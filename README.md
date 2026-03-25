@@ -1,8 +1,10 @@
 # Shipwright
 
-**40 battle-tested PM skills, 6 dedicated agents, 9 chained workflows, and an orchestrator concierge for Claude Code, Cowork, and AI coding agents.**
+**40 PM skills, 6 agents, 9 workflows, and an orchestrator for Claude Code.**
 
-Shipwright turns your AI assistant into a product management operating system. Each skill encodes a proven PM framework — not as a prompt template, but as deep domain knowledge the agent draws on during conversation.
+I got tired of re-explaining product context to AI assistants every session, and I got tired of writing the same PRDs and sprint plans from scratch. Shipwright is what came out of that frustration: a collection of PM frameworks encoded as Claude Code skills, plus agents that know how to use them together.
+
+It's not a prompt library. Each skill carries real framework knowledge (Teresa Torres, Marty Cagan, April Dunford, etc.) and produces structured artifacts you can actually hand to your team.
 
 ---
 
@@ -10,15 +12,15 @@ Shipwright turns your AI assistant into a product management operating system. E
 
 ```
 shipwright/
-├── agents/                              # 6 dedicated PM agents
-│   ├── orchestrator.md                  #   ★ Concierge — routes work to specialists
-│   ├── discovery-researcher.md          #   Autonomous research & synthesis
-│   ├── strategy-planner.md              #   Strategic artifacts & trade-off analysis
-│   ├── execution-driver.md              #   Work decomposition & delivery ops
-│   ├── customer-intelligence.md         #   Continuous customer signal synthesis
-│   └── cross-functional-liaison.md      #   Communication, alignment & coordination
+├── agents/                              # 6 PM agents
+│   ├── orchestrator.md                  #   Routes work to the right specialist
+│   ├── discovery-researcher.md          #   Research & synthesis
+│   ├── strategy-planner.md              #   Strategic artifacts & trade-offs
+│   ├── execution-driver.md              #   Work breakdown & delivery
+│   ├── customer-intelligence.md         #   Customer signal synthesis
+│   └── cross-functional-liaison.md      #   Coordination & communication
 │
-├── skills/                              # 40 PM skills organized by lifecycle phase
+├── skills/                              # 40 skills organized by lifecycle phase
 │   ├── discovery/                       #   Research & customer understanding
 │   │   ├── opportunity-solution-tree/
 │   │   ├── discovery-interview-prep/
@@ -54,49 +56,49 @@ shipwright/
 │   │   ├── retrospective-facilitator/
 │   │   └── stakeholder-communication/
 │   │
-│   ├── customer-intelligence/           #   ★ NEW — Customer signals & health
+│   ├── customer-intelligence/           #   Customer signals & health
 │   │   ├── feedback-triage/
 │   │   ├── customer-journey-mapping/
 │   │   ├── churn-analysis/
 │   │   └── customer-advisory-board/
 │   │
-│   ├── technical/                       #   ★ NEW — Technical PM skills
+│   ├── technical/                       #   Technical PM skills
 │   │   ├── technical-spec/
 │   │   ├── design-review/
 │   │   └── api-product-design/
 │   │
-│   ├── planning/                        #   ★ NEW — Alignment & decision-making
+│   ├── planning/                        #   Alignment & decision-making
 │   │   ├── okr-authoring/
 │   │   ├── stakeholder-mapping/
 │   │   └── decision-log/
 │   │
-│   ├── pricing/                         #   ★ NEW — Pricing & monetization
+│   ├── pricing/                         #   Pricing & monetization
 │   │   ├── pricing-strategy/
 │   │   └── monetization-experiments/
 │   │
-│   └── communication/                   #   ★ NEW — Influence & documentation
+│   └── communication/                   #   Influence & documentation
 │       ├── meeting-notes/
 │       ├── executive-briefing/
 │       └── product-narrative/
 │
 ├── commands/                            # 9 chained workflows
-│   ├── start.md                         #   ★ /start — launch the orchestrator
+│   ├── start.md                         #   /start — launch the orchestrator
 │   ├── discover.md                      #   /discover — full discovery cycle
 │   ├── write-prd.md                     #   /write-prd — Working Backwards PRD
 │   ├── plan-launch.md                   #   /plan-launch — GTM launch plan
 │   ├── sprint.md                        #   /sprint — sprint planning
 │   ├── strategy.md                      #   /strategy — strategy workshop
-│   ├── pricing.md                       #   ★ /pricing — pricing strategy
-│   ├── customer-review.md               #   ★ /customer-review — VoC intelligence
-│   └── tech-handoff.md                  #   ★ /tech-handoff — PM → engineering
+│   ├── pricing.md                       #   /pricing — pricing strategy
+│   ├── customer-review.md               #   /customer-review — VoC intelligence
+│   └── tech-handoff.md                  #   /tech-handoff — PM → engineering
 │
-├── skills-map.md                        # ★ Orchestrator routing reference
+├── skills-map.md                        # Orchestrator routing reference
 │
 ├── examples/
-│   └── CLAUDE.md.example                # Product context template (with auto-start)
+│   └── CLAUDE.md.example                # Product context template
 │
 ├── LICENSE                              # MIT
-└── README.md                            # You are here
+└── README.md
 ```
 
 ## Quick Start
@@ -115,7 +117,7 @@ cp -r shipwright/skills/ your-project/.claude/skills/
 cp -r shipwright/agents/ your-project/.claude/agents/
 cp -r shipwright/commands/ your-project/.claude/commands/
 
-# Or just the skills you need
+# Or cherry-pick what you need
 cp -r shipwright/skills/execution/prd-development/ your-project/.claude/skills/prd-development/
 ```
 
@@ -123,20 +125,20 @@ cp -r shipwright/skills/execution/prd-development/ your-project/.claude/skills/p
 
 ```bash
 cp shipwright/examples/CLAUDE.md.example your-project/CLAUDE.md
-# Edit CLAUDE.md with your product details
+# Fill in your product details — this is what gives the skills real context
 ```
 
-### 4. Start using
+### 4. Use it
 
-Type `/start` to launch the orchestrator. It greets you, asks what you're working on, builds an execution plan, and dispatches the right agents — no need to memorize skill names.
+Type `/start` to launch the orchestrator. It'll ask what you're working on, figure out which skills and agents to use, and build a plan. You don't need to memorize 40 skill names.
 
 ```
-/start             — Launch the orchestrator concierge  ★ NEW
+/start             — Launch the orchestrator
 /discover          — Run a full discovery cycle
 /write-prd         — Generate a Working Backwards PRD
 /plan-launch       — Build a GTM launch plan
 /sprint            — Prepare a sprint plan
-/strategy          — Facilitate a strategy session
+/strategy          — Run a strategy session
 /pricing           — Build a pricing strategy
 /customer-review   — Customer intelligence review
 /tech-handoff      — PM → engineering handoff package
@@ -144,7 +146,7 @@ Type `/start` to launch the orchestrator. It greets you, asks what you're workin
 
 ### 5. (Optional) Auto-start on session launch
 
-Add this to your `.claude/settings.json` so the orchestrator runs automatically when you open a session:
+If you want the orchestrator to greet you automatically:
 
 ```json
 {
@@ -156,10 +158,12 @@ Add this to your `.claude/settings.json` so the orchestrator runs automatically 
 }
 ```
 
-Agents are invoked for parallel, autonomous work (or let the orchestrator dispatch them for you):
+Drop that in `.claude/settings.json`.
+
+You can also invoke agents directly for parallel work:
 
 ```
-@orchestrator            — Concierge: routes work to the right agent     ★ NEW
+@orchestrator            — Routes work to the right agent
 @discovery-researcher    — Research, competitive analysis, market sizing
 @strategy-planner        — Roadmaps, positioning, PRDs, prioritization
 @execution-driver        — Epics, stories, sprint plans, release notes
@@ -221,7 +225,7 @@ Agents are invoked for parallel, autonomous work (or let the orchestrator dispat
 | **Retrospective Facilitator** | Start/Stop/Continue, 4Ls, Sailboat, Mad/Sad/Glad | Agile Retrospectives |
 | **Stakeholder Communication** | Exec updates, steering committee decks, risk escalations | Pyramid Principle |
 
-### Customer Intelligence (4) ★ NEW
+### Customer Intelligence (4)
 
 | Skill | What It Does | Framework |
 |---|---|---|
@@ -230,7 +234,7 @@ Agents are invoked for parallel, autonomous work (or let the orchestrator dispat
 | **Churn Analysis** | Diagnose why users leave, design staged retention interventions | Retention Playbook |
 | **Customer Advisory Board** | CAB agenda design, discussion guides, and synthesis templates | Strategic Advisory |
 
-### Technical & Cross-Functional (3) ★ NEW
+### Technical & Cross-Functional (3)
 
 | Skill | What It Does | Framework |
 |---|---|---|
@@ -238,7 +242,7 @@ Agents are invoked for parallel, autonomous work (or let the orchestrator dispat
 | **Design Review** | 7-perspective parallel review: Eng, Design, Exec, Legal, Customer, Devil's Advocate, Sales | Multi-stakeholder review |
 | **API Product Design** | API endpoint design, DX, versioning, documentation, developer onboarding | REST / DX best practices |
 
-### Planning & Alignment (3) ★ NEW
+### Planning & Alignment (3)
 
 | Skill | What It Does | Framework |
 |---|---|---|
@@ -246,14 +250,14 @@ Agents are invoked for parallel, autonomous work (or let the orchestrator dispat
 | **Stakeholder Mapping** | Power × Interest grids with engagement strategies and tracking | Mendelow's Matrix |
 | **Decision Log** | Structured PDRs with context, options, rationale, and revisit triggers | ADR (adapted for product) |
 
-### Pricing & Monetization (2) ★ NEW
+### Pricing & Monetization (2)
 
 | Skill | What It Does | Framework |
 |---|---|---|
 | **Pricing Strategy** | Value metric, model comparison, WTP research, competitive pricing, packaging | Van Westendorp / Gabor-Granger |
 | **Monetization Experiments** | Design pricing/packaging experiments with guardrails and kill criteria | Experimentation rigor |
 
-### Communication & Influence (3) ★ NEW
+### Communication & Influence (3)
 
 | Skill | What It Does | Framework |
 |---|---|---|
@@ -265,111 +269,67 @@ Agents are invoked for parallel, autonomous work (or let the orchestrator dispat
 
 ## The 6 Agents
 
-| Agent | Purpose | When to Use |
+| Agent | What It Does | When to Use It |
 |---|---|---|
-| **Orchestrator** ★ | Concierge agent. Understands what you need, maps it to the right skills/agents/workflows, builds a plan, dispatches work on approval. | Every session — type `/start` or configure auto-start |
-| **Discovery Researcher** | Gathers evidence. Competitive analysis, market sizing, interview synthesis. Never recommends — surfaces evidence only. | Before discovery sprints, strategy sessions, new market evaluation |
-| **Strategy Planner** | Translates research into strategic artifacts. Challenges assumptions, makes trade-offs explicit. | Quarterly planning, PRD authoring, roadmap reviews |
-| **Execution Driver** | Turns strategy into shippable work. Epics, stories, sprint plans, release notes. | Sprint planning, backlog grooming, release prep |
-| **Customer Intelligence** | Continuous customer signal synthesis. Feedback triage, churn detection, journey friction, VoC reports. | Monthly/quarterly reviews, churn spikes, product launches |
-| **Cross-Functional Liaison** | Handles coordination work. Meeting notes, stakeholder updates, decision logging, alignment tracking. | Daily PM operations, exec communication, decision capture |
+| **Orchestrator** | Figures out what you need, maps it to skills/agents, builds a plan, and dispatches work after you approve. | Default entry point. Type `/start`. |
+| **Discovery Researcher** | Gathers evidence. Competitive analysis, market sizing, interview synthesis. Surfaces findings but doesn't make recommendations. | Before discovery sprints, strategy sessions, entering a new market. |
+| **Strategy Planner** | Turns research into strategic artifacts. Challenges assumptions, makes trade-offs visible. | Quarterly planning, PRD authoring, roadmap reviews. |
+| **Execution Driver** | Turns strategy into shippable work. Epics, stories, sprint plans, release notes. | Sprint planning, backlog grooming, release prep. |
+| **Customer Intelligence** | Synthesizes customer signals. Feedback triage, churn detection, journey friction. | Monthly/quarterly reviews, churn spikes, launches. |
+| **Cross-Functional Liaison** | Handles coordination. Meeting notes, stakeholder updates, decision logging. | Daily PM ops, exec communication, decision capture. |
 
-### How the Orchestrator Works
+### How the orchestrator works
 
-The orchestrator is the front door to Shipwright. Instead of memorizing 40 skill names, you describe what you need in plain language and the orchestrator:
+You describe what you need in plain language. The orchestrator asks a few clarifying questions (deliverable, audience, timeline), maps your request to the right skills and agents, then dispatches them. It never does the actual work itself — it just routes.
 
-1. **Understands** — Asks 1-3 clarifying questions to nail down the deliverable, audience, timeline, and scope
-2. **Plans** — Maps your need to the right combination of skills, agents, and workflows using the skills map
-3. **Executes** — Dispatches specialist agents (in parallel where possible) and reports back with artifacts
+This means you can use one entry point (`/start`) for everything without learning what's under the hood.
 
-The orchestrator never does the work itself — it routes to specialists. This keeps each agent focused and prevents a single agent from trying to do everything.
+### Why the agents are separated
 
-### Agent Separation of Concerns
-
-```
-Orchestrator routes work.    →  orchestrator
-Research doesn't recommend.  →  discovery-researcher
-Strategy doesn't execute.    →  strategy-planner
-Execution doesn't strategize.→  execution-driver
-Intelligence doesn't decide. →  customer-intelligence
-Communication doesn't opine. →  cross-functional-liaison
-```
-
-This separation prevents confirmation bias, keeps the PM in the decision seat, and ensures each agent stays focused on what it does best.
+Each agent has a narrow job. Research gathers evidence but doesn't recommend. Strategy plans but doesn't break down tickets. Execution ships but doesn't set direction. This is deliberate — it keeps the PM (you) in the decision seat and prevents the kind of circular reasoning you get when one agent tries to do everything.
 
 ---
 
 ## The 9 Workflows
 
-| Command | Skills Chained | What It Produces |
+| Command | Skills Chained | Output |
 |---|---|---|
-| `/start` ★ | Orchestrator → Skills Map → Agent Dispatch | Execution plan + dispatched agents |
-| `/discover` | OST → Assumptions → Prioritization → Experiments | Discovery Report with experiment backlog |
+| `/start` | Orchestrator → Skills Map → Agent Dispatch | Execution plan + dispatched agents |
+| `/discover` | OST → Assumptions → Prioritization → Experiments | Discovery report with experiment backlog |
 | `/write-prd` | Press Release → FAQ → User Stories → Full PRD | Complete Working Backwards PRD |
-| `/plan-launch` | GTM Strategy → ICP → Positioning → Battlecard → Timeline | GTM Launch Plan |
-| `/sprint` | Sprint Goal → Capacity → Story Selection → Risk Check | Sprint Plan with agreement |
-| `/strategy` | Vision → Bets → Boundaries → Pre-Mortem → Success Criteria | Product Strategy Document |
-| `/pricing` | Value Metric → Model → Competitive → WTP → Packaging → Experiment | Pricing Strategy with validation plan |
-| `/customer-review` | Feedback Triage → Journey Map → Churn Analysis → Exec Briefing | Customer Intelligence Report |
+| `/plan-launch` | GTM Strategy → ICP → Positioning → Battlecard → Timeline | GTM launch plan |
+| `/sprint` | Sprint Goal → Capacity → Story Selection → Risk Check | Sprint plan with agreement |
+| `/strategy` | Vision → Bets → Boundaries → Pre-Mortem → Success Criteria | Product strategy document |
+| `/pricing` | Value Metric → Model → Competitive → WTP → Packaging → Experiment | Pricing strategy with validation plan |
+| `/customer-review` | Feedback Triage → Journey Map → Churn Analysis → Exec Briefing | Customer intelligence report |
 | `/tech-handoff` | PRD → Tech Spec → Design Review → Epics → Stories | Complete engineering handoff package |
 
 ---
 
-## Best Ways to Use Shipwright
+## Getting the Most Out of It
 
-### Start here (Day 1)
+**Fill in CLAUDE.md first.** Every agent reads it before doing anything. The more context you put in (personas, metrics, priorities, glossary), the less you repeat yourself. When your strategy changes, update it — every future session picks up the new context automatically.
 
-The fastest way to get value is three steps: fill in `CLAUDE.md` with your product context, type `/start`, and describe what you're working on in plain language. The orchestrator handles the rest — it figures out which skills and agents to use so you don't have to memorize anything.
+**Don't try to use all 40 skills at once.** Pick the thing you do every week that feels like a grind — sprint plans, feedback triage, stakeholder updates — and start there. Get comfortable, then expand.
 
-### Pick one painful workflow and automate it first
-
-Don't try to adopt all 40 skills at once. Think about the thing you do every week that feels repetitive — writing sprint plans, triaging feedback, drafting stakeholder updates — and start there. Run the relevant command a few times, tweak the output to match your team's style, and build trust before expanding.
-
-### Let research and strategy run in parallel
-
-One of the biggest time-savers is dispatching independent agents simultaneously. While the discovery researcher is pulling competitive intelligence, the strategy planner can be drafting your positioning. The orchestrator does this automatically when it detects steps that don't depend on each other, but you can also invoke agents directly:
+**Run agents in parallel.** The orchestrator does this automatically when steps don't depend on each other, but you can also do it manually:
 
 ```
 @discovery-researcher  "Research the competitive landscape for [feature area]"
 @strategy-planner      "Draft positioning for [product] against [competitor]"
 ```
 
-### Use CLAUDE.md as your product's single source of truth
+**Hook up your tools via MCP.** Shipwright gets a lot more useful when agents can pull real data from Jira, Slack, Notion, Linear, or Amplitude instead of working from pasted descriptions.
 
-Every agent and skill reads `CLAUDE.md` before doing anything. The more complete it is — personas, metrics, strategic priorities, glossary, conventions — the less you have to repeat yourself. Update it when your strategy shifts and every future session inherits the new context automatically.
+**Build your own workflows.** The built-in commands are just markdown files that chain skills together. Copy one, swap out the skills, and you've got a custom workflow that matches how your team actually works.
 
-### Chain skills for end-to-end workflows
-
-Individual skills produce focused artifacts. Commands chain them into complete workflows. For example, `/tech-handoff` runs PRD → Technical Spec → Design Review → Epic Breakdown → User Stories in sequence, each step feeding the next. If the built-in commands don't match your flow, create your own by copying an existing command and swapping out the skills.
-
-### Connect your tools via MCP
-
-Shipwright gets dramatically more useful when agents can read from and write to your actual tools. With MCP integrations for Jira, Slack, Notion, Amplitude, or Linear, agents can pull real tickets, real metrics, and real customer feedback instead of working from descriptions you paste in.
-
-### Keep the PM in the decision seat
-
-The agents are designed with strict separation of concerns — research doesn't recommend, strategy doesn't execute, intelligence doesn't decide. This is intentional. The agents give you structured artifacts and evidence; you make the calls. If an agent ever tries to make a decision for you, that's a signal to review the output more carefully.
-
-### Version your skills alongside your product
-
-Check your `.claude/skills/` directory into git. As your product evolves, your frameworks should too. A Series A startup's prioritization skill looks different from a growth-stage company's. Treat skills like living documentation.
-
-## Tips & Best Practices
-
-1. **Start with CLAUDE.md** — Give the agent persistent context about your product, users, and conventions
-2. **Start small** — Pick 3-5 skills that match your most painful weekly tasks, build confidence, then expand
-3. **Chain skills into workflows** — Individual skills are useful; chained commands are powerful
-4. **Separate research from decisions** — The discovery agent surfaces evidence; the PM decides
-5. **Version your skills** — Check `.claude/skills/` into git; your templates should evolve with your product
-6. **Connect your tools** — MCP integrations (Jira, Slack, Notion, Amplitude) make agents dramatically more useful
-7. **Use agents for parallel work** — Kick off research while simultaneously drafting strategy
-8. **Document decisions** — Use the decision-log skill religiously; future-you will be grateful
+**Check your skills into git.** As your product evolves, your frameworks should too. What works at Series A looks different at growth stage.
 
 ---
 
 ## Frameworks Referenced
 
-This toolkit stands on the shoulders of established PM methodology:
+The skills draw on established PM thinking:
 
 - Teresa Torres — *Continuous Discovery Habits*
 - Marty Cagan — *Inspired* and *Empowered*
@@ -389,7 +349,7 @@ This toolkit stands on the shoulders of established PM methodology:
 
 ## Contributing
 
-PRs welcome. If you've built a PM skill that's battle-tested in your workflow, open a PR with:
+PRs welcome. If you've got a PM skill that works well in your workflow, open a PR with:
 
 1. A new skill directory under the appropriate category
 2. A `SKILL.md` following the existing format (Description, When to Use, Framework, Output Format, Common Mistakes)
@@ -399,7 +359,7 @@ PRs welcome. If you've built a PM skill that's battle-tested in your workflow, o
 
 ## Acknowledgments
 
-Shipwright was informed by the growing community of PM-meets-AI practitioners, including:
+Built on ideas from a growing community of PMs figuring out how to use AI coding agents for product work:
 
 - [Pawel Huryn's PM Skills Marketplace](https://github.com/phuryn/pm-skills) (65 skills, 8 plugins)
 - [Dean Peters' Product-Manager-Skills](https://github.com/deanpeters/Product-Manager-Skills) (46 skills)
@@ -412,4 +372,4 @@ Shipwright was informed by the growing community of PM-meets-AI practitioners, i
 
 ## License
 
-MIT — use it, fork it, ship it.
+MIT
