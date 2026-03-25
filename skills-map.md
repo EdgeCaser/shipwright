@@ -1,0 +1,160 @@
+# Shipwright Skills Map
+
+> This file is the orchestrator agent's routing reference. It maps plain-language PM needs
+> to the skills, agents, and workflows best suited to handle them.
+
+## All Skills — Quick Reference
+
+### Discovery & Research
+| Skill | Directory | Best For |
+|---|---|---|
+| Opportunity Solution Tree | `skills/discovery/opportunity-solution-tree/` | Mapping outcomes to opportunities to experiments |
+| Discovery Interview Prep | `skills/discovery/discovery-interview-prep/` | Preparing customer interview materials |
+| User Research Synthesis | `skills/discovery/user-research-synthesis/` | Turning raw interview notes into insight cards |
+| Jobs-to-Be-Done | `skills/discovery/jobs-to-be-done/` | Framing needs as job statements, finding underserved outcomes |
+| Competitive Landscape | `skills/discovery/competitive-landscape/` | Structured competitor analysis |
+| Market Sizing | `skills/discovery/market-sizing/` | TAM/SAM/SOM estimation |
+
+### Strategy & Planning
+| Skill | Directory | Best For |
+|---|---|---|
+| Product Strategy Session | `skills/strategy/product-strategy-session/` | Vision, bets, boundaries, success criteria |
+| Positioning Statement | `skills/strategy/positioning-statement/` | Market positioning and messaging |
+| PESTEL Analysis | `skills/strategy/pestel-analysis/` | Macro environment scanning |
+| Lean Canvas | `skills/strategy/lean-canvas/` | One-page business model |
+| Roadmap Planning | `skills/strategy/roadmap-planning/` | Now/Next/Later outcome-based roadmaps |
+| Prioritization Advisor | `skills/strategy/prioritization-advisor/` | RICE, ICE, Kano, MoSCoW scoring |
+
+### Execution & Delivery
+| Skill | Directory | Best For |
+|---|---|---|
+| PRD Development | `skills/execution/prd-development/` | Working Backwards PRDs |
+| User Story Writing | `skills/execution/user-story-writing/` | INVEST stories with acceptance criteria |
+| Epic Breakdown | `skills/execution/epic-breakdown/` | Decomposing initiatives into shippable epics |
+| Sprint Planning | `skills/execution/sprint-planning/` | Sprint goals, capacity, scope selection |
+| Pre-Mortem | `skills/execution/pre-mortem/` | Risk identification before launch |
+| Release Notes | `skills/execution/release-notes/` | Multi-audience release communications |
+
+### Go-to-Market & Growth
+| Skill | Directory | Best For |
+|---|---|---|
+| Go-to-Market Strategy | `skills/gtm/go-to-market-strategy/` | Beachhead, ICP, messaging, launch plan |
+| Competitive Battlecard | `skills/gtm/competitive-battlecard/` | Sales-ready competitive intelligence |
+| Growth Loops | `skills/gtm/growth-loops/` | Mapping compounding growth mechanisms |
+
+### Measurement & Iteration
+| Skill | Directory | Best For |
+|---|---|---|
+| Metrics Dashboard | `skills/measurement/metrics-dashboard/` | North Star + input metrics architecture |
+| A/B Test Analysis | `skills/measurement/ab-test-analysis/` | Experiment result evaluation |
+| Retrospective Facilitator | `skills/measurement/retrospective-facilitator/` | Team retros with action items |
+| Stakeholder Communication | `skills/measurement/stakeholder-communication/` | Status updates calibrated by audience |
+
+### Customer Intelligence
+| Skill | Directory | Best For |
+|---|---|---|
+| Feedback Triage | `skills/customer-intelligence/feedback-triage/` | Multi-channel feedback synthesis |
+| Customer Journey Mapping | `skills/customer-intelligence/customer-journey-mapping/` | End-to-end experience mapping |
+| Churn Analysis | `skills/customer-intelligence/churn-analysis/` | Retention diagnosis and playbook |
+| Customer Advisory Board | `skills/customer-intelligence/customer-advisory-board/` | CAB session preparation |
+
+### Technical & Cross-Functional
+| Skill | Directory | Best For |
+|---|---|---|
+| Technical Spec | `skills/technical/technical-spec/` | Engineering-ready specifications |
+| Design Review | `skills/technical/design-review/` | 7-perspective proposal review |
+| API Product Design | `skills/technical/api-product-design/` | API endpoint and DX design |
+
+### Planning & Alignment
+| Skill | Directory | Best For |
+|---|---|---|
+| OKR Authoring | `skills/planning/okr-authoring/` | Drafting and auditing OKRs |
+| Stakeholder Mapping | `skills/planning/stakeholder-mapping/` | Power × Interest grids |
+| Decision Log | `skills/planning/decision-log/` | Product decision records |
+
+### Pricing & Monetization
+| Skill | Directory | Best For |
+|---|---|---|
+| Pricing Strategy | `skills/pricing/pricing-strategy/` | Pricing model and packaging design |
+| Monetization Experiments | `skills/pricing/monetization-experiments/` | Pricing experiment design |
+
+### Communication & Influence
+| Skill | Directory | Best For |
+|---|---|---|
+| Meeting Notes | `skills/communication/meeting-notes/` | Structured meeting summaries |
+| Executive Briefing | `skills/communication/executive-briefing/` | One-page SCR briefs |
+| Product Narrative | `skills/communication/product-narrative/` | Amazon-style 6-pager memos |
+
+---
+
+## All Agents — Capability Matrix
+
+| Agent | Core Capability | Uses These Skills | Does NOT Do |
+|---|---|---|---|
+| **discovery-researcher** | Gather evidence, analyze markets, synthesize research | discovery/*, measurement/metrics-dashboard | Make product recommendations |
+| **strategy-planner** | Build strategic artifacts, challenge assumptions, make trade-offs explicit | strategy/*, execution/prd-development, execution/pre-mortem, gtm/*, pricing/* | Conduct research, break down stories |
+| **execution-driver** | Decompose work, write stories, plan sprints, produce release comms | execution/*, measurement/*, technical/technical-spec | Set strategy, conduct research |
+| **customer-intelligence** | Synthesize customer signals, detect churn, map journeys | customer-intelligence/*, measurement/* | Make product decisions, respond to customers |
+| **cross-functional-liaison** | Document decisions, communicate to stakeholders, track alignment | communication/*, planning/*, measurement/stakeholder-communication, execution/release-notes | Make strategic decisions, conduct research |
+
+---
+
+## All Workflows — When to Use Each
+
+| Command | Chain | Best For | Time Required |
+|---|---|---|---|
+| `/discover` | OST → Assumptions → Prioritize → Experiments | Starting a discovery cycle | 30-60 min |
+| `/write-prd` | Press Release → FAQ → Stories → Full PRD | New feature specification | 45-90 min |
+| `/plan-launch` | GTM → ICP → Positioning → Battlecard → Timeline | Product or feature launch | 60-90 min |
+| `/sprint` | Goal → Capacity → Selection → Risk Check | Sprint planning prep | 20-40 min |
+| `/strategy` | Vision → Bets → Boundaries → Pre-Mortem → Metrics | Strategy development | 60-120 min |
+| `/pricing` | Value Metric → Model → Competitive → WTP → Packaging | Pricing strategy | 60-90 min |
+| `/customer-review` | Feedback → Journey → Churn → Exec Briefing | Customer intelligence report | 45-90 min |
+| `/tech-handoff` | PRD → Tech Spec → Design Review → Epics → Stories | PM-to-engineering handoff | 90-180 min |
+
+---
+
+## Keyword → Skill Routing
+
+When the user says something containing these keywords, route to the corresponding skill:
+
+| Keywords | Route To |
+|---|---|
+| "PRD", "requirements", "spec out", "write up the feature" | prd-development |
+| "user stories", "acceptance criteria", "break it down for eng" | user-story-writing |
+| "roadmap", "what should we build next", "prioritize" | roadmap-planning, prioritization-advisor |
+| "OKRs", "objectives", "key results", "goals for the quarter" | okr-authoring |
+| "competitors", "competitive", "who else does this" | competitive-landscape |
+| "market size", "TAM", "how big is the opportunity" | market-sizing |
+| "pricing", "how much should we charge", "monetization" | pricing-strategy |
+| "launch", "go to market", "GTM" | go-to-market-strategy |
+| "churn", "retention", "why are users leaving" | churn-analysis |
+| "feedback", "what are customers saying", "NPS", "reviews" | feedback-triage |
+| "interview", "talk to customers", "user research" | discovery-interview-prep |
+| "experiment", "A/B test", "did it work" | ab-test-analysis |
+| "sprint", "sprint planning", "what should we commit to" | sprint-planning |
+| "retro", "retrospective", "what went well" | retrospective-facilitator |
+| "meeting notes", "summarize the meeting", "action items" | meeting-notes |
+| "stakeholder", "update the VP", "exec update" | stakeholder-communication, executive-briefing |
+| "decision", "why did we decide", "document the choice" | decision-log |
+| "positioning", "messaging", "how do we describe ourselves" | positioning-statement |
+| "tech spec", "architecture", "hand off to engineering" | technical-spec |
+| "design review", "get feedback on this proposal" | design-review |
+| "API", "developer experience", "endpoints" | api-product-design |
+| "strategy", "vision", "where are we going" | product-strategy-session |
+| "pre-mortem", "what could go wrong", "risks" | pre-mortem |
+| "release notes", "changelog", "what shipped" | release-notes |
+| "business model", "lean canvas", "is this viable" | lean-canvas |
+| "journey map", "customer experience", "touchpoints" | customer-journey-mapping |
+| "battlecard", "sales enablement", "objection handling" | competitive-battlecard |
+| "growth", "acquisition", "viral", "loops" | growth-loops |
+| "metrics", "dashboard", "north star", "what should we measure" | metrics-dashboard |
+| "memo", "6-pager", "make the case for" | product-narrative |
+| "one-pager", "brief the exec", "get approval" | executive-briefing |
+| "JTBD", "jobs to be done", "what are users hiring us for" | jobs-to-be-done |
+| "stakeholder map", "who do I need to influence" | stakeholder-mapping |
+| "CAB", "advisory board", "customer panel" | customer-advisory-board |
+| "PESTEL", "macro", "regulatory", "external factors" | pestel-analysis |
+| "epic", "break this initiative down" | epic-breakdown |
+| "pricing experiment", "test the price", "conversion optimization" | monetization-experiments |
+| "opportunity solution tree", "OST", "discovery tree" | opportunity-solution-tree |
