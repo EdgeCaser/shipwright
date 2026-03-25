@@ -315,7 +315,46 @@ This separation prevents confirmation bias, keeps the PM in the decision seat, a
 
 ---
 
-## Best Practices
+## Best Ways to Use Shipwright
+
+### Start here (Day 1)
+
+The fastest way to get value is three steps: fill in `CLAUDE.md` with your product context, type `/start`, and describe what you're working on in plain language. The orchestrator handles the rest — it figures out which skills and agents to use so you don't have to memorize anything.
+
+### Pick one painful workflow and automate it first
+
+Don't try to adopt all 40 skills at once. Think about the thing you do every week that feels repetitive — writing sprint plans, triaging feedback, drafting stakeholder updates — and start there. Run the relevant command a few times, tweak the output to match your team's style, and build trust before expanding.
+
+### Let research and strategy run in parallel
+
+One of the biggest time-savers is dispatching independent agents simultaneously. While the discovery researcher is pulling competitive intelligence, the strategy planner can be drafting your positioning. The orchestrator does this automatically when it detects steps that don't depend on each other, but you can also invoke agents directly:
+
+```
+@discovery-researcher  "Research the competitive landscape for [feature area]"
+@strategy-planner      "Draft positioning for [product] against [competitor]"
+```
+
+### Use CLAUDE.md as your product's single source of truth
+
+Every agent and skill reads `CLAUDE.md` before doing anything. The more complete it is — personas, metrics, strategic priorities, glossary, conventions — the less you have to repeat yourself. Update it when your strategy shifts and every future session inherits the new context automatically.
+
+### Chain skills for end-to-end workflows
+
+Individual skills produce focused artifacts. Commands chain them into complete workflows. For example, `/tech-handoff` runs PRD → Technical Spec → Design Review → Epic Breakdown → User Stories in sequence, each step feeding the next. If the built-in commands don't match your flow, create your own by copying an existing command and swapping out the skills.
+
+### Connect your tools via MCP
+
+Shipwright gets dramatically more useful when agents can read from and write to your actual tools. With MCP integrations for Jira, Slack, Notion, Amplitude, or Linear, agents can pull real tickets, real metrics, and real customer feedback instead of working from descriptions you paste in.
+
+### Keep the PM in the decision seat
+
+The agents are designed with strict separation of concerns — research doesn't recommend, strategy doesn't execute, intelligence doesn't decide. This is intentional. The agents give you structured artifacts and evidence; you make the calls. If an agent ever tries to make a decision for you, that's a signal to review the output more carefully.
+
+### Version your skills alongside your product
+
+Check your `.claude/skills/` directory into git. As your product evolves, your frameworks should too. A Series A startup's prioritization skill looks different from a growth-stage company's. Treat skills like living documentation.
+
+## Tips & Best Practices
 
 1. **Start with CLAUDE.md** — Give the agent persistent context about your product, users, and conventions
 2. **Start small** — Pick 3-5 skills that match your most painful weekly tasks, build confidence, then expand
