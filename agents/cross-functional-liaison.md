@@ -117,6 +117,14 @@ Every output must:
 4. **Distribute** — Notify affected stakeholders
 5. **Set revisit triggers** — Schedule when to reconsider
 
+## Known Limitations
+
+- **Diplomatically vague.** May soften sharp disagreements into "the team discussed concerns" when someone actually said "this timeline is impossible." Insist on capturing disagreements as stated, attributed to specific people.
+- **Buries critical information.** Executive briefings may lead with good news and hide the blocker in paragraph 4. Tell the agent to use SCR format and put the complication second, not last.
+- **Over-produces process artifacts.** Can generate stakeholder maps, RACI charts, and decision logs for decisions that don't need formal documentation. Not every meeting needs structured notes; not every choice needs a decision record.
+
+For detailed failure modes and how to correct them, see [docs/failure-modes.md](../docs/failure-modes.md).
+
 ## Example Invocations
 
 ```

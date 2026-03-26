@@ -3,7 +3,7 @@
 # Checks for drift between README, skills-map, orchestrator, and actual files.
 # Run from the repo root: bash scripts/validate.sh
 
-set -euo pipefail
+set -uo pipefail
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -28,11 +28,11 @@ skill_count=$(find skills -name "SKILL.md" | wc -l | tr -d ' ')
 agent_count=$(find agents -name "*.md" | wc -l | tr -d ' ')
 command_count=$(find commands -name "*.md" | wc -l | tr -d ' ')
 
-# Extract counts from the bold tagline (e.g. "**42 PM skills, 6 agents, 15 workflows...")
-tagline=$(grep "PM skills" README.md | head -1)
-readme_skills=$(echo "$tagline" | grep -o '[0-9]* PM skills' | grep -o '[0-9]*')
-readme_agents=$(echo "$tagline" | grep -o '[0-9]* agents' | grep -o '[0-9]*')
-readme_workflows=$(echo "$tagline" | grep -o '[0-9]* workflows' | grep -o '[0-9]*')
+# Extract counts from tagline (e.g. "42 skills, 6 specialist agents, 15 chained workflows...")
+tagline=$(grep -E '[0-9]+ skills,' README.md | head -1 || echo "")
+readme_skills=$(echo "$tagline" | grep -oE '[0-9]+ skills' | grep -oE '[0-9]+' || echo "")
+readme_agents=$(echo "$tagline" | grep -oE '[0-9]+ [a-z]* ?agents' | grep -oE '[0-9]+' || echo "")
+readme_workflows=$(echo "$tagline" | grep -oE '[0-9]+ [a-z]* ?workflows' | grep -oE '[0-9]+' || echo "")
 
 if [ "$skill_count" = "$readme_skills" ]; then
   pass "Skill count: $skill_count matches README ($readme_skills)"
@@ -54,7 +54,7 @@ fi
 
 # Check plugin.json counts
 if [ -f ".claude-plugin/plugin.json" ]; then
-  plugin_skills=$(grep -o '[0-9]* skills' .claude-plugin/plugin.json | head -1 | grep -o '[0-9]*')
+  plugin_skills=$(grep -oE '[0-9]+ skills' .claude-plugin/plugin.json | head -1 | grep -oE '[0-9]+' || echo "")
   if [ -n "$plugin_skills" ] && [ "$skill_count" != "$plugin_skills" ]; then
     fail "plugin.json claims $plugin_skills skills, found $skill_count"
   else
@@ -64,7 +64,7 @@ fi
 
 # Check marketplace.json counts
 if [ -f ".claude-plugin/marketplace.json" ]; then
-  mkt_skills=$(grep -o '[0-9]* skills' .claude-plugin/marketplace.json | head -1 | grep -o '[0-9]*')
+  mkt_skills=$(grep -oE '[0-9]+ skills' .claude-plugin/marketplace.json | head -1 | grep -oE '[0-9]+' || echo "")
   if [ -n "$mkt_skills" ] && [ "$skill_count" != "$mkt_skills" ]; then
     fail "marketplace.json claims $mkt_skills skills, found $skill_count"
   else
@@ -195,12 +195,78 @@ echo ""
 
 echo "Checking skills-map workflow count..."
 
-sm_workflow_count=$(grep -c '| `/[a-z]' skills-map.md || true)
+sm_workflow_count=$(grep -c '^| `/[a-z]' skills-map.md || true)
 if [ "$sm_workflow_count" = "$command_count" ] || [ "$sm_workflow_count" = "$((command_count - 1))" ]; then
   pass "Skills-map workflow entries ($sm_workflow_count) align with command files ($command_count)"
 else
   warn "Skills-map has $sm_workflow_count workflow entries but there are $command_count command files"
 fi
+
+echo ""
+
+# ─── 10. Evals directory checks ──────────────────────────────────────────────────
+
+echo "Checking evals directory..."
+
+if [ -d "evals" ]; then
+  pass "evals/ directory exists"
+  
+  for eval_file in rubric prd strategy design-review; do
+    if [ -f "evals/${eval_file}.md" ]; then
+      pass "Eval rubric exists: evals/${eval_file}.md"
+    else
+      fail "Missing eval rubric: evals/${eval_file}.md"
+    fi
+  done
+  
+  if [ -f "evals/README.md" ]; then
+    pass "Eval README exists"
+  else
+    warn "Missing evals/README.md"
+  fi
+else
+  fail "evals/ directory not found"
+fi
+
+echo ""
+
+# ─── 11. Golden outputs checks ──────────────────────────────────────────────────
+
+echo "Checking golden outputs..."
+
+if [ -d "examples/golden-outputs" ]; then
+  pass "examples/golden-outputs/ directory exists"
+  
+  for output_file in prd strategy design-review ab-analysis; do
+    if [ -f "examples/golden-outputs/${output_file}.md" ]; then
+      pass "Golden output exists: examples/golden-outputs/${output_file}.md"
+    else
+      fail "Missing golden output: examples/golden-outputs/${output_file}.md"
+    fi
+  done
+  
+  if [ -f "examples/golden-outputs/README.md" ]; then
+    pass "Golden outputs README exists"
+  else
+    warn "Missing examples/golden-outputs/README.md"
+  fi
+else
+  fail "examples/golden-outputs/ directory not found"
+fi
+
+echo ""
+
+# ─── 12. Docs directory checks ──────────────────────────────────────────────────
+
+echo "Checking docs..."
+
+for doc_file in connecting-your-tools installing-in-other-tools using-workflows failure-modes composition-model; do
+  if [ -f "docs/${doc_file}.md" ]; then
+    pass "Doc exists: docs/${doc_file}.md"
+  else
+    fail "Missing doc: docs/${doc_file}.md"
+  fi
+done
 
 echo ""
 

@@ -114,6 +114,14 @@ When given a strategy task:
 6. **Recommend** — State your recommendation with rationale and confidence level
 7. **Define success** — How will we know if we made the right choice?
 
+## Known Limitations
+
+- **Overfits frameworks to problems.** May force a SWOT when the problem is operational, or run a full positioning exercise for an internal tool. Push back if the framework feels heavier than the decision warrants.
+- **Produces unfalsifiable strategies.** Watch for bets that lack kill criteria or strategic "directions" that can't be proven wrong. Demand specific conditions under which the team would change course.
+- **Hedges excessively when uncertain.** When evidence is thin, the agent may qualify every recommendation to the point of uselessness. Tell it to take a position and flag the confidence level, rather than presenting endless balanced options.
+
+For detailed failure modes and how to correct them, see [docs/failure-modes.md](../docs/failure-modes.md).
+
 ## Example Invocations
 
 ```

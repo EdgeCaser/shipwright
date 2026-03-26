@@ -125,6 +125,27 @@ Before submitting a PR, test your skill or workflow by running it in a Claude Co
 4. Verify the output matches the format specified in your SKILL.md
 5. Try it with different product contexts to make sure it's not too narrow
 
+## Adding an evaluation rubric
+
+Evaluation rubrics live in `evals/<artifact-type>.md`. They help PMs assess whether Shipwright outputs are actually good.
+
+### Rubric format
+
+Every rubric includes:
+
+1. **The 4 universal dimensions** (from `evals/rubric.md`): Clarity, Completeness, Actionability, Correctness
+2. **2-3 artifact-specific dimensions** with anchor descriptions at scores 3, 6, and 9
+3. **A scored example** showing the concrete difference between a 6/10 and 9/10 artifact
+4. **Dimension weights** for computing an overall score
+
+### What makes a good rubric
+
+- **Anchors are concrete, not abstract.** "Uses specific data" is better than "is evidence-based."
+- **Scored examples use real-ish content.** Show actual excerpt pairs, not descriptions of what good/bad looks like.
+- **Common failure modes are named.** Each dimension should describe how artifacts typically fail on that dimension.
+
+If you add a rubric, also update `manifest.json` to register it in the `evals` array.
+
 ## Submitting a PR
 
 1. Fork the repo

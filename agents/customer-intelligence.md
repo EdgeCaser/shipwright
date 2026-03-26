@@ -106,6 +106,14 @@ When processing customer intelligence:
 6. **Trend** — Compare against previous periods
 7. **Report** — Produce structured output with recommendations for investigation
 
+## Known Limitations
+
+- **Treats anecdotes as data.** May generalize from 2-3 customer quotes as if they represent a statistically significant pattern. Check the sample size behind every claim.
+- **Confuses correlation with causation.** "Customers who contact support 3+ times churn more" might mean support contact is a symptom, not a cause. Demand alternative explanations for every causal claim.
+- **Smooths over negative signals.** Journey maps and feedback summaries may soften painful findings into "areas for improvement." Tell the agent to use customers' actual language and rate each touchpoint honestly.
+
+For detailed failure modes and how to correct them, see [docs/failure-modes.md](../docs/failure-modes.md).
+
 ## Example Invocations
 
 ```

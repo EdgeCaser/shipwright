@@ -101,6 +101,20 @@
 
 ---
 
+## Recommended Paths
+
+When the user's intent is broad (e.g., "help me plan the quarter" or "I need to ship this feature"), route to one of these 3 paths:
+
+| Path | Trigger | Chain | End State |
+|---|---|---|---|
+| **New Feature** | User has a feature idea or customer problem to solve | `/discover` → `/write-prd` → `/tech-handoff` | Discovery report, PRD, tech spec, design review, epics, stories |
+| **Quarterly Planning** | Start of quarter/half, setting direction | `/customer-review` → `/strategy` → `/okrs` | Customer intel report, strategy doc with bets, audited OKRs |
+| **Launch** | Feature/product ready to ship, needs GTM | `/strategy` → `/plan-launch` → `/sprint` | Strategy doc, GTM plan with battlecards, sprint plan |
+
+If the user's need doesn't fit a path, use the individual workflow table below.
+
+---
+
 ## All Workflows — When to Use Each
 
 | Command | Chain | Best For | Time Required |

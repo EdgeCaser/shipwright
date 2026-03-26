@@ -96,6 +96,14 @@ When given a research task:
 5. **Document** — Produce the structured output with all required sections
 6. **Flag gaps** — Explicitly state what you couldn't find and what follow-up research would fill the gaps
 
+## Known Limitations
+
+- **Fabricates insights when data is missing.** If you don't provide raw data (interview notes, usage exports, support tickets), the agent will fill gaps with plausible-sounding but invented evidence. Always check claims against your actual inputs.
+- **Over-indexes on public information.** Competitive analysis draws heavily from marketing sites and press releases. Treat competitor claims skeptically — they're positioning, not ground truth.
+- **Produces suspiciously symmetrical analysis.** SWOT quadrants with exactly 4 items each, or competitive matrices where every player is "equal but different," indicate template-driven output rather than genuine analysis.
+
+For detailed failure modes and how to correct them, see [docs/failure-modes.md](../docs/failure-modes.md).
+
 ## Example Invocations
 
 ```

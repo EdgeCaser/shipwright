@@ -12,6 +12,8 @@ It covers the full PM lifecycle: discovery and research, strategy and positionin
 
 The skills are plain markdown files, so they're compatible with any AI coding agent that reads skill files — Cursor, Codex, Gemini CLI, and others. Agents, commands, and the orchestrator are Claude Code-specific. See the [cross-tool install guide](docs/installing-in-other-tools.md) for what works where.
 
+> **Want to see the output before you install?** Check out the [golden output examples](examples/golden-outputs/) — side-by-side comparisons of what a generic AI produces vs. what Shipwright produces for the same prompt.
+
 ---
 
 ## What's Inside
@@ -115,14 +117,29 @@ shipwright/
 ├── docs/
 │   ├── using-workflows.md               # What workflows are and how to use them
 │   ├── connecting-your-tools.md         # MCP setup guide for PMs
-│   └── installing-in-other-tools.md     # Setup for Cursor, Codex, Gemini, etc.
+│   ├── installing-in-other-tools.md     # Setup for Cursor, Codex, Gemini, etc.
+│   ├── composition-model.md            # How skills, agents, workflows compose
+│   └── failure-modes.md                # Known failure modes and how to fix them
+│
+├── evals/                               # Output evaluation rubrics
+│   ├── README.md                        # How the eval system works
+│   ├── rubric.md                        # Universal 4-dimension rubric
+│   ├── prd.md                           # PRD-specific rubric + scored example
+│   ├── strategy.md                      # Strategy-specific rubric + scored example
+│   └── design-review.md                # Design review rubric + scored example
 │
 ├── examples/
 │   ├── CLAUDE.md.example                # Blank product context template
 │   ├── CLAUDE.md.b2b-saas              # Filled-in example: compliance SaaS
 │   ├── CLAUDE.md.consumer-app          # Filled-in example: fitness app
 │   ├── CLAUDE.md.api-platform          # Filled-in example: payments API
-│   └── mcp.json.example                # Example MCP config for team sharing
+│   ├── mcp.json.example                # Example MCP config for team sharing
+│   └── golden-outputs/                 # Before/after output comparisons
+│       ├── README.md                    # Index and explanation
+│       ├── prd.md                       # PRD: baseline vs Shipwright
+│       ├── strategy.md                  # Strategy: baseline vs Shipwright
+│       ├── design-review.md            # Design review: baseline vs Shipwright
+│       └── ab-analysis.md              # A/B analysis: baseline vs Shipwright
 │
 ├── LICENSE                              # MIT
 └── README.md
@@ -190,6 +207,34 @@ You can also invoke agents directly for parallel work:
 @customer-intelligence    - Feedback triage, churn signals, VoC reports
 @cross-functional-liaison - Meeting notes, exec updates, decision logs
 ```
+
+---
+
+## Start Here: 3 Paths
+
+Most PM work falls into one of three patterns. If you're not sure where to begin, pick the path that matches what you're doing this week.
+
+### Path 1: New Feature
+```
+/discover  →  /write-prd  →  /tech-handoff
+```
+Start with customer evidence, turn it into a structured PRD, then produce the full engineering handoff package. **You'll end with:** a discovery report, a Working Backwards PRD, a tech spec, design review, epics, and stories. **Time:** 3-5 hours across sessions.
+
+### Path 2: Quarterly Planning
+```
+/customer-review  →  /strategy  →  /okrs
+```
+Synthesize what customers are telling you, build a strategy with explicit bets and boundaries, then draft OKRs aligned to those bets. **You'll end with:** a customer intelligence report, a product strategy document with kill criteria, and audited OKRs. **Time:** 3-5 hours across sessions.
+
+### Path 3: Launch
+```
+/strategy  →  /plan-launch  →  /sprint
+```
+Lock in your strategic positioning, build the GTM launch plan, then plan the sprint to ship it. **You'll end with:** a strategy doc, a GTM plan with positioning and battlecards, and a sprint plan with stories. **Time:** 3-5 hours across sessions.
+
+Each path chains 3 workflows. Run them in separate sessions or back-to-back — the output of each feeds the next. Or type `/start` and describe what you're working on, and the orchestrator will figure out the right path for you.
+
+For more detail on each path, see the [workflows guide](docs/using-workflows.md#the-3-most-common-paths).
 
 ---
 
@@ -336,6 +381,37 @@ For a fuller explanation of what workflows are, how to run them, and how to pick
 
 ---
 
+## Just Use a Skill (Standalone Mode)
+
+Don't need workflows, agents, or the orchestrator? Use any skill directly in any AI tool.
+
+```
+Read skills/execution/prd-development/SKILL.md and write a PRD for [feature].
+```
+
+That's it. No installation beyond copying the skill file. No dependencies. Works in Cursor, Codex, Gemini CLI, or any tool that reads markdown.
+
+**Three things you can do right now with one skill:**
+
+| Want to... | Copy this prompt |
+|---|---|
+| Write a PRD | `Read skills/execution/prd-development/SKILL.md and write a PRD for [feature].` |
+| Run a SWOT | `Read skills/strategy/swot-analysis/SKILL.md and run a SWOT analysis on [topic].` |
+| Plan a sprint | `Read skills/execution/sprint-planning/SKILL.md and plan the next sprint for [team].` |
+
+**When standalone is enough vs. when to level up:**
+
+| Situation | Use |
+|---|---|
+| One framework, one question | A skill directly |
+| A repeatable multi-step process | A [workflow](docs/using-workflows.md) (`/write-prd`, `/discover`, etc.) |
+| Not sure what you need | The [orchestrator](docs/using-workflows.md) (`/start`) |
+| Want to build your own process | The [composition model](docs/composition-model.md) |
+
+Skills are the core value. Everything else — agents, workflows, orchestrator — is structure built on top of skills.
+
+---
+
 ## Getting the Most Out of It
 
 **Fill in CLAUDE.md first.** Every agent reads it before doing anything. The more context you put in (personas, metrics, priorities, glossary), the less you repeat yourself. When your strategy changes, update it, and every future session picks up the new context automatically.
@@ -351,7 +427,11 @@ For a fuller explanation of what workflows are, how to run them, and how to pick
 
 **Hook up your tools via MCP.** Shipwright gets a lot more useful when agents can pull real data from Jira, Slack, Notion, Linear, or Amplitude instead of working from pasted descriptions. See the [setup guide](docs/connecting-your-tools.md) for step-by-step instructions and an [example config](examples/mcp.json.example) for team sharing.
 
-**Build your own workflows.** The built-in commands are just markdown files that chain skills together. Copy one, swap out the skills, and you've got a custom workflow that matches how your team actually works.
+**Build your own workflows.** The built-in commands are just markdown files that chain skills together. Copy one, swap out the skills, and you've got a custom workflow that matches how your team actually works. See the [composition model](docs/composition-model.md) for the full mental model.
+
+**Evaluate your outputs.** After generating an artifact, ask the agent to score it against the [evaluation rubrics](evals/). This catches gaps before you share the document with stakeholders.
+
+**Watch for failure modes.** AI-generated PM artifacts fail in predictable ways — fabricated evidence, symmetrical analysis, diplomatic vagueness. See [failure modes](docs/failure-modes.md) for what to look for and how to fix it.
 
 **Check your skills into git.** As your product evolves, your frameworks should too. What works at Series A looks different at growth stage.
 
@@ -397,6 +477,8 @@ PRs welcome. If you've got a PM skill that works well in your workflow, open a P
 1. A new skill directory under the appropriate category
 2. A `SKILL.md` following the existing format (Description, When to Use, Framework, Output Format, Common Mistakes)
 3. An update to this README's skill table
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines, including how to add workflows and evaluation rubrics.
 
 ---
 

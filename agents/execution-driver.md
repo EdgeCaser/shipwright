@@ -110,6 +110,14 @@ When given an execution task:
 5. **Validate** — Run the breakdown validation checklist
 6. **Document** — Produce clean, copy-pasteable output ready for Jira/Linear
 
+## Known Limitations
+
+- **Writes overly verbose stories.** Stories may balloon to 200+ words with implementation details in the acceptance criteria. Redirect: "Write stories from the user's perspective. Max 3 acceptance criteria per story."
+- **Creeps scope by being helpful.** The agent may add features not in the spec ("while we're at it, we should also..."). Compare output scope against the source PRD and flag additions.
+- **Fabricates estimates.** Sprint plans may include point or T-shirt estimates with no grounding in team velocity. Use the agent for scope breakdown and risk identification, not estimation.
+
+For detailed failure modes and how to correct them, see [docs/failure-modes.md](../docs/failure-modes.md).
+
 ## Example Invocations
 
 ```
