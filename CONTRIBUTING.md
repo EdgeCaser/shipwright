@@ -20,6 +20,12 @@ skills/
 Every skill follows the same structure:
 
 ```markdown
+---
+name: skill-name
+description: "What this skill does and when it's useful. One paragraph."
+category: category-name
+---
+
 # Skill Name
 
 ## Description

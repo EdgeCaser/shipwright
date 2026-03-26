@@ -1,10 +1,7 @@
 ---
 name: jobs-to-be-done
+description: "Applies the Jobs-to-Be-Done (JTBD) framework to frame customer needs as job statements and identify underserved needs. Based on the work of Clayton Christensen and Tony Ulwick's Outcome-Driven Innovation methodology."
 category: discovery
-tags: [jtbd, customer-needs, outcome-driven-innovation, opportunity-scoring, job-mapping]
-inputs: [product domain or context, target customer segment, research data or interviews]
-outputs: [job statements and job map, outcome statements with opportunity scores, underserved opportunity recommendations]
-pairs_with: [discovery-interview-prep, opportunity-solution-tree, user-story-writing]
 ---
 
 # Jobs-to-Be-Done Analysis

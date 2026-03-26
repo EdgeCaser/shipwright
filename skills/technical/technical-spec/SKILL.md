@@ -1,10 +1,7 @@
 ---
 name: technical-spec
+description: "Translates product requirements (PRDs, user stories) into engineering-ready technical specifications. Covers system architecture decisions, API contracts, data models, non-functional requirements, and migration plans. Bridges the gap between \"what to build\" (PM) and \"how to build it\" (engineering)."
 category: technical
-tags: [technical-specification, architecture, API-contract, data-model, rollout, non-functional-requirements]
-inputs: [approved PRD, system architecture context, engineering constraints]
-outputs: [technical specification, API contract, rollout and migration plan]
-pairs_with: [prd-development, epic-breakdown, api-product-design]
 ---
 
 # Technical Spec Writing

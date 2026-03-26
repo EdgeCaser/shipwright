@@ -1,10 +1,7 @@
 ---
 name: executive-briefing
+description: "Produces single-page executive briefings designed to secure alignment, approval, or resources from senior leadership. Uses the Situation-Complication-Resolution (SCR) framework and Pyramid Principle to deliver maximum impact in minimum reading time. Different from a status update — this is a persuasive artifact with a clear ask."
 category: communication
-tags: [executive, one-pager, SCR-framework, persuasion, decision-request, budget]
-inputs: [situation context, supporting data, specific ask]
-outputs: [one-page executive briefing, options comparison, decision request]
-pairs_with: [stakeholder-mapping, decision-log, stakeholder-communication]
 ---
 
 # Executive Briefing / One-Pager

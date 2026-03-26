@@ -1,10 +1,7 @@
 ---
 name: prioritization-advisor
+description: "Applies structured prioritization frameworks (RICE, ICE, Kano, MoSCoW, Weighted Scoring) to a feature backlog or initiative list. Helps PMs make transparent, defensible prioritization decisions by making trade-offs explicit."
 category: strategy
-tags: [rice-scoring, prioritization-frameworks, kano-model, moscow, trade-off-analysis, backlog]
-inputs: [list of initiatives or features to prioritize, scoring criteria or framework preference, stakeholder context]
-outputs: [scored and ranked backlog, trade-off analysis, top recommendations with rationale]
-pairs_with: [roadmap-planning, product-strategy-session, sprint-planning]
 ---
 
 # Prioritization Advisor

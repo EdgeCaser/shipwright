@@ -1,10 +1,7 @@
 ---
 name: api-product-design
+description: "For PMs who own APIs, platforms, or developer-facing products. Covers API endpoint design, developer experience (DX), versioning strategy, documentation standards, and developer onboarding. Treats the API as a product with its own personas, jobs-to-be-done, and success metrics."
 category: technical
-tags: [API, developer-experience, endpoint-design, versioning, authentication, SDK]
-inputs: [developer persona, API use cases, technical constraints]
-outputs: [API product spec, endpoint design document, DX documentation plan]
-pairs_with: [technical-spec, prd-development, epic-breakdown]
 ---
 
 # API Product Design

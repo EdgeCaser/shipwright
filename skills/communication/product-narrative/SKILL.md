@@ -1,10 +1,7 @@
 ---
 name: product-narrative
+description: "Produces long-form persuasive product narratives in the style of Amazon's 6-pager or shorter 2-pager memos. Used for complex product decisions that require deep reasoning, multi-stakeholder alignment, and a permanent record of the thinking process. Unlike a one-pager (which is a pitch), a narrative is an argument."
 category: communication
-tags: [narrative, memo, six-pager, persuasion, strategy, counterarguments]
-inputs: [product thesis, supporting evidence, counterarguments]
-outputs: [product narrative memo, recommendation with kill criteria, appendix materials]
-pairs_with: [executive-briefing, decision-log, stakeholder-mapping]
 ---
 
 # Product Narrative / Memo

@@ -1,10 +1,7 @@
 ---
 name: positioning-statement
+description: "Generates and critiques product positioning using April Dunford's \"Obviously Awesome\" methodology and Geoffrey Moore's classic positioning template. Helps PMs articulate who the product is for, what category it competes in, and why it wins."
 category: strategy
-tags: [positioning, differentiation, april-dunford, market-category, messaging, competitive-alternatives]
-inputs: [product capabilities and unique attributes, target customer profile, competitive alternatives]
-outputs: [positioning statement, value map, positioning stress test]
-pairs_with: [competitive-landscape, go-to-market-strategy, competitive-battlecard]
 ---
 
 # Positioning Statement

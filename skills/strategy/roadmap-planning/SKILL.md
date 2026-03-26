@@ -1,10 +1,7 @@
 ---
 name: roadmap-planning
+description: "Creates outcome-based product roadmaps using the Now/Next/Later framework with prioritization via RICE scoring. Helps PMs communicate what the team is working on, why, and what comes next — without falling into the trap of date-driven feature lists."
 category: strategy
-tags: [now-next-later, outcome-based-roadmap, rice-scoring, stakeholder-communication, quarterly-planning]
-inputs: [list of initiatives or outcomes, strategic bets or goals, team capacity and constraints]
-outputs: [now/next/later roadmap, RICE-scored prioritization table, dependency map]
-pairs_with: [prioritization-advisor, product-strategy-session, epic-breakdown]
 ---
 
 # Roadmap Planning

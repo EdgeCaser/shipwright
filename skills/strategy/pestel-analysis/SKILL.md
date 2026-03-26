@@ -1,10 +1,7 @@
 ---
 name: pestel-analysis
+description: "Scans the macro environment across Political, Economic, Social, Technological, Environmental, and Legal dimensions to identify strategic risks and tailwinds. Produces a structured assessment useful for strategy documents, investor updates, and risk registers."
 category: strategy
-tags: [macro-environment, regulatory-risk, political-economic-social, strategic-planning, risk-assessment]
-inputs: [product or business scope, target market or geography, industry context]
-outputs: [PESTEL dimension analysis, priority matrix, monitoring plan]
-pairs_with: [swot-analysis, product-strategy-session, competitive-landscape]
 ---
 
 # PESTEL Analysis

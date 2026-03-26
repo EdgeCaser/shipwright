@@ -1,10 +1,7 @@
 ---
 name: lean-canvas
+description: "Builds a one-page Lean Canvas capturing the core business model: problem, solution, key metrics, unfair advantage, channels, customer segments, and cost/revenue structure. Based on Ash Maurya's adaptation of the Business Model Canvas for startups."
 category: strategy
-tags: [lean-startup, business-model, problem-solution-fit, one-page-canvas, early-stage, ash-maurya]
-inputs: [product or feature idea, target customer segment, known problems or pain points]
-outputs: [one-page lean canvas, riskiest assumptions list, experiment suggestions]
-pairs_with: [market-sizing, pre-mortem, jobs-to-be-done]
 ---
 
 # Lean Canvas / Business Model

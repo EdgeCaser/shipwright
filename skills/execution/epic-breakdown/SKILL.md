@@ -1,10 +1,7 @@
 ---
 name: epic-breakdown
+description: "Takes a large product initiative and decomposes it into shippable epics, each with a hypothesis statement, success metric, and estimated effort. Ensures each epic delivers independent value and can be shipped and measured on its own."
 category: execution
-tags: [epic-decomposition, value-slicing, hypothesis-driven, delivery-phasing, initiative-scoping]
-inputs: [approved PRD or initiative description, success metric and objective, estimated scope and timeline]
-outputs: [epic definitions with hypotheses, sequenced delivery plan with milestones, dependency map and validation checklist]
-pairs_with: [prd-development, sprint-planning, roadmap-planning]
 ---
 
 # Epic Breakdown Advisor

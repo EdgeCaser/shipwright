@@ -1,10 +1,7 @@
 ---
 name: okr-authoring
+description: "Guides the drafting of Objectives and Key Results using John Doerr's \"Measure What Matters\" methodology. Covers cascading OKRs from company to team to individual, alignment checking across teams, common anti-patterns, and mid-cycle check-ins."
 category: planning
-tags: [OKRs, objectives, key-results, alignment, goal-setting, quarterly-planning]
-inputs: [company-level OKRs, team context, current baselines]
-outputs: [OKR document, alignment matrix, anti-pattern audit]
-pairs_with: [metrics-dashboard, stakeholder-communication, executive-briefing]
 ---
 
 # OKR Authoring & Alignment

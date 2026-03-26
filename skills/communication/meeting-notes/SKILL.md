@@ -1,10 +1,7 @@
 ---
 name: meeting-notes
+description: "Transforms raw meeting notes, transcripts, or recordings into structured summaries with decisions captured, action items assigned, open questions tracked, and parking lot items preserved. The single skill every PM uses daily."
 category: communication
-tags: [meeting-notes, action-items, decisions, transcript-processing, follow-up, accountability]
-inputs: [raw meeting notes or transcript, attendee list, previous action items]
-outputs: [structured meeting summary, action item list, decision log entries]
-pairs_with: [decision-log, stakeholder-communication, retrospective-facilitator]
 ---
 
 # Meeting Notes & Action Items

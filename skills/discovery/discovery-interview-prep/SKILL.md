@@ -1,10 +1,7 @@
 ---
 name: discovery-interview-prep
+description: "Generates comprehensive preparation materials for customer discovery interviews including interview guides, screener criteria, and debrief templates. Grounded in the Jobs-to-Be-Done methodology and \"The Mom Test\" principles."
 category: discovery
-tags: [customer-discovery, interviews, mom-test, screener, qualitative-research]
-inputs: [target persona or segment, discovery objective, assumptions to test]
-outputs: [interview guide, participant screener, debrief template]
-pairs_with: [user-research-synthesis, jobs-to-be-done, opportunity-solution-tree]
 ---
 
 # Discovery Interview Prep

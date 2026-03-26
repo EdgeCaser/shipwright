@@ -1,10 +1,7 @@
 ---
 name: design-review
+description: "Runs a multi-stakeholder design review by evaluating a product proposal through 7 parallel perspectives: Engineering, Design, Executive, Legal/Compliance, Customer Voice, Devil's Advocate, and Sales/GTM. Produces a synthesized review with consensus points, tensions, blockers, and open questions."
 category: technical
-tags: [design-review, multi-stakeholder, feasibility, risk-assessment, UX, compliance]
-inputs: [document under review, review scope, stakeholder perspectives]
-outputs: [design review report, blocker list, go/no-go recommendation]
-pairs_with: [technical-spec, prd-development, epic-breakdown]
 ---
 
 # Design Review Facilitator

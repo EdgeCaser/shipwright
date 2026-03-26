@@ -1,10 +1,7 @@
 ---
 name: monetization-experiments
+description: "Designs and evaluates pricing, packaging, and monetization experiments including free-to-paid conversion optimization, upsell trigger testing, plan structure changes, and price sensitivity tests. Applies experimentation rigor to the highest-leverage growth lever most teams are afraid to touch."
 category: pricing
-tags: [monetization, experimentation, conversion, pricing-test, paywall, upsell]
-inputs: [current pricing data, experiment hypothesis, traffic volume estimates]
-outputs: [monetization experiment plan, metrics framework, rollout plan]
-pairs_with: [pricing-strategy, ab-test-analysis, competitive-landscape]
 ---
 
 # Monetization Experiment Design

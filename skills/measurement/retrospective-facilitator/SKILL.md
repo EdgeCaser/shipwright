@@ -1,10 +1,7 @@
 ---
 name: retrospective-facilitator
+description: "Runs structured team retrospectives using proven formats (Start/Stop/Continue, 4Ls, Sailboat, Mad/Sad/Glad). Produces an action item list with owners, due dates, and follow-up mechanisms to ensure retro outcomes actually lead to change."
 category: measurement
-tags: [retrospective, action-items, team-health, continuous-improvement, facilitation]
-inputs: [sprint or project context, previous retro action items, participant list]
-outputs: [retrospective report, themed action items, previous-action review]
-pairs_with: [decision-log, stakeholder-communication, okr-authoring]
 ---
 
 # Retrospective Facilitator

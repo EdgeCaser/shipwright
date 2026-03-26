@@ -1,10 +1,7 @@
 ---
 name: business-model-canvas
+description: "Builds a full Business Model Canvas covering all 9 building blocks: Customer Segments, Value Propositions, Channels, Customer Relationships, Revenue Streams, Key Resources, Key Activities, Key Partnerships, and Cost Structure. More comprehensive than a Lean Canvas, better suited to established products or when you need to map the entire business system."
 category: strategy
-tags: [business-model, nine-building-blocks, value-proposition, revenue-streams, strategic-review]
-inputs: [product or business unit scope, current business model details, market and customer context]
-outputs: [completed business model canvas, key dependencies analysis, stress test of weakest links]
-pairs_with: [lean-canvas, competitive-landscape, product-strategy-session]
 ---
 
 # Business Model Canvas

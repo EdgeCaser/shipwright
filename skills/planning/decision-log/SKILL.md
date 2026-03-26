@@ -1,10 +1,7 @@
 ---
 name: decision-log
+description: "Captures product decisions in a structured, searchable format inspired by Architecture Decision Records (ADRs). Documents the context, options considered, decision made, and consequences — creating institutional memory that prevents relitigating settled decisions and helps new team members understand why things are the way they are."
 category: planning
-tags: [decisions, PDR, institutional-memory, trade-offs, rationale, governance]
-inputs: [decision context, options considered, stakeholder input]
-outputs: [product decision record, decision log entry, communication summary]
-pairs_with: [stakeholder-mapping, executive-briefing, stakeholder-communication]
 ---
 
 # Decision Log / Product Decision Record (PDR)

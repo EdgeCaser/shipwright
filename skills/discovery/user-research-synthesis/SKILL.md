@@ -1,10 +1,7 @@
 ---
 name: user-research-synthesis
+description: "Transforms raw interview notes, survey responses, and observational data into structured insight cards using affinity mapping techniques. Produces themed findings with evidence trails so product decisions are traceable back to user evidence."
 category: discovery
-tags: [affinity-mapping, insight-cards, qualitative-analysis, research-readout, evidence-based]
-inputs: [raw interview notes or survey responses, participant metadata, research objective]
-outputs: [themed insight cards, research summary with findings, atomic notes register]
-pairs_with: [discovery-interview-prep, opportunity-solution-tree, jobs-to-be-done]
 ---
 
 # User Research Synthesis

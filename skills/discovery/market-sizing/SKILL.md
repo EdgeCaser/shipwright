@@ -1,10 +1,7 @@
 ---
 name: market-sizing
+description: "Walks through both top-down and bottom-up market sizing methodologies with explicit assumption tracking. Produces investor-ready estimates with transparent reasoning."
 category: discovery
-tags: [tam-sam-som, market-opportunity, bottom-up-sizing, top-down-sizing, assumption-tracking]
-inputs: [target market or segment description, pricing model or ACV estimate, geographic and segment scope]
-outputs: [market sizing document with TAM/SAM/SOM, triangulation analysis, assumption register with sensitivity ratings]
-pairs_with: [competitive-landscape, lean-canvas, go-to-market-strategy]
 ---
 
 # Market Sizing (TAM / SAM / SOM)

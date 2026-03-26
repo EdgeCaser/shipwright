@@ -1,10 +1,7 @@
 ---
 name: ab-test-analysis
+description: "Evaluates experiment results for statistical significance, practical significance, segment effects, and next actions. Supports both frequentist and Bayesian interpretations. Helps PMs make ship/no-ship decisions with appropriate rigor."
 category: measurement
-tags: [experimentation, statistical-significance, hypothesis-testing, metrics, ship-decision, segmentation]
-inputs: [experiment results data, hypothesis and test design, guardrail metric thresholds]
-outputs: [experiment analysis report, ship/no-ship recommendation, learnings summary]
-pairs_with: [metrics-dashboard, monetization-experiments, okr-authoring]
 ---
 
 # A/B Test Analysis

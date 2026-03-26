@@ -1,10 +1,7 @@
 ---
 name: competitive-landscape
+description: "Structures a comprehensive competitive analysis across positioning, feature parity, pricing, go-to-market, and market signals. Produces artifacts useful for strategy sessions, sales enablement, and investor updates."
 category: discovery
-tags: [competitive-analysis, market-intelligence, positioning, feature-comparison, sales-enablement]
-inputs: [product domain or market category, list of known competitors, target buyer persona]
-outputs: [competitive intelligence report, feature comparison matrix, strategic implications summary]
-pairs_with: [positioning-statement, jobs-to-be-done, competitive-battlecard]
 ---
 
 # Competitive Landscape Analysis

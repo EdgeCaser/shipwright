@@ -1,10 +1,7 @@
 ---
 name: stakeholder-mapping
+description: "Maps stakeholders on a Power × Interest grid, defines engagement strategies per quadrant, tracks alignment over time, and produces a communication plan. Ensures PMs invest their limited influence capital where it matters most."
 category: planning
-tags: [stakeholders, power-interest-grid, alignment, communication-plan, influence, engagement]
-inputs: [initiative description, stakeholder list, organizational context]
-outputs: [stakeholder map, communication plan, alignment tracking sheet]
-pairs_with: [decision-log, executive-briefing, stakeholder-communication]
 ---
 
 # Stakeholder Mapping (Power × Interest)

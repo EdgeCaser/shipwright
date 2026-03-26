@@ -1,10 +1,7 @@
 ---
 name: customer-advisory-board
+description: "Designs and prepares all materials for Customer Advisory Board sessions: agenda design, discussion guides, pre-read materials, facilitation notes, and post-session synthesis templates. Ensures CAB meetings produce actionable strategic input rather than devolving into feature request sessions."
 category: customer-intelligence
-tags: [CAB, customer-research, strategic-input, discussion-guide, facilitation, synthesis]
-inputs: [strategic questions, participant list, product context]
-outputs: [CAB preparation package, discussion guides, post-session synthesis]
-pairs_with: [feedback-triage, customer-journey-mapping, competitive-landscape]
 ---
 
 # Customer Advisory Board (CAB) Prep

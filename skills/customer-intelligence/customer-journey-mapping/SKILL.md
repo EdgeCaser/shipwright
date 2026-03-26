@@ -1,10 +1,7 @@
 ---
 name: customer-journey-mapping
+description: "Creates end-to-end customer journey maps with stages, touchpoints, actions, emotions, pain points, and moments of truth. Produces maps that connect the experience layer to product opportunities and measurement points."
 category: customer-intelligence
-tags: [journey-map, touchpoints, pain-points, user-experience, moments-of-truth, drop-off]
-inputs: [target persona, journey scope, analytics and research data]
-outputs: [customer journey map, opportunity register, journey metrics framework]
-pairs_with: [churn-analysis, feedback-triage, competitive-landscape]
 ---
 
 # Customer Journey Mapping

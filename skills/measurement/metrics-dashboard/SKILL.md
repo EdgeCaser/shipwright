@@ -1,10 +1,7 @@
 ---
 name: metrics-dashboard
+description: "Defines a product metrics architecture: North Star metric, input metrics, guardrail metrics, and counter-metrics. Produces a dashboard specification that connects daily tactical metrics to strategic outcomes. Based on the Amplitude/Sean Ellis North Star framework and Reforge metrics methodology."
 category: measurement
-tags: [north-star-metric, dashboard, KPIs, guardrails, data-architecture, alerting]
-inputs: [product strategy context, current instrumentation, team structure]
-outputs: [metrics architecture document, dashboard specification, alert rules]
-pairs_with: [okr-authoring, ab-test-analysis, pricing-strategy]
 ---
 
 # Metrics Dashboard Design

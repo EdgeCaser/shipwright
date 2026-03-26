@@ -1,10 +1,7 @@
 ---
 name: sprint-planning
+description: "Helps PMs scope sprints, draft sprint goals tied to product outcomes, flag dependency risks, and balance capacity across new work, tech debt, and bug fixes. Grounded in Scrum methodology with practical adaptations for product-led teams."
 category: execution
-tags: [scrum, sprint-goal, capacity-planning, dependency-risk, story-selection]
-inputs: [backlog of candidate stories, team availability and capacity, sprint goal or product outcome]
-outputs: [sprint plan with goal and committed scope, capacity allocation breakdown, dependency and risk register]
-pairs_with: [epic-breakdown, user-story-writing, prioritization-advisor]
 ---
 
 # Sprint Planning Support

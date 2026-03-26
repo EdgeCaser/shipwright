@@ -1,10 +1,7 @@
 ---
 name: go-to-market-strategy
+description: "Builds a comprehensive GTM plan covering beachhead segment selection, ideal customer profile, messaging, channel strategy, launch timeline, and success metrics. Based on Geoffrey Moore's market adoption lifecycle and modern PLG/sales-led hybrid approaches."
 category: gtm
-tags: [gtm-plan, beachhead-segment, icp, messaging-framework, launch-planning, channel-strategy]
-inputs: [product or feature to launch, target market and buyer persona, competitive positioning]
-outputs: [GTM plan with beachhead and ICP, messaging framework and channel strategy, launch timeline with success metrics]
-pairs_with: [positioning-statement, market-sizing, competitive-battlecard]
 ---
 
 # Go-to-Market Strategy

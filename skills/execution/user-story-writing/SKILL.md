@@ -1,10 +1,7 @@
 ---
 name: user-story-writing
+description: "Generates user stories with acceptance criteria, edge cases, and definition of done. Supports splitting epics into right-sized stories using the INVEST criteria. Based on Mike Cohn's user story methodology."
 category: execution
-tags: [user-stories, acceptance-criteria, invest-criteria, story-splitting, given-when-then]
-inputs: [PRD requirements or epic scope, persona definitions, feature context]
-outputs: [user stories with acceptance criteria, edge case tables, definition of done checklists]
-pairs_with: [prd-development, epic-breakdown, jobs-to-be-done]
 ---
 
 # User Story Writing

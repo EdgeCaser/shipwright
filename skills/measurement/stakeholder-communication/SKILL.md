@@ -1,10 +1,7 @@
 ---
 name: stakeholder-communication
+description: "Drafts status updates, steering committee decks, and executive summaries calibrated to audience seniority and information needs. Uses the Pyramid Principle (lead with the answer) and adapts depth, tone, and format by stakeholder type."
 category: measurement
-tags: [status-updates, executive-summary, pyramid-principle, risk-escalation, steering-committee]
-inputs: [project status data, audience type, key metrics and risks]
-outputs: [status update document, risk escalation brief, cross-functional update]
-pairs_with: [executive-briefing, stakeholder-mapping, metrics-dashboard]
 ---
 
 # Stakeholder Communication

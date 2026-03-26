@@ -1,10 +1,7 @@
 ---
 name: prd-development
+description: "Produces a comprehensive Product Requirements Document using Amazon's Working Backwards method: start with the press release, then FAQ, then detailed requirements. This approach forces clarity of thought by starting from the customer outcome and working backward to the requirements."
 category: execution
-tags: [product-requirements, working-backwards, press-release, amazon-method, cross-functional-alignment]
-inputs: [feature or product initiative context, customer evidence and business case, stakeholder list]
-outputs: [internal press release, FAQ document, detailed product requirements document]
-pairs_with: [epic-breakdown, user-story-writing, product-strategy-session]
 ---
 
 # PRD Development

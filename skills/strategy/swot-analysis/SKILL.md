@@ -1,10 +1,7 @@
 ---
 name: swot-analysis
+description: "Produces a structured Strengths, Weaknesses, Opportunities, and Threats analysis for a product, feature, or business unit. Goes beyond listing items by cross-referencing quadrants to generate strategic options (SO, WO, ST, WT strategies)."
 category: strategy
-tags: [strengths-weaknesses, opportunities-threats, strategic-options, competitive-position, cross-reference]
-inputs: [product or business unit scope, competitive and market context, internal capabilities assessment]
-outputs: [SWOT grid with evidence, strategic options matrix, top prioritized actions]
-pairs_with: [pestel-analysis, competitive-landscape, product-strategy-session]
 ---
 
 # SWOT Analysis

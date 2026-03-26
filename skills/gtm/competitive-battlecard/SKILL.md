@@ -1,10 +1,7 @@
 ---
 name: competitive-battlecard
+description: "Creates sales-ready competitive battlecards with objection handling, win/loss patterns, feature comparison grids, and tactical talk tracks. Designed to be used in live sales conversations, deal reviews, and competitive displacement campaigns."
 category: gtm
-tags: [sales-enablement, objection-handling, win-loss-analysis, competitive-intelligence, talk-tracks]
-inputs: [competitor name and profile, feature comparison data, win/loss patterns from sales]
-outputs: [sales-ready battlecard, objection handling scripts, landmine questions for prospects]
-pairs_with: [competitive-landscape, positioning-statement, go-to-market-strategy]
 ---
 
 # Competitive Battlecard

@@ -1,10 +1,7 @@
 ---
 name: pricing-strategy
+description: "Structures a comprehensive pricing analysis covering willingness-to-pay research design, pricing model comparison (per-seat, usage-based, flat-rate, freemium, hybrid), competitive pricing intelligence, price sensitivity testing, and packaging strategy. Helps PMs make pricing decisions grounded in data rather than gut feel."
 category: pricing
-tags: [pricing, willingness-to-pay, packaging, value-metric, competitive-pricing, tiering]
-inputs: [product positioning, competitive landscape, customer segment data]
-outputs: [pricing strategy document, packaging design, WTP research plan]
-pairs_with: [monetization-experiments, competitive-landscape, churn-analysis]
 ---
 
 # Pricing Strategy Analyzer
