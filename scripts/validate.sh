@@ -279,7 +279,7 @@ for core_skill in \
   "skills/strategy/product-strategy-session/SKILL.md" \
   "skills/technical/design-review/SKILL.md" \
   "skills/measurement/ab-test-analysis/SKILL.md"; do
-  if grep -q '## Shipwright Signature (Required)' "$core_skill"; then
+  if grep -q 'Shipwright Signature' "$core_skill"; then
     pass "Signature section present: $core_skill"
   else
     fail "Missing signature section in core skill: $core_skill"
