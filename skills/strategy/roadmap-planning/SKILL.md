@@ -2,6 +2,7 @@
 name: roadmap-planning
 description: "Creates outcome-based product roadmaps using the Now/Next/Later framework with prioritization via RICE scoring. Helps PMs communicate what the team is working on, why, and what comes next — without falling into the trap of date-driven feature lists."
 category: strategy
+default_depth: standard
 ---
 
 # Roadmap Planning
@@ -16,6 +17,16 @@ Creates outcome-based product roadmaps using the Now/Next/Later framework with p
 - Communicating product direction to stakeholders and leadership
 - Aligning engineering, design, and business teams on priorities
 - Transitioning from output-based ("ship feature X") to outcome-based roadmaps
+
+## Depth
+
+| Scope | Use When | Sections to Include |
+|---|---|---|
+| **Light** | Quick stakeholder update or status share | Define Outcomes, Apply Now/Next/Later (overview only) |
+| **Standard** | Quarterly planning or cross-functional alignment | All sections |
+| **Deep** | Annual planning, multi-team coordination, or board-level roadmap | All sections + initiative-level risk assessment, capacity modeling per team, scenario variants (optimistic/pessimistic staffing) |
+
+**Omit rules:** At Light depth, skip Prioritize with RICE, Dependency Mapping, and the Not Doing section. Produce only the Now/Next/Later overview with outcomes and metrics.
 
 ## Framework
 
@@ -111,6 +122,18 @@ Low confidence. Directionally interesting but not yet committed. Treated as hypo
 | [Initiative 2] | [Design system update] | Design | Low | [Can use current system] |
 ```
 
+## Minimum Evidence Bar
+
+**Required inputs:** A list of candidate initiatives with enough context to articulate outcomes (not just feature names), and a rough sense of team capacity.
+
+**Acceptable evidence:** Customer research, usage analytics, strategic bets from a strategy session, engineering sizing estimates, stakeholder requests with business rationale.
+
+**Insufficient evidence:** If initiatives are described only as feature names with no outcome or metric, state "Insufficient evidence for outcome-based roadmap" and recommend reframing each item as a measurable outcome before placement.
+
+**Hypotheses vs. findings:**
+- **Findings:** Now-quarter items (committed work with known metrics and dependencies)
+- **Hypotheses:** Later-horizon items and RICE scores built on unvalidated assumptions — must be labeled with confidence level and promotion trigger
+
 ## Output Format
 
 Produce a Roadmap Document with:
@@ -121,6 +144,12 @@ Produce a Roadmap Document with:
 5. **Not Doing** — conscious exclusions with rationale
 6. **Dependencies** — cross-team dependencies and risks
 
+**Shipwright Signature (required closing):**
+7. **Decision Frame** — Recommended Now-quarter commitment with trade-off (scope vs. confidence), confidence with evidence quality, owner, decision date, revisit trigger
+8. **Unknowns & Evidence Gaps** — Initiatives with unvalidated RICE inputs, unresolved dependencies, missing engineering estimates
+9. **Pass/Fail Readiness** — PASS if every Now item has an outcome, metric, and owner, and at least one Later item has a promotion trigger; FAIL if Now items lack metrics or the roadmap is a feature list with no outcomes
+10. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+
 ## Common Mistakes to Avoid
 
 - **Date commitments for "Later" items** — Now can have dates; Later should not
@@ -128,3 +157,15 @@ Produce a Roadmap Document with:
 - **No "Not Doing" section** — Stakeholders need to know what was considered and declined
 - **Stale roadmaps** — Update at least quarterly; a 6-month-old roadmap is fiction
 - **Prioritization without evidence** — RICE with 20% confidence is still better than HiPPO
+
+## Weak vs. Strong Output
+
+**Weak:**
+> "Now: Build Slack integration. Next: Build email integration. Later: Build Teams integration."
+
+A feature list with time labels — no outcomes, no metrics, no rationale for sequencing.
+
+**Strong:**
+> "Now: Reduce context-switching during triage (metric: avg switches/session from 4.2 to <2, RICE: 1,840). Next: Expand async collaboration for distributed teams (metric: % decisions made outside meetings from 15% to 40%). Later: Unified notification layer — hypothesis: consolidating alerts will reduce missed actions; promote to Next if Q3 survey confirms notification fatigue >50%."
+
+Each item states an outcome, a measurable target, and Later items include promotion criteria.

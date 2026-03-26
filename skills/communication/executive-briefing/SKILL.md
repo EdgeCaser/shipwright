@@ -2,6 +2,7 @@
 name: executive-briefing
 description: "Produces single-page executive briefings designed to secure alignment, approval, or resources from senior leadership. Uses the Situation-Complication-Resolution (SCR) framework and Pyramid Principle to deliver maximum impact in minimum reading time. Different from a status update — this is a persuasive artifact with a clear ask."
 category: communication
+default_depth: standard
 ---
 
 # Executive Briefing / One-Pager
@@ -17,6 +18,16 @@ Produces single-page executive briefings designed to secure alignment, approval,
 - Escalating a decision that requires senior leadership input
 - Presenting options that need executive arbitration
 - Any time you need to compress a complex argument into one page
+
+## Depth
+
+| Scope | Use When | Sections to Include |
+|---|---|---|
+| **Light** | Quick alignment check or FYI to a sponsor who already has context | SCR Narrative + The Ask |
+| **Standard** | Requesting budget, headcount, or a decision from leadership | All sections |
+| **Deep** | Board-level ask or cross-org initiative needing full justification | All sections + Appendix with financial model, risk register, and stakeholder map |
+
+**Omit rules:** At Light depth, skip Supporting Evidence and Options Considered. Produce only the SCR narrative and a specific ask.
 
 ## Framework
 
@@ -110,6 +121,18 @@ Why does this need attention NOW, not next quarter?]
 | Escalation | Complication (the blocker) | Impact of delay, options with trade-offs | Direct, solution-oriented |
 | Resource request | Complication (capacity gap) | Current vs. needed, impact on commitments | Practical, pragmatic |
 
+## Minimum Evidence Bar
+
+**Required inputs:** The specific ask (decision, budget, or resource), the audience (who will read this), and at least one data point supporting the complication.
+
+**Acceptable evidence:** Internal metrics, customer quotes, market research, competitive intel, financial projections with stated assumptions.
+
+**Insufficient evidence:** If you cannot quantify the cost of inaction or the expected outcome of your recommendation, state "Insufficient evidence for ROI projection" and recommend running a time-boxed analysis first.
+
+**Hypotheses vs. findings:**
+- **Findings:** The Situation, Complication, and Supporting Evidence data must be grounded in verified facts.
+- **Hypotheses:** Projected outcomes in the options table and ROI estimates may be forward-looking — must be labeled with assumptions.
+
 ## Output Format
 
 Produce a One-Page Executive Briefing with:
@@ -117,6 +140,12 @@ Produce a One-Page Executive Briefing with:
 2. **SCR Narrative** — Situation, Complication, Resolution
 3. **Supporting Evidence** — key data and options comparison
 4. **The Ask** — specific, time-bound, actionable
+
+**Shipwright Signature (required closing):**
+5. **Decision Frame** — recommended option, trade-off vs. alternatives, confidence level with evidence quality cited, decision owner, decision-by date, revisit trigger
+6. **Unknowns & Evidence Gaps** — unvalidated assumptions in projections, missing competitive data, untested customer willingness
+7. **Pass/Fail Readiness** — PASS if SCR is complete, ask is specific and time-bound, and at least one data point supports the complication; FAIL if the ask is vague or the complication lacks quantified urgency
+8. **Recommended Next Artifact** — Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid
 
@@ -126,3 +155,15 @@ Produce a One-Page Executive Briefing with:
 - **Weasel words** — "We might want to consider possibly exploring..." → "We should invest $X in Y because Z"
 - **Missing the "do nothing" cost** — Executives default to inaction; make the cost of inaction explicit
 - **More than one page** — Ruthlessly edit. If you can't say it in one page, you don't understand it well enough yet.
+
+## Weak vs. Strong Output
+
+**Weak:**
+> "We might want to consider investing in a new onboarding flow, as we've been hearing some feedback about it."
+
+Vague ask, no data, no urgency — an executive will defer this indefinitely.
+
+**Strong:**
+> "We need $120K to rebuild onboarding by Q3. Trial-to-paid conversion has dropped from 18% to 11% since January (source: Amplitude cohort report), costing ~$40K/mo in lost revenue. Doing nothing means $480K lost by year-end."
+
+Specific ask, quantified complication, explicit cost of inaction — forces a decision.

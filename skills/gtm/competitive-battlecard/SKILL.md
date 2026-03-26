@@ -2,6 +2,7 @@
 name: competitive-battlecard
 description: "Creates sales-ready competitive battlecards with objection handling, win/loss patterns, feature comparison grids, and tactical talk tracks. Designed to be used in live sales conversations, deal reviews, and competitive displacement campaigns."
 category: gtm
+default_depth: standard
 ---
 
 # Competitive Battlecard
@@ -17,6 +18,16 @@ Creates sales-ready competitive battlecards with objection handling, win/loss pa
 - New competitor enters the market
 - Quarterly competitive intelligence refresh
 - Sales kickoff or enablement sessions
+
+## Depth
+
+| Scope | Use When | Sections to Include |
+|---|---|---|
+| **Light** | Quick prep before a single deal or call | Quick Reference, Feature Comparison |
+| **Standard** | Recurring competitor across multiple deals | All sections |
+| **Deep** | Competitive displacement campaign or SKO prep | All sections + customer-sourced verbatim quotes, trap-question roleplay scripts, segment-specific variants |
+
+**Omit rules:** At Light depth, skip Competitor Overview, Win/Loss Patterns, Landmines, and Recent Intelligence. Produce only the Quick Reference card and Feature Comparison grid.
 
 ## Framework
 
@@ -126,6 +137,18 @@ Questions to ask the prospect that expose competitor weaknesses:
 - [Date]: [Customer feedback about competitor]
 ```
 
+## Minimum Evidence Bar
+
+**Required inputs:** Competitor name, your product's key differentiators, and at least one source of competitive data (website, G2 reviews, win/loss interviews, or sales call recordings).
+
+**Acceptable evidence:** Public pricing pages, analyst reports, verified customer reviews, CRM win/loss notes, sales call transcripts, competitor documentation.
+
+**Insufficient evidence:** If no win/loss data or direct customer feedback exists, state "Insufficient evidence for Win/Loss Patterns" and recommend conducting 3-5 win/loss interviews before finalizing.
+
+**Hypotheses vs. findings:**
+- **Findings:** Feature Comparison ratings, pricing data, and Competitor Overview must be sourced.
+- **Hypotheses:** Win/Loss Patterns and Landmines may be hypothesized from limited data — must be labeled "Hypothesis — validate with sales team."
+
 ## Output Format
 
 Produce a Competitive Battlecard with:
@@ -137,6 +160,12 @@ Produce a Competitive Battlecard with:
 6. **Landmines** — questions that expose competitor weaknesses
 7. **Recent Intelligence** — latest competitive signals
 
+**Shipwright Signature (required closing):**
+8. **Decision Frame** — recommended competitive positioning stance, trade-off acknowledged, confidence level with source quality, owner (product marketing or sales enablement), decision date, revisit trigger (competitor launch or pricing change)
+9. **Unknowns & Evidence Gaps** — unverified feature claims, missing win/loss data, pricing tiers not yet confirmed
+10. **Pass/Fail Readiness** — PASS if Quick Reference, Feature Comparison, and at least 3 objection handlers are evidence-backed; FAIL if feature ratings are unverified or no win/loss patterns exist
+11. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+
 ## Common Mistakes to Avoid
 
 - **Trashing the competitor** — Buyers respect honesty; acknowledge strengths and pivot
@@ -144,3 +173,15 @@ Produce a Competitive Battlecard with:
 - **No win/loss data** — Without pattern recognition, battlecards are guesswork
 - **Too long for live use** — The quick reference section must fit on one screen
 - **Ignoring their strengths** — If sales is surprised by a competitor advantage, the battlecard failed
+
+## Weak vs. Strong Output
+
+**Weak:**
+> "We are better than Competitor X in most areas and offer a superior product overall."
+
+Vague claim with no specific differentiators, no evidence, and nothing a rep can say on a call.
+
+**Strong:**
+> "Our 3 biggest advantages: 1. Sub-200ms API response (their median is 800ms per G2 benchmarks, Dec 2025). 2. Native SSO — they charge $5k/yr add-on. 3. SOC 2 Type II certified since 2023; they have Type I only."
+
+Specific, sourced, and immediately usable in a live conversation.

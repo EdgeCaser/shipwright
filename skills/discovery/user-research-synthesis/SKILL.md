@@ -2,6 +2,7 @@
 name: user-research-synthesis
 description: "Transforms raw interview notes, survey responses, and observational data into structured insight cards using affinity mapping techniques. Produces themed findings with evidence trails so product decisions are traceable back to user evidence."
 category: discovery
+default_depth: standard
 ---
 
 # User Research Synthesis
@@ -16,6 +17,16 @@ Transforms raw interview notes, survey responses, and observational data into st
 - Synthesizing mixed-method research (interviews + survey + analytics)
 - Preparing research readouts for stakeholders
 - Building an evidence base before making product decisions
+
+## Depth
+
+| Scope | Use When | Sections to Include |
+|---|---|---|
+| **Light** | Quick theme extraction from 3-5 interviews for a team standup | Steps 1-2 (Extract Atomic Notes + Cluster into Themes) only |
+| **Standard** | Post-sprint synthesis for a stakeholder readout | All steps |
+| **Deep** | Multi-method study synthesis (interviews + survey + analytics) or longitudinal research | All steps + cross-method triangulation matrix, segment-level theme comparison, evidence strength audit |
+
+**Omit rules:** At Light depth, skip Steps 3-4 (Insight Cards and Research Summary). Produce only the atomic notes register and theme clusters with participant counts.
 
 ## Framework
 
@@ -112,6 +123,18 @@ Assemble insight cards into a research readout:
 - [What we'd do differently next time]
 ```
 
+## Minimum Evidence Bar
+
+**Required inputs:** Raw research data from at least 3 participants — interview transcripts, notes, survey responses, or observational records with participant identifiers.
+
+**Acceptable evidence:** Verbatim quotes, behavioral observations, timestamped session recordings, survey free-text responses, support ticket excerpts, or analytics event logs tied to specific users or segments.
+
+**Insufficient evidence:** If fewer than 3 participants or only a single data source is available, state "Insufficient evidence for theme-level synthesis" and recommend completing additional interviews or supplementing with quantitative data before clustering.
+
+**Hypotheses vs. findings:**
+- **Findings:** Themes rated "Strong" (60%+ participants) and their insight card observations must be grounded in specific, cited evidence.
+- **Hypotheses:** Themes rated "Emerging" (< 30% participants) are hypotheses — label as "signal to track" and recommend validation method in the insight card's next steps.
+
 ## Output Format
 
 Produce:
@@ -120,6 +143,12 @@ Produce:
 3. **Insight cards** — structured findings
 4. **Research summary** — executive-level readout
 
+**Shipwright Signature (required closing):**
+5. **Decision Frame** — Top findings and their product implications, trade-off between acting on current evidence vs. gathering more data, confidence in themes with evidence quality and sample size, owner, decision date, revisit trigger
+6. **Unknowns & Evidence Gaps** — Segments not represented in the sample, themes with only counter-evidence, questions that emerged but were not explored
+7. **Pass/Fail Readiness** — PASS if at least 2 themes reach "Strong" or "Moderate" strength with multi-participant evidence and counter-evidence is documented; FAIL if themes are pre-defined rather than emergent or evidence trails are missing
+8. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+
 ## Common Mistakes to Avoid
 
 - **Theming too early** — Let patterns emerge from the data, don't force notes into pre-existing categories
@@ -127,3 +156,19 @@ Produce:
 - **Conflating observation and interpretation** — Keep "what we saw" separate from "what it means"
 - **Overclaiming from small samples** — 5 interviews is signal, not proof. Label confidence honestly
 - **Losing the evidence trail** — Every insight must link back to specific participant observations
+
+## Weak vs. Strong Output
+
+**Weak:**
+> Theme: "Users struggle with navigation"
+> Strength: Moderate
+> Supporting evidence: Several participants had trouble.
+
+No participant IDs, no specific observations, theme name is a label rather than an assertion.
+
+**Strong:**
+> Theme: "Users create manual workarounds to share dashboard data with non-product stakeholders"
+> Strength: Strong (5 of 8 participants)
+> Supporting evidence: N002 (P07): "I just screenshot the dashboard and paste it into Slack"; N014 (P03): exported to CSV and reformatted in Google Sheets weekly; N019 (P01): built a Zapier integration to auto-email a PDF.
+
+Assertive theme name, specific participant count, each note is atomic with behavioral detail and participant ID.

@@ -2,6 +2,7 @@
 name: stakeholder-mapping
 description: "Maps stakeholders on a Power × Interest grid, defines engagement strategies per quadrant, tracks alignment over time, and produces a communication plan. Ensures PMs invest their limited influence capital where it matters most."
 category: planning
+default_depth: standard
 ---
 
 # Stakeholder Mapping (Power × Interest)
@@ -17,6 +18,16 @@ Maps stakeholders on a Power × Interest grid, defines engagement strategies per
 - New PM onboarding to understand the political landscape
 - Before a major launch that requires cross-functional buy-in
 - When stakeholder misalignment is blocking progress
+
+## Depth
+
+| Scope | Use When | Sections to Include |
+|---|---|---|
+| **Light** | Small initiative, <5 stakeholders, low political complexity | Step 1: Identify Stakeholders, Step 2: Map Power x Interest |
+| **Standard** | Cross-functional initiative with mixed support and resistance | All sections |
+| **Deep** | High-stakes or politically charged initiative with exec-level resistors | All sections + influence network diagram, resistor-specific persuasion briefs, pre-mortem on stakeholder derailment scenarios |
+
+**Omit rules:** At Light depth, skip Step 3: Analyze Alignment & Risk, Step 4: Build the Communication Plan, and Step 5: Track Over Time. Produce only the Stakeholder Register and Power x Interest Grid.
 
 ## Framework
 
@@ -142,6 +153,18 @@ If any "Manage Closely" stakeholder moves to "Resistant":
 - [ ] Involve their champion/influencer if direct approach fails
 ```
 
+## Minimum Evidence Bar
+
+**Required inputs:** The initiative name, a list of stakeholders (or org chart to derive them from), and at least a rough read on each stakeholder's current stance toward the initiative.
+
+**Acceptable evidence:** 1:1 conversations, meeting behavior, email/Slack tone, org chart reporting lines, prior project history with the stakeholder, direct quotes or stated positions.
+
+**Insufficient evidence:** If a stakeholder's stance is based solely on title or assumption with no interaction data, state "Insufficient evidence for [Name]'s stance" and recommend a discovery 1:1 before assigning a quadrant.
+
+**Hypotheses vs. findings:**
+- **Findings:** Stakeholder roles, reporting lines, and observed behavior (champion/resistant/neutral) must be grounded in evidence.
+- **Hypotheses:** Influence network connections and swing vote predictions may be inferred — label these as "Estimated" until validated through engagement.
+
 ## Output Format
 
 Produce a Stakeholder Map with:
@@ -151,6 +174,12 @@ Produce a Stakeholder Map with:
 4. **Communication Plan** — tailored by stakeholder
 5. **Tracking Sheet** — alignment over time with escalation triggers
 
+**Shipwright Signature (required closing):**
+6. **Decision Frame** — Top engagement priority (which stakeholder relationship to invest in first), trade-off between breadth and depth of engagement, confidence based on evidence quality of stance assessments, map owner, date, revisit trigger
+7. **Unknowns & Evidence Gaps** — Stakeholders whose stance is assumed not observed, influence relationships not yet validated, hidden decision-makers not yet identified
+8. **Pass/Fail Readiness** — PASS if every "Manage Closely" stakeholder has a documented stance based on direct interaction and a tailored engagement plan; FAIL if any high-power stakeholder's stance is unverified assumption
+9. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+
 ## Common Mistakes to Avoid
 
 - **Mapping only the obvious stakeholders** — Include indirect influencers, executive assistants, and "shadow" decision-makers
@@ -158,3 +187,15 @@ Produce a Stakeholder Map with:
 - **Same message to everyone** — The VP of Engineering cares about different things than the VP of Sales
 - **Ignoring resistors** — Unaddressed resistance becomes sabotage; engage early
 - **Over-investing in "Monitor" quadrant** — Don't spend weekly 1:1 time on people who have low power and low interest
+
+## Weak vs. Strong Output
+
+**Weak:**
+> **VP Engineering — Resistant.** Engagement plan: Set up a meeting to discuss concerns.
+
+No stated reason for resistance, no tailored approach — "set up a meeting" is not a plan.
+
+**Strong:**
+> **VP Engineering — Resistant (Power: 5, Interest: 4, Manage Closely).** Resists because migration threatens Q2 uptime SLA. Engagement plan: Share load-test results from staging (available April 3) in a 1:1 before the steering committee vote; frame as risk reduction, not feature delivery. Fallback: escalate to CTO with joint risk brief if stance doesn't shift.
+
+Names the specific concern, ties the engagement to concrete evidence, provides a fallback path.

@@ -2,6 +2,7 @@
 name: jobs-to-be-done
 description: "Applies the Jobs-to-Be-Done (JTBD) framework to frame customer needs as job statements and identify underserved needs. Based on the work of Clayton Christensen and Tony Ulwick's Outcome-Driven Innovation methodology."
 category: discovery
+default_depth: standard
 ---
 
 # Jobs-to-Be-Done Analysis
@@ -16,6 +17,16 @@ Applies the Jobs-to-Be-Done (JTBD) framework to frame customer needs as job stat
 - Identifying new market opportunities by finding underserved jobs
 - Writing better user stories grounded in real customer motivation
 - Evaluating whether a proposed feature actually addresses a meaningful job
+
+## Depth
+
+| Scope | Use When | Sections to Include |
+|---|---|---|
+| **Light** | Quick reframe of a feature request into a job statement | Step 1 (Identify the Core Job) only |
+| **Standard** | Discovery cycle scoping or roadmap prioritization | All steps |
+| **Deep** | New market entry or Outcome-Driven Innovation initiative | All steps + emotional/social job elaboration per step, switching cost analysis, non-consumption deep dive |
+
+**Omit rules:** At Light depth, skip Steps 2-5 (Job Map, Outcomes, Opportunity Scoring, Competing Solutions). Produce only the core job statement with functional/emotional/social layers.
 
 ## Key Concepts
 
@@ -107,6 +118,18 @@ Map what customers currently "hire" to do this job:
 - Indirect competitors (different category, same job)
 - Non-consumption (doing nothing or manual workarounds)
 
+## Minimum Evidence Bar
+
+**Required inputs:** Target persona or segment and a description of the problem space or feature area to analyze.
+
+**Acceptable evidence:** Customer interview transcripts, support tickets, survey verbatims, behavioral analytics, sales call recordings, or documented workaround observations.
+
+**Insufficient evidence:** If no customer evidence exists (only stakeholder opinions or feature requests), state "Insufficient evidence for opportunity scoring" and recommend running Discovery Interview Prep to gather behavioral data first. Job statements can still be drafted as hypotheses.
+
+**Hypotheses vs. findings:**
+- **Findings:** Opportunity scores (Step 4) and competing solutions (Step 5) must be grounded in evidence or sourced data.
+- **Hypotheses:** Job statements (Step 1) and job maps (Step 2) may be drafted speculatively when evidence is thin — label as "hypothesis" and flag for validation.
+
 ## Output Format
 
 ```markdown
@@ -138,6 +161,12 @@ When I [context], I want to [goal], So I can [outcome].
 [What to explore next — prototype tests, deeper research, etc.]
 ```
 
+**Shipwright Signature (required closing):**
+8. **Decision Frame** — Top underserved opportunities worth pursuing, trade-off between breadth of jobs vs. depth of scoring, confidence in opportunity scores with evidence quality, owner, decision date, revisit trigger
+9. **Unknowns & Evidence Gaps** — Job steps with no customer evidence, outcomes scored on assumption rather than data
+10. **Pass/Fail Readiness** — PASS if core job statement is solution-agnostic with at least 3 scored outcomes backed by evidence; FAIL if job statements contain product/feature names or all scores are assumed
+11. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+
 ## Common Mistakes to Avoid
 
 - **Defining jobs as features** — "I want to use a Gantt chart" is a solution, not a job
@@ -145,3 +174,15 @@ When I [context], I want to [goal], So I can [outcome].
 - **Skipping emotional and social jobs** — Functional alone misses half the picture
 - **Surveying importance without satisfaction** — You need both to find opportunity
 - **Competitor analysis by product instead of by job** — Your real competition might not be in your category
+
+## Weak vs. Strong Output
+
+**Weak:**
+> "When I need to manage projects, I want a better tool, so I can be more productive."
+
+Contains a solution ("better tool"), vague outcome ("more productive"), and no triggering context.
+
+**Strong:**
+> "When I'm coordinating a cross-functional launch with 4+ teams, I want to see who's blocked and why without chasing status updates, so I can unblock dependencies before they delay the ship date."
+
+Solution-agnostic, specific context with a threshold, measurable outcome tied to a real consequence.

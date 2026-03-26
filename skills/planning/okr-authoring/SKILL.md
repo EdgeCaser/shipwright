@@ -2,6 +2,7 @@
 name: okr-authoring
 description: "Guides the drafting of Objectives and Key Results using John Doerr's \"Measure What Matters\" methodology. Covers cascading OKRs from company to team to individual, alignment checking across teams, common anti-patterns, and mid-cycle check-ins."
 category: planning
+default_depth: standard
 ---
 
 # OKR Authoring & Alignment
@@ -16,6 +17,16 @@ Guides the drafting of Objectives and Key Results using John Doerr's "Measure Wh
 - Aligning team OKRs with company-level objectives
 - Reviewing and improving existing OKRs that feel stale or unmeasurable
 - Coaching a team new to OKRs
+
+## Depth
+
+| Scope | Use When | Sections to Include |
+|---|---|---|
+| **Light** | Single team drafting 1-2 objectives in a stable org | Step 1: Draft Objectives, Step 2: Draft Key Results |
+| **Standard** | Quarterly planning with cross-team dependencies | All sections |
+| **Deep** | Company-wide OKR cascade or first-time OKR rollout | All sections + per-KR instrumentation plan, dependency RACI across teams, OKR retrospective template from prior cycle |
+
+**Omit rules:** At Light depth, skip Step 3: Alignment Check, Step 4: Anti-Pattern Detection, and Step 5: Scoring & Check-In Template. Produce only Objectives and Key Results with quality checklists passed.
 
 ## Key Concepts
 
@@ -158,6 +169,18 @@ Run the OKRs through this anti-pattern checklist:
 - 0.9-1.0: Hit it (great for committed, means you sandbagged if aspirational)
 ```
 
+## Minimum Evidence Bar
+
+**Required inputs:** Company or team strategy context, the planning timeframe, and current baseline metrics for any proposed Key Results.
+
+**Acceptable evidence:** Existing dashboards, analytics tools, prior-quarter OKR scores, product strategy docs, company-level OKRs to cascade from, user research findings that inform outcome targets.
+
+**Insufficient evidence:** If a baseline metric cannot be sourced or estimated, state "Insufficient evidence for KR baseline" and recommend instrumenting the metric in week 1 before committing to a target.
+
+**Hypotheses vs. findings:**
+- **Findings:** Baselines, current scores, and alignment relationships to company OKRs must be grounded in data.
+- **Hypotheses:** Targets and confidence levels are inherently forward-looking — label aspirational targets as such and note the assumptions behind stretch goals.
+
 ## Output Format
 
 Produce an OKR Document with:
@@ -167,6 +190,12 @@ Produce an OKR Document with:
 4. **Anti-Pattern Audit** — checklist results with fixes
 5. **Check-In Template** — ready for mid-quarter scoring
 
+**Shipwright Signature (required closing):**
+6. **Decision Frame** — Key trade-offs in objective selection (what you're pursuing vs. what you're deferring), confidence in each target based on baseline data quality, OKR owner, cycle dates, revisit trigger
+7. **Unknowns & Evidence Gaps** — KRs lacking baselines, metrics not yet instrumented, alignment relationships assumed but unconfirmed with partner teams
+8. **Pass/Fail Readiness** — PASS if every KR has a measurable target with a known or planned baseline and each Objective connects to a company-level goal; FAIL if any KR is binary ("ship X") or has no measurement method
+9. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+
 ## Common Mistakes to Avoid
 
 - **OKRs as task lists** — OKRs measure outcomes, not outputs. "Ship feature X" is a project, not an OKR
@@ -174,3 +203,15 @@ Produce an OKR Document with:
 - **All committed** — If every OKR is a 1.0 at end of quarter, you're not stretching
 - **No alignment discussion** — Write OKRs in isolation and you'll have conflicting priorities across teams
 - **Changing OKRs mid-quarter** — Resist the urge; OKRs are a commitment. If they need changing, it's a signal your planning needs work
+
+## Weak vs. Strong Output
+
+**Weak:**
+> **KR2:** Improve onboarding completion rate (Committed)
+
+No baseline, no target, no measurement method — impossible to score at end of quarter.
+
+**Strong:**
+> **KR2:** Increase onboarding completion rate from 34% to 55% (Committed). Measurement: Amplitude funnel "Signup → First Dashboard Created," baseline pulled 2026-03-20. Confidence: 72%.
+
+Baseline sourced, target quantified, measurement tool named, confidence stated — can be scored objectively at check-in.

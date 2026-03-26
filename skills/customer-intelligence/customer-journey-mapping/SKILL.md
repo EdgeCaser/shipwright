@@ -2,6 +2,7 @@
 name: customer-journey-mapping
 description: "Creates end-to-end customer journey maps with stages, touchpoints, actions, emotions, pain points, and moments of truth. Produces maps that connect the experience layer to product opportunities and measurement points."
 category: customer-intelligence
+default_depth: standard
 ---
 
 # Customer Journey Mapping
@@ -17,6 +18,16 @@ Creates end-to-end customer journey maps with stages, touchpoints, actions, emot
 - Identifying the highest-leverage improvement opportunities in the user lifecycle
 - Preparing for a design sprint or UX research initiative
 - Onboarding new team members to understand the customer experience holistically
+
+## Depth
+
+| Scope | Use When | Sections to Include |
+|---|---|---|
+| **Light** | Quick alignment artifact for a single journey segment (e.g., onboarding only) | Define Scope & Persona, Map the Stages, one stage Detail |
+| **Standard** | Full end-to-end journey map for a redesign or cross-functional alignment | All sections |
+| **Deep** | Multi-persona or multi-journey mapping with service blueprint and measurement plan | All sections + backstage service blueprint, persona variant overlays, instrumentation plan |
+
+**Omit rules:** At Light depth, skip Identify Cross-Stage Patterns and Measurement Framework. Produce only a stage map with pain points and top opportunities for the scoped segment.
 
 ## Framework
 
@@ -139,6 +150,18 @@ Critical decision points where the user decides to continue or leave:
 | Expansion | Expansion revenue rate | [X]% | [target] | [Billing] |
 ```
 
+## Minimum Evidence Bar
+
+**Required inputs:** A defined persona (or target user description), at least one data source per journey stage (analytics, research, or support data), and a clear journey scope (trigger and end state).
+
+**Acceptable evidence:** Product analytics (funnels, drop-offs, TTFV), user research transcripts, session recordings, support ticket patterns, NPS/CSAT by stage, onboarding completion data.
+
+**Insufficient evidence:** If a journey stage has no analytics and no qualitative research, state "Insufficient evidence for Stage [N] detail" and recommend instrumenting that stage or conducting targeted user interviews before mapping pain points.
+
+**Hypotheses vs. findings:**
+- **Findings:** Drop-off rates, touchpoint sequences, and documented pain points must be grounded in observed data.
+- **Hypotheses:** Emotional journey intensities and moment-of-truth impact estimates may be inferred — label them "Hypothesis — validate with research" when not sourced from direct user input.
+
 ## Output Format
 
 Produce a Customer Journey Map with:
@@ -149,6 +172,12 @@ Produce a Customer Journey Map with:
 5. **Opportunity Register** — prioritized list of improvements
 6. **Measurement Framework** — metrics per stage
 
+**Shipwright Signature (required closing):**
+7. **Decision Frame** — highest-leverage experience improvements with expected impact, trade-offs (quick wins vs. structural redesigns), confidence level with evidence quality, owner, decision date, revisit trigger
+8. **Unknowns & Evidence Gaps** — stages with no analytics or research coverage, emotional journey assumptions not validated with users, backstage failure points not yet mapped
+9. **Pass/Fail Readiness** — PASS if all stages have at least one evidence-backed pain point and the opportunity register is prioritized; FAIL if stages are mapped from internal assumptions with no customer data
+10. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+
 ## Common Mistakes to Avoid
 
 - **Inside-out mapping** — Map from the customer's perspective, not your product's feature list
@@ -156,3 +185,15 @@ Produce a Customer Journey Map with:
 - **No evidence** — Every pain point needs a source: analytics, research, or support data
 - **Too granular** — A journey map is strategic, not a UI flowchart; stay at the experience level
 - **Maps that sit on a shelf** — Connect every pain point to an opportunity with an owner
+
+## Weak vs. Strong Output
+
+**Weak:**
+> "Pain point: Onboarding is confusing."
+
+No specificity about what is confusing, for whom, or how severe. Cannot be acted on.
+
+**Strong:**
+> "Pain point: 34% of new users abandon the workspace setup wizard at step 3 (team invitation). Session recordings show users looking for a 'skip' option. Severity: High. Evidence: product analytics + 12 session recordings (Jan cohort)."
+
+Pinpoints the exact moment, quantifies drop-off, names the evidence sources, and gives designers a clear target.

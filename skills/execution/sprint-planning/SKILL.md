@@ -2,6 +2,7 @@
 name: sprint-planning
 description: "Helps PMs scope sprints, draft sprint goals tied to product outcomes, flag dependency risks, and balance capacity across new work, tech debt, and bug fixes. Grounded in Scrum methodology with practical adaptations for product-led teams."
 category: execution
+default_depth: standard
 ---
 
 # Sprint Planning Support
@@ -16,6 +17,16 @@ Helps PMs scope sprints, draft sprint goals tied to product outcomes, flag depen
 - Drafting sprint goals that connect to product outcomes
 - Balancing competing priorities within a fixed capacity
 - Identifying dependency risks before committing scope
+
+## Depth
+
+| Scope | Use When | Sections to Include |
+|---|---|---|
+| **Light** | Small team, continuation sprint with minimal new scope | Define the Sprint Goal, Story Selection & Commitment |
+| **Standard** | Regular sprint with new scope and cross-team touchpoints | All sections |
+| **Deep** | Sprint with hard deadline, major dependencies, or team composition changes | All sections + individual capacity risk flags, contingency scope ladder (cut list priority order), daily stand-up focus prompts |
+
+**Omit rules:** At Light depth, skip Capacity Planning and Dependency & Risk Check. Produce only a sprint goal statement and a committed story list with estimates.
 
 ## Framework
 
@@ -124,6 +135,18 @@ We'll know we succeeded when [measurable result].
 - [ ] Demo-ready for sprint review
 ```
 
+## Minimum Evidence Bar
+
+**Required inputs:** A prioritized backlog with estimated stories, team roster with availability for the sprint period, and a product goal or roadmap context for the sprint.
+
+**Acceptable evidence:** Groomed backlog with story point estimates, team capacity spreadsheet or PTO calendar, prior sprint velocity data, and dependency status from upstream teams.
+
+**Insufficient evidence:** If stories are unestimated or the team roster is unknown, state "Insufficient evidence for sprint commitment" and recommend running backlog grooming or capacity planning first.
+
+**Hypotheses vs. findings:**
+- **Findings:** Team availability, known PTO, confirmed dependencies, and historical velocity must be grounded in evidence.
+- **Hypotheses:** Story point estimates and sprint goal achievement probability are hypotheses -- label them as such and note estimation confidence.
+
 ## Output Format
 
 Produce a Sprint Plan with:
@@ -133,6 +156,12 @@ Produce a Sprint Plan with:
 4. **Dependencies & Risks** — flagged and mitigated
 5. **Sprint Agreement** — what's in, what's stretch, what's out
 
+**Shipwright Signature (required closing):**
+6. **Decision Frame** — sprint scope recommendation with capacity utilization rationale, trade-off, confidence with evidence quality, owner, decision date, revisit trigger
+7. **Unknowns & Evidence Gaps** — unconfirmed external dependencies, stories with low estimation confidence, untested capacity assumptions for new team members
+8. **Pass/Fail Readiness** — PASS if sprint goal is outcome-oriented, committed scope is within 85% capacity, and all dependencies have confirmed status; FAIL if no sprint goal exists or committed scope exceeds capacity
+9. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+
 ## Common Mistakes to Avoid
 
 - **Overcommitting** — Leave 10-15% buffer; things always take longer than expected
@@ -140,3 +169,15 @@ Produce a Sprint Plan with:
 - **Ignoring tech debt** — Zero tech debt allocation leads to compounding slowdowns
 - **Hidden dependencies** — Surface cross-team deps before the sprint starts, not during
 - **100% utilization** — Teams at 100% have no capacity for the unexpected; target 80-85%
+
+## Weak vs. Strong Output
+
+**Weak:**
+> Sprint Goal: Work on dashboard and fix bugs. Committed: JIRA-101, JIRA-102, JIRA-103, JIRA-104, JIRA-105.
+
+A task list with no outcome, no capacity check, and no way to evaluate whether the sprint succeeded.
+
+**Strong:**
+> Sprint Goal: Reduce dashboard load time so that enterprise users on 50k+ row datasets can interact without perceived lag. Success: p95 load time drops from 8s to under 2s. **Committed:** 42 points against 50-point capacity (84% utilization, 3-sprint velocity avg: 48). **Stretch:** DASH-220 (chart caching) if DASH-218 closes early.
+
+Outcome-oriented goal with a measurable target, capacity grounded in historical velocity, and an explicit stretch/cut boundary.

@@ -2,6 +2,7 @@
 name: customer-advisory-board
 description: "Designs and prepares all materials for Customer Advisory Board sessions: agenda design, discussion guides, pre-read materials, facilitation notes, and post-session synthesis templates. Ensures CAB meetings produce actionable strategic input rather than devolving into feature request sessions."
 category: customer-intelligence
+default_depth: standard
 ---
 
 # Customer Advisory Board (CAB) Prep
@@ -16,6 +17,16 @@ Designs and prepares all materials for Customer Advisory Board sessions: agenda 
 - Standing up a new Customer Advisory Board program
 - Redesigning a CAB that's become a complaint forum instead of a strategic input channel
 - Synthesizing outputs from a completed CAB session
+
+## Depth
+
+| Scope | Use When | Sections to Include |
+|---|---|---|
+| **Light** | Quick prep for an informal customer round-table or single-topic check-in | Define CAB Objectives, one Discussion Guide |
+| **Standard** | Preparing a full quarterly or annual CAB session | All sections |
+| **Deep** | Standing up a new CAB program or redesigning one that has gone off-track | All sections + member selection criteria, multi-session arc plan, CAB charter document |
+
+**Omit rules:** At Light depth, skip Design the Agenda, Pre-Work Materials, and Post-Session Synthesis template. Produce only the strategic questions and a single discussion guide.
 
 ## Framework
 
@@ -157,6 +168,18 @@ We will share the following with CAB members by [date]:
 - Timeline for next session
 ```
 
+## Minimum Evidence Bar
+
+**Required inputs:** At least 2-3 strategic questions the business needs answered, a confirmed participant list (or target criteria), and context on what has changed since the last CAB (or the business context if this is the first).
+
+**Acceptable evidence:** Prior CAB synthesis documents, product roadmap context, recent customer research findings, NPS/CSAT trends, competitive landscape shifts, strategic planning inputs.
+
+**Insufficient evidence:** If you have no strategic questions defined and no context on what the business needs to learn, state "Insufficient evidence for CAB Objectives" and recommend a stakeholder alignment session to define learning goals before designing the agenda.
+
+**Hypotheses vs. findings:**
+- **Findings:** Themes, validated assumptions, and participant sentiment from Post-Session Synthesis must be grounded in what participants actually said.
+- **Hypotheses:** Discussion Guide questions and anticipated themes may be speculative — label pre-session assumptions as "To be validated during session."
+
 ## Output Format
 
 Produce a CAB Preparation Package with:
@@ -166,6 +189,12 @@ Produce a CAB Preparation Package with:
 4. **Pre-Work Materials** — pre-read and pre-survey
 5. **Synthesis Template** — ready-to-fill post-session document
 
+**Shipwright Signature (required closing):**
+6. **Decision Frame** — strategic insights surfaced and options they inform, trade-offs between competing member perspectives, confidence level with evidence quality, owner, decision date, revisit trigger
+7. **Unknowns & Evidence Gaps** — strategic questions not yet answered, segments or personas unrepresented in the CAB, assumptions still untested
+8. **Pass/Fail Readiness** — PASS if strategic questions are defined, agenda is timed with discussion guides, and synthesis template is ready; FAIL if no strategic questions exist or the session is structured as a feature-request forum
+9. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+
 ## Common Mistakes to Avoid
 
 - **No strategic questions** — Without clear learning objectives, CABs become unfocused
@@ -173,3 +202,15 @@ Produce a CAB Preparation Package with:
 - **Same voices dominate** — Use small group exercises and round-robins to hear from everyone
 - **No follow-through** — If you don't report back on what you did with their input, members disengage
 - **Inviting the wrong people** — CAB members should be strategic thinkers, not just your loudest customers
+
+## Weak vs. Strong Output
+
+**Weak:**
+> "Theme: Customers want better reporting."
+
+A label, not an insight. No strength of signal, no supporting evidence, no implication.
+
+**Strong:**
+> "Theme: Current reporting forces manual export-and-reformat cycles before exec review (Strong signal — 6 of 8 participants, unprompted). Implication: embedded executive summary views could reduce time-to-insight and strengthen the champion's internal case."
+
+Assertion-formatted theme, quantified signal strength, grounded in what participants said, with a clear product implication.

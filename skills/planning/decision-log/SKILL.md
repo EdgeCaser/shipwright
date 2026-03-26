@@ -2,6 +2,7 @@
 name: decision-log
 description: "Captures product decisions in a structured, searchable format inspired by Architecture Decision Records (ADRs). Documents the context, options considered, decision made, and consequences — creating institutional memory that prevents relitigating settled decisions and helps new team members understand why things are the way they are."
 category: planning
+default_depth: standard
 ---
 
 # Decision Log / Product Decision Record (PDR)
@@ -17,6 +18,16 @@ Captures product decisions in a structured, searchable format inspired by Archit
 - During retrospectives when the team realizes decisions aren't being documented
 - Onboarding new PMs or team members who need to understand historical context
 - When the same decision keeps getting relitigated in meetings
+
+## Depth
+
+| Scope | Use When | Sections to Include |
+|---|---|---|
+| **Light** | S3 tactical decision; team-internal, easily reversible | PDR Template (Status through Decision only), Decision Log Entry |
+| **Standard** | S2 significant decision; cross-team or multi-sprint impact | All sections |
+| **Deep** | S1 strategic decision; changes product direction or requires exec approval | All sections + extended Options Considered with effort estimates, explicit Influence Network analysis, formal Communication Summary with escalation plan |
+
+**Omit rules:** At Light depth, skip Options Considered, Consequences, Revisit Criteria, and Communication Summary. Produce only the Decision Record core (Status, Date, Decision-Maker, Context, Decision) and a Decision Log Entry row.
 
 ## Framework
 
@@ -128,12 +139,30 @@ Maintain a running index:
 | PDR-004 | 2026-02-10 | Adopt usage-based pricing for API product | Pricing | S1 | Accepted |
 ```
 
+## Minimum Evidence Bar
+
+**Required inputs:** The decision being made (or already made), who made it, at least two options that were considered, and the reasoning for the chosen path.
+
+**Acceptable evidence:** Meeting notes, Slack threads, verbal accounts from participants, prior PRDs or specs that constrained the decision, relevant metrics or data referenced during discussion.
+
+**Insufficient evidence:** If the rationale behind the decision cannot be articulated beyond "we just decided," state "Insufficient evidence for Rationale" and recommend interviewing the decision-maker before finalizing the PDR.
+
+**Hypotheses vs. findings:**
+- **Findings:** Context, Decision, Options Considered, and Rationale must reflect what actually happened.
+- **Hypotheses:** Consequences (especially long-term constraints) and Revisit Criteria may be forward-looking projections — label speculative consequences as "Expected."
+
 ## Output Format
 
 Produce:
 1. **Decision Record** — fully structured PDR for the specific decision
 2. **Decision Log Entry** — row for the index
 3. **Communication Summary** — who needs to be informed and how (for S1 and S2 decisions)
+
+**Shipwright Signature (required closing):**
+4. **Decision Frame** — Restate the chosen option as a trade-off statement ("We chose X over Y because Z"), confidence level tied to evidence quality, decision owner, decision date, revisit trigger
+5. **Unknowns & Evidence Gaps** — Consequences not yet validated, assumptions underlying the rationale, options rejected without full evaluation
+6. **Pass/Fail Readiness** — PASS if the PDR has a clear decision statement, documented rationale, and at least two options considered; FAIL if rationale is missing or only one option was evaluated
+7. **Recommended Next Artifact** — Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid
 
@@ -142,3 +171,15 @@ Produce:
 - **No revisit criteria** — Without these, decisions are permanent by default even when conditions change
 - **Documenting too late** — Write the PDR when the decision is made, not weeks later when memory has faded
 - **Only documenting big decisions** — S3 decisions add up; a light-touch PDR is better than no record at all
+
+## Weak vs. Strong Output
+
+**Weak:**
+> **Rationale:** We decided to go with Option B because it seemed like the best approach for our needs.
+
+No specific trade-off articulated; a reader six months later learns nothing about why Option A was rejected.
+
+**Strong:**
+> **Rationale:** We chose event-driven notifications (Option B) over polling (Option A) because our p95 latency requirement of <200ms rules out polling's 5-second minimum delay, and the 3-week implementation cost is justified by eliminating the need to revisit this when we add real-time features in Q3.
+
+Names the constraint, quantifies the trade-off, and connects the decision to a future roadmap item.

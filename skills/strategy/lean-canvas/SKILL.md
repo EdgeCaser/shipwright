@@ -2,6 +2,7 @@
 name: lean-canvas
 description: "Builds a one-page Lean Canvas capturing the core business model: problem, solution, key metrics, unfair advantage, channels, customer segments, and cost/revenue structure. Based on Ash Maurya's adaptation of the Business Model Canvas for startups."
 category: strategy
+default_depth: standard
 ---
 
 # Lean Canvas / Business Model
@@ -17,6 +18,16 @@ Builds a one-page Lean Canvas capturing the core business model: problem, soluti
 - Comparing multiple product concepts side-by-side
 - Starting a new venture or product line
 - Investor pitch preparation
+
+## Depth
+
+| Scope | Use When | Sections to Include |
+|---|---|---|
+| **Light** | Quick idea screening or comparing multiple concepts | Problem, Customer Segments, Unique Value Proposition only |
+| **Standard** | Building a business case or preparing a pitch | All 9 boxes + Riskiest Assumptions + Experiment Suggestions |
+| **Deep** | Investor due diligence or pre-launch validation planning | All sections + per-assumption experiment design with success criteria, TAM/SAM/SOM sizing, unit economics model |
+
+**Omit rules:** At Light depth, skip Solution, Channels, Revenue Streams, Cost Structure, Key Metrics, and Unfair Advantage. Produce only the demand-side trio with existing alternatives noted.
 
 ## Framework
 
@@ -109,12 +120,30 @@ Something that cannot be easily copied or bought:
 **Note:** It's okay to leave this blank initially. Most startups don't have an unfair advantage on day one — but you should be building toward one.
 ```
 
+## Minimum Evidence Bar
+
+**Required inputs:** A specific problem statement with at least one identified customer segment, and a proposed solution concept.
+
+**Acceptable evidence:** Customer interviews, support tickets, survey data, competitor pricing pages, usage analytics, published market research, founder domain experience with concrete examples.
+
+**Insufficient evidence:** If the problem is stated without any customer evidence (interviews, data, or observed behavior), state "Insufficient evidence for Problem validation" and recommend at least 5 customer discovery interviews.
+
+**Hypotheses vs. findings:**
+- **Findings:** Problem (top 3), Customer Segments, and Existing Alternatives must be grounded in observed customer behavior or data.
+- **Hypotheses:** Solution mapping, Unfair Advantage, Revenue Streams pricing, and Key Metrics targets are allowed to be speculative — must be labeled as assumptions to test.
+
 ## Output Format
 
 Produce:
 1. **Lean Canvas (single page)** — all nine boxes completed
 2. **Riskiest Assumptions** — top 3 assumptions that could invalidate the canvas
 3. **Experiment Suggestions** — how to test each risky assumption cheaply
+
+**Shipwright Signature (required closing):**
+4. **Decision Frame** — Go/no-go recommendation on pursuing this concept, key trade-off, confidence with evidence quality, owner, decision date, revisit trigger
+5. **Unknowns & Evidence Gaps** — Unvalidated willingness-to-pay, untested channel assumptions, assumed early adopter characteristics
+6. **Pass/Fail Readiness** — PASS if Problem and Customer Segments are evidence-backed and at least one riskiest assumption has a testable experiment; FAIL if Problem is speculative with no customer evidence
+7. **Recommended Next Artifact** — Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid
 
@@ -123,3 +152,15 @@ Produce:
 - **No early adopter definition** — "Everyone" is not a customer segment
 - **Confusing features with UVP** — "Has AI" is a feature; "Get board-ready reports in 10 minutes instead of 3 hours" is a UVP
 - **Missing unfair advantage** — It's fine to leave blank, but don't claim one you don't have
+
+## Weak vs. Strong Output
+
+**Weak:**
+> **Problem 1:** Teams struggle with communication and productivity.
+
+No specificity on who, when, or how much it costs them — could describe any product pitch ever written.
+
+**Strong:**
+> **Problem 1:** Series A engineering teams (15-40 devs) lose ~6 hours/week per engineer to context-switching between Slack threads, Jira tickets, and design docs when triaging production incidents.
+
+Named segment, quantified pain, specific workflow trigger — testable with 5 customer interviews.

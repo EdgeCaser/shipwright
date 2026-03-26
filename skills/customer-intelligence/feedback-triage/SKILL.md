@@ -2,6 +2,7 @@
 name: feedback-triage
 description: "Ingests raw customer feedback from multiple channels (support tickets, NPS responses, app store reviews, feature requests, sales call notes, social media) and produces a categorized, deduplicated, prioritized view of what customers are telling you. Turns noisy signal into actionable intelligence."
 category: customer-intelligence
+default_depth: standard
 ---
 
 # Feedback Triage & Taxonomy
@@ -17,6 +18,16 @@ Ingests raw customer feedback from multiple channels (support tickets, NPS respo
 - Before prioritization or planning sessions to ground decisions in customer evidence
 - Building a "voice of the customer" report for leadership
 - Onboarding onto a new product area and need to understand the feedback landscape
+
+## Depth
+
+| Scope | Use When | Sections to Include |
+|---|---|---|
+| **Light** | Quick read on a single channel or post-incident feedback spike | Ingest & Normalize, Deduplicate & Cluster (top 5 clusters only) |
+| **Standard** | Monthly or quarterly multi-channel feedback synthesis | All sections |
+| **Deep** | Annual voice-of-customer program or pre-strategy feedback audit | All sections + longitudinal trend analysis, segment-level breakdowns, competitive mention mapping |
+
+**Omit rules:** At Light depth, skip Categorize by Type, Prioritize, and Produce the Feedback Report. Produce only a ranked cluster list with volume counts and representative quotes.
 
 ## Framework
 
@@ -144,6 +155,18 @@ Score each cluster for action priority:
 - Deduplication rate: [X]% (N raw → N unique)
 ```
 
+## Minimum Evidence Bar
+
+**Required inputs:** Raw feedback from at least two channels covering the analysis period, with enough volume to form meaningful clusters (minimum ~20 items for a useful triage).
+
+**Acceptable evidence:** Support tickets, NPS verbatims, app store reviews, feature request logs, sales call notes, social media mentions, community forum posts, churned-customer exit surveys.
+
+**Insufficient evidence:** If total feedback volume is below 20 items or comes from only one channel, state "Insufficient evidence for cross-channel triangulation" and recommend broadening collection before drawing prioritization conclusions.
+
+**Hypotheses vs. findings:**
+- **Findings:** Cluster volumes, sentiment distributions, and trend directions must be grounded in the raw data.
+- **Hypotheses:** Inferred underlying needs behind feature requests (e.g., "50 dark mode requests = eye strain during evening use") must be labeled "Hypothesis — validate with user interviews."
+
 ## Output Format
 
 Produce a Feedback Intelligence Report with:
@@ -153,6 +176,12 @@ Produce a Feedback Intelligence Report with:
 4. **Taxonomy** — categorized by type (bugs, UX, feature requests, praise, churn)
 5. **Priority Matrix** — scored and ranked for action
 
+**Shipwright Signature (required closing):**
+6. **Decision Frame** — top clusters with recommended response type (fix, build, investigate), trade-offs between high-volume and high-revenue-impact items, confidence level with evidence quality, owner, decision date, revisit trigger
+7. **Unknowns & Evidence Gaps** — clusters with single-channel signal only, segments with no feedback representation, underlying needs inferred but not validated
+8. **Pass/Fail Readiness** — PASS if feedback is sourced from 2+ channels, clusters have 3+ independent items each, and priority scoring is applied; FAIL if clusters are based on a single source or fewer than 20 total items
+9. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+
 ## Common Mistakes to Avoid
 
 - **Counting votes, not understanding needs** — 50 people asking for "dark mode" might really mean "the UI is hard on my eyes during evening use"
@@ -160,3 +189,15 @@ Produce a Feedback Intelligence Report with:
 - **Ignoring positive feedback** — What customers love tells you what NOT to break
 - **Single-channel blindness** — Support tickets skew toward bugs; NPS skews toward overall sentiment; you need multiple channels
 - **No deduplication** — One customer submitting 10 tickets about the same issue is 1 signal, not 10
+
+## Weak vs. Strong Output
+
+**Weak:**
+> "Cluster: Export issues (15 mentions)"
+
+A label with a count. No assertion about what the problem actually is, no segment, no trend.
+
+**Strong:**
+> "Cluster: PDF exports drop formatting and images for documents over 10 pages (15 mentions — 9 support tickets, 4 app store reviews, 2 NPS comments). Segments: Enterprise (11), Mid-Market (4). Trend: increasing — 3 mentions in Q1, 12 in Q2. Cross-channel confirmed."
+
+Names the specific failure, quantifies across channels, identifies affected segments, and flags the trend direction.

@@ -2,6 +2,7 @@
 name: epic-breakdown
 description: "Takes a large product initiative and decomposes it into shippable epics, each with a hypothesis statement, success metric, and estimated effort. Ensures each epic delivers independent value and can be shipped and measured on its own."
 category: execution
+default_depth: standard
 ---
 
 # Epic Breakdown Advisor
@@ -16,6 +17,16 @@ Takes a large product initiative and decomposes it into shippable epics, each wi
 - An initiative is too large for a single sprint and needs phasing
 - The team needs to agree on what "done" looks like for each increment
 - Reducing delivery risk by shipping smaller, measurable chunks
+
+## Depth
+
+| Scope | Use When | Sections to Include |
+|---|---|---|
+| **Light** | Single-team initiative with obvious slicing | Define the Initiative, Define Each Epic (hypothesis + scope only), Sequence the Epics |
+| **Standard** | Cross-team initiative or multi-quarter effort | All sections |
+| **Deep** | High-stakes platform bet or re-architecture | All sections + per-epic RACI, rollback plan per phase, dependency risk matrix with external teams |
+
+**Omit rules:** At Light depth, skip Identify Value Slices analysis and Validate the Breakdown checklist. Produce only a numbered epic list with one-line hypotheses and a sequencing order.
 
 ## Framework
 
@@ -114,6 +125,18 @@ Run through these checks:
 - [ ] Each epic has a clear hypothesis that could be proven wrong
 ```
 
+## Minimum Evidence Bar
+
+**Required inputs:** Approved PRD or initiative brief with a stated objective, success metric, and rough scope estimate.
+
+**Acceptable evidence:** PRD, strategy document, stakeholder alignment deck, customer research summary, or recorded decision from a planning meeting.
+
+**Insufficient evidence:** If no success metric or objective exists for the initiative, state "Insufficient evidence for epic decomposition" and recommend running PRD Development first.
+
+**Hypotheses vs. findings:**
+- **Findings:** Initiative objective, dependencies on existing systems, and team capacity constraints must be grounded in evidence.
+- **Hypotheses:** Per-epic success metrics and effort estimates are hypotheses until validated by engineering review and post-ship measurement -- label them as such.
+
 ## Output Format
 
 Produce an Epic Breakdown Document with:
@@ -123,6 +146,12 @@ Produce an Epic Breakdown Document with:
 4. **Dependency Map** — which epics depend on which
 5. **Validation Checklist** — breakdown quality assessment
 
+**Shipwright Signature (required closing):**
+6. **Decision Frame** — recommended sequencing and slicing strategy, trade-off, confidence with evidence quality, owner, decision date, revisit trigger
+7. **Unknowns & Evidence Gaps** — unvalidated effort estimates, untested hypotheses, unclear cross-team dependencies
+8. **Pass/Fail Readiness** — PASS if every epic has independent value, a measurable hypothesis, and a sequenced delivery order; FAIL if any epic lacks a success metric or exceeds 8 weeks
+9. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+
 ## Common Mistakes to Avoid
 
 - **Epics without independent value** — "Set up infrastructure" isn't an epic; it's a task inside an epic
@@ -130,3 +159,15 @@ Produce an Epic Breakdown Document with:
 - **Too large** — If an epic takes more than 6-8 weeks, it needs further decomposition
 - **Sequencing by comfort, not risk** — Ship the riskiest thing first, not the easiest
 - **Scope creep across epics** — Each epic's "out of scope" must be clear and respected
+
+## Weak vs. Strong Output
+
+**Weak:**
+> Epic 3: Dashboard Improvements. Build dashboard features. Success metric: Users like it.
+
+No hypothesis, no measurable metric, no independent value statement -- this is a task bucket, not a shippable epic.
+
+**Strong:**
+> Epic 3: Self-Serve Reporting. **Hypothesis:** We believe that giving ops managers the ability to build their own reports will reduce ad-hoc data requests to the analytics team by 40%, because 68% of current requests follow 5 repeatable templates (source: Q3 support ticket analysis). **Success metric:** Ad-hoc data requests drop from 50/week to 30/week within 6 weeks of launch.
+
+Testable hypothesis grounded in evidence, with a specific metric and timeframe that makes "did this work?" unambiguous.

@@ -2,6 +2,7 @@
 name: user-story-writing
 description: "Generates user stories with acceptance criteria, edge cases, and definition of done. Supports splitting epics into right-sized stories using the INVEST criteria. Based on Mike Cohn's user story methodology."
 category: execution
+default_depth: standard
 ---
 
 # User Story Writing
@@ -16,6 +17,16 @@ Generates user stories with acceptance criteria, edge cases, and definition of d
 - Sprint planning and backlog grooming
 - Ensuring engineering, design, and QA share the same understanding of "done"
 - Training teams on effective story writing
+
+## Depth
+
+| Scope | Use When | Sections to Include |
+|---|---|---|
+| **Light** | Trivial story with obvious behavior (e.g., copy change, config toggle) | Story Format, Acceptance Criteria (2 criteria minimum), Definition of Done |
+| **Standard** | Typical feature story for sprint planning | All sections |
+| **Deep** | High-complexity story with multiple personas, integrations, or compliance requirements | All sections + data contract specification, cross-persona impact matrix, regression test plan |
+
+**Omit rules:** At Light depth, skip Edge Cases & Error States table and Story Splitting. Reduce acceptance criteria to 2 (happy path + one error path).
 
 ## Key Concepts
 
@@ -135,6 +146,18 @@ Estimate: [S]
 Depends on: Story 1
 ```
 
+## Minimum Evidence Bar
+
+**Required inputs:** A defined persona, a user need or job-to-be-done, and enough context to specify expected behavior (PRD, design spec, or documented user research).
+
+**Acceptable evidence:** PRD requirements, design mockups, user interview notes, support ticket patterns, or an approved epic with scope definition.
+
+**Insufficient evidence:** If the persona is undefined or the user need is assumed without evidence, state "Insufficient evidence for story specification" and recommend running user research or completing the PRD first.
+
+**Hypotheses vs. findings:**
+- **Findings:** Persona definition, core acceptance criteria, and known system constraints must be grounded in evidence.
+- **Hypotheses:** Edge case severity, performance thresholds, and effort estimates are hypotheses -- label them as such until validated by engineering and QA review.
+
 ## Output Format
 
 For each user story, produce:
@@ -144,6 +167,12 @@ For each user story, produce:
 4. **Definition of done** — checklist
 5. **Estimation notes** — dependencies, risks, unknowns
 
+**Shipwright Signature (required closing):**
+6. **Decision Frame** — story readiness recommendation (ready for sprint / needs grooming / needs split), trade-off, confidence with evidence quality, owner, decision date, revisit trigger
+7. **Unknowns & Evidence Gaps** — undefined edge case behaviors, missing design specs, unconfirmed performance thresholds
+8. **Pass/Fail Readiness** — PASS if story meets INVEST criteria, has 3+ acceptance criteria, and persona is evidence-based; FAIL if persona is generic ("a user"), acceptance criteria are untestable, or story is too large for one sprint
+9. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+
 ## Common Mistakes to Avoid
 
 - **Stories that are tasks** — "Set up database table" is a task, not a user story
@@ -151,3 +180,15 @@ For each user story, produce:
 - **Acceptance criteria that duplicate implementation** — Describe *what*, not *how*
 - **Stories too large to estimate** — If it can't fit in a sprint, split it
 - **Ignoring unhappy paths** — Error states and empty states are where UX quality lives
+
+## Weak vs. Strong Output
+
+**Weak:**
+> AC1: User can upload a file. AC2: File is saved.
+
+No preconditions, no boundaries, no error path -- QA cannot write a test from this.
+
+**Strong:**
+> AC1: **Happy path upload.** Given a logged-in hiring manager on the candidate profile page, when they upload a PDF or DOCX under 10MB, then the file appears in the Documents tab within 3 seconds and a confirmation toast displays. AC2: **Oversized file.** Given the same context, when they upload a file over 10MB, then the upload is rejected with the message "File must be under 10MB" and no partial file is saved.
+
+Specifies persona, precondition, format constraints, performance expectation, and error behavior -- each criterion is independently testable.

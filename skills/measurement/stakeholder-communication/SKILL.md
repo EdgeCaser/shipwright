@@ -2,6 +2,7 @@
 name: stakeholder-communication
 description: "Drafts status updates, steering committee decks, and executive summaries calibrated to audience seniority and information needs. Uses the Pyramid Principle (lead with the answer) and adapts depth, tone, and format by stakeholder type."
 category: measurement
+default_depth: standard
 ---
 
 # Stakeholder Communication
@@ -17,6 +18,16 @@ Drafts status updates, steering committee decks, and executive summaries calibra
 - Cross-functional alignment communications
 - Escalation or risk communication to senior leadership
 - Project kickoff or completion announcements
+
+## Depth
+
+| Scope | Use When | Sections to Include |
+|---|---|---|
+| **Light** | Quick weekly status email to a single stakeholder | Identify the audience, Draft the communication (Executive Status Update template only) |
+| **Standard** | Steering committee prep or cross-functional update | All sections |
+| **Deep** | Board presentation, crisis escalation, or multi-audience comms package | All sections + audience-specific variants of the same update, pre-read document, appendix with supporting data |
+
+**Omit rules:** At Light depth, skip Audience Calibration Guide and template selection. Produce only a single Pyramid Principle status update with bottom line, metrics, risks, and ask.
 
 ## Framework
 
@@ -172,6 +183,18 @@ Level 1: Answer / Recommendation (what you want them to know or do)
 | Engineering team | As needed | Full detail | Technical, specific | Specs, blockers, technical decisions |
 | Board/Investors | 1-2 pages | Curated metrics | Confident, forward-looking | Growth, milestones, market position |
 
+## Minimum Evidence Bar
+
+**Required inputs:** Target audience (role/seniority), the key message or status to communicate, at least one supporting data point or metric.
+
+**Acceptable evidence:** Metric actuals vs. targets, milestone completion status, risk register entries, decision options with trade-offs, specific asks with deadlines.
+
+**Insufficient evidence:** If no metrics or concrete progress data are available, state "Insufficient evidence for a credible status update" and recommend gathering actuals from the team before sending.
+
+**Hypotheses vs. findings:**
+- **Findings:** Status (on track/at risk/off track), metric actuals, completed milestones, known risks — must be grounded in verifiable data.
+- **Hypotheses:** Forecasted completion dates, predicted risk impacts, proposed mitigations — must be labeled as projections.
+
 ## Output Format
 
 Produce the appropriate communication document based on the audience:
@@ -181,6 +204,12 @@ Produce the appropriate communication document based on the audience:
 4. **Calibrate the detail** — right depth for the audience
 5. **Specify the ask** — every communication should have a clear "so what" for the reader
 
+**Shipwright Signature (required closing):**
+6. **Decision Frame** — recommended action or decision for the reader, trade-off, confidence with evidence quality (data freshness, metric reliability), owner, decision date, revisit trigger
+7. **Unknowns & Evidence Gaps** — metrics not yet available, risks not fully quantified, stakeholder context gaps
+8. **Pass/Fail Readiness** — PASS if communication has a clear bottom line, at least one supporting metric, and an explicit ask; FAIL if status is asserted without data or no ask is specified
+9. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+
 ## Common Mistakes to Avoid
 
 - **Burying the lead** — Put the most important thing first, not last
@@ -188,3 +217,15 @@ Produce the appropriate communication document based on the audience:
 - **Asymmetric reporting** — Report risks with the same rigor as wins; hiding bad news erodes trust
 - **No clear ask** — If you need a decision, state it explicitly with a deadline
 - **Same update for every audience** — What the CEO needs is different from what the engineering lead needs
+
+## Weak vs. Strong Output
+
+**Weak:**
+> "The project is going well. We completed several tasks this sprint and are making good progress toward our goals."
+
+No status indicator, no metrics, no specifics, no ask — the reader learns nothing actionable.
+
+**Strong:**
+> "Status: At Risk. Activation rate dropped to 18% (target: 25%) after the onboarding redesign shipped 2 weeks ago. Root cause investigation underway. Decision needed by Friday: revert to previous flow or extend the current test 2 more weeks. Recommendation: extend, because week-2 cohort shows early recovery to 22%."
+
+Clear status, quantified problem, deadline, options, and a data-backed recommendation.

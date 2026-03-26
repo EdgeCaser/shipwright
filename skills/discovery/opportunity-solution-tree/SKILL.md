@@ -2,6 +2,7 @@
 name: opportunity-solution-tree
 description: "Guides the PM through Teresa Torres' Opportunity Solution Tree (OST) framework for continuous product discovery. Maps a desired outcome to customer opportunities, then to potential solutions, and finally to assumption tests and experiments."
 category: discovery
+default_depth: standard
 ---
 
 # Opportunity Solution Tree
@@ -16,6 +17,16 @@ Guides the PM through Teresa Torres' Opportunity Solution Tree (OST) framework f
 - Connecting customer pain points to strategic outcomes
 - Deciding which solutions to test next
 - Aligning a team around a shared discovery map
+
+## Depth
+
+| Scope | Use When | Sections to Include |
+|---|---|---|
+| **Light** | Quick alignment on which opportunity to pursue next | Steps 1-2 (Desired Outcome + Opportunity Map) only |
+| **Standard** | Discovery sprint planning or quarterly roadmap input | All steps |
+| **Deep** | Multi-team discovery with shared outcome or bet-level investment | All steps + cross-team opportunity deduplication, assumption interdependency mapping, experiment sequencing timeline |
+
+**Omit rules:** At Light depth, skip Steps 3-5 (Solution Ideas, Assumptions, Assumption Tests). Produce only the outcome and prioritized opportunity map with evidence.
 
 ## Framework
 
@@ -93,6 +104,18 @@ Timeline: [How long to run]
 Cost: [Effort required]
 ```
 
+## Minimum Evidence Bar
+
+**Required inputs:** A measurable desired outcome and at least 2 customer opportunities with evidence sources.
+
+**Acceptable evidence:** Customer interview insights, user research synthesis themes, support ticket patterns, behavioral analytics, JTBD opportunity scores, or direct observation of user workarounds.
+
+**Insufficient evidence:** If fewer than 2 opportunities have any customer evidence, state "Insufficient evidence for opportunity prioritization" and recommend running User Research Synthesis or Discovery Interview Prep to build the evidence base.
+
+**Hypotheses vs. findings:**
+- **Findings:** Opportunities (Step 2) must cite specific evidence sources. Assumptions flagged as "High confidence" must have supporting data.
+- **Hypotheses:** Solutions (Step 3) and assumptions (Step 4) are inherently speculative — label confidence levels honestly and ensure every low-confidence assumption has a test designed in Step 5.
+
 ## Output Format
 
 Produce a structured markdown document with:
@@ -102,6 +125,12 @@ Produce a structured markdown document with:
 3. **Solution Space** — solutions mapped to opportunities
 4. **Assumption Register** — all assumptions with risk ratings
 5. **Experiment Backlog** — prioritized list of assumption tests
+
+**Shipwright Signature (required closing):**
+6. **Decision Frame** — Which opportunity-solution pair to test first, trade-off between assumption risk vs. experiment cost, confidence in opportunity prioritization with evidence quality, owner, decision date, revisit trigger
+7. **Unknowns & Evidence Gaps** — Opportunities with single-source evidence, assumption categories (desirability/viability/feasibility/usability) with no tests designed
+8. **Pass/Fail Readiness** — PASS if outcome is measurable, at least 2 opportunities have evidence, and each prioritized solution has its riskiest assumption identified with a test; FAIL if opportunities lack evidence sources or no assumptions are surfaced
+9. **Recommended Next Artifact** — Which Shipwright skill to run next and why
 
 Include a visual tree summary at the top using indented markdown:
 
@@ -124,3 +153,17 @@ Outcome: [Desired outcome]
 - **Untested assumptions** — Every solution should have its riskiest assumption identified
 - **Confusing outputs with outcomes** — "Ship feature X" is an output; "Reduce churn by 15%" is an outcome
 - **Skipping evidence** — Every opportunity needs a source; gut feelings aren't opportunities
+
+## Weak vs. Strong Output
+
+**Weak:**
+> Opportunity: "Users find onboarding confusing"
+> Evidence: Team discussion
+
+Vague pain description with no customer source — could mean anything and drives no specific solution.
+
+**Strong:**
+> Opportunity O3: "New users cannot locate their first workflow within 2 minutes of signup"
+> Evidence: 6/8 interview participants (P01, P02, P04, P05, P07, P08) abandoned onboarding at step 3; avg. time-to-first-action = 4.2 min (Mixpanel, Jan 2026)
+
+Specific, measurable, multi-source evidence with participant IDs — directly testable and prioritizable.

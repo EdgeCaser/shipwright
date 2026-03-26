@@ -2,6 +2,7 @@
 name: swot-analysis
 description: "Produces a structured Strengths, Weaknesses, Opportunities, and Threats analysis for a product, feature, or business unit. Goes beyond listing items by cross-referencing quadrants to generate strategic options (SO, WO, ST, WT strategies)."
 category: strategy
+default_depth: standard
 ---
 
 # SWOT Analysis
@@ -17,6 +18,16 @@ Produces a structured Strengths, Weaknesses, Opportunities, and Threats analysis
 - Assessing a product's competitive position before roadmap planning
 - Briefing leadership on where a product stands
 - Comparing multiple strategic options side-by-side
+
+## Depth
+
+| Scope | Use When | Sections to Include |
+|---|---|---|
+| **Light** | Quick competitive position check or meeting prep | Define the Subject, Fill the Four Quadrants (top 2-3 per quadrant) |
+| **Standard** | Strategic planning input or product review | All sections |
+| **Deep** | Market entry decision, M&A evaluation, or board presentation | All sections + PESTEL overlay per threat/opportunity, competitive SWOT comparison, quantified impact estimates per item |
+
+**Omit rules:** At Light depth, skip Cross-Reference for Strategic Options and Prioritize. Produce only the four-quadrant grid with evidence. Watch for symmetrical outputs — if every quadrant has exactly the same number of items with equal weight, the analysis is likely superficial.
 
 ## Framework
 
@@ -97,12 +108,30 @@ Mitigate worst-case scenarios:
 
 Rank the strategic options by impact and feasibility. Identify which belong on the roadmap now vs. later.
 
+## Minimum Evidence Bar
+
+**Required inputs:** A clearly scoped subject (product, feature, business unit — not "our company"), and at least one source of internal data and one source of external/market data.
+
+**Acceptable evidence:** Customer feedback, usage metrics, competitive analysis, market reports, win/loss data, support ticket themes, industry benchmarks.
+
+**Insufficient evidence:** If no competitive or market context is available for the external quadrants (Opportunities/Threats), state "Insufficient evidence for external assessment" and recommend competitive research or market analysis before completing the SWOT.
+
+**Hypotheses vs. findings:**
+- **Findings:** Strengths and Weaknesses backed by internal data (metrics, customer quotes, support volumes)
+- **Hypotheses:** Opportunities and Threats based on market projections or competitor speculation — must be labeled with source and confidence
+
 ## Output Format
 
 Produce:
 1. **SWOT Grid** with evidence for each item (not just assertions)
 2. **Strategic Options Matrix** (SO, WO, ST, WT) with at least 2 options per quadrant
 3. **Top 3 Actions** ranked by urgency and impact
+
+**Shipwright Signature (required closing):**
+4. **Decision Frame** — Top strategic action from cross-reference analysis with trade-off (offensive vs. defensive posture), confidence with evidence quality, owner, decision date, revisit trigger
+5. **Unknowns & Evidence Gaps** — Quadrant items based on assumption rather than data, missing competitive intel, unverified market trends
+6. **Pass/Fail Readiness** — PASS if every quadrant item cites evidence and at least one SO/WT strategy is actionable; FAIL if quadrants contain unsourced assertions or cross-reference section is missing
+7. **Recommended Next Artifact** — Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid
 
@@ -111,3 +140,15 @@ Produce:
 - **Stopping at the grid** - The four lists are inputs, not outputs. The strategic options are the actual deliverable.
 - **Ignoring the WT quadrant** - It's uncomfortable but it's where your biggest risks live.
 - **Doing SWOT in isolation** - Combine with competitive landscape, PESTEL, or customer feedback for grounded inputs.
+
+## Weak vs. Strong Output
+
+**Weak:**
+> "Strength: Great product. Weakness: Could be better. Opportunity: Market is growing. Threat: Competition."
+
+Symmetrical, unsourced, and interchangeable with any company — this SWOT does zero analytical work.
+
+**Strong:**
+> "Strength: 3-day avg onboarding vs. 14-day industry benchmark (Source: internal telemetry, Jan 2026). Threat: Incumbent announced free tier at $0/seat targeting our SMB segment (Source: competitor press release, Feb 2026). ST Strategy: Accelerate enterprise onboarding as moat — free-tier competitors can't match our white-glove setup."
+
+Each item cites a source, and the cross-reference generates an actionable strategy rather than restating the inputs.

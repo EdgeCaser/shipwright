@@ -2,6 +2,7 @@
 name: positioning-statement
 description: "Generates and critiques product positioning using April Dunford's \"Obviously Awesome\" methodology and Geoffrey Moore's classic positioning template. Helps PMs articulate who the product is for, what category it competes in, and why it wins."
 category: strategy
+default_depth: standard
 ---
 
 # Positioning Statement
@@ -16,6 +17,16 @@ Generates and critiques product positioning using April Dunford's "Obviously Awe
 - Repositioning an existing product after a pivot
 - Aligning marketing, sales, and product on messaging
 - Preparing for competitive displacement campaigns
+
+## Depth
+
+| Scope | Use When | Sections to Include |
+|---|---|---|
+| **Light** | Internal alignment on messaging or quick positioning check | Competitive Alternatives, Unique Value Proposition, Target Customer only |
+| **Standard** | Product launch or repositioning effort | All 7 steps: Competitive Alternatives through Stress Test |
+| **Deep** | Competitive displacement campaign or category creation | All steps + segment-specific positioning variants, message testing plan, sales enablement talk track |
+
+**Omit rules:** At Light depth, skip Unique Attributes, Value Map, Market Category, and Stress Test. Produce only a competitive context, a one-line UVP, and the target customer profile.
 
 ## Framework
 
@@ -129,6 +140,18 @@ Evaluate the positioning against these questions:
 - Can sales use this in a cold outreach email?
 - Would a customer describe us this way to a peer?
 
+## Minimum Evidence Bar
+
+**Required inputs:** Product name, at least two competitive alternatives (or status quo workarounds), and a described target customer.
+
+**Acceptable evidence:** Customer interviews or win/loss data, competitor product pages or G2/Gartner reviews, sales call recordings, usage analytics showing differentiation, published analyst comparisons.
+
+**Insufficient evidence:** If differentiation claims have no customer or market validation, state "Insufficient evidence for Unique Attributes" and recommend win/loss interviews or competitive teardowns before finalizing positioning.
+
+**Hypotheses vs. findings:**
+- **Findings:** Competitive Alternatives, Unique Attributes, and Target Customer characteristics must be grounded in observable market data or direct customer input.
+- **Hypotheses:** Market Category choice and Stress Test predictions may be directional — must be labeled as positioning bets to validate.
+
 ## Output Format
 
 Produce a positioning document with:
@@ -140,6 +163,12 @@ Produce a positioning document with:
 6. **Positioning Statement** — assembled statement
 7. **Stress Test** — evaluation and refinements
 
+**Shipwright Signature (required closing):**
+8. **Decision Frame** — Recommended positioning to commit to, category strategy trade-off, confidence with evidence quality, owner, decision date, revisit trigger
+9. **Unknowns & Evidence Gaps** — Unvalidated differentiation claims, untested category framing with buyers, assumed competitive weaknesses
+10. **Pass/Fail Readiness** — PASS if positioning is grounded in at least 3 validated unique attributes and tested against real competitive alternatives; FAIL if differentiation is aspirational with no customer or market evidence
+11. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+
 ## Common Mistakes to Avoid
 
 - **Positioning on aspirations** — Position on what's true today, not what you hope to build
@@ -147,3 +176,15 @@ Produce a positioning document with:
 - **Category is too broad** — "Software" is not a useful category; narrow until it's meaningful
 - **Feature-led differentiation** — "We have feature X" is weak; "We enable outcome Y" is strong
 - **Ignoring the competitive alternative** — You don't position in a vacuum; you position *against something*
+
+## Weak vs. Strong Output
+
+**Weak:**
+> For businesses who need better data, DataCo is an innovative platform that uses AI to provide insights. Unlike competitors, we are faster and more accurate.
+
+No named segment, no specific value, "innovative" and "AI" are filler, "faster and more accurate" is unverifiable.
+
+**Strong:**
+> For mid-market e-commerce teams (50-500 SKUs) who lose 8-12% of revenue to stockouts during promotions, PlanCast is a demand forecasting tool that predicts promotional lift within 5% accuracy using historical POS data. Unlike manual spreadsheet planning, PlanCast updates forecasts daily and flags reorder points 72 hours before stockout risk.
+
+Named segment with a quantified pain, specific mechanism, measurable differentiation, and a concrete competitive alternative.

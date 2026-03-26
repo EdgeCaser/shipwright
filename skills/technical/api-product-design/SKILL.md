@@ -2,6 +2,7 @@
 name: api-product-design
 description: "For PMs who own APIs, platforms, or developer-facing products. Covers API endpoint design, developer experience (DX), versioning strategy, documentation standards, and developer onboarding. Treats the API as a product with its own personas, jobs-to-be-done, and success metrics."
 category: technical
+default_depth: standard
 ---
 
 # API Product Design
@@ -17,6 +18,16 @@ For PMs who own APIs, platforms, or developer-facing products. Covers API endpoi
 - Planning API versioning and deprecation
 - Creating developer documentation and getting-started guides
 - Evaluating API usability through developer feedback
+
+## Depth
+
+| Scope | Use When | Sections to Include |
+|---|---|---|
+| **Light** | Single internal endpoint or quick API extension | API Strategy (persona + JTBD only) + Endpoint Design (one resource) |
+| **Standard** | New public API surface or partner integration | All sections |
+| **Deep** | Platform API launch or developer ecosystem play | All sections + SDK design per language, sandbox test plan, migration guide from prior version |
+
+**Omit rules:** At Light depth, skip Authentication & Security, Versioning & Deprecation, and Developer Experience. Produce only persona, JTBD, and the endpoint resource table.
 
 ## Framework
 
@@ -245,6 +256,18 @@ docs/
 - Webhook testing via [tool — e.g., local tunnel or webhook.site integration]
 ```
 
+## Minimum Evidence Bar
+
+**Required inputs:** Product brief or PRD identifying the integration need, target developer persona, and at least one concrete use case the API must support.
+
+**Acceptable evidence:** Developer interviews or support tickets showing integration demand, existing internal API usage data, competitive API benchmarks, or documented partner requirements.
+
+**Insufficient evidence:** If no developer persona has been validated with real users or prospects, state "Insufficient evidence for API persona definition" and recommend developer discovery interviews before designing endpoints.
+
+**Hypotheses vs. findings:**
+- **Findings:** Developer persona, JTBD, endpoint resource structure (must be grounded in validated use cases)
+- **Hypotheses:** Adoption rate targets, rate limit tiers, pagination strategy choice (must be labeled as assumptions pending production data)
+
 ## Output Format
 
 Produce an API Product Spec with:
@@ -254,6 +277,12 @@ Produce an API Product Spec with:
 4. **Versioning** — compatibility rules and deprecation policy
 5. **Developer Experience** — getting started flow, docs structure, SDK design
 
+**Shipwright Signature (required closing):**
+6. **Decision Frame** — recommended API strategy (build vs. extend vs. partner), trade-off, confidence with evidence quality, owner, decision date, revisit trigger
+7. **Unknowns & Evidence Gaps** — unvalidated persona assumptions, untested rate limits, unknown integration patterns
+8. **Pass/Fail Readiness** — PASS if developer persona validated and at least one endpoint schema reviewed by engineering; FAIL if no developer has attempted the proposed getting-started flow
+9. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+
 ## Common Mistakes to Avoid
 
 - **Designing for internal convenience, not developer experience** — Your database schema is not your API schema
@@ -261,3 +290,15 @@ Produce an API Product Spec with:
 - **Inconsistent naming** — Mixed casing, plural/singular inconsistency, or verb-based endpoints destroy trust
 - **Breaking changes without notice** — This is the fastest way to lose developer trust permanently
 - **Documentation as afterthought** — For APIs, docs ARE the product; budget for them accordingly
+
+## Weak vs. Strong Output
+
+**Weak:**
+> "The API should support pagination for list endpoints."
+
+No pagination strategy chosen, no max page size, no rationale for offset vs. cursor approach.
+
+**Strong:**
+> "List endpoints use cursor-based pagination (cursor + limit, max 100) because the projects table exceeds 500K rows and offset-based pagination degrades past page 5000. Cursor is the opaque `created_at` + `id` composite, returned as `next_cursor` in the response `meta` object."
+
+Specifies the approach, justifies it with data volume, and defines the implementation contract.

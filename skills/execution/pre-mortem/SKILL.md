@@ -2,6 +2,7 @@
 name: pre-mortem
 description: "Runs a structured \"imagine this already failed\" exercise to surface risks, assumptions, and failure modes before a launch or major initiative begins. Based on Gary Klein's prospective hindsight research, which shows that imagining failure improves risk identification by 30%."
 category: execution
+default_depth: standard
 ---
 
 # Pre-Mortem Analysis
@@ -16,6 +17,16 @@ Runs a structured "imagine this already failed" exercise to surface risks, assum
 - Before committing to a large, irreversible initiative
 - When the team seems overly confident or has groupthink
 - Before signing a major partnership or platform migration
+
+## Depth
+
+| Scope | Use When | Sections to Include |
+|---|---|---|
+| **Light** | Low-stakes feature with a single team | Set the Scene, Generate Failure Reasons (top 5 only), Assess & Prioritize Risks |
+| **Standard** | Major feature launch or cross-team initiative | All sections |
+| **Deep** | Irreversible bet, platform migration, or public-facing launch | All sections + stakeholder-specific failure interviews, second-order consequence mapping, historical failure audit of comparable initiatives |
+
+**Omit rules:** At Light depth, skip Define Mitigations and Kill Criteria. Produce only a ranked risk list with likelihood and impact scores.
 
 ## Framework
 
@@ -124,6 +135,18 @@ If any of the following become true, we will pause and reassess:
    - Decision-maker: [Name]
 ```
 
+## Minimum Evidence Bar
+
+**Required inputs:** A defined initiative with a stated objective, target metric, timeline, and at least a draft plan or PRD.
+
+**Acceptable evidence:** PRD, project plan, architecture proposal, competitive landscape analysis, historical post-mortems from similar initiatives, or stakeholder risk interviews.
+
+**Insufficient evidence:** If the initiative has no defined success metric or timeline, state "Insufficient evidence for pre-mortem analysis" and recommend completing the PRD or initiative brief first.
+
+**Hypotheses vs. findings:**
+- **Findings:** Known dependencies, confirmed resource constraints, and past failure patterns from historical data must be grounded in evidence.
+- **Hypotheses:** Failure mode likelihood ratings and impact estimates are informed speculation -- label them as such and flag which ones need validation through spikes or stakeholder review.
+
 ## Output Format
 
 Produce a Pre-Mortem Report with:
@@ -133,6 +156,12 @@ Produce a Pre-Mortem Report with:
 4. **Mitigation Plan** — prevention, detection, and contingency for each top risk
 5. **Kill Criteria** — pre-committed decision triggers
 
+**Shipwright Signature (required closing):**
+6. **Decision Frame** — go/no-go recommendation based on risk profile, trade-off, confidence with evidence quality, owner, decision date, revisit trigger
+7. **Unknowns & Evidence Gaps** — failure modes with low-confidence likelihood ratings, risks that need spike investigation, missing historical baselines
+8. **Pass/Fail Readiness** — PASS if top 3 risks have owned mitigations and kill criteria are pre-committed; FAIL if any high-impact risk lacks a mitigation owner or kill criteria are absent
+9. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+
 ## Common Mistakes to Avoid
 
 - **Being too polite** — The whole point is to imagine failure; encourage brutal honesty
@@ -140,3 +169,15 @@ Produce a Pre-Mortem Report with:
 - **Mitigations without owners** — Unowned mitigations don't happen
 - **No kill criteria** — Without pre-committed exit conditions, sunk cost fallacy takes over
 - **Doing it once and forgetting** — Revisit the pre-mortem at milestones to check for emerging risks
+
+## Weak vs. Strong Output
+
+**Weak:**
+> Risk: Something could go wrong with the integration. Likelihood: Medium. Mitigation: We'll handle it.
+
+No specificity in the failure mode, no detection signal, no owner -- this mitigates nothing.
+
+**Strong:**
+> Risk: Payment provider API rate limits throttle checkout during Black Friday traffic (3x normal volume based on 2024 data). Likelihood: High. Detectability: At launch (no staging load test planned). **Mitigation:** Run load test at 4x peak by Nov 1 (Owner: Platform Lead). **Contingency:** Pre-negotiated burst rate agreement with provider; fallback to queued checkout if latency exceeds 2s.
+
+Names the specific failure scenario with historical data, assigns an owner and deadline, and defines both prevention and contingency.

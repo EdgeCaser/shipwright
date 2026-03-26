@@ -2,6 +2,7 @@
 name: prd-development
 description: "Produces a comprehensive Product Requirements Document using Amazon's Working Backwards method: start with the press release, then FAQ, then detailed requirements. This approach forces clarity of thought by starting from the customer outcome and working backward to the requirements."
 category: execution
+default_depth: standard
 ---
 
 # PRD Development
@@ -16,6 +17,16 @@ Produces a comprehensive Product Requirements Document using Amazon's Working Ba
 - Aligning cross-functional teams on scope and requirements
 - Documenting decisions for future reference
 - Before engineering estimation or design exploration
+
+## Depth
+
+| Scope | Use When | Sections to Include |
+|---|---|---|
+| **Light** | Small feature or fast-follow with clear scope | Press Release headline + summary, Goals & Success Metrics, Scope (In/Out), Open Questions |
+| **Standard** | New feature or cross-functional initiative | All sections |
+| **Deep** | New product line, platform migration, or regulatory feature | All sections + competitive analysis appendix, data privacy impact assessment, rollout experiment design |
+
+**Omit rules:** At Light depth, skip the full Press Release, FAQ, and Detailed Requirements phases. Produce a 1-page brief: problem, proposed solution, success metric, scope boundaries, and open questions.
 
 ## Framework
 
@@ -163,6 +174,18 @@ A: [T-shirt size and breakdown]
 | [Question 1] | [name] | [date] | [TBD / resolved] |
 ```
 
+## Minimum Evidence Bar
+
+**Required inputs:** A problem statement with at least one form of customer evidence (interviews, support tickets, usage data, or market research).
+
+**Acceptable evidence:** Customer interview transcripts, support ticket volume/trends, usage analytics, churned-customer feedback, competitive teardowns, or sales call recordings.
+
+**Insufficient evidence:** If no customer evidence exists for the stated problem, state "Insufficient evidence for requirements specification" and recommend running customer discovery interviews or a Jobs-to-Be-Done analysis first.
+
+**Hypotheses vs. findings:**
+- **Findings:** Problem statement, current metric baselines, and documented customer pain must be grounded in evidence.
+- **Hypotheses:** Proposed solution, success metric targets, and estimated effort are hypotheses -- label them as such until validated through design review or prototype testing.
+
 ## Output Format
 
 Produce a complete PRD with all three phases:
@@ -170,29 +193,11 @@ Produce a complete PRD with all three phases:
 2. **FAQ** — customer and internal questions answered
 3. **Detailed Requirements** — full specification
 
-## Shipwright Signature (Required)
-
-The final output must include this signature structure so artifacts are recognizable and decision-ready:
-
-1. `## Context`
-2. `## Analysis`
-3. `## Decision Frame`
-4. `## Risks and Open Questions`
-5. `## Action Plan`
-
-Include this Decision Frame block exactly:
-
-```markdown
-## Decision Frame
-- **Recommendation:** [one clear decision]
-- **Trade-off:** [what we gain vs. what we give up]
-- **Confidence:** [High / Medium / Low] - [why]
-- **Owner:** [role or name]
-- **Decision Date:** [YYYY-MM-DD]
-- **Revisit Trigger:** [specific condition that would change this decision]
-```
-
-If owner/date/revisit trigger are missing, output is not ship-ready.
+**Shipwright Signature (required closing):**
+4. **Decision Frame** — build/buy/partner recommendation, trade-off, confidence with evidence quality, owner, decision date, revisit trigger
+5. **Unknowns & Evidence Gaps** — unvalidated customer assumptions, missing technical feasibility data, untested pricing or GTM hypotheses
+6. **Pass/Fail Readiness** — PASS if problem is evidence-backed, success metrics have baselines and targets, and scope boundaries are explicit; FAIL if no customer evidence exists or success metrics lack baselines
+7. **Recommended Next Artifact** — Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid
 
@@ -201,3 +206,15 @@ If owner/date/revisit trigger are missing, output is not ship-ready.
 - **Missing "out of scope"** — Scope creep starts when boundaries aren't explicit
 - **Writing for engineers only** — A good PRD is readable by design, marketing, and leadership too
 - **Treating the PRD as final** — It's a living document; update it as you learn
+
+## Weak vs. Strong Output
+
+**Weak:**
+> **Problem:** Users have trouble with onboarding. We should make it better. **Success metric:** Improve onboarding completion.
+
+No customer evidence, no baseline, no target -- impossible to scope, estimate, or measure.
+
+**Strong:**
+> **Problem:** 62% of trial users abandon onboarding at the integration step (Mixpanel, Jan-Feb data). Support tickets citing "can't connect my data" increased 3x since v2.1 launched. **Success metric:** Integration-step completion rate from 38% to 65% within 60 days of launch; support tickets tagged "integration-setup" decrease by 50%.
+
+Grounded in specific data, cites sources, and sets measurable targets with timeframes.

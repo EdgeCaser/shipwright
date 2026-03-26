@@ -2,6 +2,7 @@
 name: churn-analysis
 description: "Structures a systematic approach to diagnosing why users leave and designing staged interventions to retain them. Combines quantitative churn metrics with qualitative exit research to produce actionable retention playbooks."
 category: customer-intelligence
+default_depth: standard
 ---
 
 # Churn Analysis & Retention Playbook
@@ -17,6 +18,16 @@ Structures a systematic approach to diagnosing why users leave and designing sta
 - Post-mortem on a cohort with unexpectedly high churn
 - Designing lifecycle email/in-app intervention campaigns
 - Evaluating whether a "save" motion (discounts, calls) is effective
+
+## Depth
+
+| Scope | Use When | Sections to Include |
+|---|---|---|
+| **Light** | Quick pulse on whether churn is worsening or a single cohort needs triage | Define & Measure Churn, Diagnose Root Causes (top 3 only) |
+| **Standard** | Building or revising a retention strategy with cross-functional input | All sections |
+| **Deep** | Board-level retention review or churn crisis with revenue impact | All sections + cohort-level segmentation, competitive save benchmarks, LTV impact modeling |
+
+**Omit rules:** At Light depth, skip Identify Churn Predictors, Design the Retention Playbook, and Measure the Playbook. Produce only a churn snapshot with top root causes and one recommended next step.
 
 ## Framework
 
@@ -156,6 +167,18 @@ Combine leading indicators into a churn risk score:
 | Net revenue retention | [X]% | > 100% | Monthly |
 ```
 
+## Minimum Evidence Bar
+
+**Required inputs:** Churn rate data (logo or revenue) for at least one measurement period, and at least one qualitative source (exit surveys, support tickets, or churned-customer interviews).
+
+**Acceptable evidence:** Billing/subscription data, product usage analytics, exit survey responses, NPS detractor comments, win/loss interview transcripts, support ticket logs.
+
+**Insufficient evidence:** If you have churn rate numbers but zero qualitative data on why users left, state "Insufficient evidence for Root Cause Analysis" and recommend conducting exit surveys or churned-customer interviews before designing interventions.
+
+**Hypotheses vs. findings:**
+- **Findings:** Churn rates, churn type breakdown, and leading indicator correlations must be grounded in data.
+- **Hypotheses:** Root cause attributions and predicted intervention effectiveness may be directional — label them "Hypothesis — pending validation" when sourced from fewer than 5 data points.
+
 ## Output Format
 
 Produce a Churn Analysis & Retention Playbook with:
@@ -165,6 +188,12 @@ Produce a Churn Analysis & Retention Playbook with:
 4. **Retention Playbook** — staged interventions (prevention, intervention, save, recovery)
 5. **Measurement Plan** — metrics and review cadence
 
+**Shipwright Signature (required closing):**
+6. **Decision Frame** — retention investment options with expected churn impact, trade-offs (cost of intervention vs. cost of churn), confidence level with evidence quality, owner, decision date, revisit trigger
+7. **Unknowns & Evidence Gaps** — root causes with insufficient qualitative backing, segments with no exit data, untested intervention assumptions
+8. **Pass/Fail Readiness** — PASS if churn rate is quantified, top 3 root causes are evidence-backed, and at least one intervention layer is designed; FAIL if churn definition is missing or root causes are assumed without data
+9. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+
 ## Common Mistakes to Avoid
 
 - **Treating all churn the same** — Voluntary vs. involuntary, satisfied vs. dissatisfied need different responses
@@ -172,3 +201,15 @@ Produce a Churn Analysis & Retention Playbook with:
 - **Intervention without diagnosis** — Offering discounts when the problem is usability wastes money and annoys users
 - **No prevention layer** — The best retention strategy is getting users to value fast, not saving them at cancellation
 - **Ignoring involuntary churn** — Payment failures are often 20-40% of total churn and are highly fixable with dunning optimization
+
+## Weak vs. Strong Output
+
+**Weak:**
+> "Root cause: Users are unhappy with the product and leaving."
+
+Restates the churn problem instead of diagnosing it. No segmentation, no evidence, no actionable category.
+
+**Strong:**
+> "Root cause: 38% of Q3 churn cited 'missing integrations' in exit surveys (n=42), concentrated in Mid-Market segment. Top 3 requested integrations: Salesforce, HubSpot, Slack. Controllable — product investment required."
+
+Specific category, quantified, sourced from named evidence, tied to a segment, and tagged as controllable.

@@ -2,6 +2,7 @@
 name: product-strategy-session
 description: "Facilitates a structured product strategy workshop covering vision, positioning, strategic bets, and success criteria. Inspired by Marty Cagan's \"Inspired\" and \"Empowered\" frameworks for product-led organizations."
 category: strategy
+default_depth: standard
 ---
 
 # Product Strategy Session
@@ -16,6 +17,16 @@ Facilitates a structured product strategy workshop covering vision, positioning,
 - New product or product line launch planning
 - Team alignment on strategic direction
 - Preparing for a strategy offsite or leadership review
+
+## Depth
+
+| Scope | Use When | Sections to Include |
+|---|---|---|
+| **Light** | Quick alignment check or prep for a leadership conversation | Product Vision, Strategic Bets (thesis only) |
+| **Standard** | Quarterly or annual strategy cycle | All sections |
+| **Deep** | New product launch, pivot, or board-level strategy review | All sections + competitor bet mapping, assumption stress-test per bet, scenario analysis (base/bull/bear) |
+
+**Omit rules:** At Light depth, skip Strategic Context, What We're NOT Doing, and Success Criteria & Review Cadence. Produce only the vision statement and bet theses.
 
 ## Framework
 
@@ -114,6 +125,18 @@ Equally important as what you invest in:
 - Quarterly: [Full strategy review — keep/adjust/kill each bet]
 ```
 
+## Minimum Evidence Bar
+
+**Required inputs:** Target customer definition, at least one known competitive alternative, and enough market context to articulate why now.
+
+**Acceptable evidence:** Customer research (interviews, surveys, usage data), market reports, competitive intel, internal metrics (retention, NPS, revenue trends), prior experiment results.
+
+**Insufficient evidence:** If no customer input exists (zero interviews, no usage data, no support signal), state "Insufficient evidence for customer-grounded strategy" and recommend discovery research before committing bets.
+
+**Hypotheses vs. findings:**
+- **Findings:** Strategic Context (current metrics, market trajectory), customer satisfaction assessments
+- **Hypotheses:** Strategic Bets (theses are inherently speculative), kill criteria assumptions — must be labeled with "we believe" framing and falsifiability conditions
+
 ## Output Format
 
 Produce a Product Strategy Document with:
@@ -122,6 +145,12 @@ Produce a Product Strategy Document with:
 3. **Strategic Bets** — 2-4 focused bets with theses
 4. **Strategic Boundaries** — what we're not doing and why
 5. **Success Criteria** — metrics and review cadence
+
+**Shipwright Signature (required closing):**
+6. **Decision Frame** — Primary strategic bet recommendation with trade-off (focus vs. optionality), confidence with evidence quality, owner, decision date, revisit trigger
+7. **Unknowns & Evidence Gaps** — Unvalidated assumptions behind bets, missing customer evidence, market data gaps
+8. **Pass/Fail Readiness** — PASS if each bet has a falsifiable thesis, kill criteria, and at least one evidence-backed assumption; FAIL if bets lack customer grounding or kill criteria
+9. **Recommended Next Artifact** — Which Shipwright skill to run next and why
 
 ## Shipwright Signature (Required)
 
@@ -154,3 +183,15 @@ A strategy without explicit trade-off/owner/revisit trigger is incomplete.
 - **No kill criteria** — Without pre-committed exit conditions, every bet becomes permanent
 - **Vision too vague** — "Be the best platform" is not a vision; it needs a customer and a differentiated outcome
 - **Skipping "what we're NOT doing"** — The power of strategy is in the choices you make *against*
+
+## Weak vs. Strong Output
+
+**Weak:**
+> "Bet: Expand to mobile. Thesis: Mobile is growing so we should be there."
+
+No falsifiable claim, no evidence, no kill criteria — this is a wish, not a strategic bet.
+
+**Strong:**
+> "Bet: Mobile-first onboarding. Thesis: We believe that shipping a mobile onboarding flow by Q3 will increase Day-7 retention from 35% to 50% because 62% of signups now originate on mobile devices (GA data, Feb 2026). Kill criteria: If Day-7 retention stays below 40% after 6 weeks post-launch, deprioritize and redirect to web activation."
+
+Testable claim, quantified baseline, named data source, pre-committed exit condition.

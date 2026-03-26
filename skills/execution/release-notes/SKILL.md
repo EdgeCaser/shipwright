@@ -2,6 +2,7 @@
 name: release-notes
 description: "Transforms Jira/Linear tickets, changelogs, and commit histories into polished, customer-facing release notes. Supports segmentation by audience (end users, admins, developers) and tone calibration for different channels."
 category: execution
+default_depth: standard
 ---
 
 # Release Notes Generator
@@ -16,6 +17,16 @@ Transforms Jira/Linear tickets, changelogs, and commit histories into polished, 
 - Preparing changelog entries for product updates
 - Drafting customer communications for major releases
 - Creating internal release summaries for support, sales, and CS teams
+
+## Depth
+
+| Scope | Use When | Sections to Include |
+|---|---|---|
+| **Light** | Patch or hotfix with fewer than 5 changes | Gather Raw Inputs, Categorize Changes, Write Customer-Facing Notes (Fixes & Improvements only) |
+| **Standard** | Regular minor or major release | All sections |
+| **Deep** | Major version launch, breaking changes, or public-facing announcement | All sections + migration guide appendix, customer segmentation matrix, coordinated launch timeline across channels |
+
+**Omit rules:** At Light depth, skip Internal Release Notes and Channel Adaptation. Produce only a categorized changelog with one-line benefit statements.
 
 ## Framework
 
@@ -139,12 +150,30 @@ Adapt the same content for different channels:
 | Social media | 1-2 sentences | Punchy, visual | Single biggest highlight |
 | Slack/internal | Bullet points | Casual, practical | What the team needs to know |
 
+## Minimum Evidence Bar
+
+**Required inputs:** A list of merged PRs, completed tickets, or a changelog diff since the last release, plus the release version and date.
+
+**Acceptable evidence:** Git commit history, Jira/Linear ticket exports, design specs for new features, QA test reports, and performance benchmarks.
+
+**Insufficient evidence:** If no ticket list or commit history is available, state "Insufficient evidence for release notes" and recommend pulling the changelog diff from version control or the project management tool.
+
+**Hypotheses vs. findings:**
+- **Findings:** What changed, which bugs were fixed, and what breaking changes exist must be grounded in the commit/ticket record.
+- **Hypotheses:** Customer impact estimates and "coming soon" teasers are forward-looking -- label them as such.
+
 ## Output Format
 
 Produce:
 1. **Customer-Facing Release Notes** — polished, benefit-oriented
 2. **Internal Release Notes** — segmented by audience (Support, Sales, Eng)
 3. **Channel Variants** — adapted versions for email, blog, social, in-app
+
+**Shipwright Signature (required closing):**
+4. **Decision Frame** — recommended communication priority and channel sequencing, trade-off, confidence with evidence quality, owner, decision date, revisit trigger
+5. **Unknowns & Evidence Gaps** — unconfirmed customer impact of changes, missing performance benchmarks, unclear migration paths for breaking changes
+6. **Pass/Fail Readiness** — PASS if every customer-facing change has a benefit statement and breaking changes have migration instructions; FAIL if breaking changes are undocumented or customer-facing notes use engineering jargon
+7. **Recommended Next Artifact** — Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid
 
@@ -153,3 +182,15 @@ Produce:
 - **Burying breaking changes** — These need prominent placement and clear migration instructions
 - **No internal notes** — Support and sales teams get blindsided without a heads-up
 - **Inconsistent cadence** — Ship release notes with every release; silence erodes trust
+
+## Weak vs. Strong Output
+
+**Weak:**
+> Improved performance of the data processing pipeline and refactored the caching layer for better efficiency.
+
+Engineering jargon that tells the customer nothing about what changed for them.
+
+**Strong:**
+> **Faster exports:** CSV and PDF exports now complete up to 3x faster for datasets over 10,000 rows. Large reports that previously timed out will now download reliably.
+
+Leads with the customer benefit, quantifies the improvement, and explains when they will notice the change.

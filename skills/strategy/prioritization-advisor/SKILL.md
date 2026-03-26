@@ -2,6 +2,7 @@
 name: prioritization-advisor
 description: "Applies structured prioritization frameworks (RICE, ICE, Kano, MoSCoW, Weighted Scoring) to a feature backlog or initiative list. Helps PMs make transparent, defensible prioritization decisions by making trade-offs explicit."
 category: strategy
+default_depth: standard
 ---
 
 # Prioritization Advisor
@@ -16,6 +17,16 @@ Applies structured prioritization frameworks (RICE, ICE, Kano, MoSCoW, Weighted 
 - Sprint or quarterly planning when tough trade-offs must be made
 - Stakeholder alignment when multiple teams want different things prioritized
 - Any time the PM needs to justify "why X before Y"
+
+## Depth
+
+| Scope | Use When | Sections to Include |
+|---|---|---|
+| **Light** | Quick gut-check on 3-5 items, single framework obvious | Ask, Score, Rank |
+| **Standard** | Backlog triage or quarterly planning with competing inputs | All sections |
+| **Deep** | Cross-org prioritization with multiple stakeholder groups | All sections + multi-framework comparison, stakeholder-specific scoring weights, sensitivity analysis per assumption |
+
+**Omit rules:** At Light depth, skip Challenge, Surface Trade-Offs, Sensitivity Notes, and Trade-Off Analysis. Produce only a scored and ranked list with the chosen framework.
 
 ## Available Frameworks
 
@@ -114,6 +125,18 @@ Best for: When different stakeholders value different criteria.
 5. **Challenge** any scoring that seems off — "You rated confidence at 90% but mentioned you haven't validated demand. Should this be lower?"
 6. **Surface trade-offs** — "Items A and B are close in score but very different in risk profile. Here's what changes if assumptions shift."
 
+## Minimum Evidence Bar
+
+**Required inputs:** A list of at least 3 items to prioritize and enough context to estimate scoring dimensions (reach, impact, effort, or equivalent).
+
+**Acceptable evidence:** Usage analytics, customer feedback, stakeholder requests with business rationale, engineering estimates, prior experiment results.
+
+**Insufficient evidence:** If fewer than 3 items are provided or no context exists for any scoring dimension, state "Insufficient evidence for defensible prioritization" and recommend gathering usage data or stakeholder input before scoring.
+
+**Hypotheses vs. findings:**
+- **Findings:** Final ranked order, scores backed by data (reach from analytics, effort from engineering estimates)
+- **Hypotheses:** Confidence percentages and impact ratings without direct validation — must be labeled with evidence source or "assumption"
+
 ## Output Format
 
 Produce a Prioritization Report with:
@@ -123,6 +146,12 @@ Produce a Prioritization Report with:
 4. **Recommendation** — top 3-5 items to invest in, with rationale
 5. **Sensitivity Notes** — which scores are most uncertain
 
+**Shipwright Signature (required closing):**
+6. **Decision Frame** — Top recommended investment with trade-off (speed vs. certainty, breadth vs. depth), confidence with evidence quality, owner, decision date, revisit trigger
+7. **Unknowns & Evidence Gaps** — Items scored with <50% confidence, assumptions that would change the ranking if wrong
+8. **Pass/Fail Readiness** — PASS if all items scored with stated evidence sources and top 3 have >60% confidence; FAIL if majority of scores are gut-feel with no supporting data
+9. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+
 ## Common Mistakes to Avoid
 
 - **Precision theater** — Don't debate whether something is a 7 or an 8; focus on the big gaps
@@ -130,3 +159,15 @@ Produce a Prioritization Report with:
 - **Using one framework for everything** — RICE for roadmap planning, MoSCoW for release scoping, Kano for feature strategy
 - **Scoring in isolation** — Score as a team, not solo, to reduce individual bias
 - **Forgetting to re-prioritize** — Priorities change as you learn; rescore at least quarterly
+
+## Weak vs. Strong Output
+
+**Weak:**
+> "Impact: High. Confidence: High. This is a top priority."
+
+No evidence behind the scores — just adjectives restating the rating scale.
+
+**Strong:**
+> "Impact: 2 (High) — based on 1,200 support tickets/month citing this workflow gap. Confidence: 70% — validated via 3 customer interviews but no quantitative A/B test yet."
+
+Scores are anchored to specific evidence with explicit gaps called out.

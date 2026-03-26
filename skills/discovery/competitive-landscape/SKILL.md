@@ -2,6 +2,7 @@
 name: competitive-landscape
 description: "Structures a comprehensive competitive analysis across positioning, feature parity, pricing, go-to-market, and market signals. Produces artifacts useful for strategy sessions, sales enablement, and investor updates."
 category: discovery
+default_depth: standard
 ---
 
 # Competitive Landscape Analysis
@@ -17,6 +18,16 @@ Structures a comprehensive competitive analysis across positioning, feature pari
 - Enabling the sales team with competitive intelligence
 - Evaluating whether a new entrant threatens your position
 - Annual or quarterly competitive refresh
+
+## Depth
+
+| Scope | Use When | Sections to Include |
+|---|---|---|
+| **Light** | Quick check for a single decision or internal discussion | Competitive Set (Step 1) + Feature Matrix (Step 2) + Executive Summary only |
+| **Standard** | Quarterly refresh, strategy session, or sales enablement | All sections |
+| **Deep** | Market entry, board presentation, or investor due diligence | All sections + win/loss interview data + scenario modeling for likely competitive responses |
+
+**Omit rules:** At Light depth, skip Positioning Analysis, Competitor Deep Dives, and Market Dynamics. Produce only the competitive set table, capability matrix, and a 3-5 bullet executive summary.
 
 ## Framework
 
@@ -100,6 +111,18 @@ For each key competitor:
 **Technology shifts:** [Platform changes, AI, open-source disruption]
 ```
 
+## Minimum Evidence Bar
+
+**Required inputs:** At least 2 named competitors, a defined buyer persona or segment, and a product category.
+
+**Acceptable evidence:** Public pricing pages, G2/Capterra reviews, analyst reports (Gartner, Forrester), customer win/loss interviews, job postings, press releases, SEC filings, product changelogs, direct product usage.
+
+**Insufficient evidence:** If the competitive set is based solely on internal assumptions with no external validation, state "Insufficient evidence: competitive set is unvalidated" and recommend customer interviews or win/loss analysis before treating this artifact as decision-ready.
+
+**Hypotheses vs. findings:**
+- **Findings:** Strengths, weaknesses, and recent moves backed by observable evidence (public data, customer quotes, product tests)
+- **Hypotheses:** "Likely next moves" and "Strategic implications" — must be explicitly labeled as hypotheses with supporting reasoning
+
 ## Output Format
 
 Produce a structured competitive intelligence report with:
@@ -109,7 +132,13 @@ Produce a structured competitive intelligence report with:
 4. **Positioning Map** — how each competitor positions themselves
 5. **Competitor Deep Dives** — strengths, weaknesses, recent moves
 6. **Market Dynamics** — macro trends affecting competition
-7. **Strategic Implications** — what this means for our product decisions
+7. **Strategic Implications** — what this means for our product decisions (label as hypotheses)
+
+**Shipwright Signature (required closing):**
+8. **Decision Frame** — Primary strategic takeaway, trade-off, confidence with evidence quality, owner, decision date, revisit trigger
+9. **Unknowns & Evidence Gaps** — What we don't know about the competitive landscape and what evidence would resolve it
+10. **Pass/Fail Readiness** — PASS if ≥2 competitors analyzed with sourced evidence; FAIL if competitive set is assumption-only or no capability matrix produced
+11. **Recommended Next Artifact** — Which Shipwright skill to run next (e.g., positioning-statement, competitive-battlecard) and why
 
 ## Common Mistakes to Avoid
 
@@ -118,3 +147,15 @@ Produce a structured competitive intelligence report with:
 - **Stale intelligence** — Competitive landscapes shift quarterly; timestamp everything
 - **Ignoring pricing and GTM** — Product parity means nothing if they out-distribute you
 - **Bias toward your own strengths** — Be rigorous about where competitors genuinely beat you
+
+## Weak vs. Strong Output
+
+**Weak:**
+> "Competitor A is strong in the enterprise segment and has good brand recognition."
+
+No evidence, no specificity, could describe any company. Not actionable.
+
+**Strong:**
+> "Competitor A won 3 of 5 enterprise deals we competed for in Q4 (source: win/loss log). Primary differentiator cited by buyers was SOC2 Type II + HIPAA certification, which we lack. Their G2 enterprise rating (4.6/5.0, n=89) outpaces ours (4.1/5.0, n=34). *Implication: we lose on compliance, not product.*"
+
+Sourced, specific, and directly informs where to invest.

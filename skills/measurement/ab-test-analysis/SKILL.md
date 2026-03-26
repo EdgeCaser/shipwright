@@ -2,6 +2,7 @@
 name: ab-test-analysis
 description: "Evaluates experiment results for statistical significance, practical significance, segment effects, and next actions. Supports both frequentist and Bayesian interpretations. Helps PMs make ship/no-ship decisions with appropriate rigor."
 category: measurement
+default_depth: standard
 ---
 
 # A/B Test Analysis
@@ -16,6 +17,16 @@ Evaluates experiment results for statistical significance, practical significanc
 - Deciding whether results are strong enough to ship
 - Analyzing unexpected or ambiguous experiment results
 - Post-experiment review and learning documentation
+
+## Depth
+
+| Scope | Use When | Sections to Include |
+|---|---|---|
+| **Light** | Quick read on a clear win/loss with no ambiguity | Experiment Summary, Results Summary, Decision |
+| **Standard** | Typical post-experiment review | All sections |
+| **Deep** | High-stakes launch decision, mixed signals, or multi-variant test | All sections + Bayesian credible intervals, long-term holdout plan, interaction effects between variants |
+
+**Omit rules:** At Light depth, skip Interpretation rigor checks, Segment Analysis, and Learnings. Produce only the results table and a ship/no-ship recommendation.
 
 ## Framework
 
@@ -138,6 +149,18 @@ Does the effect vary across important segments?
 - **Impact on strategy:** [does this change any product bets?]
 ```
 
+## Minimum Evidence Bar
+
+**Required inputs:** Experiment hypothesis, test dates, sample sizes per variant, metric values for control and treatment.
+
+**Acceptable evidence:** Raw metric values with confidence intervals, p-values or posterior probabilities, segment-level breakdowns, guardrail metric readings.
+
+**Insufficient evidence:** If sample size does not meet minimum detectable effect (MDE) requirements or the test ran fewer than 7 days, state "Insufficient evidence for a ship/no-ship decision" and recommend extending the test with a target sample size.
+
+**Hypotheses vs. findings:**
+- **Findings:** Effect classification (win/loss/inconclusive), statistical significance, guardrail status — must be grounded in provided data.
+- **Hypotheses:** Segment-level explanations and proposed next experiments — must be labeled as exploratory.
+
 ## Output Format
 
 Produce an Experiment Analysis Report with:
@@ -147,6 +170,12 @@ Produce an Experiment Analysis Report with:
 4. **Segment Analysis** — how effects vary across groups
 5. **Decision** — ship/iterate/extend with rationale
 6. **Learnings** — institutional knowledge capture
+
+**Shipwright Signature (required closing):**
+7. **Decision Frame** — ship/no-ship/iterate recommendation, trade-off, confidence with evidence quality (sample size, test duration, SRM check), owner, decision date, revisit trigger
+8. **Unknowns & Evidence Gaps** — segments not tested, long-term effects unmeasured, novelty/primacy uncertainty
+9. **Pass/Fail Readiness** — PASS if primary metric has sufficient power and no guardrail degradation; FAIL if sample size below MDE or guardrails breached without mitigation
+10. **Recommended Next Artifact** — Which Shipwright skill to run next and why
 
 ## Shipwright Signature (Required)
 
@@ -179,3 +208,15 @@ If guardrails degrade, recommendation must explicitly justify any "Ship" decisio
 - **No guardrail checks** — A win on the primary metric that degrades something critical is a net loss
 - **Overclaiming segment results** — Segment analysis is hypothesis-generating, not hypothesis-confirming
 - **Not documenting learnings** — An experiment that doesn't update your team's mental model was wasted
+
+## Weak vs. Strong Output
+
+**Weak:**
+> "The test was statistically significant so we should ship it."
+
+No effect size, no guardrail check, no practical significance judgment — significance alone does not justify shipping.
+
+**Strong:**
+> "Treatment lifted activation rate +3.2% (95% CI: +1.8% to +4.6%, p=0.002). Guardrails stable. Effect is 2x our MDE threshold. Recommend ship with 14-day post-launch monitoring on error rate."
+
+Quantified effect with confidence interval, guardrail status, practical significance threshold, and a concrete next step.

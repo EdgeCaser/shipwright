@@ -2,6 +2,7 @@
 name: meeting-notes
 description: "Transforms raw meeting notes, transcripts, or recordings into structured summaries with decisions captured, action items assigned, open questions tracked, and parking lot items preserved. The single skill every PM uses daily."
 category: communication
+default_depth: standard
 ---
 
 # Meeting Notes & Action Items
@@ -16,6 +17,16 @@ Transforms raw meeting notes, transcripts, or recordings into structured summari
 - Processing a meeting transcript or recording
 - Before the next meeting — review previous action items
 - When someone asks "what did we decide in that meeting?"
+
+## Depth
+
+| Scope | Use When | Sections to Include |
+|---|---|---|
+| **Light** | Quick standup or informal sync with few decisions | TL;DR + Action Items only |
+| **Standard** | Regular planning, design review, or stakeholder sync | All sections |
+| **Deep** | High-stakes meeting (board, exec review, post-mortem) requiring full audit trail | All sections + verbatim quotes on key decisions, timestamped discussion notes, and explicit dissent record |
+
+**Omit rules:** At Light depth, skip Decisions table, Discussion Notes, Open Questions, and Parking Lot. Produce only the TL;DR summary and owned action items.
 
 ## Framework
 
@@ -135,6 +146,18 @@ Add: Design decision log, feedback by reviewer, next iteration scope
 **For Stakeholder Syncs:**
 Add: Alignment status, escalation items, communication actions
 
+## Minimum Evidence Bar
+
+**Required inputs:** Raw meeting notes, transcript, or recording — plus attendee list and meeting purpose.
+
+**Acceptable evidence:** Direct quotes from participants, screen-shared data referenced in discussion, stated commitments ("I'll do X by Friday"), explicit decisions ("We're going with option B").
+
+**Insufficient evidence:** If a decision was implied but never explicitly stated, state "Insufficient evidence for decision — confirm with [decision-maker]" and flag in Open Questions.
+
+**Hypotheses vs. findings:**
+- **Findings:** Decisions Made, Action Items, and the TL;DR must reflect only what was actually said or agreed.
+- **Hypotheses:** Inferred sentiment or unstated concerns noted in Discussion Notes — must be labeled as "inferred" or "implied."
+
 ## Output Format
 
 Produce structured meeting notes with:
@@ -146,6 +169,12 @@ Produce structured meeting notes with:
 6. **Parking Lot** — deferred items with revisit dates
 7. **Previous Action Review** — accountability check
 
+**Shipwright Signature (required closing):**
+8. **Decision Frame** — key decision from this meeting, trade-offs discussed, confidence based on evidence cited in-room, decision owner, decision date, revisit trigger
+9. **Unknowns & Evidence Gaps** — questions raised but unanswered, data cited but not verified, absent stakeholders whose input is needed
+10. **Pass/Fail Readiness** — PASS if every action item has a single owner and due date and every decision has a named decision-maker; FAIL if any action item is unowned or any decision lacks attribution
+11. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+
 ## Common Mistakes to Avoid
 
 - **Transcript, not notes** — Don't capture everything; capture what matters (decisions, actions, key arguments)
@@ -153,3 +182,15 @@ Produce structured meeting notes with:
 - **Missing decisions** — If a decision was made, it must be explicitly captured; implicit decisions get relitigated
 - **No TL;DR** — People who weren't in the meeting need the summary; they won't read the full notes
 - **Never reviewing previous actions** — Without accountability, meeting notes are write-only artifacts
+
+## Weak vs. Strong Output
+
+**Weak:**
+> "A1: Look into the analytics issue — Team — ASAP"
+
+No single owner, no specific date, vague task — this will never get done.
+
+**Strong:**
+> "A1: Investigate 15% drop in dashboard load time since March deploy — @Sarah — Due: 2025-04-04 — Status: Open"
+
+Named owner, specific problem, concrete deadline — trackable and accountable.

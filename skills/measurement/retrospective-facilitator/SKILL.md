@@ -2,6 +2,7 @@
 name: retrospective-facilitator
 description: "Runs structured team retrospectives using proven formats (Start/Stop/Continue, 4Ls, Sailboat, Mad/Sad/Glad). Produces an action item list with owners, due dates, and follow-up mechanisms to ensure retro outcomes actually lead to change."
 category: measurement
+default_depth: standard
 ---
 
 # Retrospective Facilitator
@@ -89,6 +90,16 @@ Best for: Emotional check-ins. Good when team morale needs attention.
 - [Item]
 ```
 
+## Depth
+
+| Scope | Use When | Sections to Include |
+|---|---|---|
+| **Light** | Quick end-of-sprint check-in with a stable team | Set the Stage, Gather Input (one format), Action Items |
+| **Standard** | Regular sprint or post-launch retro | All sections |
+| **Deep** | Post-incident review, post-mortem, or quarterly team health check | All sections + timeline reconstruction, contributing factor analysis, systemic pattern review across past 3+ retros |
+
+**Omit rules:** At Light depth, skip Discuss Top Themes and Review Previous Action Items. Produce only observations and an owned action item list.
+
 ## Framework
 
 ### Step 1: Set the Stage
@@ -172,6 +183,18 @@ For each prioritized theme (top 2-3 by votes):
 | [Action from last retro] | [Name] | [Done / In Progress / Not Started] | [What happened] |
 ```
 
+## Minimum Evidence Bar
+
+**Required inputs:** Time scope of the retrospective, list of participants, at least one concrete observation or data point per format category.
+
+**Acceptable evidence:** Participant observations, sprint velocity data, incident timelines, user feedback excerpts, previous retro action item status.
+
+**Insufficient evidence:** If fewer than 3 participants contributed observations or no specific examples are provided (only vague sentiments), state "Insufficient evidence for actionable themes" and recommend a follow-up async input collection round.
+
+**Hypotheses vs. findings:**
+- **Findings:** Observed events, measured outcomes, action item completion status — must reference what actually happened.
+- **Hypotheses:** Root cause explanations and proposed process changes — must be labeled as team-generated theories to test.
+
 ## Output Format
 
 Produce a Retrospective Report with:
@@ -182,6 +205,12 @@ Produce a Retrospective Report with:
 5. **Action Items** — owned, dated, with success criteria
 6. **Previous Items Review** — accountability check
 
+**Shipwright Signature (required closing):**
+7. **Decision Frame** — top process change recommendation, trade-off (effort to implement vs. expected improvement), confidence with evidence quality (number of corroborating observations, recurrence across retros), owner, decision date, revisit trigger
+8. **Unknowns & Evidence Gaps** — themes raised by only one person, root causes not yet validated, missing perspectives from absent team members
+9. **Pass/Fail Readiness** — PASS if at least 2 owned action items with due dates and success criteria exist; FAIL if action items are unowned or no themes reached consensus
+10. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+
 ## Common Mistakes to Avoid
 
 - **No action items** — A retro without actions is just venting
@@ -189,3 +218,15 @@ Produce a Retrospective Report with:
 - **Never reviewing past actions** — Without follow-through, teams stop trusting retros
 - **Blame culture** — Focus on systems and processes, not individuals
 - **Always the same format** — Rotate formats to keep retros fresh and surface different insights
+
+## Weak vs. Strong Output
+
+**Weak:**
+> "Action item: Improve communication. Owner: The team. Due: Ongoing."
+
+No specific behavior change, no individual owner, no deadline, no success criteria — this will never get done.
+
+**Strong:**
+> "Action item: Create a shared #api-changes Slack channel and post breaking changes 48 hours before merge. Owner: Sarah (tech lead). Due: 2026-04-01. Success criteria: zero surprise API breakages in the next sprint."
+
+Specific mechanism, named owner, concrete deadline, and a measurable way to know if it worked.

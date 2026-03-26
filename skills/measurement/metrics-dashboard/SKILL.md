@@ -2,6 +2,7 @@
 name: metrics-dashboard
 description: "Defines a product metrics architecture: North Star metric, input metrics, guardrail metrics, and counter-metrics. Produces a dashboard specification that connects daily tactical metrics to strategic outcomes. Based on the Amplitude/Sean Ellis North Star framework and Reforge metrics methodology."
 category: measurement
+default_depth: standard
 ---
 
 # Metrics Dashboard Design
@@ -16,6 +17,16 @@ Defines a product metrics architecture: North Star metric, input metrics, guardr
 - Redesigning a metrics framework that's become noisy or misaligned
 - Aligning teams on what "success" means quantitatively
 - Preparing for a data-informed planning cycle
+
+## Depth
+
+| Scope | Use When | Sections to Include |
+|---|---|---|
+| **Light** | Quick alignment on what to measure for a new feature | North Star Metric, Input Metrics |
+| **Standard** | Setting up metrics for a product area or redesigning a stale framework | All sections |
+| **Deep** | Org-wide metrics overhaul or board-level reporting setup | All sections + metric dependency map, instrumentation plan with engineering owners, data quality audit |
+
+**Omit rules:** At Light depth, skip Guardrail Metrics, Counter-Metrics, and Dashboard Specification. Produce only the North Star definition and input metric decomposition.
 
 ## Framework
 
@@ -125,6 +136,18 @@ Counter-metrics detect when an optimization in one area causes harm in another.
 | Input metric misses target 3 weeks running | Info | [Weekly review agenda] | Discuss in planning |
 ```
 
+## Minimum Evidence Bar
+
+**Required inputs:** Product or feature description, target user segment, at least one known business objective, current instrumentation capabilities.
+
+**Acceptable evidence:** Existing analytics data, user research findings, business KPIs, product usage logs, stakeholder interviews about what "success" means.
+
+**Insufficient evidence:** If the team cannot define what user value the product delivers or cannot instrument the proposed North Star today, state "Insufficient evidence for a North Star metric" and recommend a discovery sprint or instrumentation spike first.
+
+**Hypotheses vs. findings:**
+- **Findings:** Current metric baselines, existing instrumentation gaps, known data source limitations — must be grounded in evidence.
+- **Hypotheses:** Proposed North Star rationale, input metric decomposition, predicted counter-metric risks — must be labeled as assumptions to validate.
+
 ## Output Format
 
 Produce a Metrics Architecture Document with:
@@ -134,6 +157,12 @@ Produce a Metrics Architecture Document with:
 4. **Counter-Metrics** — side effect detection
 5. **Dashboard Specification** — layout, data sources, alert rules
 
+**Shipwright Signature (required closing):**
+6. **Decision Frame** — recommended North Star with rationale, trade-off vs. alternative candidates, confidence with evidence quality (data availability, instrumentation readiness), owner, decision date, revisit trigger
+7. **Unknowns & Evidence Gaps** — metrics that cannot be instrumented yet, unvalidated causal assumptions in the input metric decomposition
+8. **Pass/Fail Readiness** — PASS if North Star meets all four validation criteria and at least 3 input metrics are instrumentable today; FAIL if North Star is a vanity metric or no baseline data exists
+9. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+
 ## Common Mistakes to Avoid
 
 - **Revenue as North Star** — Revenue is a lagging business metric, not a product health indicator
@@ -141,3 +170,15 @@ Produce a Metrics Architecture Document with:
 - **No guardrails** — Without guardrails, teams optimize the North Star by degrading everything else
 - **Vanity metrics** — Page views, total registered users, and "downloads" feel good but don't drive decisions
 - **Unmeasurable metrics** — If you can't instrument it today, it can't be a North Star today
+
+## Weak vs. Strong Output
+
+**Weak:**
+> "North Star Metric: Monthly Active Users."
+
+No definition of "active," no validation against the four criteria, no connection to customer value — MAU is a vanity metric in disguise.
+
+**Strong:**
+> "North Star Metric: Weekly teams completing at least one shared workflow. Definition: distinct team accounts where 2+ members execute a collaborative workflow within a 7-day window. Current: 1,240. Target: 2,000 by Q3. Why: captures both activation and collaboration value, validated against all four criteria."
+
+Precise definition, measurable baseline, target with timeline, and explicit rationale tying the metric to customer value.

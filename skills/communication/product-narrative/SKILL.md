@@ -2,6 +2,7 @@
 name: product-narrative
 description: "Produces long-form persuasive product narratives in the style of Amazon's 6-pager or shorter 2-pager memos. Used for complex product decisions that require deep reasoning, multi-stakeholder alignment, and a permanent record of the thinking process. Unlike a one-pager (which is a pitch), a narrative is an argument."
 category: communication
+default_depth: standard
 ---
 
 # Product Narrative / Memo
@@ -17,6 +18,16 @@ Produces long-form persuasive product narratives in the style of Amazon's 6-page
 - Annual/quarterly product strategy documentation
 - When the decision requires the reader to change their mental model
 - Building institutional knowledge around a pivotal decision
+
+## Depth
+
+| Scope | Use When | Sections to Include |
+|---|---|---|
+| **Light** | 2-pager for a decision within existing strategy | Introduction + The Argument + Recommendation |
+| **Standard** | Full 6-pager for a significant product bet or strategic shift | All sections |
+| **Deep** | Company-level strategic pivot or board-facing memo | All sections + extended Appendix with financial model, customer research corpus, and competitive teardown |
+
+**Omit rules:** At Light depth, skip Background & Context, Counterarguments & Risks, and Appendix. Produce only the thesis, core argument, and recommendation.
 
 ## Framework
 
@@ -182,6 +193,18 @@ For 6-pagers, follow Amazon's reading meeting format:
 - The quality of the writing is the quality of the thinking
 ```
 
+## Minimum Evidence Bar
+
+**Required inputs:** A specific thesis (not a question), at least two supporting data points with sources, and at least one steel-manned counterargument.
+
+**Acceptable evidence:** Customer research (interviews, surveys, usage data), market data with cited sources, competitive intel, internal metrics, experiment results.
+
+**Insufficient evidence:** If the argument rests on a single anecdote or unsourced market claim, state "Insufficient evidence for [specific claim]" and recommend targeted customer research or data pull before finalizing.
+
+**Hypotheses vs. findings:**
+- **Findings:** Data in the Argument section and Background must cite verifiable sources.
+- **Hypotheses:** Forward-looking projections in the Recommendation section (targets, timelines, kill criteria thresholds) — must be labeled with underlying assumptions.
+
 ## Output Format
 
 Produce a Product Narrative with:
@@ -191,6 +214,12 @@ Produce a Product Narrative with:
 4. **Counterarguments** — steel-manned and addressed
 5. **Recommendation** — specific action, investment, success criteria, kill criteria
 
+**Shipwright Signature (required closing):**
+6. **Decision Frame** — recommended course of action, trade-off vs. alternatives considered, confidence level with evidence quality cited, decision owner, decision date, revisit trigger
+7. **Unknowns & Evidence Gaps** — untested assumptions in the argument, missing customer segments, unvalidated market sizing
+8. **Pass/Fail Readiness** — PASS if thesis is falsifiable, at least one counterargument is steel-manned, and kill criteria are defined; FAIL if the memo lacks a clear thesis or presents no counterarguments
+9. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+
 ## Common Mistakes to Avoid
 
 - **Memo as data dump** — A narrative makes an argument; a data dump presents information without a thesis
@@ -198,3 +227,15 @@ Produce a Product Narrative with:
 - **No kill criteria** — Proposing a bet without pre-committed exit conditions invites sunk cost fallacy
 - **Bullet point soup** — Narratives require prose; bullets are a crutch that hides weak reasoning
 - **Memo too late** — Write the narrative BEFORE the decision, not after to rationalize what you already chose
+
+## Weak vs. Strong Output
+
+**Weak:**
+> "Customers have expressed interest in self-serve analytics, and the market is growing, so we should build it."
+
+No specific data, no source, no quantified opportunity — this is an assertion dressed as an argument.
+
+**Strong:**
+> "In 14 of 20 mid-market churn interviews (Q4 research deck, slide 12), customers cited 'waiting for an analyst to pull data' as a top-3 frustration. The self-serve BI market grew 34% YoY (Gartner, 2024). We estimate a $2.1M ARR expansion opportunity based on current mid-market seat count."
+
+Cited sources, specific sample size, quantified opportunity — a skeptical reader can verify every claim.

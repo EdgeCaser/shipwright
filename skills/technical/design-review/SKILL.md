@@ -2,6 +2,7 @@
 name: design-review
 description: "Runs a multi-stakeholder design review by evaluating a product proposal through 7 parallel perspectives: Engineering, Design, Executive, Legal/Compliance, Customer Voice, Devil's Advocate, and Sales/GTM. Produces a synthesized review with consensus points, tensions, blockers, and open questions."
 category: technical
+default_depth: standard
 ---
 
 # Design Review Facilitator
@@ -17,6 +18,16 @@ Runs a multi-stakeholder design review by evaluating a product proposal through 
 - When a proposal needs sign-off from multiple stakeholders
 - Stress-testing a design before presenting to leadership
 - Any time you want to catch blind spots before they become expensive mistakes
+
+## Depth
+
+| Scope | Use When | Sections to Include |
+|---|---|---|
+| **Light** | Small feature or low-risk change | Review Setup + 3 perspectives (Engineering, Customer Voice, Devil's Advocate) + Synthesis |
+| **Standard** | Typical feature or cross-team project | All 7 perspectives + full Synthesis |
+| **Deep** | Major platform bet or irreversible architecture decision | All 7 perspectives + external benchmarking, red team scenario modeling, written stakeholder sign-off |
+
+**Omit rules:** At Light depth, skip Design/UX, Executive, Legal, and Sales/GTM perspectives. Produce only Review Setup, the 3 core perspectives, and a condensed Synthesis.
 
 ## Framework
 
@@ -249,6 +260,18 @@ Evaluate the document from each stakeholder perspective:
 **Recommendation:** [Approve / Approve with changes / Revise and re-review / Reject]
 ```
 
+## Minimum Evidence Bar
+
+**Required inputs:** A written proposal document (PRD, tech spec, or design mockup) with enough detail to evaluate feasibility, user impact, and business alignment.
+
+**Acceptable evidence:** The proposal itself, supporting user research, analytics data, competitive analysis, engineering estimates, or prior review feedback.
+
+**Insufficient evidence:** If the proposal lacks defined scope or success metrics, state "Insufficient evidence for Executive and Customer Voice perspectives" and recommend completing the PRD before running the review.
+
+**Hypotheses vs. findings:**
+- **Findings:** Blockers, consensus points, and effort estimate deltas (must be grounded in the reviewed document or cited data)
+- **Hypotheses:** Worst-case scenarios, assumption challenges, and adoption projections (must be labeled as Devil's Advocate or speculative)
+
 ## Output Format
 
 Produce a Design Review Report with:
@@ -256,6 +279,12 @@ Produce a Design Review Report with:
 2. **7 Perspective Reviews** — each with assessment, concerns, and verdict
 3. **Synthesis** — consensus, tensions, blockers, recommendations, open questions
 4. **Overall Verdict** — go/no-go recommendation
+
+**Shipwright Signature (required closing):**
+5. **Decision Frame** — approve/revise/reject recommendation, trade-off, confidence with evidence quality, owner, decision date, revisit trigger
+6. **Unknowns & Evidence Gaps** — unresolved tensions, missing stakeholder input, untested assumptions surfaced by Devil's Advocate
+7. **Pass/Fail Readiness** — PASS if no Critical blockers remain and all tensions have assigned owners; FAIL if any perspective is Red without a resolution plan
+8. **Recommended Next Artifact** — Which Shipwright skill to run next and why
 
 ## Shipwright Signature (Required)
 
@@ -288,3 +317,15 @@ Design review outputs must clearly separate blockers vs recommendations and incl
 - **No resolution owners for tensions** — Identified tensions without owners become permanent ambiguity
 - **Review too late** — Run design reviews before significant engineering investment, not after
 - **Missing perspectives** — Even if you don't have a legal team, simulate the legal perspective
+
+## Weak vs. Strong Output
+
+**Weak:**
+> "Engineering says the timeline is aggressive."
+
+No specifics on which parts are under-scoped, no revised estimate, no path to resolution.
+
+**Strong:**
+> "Engineering rates the timeline Yellow: the auth integration is scoped at 2 days but requires OAuth 2.0 PKCE flow plus token refresh handling, estimated at 5 days by the backend lead. Proposed resolution: split auth into a separate sprint or adopt API-key-only auth for V1. Owner: Tech Lead, decision by 2026-04-01."
+
+Identifies the specific gap, quantifies the delta, proposes alternatives, and assigns ownership.

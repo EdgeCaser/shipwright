@@ -2,6 +2,7 @@
 name: market-sizing
 description: "Walks through both top-down and bottom-up market sizing methodologies with explicit assumption tracking. Produces investor-ready estimates with transparent reasoning."
 category: discovery
+default_depth: standard
 ---
 
 # Market Sizing (TAM / SAM / SOM)
@@ -16,6 +17,16 @@ Walks through both top-down and bottom-up market sizing methodologies with expli
 - Preparing investor decks or business cases
 - Prioritizing between multiple market segments
 - Sanity-checking revenue projections
+
+## Depth
+
+| Scope | Use When | Sections to Include |
+|---|---|---|
+| **Light** | Quick sanity check on whether a market is worth exploring | Top-Down Sizing only, single-source TAM/SAM/SOM |
+| **Standard** | Business case or investor deck preparation | All sections |
+| **Deep** | Board-level investment decision or new market entry | All sections + scenario modeling (bull/base/bear), sensitivity analysis on top 3 assumptions, comparable company benchmarks |
+
+**Omit rules:** At Light depth, skip Bottom-Up Sizing, Triangulation, and Assumption Register. Produce only a top-down TAM/SAM/SOM with source citations.
 
 ## Key Definitions
 
@@ -109,6 +120,18 @@ Every market sizing exercise must include an explicit assumption log:
 
 **Sensitivity:** HIGH = changes the conclusion, MEDIUM = shifts magnitude, LOW = minor impact.
 
+## Minimum Evidence Bar
+
+**Required inputs:** Target market definition (industry, geography, or customer segment) and at least one of: pricing model, comparable company data, or industry report reference.
+
+**Acceptable evidence:** Analyst reports (Gartner, IDC, CB Insights), government/census data, public company filings, industry association statistics, comparable company revenue disclosures, or primary research with documented sample sizes.
+
+**Insufficient evidence:** If no credible source exists for the TAM base figure, state "Insufficient evidence for TAM estimate" and recommend sourcing an industry report or running a bottom-up count from public data (e.g., LinkedIn, Census Bureau).
+
+**Hypotheses vs. findings:**
+- **Findings:** TAM base figures and customer counts must cite a specific source with publication year.
+- **Hypotheses:** Narrowing factors (segment penetration, capture rate) and ACV assumptions may be estimated — label each as "assumed" with sensitivity rating in the Assumption Register.
+
 ## Output Format
 
 Produce a market sizing document with:
@@ -119,6 +142,12 @@ Produce a market sizing document with:
 5. **Assumption Register** — all assumptions with sensitivity ratings
 6. **Visualization** — nested TAM > SAM > SOM summary
 
+**Shipwright Signature (required closing):**
+7. **Decision Frame** — Whether the market justifies investment given SOM range, trade-off between market size confidence vs. speed to decision, confidence in estimates with evidence quality, owner, decision date, revisit trigger
+8. **Unknowns & Evidence Gaps** — Assumptions with HIGH sensitivity that lack primary sources, segments with no bottom-up validation
+9. **Pass/Fail Readiness** — PASS if both top-down and bottom-up estimates are present with cited sources and deltas are reconciled; FAIL if only one method used or TAM source is undocumented
+10. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+
 ## Common Mistakes to Avoid
 
 - **Conflating TAM with opportunity** — TAM is theoretical; SOM is what matters for planning
@@ -126,3 +155,15 @@ Produce a market sizing document with:
 - **Hidden assumptions** — Every number should have a source or a labeled assumption
 - **Ignoring growth rates** — Static sizing misses trajectory; include CAGR estimates
 - **Precision theater** — A range ($800M-$1.2B) is more honest than a false-precision point estimate ($943M)
+
+## Weak vs. Strong Output
+
+**Weak:**
+> "TAM is $50B based on the global SaaS market."
+
+Unsourced, uses an overbroad category, no narrowing logic — makes any SOM look artificially large.
+
+**Strong:**
+> "TAM is $8.2B (Gartner 2025, global spend on employee onboarding software). SAM = $2.5B after filtering to North America (40%) and mid-market 100-1000 employees (76% of segment). Source: LinkedIn company count cross-referenced with BLS data."
+
+Cited, narrowed with explicit factors, uses two independent sources for triangulation.

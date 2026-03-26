@@ -2,6 +2,7 @@
 name: growth-loops
 description: "Maps acquisition, engagement, and monetization loops to identify self-reinforcing growth mechanisms. Moves beyond the linear funnel model to identify compounding loops where output from one cycle becomes input for the next. Based on Reforge's growth loops framework."
 category: gtm
+default_depth: standard
 ---
 
 # Growth Loops Identification
@@ -25,6 +26,16 @@ Maps acquisition, engagement, and monetization loops to identify self-reinforcin
 1. **Input** — what enters the loop (new users, content, data)
 2. **Action** — what the user does inside the product
 3. **Output** — what the action produces that feeds back as new input
+
+## Depth
+
+| Scope | Use When | Sections to Include |
+|---|---|---|
+| **Light** | Quick audit of what loops exist today | Step 1: Identify Existing Loops, Step 2: Evaluate Loop Strength |
+| **Standard** | Growth strategy planning or plateau diagnosis | All sections (Steps 1-4) |
+| **Deep** | Full growth model redesign or investor-facing growth narrative | All sections + loop interaction map, multi-quarter compounding projections, sensitivity analysis on key assumptions |
+
+**Omit rules:** At Light depth, skip Step 3 (Intervention Opportunities) and Step 4 (Design New Loops). Produce only the Loop Inventory and Evaluation table.
 
 ## Framework
 
@@ -134,6 +145,18 @@ If existing loops are insufficient, design new ones:
 **Success criteria:** [What metric at what level validates the loop]
 ```
 
+## Minimum Evidence Bar
+
+**Required inputs:** Product description, current growth channels, and at least one of: usage/analytics data, cohort retention curves, or user acquisition source breakdown.
+
+**Acceptable evidence:** Product analytics (cycle time, conversion rates at each loop step), cohort retention data, referral/invite metrics, NRR figures, A/B test results on loop interventions.
+
+**Insufficient evidence:** If no product analytics or retention data exist, state "Insufficient evidence for Loop Evaluation and Intervention Priorities" and recommend instrumenting core loop steps before designing interventions.
+
+**Hypotheses vs. findings:**
+- **Findings:** Loop Inventory (which loops exist) and Evaluation ratings (Strong/Medium/Weak) must be grounded in observed metrics or user behavior.
+- **Hypotheses:** New Loop Proposals and compounding projections are inherently speculative — must be labeled "Hypothesis — validate with MVP test."
+
 ## Output Format
 
 Produce a Growth Loops Analysis with:
@@ -143,6 +166,12 @@ Produce a Growth Loops Analysis with:
 4. **New Loop Proposals** — designed loops with hypotheses and tests
 5. **Investment Recommendation** — where to focus growth engineering effort
 
+**Shipwright Signature (required closing):**
+6. **Decision Frame** — recommended loop to invest in first, trade-off vs. alternative loops, confidence level with data quality, owner (growth or product lead), decision date, revisit trigger (loop metric review at end of cycle)
+7. **Unknowns & Evidence Gaps** — unmeasured cycle times, assumed conversion rates, missing K-factor data
+8. **Pass/Fail Readiness** — PASS if at least one loop has measured cycle time and conversion data at each step; FAIL if all loops are theoretical with no observed metrics
+9. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+
 ## Common Mistakes to Avoid
 
 - **Funnel thinking** — Funnels are one-and-done; loops compound. Design for loops.
@@ -150,3 +179,15 @@ Produce a Growth Loops Analysis with:
 - **Over-investing in weak loops** — If the loop isn't working after reasonable investment, try a different loop
 - **All acquisition, no engagement** — Leaky bucket. Fix engagement loops before pouring more into acquisition.
 - **Assuming virality** — Most products aren't viral (K < 1). That's fine. Content loops, paid loops, and sales loops compound too.
+
+## Weak vs. Strong Output
+
+**Weak:**
+> "We have a viral loop where users invite other users, which drives growth."
+
+No K-factor, no cycle time, no conversion rate — impossible to evaluate or invest against.
+
+**Strong:**
+> "Viral Invite loop: K-factor 0.3 (avg 2.1 invites/user x 14% acceptance rate), 11-day cycle time. Loop is decaying (K < 1) but intervention on invite acceptance (current 14% → target 25% via pre-filled workspace) would lift K to 0.53 and reduce payback period by 4 months."
+
+Measured, actionable, with a specific intervention tied to a projected outcome.

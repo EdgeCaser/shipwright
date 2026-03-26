@@ -2,6 +2,7 @@
 name: pestel-analysis
 description: "Scans the macro environment across Political, Economic, Social, Technological, Environmental, and Legal dimensions to identify strategic risks and tailwinds. Produces a structured assessment useful for strategy documents, investor updates, and risk registers."
 category: strategy
+default_depth: standard
 ---
 
 # PESTEL Analysis
@@ -17,6 +18,16 @@ Scans the macro environment across Political, Economic, Social, Technological, E
 - Assessing regulatory risk for a product area
 - Board or investor preparation
 - Due diligence on an acquisition target
+
+## Depth
+
+| Scope | Use When | Sections to Include |
+|---|---|---|
+| **Light** | Quick risk scan for a product decision or feature bet | Top 2-3 most relevant PESTEL dimensions only, no Priority Matrix |
+| **Standard** | Annual strategy planning or new market entry | All 6 dimensions + Priority Matrix + Monitoring Plan |
+| **Deep** | Board preparation, M&A due diligence, or regulatory filing support | All sections + scenario modeling per Act Now factor, regulatory timeline mapping, cross-dimension interaction analysis |
+
+**Omit rules:** At Light depth, skip dimensions with no material impact and omit the Priority Matrix and Monitoring Plan. Produce only dimension tables for the 2-3 factors most likely to affect the decision at hand.
 
 ## Framework
 
@@ -97,6 +108,18 @@ Plot the highest-impact factors:
 1. [Factor] — [noted, no action needed]
 ```
 
+## Minimum Evidence Bar
+
+**Required inputs:** Product or business description, target market or geography, and the strategic decision this analysis is informing.
+
+**Acceptable evidence:** Published regulation or pending legislation, government agency announcements, industry analyst reports, macroeconomic data (central bank rates, inflation indices), trade press, peer-reviewed research, company filings.
+
+**Insufficient evidence:** If a PESTEL dimension relies only on speculation with no published source or observable trend, state "Insufficient evidence for [Dimension]" and recommend specific monitoring sources rather than fabricating factors.
+
+**Hypotheses vs. findings:**
+- **Findings:** Factors scored High Impact or High Likelihood must cite a specific source, regulation, or data point.
+- **Hypotheses:** Medium/Low likelihood factors and long-timeframe trends may be directional — must be labeled as emerging signals, not established facts.
+
 ## Output Format
 
 Produce a PESTEL report with:
@@ -105,6 +128,12 @@ Produce a PESTEL report with:
 3. **Priority Matrix** — categorized by urgency
 4. **Monitoring Plan** — signals to watch and review cadence
 
+**Shipwright Signature (required closing):**
+5. **Decision Frame** — Which macro factors to act on vs. monitor, key trade-off, confidence with evidence quality, owner, decision date, revisit trigger
+6. **Unknowns & Evidence Gaps** — Pending legislation outcomes, unconfirmed regulatory timelines, emerging technology trajectories without consensus
+7. **Pass/Fail Readiness** — PASS if at least 4 dimensions have sourced factors and the Priority Matrix has at least one Act Now item; FAIL if factors are generic trends not tied to the specific product or market
+8. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+
 ## Common Mistakes to Avoid
 
 - **Listing everything** — Focus on factors that could materially affect *your* product, not every macro trend
@@ -112,3 +141,15 @@ Produce a PESTEL report with:
 - **Ignoring positive factors** — PESTEL isn't just risk; it surfaces tailwinds too
 - **Static analysis** — The macro environment shifts; build a monitoring plan, not a one-time document
 - **Confusing categories** — If a factor fits multiple categories, put it in the one most relevant to the action you'd take
+
+## Weak vs. Strong Output
+
+**Weak:**
+> **Technological:** AI is changing everything. Impact: High. Likelihood: High.
+
+No specificity on which AI development, no implication for this product, no actionable signal to monitor.
+
+**Strong:**
+> **Technological:** LLM inference costs dropped 90% in 18 months (GPT-4 $30/1M tokens → GPT-4o-mini $0.15/1M tokens, source: OpenAI pricing 2024). Impact: High. Likelihood: High (already happening). Implication: Competitors with larger engineering teams can now ship AI features at near-zero marginal cost — our 6-month head start on fine-tuned models is eroding.
+
+Sourced data point, quantified trend, and a product-specific implication that drives action.

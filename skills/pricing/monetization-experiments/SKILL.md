@@ -2,6 +2,7 @@
 name: monetization-experiments
 description: "Designs and evaluates pricing, packaging, and monetization experiments including free-to-paid conversion optimization, upsell trigger testing, plan structure changes, and price sensitivity tests. Applies experimentation rigor to the highest-leverage growth lever most teams are afraid to touch."
 category: pricing
+default_depth: standard
 ---
 
 # Monetization Experiment Design
@@ -17,6 +18,16 @@ Designs and evaluates pricing, packaging, and monetization experiments including
 - Evaluating upsell/cross-sell triggers
 - Running a price increase with controlled rollout
 - Testing the impact of feature gating changes
+
+## Depth
+
+| Scope | Use When | Sections to Include |
+|---|---|---|
+| **Light** | Quick sanity check on a single variable (e.g., trial length or discount offer) | Experiment Hypothesis + Metrics + Kill Criteria only |
+| **Standard** | Typical pricing or packaging test with controlled rollout | All sections |
+| **Deep** | High-revenue-risk change (price increase on existing customers, major packaging overhaul) | All sections + segment-level metric breakdowns, legal review checklist, customer communication plan |
+
+**Omit rules:** At Light depth, skip Experiment Design, Risk Assessment, and Rollout Plan. Produce only Hypothesis, primary/guardrail Metrics, and Kill Criteria.
 
 ## Framework
 
@@ -166,6 +177,18 @@ Stop the experiment immediately if:
 - [ ] Monitor for 30 days post-rollout
 ```
 
+## Minimum Evidence Bar
+
+**Required inputs:** Baseline conversion rate (or relevant monetization metric), current pricing/packaging structure, and traffic volume sufficient to estimate sample size.
+
+**Acceptable evidence:** Product analytics (conversion funnels, ARPU, churn cohorts), prior experiment results, customer support ticket themes around pricing, competitive pricing data, user research on upgrade friction.
+
+**Insufficient evidence:** If no baseline conversion rate or monetization metric exists, state "Insufficient evidence for sample size calculation and effect estimation" and recommend instrumenting the conversion funnel for 4-6 weeks before designing the experiment.
+
+**Hypotheses vs. findings:**
+- **Findings:** Baseline metrics, sample size requirements, guardrail thresholds, and kill criteria must be grounded in actual data.
+- **Hypotheses:** Expected effect size and revenue projections are forward-looking estimates — must be labeled as such with stated assumptions.
+
 ## Output Format
 
 Produce a Monetization Experiment Plan with:
@@ -175,6 +198,12 @@ Produce a Monetization Experiment Plan with:
 4. **Risk Assessment** — risks with mitigations and kill criteria
 5. **Rollout Plan** — phased deployment with checkpoints
 
+**Shipwright Signature (required closing):**
+6. **Decision Frame** — Ship/iterate/kill recommendation, revenue vs. churn trade-off, confidence level with evidence quality, experiment owner, decision date, revisit trigger (e.g., metric drift post-rollout)
+7. **Unknowns & Evidence Gaps** — Segments not yet tested, long-term retention effects, price elasticity beyond tested range
+8. **Pass/Fail Readiness** — PASS if hypothesis is falsifiable, sample size is achievable within 8 weeks, and kill criteria are defined; FAIL if no baseline metric exists or guardrails are missing
+9. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+
 ## Common Mistakes to Avoid
 
 - **Testing price in isolation** — Price changes interact with packaging, messaging, and positioning; test holistically
@@ -182,3 +211,15 @@ Produce a Monetization Experiment Plan with:
 - **Excluding revenue metrics** — Conversion up + ARPU down = possibly net negative revenue
 - **Forgetting existing customers** — Price experiments on new users are clean; changing prices for existing users requires careful communication
 - **Too short** — Pricing decisions need at least one full billing cycle to evaluate properly
+
+## Weak vs. Strong Output
+
+**Weak:**
+> "We believe changing the pricing will improve conversion."
+
+No specificity on what changes, what conversion baseline is, or why the change should work. Unfalsifiable.
+
+**Strong:**
+> "We believe that reducing the free-to-paid jump from $49 to $29/mo (with a new $49 Pro tier) will increase free-to-paid conversion from 3.2% to 4.5%, because 62% of churned free users cited 'too expensive' in exit surveys and median WTP in our segment is $25-35/mo."
+
+Testable, grounded in data, with a specific mechanism and measurable target.

@@ -2,6 +2,7 @@
 name: pricing-strategy
 description: "Structures a comprehensive pricing analysis covering willingness-to-pay research design, pricing model comparison (per-seat, usage-based, flat-rate, freemium, hybrid), competitive pricing intelligence, price sensitivity testing, and packaging strategy. Helps PMs make pricing decisions grounded in data rather than gut feel."
 category: pricing
+default_depth: standard
 ---
 
 # Pricing Strategy Analyzer
@@ -18,6 +19,16 @@ Structures a comprehensive pricing analysis covering willingness-to-pay research
 - Competitive pricing response
 - Designing a free tier or freemium model
 - Preparing for a pricing increase
+
+## Depth
+
+| Scope | Use When | Sections to Include |
+|---|---|---|
+| **Light** | Quick pricing gut-check or early-stage product with no existing data | Pricing Objectives + Value Metric Identification + Model Recommendation only |
+| **Standard** | Setting or revising pricing with available customer and competitive data | All sections |
+| **Deep** | Major pricing model migration or enterprise pricing overhaul | All sections + segment-specific WTP analysis, migration modeling, revenue cannibalization scenarios |
+
+**Omit rules:** At Light depth, skip WTP Research Design, Competitive Pricing Analysis, and Packaging Design. Produce only Objectives, Value Metric, and Model Recommendation.
 
 ## Framework
 
@@ -171,6 +182,18 @@ Test 5-7 price points to build a demand curve.
 | [Enterprise feature] | ✗ | ✗ | ✗ | ✓ |
 ```
 
+## Minimum Evidence Bar
+
+**Required inputs:** Product description with target customer segment, current pricing (if any), and at least one of: customer interview data, competitive pricing data, or usage/conversion analytics.
+
+**Acceptable evidence:** Van Westendorp or Gabor-Granger survey results, win/loss data citing price, competitive pricing pages, ARPU and conversion cohorts, customer interviews mentioning willingness-to-pay, usage data showing value metric correlation.
+
+**Insufficient evidence:** If no customer data, competitive data, or usage analytics exist, state "Insufficient evidence for price point recommendation" and recommend running a Van Westendorp survey (minimum 30 respondents per segment) before setting prices.
+
+**Hypotheses vs. findings:**
+- **Findings:** Current state metrics, competitive pricing landscape, and value metric alignment scores must be grounded in evidence.
+- **Hypotheses:** Recommended price points, projected conversion impact, and tier boundaries without WTP data are hypotheses — must be labeled as such.
+
 ## Output Format
 
 Produce a Pricing Strategy Document with:
@@ -181,6 +204,12 @@ Produce a Pricing Strategy Document with:
 5. **Competitive Analysis** — market pricing landscape
 6. **Packaging Design** — tier structure with feature gating and upgrade triggers
 
+**Shipwright Signature (required closing):**
+7. **Decision Frame** — Recommended pricing model and price point, acquisition vs. revenue trade-off, confidence level with evidence quality, pricing owner, decision date, revisit trigger (e.g., competitive move, NRR shift)
+8. **Unknowns & Evidence Gaps** — WTP ranges not yet validated, segments not surveyed, competitive pricing behind sales walls
+9. **Pass/Fail Readiness** — PASS if value metric is identified, at least one model is evaluated with rationale, and a price range is defensible; FAIL if no customer or competitive evidence supports the recommendation
+10. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+
 ## Common Mistakes to Avoid
 
 - **Cost-plus pricing** — Price based on value delivered, not cost to build
@@ -188,3 +217,15 @@ Produce a Pricing Strategy Document with:
 - **Free tier too generous** — If there's no reason to upgrade, free users stay free forever
 - **Pricing without research** — Gut-feel pricing leaves money on the table or prices you out of deals
 - **Never raising prices** — If you haven't raised prices in 2+ years, you're almost certainly underpriced
+
+## Weak vs. Strong Output
+
+**Weak:**
+> "We recommend usage-based pricing because it aligns with value."
+
+No value metric specified, no comparison to alternatives, no evidence for why this model fits the product or buyer.
+
+**Strong:**
+> "We recommend usage-based pricing on API calls (metered monthly, billed in arrears) over per-seat, because 78% of revenue comes from 12% of accounts by volume, per-seat would undertax heavy integrators by 4x, and 3 of 4 direct competitors already use usage-based models — reducing buyer friction on model comprehension."
+
+Specific metric, quantified rationale, competitive validation, and addresses buyer experience.

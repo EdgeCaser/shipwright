@@ -24,6 +24,7 @@ Every skill follows the same structure:
 name: skill-name
 description: "What this skill does and when it's useful. One paragraph."
 category: category-name
+default_depth: standard
 ---
 
 # Skill Name
@@ -35,27 +36,66 @@ What this skill does and when it's useful. One paragraph.
 - Bullet list of scenarios where this skill applies
 - Be specific: "Evaluating a new market entry" not "Strategy stuff"
 
+## Depth
+
+| Scope | Use When | Sections to Include |
+|---|---|---|
+| **Light** | [quick/simple scenario] | [subset of framework steps] |
+| **Standard** | [typical scenario] | All sections |
+| **Deep** | [high-stakes scenario] | All sections + [extras] |
+
+**Omit rules:** At Light depth, skip [sections]. Produce only [minimum viable output].
+
 ## Framework
 The core teaching material. This is where the real value lives.
 Include steps, templates, and markdown code blocks showing
 the expected output format.
+
+## Minimum Evidence Bar
+
+**Required inputs:** [what you need before starting]
+**Acceptable evidence:** [what counts — data, quotes, research]
+**Insufficient evidence:** If [condition], state "Insufficient evidence for [X]" and recommend [action].
+**Hypotheses vs. findings:**
+- **Findings:** [outputs that must be evidence-backed]
+- **Hypotheses:** [outputs allowed to be speculative — must be labeled]
 
 ## Output Format
 What the skill should produce:
 1. Artifact 1 (e.g., "SWOT grid with evidence")
 2. Artifact 2 (e.g., "Top 3 strategic actions")
 
+**Shipwright Signature (required closing):**
+3. **Decision Frame** — Recommendation, trade-off, confidence, owner, date, revisit trigger
+4. **Unknowns & Evidence Gaps** — What we don't know and how to resolve it
+5. **Pass/Fail Readiness** — Skill-specific pass/fail conditions
+6. **Recommended Next Artifact** — Next skill to run and why
+
 ## Common Mistakes to Avoid
 - Anti-patterns the agent should watch for
 - Be specific about what's wrong and what's better
+
+## Weak vs. Strong Output
+
+**Weak:**
+> [vague, unsourced, generic example]
+
+[Why it's weak — 1 line]
+
+**Strong:**
+> [specific, sourced, actionable example]
+
+[Why it's strong — 1 line]
 ```
 
 ### What makes a good skill
 
 - **Grounded in a real framework.** "Write a strategy doc" is not a skill. "Run a SWOT analysis with cross-referenced strategic options" is.
 - **Specific outputs.** The skill should produce something you can hand to your team or stakeholders, not vague advice.
-- **Evidence over assertion.** Templates should have columns for "evidence" or "source," not just opinions.
+- **Evidence over assertion.** Templates should have columns for "evidence" or "source," not just opinions. The Minimum Evidence Bar section enforces this.
 - **Actionable.** Every item in the output should point toward a decision or next step.
+- **Proportional.** The Depth section must define when to go light vs. deep. Not every problem needs every section — ceremony should scale with stakes.
+- **Signed.** Every output closes with the Shipwright Signature (Decision Frame, Unknowns, Pass/Fail, Next Artifact). This is what makes outputs recognizably Shipwright.
 
 ### Naming conventions
 

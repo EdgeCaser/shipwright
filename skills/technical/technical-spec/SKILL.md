@@ -2,6 +2,7 @@
 name: technical-spec
 description: "Translates product requirements (PRDs, user stories) into engineering-ready technical specifications. Covers system architecture decisions, API contracts, data models, non-functional requirements, and migration plans. Bridges the gap between \"what to build\" (PM) and \"how to build it\" (engineering)."
 category: technical
+default_depth: standard
 ---
 
 # Technical Spec Writing
@@ -16,6 +17,16 @@ Translates product requirements (PRDs, user stories) into engineering-ready tech
 - When a feature requires significant architectural decisions
 - When multiple engineering teams need to coordinate on an implementation
 - As a PM who wants to speak engineering's language and earn technical credibility
+
+## Depth
+
+| Scope | Use When | Sections to Include |
+|---|---|---|
+| **Light** | Small feature or isolated backend change | Context & Motivation + System Architecture + API Contract |
+| **Standard** | Typical feature spanning multiple components | All sections |
+| **Deep** | Platform migration, new system, or multi-team coordination | All sections + load test plan, detailed ADRs per component, cross-service sequence diagrams, rollback rehearsal script |
+
+**Omit rules:** At Light depth, skip Non-Functional Requirements and Rollout & Migration. Produce only Context, Architecture (components table + one ADR), and API Contract.
 
 ## Framework
 
@@ -228,6 +239,18 @@ For each significant choice:
 - [ ] Accessibility audit
 ```
 
+## Minimum Evidence Bar
+
+**Required inputs:** An approved PRD or equivalent product brief with defined scope, target users, and success metrics. Access to the current system architecture (or confirmation this is greenfield).
+
+**Acceptable evidence:** PRD, system architecture diagrams, existing API documentation, performance benchmarks, engineering team input on feasibility, and schema or data model context.
+
+**Insufficient evidence:** If no PRD or product brief exists, state "Insufficient evidence for Context & Motivation" and recommend completing the PRD skill first. If no engineering input is available, state "Architecture decisions are PM hypotheses only" and flag for tech lead review.
+
+**Hypotheses vs. findings:**
+- **Findings:** Components affected, API contract schemas, data model structure (must reflect current system state or confirmed engineering decisions)
+- **Hypotheses:** Performance targets, data volume estimates, rollout ramp percentages (must be labeled as projections pending load testing or production validation)
+
 ## Output Format
 
 Produce a Technical Specification with:
@@ -238,6 +261,12 @@ Produce a Technical Specification with:
 5. **Non-Functional Requirements** — performance, security, reliability
 6. **Rollout Plan** — feature flags, migration, rollback
 
+**Shipwright Signature (required closing):**
+7. **Decision Frame** — recommended architecture approach, trade-off, confidence with evidence quality, owner, decision date, revisit trigger
+8. **Unknowns & Evidence Gaps** — unvalidated performance targets, missing data volume estimates, untested migration paths
+9. **Pass/Fail Readiness** — PASS if architecture reviewed by tech lead and API contract validated against PRD requirements; FAIL if ADRs list no alternatives considered or rollback plan is absent
+10. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+
 ## Common Mistakes to Avoid
 
 - **Writing implementation details in the PRD** — The PRD says "what"; the tech spec says "how"
@@ -245,3 +274,15 @@ Produce a Technical Specification with:
 - **Forgetting non-functionals** — Performance, security, and observability are requirements, not nice-to-haves
 - **No rollback plan** — Every deployment should be reversible
 - **PM writes tech spec alone** — Co-author with the tech lead; the PM ensures requirements fidelity, the engineer ensures technical feasibility
+
+## Weak vs. Strong Output
+
+**Weak:**
+> "ADR: We will use a message queue for async processing."
+
+No alternatives considered, no trade-off analysis, no consequences stated — this is a statement, not a decision record.
+
+**Strong:**
+> "ADR: Use RabbitMQ over SQS for notification processing. SQS is simpler but lacks routing key support needed for per-tenant delivery rules. RabbitMQ adds operational overhead (cluster management) but supports the fan-out pattern required by 3 of 4 notification types. Consequence: team must maintain RabbitMQ infrastructure or migrate to managed CloudAMQP ($200/mo at projected volume)."
+
+Names alternatives, explains the deciding factor, and quantifies the operational consequence.
