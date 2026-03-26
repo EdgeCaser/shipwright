@@ -1,5 +1,26 @@
 # Changelog
 
+## v1.2.0 - 2026-03-25
+
+### Added
+- **Output signature standard**: `docs/output-standard.md` defines required artifact sectioning and a mandatory `Decision Frame` block.
+- **Deterministic recovery playbooks**: `docs/recovery-playbooks.md` maps failure triggers to exact remediation steps.
+- **Binary quality gates**: `evals/pass-fail.md` introduces pass/fail enforcement before rubric scoring.
+- **Raw AI comparison framing**: README now includes a direct "Why this beats raw AI" comparison table.
+
+### Changed
+- **Core skill enforcement**: PRD, Strategy, Design Review, and A/B Analysis skills now require the Shipwright signature structure.
+- **Validation hardening**: `scripts/validate.sh` now checks:
+  - pass/fail gate file exists
+  - output/recovery docs exist
+  - signature section presence in core skills
+- **Evaluation flow**: `evals/README.md` now enforces pass/fail-first, scoring-second.
+- **Composition model clarity**: `docs/composition-model.md` now defines explicit primitives:
+  - `Workflow = graph(Skills)`
+  - `Agent = constrained executor`
+  - `Orchestrator = planner over graph`
+- **Cross-tool guidance**: docs now include pass/fail gating and signature usage for standalone mode.
+
 ## v1.1.0 - 2026-03-25
 
 ### Added
