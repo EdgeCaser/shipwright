@@ -184,11 +184,11 @@ Test 5-7 price points to build a demand curve.
 
 ## Minimum Evidence Bar
 
-**Required inputs:** Product description with target customer segment, current pricing (if any), and at least one of: customer interview data, competitive pricing data, or usage/conversion analytics.
+**Required inputs:** Product description with target customer segment, current pricing (if any), and at least one of: customer interview data, competitive pricing data, or usage/conversion analytics. At Light depth, product description and target customer segment are sufficient — data inputs are deferred to Standard/Deep.
 
 **Acceptable evidence:** Van Westendorp or Gabor-Granger survey results, win/loss data citing price, competitive pricing pages, ARPU and conversion cohorts, customer interviews mentioning willingness-to-pay, usage data showing value metric correlation.
 
-**Insufficient evidence:** If no customer data, competitive data, or usage analytics exist, stop and recommend running a Van Westendorp survey (minimum 30 respondents per segment) before attempting this skill. Do not produce a pricing recommendation without at least one evidence source.
+**Insufficient evidence:** If no customer data, competitive data, or usage analytics exist: at Standard/Deep depth, stop and recommend running a Van Westendorp survey (minimum 30 respondents per segment) before attempting this skill; at Light depth, produce a partial artifact with price ranges and model comparisons marked `[TBD — requires: customer WTP data or competitive pricing intelligence]` and flag the artifact as hypothesis-only. Do not produce a Standard/Deep pricing recommendation without at least one evidence source.
 
 **Hypotheses vs. findings:**
 - **Findings:** Current state metrics, competitive pricing landscape, and value metric alignment scores must be grounded in evidence.

@@ -137,7 +137,7 @@ Produce a structured competitive intelligence report with:
 **Shipwright Signature (required closing):**
 8. **Decision Frame** — Primary strategic takeaway, trade-off, confidence with evidence quality, owner, decision date, revisit trigger
 9. **Unknowns & Evidence Gaps** — What we don't know about the competitive landscape and what evidence would resolve it
-10. **Pass/Fail Readiness** — PASS if ≥2 competitors analyzed with sourced evidence; FAIL if competitive set is assumption-only or no capability matrix produced
+10. **Pass/Fail Readiness** — PASS if ≥2 competitors analyzed with sourced evidence (at Light depth: PASS if ≥2 competitors listed with sourced evidence and capability matrix is present; Positioning Analysis, Competitor Deep Dives, and Market Dynamics not required); FAIL if competitive set is assumption-only or no capability matrix produced
 11. **Recommended Next Artifact** — Which Shipwright skill to run next (e.g., positioning-statement, competitive-battlecard) and why
 
 ## Common Mistakes to Avoid

@@ -23,11 +23,11 @@ Builds a one-page Lean Canvas capturing the core business model: problem, soluti
 
 | Scope | Use When | Sections to Include |
 |---|---|---|
-| **Light** | Quick idea screening or comparing multiple concepts | Problem, Customer Segments, Unique Value Proposition only |
+| **Light** | Quick idea screening or comparing multiple concepts | Problem, Customer Segments, Unique Value Proposition only (following the recommended working order: Problem → Customer Segments → UVP) |
 | **Standard** | Building a business case or preparing a pitch | All 9 boxes + Riskiest Assumptions + Experiment Suggestions |
 | **Deep** | Investor due diligence or pre-launch validation planning | All sections + per-assumption experiment design with success criteria, TAM/SAM/SOM sizing, unit economics model |
 
-**Omit rules:** At Light depth, skip Solution, Channels, Revenue Streams, Cost Structure, Key Metrics, and Unfair Advantage. Produce only the demand-side trio with existing alternatives noted.
+**Omit rules:** At Light depth, skip Solution, Channels, Revenue Streams, Cost Structure, Key Metrics, and Unfair Advantage. Produce only the three core boxes (Problem, Customer Segments, Unique Value Proposition) with existing alternatives noted.
 
 ## Framework
 
@@ -142,7 +142,7 @@ Produce:
 **Shipwright Signature (required closing):**
 4. **Decision Frame** — Go/no-go recommendation on pursuing this concept, key trade-off, confidence with evidence quality, owner, decision date, revisit trigger
 5. **Unknowns & Evidence Gaps** — Unvalidated willingness-to-pay, untested channel assumptions, assumed early adopter characteristics
-6. **Pass/Fail Readiness** — PASS if Problem and Customer Segments are evidence-backed and at least one riskiest assumption has a testable experiment (at Light depth: PASS if Problem and Customer Segments are evidence-backed — experiment design is deferred); FAIL if Problem is speculative with no customer evidence
+6. **Pass/Fail Readiness** — PASS if Problem and Customer Segments are evidence-backed and each identified riskiest assumption has a testable experiment (at Light depth: PASS if Problem and Customer Segments are evidence-backed — experiment design is deferred); FAIL if Problem is speculative with no customer evidence
 7. **Recommended Next Artifact** — Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid

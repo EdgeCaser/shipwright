@@ -157,11 +157,11 @@ Score each cluster for action priority:
 
 ## Minimum Evidence Bar
 
-**Required inputs:** Raw feedback from at least two channels covering the analysis period, with enough volume to form meaningful clusters (minimum ~20 items for a useful triage).
+**Required inputs:** Raw feedback from at least two channels covering the analysis period, with enough volume to form meaningful clusters (minimum ~20 items for a useful triage). (At Light depth, a single channel with sufficient volume is acceptable.)
 
 **Acceptable evidence:** Support tickets, NPS verbatims, app store reviews, feature request logs, sales call notes, social media mentions, community forum posts, churned-customer exit surveys.
 
-**Insufficient evidence:** If total feedback volume is below 20 items or comes from only one channel, state "Insufficient evidence for cross-channel triangulation" and stop. Recommend running a broader feedback collection effort or the Shipwright customer-journey-mapping skill to identify which channels to instrument before attempting this skill.
+**Insufficient evidence:** If total feedback volume is below 20 items or comes from only one channel at Standard/Deep depth, state "Insufficient evidence for cross-channel triangulation" and stop. At Light depth, single-channel input is acceptable provided total volume is 20+ items. Recommend running a broader feedback collection effort or the Shipwright customer-journey-mapping skill to identify which channels to instrument before attempting this skill at Standard or Deep depth.
 
 **Hypotheses vs. findings:**
 - **Findings:** Cluster volumes, sentiment distributions, and trend directions must be grounded in the raw data.

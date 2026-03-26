@@ -142,7 +142,7 @@ Counter-metrics detect when an optimization in one area causes harm in another.
 
 **Acceptable evidence:** Existing analytics data, user research findings, business KPIs, product usage logs, stakeholder interviews about what "success" means.
 
-**Insufficient evidence:** If the team cannot define what user value the product delivers or cannot instrument the proposed North Star today, stop and recommend running a user-research or jobs-to-be-done discovery sprint before attempting this skill. A metrics architecture built on an unvalidated value hypothesis will mislead rather than inform.
+**Insufficient evidence:** If the team cannot define what user value the product delivers or cannot instrument the proposed North Star today, stop and recommend running a user-research-synthesis or jobs-to-be-done discovery sprint before attempting this skill. A metrics architecture built on an unvalidated value hypothesis will mislead rather than inform.
 
 **Hypotheses vs. findings:**
 - **Findings:** Current metric baselines, existing instrumentation gaps, known data source limitations — must be grounded in evidence.
@@ -160,7 +160,7 @@ Produce a Metrics Architecture Document with:
 **Shipwright Signature (required closing):**
 6. **Decision Frame** — recommended North Star with rationale, trade-off vs. alternative candidates, confidence with evidence quality (data availability, instrumentation readiness), owner, decision date, revisit trigger
 7. **Unknowns & Evidence Gaps** — metrics that cannot be instrumented yet, unvalidated causal assumptions in the input metric decomposition
-8. **Pass/Fail Readiness** — PASS if North Star meets all four validation criteria and at least 3 input metrics are instrumentable today; FAIL if North Star is a vanity metric or no baseline data exists
+8. **Pass/Fail Readiness** — PASS if North Star meets all four validation criteria and at least 3 input metrics are instrumentable today; at Light depth, PASS if North Star meets all four validation criteria and input metric decomposition is logically sound — instrumentability verification is deferred; FAIL if North Star is a vanity metric or no baseline data exists
 9. **Recommended Next Artifact** — Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid

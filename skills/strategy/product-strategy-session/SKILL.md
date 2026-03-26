@@ -152,30 +152,6 @@ Produce a Product Strategy Document with:
 8. **Pass/Fail Readiness** — PASS if each bet has a falsifiable thesis, kill criteria, and at least one evidence-backed assumption (at Light depth: PASS if each bet has a falsifiable thesis — kill criteria and full assumption mapping are deferred); FAIL if bets lack customer grounding or kill criteria
 9. **Recommended Next Artifact** — Which Shipwright skill to run next and why
 
-## Shipwright Signature (Required)
-
-The final output must include this signature structure so artifacts are consistent across sessions:
-
-1. `## Context`
-2. `## Analysis`
-3. `## Decision Frame`
-4. `## Risks and Open Questions`
-5. `## Action Plan`
-
-Include this Decision Frame block exactly:
-
-```markdown
-## Decision Frame
-- **Recommendation:** [one clear decision]
-- **Trade-off:** [what we gain vs. what we give up]
-- **Confidence:** [High / Medium / Low] - [why]
-- **Owner:** [role or name]
-- **Decision Date:** [YYYY-MM-DD]
-- **Revisit Trigger:** [specific condition that would change this decision]
-```
-
-A strategy without explicit trade-off/owner/revisit trigger is incomplete.
-
 ## Common Mistakes to Avoid
 
 - **Strategy as a feature list** — A roadmap is not a strategy; a strategy explains *why* you're building what you're building

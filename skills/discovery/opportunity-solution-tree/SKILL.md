@@ -110,7 +110,7 @@ Cost: [Effort required]
 
 **Acceptable evidence:** Customer interview insights, user research synthesis themes, support ticket patterns, behavioral analytics, JTBD opportunity scores, or direct observation of user workarounds.
 
-**Insufficient evidence:** If fewer than 2 opportunities have any customer evidence, state "Insufficient evidence for opportunity prioritization" and stop and recommend running User Research Synthesis or Discovery Interview Prep to build the evidence base before attempting this skill.
+**Insufficient evidence:** If fewer than 2 opportunities have any customer evidence, state "Insufficient evidence for opportunity prioritization" and stop and recommend running discovery-interview-prep to gather user evidence or feedback-triage to synthesize existing data before attempting this skill.
 
 **Hypotheses vs. findings:**
 - **Findings:** Opportunities (Step 2) must cite specific evidence sources. Assumptions flagged as "High confidence" must have supporting data.

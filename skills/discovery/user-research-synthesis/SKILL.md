@@ -129,7 +129,7 @@ Assemble insight cards into a research readout:
 
 **Acceptable evidence:** Verbatim quotes, behavioral observations, timestamped session recordings, survey free-text responses, support ticket excerpts, or analytics event logs tied to specific users or segments.
 
-**Insufficient evidence:** If fewer than 3 participants or only a single data source is available, state "Insufficient evidence for theme-level synthesis" and stop and recommend completing additional interviews or supplementing with quantitative data via Discovery Interview Prep before attempting this skill.
+**Insufficient evidence:** If fewer than 3 participants or only a single data source is available, state "Insufficient evidence for theme-level synthesis" and stop and recommend completing additional interviews via discovery-interview-prep or supplementing with quantitative data before attempting this skill.
 
 **Hypotheses vs. findings:**
 - **Findings:** Themes rated "Strong" (60%+ participants) and their insight card observations must be grounded in specific, cited evidence.
@@ -146,7 +146,7 @@ Produce:
 **Shipwright Signature (required closing):**
 5. **Decision Frame** — Top findings and their product implications, trade-off between acting on current evidence vs. gathering more data, confidence in themes with evidence quality and sample size, owner, decision date, revisit trigger
 6. **Unknowns & Evidence Gaps** — Segments not represented in the sample, themes with only counter-evidence, questions that emerged but were not explored
-7. **Pass/Fail Readiness** — PASS if at least 2 themes reach "Strong" or "Moderate" strength with multi-participant evidence and counter-evidence is documented; FAIL if themes are pre-defined rather than emergent or evidence trails are missing
+7. **Pass/Fail Readiness** — PASS if at least 2 themes reach "Strong" or "Moderate" strength with multi-participant evidence and counter-evidence is documented (at Light depth: PASS if at least 2 theme clusters emerge with multi-participant evidence; insight cards and research summary not required); FAIL if themes are pre-defined rather than emergent or evidence trails are missing
 8. **Recommended Next Artifact** — Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid

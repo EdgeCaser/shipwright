@@ -22,11 +22,11 @@ Generates and critiques product positioning using April Dunford's "Obviously Awe
 
 | Scope | Use When | Sections to Include |
 |---|---|---|
-| **Light** | Internal alignment on messaging or quick positioning check | Competitive Alternatives, Unique Value Proposition, Target Customer only |
+| **Light** | Internal alignment on messaging or quick positioning check | Competitive Alternatives, Unique Attributes, Value (UVP), Target Customer only |
 | **Standard** | Product launch or repositioning effort | All 7 steps: Competitive Alternatives through Stress Test |
 | **Deep** | Competitive displacement campaign or category creation | All steps + segment-specific positioning variants, message testing plan, sales enablement talk track |
 
-**Omit rules:** At Light depth, skip Unique Attributes, Value Map, Market Category, and Stress Test. Produce only a competitive context, a one-line UVP, and the target customer profile.
+**Omit rules:** At Light depth, skip Value Map, Market Category, and Stress Test. Produce only Competitive Alternatives, Unique Attributes, a one-line Value (UVP), and the target customer profile.
 
 ## Framework
 
@@ -166,7 +166,7 @@ Produce a positioning document with:
 **Shipwright Signature (required closing):**
 8. **Decision Frame** — Recommended positioning to commit to, category strategy trade-off, confidence with evidence quality, owner, decision date, revisit trigger
 9. **Unknowns & Evidence Gaps** — Unvalidated differentiation claims, untested category framing with buyers, assumed competitive weaknesses
-10. **Pass/Fail Readiness** — PASS if positioning is grounded in at least 3 validated unique attributes and tested against real competitive alternatives (at Light depth: PASS if competitive context is established and UVP is grounded in at least one differentiator — full attribute validation is deferred); FAIL if differentiation is aspirational with no customer or market evidence
+10. **Pass/Fail Readiness** — PASS if positioning is grounded in multiple validated unique attributes and tested against real competitive alternatives (at Light depth: PASS if competitive context is established and Value (UVP) is grounded in at least one differentiator — full attribute validation is deferred); FAIL if differentiation is aspirational with no customer or market evidence
 11. **Recommended Next Artifact** — Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid

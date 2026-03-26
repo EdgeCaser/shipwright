@@ -24,7 +24,7 @@ Scans the macro environment across Political, Economic, Social, Technological, E
 | Scope | Use When | Sections to Include |
 |---|---|---|
 | **Light** | Quick risk scan for a product decision or feature bet | Top 2-3 most relevant PESTEL dimensions only, no Priority Matrix |
-| **Standard** | Annual strategy planning or new market entry | All 6 dimensions + Priority Matrix + Monitoring Plan |
+| **Standard** | Annual strategy planning or new market entry | Executive Summary + All 6 dimensions + Priority Matrix + Monitoring Plan |
 | **Deep** | Board preparation, M&A due diligence, or regulatory filing support | All sections + scenario modeling per Act Now factor, regulatory timeline mapping, cross-dimension interaction analysis |
 
 **Omit rules:** At Light depth, skip dimensions with no material impact and omit the Priority Matrix and Monitoring Plan. Produce only dimension tables for the 2-3 factors most likely to affect the decision at hand.
@@ -131,7 +131,7 @@ Produce a PESTEL report with:
 **Shipwright Signature (required closing):**
 5. **Decision Frame** — Which macro factors to act on vs. monitor, key trade-off, confidence with evidence quality, owner, decision date, revisit trigger
 6. **Unknowns & Evidence Gaps** — Pending legislation outcomes, unconfirmed regulatory timelines, emerging technology trajectories without consensus
-7. **Pass/Fail Readiness** — PASS if at least 4 dimensions have sourced factors and the Priority Matrix has at least one Act Now item (at Light depth: PASS if the 2-3 included dimensions have sourced factors — Priority Matrix is deferred); FAIL if factors are generic trends not tied to the specific product or market
+7. **Pass/Fail Readiness** — PASS if at least 4 dimensions have sourced factors and the Priority Matrix is populated (Act Now items required only if factors meet the High Impact × High Likelihood × Near-term threshold; if none qualify, explicit declaration is sufficient) (at Light depth: PASS if the 2-3 included dimensions have sourced factors — Priority Matrix is deferred); FAIL if factors are generic trends not tied to the specific product or market
 8. **Recommended Next Artifact** — Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid

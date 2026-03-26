@@ -170,7 +170,7 @@ Identify the single segment you'll win first before expanding:
 
 **Acceptable evidence:** Customer discovery interviews (5+), survey data, market-size estimates from credible sources (analyst reports, census data, industry publications), existing usage or sales pipeline data, competitor pricing pages.
 
-**Insufficient evidence:** If no customer interviews or usage data exist, stop and recommend running the **customer-interview** or **user-research** skill to conduct 5-10 discovery interviews before attempting this skill.
+**Insufficient evidence:** If no customer interviews or usage data exist, stop and recommend running the **discovery-interview-prep** or **jobs-to-be-done** skill to conduct 5-10 discovery interviews before attempting this skill.
 
 **Hypotheses vs. findings:**
 - **Findings:** Beachhead Segment scoring and ICP qualification criteria must reference real data or interviews.

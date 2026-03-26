@@ -25,7 +25,7 @@ Captures product decisions in a structured, searchable format inspired by Archit
 |---|---|---|
 | **Light** | S3 tactical decision; team-internal, easily reversible | PDR Template (Status through Decision only), Decision Log Entry |
 | **Standard** | S2 significant decision; cross-team or multi-sprint impact | All sections |
-| **Deep** | S1 strategic decision; changes product direction or requires exec approval | All sections + extended Options Considered with effort estimates, explicit Influence Network analysis, formal Communication Summary with escalation plan |
+| **Deep** | S1 strategic decision; changes product direction or requires exec approval | All sections + extended Options Considered with effort estimates, stakeholder influence context (from stakeholder-mapping if available, or inline assessment), formal Communication Summary with escalation plan |
 
 **Omit rules:** At Light depth, skip Options Considered, Consequences, Revisit Criteria, and Communication Summary. Produce only the Decision Record core (Status, Date, Decision-Maker, Context, Decision) and a Decision Log Entry row.
 

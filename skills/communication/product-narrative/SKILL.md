@@ -195,11 +195,11 @@ For 6-pagers, follow Amazon's reading meeting format:
 
 ## Minimum Evidence Bar
 
-**Required inputs:** A specific thesis (not a question), at least two supporting data points with sources, and at least one steel-manned counterargument.
+**Required inputs:** A specific thesis (not a question), at least two supporting data points with sources, and at least one steel-manned counterargument (Standard and Deep only; at Light depth, counterargument input is recommended but not required).
 
 **Acceptable evidence:** Customer research (interviews, surveys, usage data), market data with cited sources, competitive intel, internal metrics, experiment results.
 
-**Insufficient evidence:** If the argument rests on a single anecdote or unsourced market claim, stop and recommend running the **user-research** or **metrics-definition** skill to gather targeted evidence before attempting this skill.
+**Insufficient evidence:** If the argument rests on a single anecdote or unsourced market claim, stop and recommend running the **discovery-interview-prep** or **metrics-dashboard** skill to gather targeted evidence before attempting this skill.
 
 **Hypotheses vs. findings:**
 - **Findings:** Data in the Argument section and Background must cite verifiable sources.

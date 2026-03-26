@@ -65,19 +65,16 @@ Rate each stakeholder:
 ### Quadrant Definitions
 
 ```
-              HIGH INTEREST
-                   │
-    Keep Satisfied │  Manage Closely
-    (High Power,   │  (High Power,
-     Low Interest)  │   High Interest)
-                   │
-HIGH POWER ────────┼──────── LOW POWER
-                   │
-    Monitor        │  Keep Informed
-    (Low Power,    │  (Low Power,
-     Low Interest)  │   High Interest)
-                   │
-              LOW INTEREST
+                LOW INTEREST           HIGH INTEREST
+               ┌──────────────────┬──────────────────┐
+               │  Keep Satisfied  │  Manage Closely  │
+  HIGH POWER   │  (High Power,    │  (High Power,    │
+               │   Low Interest)  │   High Interest) │
+               ├──────────────────┼──────────────────┤
+               │  Monitor         │  Keep Informed   │
+  LOW POWER    │  (Low Power,     │  (Low Power,     │
+               │   Low Interest)  │   High Interest) │
+               └──────────────────┴──────────────────┘
 ```
 
 ### Engagement Strategy by Quadrant

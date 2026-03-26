@@ -169,7 +169,7 @@ Combine leading indicators into a churn risk score:
 
 ## Minimum Evidence Bar
 
-**Required inputs:** Churn rate data (logo or revenue) for at least one measurement period, and at least one qualitative source (exit surveys, support tickets, or churned-customer interviews).
+**Required inputs:** Churn rate data (logo or revenue) for at least one measurement period, and at least one qualitative source (exit surveys, support tickets, or churned-customer interviews). At Light depth, churn rate data alone is sufficient; qualitative sources are recommended but not required for a quick pulse.
 
 **Acceptable evidence:** Billing/subscription data, product usage analytics, exit survey responses, NPS detractor comments, win/loss interview transcripts, support ticket logs.
 
@@ -185,13 +185,13 @@ Produce a Churn Analysis & Retention Playbook with:
 1. **Churn Metrics** — current rates, types, trends
 2. **Leading Indicators** — behavioral predictors and risk scoring
 3. **Root Cause Analysis** — categorized diagnosis with evidence
-4. **Retention Playbook** — staged interventions (prevention, intervention, save, recovery)
+4. **Retention Options** — framed intervention options across stages (prevention, intervention, save, recovery) with expected impact and trade-offs; does not prescribe which to implement
 5. **Measurement Plan** — metrics and review cadence
 
 **Shipwright Signature (required closing):**
-6. **Decision Frame** — retention investment options with expected churn impact, trade-offs (cost of intervention vs. cost of churn), confidence level with evidence quality, owner, decision date, revisit trigger
+6. **Decision Frame** — primary finding on churn drivers and framed retention options with expected churn impact, trade-offs (cost of intervention vs. cost of churn), confidence level with evidence quality, owner, decision date, revisit trigger
 7. **Unknowns & Evidence Gaps** — root causes with insufficient qualitative backing, segments with no exit data, untested intervention assumptions
-8. **Pass/Fail Readiness** — PASS if churn rate is quantified, top 3 root causes are evidence-backed, and at least one intervention layer is designed (at Light depth: PASS if churn rate is quantified and top 3 root causes are identified with at least directional evidence); FAIL if churn definition is missing or root causes are assumed without data
+8. **Pass/Fail Readiness** — PASS if churn rate is quantified, top 3 root causes are evidence-backed, and at least one retention option is framed with expected impact (at Light depth: PASS if churn rate is quantified and top 3 root causes are identified with at least directional evidence); FAIL if churn definition is missing or root causes are assumed without data
 9. **Recommended Next Artifact** — Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid

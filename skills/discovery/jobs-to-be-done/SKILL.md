@@ -157,8 +157,8 @@ When I [context], I want to [goal], So I can [outcome].
 ## Underserved Opportunities
 [Top 3-5 outcomes with highest opportunity scores, with strategic implications]
 
-## Recommendations
-[What to explore next — prototype tests, deeper research, etc.]
+## Framed Options
+[Top underserved opportunities with possible next steps — prototype tests, deeper research, etc.]
 ```
 
 **Shipwright Signature (required closing):**

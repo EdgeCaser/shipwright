@@ -176,7 +176,7 @@ A: [T-shirt size and breakdown]
 
 ## Minimum Evidence Bar
 
-**Required inputs:** A problem statement with at least one form of customer evidence (interviews, support tickets, usage data, or market research).
+**Required inputs:** A problem statement with at least one form of customer evidence (interviews, support tickets, usage data, or market research). At Light depth, prior PRD, launch data, or documented stakeholder alignment satisfies the evidence requirement for fast-follows with clear scope.
 
 **Acceptable evidence:** Customer interview transcripts, support ticket volume/trends, usage analytics, churned-customer feedback, competitive teardowns, or sales call recordings.
 
@@ -196,7 +196,7 @@ Produce a complete PRD with all three phases:
 **Shipwright Signature (required closing):**
 4. **Decision Frame** — build/buy/partner recommendation, trade-off, confidence with evidence quality, owner, decision date, revisit trigger
 5. **Unknowns & Evidence Gaps** — unvalidated customer assumptions, missing technical feasibility data, untested pricing or GTM hypotheses
-6. **Pass/Fail Readiness** — PASS if problem is evidence-backed, success metrics have baselines and targets, and scope boundaries are explicit; FAIL if no customer evidence exists or success metrics lack baselines
+6. **Pass/Fail Readiness** — PASS if problem is evidence-backed, success metrics have baselines and targets, and scope boundaries are explicit; at Light depth, PASS if problem is evidence-backed (prior PRD, launch data, or stakeholder alignment qualifies), scope boundaries are explicit, and at least one success metric is identified; FAIL if no customer evidence exists or success metrics lack baselines
 7. **Recommended Next Artifact** — Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid

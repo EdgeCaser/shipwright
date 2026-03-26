@@ -179,7 +179,7 @@ Stop the experiment immediately if:
 
 ## Minimum Evidence Bar
 
-**Required inputs:** Baseline conversion rate (or relevant monetization metric), current pricing/packaging structure, and traffic volume sufficient to estimate sample size.
+**Required inputs:** Baseline conversion rate (or relevant monetization metric), current pricing/packaging structure, and traffic volume sufficient to estimate sample size. At Light depth, baseline metric and current pricing/packaging structure are sufficient — traffic volume for sample sizing is deferred.
 
 **Acceptable evidence:** Product analytics (conversion funnels, ARPU, churn cohorts), prior experiment results, customer support ticket themes around pricing, competitive pricing data, user research on upgrade friction.
 

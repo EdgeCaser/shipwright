@@ -283,32 +283,8 @@ Produce a Design Review Report with:
 **Shipwright Signature (required closing):**
 5. **Decision Frame** — approve/revise/reject recommendation, trade-off, confidence with evidence quality, owner, decision date, revisit trigger
 6. **Unknowns & Evidence Gaps** — unresolved tensions, missing stakeholder input, untested assumptions surfaced by Devil's Advocate
-7. **Pass/Fail Readiness** — PASS if no Critical blockers remain and all tensions have assigned owners; FAIL if any perspective is Red without a resolution plan
+7. **Pass/Fail Readiness** — PASS if no Critical blockers remain and all tensions have assigned owners; FAIL if any perspective is Red without a resolution plan. At Light depth, PASS scopes to the 3 included perspectives only (Engineering, Customer Voice, Devil's Advocate).
 8. **Recommended Next Artifact** — Which Shipwright skill to run next and why
-
-## Shipwright Signature (Required)
-
-The final output must include this signature structure:
-
-1. `## Context`
-2. `## Analysis`
-3. `## Decision Frame`
-4. `## Risks and Open Questions`
-5. `## Action Plan`
-
-Include this Decision Frame block exactly:
-
-```markdown
-## Decision Frame
-- **Recommendation:** [one clear decision]
-- **Trade-off:** [what we gain vs. what we give up]
-- **Confidence:** [High / Medium / Low] - [why]
-- **Owner:** [role or name]
-- **Decision Date:** [YYYY-MM-DD]
-- **Revisit Trigger:** [specific condition that would change this decision]
-```
-
-Design review outputs must clearly separate blockers vs recommendations and include owner/date for resolution actions.
 
 ## Common Mistakes to Avoid
 

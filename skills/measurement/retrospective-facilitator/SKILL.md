@@ -208,7 +208,7 @@ Produce a Retrospective Report with:
 **Shipwright Signature (required closing):**
 7. **Decision Frame** — top process change recommendation, trade-off (effort to implement vs. expected improvement), confidence with evidence quality (number of corroborating observations, recurrence across retros), owner, decision date, revisit trigger
 8. **Unknowns & Evidence Gaps** — themes raised by only one person, root causes not yet validated, missing perspectives from absent team members
-9. **Pass/Fail Readiness** — PASS if at least 2 owned action items with due dates and success criteria exist; FAIL if action items are unowned. (At Light depth, theme consensus is not evaluated since theme discussion is omitted.)
+9. **Pass/Fail Readiness** — PASS if at least 2 owned action items with due dates and success criteria exist; at Light depth, PASS if at least 2 owned action items with due dates exist (success criteria optional, theme consensus not evaluated since theme discussion is omitted); FAIL if action items are unowned
 10. **Recommended Next Artifact** — Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid

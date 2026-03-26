@@ -147,7 +147,7 @@ Produce a Roadmap Document with:
 **Shipwright Signature (required closing):**
 7. **Decision Frame** — Recommended Now-quarter commitment with trade-off (scope vs. confidence), confidence with evidence quality, owner, decision date, revisit trigger
 8. **Unknowns & Evidence Gaps** — Initiatives with unvalidated RICE inputs, unresolved dependencies, missing engineering estimates
-9. **Pass/Fail Readiness** — PASS if every Now item has an outcome, metric, and owner, and at least one Later item has a promotion trigger; FAIL if Now items lack metrics or the roadmap is a feature list with no outcomes
+9. **Pass/Fail Readiness** — PASS if every Now item has an outcome, metric, and owner, and at least one Later item has a promotion trigger; at Light depth, PASS if Now/Next/Later overview is present with outcomes and metrics for each item — RICE scoring, dependencies, and Not Doing section are not required; FAIL if Now items lack metrics or the roadmap is a feature list with no outcomes
 10. **Recommended Next Artifact** — Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid
