@@ -4,7 +4,23 @@ Shipwright's skills are plain markdown files. They work in any AI coding agent t
 
 ## Claude Code
 
-This is Shipwright's primary target. Copy everything into your project's `.claude/` directory:
+This is Shipwright's primary target.
+
+**Recommended: script install**
+
+```bash
+bash shipwright/scripts/sync.sh --install your-project/
+```
+
+This copies skills, agents, commands, docs, and evals into `your-project/.claude/`, and installs a `shipwright-sync.sh` script for pulling future updates. To check for updates later:
+
+```bash
+cd your-project/
+bash shipwright-sync.sh          # interactive — review changes before applying
+bash shipwright-sync.sh --yes    # auto-update without prompts
+```
+
+**Alternative: manual copy**
 
 ```bash
 cp -r shipwright/skills/ your-project/.claude/skills/

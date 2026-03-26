@@ -165,11 +165,18 @@ Before submitting a PR, run the repository checks first:
 
 Then test your skill or workflow in a Claude Code session:
 
-1. Copy your new files into a project's `.claude/` directory
+1. Install into a test project: `bash scripts/sync.sh --install /path/to/test-project/`
 2. Set up a CLAUDE.md with product context (use one of the examples in `examples/`)
 3. Run the skill or workflow and check the output
 4. Verify the output matches the format specified in your SKILL.md
 5. Try it with different product contexts to make sure it's not too narrow
+
+After making further changes in the Shipwright repo, re-sync your test project instead of re-copying manually:
+
+```bash
+cd /path/to/test-project/
+bash shipwright-sync.sh
+```
 
 ## Adding an evaluation rubric
 

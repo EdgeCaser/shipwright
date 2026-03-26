@@ -59,7 +59,15 @@ claude plugin marketplace add EdgeCaser/shipwright
 claude plugin install shipwright@shipwright
 ```
 
-**Option B: Manual install**
+**Option B: Script install (recommended for manual)**
+```bash
+git clone https://github.com/EdgeCaser/shipwright.git
+bash shipwright/scripts/sync.sh --install your-project/
+```
+
+This copies all skills, agents, commands, docs, and evals into `your-project/.claude/`, and drops a `shipwright-sync.sh` script you can re-run later to pull updates.
+
+**Option C: Manual install**
 ```bash
 git clone https://github.com/EdgeCaser/shipwright.git
 cp -r shipwright/skills/ your-project/.claude/skills/
@@ -127,6 +135,17 @@ Want proof before adoption? Start here:
 - PASS: Problem framing tied to evidence and owner/date assigned.
 - FAIL if: recommendation has no owner/date, or unknowns are listed without a plan to resolve.
 ```
+
+## Keeping Your Install Up to Date
+
+If you installed with `scripts/sync.sh --install`, your project has a `shipwright-sync.sh` script. After pulling new changes in the Shipwright repo, run it from your project directory:
+
+```bash
+bash shipwright-sync.sh          # interactive — shows what changed, asks before updating
+bash shipwright-sync.sh --yes    # auto-update everything without prompting
+```
+
+The sync script compares every file against the Shipwright source and reports what's changed, what's new, and what's been removed. You can update all at once or file-by-file with diffs.
 
 ## Deep Reference Docs
 
