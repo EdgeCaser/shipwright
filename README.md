@@ -4,13 +4,13 @@
 [![GitHub forks](https://img.shields.io/github/forks/EdgeCaser/shipwright)](https://github.com/EdgeCaser/shipwright/network/members)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**40 PM skills, 6 agents, 9 workflows, and an orchestrator for Claude Code.**
+**42 PM skills, 6 agents, 15 workflows, and an orchestrator for Claude Code.**
 
 I got tired of re-explaining product context to AI assistants every session, and I got tired of writing the same PRDs and sprint plans from scratch. Shipwright is what came out of that frustration: a collection of PM frameworks encoded as Claude Code skills, plus agents that know how to use them together.
 
 It's not a prompt library. Each skill carries real framework knowledge (Teresa Torres, Marty Cagan, April Dunford, etc.) and produces structured artifacts you can actually hand to your team.
 
-The skills are plain markdown, so they work with Claude Code, Cursor, Codex, and any other AI coding agent that reads skill files.
+The skills are plain markdown, so they work with Claude Code, Cursor, Codex, and any other AI coding agent that reads skill files. See the [cross-tool install guide](docs/installing-in-other-tools.md) for setup instructions.
 
 ---
 
@@ -26,7 +26,7 @@ shipwright/
 │   ├── customer-intelligence.md         #   Customer signal synthesis
 │   └── cross-functional-liaison.md      #   Coordination & communication
 │
-├── skills/                              # 40 skills organized by lifecycle phase
+├── skills/                              # 42 skills organized by lifecycle phase
 │   ├── discovery/                       #   Research & customer understanding
 │   │   ├── opportunity-solution-tree/
 │   │   ├── discovery-interview-prep/
@@ -40,6 +40,8 @@ shipwright/
 │   │   ├── positioning-statement/
 │   │   ├── pestel-analysis/
 │   │   ├── lean-canvas/
+│   │   ├── business-model-canvas/
+│   │   ├── swot-analysis/
 │   │   ├── roadmap-planning/
 │   │   └── prioritization-advisor/
 │   │
@@ -87,7 +89,7 @@ shipwright/
 │       ├── executive-briefing/
 │       └── product-narrative/
 │
-├── commands/                            # 9 chained workflows
+├── commands/                            # 15 chained workflows
 │   ├── start.md                         #   /start - launch the orchestrator
 │   ├── discover.md                      #   /discover - full discovery cycle
 │   ├── write-prd.md                     #   /write-prd - Working Backwards PRD
@@ -96,12 +98,23 @@ shipwright/
 │   ├── strategy.md                      #   /strategy - strategy workshop
 │   ├── pricing.md                       #   /pricing - pricing strategy
 │   ├── customer-review.md               #   /customer-review - VoC intelligence
-│   └── tech-handoff.md                  #   /tech-handoff - PM → engineering
+│   ├── tech-handoff.md                  #   /tech-handoff - PM → engineering
+│   ├── personas.md                      #   /personas - user persona workshop
+│   ├── competitive.md                   #   /competitive - competitive intel
+│   ├── metrics.md                       #   /metrics - metrics framework
+│   ├── okrs.md                          #   /okrs - OKR authoring
+│   ├── retro.md                         #   /retro - retrospective
+│   └── narrative.md                     #   /narrative - product narrative
 │
 ├── skills-map.md                        # Orchestrator routing reference
 │
+├── .claude-plugin/                      # Plugin manifest for marketplace install
+│   ├── plugin.json
+│   └── marketplace.json
+│
 ├── docs/
-│   └── connecting-your-tools.md         # MCP setup guide for PMs
+│   ├── connecting-your-tools.md         # MCP setup guide for PMs
+│   └── installing-in-other-tools.md     # Setup for Cursor, Codex, Gemini, etc.
 │
 ├── examples/
 │   ├── CLAUDE.md.example                # Blank product context template
@@ -116,16 +129,17 @@ shipwright/
 
 ## Quick Start
 
-### 1. Clone the repo
+### 1. Install
 
+**Option A: Plugin install (recommended)**
 ```bash
-git clone https://github.com/YOUR_USERNAME/shipwright.git
+claude plugin marketplace add EdgeCaser/shipwright
+claude plugin install shipwright@shipwright
 ```
 
-### 2. Copy skills into your project
-
+**Option B: Manual install**
 ```bash
-# Copy everything
+git clone https://github.com/EdgeCaser/shipwright.git
 cp -r shipwright/skills/ your-project/.claude/skills/
 cp -r shipwright/agents/ your-project/.claude/agents/
 cp -r shipwright/commands/ your-project/.claude/commands/
@@ -134,30 +148,38 @@ cp -r shipwright/commands/ your-project/.claude/commands/
 cp -r shipwright/skills/execution/prd-development/ your-project/.claude/skills/prd-development/
 ```
 
-### 3. Set up your product context
+Using a different tool? See the [cross-tool install guide](docs/installing-in-other-tools.md) for Cursor, Codex, Gemini CLI, OpenCode, and Kiro.
+
+### 2. Set up your product context
 
 ```bash
 cp shipwright/examples/CLAUDE.md.example your-project/CLAUDE.md
 # Fill in your product details. This is what gives the skills real context
 ```
 
-### 4. Use it
+### 3. Use it
 
-Type `/start` to launch the orchestrator. It'll ask what you're working on, figure out which skills and agents to use, and build a plan. You don't need to memorize 40 skill names.
+Type `/start` to launch the orchestrator. It'll ask what you're working on, figure out which skills and agents to use, and build a plan. You don't need to memorize skill names.
 
 ```
 /start             - Launch the orchestrator
-/discover          - Run a full discovery cycle
-/write-prd         - Generate a Working Backwards PRD
-/plan-launch       - Build a GTM launch plan
-/sprint            - Prepare a sprint plan
-/strategy          - Run a strategy session
-/pricing           - Build a pricing strategy
+/discover          - Full discovery cycle
+/write-prd         - Working Backwards PRD
+/plan-launch       - GTM launch plan
+/sprint            - Sprint planning
+/strategy          - Strategy session
+/pricing           - Pricing strategy
 /customer-review   - Customer intelligence review
-/tech-handoff      - PM → engineering handoff package
+/tech-handoff      - PM → engineering handoff
+/personas          - User persona workshop
+/competitive       - Competitive intelligence
+/metrics           - Metrics framework design
+/okrs              - OKR authoring and review
+/retro             - Retrospective facilitation
+/narrative         - Product narrative (memo or briefing)
 ```
 
-### 5. (Optional) Auto-start on session launch
+### 4. (Optional) Auto-start on session launch
 
 If you want the orchestrator to greet you automatically:
 
@@ -186,7 +208,7 @@ You can also invoke agents directly for parallel work:
 
 ---
 
-## The 40 Skills
+## The 42 Skills
 
 ### Discovery & Research (6)
 
@@ -199,7 +221,7 @@ You can also invoke agents directly for parallel work:
 | **Competitive Landscape** | Feature matrices, positioning maps, strategic posture | Porter's Five Forces |
 | **Market Sizing** | TAM/SAM/SOM with top-down, bottom-up, and triangulation | Standard VC methodology |
 
-### Strategy & Planning (6)
+### Strategy & Planning (8)
 
 | Skill | What It Does | Framework |
 |---|---|---|
@@ -207,6 +229,8 @@ You can also invoke agents directly for parallel work:
 | **Positioning Statement** | Competitive alternatives → unique attributes → value → positioning | April Dunford / Geoffrey Moore |
 | **PESTEL Analysis** | Macro environment scan across 6 dimensions | PESTEL |
 | **Lean Canvas** | One-page business model with 9 validated boxes | Ash Maurya / Lean Startup |
+| **Business Model Canvas** | Full 9-block business model for established products | Osterwalder / Strategyzer |
+| **SWOT Analysis** | Strengths, weaknesses, opportunities, threats with cross-referenced strategic options | SWOT + TOWS Matrix |
 | **Roadmap Planning** | Outcome-based Now/Next/Later with RICE scoring | RICE + Now/Next/Later |
 | **Prioritization Advisor** | RICE, ICE, Kano, MoSCoW, and weighted scoring | Multiple frameworks |
 
@@ -303,7 +327,7 @@ Each agent has a narrow job. Research gathers evidence but doesn't recommend. St
 
 ---
 
-## The 9 Workflows
+## The 15 Workflows
 
 | Command | Skills Chained | Output |
 |---|---|---|
@@ -316,6 +340,12 @@ Each agent has a narrow job. Research gathers evidence but doesn't recommend. St
 | `/pricing` | Value Metric → Model → Competitive → WTP → Packaging → Experiment | Pricing strategy with validation plan |
 | `/customer-review` | Feedback Triage → Journey Map → Churn Analysis → Exec Briefing | Customer intelligence report |
 | `/tech-handoff` | PRD → Tech Spec → Design Review → Epics → Stories | Complete engineering handoff package |
+| `/personas` | Inputs → Profiles → JTBD Mapping → Validation | Persona document with research gaps |
+| `/competitive` | Landscape → Battlecards → Positioning Review | Competitive intelligence package |
+| `/metrics` | North Star → Input Metrics → Guardrails → Dashboard Spec | Metrics framework document |
+| `/okrs` | Context → Draft → Anti-Pattern Audit → Alignment | OKR document with scoring criteria |
+| `/retro` | Format → Observations → Patterns → Actions | Retrospective summary with action items |
+| `/narrative` | Format → Draft (Briefing or 6-Pager) → Review | Product narrative for decisions |
 
 ---
 
@@ -323,7 +353,7 @@ Each agent has a narrow job. Research gathers evidence but doesn't recommend. St
 
 **Fill in CLAUDE.md first.** Every agent reads it before doing anything. The more context you put in (personas, metrics, priorities, glossary), the less you repeat yourself. When your strategy changes, update it, and every future session picks up the new context automatically.
 
-**Don't try to use all 40 skills at once.** Pick the thing you do every week that feels like a grind (sprint plans, feedback triage, stakeholder updates) and start there. Get comfortable, then expand.
+**Don't try to use all 42 skills at once.** Pick the thing you do every week that feels like a grind (sprint plans, feedback triage, stakeholder updates) and start there. Get comfortable, then expand.
 
 **Run agents in parallel.** The orchestrator does this automatically when steps don't depend on each other, but you can also do it manually:
 
@@ -350,6 +380,7 @@ The skills draw on established PM thinking:
 - Geoffrey Moore, *Crossing the Chasm*
 - Rob Fitzpatrick, *The Mom Test*
 - Ash Maurya, *Running Lean*
+- Alexander Osterwalder, *Business Model Generation*
 - John Doerr, *Measure What Matters*
 - Clayton Christensen / Tony Ulwick, Jobs-to-Be-Done
 - Gary Klein, Pre-Mortem / Prospective Hindsight

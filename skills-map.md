@@ -24,6 +24,8 @@
 | Lean Canvas | `skills/strategy/lean-canvas/` | One-page business model |
 | Roadmap Planning | `skills/strategy/roadmap-planning/` | Now/Next/Later outcome-based roadmaps |
 | Prioritization Advisor | `skills/strategy/prioritization-advisor/` | RICE, ICE, Kano, MoSCoW scoring |
+| SWOT Analysis | `skills/strategy/swot-analysis/` | Strengths, weaknesses, opportunities, threats with strategic options |
+| Business Model Canvas | `skills/strategy/business-model-canvas/` | Full 9-block business model mapping |
 
 ### Execution & Delivery
 | Skill | Directory | Best For |
@@ -111,6 +113,12 @@
 | `/pricing` | Value Metric → Model → Competitive → WTP → Packaging | Pricing strategy | 60-90 min |
 | `/customer-review` | Feedback → Journey → Churn → Exec Briefing | Customer intelligence report | 45-90 min |
 | `/tech-handoff` | PRD → Tech Spec → Design Review → Epics → Stories | PM-to-engineering handoff | 90-180 min |
+| `/personas` | Inputs → Persona Profiles → JTBD Mapping → Validation | Building user personas | 30-60 min |
+| `/competitive` | Landscape → Battlecards → Positioning Review | Competitive intelligence package | 45-90 min |
+| `/metrics` | North Star → Input Metrics → Guardrails → Dashboard Spec | Metrics framework design | 30-60 min |
+| `/okrs` | Context → Draft → Anti-Pattern Audit → Alignment Check | OKR authoring and review | 30-60 min |
+| `/retro` | Format → Observations → Patterns → Actions | Team retrospective facilitation | 20-40 min |
+| `/narrative` | Format → Draft (Briefing or 6-Pager) → Review | Product narratives for decisions | 30-90 min |
 
 ---
 
@@ -158,3 +166,11 @@ When the user says something containing these keywords, route to the correspondi
 | "epic", "break this initiative down" | epic-breakdown |
 | "pricing experiment", "test the price", "conversion optimization" | monetization-experiments |
 | "opportunity solution tree", "OST", "discovery tree" | opportunity-solution-tree |
+| "SWOT", "strengths weaknesses", "strategic assessment" | swot-analysis |
+| "business model canvas", "BMC", "9 blocks", "full business model" | business-model-canvas |
+| "personas", "who are our users", "user profiles" | /personas workflow |
+| "competitive analysis", "who are we up against" | /competitive workflow |
+| "metrics framework", "what should we track", "dashboard design" | /metrics workflow |
+| "OKR", "quarterly goals", "objectives and key results" | /okrs workflow |
+| "retro", "what went well", "retrospective" | /retro workflow |
+| "write a memo", "make the case", "narrative", "one-pager" | /narrative workflow |
