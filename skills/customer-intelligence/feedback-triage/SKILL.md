@@ -1,3 +1,12 @@
+---
+name: feedback-triage
+category: customer-intelligence
+tags: [feedback, voice-of-customer, taxonomy, sentiment-analysis, prioritization, clustering]
+inputs: [raw feedback from multiple channels, customer segment data, time period]
+outputs: [feedback intelligence report, priority matrix, voice-of-customer summary]
+pairs_with: [churn-analysis, customer-journey-mapping, customer-advisory-board]
+---
+
 # Feedback Triage & Taxonomy
 
 ## Description

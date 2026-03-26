@@ -1,3 +1,12 @@
+---
+name: epic-breakdown
+category: execution
+tags: [epic-decomposition, value-slicing, hypothesis-driven, delivery-phasing, initiative-scoping]
+inputs: [approved PRD or initiative description, success metric and objective, estimated scope and timeline]
+outputs: [epic definitions with hypotheses, sequenced delivery plan with milestones, dependency map and validation checklist]
+pairs_with: [prd-development, sprint-planning, roadmap-planning]
+---
+
 # Epic Breakdown Advisor
 
 ## Description

@@ -1,3 +1,12 @@
+---
+name: swot-analysis
+category: strategy
+tags: [strengths-weaknesses, opportunities-threats, strategic-options, competitive-position, cross-reference]
+inputs: [product or business unit scope, competitive and market context, internal capabilities assessment]
+outputs: [SWOT grid with evidence, strategic options matrix, top prioritized actions]
+pairs_with: [pestel-analysis, competitive-landscape, product-strategy-session]
+---
+
 # SWOT Analysis
 
 ## Description

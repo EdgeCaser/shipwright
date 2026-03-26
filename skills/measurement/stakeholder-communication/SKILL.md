@@ -1,3 +1,12 @@
+---
+name: stakeholder-communication
+category: measurement
+tags: [status-updates, executive-summary, pyramid-principle, risk-escalation, steering-committee]
+inputs: [project status data, audience type, key metrics and risks]
+outputs: [status update document, risk escalation brief, cross-functional update]
+pairs_with: [executive-briefing, stakeholder-mapping, metrics-dashboard]
+---
+
 # Stakeholder Communication
 
 ## Description

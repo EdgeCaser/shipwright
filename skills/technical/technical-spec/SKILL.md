@@ -1,3 +1,12 @@
+---
+name: technical-spec
+category: technical
+tags: [technical-specification, architecture, API-contract, data-model, rollout, non-functional-requirements]
+inputs: [approved PRD, system architecture context, engineering constraints]
+outputs: [technical specification, API contract, rollout and migration plan]
+pairs_with: [prd-development, epic-breakdown, api-product-design]
+---
+
 # Technical Spec Writing
 
 ## Description

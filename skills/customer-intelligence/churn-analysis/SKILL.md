@@ -1,3 +1,12 @@
+---
+name: churn-analysis
+category: customer-intelligence
+tags: [churn, retention, lifecycle, risk-scoring, dunning, win-back]
+inputs: [churn metrics data, exit survey results, product usage analytics]
+outputs: [churn analysis report, retention playbook, risk scoring model]
+pairs_with: [customer-journey-mapping, feedback-triage, pricing-strategy]
+---
+
 # Churn Analysis & Retention Playbook
 
 ## Description

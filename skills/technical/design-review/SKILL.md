@@ -1,3 +1,12 @@
+---
+name: design-review
+category: technical
+tags: [design-review, multi-stakeholder, feasibility, risk-assessment, UX, compliance]
+inputs: [document under review, review scope, stakeholder perspectives]
+outputs: [design review report, blocker list, go/no-go recommendation]
+pairs_with: [technical-spec, prd-development, epic-breakdown]
+---
+
 # Design Review Facilitator
 
 ## Description

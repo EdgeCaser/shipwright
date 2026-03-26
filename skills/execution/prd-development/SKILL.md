@@ -1,3 +1,12 @@
+---
+name: prd-development
+category: execution
+tags: [product-requirements, working-backwards, press-release, amazon-method, cross-functional-alignment]
+inputs: [feature or product initiative context, customer evidence and business case, stakeholder list]
+outputs: [internal press release, FAQ document, detailed product requirements document]
+pairs_with: [epic-breakdown, user-story-writing, product-strategy-session]
+---
+
 # PRD Development
 
 ## Description

@@ -1,3 +1,12 @@
+---
+name: retrospective-facilitator
+category: measurement
+tags: [retrospective, action-items, team-health, continuous-improvement, facilitation]
+inputs: [sprint or project context, previous retro action items, participant list]
+outputs: [retrospective report, themed action items, previous-action review]
+pairs_with: [decision-log, stakeholder-communication, okr-authoring]
+---
+
 # Retrospective Facilitator
 
 ## Description

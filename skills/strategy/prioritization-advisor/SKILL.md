@@ -1,3 +1,12 @@
+---
+name: prioritization-advisor
+category: strategy
+tags: [rice-scoring, prioritization-frameworks, kano-model, moscow, trade-off-analysis, backlog]
+inputs: [list of initiatives or features to prioritize, scoring criteria or framework preference, stakeholder context]
+outputs: [scored and ranked backlog, trade-off analysis, top recommendations with rationale]
+pairs_with: [roadmap-planning, product-strategy-session, sprint-planning]
+---
+
 # Prioritization Advisor
 
 ## Description

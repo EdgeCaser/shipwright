@@ -1,3 +1,12 @@
+---
+name: customer-advisory-board
+category: customer-intelligence
+tags: [CAB, customer-research, strategic-input, discussion-guide, facilitation, synthesis]
+inputs: [strategic questions, participant list, product context]
+outputs: [CAB preparation package, discussion guides, post-session synthesis]
+pairs_with: [feedback-triage, customer-journey-mapping, competitive-landscape]
+---
+
 # Customer Advisory Board (CAB) Prep
 
 ## Description

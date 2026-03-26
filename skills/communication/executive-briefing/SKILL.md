@@ -1,3 +1,12 @@
+---
+name: executive-briefing
+category: communication
+tags: [executive, one-pager, SCR-framework, persuasion, decision-request, budget]
+inputs: [situation context, supporting data, specific ask]
+outputs: [one-page executive briefing, options comparison, decision request]
+pairs_with: [stakeholder-mapping, decision-log, stakeholder-communication]
+---
+
 # Executive Briefing / One-Pager
 
 ## Description

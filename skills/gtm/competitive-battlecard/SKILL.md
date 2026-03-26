@@ -1,3 +1,12 @@
+---
+name: competitive-battlecard
+category: gtm
+tags: [sales-enablement, objection-handling, win-loss-analysis, competitive-intelligence, talk-tracks]
+inputs: [competitor name and profile, feature comparison data, win/loss patterns from sales]
+outputs: [sales-ready battlecard, objection handling scripts, landmine questions for prospects]
+pairs_with: [competitive-landscape, positioning-statement, go-to-market-strategy]
+---
+
 # Competitive Battlecard
 
 ## Description

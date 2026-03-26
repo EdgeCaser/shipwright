@@ -1,3 +1,12 @@
+---
+name: opportunity-solution-tree
+category: discovery
+tags: [continuous-discovery, opportunity-mapping, assumption-testing, experiment-design, teresa-torres]
+inputs: [desired measurable outcome, customer research or interview data, product area context]
+outputs: [opportunity solution tree diagram, assumption register, experiment backlog]
+pairs_with: [discovery-interview-prep, user-research-synthesis, pre-mortem]
+---
+
 # Opportunity Solution Tree
 
 ## Description

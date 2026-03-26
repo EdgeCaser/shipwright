@@ -1,3 +1,12 @@
+---
+name: api-product-design
+category: technical
+tags: [API, developer-experience, endpoint-design, versioning, authentication, SDK]
+inputs: [developer persona, API use cases, technical constraints]
+outputs: [API product spec, endpoint design document, DX documentation plan]
+pairs_with: [technical-spec, prd-development, epic-breakdown]
+---
+
 # API Product Design
 
 ## Description

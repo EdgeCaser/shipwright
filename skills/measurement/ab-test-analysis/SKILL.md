@@ -1,3 +1,12 @@
+---
+name: ab-test-analysis
+category: measurement
+tags: [experimentation, statistical-significance, hypothesis-testing, metrics, ship-decision, segmentation]
+inputs: [experiment results data, hypothesis and test design, guardrail metric thresholds]
+outputs: [experiment analysis report, ship/no-ship recommendation, learnings summary]
+pairs_with: [metrics-dashboard, monetization-experiments, okr-authoring]
+---
+
 # A/B Test Analysis
 
 ## Description

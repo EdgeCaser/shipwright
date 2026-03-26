@@ -4,13 +4,22 @@
 [![GitHub forks](https://img.shields.io/github/forks/EdgeCaser/shipwright)](https://github.com/EdgeCaser/shipwright/network/members)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**42 PM skills, 6 agents, 15 workflows, and an orchestrator for Claude Code.**
+**PM frameworks for AI coding agents. Write PRDs, run discovery cycles, plan launches, build pricing strategies, and facilitate strategy sessions — all from your terminal.**
 
 I got tired of re-explaining product context to AI assistants every session, and I got tired of writing the same PRDs and sprint plans from scratch. Shipwright is what came out of that frustration: a collection of PM frameworks encoded as Claude Code skills, plus agents that know how to use them together.
 
 It's not a prompt library. Each skill carries real framework knowledge (Teresa Torres, Marty Cagan, April Dunford, etc.) and produces structured artifacts you can actually hand to your team.
 
-The skills are plain markdown, so they work with Claude Code, Cursor, Codex, and any other AI coding agent that reads skill files. See the [cross-tool install guide](docs/installing-in-other-tools.md) for setup instructions.
+The skills are plain markdown files that work across multiple AI coding tools. See the [cross-tool install guide](docs/installing-in-other-tools.md) for setup instructions.
+
+### Tool Compatibility
+
+| Feature | Claude Code | Cursor | Codex CLI | Gemini CLI | OpenCode | Kiro |
+|---------|:-----------:|:------:|:---------:|:----------:|:--------:|:----:|
+| Skills (SKILL.md files) | Confirmed | Confirmed | Confirmed | Confirmed | Confirmed | Confirmed |
+| Commands (/workflows) | Confirmed | — | — | — | — | — |
+| Agents (@specialists) | Confirmed | — | — | — | — | — |
+| Orchestrator (/start) | Confirmed | — | — | — | — | — |
 
 ---
 
@@ -356,7 +365,7 @@ For a fuller explanation of what workflows are, how to run them, and how to pick
 
 **Fill in CLAUDE.md first.** Every agent reads it before doing anything. The more context you put in (personas, metrics, priorities, glossary), the less you repeat yourself. When your strategy changes, update it, and every future session picks up the new context automatically.
 
-**Don't try to use all 42 skills at once.** Pick the thing you do every week that feels like a grind (sprint plans, feedback triage, stakeholder updates) and start there. Get comfortable, then expand.
+**Don't try to use everything at once.** Pick the thing you do every week that feels like a grind (sprint plans, feedback triage, stakeholder updates) and start there. Get comfortable, then expand.
 
 **Run agents in parallel.** The orchestrator does this automatically when steps don't depend on each other, but you can also do it manually:
 
@@ -399,8 +408,9 @@ The skills draw on established PM thinking:
 PRs welcome. If you've got a PM skill that works well in your workflow, open a PR with:
 
 1. A new skill directory under the appropriate category
-2. A `SKILL.md` following the existing format (Description, When to Use, Framework, Output Format, Common Mistakes)
-3. An update to this README's skill table
+2. A `SKILL.md` with YAML frontmatter (name, category, tags, inputs, outputs, pairs_with) and the standard body sections (Description, When to Use, Framework, Output Format, Common Mistakes)
+3. An update to `manifest.json` and this README's skill table
+4. A passing `scripts/validate.sh` run
 
 ---
 

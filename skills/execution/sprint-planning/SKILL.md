@@ -1,3 +1,12 @@
+---
+name: sprint-planning
+category: execution
+tags: [scrum, sprint-goal, capacity-planning, dependency-risk, story-selection]
+inputs: [backlog of candidate stories, team availability and capacity, sprint goal or product outcome]
+outputs: [sprint plan with goal and committed scope, capacity allocation breakdown, dependency and risk register]
+pairs_with: [epic-breakdown, user-story-writing, prioritization-advisor]
+---
+
 # Sprint Planning Support
 
 ## Description

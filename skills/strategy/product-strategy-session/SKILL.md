@@ -1,3 +1,12 @@
+---
+name: product-strategy-session
+category: strategy
+tags: [product-vision, strategic-bets, marty-cagan, kill-criteria, team-alignment, strategy-workshop]
+inputs: [product area and current state, market and customer context, team goals or OKRs]
+outputs: [product strategy document, strategic bets with theses, success criteria and review cadence]
+pairs_with: [swot-analysis, roadmap-planning, pre-mortem]
+---
+
 # Product Strategy Session
 
 ## Description

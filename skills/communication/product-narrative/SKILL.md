@@ -1,3 +1,12 @@
+---
+name: product-narrative
+category: communication
+tags: [narrative, memo, six-pager, persuasion, strategy, counterarguments]
+inputs: [product thesis, supporting evidence, counterarguments]
+outputs: [product narrative memo, recommendation with kill criteria, appendix materials]
+pairs_with: [executive-briefing, decision-log, stakeholder-mapping]
+---
+
 # Product Narrative / Memo
 
 ## Description

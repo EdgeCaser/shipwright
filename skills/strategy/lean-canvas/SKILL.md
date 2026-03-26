@@ -1,3 +1,12 @@
+---
+name: lean-canvas
+category: strategy
+tags: [lean-startup, business-model, problem-solution-fit, one-page-canvas, early-stage, ash-maurya]
+inputs: [product or feature idea, target customer segment, known problems or pain points]
+outputs: [one-page lean canvas, riskiest assumptions list, experiment suggestions]
+pairs_with: [market-sizing, pre-mortem, jobs-to-be-done]
+---
+
 # Lean Canvas / Business Model
 
 ## Description

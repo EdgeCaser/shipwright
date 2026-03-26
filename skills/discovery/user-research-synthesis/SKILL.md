@@ -1,3 +1,12 @@
+---
+name: user-research-synthesis
+category: discovery
+tags: [affinity-mapping, insight-cards, qualitative-analysis, research-readout, evidence-based]
+inputs: [raw interview notes or survey responses, participant metadata, research objective]
+outputs: [themed insight cards, research summary with findings, atomic notes register]
+pairs_with: [discovery-interview-prep, opportunity-solution-tree, jobs-to-be-done]
+---
+
 # User Research Synthesis
 
 ## Description

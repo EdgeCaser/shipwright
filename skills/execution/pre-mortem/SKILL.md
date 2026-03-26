@@ -1,3 +1,12 @@
+---
+name: pre-mortem
+category: execution
+tags: [risk-identification, failure-modes, prospective-hindsight, kill-criteria, mitigation-planning]
+inputs: [initiative name and description, definition of failure, launch timeline]
+outputs: [pre-mortem report with failure modes, risk assessment matrix, mitigation plan with kill criteria]
+pairs_with: [product-strategy-session, prd-development, lean-canvas]
+---
+
 # Pre-Mortem Analysis
 
 ## Description

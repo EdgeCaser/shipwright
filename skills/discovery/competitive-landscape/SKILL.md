@@ -1,3 +1,12 @@
+---
+name: competitive-landscape
+category: discovery
+tags: [competitive-analysis, market-intelligence, positioning, feature-comparison, sales-enablement]
+inputs: [product domain or market category, list of known competitors, target buyer persona]
+outputs: [competitive intelligence report, feature comparison matrix, strategic implications summary]
+pairs_with: [positioning-statement, jobs-to-be-done, competitive-battlecard]
+---
+
 # Competitive Landscape Analysis
 
 ## Description

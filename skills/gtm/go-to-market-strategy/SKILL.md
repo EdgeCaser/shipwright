@@ -1,3 +1,12 @@
+---
+name: go-to-market-strategy
+category: gtm
+tags: [gtm-plan, beachhead-segment, icp, messaging-framework, launch-planning, channel-strategy]
+inputs: [product or feature to launch, target market and buyer persona, competitive positioning]
+outputs: [GTM plan with beachhead and ICP, messaging framework and channel strategy, launch timeline with success metrics]
+pairs_with: [positioning-statement, market-sizing, competitive-battlecard]
+---
+
 # Go-to-Market Strategy
 
 ## Description

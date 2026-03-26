@@ -1,3 +1,12 @@
+---
+name: meeting-notes
+category: communication
+tags: [meeting-notes, action-items, decisions, transcript-processing, follow-up, accountability]
+inputs: [raw meeting notes or transcript, attendee list, previous action items]
+outputs: [structured meeting summary, action item list, decision log entries]
+pairs_with: [decision-log, stakeholder-communication, retrospective-facilitator]
+---
+
 # Meeting Notes & Action Items
 
 ## Description

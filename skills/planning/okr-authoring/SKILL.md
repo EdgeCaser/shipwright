@@ -1,3 +1,12 @@
+---
+name: okr-authoring
+category: planning
+tags: [OKRs, objectives, key-results, alignment, goal-setting, quarterly-planning]
+inputs: [company-level OKRs, team context, current baselines]
+outputs: [OKR document, alignment matrix, anti-pattern audit]
+pairs_with: [metrics-dashboard, stakeholder-communication, executive-briefing]
+---
+
 # OKR Authoring & Alignment
 
 ## Description

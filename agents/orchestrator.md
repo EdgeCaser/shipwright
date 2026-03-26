@@ -131,7 +131,7 @@ Read the full skill map from `/skills-map.md` for detailed routing logic. Here's
 | Plan a sprint | `/sprint` | execution-driver | sprint-planning, user-story-writing |
 | Do product strategy | `/strategy` | strategy-planner | product-strategy-session, pre-mortem |
 | Research the market | — | discovery-researcher | competitive-landscape, market-sizing |
-| Understand customers | `/customer-review` | customer-intelligence | feedback-triage, journey-mapping, churn-analysis |
+| Understand customers | `/customer-review` | customer-intelligence | feedback-triage, customer-journey-mapping, churn-analysis |
 | Plan a launch | `/plan-launch` | strategy-planner + execution-driver | go-to-market-strategy, competitive-battlecard |
 | Set pricing | `/pricing` | strategy-planner | pricing-strategy, monetization-experiments |
 | Hand off to engineering | `/tech-handoff` | execution-driver | technical-spec, design-review, epic-breakdown |

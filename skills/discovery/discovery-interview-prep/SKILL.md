@@ -1,3 +1,12 @@
+---
+name: discovery-interview-prep
+category: discovery
+tags: [customer-discovery, interviews, mom-test, screener, qualitative-research]
+inputs: [target persona or segment, discovery objective, assumptions to test]
+outputs: [interview guide, participant screener, debrief template]
+pairs_with: [user-research-synthesis, jobs-to-be-done, opportunity-solution-tree]
+---
+
 # Discovery Interview Prep
 
 ## Description

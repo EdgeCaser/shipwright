@@ -1,3 +1,12 @@
+---
+name: jobs-to-be-done
+category: discovery
+tags: [jtbd, customer-needs, outcome-driven-innovation, opportunity-scoring, job-mapping]
+inputs: [product domain or context, target customer segment, research data or interviews]
+outputs: [job statements and job map, outcome statements with opportunity scores, underserved opportunity recommendations]
+pairs_with: [discovery-interview-prep, opportunity-solution-tree, user-story-writing]
+---
+
 # Jobs-to-Be-Done Analysis
 
 ## Description

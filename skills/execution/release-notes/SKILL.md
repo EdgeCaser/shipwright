@@ -1,3 +1,12 @@
+---
+name: release-notes
+category: execution
+tags: [changelog, customer-communication, release-management, multi-audience, content-adaptation]
+inputs: [merged PRs or completed tickets, release version and date, feature descriptions and bug fixes]
+outputs: [customer-facing release notes, internal release notes by audience, channel-adapted variants]
+pairs_with: [go-to-market-strategy, sprint-planning, competitive-battlecard]
+---
+
 # Release Notes Generator
 
 ## Description

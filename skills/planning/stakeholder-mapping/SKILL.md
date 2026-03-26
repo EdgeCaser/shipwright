@@ -1,3 +1,12 @@
+---
+name: stakeholder-mapping
+category: planning
+tags: [stakeholders, power-interest-grid, alignment, communication-plan, influence, engagement]
+inputs: [initiative description, stakeholder list, organizational context]
+outputs: [stakeholder map, communication plan, alignment tracking sheet]
+pairs_with: [decision-log, executive-briefing, stakeholder-communication]
+---
+
 # Stakeholder Mapping (Power × Interest)
 
 ## Description

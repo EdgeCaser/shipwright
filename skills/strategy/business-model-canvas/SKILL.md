@@ -1,3 +1,12 @@
+---
+name: business-model-canvas
+category: strategy
+tags: [business-model, nine-building-blocks, value-proposition, revenue-streams, strategic-review]
+inputs: [product or business unit scope, current business model details, market and customer context]
+outputs: [completed business model canvas, key dependencies analysis, stress test of weakest links]
+pairs_with: [lean-canvas, competitive-landscape, product-strategy-session]
+---
+
 # Business Model Canvas
 
 ## Description

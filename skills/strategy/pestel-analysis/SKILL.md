@@ -1,3 +1,12 @@
+---
+name: pestel-analysis
+category: strategy
+tags: [macro-environment, regulatory-risk, political-economic-social, strategic-planning, risk-assessment]
+inputs: [product or business scope, target market or geography, industry context]
+outputs: [PESTEL dimension analysis, priority matrix, monitoring plan]
+pairs_with: [swot-analysis, product-strategy-session, competitive-landscape]
+---
+
 # PESTEL Analysis
 
 ## Description

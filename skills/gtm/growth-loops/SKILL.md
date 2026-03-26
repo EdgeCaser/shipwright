@@ -1,3 +1,12 @@
+---
+name: growth-loops
+category: gtm
+tags: [growth-strategy, acquisition-loops, engagement-loops, monetization-loops, compounding-growth, reforge]
+inputs: [current product growth data, existing acquisition and retention channels, growth goals or plateau diagnosis]
+outputs: [growth loop inventory and evaluation, intervention priorities ranked by leverage, new loop proposals with tests]
+pairs_with: [go-to-market-strategy, product-strategy-session, market-sizing]
+---
+
 # Growth Loops Identification
 
 ## Description

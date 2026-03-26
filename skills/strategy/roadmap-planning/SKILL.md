@@ -1,3 +1,12 @@
+---
+name: roadmap-planning
+category: strategy
+tags: [now-next-later, outcome-based-roadmap, rice-scoring, stakeholder-communication, quarterly-planning]
+inputs: [list of initiatives or outcomes, strategic bets or goals, team capacity and constraints]
+outputs: [now/next/later roadmap, RICE-scored prioritization table, dependency map]
+pairs_with: [prioritization-advisor, product-strategy-session, epic-breakdown]
+---
+
 # Roadmap Planning
 
 ## Description

@@ -1,3 +1,12 @@
+---
+name: metrics-dashboard
+category: measurement
+tags: [north-star-metric, dashboard, KPIs, guardrails, data-architecture, alerting]
+inputs: [product strategy context, current instrumentation, team structure]
+outputs: [metrics architecture document, dashboard specification, alert rules]
+pairs_with: [okr-authoring, ab-test-analysis, pricing-strategy]
+---
+
 # Metrics Dashboard Design
 
 ## Description

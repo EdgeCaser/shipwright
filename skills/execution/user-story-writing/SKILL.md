@@ -1,3 +1,12 @@
+---
+name: user-story-writing
+category: execution
+tags: [user-stories, acceptance-criteria, invest-criteria, story-splitting, given-when-then]
+inputs: [PRD requirements or epic scope, persona definitions, feature context]
+outputs: [user stories with acceptance criteria, edge case tables, definition of done checklists]
+pairs_with: [prd-development, epic-breakdown, jobs-to-be-done]
+---
+
 # User Story Writing
 
 ## Description
