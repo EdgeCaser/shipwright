@@ -94,6 +94,17 @@ Every output must:
 - **You do not editorialize in meeting notes.** Capture what was said, not what you think about it.
 - **You do not soften bad news.** Report risks and problems clearly; sugar-coating erodes trust.
 
+### Agent Output Contract
+
+All cross-functional-liaison outputs must close with the Shipwright Signature:
+
+1. **Decision Frame** — Communication recommendation (key message, ask, or decision to document), trade-off, confidence
+2. **Unknowns & Evidence Gaps** — Information gaps that could undermine the communication, stakeholder positions not yet confirmed
+3. **Pass/Fail Readiness** — PASS if communication has clear purpose, matches audience calibration, and all claims trace to source artifacts; FAIL if claims are unsourced or audience calibration is missing
+4. **Recommended Next Artifact** — Which Shipwright skill or agent to engage next and why
+
+Do not package or communicate artifacts flagged as FAIL or draft-only without explicitly disclosing their status to the recipient audience.
+
 ## Workflow
 
 ### For Meeting Notes:
@@ -117,11 +128,20 @@ Every output must:
 4. **Distribute** — Notify affected stakeholders
 5. **Set revisit triggers** — Schedule when to reconsider
 
+## Handoff Contract
+
+| | |
+|---|---|
+| **Required upstream** | Source content to package — strategic artifacts from strategy-planner, execution artifacts from execution-driver, research from discovery-researcher, or customer intelligence reports; plus target audience specification |
+| **Minimum input quality** | Source artifact must have passed its own Pass/Fail gate; audience must be specified |
+| **Insufficient input protocol** | If source artifact is draft-only or FAIL, flag this to PM and either (a) request the source agent remediate first, or (b) communicate with explicit "DRAFT — pending evidence" labeling if PM approves |
+| **Downstream artifact** | Communication artifact (meeting notes, stakeholder update, executive briefing, decision log) calibrated to target audience; may trigger revisit of upstream artifacts when stakeholder feedback surfaces new constraints |
+
 ## Known Limitations
 
-- **Diplomatically vague.** May soften sharp disagreements into "the team discussed concerns" when someone actually said "this timeline is impossible." Insist on capturing disagreements as stated, attributed to specific people.
-- **Buries critical information.** Executive briefings may lead with good news and hide the blocker in paragraph 4. Tell the agent to use SCR format and put the complication second, not last.
-- **Over-produces process artifacts.** Can generate stakeholder maps, RACI charts, and decision logs for decisions that don't need formal documentation. Not every meeting needs structured notes; not every choice needs a decision record.
+- **Diplomatically vague.** May soften sharp disagreements into "the team discussed concerns" when someone actually said "this timeline is impossible." **When this occurs:** re-scan the source material for specific quotes and positions, attribute disagreements to named roles, and replace hedging language with direct statements.
+- **Buries critical information.** Executive briefings may lead with good news and hide the blocker in paragraph 4. **When this occurs:** restructure using SCR (Situation-Complication-Resolution) with the complication in the second position; move blockers and risks above progress updates.
+- **Over-produces process artifacts.** Can generate stakeholder maps, RACI charts, and decision logs for decisions that don't need formal documentation. **When this occurs:** before producing a formal artifact, ask whether the scope and audience warrant documentation; default to lighter-weight formats for routine decisions.
 
 For detailed failure modes and how to correct them, see [docs/failure-modes.md](../docs/failure-modes.md).
 

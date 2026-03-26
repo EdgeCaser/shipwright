@@ -121,30 +121,14 @@ When spawning a specialist agent, provide it with:
 
 ## Skill Map — Need-to-Skill Routing
 
-Read the full skill map from `/skills-map.md` for detailed routing logic. Here's the quick reference:
+**`manifest.json` is the single source of truth for command → agent → skill routing.** Read the manifest's `routing` object at dispatch time. Do not duplicate or maintain routing tables here.
 
-### By PM Activity → Recommended Path
+### How to Route
 
-| "I need to..." | Workflow | Primary Agent | Key Skills |
-|---|---|---|---|
-| Write a PRD | `/write-prd` | execution-driver | prd-development, user-story-writing |
-| Plan a sprint | `/sprint` | execution-driver | sprint-planning, user-story-writing |
-| Do product strategy | `/strategy` | strategy-planner | product-strategy-session, pre-mortem |
-| Research the market | — | discovery-researcher | competitive-landscape, market-sizing |
-| Understand customers | `/customer-review` | customer-intelligence | feedback-triage, customer-journey-mapping, churn-analysis |
-| Plan a launch | `/plan-launch` | strategy-planner + execution-driver | go-to-market-strategy, competitive-battlecard |
-| Set pricing | `/pricing` | strategy-planner | pricing-strategy, monetization-experiments |
-| Hand off to engineering | `/tech-handoff` | execution-driver | technical-spec, design-review, epic-breakdown |
-| Write OKRs | — | strategy-planner | okr-authoring |
-| Prepare for a board meeting | — | cross-functional-liaison + discovery-researcher | executive-briefing, metrics-dashboard, competitive-landscape |
-| Run a retro | — | execution-driver | retrospective-facilitator |
-| Analyze an experiment | — | execution-driver | ab-test-analysis |
-| Write stakeholder update | — | cross-functional-liaison | stakeholder-communication |
-| Make a big product decision | — | strategy-planner + cross-functional-liaison | product-narrative, decision-log |
-| Prepare for user interviews | — | discovery-researcher | discovery-interview-prep |
-| Synthesize research | — | discovery-researcher | user-research-synthesis, jobs-to-be-done |
-| Map stakeholders | — | cross-functional-liaison | stakeholder-mapping |
-| Design an API | — | strategy-planner + execution-driver | api-product-design, technical-spec |
+1. **Read `manifest.json`** — Check the `routing` object for the user's need
+2. **Match by intent** — Map the user's plain-language request to the closest command key
+3. **Resolve agent + skills** — Use the manifest entry to determine which agent and skills to dispatch
+4. **Fall back to capabilities** — If no command matches, read agent descriptions and route by capability fit
 
 ### By Complexity → Recommended Approach
 
@@ -155,34 +139,14 @@ Read the full skill map from `/skills-map.md` for detailed routing logic. Here's
 | **Complex task** (half-day+) | Multi-agent orchestration | "Prepare for quarterly planning" → discovery + strategy + execution |
 | **Ongoing** | Recurring agent dispatch | "Monthly customer intelligence" → customer-intelligence agent |
 
-### Multi-Step Scenarios
+### Multi-Step Orchestration
 
-For common multi-step scenarios, here are the recommended agent sequences:
+For complex requests requiring multiple agents, compose a sequence by reading each agent's handoff contract. Chain agents so that each step's downstream artifact satisfies the next step's required upstream input. Present the full sequence to the user for approval before dispatching.
 
-**"I'm starting a new product/feature from scratch"**
-1. @discovery-researcher — Market sizing, competitive landscape, user research synthesis
-2. @strategy-planner — Product strategy, positioning, lean canvas
-3. @strategy-planner — Roadmap with prioritization
-4. @execution-driver — PRD, tech spec, epic breakdown
-5. @cross-functional-liaison — Stakeholder communication, decision log
-
-**"We're preparing for quarterly planning"**
-1. @customer-intelligence — Feedback triage, churn analysis (what customers are telling us)
-2. @discovery-researcher — Competitive landscape update, market trends
-3. @strategy-planner — OKR authoring, roadmap planning, prioritization
-4. @cross-functional-liaison — Executive briefing, stakeholder updates
-
-**"I need to figure out pricing"**
-1. @discovery-researcher — Competitive pricing landscape, market sizing
-2. @strategy-planner — Pricing strategy, packaging design
-3. @strategy-planner — Monetization experiment design
-4. @cross-functional-liaison — Executive briefing for pricing approval
-
-**"We're launching next month"**
-1. @strategy-planner — GTM strategy, positioning, competitive battlecard
-2. @execution-driver — Release notes, sprint planning for launch items
-3. @cross-functional-liaison — Stakeholder updates, launch communication plan
-4. @customer-intelligence — Set up post-launch feedback monitoring
+**Do not maintain hardcoded scenario lists.** Instead, derive sequences from:
+1. The user's stated goal
+2. Each agent's handoff contract (required upstream, downstream artifact)
+3. The manifest's routing and skill assignments
 
 ## Operating Principles
 

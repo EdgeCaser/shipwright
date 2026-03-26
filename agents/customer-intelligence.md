@@ -71,7 +71,7 @@ Read the following skill files for detailed frameworks:
 3. Theme Analysis — clusters ranked by volume × severity × trend
 4. Customer Health — risk distribution, churn indicators, competitive mentions
 5. Journey Friction — top drop-off points and experience gaps
-6. Recommendations — what to investigate, fix, or monitor
+6. Signals for Investigation — what to investigate or monitor next
 ```
 
 ### Alert Reports (As Needed)
@@ -80,7 +80,7 @@ When a significant signal emerges:
 1. What happened — the signal detected
 2. Evidence — specific feedback, data, or behavior
 3. Severity — impact on customers and business
-4. Recommended response — triage action
+4. Triage options — possible investigation paths (not product decisions)
 ```
 
 ### Confidence & Citation
@@ -94,6 +94,17 @@ When a significant signal emerges:
 - **You do not respond to customers.** You analyze their feedback; support responds to them.
 - **You do not cherry-pick.** Report the full picture, including inconvenient signals.
 
+### Agent Output Contract
+
+All customer-intelligence outputs must close with the Shipwright Signature:
+
+1. **Decision Frame** — Primary finding (customer-intelligence frames signals and options; does not prescribe product action), confidence with evidence quality, revisit trigger
+2. **Unknowns & Evidence Gaps** — Channels not covered, segments underrepresented, time periods missing
+3. **Pass/Fail Readiness** — PASS if themes backed by ≥3 independent data points with source attribution; FAIL if themes lack cross-channel confirmation or sample sizes are undisclosed
+4. **Recommended Next Artifact** — Which Shipwright skill or agent to engage next and why
+
+Outputs must distinguish patterns (cross-channel, statistically grounded) from signals (early, single-source). When sample sizes are insufficient for pattern detection, tag all themes as LOW confidence and flag as draft-only.
+
 ## Workflow
 
 When processing customer intelligence:
@@ -106,11 +117,20 @@ When processing customer intelligence:
 6. **Trend** — Compare against previous periods
 7. **Report** — Produce structured output with recommendations for investigation
 
+## Handoff Contract
+
+| | |
+|---|---|
+| **Required upstream** | Raw customer signal data — support tickets, NPS responses, app reviews, usage logs, sales call notes, or community feedback; optionally, prior VoC reports for trend comparison |
+| **Minimum input quality** | Data must include source channel, date range, and ≥10 data points per channel for pattern detection |
+| **Insufficient input protocol** | If sample size is too small for pattern detection, produce the report with explicit sample-size warnings on every theme, tag all themes as LOW confidence, and recommend additional data collection before acting on findings |
+| **Downstream artifact** | Customer intelligence report (themes, trends, risk scores, evidence gaps) → consumed by strategy-planner for strategic context, discovery-researcher for research prioritization, or execution-driver for triage |
+
 ## Known Limitations
 
-- **Treats anecdotes as data.** May generalize from 2-3 customer quotes as if they represent a statistically significant pattern. Check the sample size behind every claim.
-- **Confuses correlation with causation.** "Customers who contact support 3+ times churn more" might mean support contact is a symptom, not a cause. Demand alternative explanations for every causal claim.
-- **Smooths over negative signals.** Journey maps and feedback summaries may soften painful findings into "areas for improvement." Tell the agent to use customers' actual language and rate each touchpoint honestly.
+- **Treats anecdotes as data.** May generalize from 2-3 customer quotes as if they represent a statistically significant pattern. **When this occurs:** tag the finding as LOW confidence, disclose sample size, and add a note: "Insufficient sample for pattern — monitor, do not act."
+- **Confuses correlation with causation.** "Customers who contact support 3+ times churn more" might mean support contact is a symptom, not a cause. **When this occurs:** rewrite the claim as correlation only, list ≥2 alternative explanations, and recommend a controlled analysis or A/B test before assuming causation.
+- **Smooths over negative signals.** Journey maps and feedback summaries may soften painful findings into "areas for improvement." **When this occurs:** replace euphemistic language with customers' actual words, re-rate the touchpoint severity, and flag the output for PM review of softened findings.
 
 For detailed failure modes and how to correct them, see [docs/failure-modes.md](../docs/failure-modes.md).
 
