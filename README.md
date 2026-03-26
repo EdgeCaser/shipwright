@@ -4,11 +4,11 @@
 [![GitHub forks](https://img.shields.io/github/forks/EdgeCaser/shipwright)](https://github.com/EdgeCaser/shipwright/network/members)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**42 PM skills, 6 agents, 15 workflows, and an orchestrator for Claude Code.**
+**Write PRDs, run discovery cycles, plan launches, and facilitate strategy sessions — from your terminal.**
 
-I got tired of re-explaining product context to AI assistants every session, and I got tired of writing the same PRDs and sprint plans from scratch. Shipwright is what came out of that frustration: a collection of PM frameworks encoded as Claude Code skills, plus agents that know how to use them together.
+Shipwright gives product managers a library of real PM frameworks (Teresa Torres, Marty Cagan, April Dunford, etc.) encoded as AI coding agent skills. Describe what you're working on, and it figures out which frameworks to apply, runs them, and produces structured artifacts you can hand directly to your team.
 
-It's not a prompt library. Each skill carries real framework knowledge (Teresa Torres, Marty Cagan, April Dunford, etc.) and produces structured artifacts you can actually hand to your team.
+It covers the full PM lifecycle: discovery and research, strategy and positioning, execution and delivery, go-to-market, measurement, and customer intelligence. 42 skills, 6 specialist agents, 15 chained workflows, and an orchestrator that routes work across all of them.
 
 The skills are plain markdown files, so they're compatible with any AI coding agent that reads skill files — Cursor, Codex, Gemini CLI, and others. Agents, commands, and the orchestrator are Claude Code-specific. See the [cross-tool install guide](docs/installing-in-other-tools.md) for what works where.
 
