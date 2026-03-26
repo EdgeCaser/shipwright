@@ -69,15 +69,22 @@ cp -r shipwright/commands/ your-project/.claude/commands/
 
 Using a different tool? See the [cross-tool install guide](docs/installing-in-other-tools.md).
 
-### 2) Add product context
+### 2) Add product context and go
 
 ```bash
 cp shipwright/examples/CLAUDE.md.example your-project/CLAUDE.md
+# Fill in your product name, personas, metrics, and priorities — even rough answers help
 ```
 
-### 3) Run a workflow
+Then open Claude Code in your project and run:
 
-Type `/start` and describe what you're working on. Or run one directly:
+```text
+/start I'm a PM at [company] working on [brief context]
+```
+
+That's it. The orchestrator reads your CLAUDE.md, picks up your context, and routes you to the right workflow. If you skip the CLAUDE.md, Shipwright still works — but outputs will be generic instead of tailored to your product.
+
+You can also run workflows directly:
 
 ```text
 /discover   /write-prd   /plan-launch   /strategy   /sprint   /okrs

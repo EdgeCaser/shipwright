@@ -107,6 +107,39 @@ The orchestrator (`/start`) sits above workflows and agents. It routes work to t
 
 **Location:** `agents/orchestrator.md` + `commands/start.md` + `skills-map.md`
 
+## Quality gate lifecycle
+
+Every skill execution passes through a gate check before the artifact is considered done. The orchestrator and workflows enforce this cycle automatically; standalone skill use requires manual gate checks.
+
+```mermaid
+stateDiagram-v2
+    [*] --> SkillExecution: Workflow dispatches skill
+
+    SkillExecution --> GateCheck: Artifact produced
+    GateCheck --> Passed: All gates pass
+    GateCheck --> Failed: Any gate fails
+
+    Passed --> Scoring: Run artifact rubric
+    Scoring --> Done: Artifact complete
+    Scoring --> Failed: Score below threshold
+
+    Failed --> DiagnoseFailure: Identify failed gate(s)
+    DiagnoseFailure --> ApplyPlaybook: Match to recovery playbook
+    ApplyPlaybook --> SkillExecution: Re-run skill with constraints
+
+    Failed --> Escalation: Same gate fails twice
+    Escalation --> RequestInput: Ask PM for missing data
+    RequestInput --> SkillExecution: Rebuild from scratch
+```
+
+**Gate check** runs the core and artifact-specific gates from [pass-fail.md](../evals/pass-fail.md). A single failed gate means the artifact is not done — no partial pass, no "good enough" override.
+
+**Recovery** is deterministic: each failed gate maps to a specific playbook in [recovery-playbooks.md](recovery-playbooks.md) with a trigger → action → expected correction pattern.
+
+**Escalation** fires when the same gate fails on re-run. At that point the system stops iterating on wording and asks the PM for the missing input data, then rebuilds from scratch.
+
+For the full list of failure patterns by agent, see [failure-modes.md](failure-modes.md).
+
 ## Composition rules
 
 ### Combining skills into a workflow
