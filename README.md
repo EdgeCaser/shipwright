@@ -113,6 +113,7 @@ shipwright/
 │   └── marketplace.json
 │
 ├── docs/
+│   ├── using-workflows.md               # What workflows are and how to use them
 │   ├── connecting-your-tools.md         # MCP setup guide for PMs
 │   └── installing-in-other-tools.md     # Setup for Cursor, Codex, Gemini, etc.
 │
@@ -328,6 +329,8 @@ Each agent has a narrow job. Research gathers evidence but doesn't recommend. St
 ---
 
 ## The 15 Workflows
+
+For a fuller explanation of what workflows are, how to run them, and how to pick the right one, see the [workflows guide](docs/using-workflows.md).
 
 | Command | Skills Chained | Output |
 |---|---|---|
