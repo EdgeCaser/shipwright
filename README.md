@@ -1,10 +1,16 @@
 # Shipwright
 
+[![GitHub stars](https://img.shields.io/github/stars/EdgeCaser/shipwright)](https://github.com/EdgeCaser/shipwright/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/EdgeCaser/shipwright)](https://github.com/EdgeCaser/shipwright/network/members)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 **40 PM skills, 6 agents, 9 workflows, and an orchestrator for Claude Code.**
 
 I got tired of re-explaining product context to AI assistants every session, and I got tired of writing the same PRDs and sprint plans from scratch. Shipwright is what came out of that frustration: a collection of PM frameworks encoded as Claude Code skills, plus agents that know how to use them together.
 
 It's not a prompt library. Each skill carries real framework knowledge (Teresa Torres, Marty Cagan, April Dunford, etc.) and produces structured artifacts you can actually hand to your team.
+
+The skills are plain markdown, so they work with Claude Code, Cursor, Codex, and any other AI coding agent that reads skill files.
 
 ---
 
@@ -82,20 +88,23 @@ shipwright/
 │       └── product-narrative/
 │
 ├── commands/                            # 9 chained workflows
-│   ├── start.md                         #   /start — launch the orchestrator
-│   ├── discover.md                      #   /discover — full discovery cycle
-│   ├── write-prd.md                     #   /write-prd — Working Backwards PRD
-│   ├── plan-launch.md                   #   /plan-launch — GTM launch plan
-│   ├── sprint.md                        #   /sprint — sprint planning
-│   ├── strategy.md                      #   /strategy — strategy workshop
-│   ├── pricing.md                       #   /pricing — pricing strategy
-│   ├── customer-review.md               #   /customer-review — VoC intelligence
-│   └── tech-handoff.md                  #   /tech-handoff — PM → engineering
+│   ├── start.md                         #   /start - launch the orchestrator
+│   ├── discover.md                      #   /discover - full discovery cycle
+│   ├── write-prd.md                     #   /write-prd - Working Backwards PRD
+│   ├── plan-launch.md                   #   /plan-launch - GTM launch plan
+│   ├── sprint.md                        #   /sprint - sprint planning
+│   ├── strategy.md                      #   /strategy - strategy workshop
+│   ├── pricing.md                       #   /pricing - pricing strategy
+│   ├── customer-review.md               #   /customer-review - VoC intelligence
+│   └── tech-handoff.md                  #   /tech-handoff - PM → engineering
 │
 ├── skills-map.md                        # Orchestrator routing reference
 │
 ├── examples/
-│   └── CLAUDE.md.example                # Product context template
+│   ├── CLAUDE.md.example                # Blank product context template
+│   ├── CLAUDE.md.b2b-saas              # Filled-in example: compliance SaaS
+│   ├── CLAUDE.md.consumer-app          # Filled-in example: fitness app
+│   └── CLAUDE.md.api-platform          # Filled-in example: payments API
 │
 ├── LICENSE                              # MIT
 └── README.md
@@ -125,7 +134,7 @@ cp -r shipwright/skills/execution/prd-development/ your-project/.claude/skills/p
 
 ```bash
 cp shipwright/examples/CLAUDE.md.example your-project/CLAUDE.md
-# Fill in your product details — this is what gives the skills real context
+# Fill in your product details. This is what gives the skills real context
 ```
 
 ### 4. Use it
@@ -133,15 +142,15 @@ cp shipwright/examples/CLAUDE.md.example your-project/CLAUDE.md
 Type `/start` to launch the orchestrator. It'll ask what you're working on, figure out which skills and agents to use, and build a plan. You don't need to memorize 40 skill names.
 
 ```
-/start             — Launch the orchestrator
-/discover          — Run a full discovery cycle
-/write-prd         — Generate a Working Backwards PRD
-/plan-launch       — Build a GTM launch plan
-/sprint            — Prepare a sprint plan
-/strategy          — Run a strategy session
-/pricing           — Build a pricing strategy
-/customer-review   — Customer intelligence review
-/tech-handoff      — PM → engineering handoff package
+/start             - Launch the orchestrator
+/discover          - Run a full discovery cycle
+/write-prd         - Generate a Working Backwards PRD
+/plan-launch       - Build a GTM launch plan
+/sprint            - Prepare a sprint plan
+/strategy          - Run a strategy session
+/pricing           - Build a pricing strategy
+/customer-review   - Customer intelligence review
+/tech-handoff      - PM → engineering handoff package
 ```
 
 ### 5. (Optional) Auto-start on session launch
@@ -163,12 +172,12 @@ Drop that in `.claude/settings.json`.
 You can also invoke agents directly for parallel work:
 
 ```
-@orchestrator            — Routes work to the right agent
-@discovery-researcher    — Research, competitive analysis, market sizing
-@strategy-planner        — Roadmaps, positioning, PRDs, prioritization
-@execution-driver        — Epics, stories, sprint plans, release notes
-@customer-intelligence   — Feedback triage, churn signals, VoC reports
-@cross-functional-liaison — Meeting notes, exec updates, decision logs
+@orchestrator             - Routes work to the right agent
+@discovery-researcher     - Research, competitive analysis, market sizing
+@strategy-planner         - Roadmaps, positioning, PRDs, prioritization
+@execution-driver         - Epics, stories, sprint plans, release notes
+@customer-intelligence    - Feedback triage, churn signals, VoC reports
+@cross-functional-liaison - Meeting notes, exec updates, decision logs
 ```
 
 ---
@@ -280,13 +289,13 @@ You can also invoke agents directly for parallel work:
 
 ### How the orchestrator works
 
-You describe what you need in plain language. The orchestrator asks a few clarifying questions (deliverable, audience, timeline), maps your request to the right skills and agents, then dispatches them. It never does the actual work itself — it just routes.
+You describe what you need in plain language. The orchestrator asks a few clarifying questions (deliverable, audience, timeline), maps your request to the right skills and agents, then dispatches them. It never does the actual work itself, it just routes.
 
 This means you can use one entry point (`/start`) for everything without learning what's under the hood.
 
 ### Why the agents are separated
 
-Each agent has a narrow job. Research gathers evidence but doesn't recommend. Strategy plans but doesn't break down tickets. Execution ships but doesn't set direction. This is deliberate — it keeps the PM (you) in the decision seat and prevents the kind of circular reasoning you get when one agent tries to do everything.
+Each agent has a narrow job. Research gathers evidence but doesn't recommend. Strategy plans but doesn't break down tickets. Execution ships but doesn't set direction. This is deliberate. It keeps the PM (you) in the decision seat and prevents the kind of circular reasoning you get when one agent tries to do everything.
 
 ---
 
@@ -308,9 +317,9 @@ Each agent has a narrow job. Research gathers evidence but doesn't recommend. St
 
 ## Getting the Most Out of It
 
-**Fill in CLAUDE.md first.** Every agent reads it before doing anything. The more context you put in (personas, metrics, priorities, glossary), the less you repeat yourself. When your strategy changes, update it — every future session picks up the new context automatically.
+**Fill in CLAUDE.md first.** Every agent reads it before doing anything. The more context you put in (personas, metrics, priorities, glossary), the less you repeat yourself. When your strategy changes, update it, and every future session picks up the new context automatically.
 
-**Don't try to use all 40 skills at once.** Pick the thing you do every week that feels like a grind — sprint plans, feedback triage, stakeholder updates — and start there. Get comfortable, then expand.
+**Don't try to use all 40 skills at once.** Pick the thing you do every week that feels like a grind (sprint plans, feedback triage, stakeholder updates) and start there. Get comfortable, then expand.
 
 **Run agents in parallel.** The orchestrator does this automatically when steps don't depend on each other, but you can also do it manually:
 
@@ -331,19 +340,19 @@ Each agent has a narrow job. Research gathers evidence but doesn't recommend. St
 
 The skills draw on established PM thinking:
 
-- Teresa Torres — *Continuous Discovery Habits*
-- Marty Cagan — *Inspired* and *Empowered*
-- April Dunford — *Obviously Awesome*
-- Geoffrey Moore — *Crossing the Chasm*
-- Rob Fitzpatrick — *The Mom Test*
-- Ash Maurya — *Running Lean*
-- John Doerr — *Measure What Matters*
-- Clayton Christensen / Tony Ulwick — Jobs-to-Be-Done
-- Gary Klein — Pre-Mortem / Prospective Hindsight
-- Barbara Minto — The Pyramid Principle
-- Sean Ellis — North Star Framework
-- Reforge — Growth Loops
-- Amazon — Working Backwards / 6-Pager Memos
+- Teresa Torres, *Continuous Discovery Habits*
+- Marty Cagan, *Inspired* and *Empowered*
+- April Dunford, *Obviously Awesome*
+- Geoffrey Moore, *Crossing the Chasm*
+- Rob Fitzpatrick, *The Mom Test*
+- Ash Maurya, *Running Lean*
+- John Doerr, *Measure What Matters*
+- Clayton Christensen / Tony Ulwick, Jobs-to-Be-Done
+- Gary Klein, Pre-Mortem / Prospective Hindsight
+- Barbara Minto, The Pyramid Principle
+- Sean Ellis, North Star Framework
+- Reforge, Growth Loops
+- Amazon, Working Backwards / 6-Pager Memos
 
 ---
 

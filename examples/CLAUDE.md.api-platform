@@ -1,0 +1,87 @@
+# CLAUDE.md - API Platform Example (Payments)
+
+> This is a filled-in example showing what CLAUDE.md looks like for a developer-facing API platform.
+> Copy the blank template from CLAUDE.md.example and adapt it to your product.
+
+## Shipwright Auto-Start
+
+When a new Claude Code session begins, run `/start` to launch the Shipwright orchestrator.
+
+## Product
+
+- **Name:** PayRoute
+- **Category:** Payment orchestration API for marketplaces and platforms
+- **Stage:** Growth (Series B, 3 years post-launch, 340 customers)
+- **Target users:** Engineering leads and heads of payments at marketplaces and platforms ($10M-$500M GMV) who need multi-PSP routing, split payments, and compliance tooling
+- **Core job-to-be-done:** Let platforms route payments across multiple processors, manage seller payouts, and handle compliance without building payment infrastructure from scratch
+
+## Key Metrics
+
+| Metric | Current Value | Target | Timeframe |
+|---|---|---|---|
+| North Star: Monthly payment volume processed | $2.1B | $4B | Q4 2026 |
+| API uptime | 99.97% | 99.99% | Q3 2026 |
+| Time to first live transaction (new customer) | 18 days | 7 days | Q3 2026 |
+| Net revenue retention | 132% | 140% | Q4 2026 |
+
+## Strategic Priorities (Current Quarter)
+
+1. **Smart routing:** Automatically route transactions to the processor with the highest approval rate for a given card type, geography, and amount. This is the top-requested feature from customers processing >$50M/month.
+2. **Developer experience overhaul:** Rewrite docs, add interactive API explorer, ship SDKs for Python and Go (currently only Node and Ruby). Median time-to-first-transaction is 18 days and it should be under a week.
+3. **SOC 2 Type II:** Complete audit. 40% of enterprise pipeline is gated on this.
+
+## What We're NOT Doing
+
+- Consumer payments. We're infrastructure for platforms, not a Stripe competitor for direct merchants.
+- Crypto/stablecoin payments. Regulatory complexity isn't worth it for our market segment yet.
+- Building our own acquiring capability. We orchestrate across existing PSPs.
+
+## Personas
+
+### Payments Lead Patricia
+- **Role:** Head of Payments or Payments Engineer. Owns PSP relationships, payment routing logic, and payout operations. Reports to VP Engineering or CTO.
+- **Goals:** Increase approval rates, reduce processing costs by routing intelligently, consolidate reporting across PSPs, stay PCI compliant without it consuming her team.
+- **Pain points:** Managing 3 PSPs with custom integrations each. No single view of transaction success rates across processors. Building retry and fallback logic in-house is fragile.
+- **How she evaluates tools:** Wants to see API docs before a sales call. Needs sandbox with realistic test data. Asks about latency percentiles, not averages. Checks status page history.
+
+### Platform CTO Tom
+- **Role:** CTO at a marketplace. Signs off on infrastructure decisions. Cares about payments as a business-critical dependency, not a feature he wants to build.
+- **Goals:** Stop his team from building and maintaining payment infrastructure. Reduce vendor lock-in to any single PSP.
+- **Pain points:** Current Stripe-only setup means no leverage on pricing and no fallback if Stripe has an outage. His team has spent 6 months building split payment logic that still has edge cases.
+
+## Competitors
+
+| Competitor | Type | Our Advantage | Their Advantage |
+|---|---|---|---|
+| Stripe Connect | Direct | Multi-PSP routing, lower lock-in, smart routing | Developer brand, ecosystem, single-vendor simplicity |
+| Spreedly | Direct | Better marketplace features (splits, payouts, compliance), simpler pricing | Wider PSP coverage, longer track record |
+| In-house builds | Indirect | Maintained by us, not by their payments team | Full control, no vendor dependency |
+
+## Conventions
+
+- **User stories:** "As a [persona], I want [action] so that [outcome]"
+- **PRD format:** Working Backwards, with a technical addendum for API contract changes
+- **Prioritization:** RICE scoring, with reach = number of customer accounts affected
+- **Roadmap style:** Now / Next / Later, shared publicly on docs site
+- **Sprint cadence:** 2-week sprints
+- **Definition of Done:** API changes deployed to sandbox, integration tests green, docs updated, changelog entry written, migration guide if breaking
+
+## Tools & Integrations
+
+- **Project management:** Linear
+- **Documentation:** GitBook (public docs) + Notion (internal)
+- **Analytics:** Datadog (infrastructure) + Metabase (business metrics on Postgres)
+- **Communication:** Slack
+- **Design:** Figma (internal tools and docs)
+- **API testing:** Postman collections maintained alongside code
+
+## Glossary
+
+| Term | Definition |
+|---|---|
+| PSP | Payment service provider (Stripe, Adyen, Braintree, etc.) |
+| GMV | Gross merchandise value, total transaction volume across a platform |
+| Smart routing | Automatically selecting the best PSP for a transaction based on approval probability |
+| Split payment | A single transaction divided across multiple recipients (platform + sellers) |
+| Payout | Disbursement of funds from the platform to individual sellers |
+| Sandbox | Test environment with simulated PSP responses for integration development |
