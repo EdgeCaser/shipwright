@@ -76,6 +76,7 @@ cp -r shipwright/skills/ your-project/.kiro/skills/
 | Agents (@discovery-researcher, etc.) | No | Yes |
 | Orchestrator (/start) | No | Yes |
 | Evaluation rubrics (evals/) | Yes | Yes |
+| Pass/fail quality gates | Yes | Yes |
 | MCP integrations | Varies by tool | Yes |
 
 ## Standalone mode (any tool)
@@ -125,6 +126,15 @@ Read evals/prd.md and score the PRD you just wrote. Be honest about weaknesses.
 ```
 
 The rubrics work in any tool. They don't depend on agents or commands.
+
+For binary quality gating:
+
+```
+Read evals/pass-fail.md and tell me PASS or FAIL for this artifact.
+If FAIL, list failed gates and exact fixes.
+```
+
+For consistent output signature, use [docs/output-standard.md](output-standard.md).
 
 ## Tips for non-Claude tools
 

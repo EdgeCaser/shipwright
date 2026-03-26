@@ -1,6 +1,6 @@
 # Failure Modes
 
-Shipwright produces structured artifacts, not guaranteed-correct ones. The frameworks improve output quality significantly (see [golden outputs](../examples/golden-outputs/)), but AI-generated PM artifacts fail in predictable ways. This document describes those failure modes so you can detect and correct them.
+Shipwright produces structured artifacts, not guaranteed-correct ones. The frameworks improve output quality significantly (see [golden outputs](../examples/golden-outputs/)), but AI-generated PM artifacts fail in predictable ways. This document describes those failure modes so you can detect them. For deterministic recovery steps, use [recovery playbooks](recovery-playbooks.md).
 
 ## Agent failure modes
 
@@ -104,4 +104,6 @@ Don't use SWOT here. This is a pricing decision — use the pricing strategy ski
 Score this artifact against the rubric in evals/prd.md. Where does it score below 7? Fix those sections.
 ```
 
-The agents are designed to respond to direct correction. They won't argue or insist on following the framework if you redirect them. You're the PM — the agents work for you, not the other way around.
+The agents are designed to respond to direct correction. They won't argue or insist on following the framework if you redirect them. You're the PM - the agents work for you, not the other way around.
+
+For deterministic repair paths, see [recovery playbooks](recovery-playbooks.md).

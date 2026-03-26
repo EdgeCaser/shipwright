@@ -257,6 +257,30 @@ Produce a Design Review Report with:
 3. **Synthesis** — consensus, tensions, blockers, recommendations, open questions
 4. **Overall Verdict** — go/no-go recommendation
 
+## Shipwright Signature (Required)
+
+The final output must include this signature structure:
+
+1. `## Context`
+2. `## Analysis`
+3. `## Decision Frame`
+4. `## Risks and Open Questions`
+5. `## Action Plan`
+
+Include this Decision Frame block exactly:
+
+```markdown
+## Decision Frame
+- **Recommendation:** [one clear decision]
+- **Trade-off:** [what we gain vs. what we give up]
+- **Confidence:** [High / Medium / Low] - [why]
+- **Owner:** [role or name]
+- **Decision Date:** [YYYY-MM-DD]
+- **Revisit Trigger:** [specific condition that would change this decision]
+```
+
+Design review outputs must clearly separate blockers vs recommendations and include owner/date for resolution actions.
+
 ## Common Mistakes to Avoid
 
 - **Skipping the Devil's Advocate** — This is the most valuable perspective; don't cut it for time

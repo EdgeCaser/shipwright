@@ -14,6 +14,21 @@ The skills are plain markdown files, so they're compatible with any AI coding ag
 
 > **Want to see the output before you install?** Check out the [golden output examples](examples/golden-outputs/) — side-by-side comparisons of what a generic AI produces vs. what Shipwright produces for the same prompt.
 
+## Why this beats raw AI
+
+Shipwright is not "better prompting." It is a quality system around prompting.
+
+| Dimension | Raw AI prompting | Shipwright |
+|---|---|---|
+| **Consistency** | Format shifts each run | Stable output signature via [output standard](docs/output-standard.md) |
+| **Decision quality** | Often descriptive, not decisive | Required `Decision Frame` with recommendation + trade-off + owner/date |
+| **Evidence discipline** | Easy to mix assumptions and facts | Sourced claims + explicit unknowns |
+| **Readiness gating** | "Looks good" is subjective | Binary [pass/fail gates](evals/pass-fail.md) before scoring |
+| **Recovery path** | Ad hoc rewrites | Deterministic [recovery playbooks](docs/recovery-playbooks.md) |
+| **Handoff quality** | Varies by prompt quality | Repeatable workflows with role constraints and checks |
+
+If you want proof, review the [golden outputs](examples/golden-outputs/) and run the same prompts yourself.
+
 ---
 
 ## What's Inside
@@ -119,10 +134,13 @@ shipwright/
 │   ├── connecting-your-tools.md         # MCP setup guide for PMs
 │   ├── installing-in-other-tools.md     # Setup for Cursor, Codex, Gemini, etc.
 │   ├── composition-model.md            # How skills, agents, workflows compose
-│   └── failure-modes.md                # Known failure modes and how to fix them
+│   ├── failure-modes.md                # Known failure modes and how to detect them
+│   ├── recovery-playbooks.md           # Deterministic repair flows for failed outputs
+│   └── output-standard.md              # Signature formatting and decision framing rules
 │
 ├── evals/                               # Output evaluation rubrics
 │   ├── README.md                        # How the eval system works
+│   ├── pass-fail.md                     # Binary release gates (pass or rewrite)
 │   ├── rubric.md                        # Universal 4-dimension rubric
 │   ├── prd.md                           # PRD-specific rubric + scored example
 │   ├── strategy.md                      # Strategy-specific rubric + scored example
@@ -431,7 +449,11 @@ Skills are the core value. Everything else — agents, workflows, orchestrator �
 
 **Evaluate your outputs.** After generating an artifact, ask the agent to score it against the [evaluation rubrics](evals/). This catches gaps before you share the document with stakeholders.
 
-**Watch for failure modes.** AI-generated PM artifacts fail in predictable ways — fabricated evidence, symmetrical analysis, diplomatic vagueness. See [failure modes](docs/failure-modes.md) for what to look for and how to fix it.
+**Gate quality before you ship.** Run [pass/fail gates](evals/pass-fail.md) first, then rubrics. If any required gate fails, rewrite instead of polishing.
+
+**Watch for failure modes.** AI-generated PM artifacts fail in predictable ways — fabricated evidence, symmetrical analysis, diplomatic vagueness. See [failure modes](docs/failure-modes.md) for detection and [recovery playbooks](docs/recovery-playbooks.md) for deterministic fixes.
+
+**Keep a recognizable signature.** Use the [output standard](docs/output-standard.md) to keep sectioning, tone, and decision framing consistent so outputs are unmistakably Shipwright.
 
 **Check your skills into git.** As your product evolves, your frameworks should too. What works at Series A looks different at growth stage.
 

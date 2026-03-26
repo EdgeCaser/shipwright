@@ -211,7 +211,7 @@ echo "Checking evals directory..."
 if [ -d "evals" ]; then
   pass "evals/ directory exists"
   
-  for eval_file in rubric prd strategy design-review; do
+  for eval_file in pass-fail rubric prd strategy design-review; do
     if [ -f "evals/${eval_file}.md" ]; then
       pass "Eval rubric exists: evals/${eval_file}.md"
     else
@@ -260,11 +260,29 @@ echo ""
 
 echo "Checking docs..."
 
-for doc_file in connecting-your-tools installing-in-other-tools using-workflows failure-modes composition-model; do
+for doc_file in connecting-your-tools installing-in-other-tools using-workflows failure-modes recovery-playbooks output-standard composition-model; do
   if [ -f "docs/${doc_file}.md" ]; then
     pass "Doc exists: docs/${doc_file}.md"
   else
     fail "Missing doc: docs/${doc_file}.md"
+  fi
+done
+
+echo ""
+
+# ─── 13. Output signature checks on core skills ─────────────────────────────────
+
+echo "Checking Shipwright signature sections in core skills..."
+
+for core_skill in \
+  "skills/execution/prd-development/SKILL.md" \
+  "skills/strategy/product-strategy-session/SKILL.md" \
+  "skills/technical/design-review/SKILL.md" \
+  "skills/measurement/ab-test-analysis/SKILL.md"; do
+  if grep -q '## Shipwright Signature (Required)' "$core_skill"; then
+    pass "Signature section present: $core_skill"
+  else
+    fail "Missing signature section in core skill: $core_skill"
   fi
 done
 

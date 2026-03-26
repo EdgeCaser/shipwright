@@ -29,6 +29,34 @@ Shipwright has four layers. Each layer builds on the one below it. Understanding
 └──────────────────────────────────────────────────┘
 ```
 
+## Core primitives
+
+This is the shortest mental model for advanced users:
+
+```text
+Workflow = graph(Skills)
+Agent = constrained executor
+Orchestrator = planner over graph
+```
+
+- **Workflow = graph(Skills):** A workflow is not just a list - it's a dependency graph of skill outputs feeding downstream steps.
+- **Agent = constrained executor:** Agents execute graph nodes within role boundaries and refusal constraints.
+- **Orchestrator = planner over graph:** The orchestrator chooses which graph to run, then schedules sequential vs parallel execution based on dependencies.
+
+```mermaid
+flowchart TD
+    userIntent[UserIntent] --> orchestrator[OrchestratorPlanner]
+    orchestrator --> workflowGraph[WorkflowSkillGraph]
+    workflowGraph --> skillNodeA[SkillNodeA]
+    workflowGraph --> skillNodeB[SkillNodeB]
+    skillNodeA --> agentExecA[AgentExecutorA]
+    skillNodeB --> agentExecB[AgentExecutorB]
+    agentExecA --> artifactA[ArtifactA]
+    agentExecB --> artifactB[ArtifactB]
+    artifactA --> decisionFrame[DecisionFrame]
+    artifactB --> decisionFrame
+```
+
 ### Skill — atomic capability
 
 A skill is a single markdown file that teaches the AI one PM framework and produces one type of artifact.

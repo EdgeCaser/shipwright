@@ -4,6 +4,8 @@
 
 A workflow is a command (like `/discover` or `/sprint`) that chains multiple skills together in sequence. Instead of running skills one at a time, a workflow walks you through a complete process from start to finish, with each step feeding into the next.
 
+If you want the technical model behind this, see [composition-model.md](composition-model.md): `Workflow = graph(Skills)`, `Agent = constrained executor`, `Orchestrator = planner over graph`.
+
 For example, the `/write-prd` workflow runs five steps in order:
 1. Write a press release (forces you to articulate the customer value)
 2. Draft an FAQ (surfaces hard questions early)
@@ -136,6 +138,8 @@ Workflows are conversational, not automated. They don't just dump a finished doc
 3. **Final output.** At the end, you get a complete document or package. Depending on the workflow, this might be a PRD, a sprint plan, a competitive analysis, or a metrics framework.
 
 4. **Iteration.** The output is a strong first draft, not a final version. Review it, push back on anything that doesn't feel right, and ask the agent to revise. The frameworks give the output structure; your judgment gives it accuracy.
+
+Before sharing externally, run [evals/pass-fail.md](../evals/pass-fail.md). If a gate fails, apply the matching fix from [recovery-playbooks.md](recovery-playbooks.md).
 
 ## How long workflows take
 

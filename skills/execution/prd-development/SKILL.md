@@ -170,6 +170,30 @@ Produce a complete PRD with all three phases:
 2. **FAQ** — customer and internal questions answered
 3. **Detailed Requirements** — full specification
 
+## Shipwright Signature (Required)
+
+The final output must include this signature structure so artifacts are recognizable and decision-ready:
+
+1. `## Context`
+2. `## Analysis`
+3. `## Decision Frame`
+4. `## Risks and Open Questions`
+5. `## Action Plan`
+
+Include this Decision Frame block exactly:
+
+```markdown
+## Decision Frame
+- **Recommendation:** [one clear decision]
+- **Trade-off:** [what we gain vs. what we give up]
+- **Confidence:** [High / Medium / Low] - [why]
+- **Owner:** [role or name]
+- **Decision Date:** [YYYY-MM-DD]
+- **Revisit Trigger:** [specific condition that would change this decision]
+```
+
+If owner/date/revisit trigger are missing, output is not ship-ready.
+
 ## Common Mistakes to Avoid
 
 - **Starting with requirements** — Always start with the press release to ground the work in customer value

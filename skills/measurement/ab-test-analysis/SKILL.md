@@ -148,6 +148,30 @@ Produce an Experiment Analysis Report with:
 5. **Decision** — ship/iterate/extend with rationale
 6. **Learnings** — institutional knowledge capture
 
+## Shipwright Signature (Required)
+
+The final output must include this signature structure:
+
+1. `## Context`
+2. `## Analysis`
+3. `## Decision Frame`
+4. `## Risks and Open Questions`
+5. `## Action Plan`
+
+Include this Decision Frame block exactly:
+
+```markdown
+## Decision Frame
+- **Recommendation:** [one clear decision]
+- **Trade-off:** [what we gain vs. what we give up]
+- **Confidence:** [High / Medium / Low] - [why]
+- **Owner:** [role or name]
+- **Decision Date:** [YYYY-MM-DD]
+- **Revisit Trigger:** [specific condition that would change this decision]
+```
+
+If guardrails degrade, recommendation must explicitly justify any "Ship" decision and include mitigation owners/dates.
+
 ## Common Mistakes to Avoid
 
 - **Peeking and stopping early** — Checking results daily and stopping when p < 0.05 inflates false positives

@@ -23,10 +23,20 @@ Use the rubrics to align your team on what "good" looks like. The scored example
 ### For continuous improvement
 Track scores across sessions. If your PRDs consistently score low on "evidence grounding," that's a signal to invest more in discovery before writing requirements — not a prompt engineering problem.
 
+## Enforcement first, scoring second
+
+Use [pass-fail gates](pass-fail.md) before any scoring rubric.
+
+1. Run pass/fail gates to determine if the artifact is acceptable or must be rewritten
+2. If it passes, run a scoring rubric to improve quality from good to excellent
+
+This prevents evals from becoming optional documentation.
+
 ## The rubrics
 
 | Rubric | Evaluates | Artifact-specific dimensions |
 |---|---|---|
+| [Pass/Fail gates](pass-fail.md) | Binary readiness check | Required structure, decision frame, evidence integrity, ownership |
 | [Universal rubric](rubric.md) | Any Shipwright artifact | Clarity, Completeness, Actionability, Correctness |
 | [PRD](prd.md) | PRDs from `/write-prd` | + Scope Discipline, Evidence Grounding |
 | [Strategy](strategy.md) | Strategy docs from `/strategy` | + Decision Courage, Falsifiability |
@@ -37,9 +47,9 @@ Track scores across sessions. If your PRDs consistently score low on "evidence g
 All dimensions use a 1-10 scale. The universal rubric defines anchor points at 3 (weak), 6 (adequate), and 9 (strong) for each dimension. Artifact-specific rubrics add their own anchors.
 
 A practical quality bar:
-- **7+ on all dimensions:** Ship-ready. Suitable for sharing with stakeholders.
-- **5-6 on any dimension:** Needs revision. Identify the weak dimension and iterate.
-- **Below 5 on any dimension:** Rework. The artifact has a structural gap, not just polish issues.
+- **Fail any pass/fail gate:** Rewrite required, do not ship
+- **Pass all gates + 7+ on all rubric dimensions:** Ship-ready
+- **Pass all gates + any rubric dimension below 7:** Iterate before broad sharing
 
 ## Adding rubrics
 
