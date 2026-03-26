@@ -6,13 +6,11 @@
 
 **Write PRDs, run discovery cycles, plan launches, and facilitate strategy sessions — from your terminal.**
 
-Shipwright gives product managers a library of real PM frameworks (Teresa Torres, Marty Cagan, April Dunford, etc.) encoded as AI coding agent skills. Describe what you're working on, and it figures out which frameworks to apply, runs them, and produces structured artifacts you can hand directly to your team.
+Shipwright gives PMs a real operating system for product work: framework-backed skills, orchestrated workflows, and quality gates that produce artifacts teams can execute.
 
-It covers the full PM lifecycle: discovery and research, strategy and positioning, execution and delivery, go-to-market, measurement, and customer intelligence. 42 skills, 6 specialist agents, 15 chained workflows, and an orchestrator that routes work across all of them.
+Under the hood, Shipwright includes 42 skills, 6 specialist agents, and 15 chained workflows. The counts matter less than the contract: evidence-first outputs, explicit decisions, pass/fail gating, and deterministic recovery.
 
-The skills are plain markdown files, so they're compatible with any AI coding agent that reads skill files — Cursor, Codex, Gemini CLI, and others. Agents, commands, and the orchestrator are Claude Code-specific. See the [cross-tool install guide](docs/installing-in-other-tools.md) for what works where.
-
-> **Want to see the output before you install?** Check out the [golden output examples](examples/golden-outputs/) — side-by-side comparisons of what a generic AI produces vs. what Shipwright produces for the same prompt.
+The skills are plain markdown files, so they're compatible with any AI coding tool that reads skill files (Cursor, Codex, Gemini CLI, and others). Agents, commands, and the orchestrator are Claude Code-specific.
 
 ## Why this beats raw AI
 
@@ -27,145 +25,33 @@ Shipwright is not "better prompting." It is a quality system around prompting.
 | **Recovery path** | Ad hoc rewrites | Deterministic [recovery playbooks](docs/recovery-playbooks.md) |
 | **Handoff quality** | Varies by prompt quality | Repeatable workflows with role constraints and checks |
 
-If you want proof, review the [golden outputs](examples/golden-outputs/) and run the same prompts yourself.
+## Start Here: 3 Paths
 
----
+Most PM work falls into one of three patterns. If you're unsure where to begin, pick the path that matches this week's job.
 
-## What's Inside
-
+### Path 1: New Feature
 ```
-shipwright/
-├── agents/                              # 6 PM agents
-│   ├── orchestrator.md                  #   Routes work to the right specialist
-│   ├── discovery-researcher.md          #   Research & synthesis
-│   ├── strategy-planner.md              #   Strategic artifacts & trade-offs
-│   ├── execution-driver.md              #   Work breakdown & delivery
-│   ├── customer-intelligence.md         #   Customer signal synthesis
-│   └── cross-functional-liaison.md      #   Coordination & communication
-│
-├── skills/                              # 42 skills organized by lifecycle phase
-│   ├── discovery/                       #   Research & customer understanding
-│   │   ├── opportunity-solution-tree/
-│   │   ├── discovery-interview-prep/
-│   │   ├── user-research-synthesis/
-│   │   ├── jobs-to-be-done/
-│   │   ├── competitive-landscape/
-│   │   └── market-sizing/
-│   │
-│   ├── strategy/                        #   Vision, positioning & planning
-│   │   ├── product-strategy-session/
-│   │   ├── positioning-statement/
-│   │   ├── pestel-analysis/
-│   │   ├── lean-canvas/
-│   │   ├── business-model-canvas/
-│   │   ├── swot-analysis/
-│   │   ├── roadmap-planning/
-│   │   └── prioritization-advisor/
-│   │
-│   ├── execution/                       #   PRDs, stories & sprint ops
-│   │   ├── prd-development/
-│   │   ├── user-story-writing/
-│   │   ├── epic-breakdown/
-│   │   ├── sprint-planning/
-│   │   ├── pre-mortem/
-│   │   └── release-notes/
-│   │
-│   ├── gtm/                             #   Go-to-market & growth
-│   │   ├── go-to-market-strategy/
-│   │   ├── competitive-battlecard/
-│   │   └── growth-loops/
-│   │
-│   ├── measurement/                     #   Metrics, experiments & retros
-│   │   ├── metrics-dashboard/
-│   │   ├── ab-test-analysis/
-│   │   ├── retrospective-facilitator/
-│   │   └── stakeholder-communication/
-│   │
-│   ├── customer-intelligence/           #   Customer signals & health
-│   │   ├── feedback-triage/
-│   │   ├── customer-journey-mapping/
-│   │   ├── churn-analysis/
-│   │   └── customer-advisory-board/
-│   │
-│   ├── technical/                       #   Technical PM skills
-│   │   ├── technical-spec/
-│   │   ├── design-review/
-│   │   └── api-product-design/
-│   │
-│   ├── planning/                        #   Alignment & decision-making
-│   │   ├── okr-authoring/
-│   │   ├── stakeholder-mapping/
-│   │   └── decision-log/
-│   │
-│   ├── pricing/                         #   Pricing & monetization
-│   │   ├── pricing-strategy/
-│   │   └── monetization-experiments/
-│   │
-│   └── communication/                   #   Influence & documentation
-│       ├── meeting-notes/
-│       ├── executive-briefing/
-│       └── product-narrative/
-│
-├── commands/                            # 15 chained workflows
-│   ├── start.md                         #   /start - launch the orchestrator
-│   ├── discover.md                      #   /discover - full discovery cycle
-│   ├── write-prd.md                     #   /write-prd - Working Backwards PRD
-│   ├── plan-launch.md                   #   /plan-launch - GTM launch plan
-│   ├── sprint.md                        #   /sprint - sprint planning
-│   ├── strategy.md                      #   /strategy - strategy workshop
-│   ├── pricing.md                       #   /pricing - pricing strategy
-│   ├── customer-review.md               #   /customer-review - VoC intelligence
-│   ├── tech-handoff.md                  #   /tech-handoff - PM → engineering
-│   ├── personas.md                      #   /personas - user persona workshop
-│   ├── competitive.md                   #   /competitive - competitive intel
-│   ├── metrics.md                       #   /metrics - metrics framework
-│   ├── okrs.md                          #   /okrs - OKR authoring
-│   ├── retro.md                         #   /retro - retrospective
-│   └── narrative.md                     #   /narrative - product narrative
-│
-├── skills-map.md                        # Orchestrator routing reference
-│
-├── .claude-plugin/                      # Plugin manifest for marketplace install
-│   ├── plugin.json
-│   └── marketplace.json
-│
-├── docs/
-│   ├── using-workflows.md               # What workflows are and how to use them
-│   ├── connecting-your-tools.md         # MCP setup guide for PMs
-│   ├── installing-in-other-tools.md     # Setup for Cursor, Codex, Gemini, etc.
-│   ├── composition-model.md            # How skills, agents, workflows compose
-│   ├── failure-modes.md                # Known failure modes and how to detect them
-│   ├── recovery-playbooks.md           # Deterministic repair flows for failed outputs
-│   └── output-standard.md              # Signature formatting and decision framing rules
-│
-├── evals/                               # Output evaluation rubrics
-│   ├── README.md                        # How the eval system works
-│   ├── pass-fail.md                     # Binary release gates (pass or rewrite)
-│   ├── rubric.md                        # Universal 4-dimension rubric
-│   ├── prd.md                           # PRD-specific rubric + scored example
-│   ├── strategy.md                      # Strategy-specific rubric + scored example
-│   └── design-review.md                # Design review rubric + scored example
-│
-├── examples/
-│   ├── CLAUDE.md.example                # Blank product context template
-│   ├── CLAUDE.md.b2b-saas              # Filled-in example: compliance SaaS
-│   ├── CLAUDE.md.consumer-app          # Filled-in example: fitness app
-│   ├── CLAUDE.md.api-platform          # Filled-in example: payments API
-│   ├── mcp.json.example                # Example MCP config for team sharing
-│   └── golden-outputs/                 # Before/after output comparisons
-│       ├── README.md                    # Index and explanation
-│       ├── prd.md                       # PRD: baseline vs Shipwright
-│       ├── strategy.md                  # Strategy: baseline vs Shipwright
-│       ├── design-review.md            # Design review: baseline vs Shipwright
-│       └── ab-analysis.md              # A/B analysis: baseline vs Shipwright
-│
-├── LICENSE                              # MIT
-└── README.md
+/discover  →  /write-prd  →  /tech-handoff
 ```
+Start with customer evidence, convert it into a structured PRD, then generate the engineering handoff package. **You end with:** discovery report, Working Backwards PRD, tech spec, design review, epics, and stories. **Typical effort:** a few focused sessions.
+
+### Path 2: Quarterly Planning
+```
+/customer-review  →  /strategy  →  /okrs
+```
+Synthesize customer signals, set strategic bets and boundaries, then draft and audit OKRs against those bets. **You end with:** customer intelligence report, strategy doc with kill criteria, and audited OKRs. **Typical effort:** a few focused sessions.
+
+### Path 3: Launch
+```
+/strategy  →  /plan-launch  →  /sprint
+```
+Lock positioning, build the GTM launch plan, then turn it into execution-ready sprint scope. **You end with:** strategy doc, GTM launch plan, and sprint plan with stories. **Typical effort:** a few focused sessions.
+
+Each path chains 3 workflows; run them in separate sessions or back-to-back. For full path details, see the [workflows guide](docs/using-workflows.md#the-3-most-common-paths).
 
 ## Quick Start
 
-### 1. Install
+### 1) Install
 
 **Option A: Plugin install (recommended)**
 ```bash
@@ -179,343 +65,91 @@ git clone https://github.com/EdgeCaser/shipwright.git
 cp -r shipwright/skills/ your-project/.claude/skills/
 cp -r shipwright/agents/ your-project/.claude/agents/
 cp -r shipwright/commands/ your-project/.claude/commands/
-
-# Or cherry-pick what you need
-cp -r shipwright/skills/execution/prd-development/ your-project/.claude/skills/prd-development/
 ```
 
-Using a different tool? See the [cross-tool install guide](docs/installing-in-other-tools.md) for Cursor, Codex, Gemini CLI, OpenCode, and Kiro.
+Using a different tool? See the [cross-tool install guide](docs/installing-in-other-tools.md).
 
-### 2. Set up your product context
+### 2) Add product context
 
 ```bash
 cp shipwright/examples/CLAUDE.md.example your-project/CLAUDE.md
-# Fill in your product details. This is what gives the skills real context
 ```
 
-### 3. Use it
+### 3) Run a workflow
 
-Type `/start` to launch the orchestrator. It'll ask what you're working on, figure out which skills and agents to use, and build a plan. You don't need to memorize skill names.
+Type `/start` and describe what you're working on. Or run one directly:
 
-```
-/start             - Launch the orchestrator
-/discover          - Full discovery cycle
-/write-prd         - Working Backwards PRD
-/plan-launch       - GTM launch plan
-/sprint            - Sprint planning
-/strategy          - Strategy session
-/pricing           - Pricing strategy
-/customer-review   - Customer intelligence review
-/tech-handoff      - PM → engineering handoff
-/personas          - User persona workshop
-/competitive       - Competitive intelligence
-/metrics           - Metrics framework design
-/okrs              - OKR authoring and review
-/retro             - Retrospective facilitation
-/narrative         - Product narrative (memo or briefing)
+```text
+/discover   /write-prd   /plan-launch   /strategy   /sprint   /okrs
 ```
 
-You can also invoke agents directly for parallel work:
+For the full workflow list and behavior, see [using workflows](docs/using-workflows.md).
 
-```
-@orchestrator             - Routes work to the right agent
-@discovery-researcher     - Research, competitive analysis, market sizing
-@strategy-planner         - Roadmaps, positioning, PRDs, prioritization
-@execution-driver         - Epics, stories, sprint plans, release notes
-@customer-intelligence    - Feedback triage, churn signals, VoC reports
-@cross-functional-liaison - Meeting notes, exec updates, decision logs
-```
+## Standalone Mode (Any Tool)
 
----
+You can use any skill directly without workflows, agents, or orchestrator:
 
-## Start Here: 3 Paths
-
-Most PM work falls into one of three patterns. If you're not sure where to begin, pick the path that matches what you're doing this week.
-
-### Path 1: New Feature
-```
-/discover  →  /write-prd  →  /tech-handoff
-```
-Start with customer evidence, turn it into a structured PRD, then produce the full engineering handoff package. **You'll end with:** a discovery report, a Working Backwards PRD, a tech spec, design review, epics, and stories. **Time:** 3-5 hours across sessions.
-
-### Path 2: Quarterly Planning
-```
-/customer-review  →  /strategy  →  /okrs
-```
-Synthesize what customers are telling you, build a strategy with explicit bets and boundaries, then draft OKRs aligned to those bets. **You'll end with:** a customer intelligence report, a product strategy document with kill criteria, and audited OKRs. **Time:** 3-5 hours across sessions.
-
-### Path 3: Launch
-```
-/strategy  →  /plan-launch  →  /sprint
-```
-Lock in your strategic positioning, build the GTM launch plan, then plan the sprint to ship it. **You'll end with:** a strategy doc, a GTM plan with positioning and battlecards, and a sprint plan with stories. **Time:** 3-5 hours across sessions.
-
-Each path chains 3 workflows. Run them in separate sessions or back-to-back — the output of each feeds the next. Or type `/start` and describe what you're working on, and the orchestrator will figure out the right path for you.
-
-For more detail on each path, see the [workflows guide](docs/using-workflows.md#the-3-most-common-paths).
-
----
-
-## The 42 Skills
-
-### Discovery & Research (6)
-
-| Skill | What It Does | Framework |
-|---|---|---|
-| **Opportunity Solution Tree** | Maps outcomes → opportunities → solutions → experiments | Teresa Torres |
-| **Discovery Interview Prep** | Interview guides, screeners, and debrief templates | The Mom Test / JTBD |
-| **User Research Synthesis** | Raw notes → themed insight cards with evidence trails | Affinity Mapping |
-| **Jobs-to-Be-Done** | Job statements, outcome mapping, and opportunity scoring | Christensen / Ulwick |
-| **Competitive Landscape** | Feature matrices, positioning maps, strategic posture | Porter's Five Forces |
-| **Market Sizing** | TAM/SAM/SOM with top-down, bottom-up, and triangulation | Standard VC methodology |
-
-### Strategy & Planning (8)
-
-| Skill | What It Does | Framework |
-|---|---|---|
-| **Product Strategy Session** | Vision, bets, boundaries, and success criteria | Marty Cagan / Inspired |
-| **Positioning Statement** | Competitive alternatives → unique attributes → value → positioning | April Dunford / Geoffrey Moore |
-| **PESTEL Analysis** | Macro environment scan across 6 dimensions | PESTEL |
-| **Lean Canvas** | One-page business model with 9 validated boxes | Ash Maurya / Lean Startup |
-| **Business Model Canvas** | Full 9-block business model for established products | Osterwalder / Strategyzer |
-| **SWOT Analysis** | Strengths, weaknesses, opportunities, threats with cross-referenced strategic options | SWOT + TOWS Matrix |
-| **Roadmap Planning** | Outcome-based Now/Next/Later with RICE scoring | RICE + Now/Next/Later |
-| **Prioritization Advisor** | RICE, ICE, Kano, MoSCoW, and weighted scoring | Multiple frameworks |
-
-### Execution & Delivery (6)
-
-| Skill | What It Does | Framework |
-|---|---|---|
-| **PRD Development** | Working Backwards: press release → FAQ → full requirements | Amazon Working Backwards |
-| **User Story Writing** | INVEST stories with Given/When/Then acceptance criteria | Mike Cohn |
-| **Epic Breakdown** | Initiative → shippable epics with hypotheses and metrics | Lean UX |
-| **Sprint Planning** | Goals, capacity, scope selection, risk assessment | Scrum |
-| **Pre-Mortem** | Structured failure imagination to surface risks early | Gary Klein |
-| **Release Notes** | Tickets → polished notes segmented by audience | Multi-audience comms |
-
-### Go-to-Market & Growth (3)
-
-| Skill | What It Does | Framework |
-|---|---|---|
-| **Go-to-Market Strategy** | Beachhead → ICP → messaging → channels → launch timeline | Geoffrey Moore |
-| **Competitive Battlecard** | Sales-ready cards with objection handling and landmines | Sales Enablement |
-| **Growth Loops** | Map acquisition, engagement, and monetization loops | Reforge |
-
-### Measurement & Iteration (4)
-
-| Skill | What It Does | Framework |
-|---|---|---|
-| **Metrics Dashboard** | North Star → input metrics → guardrails → counter-metrics | Amplitude / Sean Ellis |
-| **A/B Test Analysis** | Statistical rigor, segment analysis, ship/no-ship decisions | Frequentist / Bayesian |
-| **Retrospective Facilitator** | Start/Stop/Continue, 4Ls, Sailboat, Mad/Sad/Glad | Agile Retrospectives |
-| **Stakeholder Communication** | Exec updates, steering committee decks, risk escalations | Pyramid Principle |
-
-### Customer Intelligence (4)
-
-| Skill | What It Does | Framework |
-|---|---|---|
-| **Feedback Triage** | Multi-channel feedback → categorized, deduplicated, prioritized themes | Affinity Mapping |
-| **Customer Journey Mapping** | End-to-end journey maps with touchpoints, emotions, and drop-offs | Service Design |
-| **Churn Analysis** | Diagnose why users leave, design staged retention interventions | Retention Playbook |
-| **Customer Advisory Board** | CAB agenda design, discussion guides, and synthesis templates | Strategic Advisory |
-
-### Technical & Cross-Functional (3)
-
-| Skill | What It Does | Framework |
-|---|---|---|
-| **Technical Spec** | PRD → engineering-ready spec with API contracts, data models, ADRs | ADR / RFC |
-| **Design Review** | 7-perspective parallel review: Eng, Design, Exec, Legal, Customer, Devil's Advocate, Sales | Multi-stakeholder review |
-| **API Product Design** | API endpoint design, DX, versioning, documentation, developer onboarding | REST / DX best practices |
-
-### Planning & Alignment (3)
-
-| Skill | What It Does | Framework |
-|---|---|---|
-| **OKR Authoring** | Draft, cascade, and audit OKRs with anti-pattern detection | Measure What Matters |
-| **Stakeholder Mapping** | Power × Interest grids with engagement strategies and tracking | Mendelow's Matrix |
-| **Decision Log** | Structured PDRs with context, options, rationale, and revisit triggers | ADR (adapted for product) |
-
-### Pricing & Monetization (2)
-
-| Skill | What It Does | Framework |
-|---|---|---|
-| **Pricing Strategy** | Value metric, model comparison, WTP research, competitive pricing, packaging | Van Westendorp / Gabor-Granger |
-| **Monetization Experiments** | Design pricing/packaging experiments with guardrails and kill criteria | Experimentation rigor |
-
-### Communication & Influence (3)
-
-| Skill | What It Does | Framework |
-|---|---|---|
-| **Meeting Notes** | Raw notes → structured summaries with decisions, actions, questions | Meeting intelligence |
-| **Executive Briefing** | One-page SCR (Situation-Complication-Resolution) for leadership asks | SCR / Pyramid Principle |
-| **Product Narrative** | Amazon-style 6-pager memos for complex product decisions | Amazon 6-pager |
-
----
-
-## The 6 Agents
-
-| Agent | What It Does | When to Use It |
-|---|---|---|
-| **Orchestrator** | Figures out what you need, maps it to skills/agents, builds a plan, and dispatches work after you approve. | Default entry point. Type `/start`. |
-| **Discovery Researcher** | Gathers evidence. Competitive analysis, market sizing, interview synthesis. Surfaces findings but doesn't make recommendations. | Before discovery sprints, strategy sessions, entering a new market. |
-| **Strategy Planner** | Turns research into strategic artifacts. Challenges assumptions, makes trade-offs visible. | Quarterly planning, PRD authoring, roadmap reviews. |
-| **Execution Driver** | Turns strategy into shippable work. Epics, stories, sprint plans, release notes. | Sprint planning, backlog grooming, release prep. |
-| **Customer Intelligence** | Synthesizes customer signals. Feedback triage, churn detection, journey friction. | Monthly/quarterly reviews, churn spikes, launches. |
-| **Cross-Functional Liaison** | Handles coordination. Meeting notes, stakeholder updates, decision logging. | Daily PM ops, exec communication, decision capture. |
-
-### How the orchestrator works
-
-You describe what you need in plain language. The orchestrator asks a few clarifying questions (deliverable, audience, timeline), maps your request to the right skills and agents, then dispatches them. It never does the actual work itself, it just routes.
-
-This means you can use one entry point (`/start`) for everything without learning what's under the hood.
-
-### Why the agents are separated
-
-Each agent has a narrow job. Research gathers evidence but doesn't recommend. Strategy plans but doesn't break down tickets. Execution ships but doesn't set direction. This is deliberate. It keeps the PM (you) in the decision seat and prevents the kind of circular reasoning you get when one agent tries to do everything.
-
----
-
-## The 15 Workflows
-
-For a fuller explanation of what workflows are, how to run them, and how to pick the right one, see the [workflows guide](docs/using-workflows.md).
-
-| Command | Skills Chained | Output |
-|---|---|---|
-| `/start` | Orchestrator → Skills Map → Agent Dispatch | Execution plan + dispatched agents |
-| `/discover` | OST → Assumptions → Prioritization → Experiments | Discovery report with experiment backlog |
-| `/write-prd` | Press Release → FAQ → User Stories → Full PRD | Complete Working Backwards PRD |
-| `/plan-launch` | GTM Strategy → ICP → Positioning → Battlecard → Timeline | GTM launch plan |
-| `/sprint` | Sprint Goal → Capacity → Story Selection → Risk Check | Sprint plan with agreement |
-| `/strategy` | Vision → Bets → Boundaries → Pre-Mortem → Success Criteria | Product strategy document |
-| `/pricing` | Value Metric → Model → Competitive → WTP → Packaging → Experiment | Pricing strategy with validation plan |
-| `/customer-review` | Feedback Triage → Journey Map → Churn Analysis → Exec Briefing | Customer intelligence report |
-| `/tech-handoff` | PRD → Tech Spec → Design Review → Epics → Stories | Complete engineering handoff package |
-| `/personas` | Inputs → Profiles → JTBD Mapping → Validation | Persona document with research gaps |
-| `/competitive` | Landscape → Battlecards → Positioning Review | Competitive intelligence package |
-| `/metrics` | North Star → Input Metrics → Guardrails → Dashboard Spec | Metrics framework document |
-| `/okrs` | Context → Draft → Anti-Pattern Audit → Alignment | OKR document with scoring criteria |
-| `/retro` | Format → Observations → Patterns → Actions | Retrospective summary with action items |
-| `/narrative` | Format → Draft (Briefing or 6-Pager) → Review | Product narrative for decisions |
-
----
-
-## Just Use a Skill (Standalone Mode)
-
-Don't need workflows, agents, or the orchestrator? Use any skill directly in any AI tool.
-
-```
+```text
 Read skills/execution/prd-development/SKILL.md and write a PRD for [feature].
 ```
 
-That's it. No installation beyond copying the skill file. No dependencies. Works in Cursor, Codex, Gemini CLI, or any tool that reads markdown.
+Use standalone mode for one framework and one question. Move up to workflows when you need repeatable, multi-step output quality.
 
-**Three things you can do right now with one skill:**
+## Proof and Quality Gates
 
-| Want to... | Copy this prompt |
-|---|---|
-| Write a PRD | `Read skills/execution/prd-development/SKILL.md and write a PRD for [feature].` |
-| Run a SWOT | `Read skills/strategy/swot-analysis/SKILL.md and run a SWOT analysis on [topic].` |
-| Plan a sprint | `Read skills/execution/sprint-planning/SKILL.md and plan the next sprint for [team].` |
+Want proof before adoption? Start here:
 
-**When standalone is enough vs. when to level up:**
+- [Golden outputs](examples/golden-outputs/) for side-by-side baseline vs Shipwright comparisons
+- [Pass/fail gates](evals/pass-fail.md) for binary readiness checks
+- [Eval rubrics](evals/) for scored quality dimensions
+- [Failure modes](docs/failure-modes.md) and [recovery playbooks](docs/recovery-playbooks.md) for deterministic fixes
 
-| Situation | Use |
-|---|---|
-| One framework, one question | A skill directly |
-| A repeatable multi-step process | A [workflow](docs/using-workflows.md) (`/write-prd`, `/discover`, etc.) |
-| Not sure what you need | The [orchestrator](docs/using-workflows.md) (`/start`) |
-| Want to build your own process | The [composition model](docs/composition-model.md) |
+### Shipwright Output Signature (Compact Example)
 
-Skills are the core value. Everything else — agents, workflows, orchestrator — is structure built on top of skills.
+```markdown
+## Decision Frame
+- Recommendation: Ship onboarding checklist v1 to all self-serve accounts this quarter.
+- Trade-off: Slower velocity on template gallery improvements for 2 sprints.
+- Decision owner/date: PM Lead (2026-03-25)
 
----
+## Unknowns and Evidence Gaps
+- Unknown: Activation impact for enterprise admins with SSO.
+- Evidence needed: Segment-level activation baseline + 2-week pilot telemetry.
 
-## Getting the Most Out of It
-
-**Fill in CLAUDE.md first.** Every agent reads it before doing anything. The more context you put in (personas, metrics, priorities, glossary), the less you repeat yourself. When your strategy changes, update it, and every future session picks up the new context automatically.
-
-**Don't try to use all 42 skills at once.** Pick the thing you do every week that feels like a grind (sprint plans, feedback triage, stakeholder updates) and start there. Get comfortable, then expand.
-
-**Run agents in parallel.** The orchestrator does this automatically when steps don't depend on each other, but you can also do it manually:
-
-```
-@discovery-researcher  "Research the competitive landscape for [feature area]"
-@strategy-planner      "Draft positioning for [product] against [competitor]"
+## Pass/Fail Readiness
+- PASS: Problem framing tied to evidence and owner/date assigned.
+- FAIL if: recommendation has no owner/date, or unknowns are listed without a plan to resolve.
 ```
 
-**Hook up your tools via MCP.** Shipwright gets a lot more useful when agents can pull real data from Jira, Slack, Notion, Linear, or Amplitude instead of working from pasted descriptions. See the [setup guide](docs/connecting-your-tools.md) for step-by-step instructions and an [example config](examples/mcp.json.example) for team sharing.
+## Deep Reference Docs
 
-**Build your own workflows.** The built-in commands are just markdown files that chain skills together. Copy one, swap out the skills, and you've got a custom workflow that matches how your team actually works. See the [composition model](docs/composition-model.md) for the full mental model.
-
-**Evaluate your outputs.** After generating an artifact, ask the agent to score it against the [evaluation rubrics](evals/). This catches gaps before you share the document with stakeholders.
-
-**Gate quality before you ship.** Run [pass/fail gates](evals/pass-fail.md) first, then rubrics. If any required gate fails, rewrite instead of polishing.
-
-**Watch for failure modes.** AI-generated PM artifacts fail in predictable ways — fabricated evidence, symmetrical analysis, diplomatic vagueness. See [failure modes](docs/failure-modes.md) for detection and [recovery playbooks](docs/recovery-playbooks.md) for deterministic fixes.
-
-**Keep a recognizable signature.** Use the [output standard](docs/output-standard.md) to keep sectioning, tone, and decision framing consistent so outputs are unmistakably Shipwright.
-
-**Check your skills into git.** As your product evolves, your frameworks should too. What works at Series A looks different at growth stage.
-
-**Advanced: auto-start on session launch.** If you want the orchestrator to greet you every time you open Claude Code, add this to `.claude/settings.json`. Most people prefer typing `/start` manually so the orchestrator doesn't interrupt sessions where they just want to ask a quick question.
-
-```json
-{
-  "hooks": {
-    "session_start": [
-      { "command": "/start" }
-    ]
-  }
-}
-```
-
----
-
-## Frameworks Referenced
-
-The skills draw on established PM thinking:
-
-- Teresa Torres, *Continuous Discovery Habits*
-- Marty Cagan, *Inspired* and *Empowered*
-- April Dunford, *Obviously Awesome*
-- Geoffrey Moore, *Crossing the Chasm*
-- Rob Fitzpatrick, *The Mom Test*
-- Ash Maurya, *Running Lean*
-- Alexander Osterwalder, *Business Model Generation*
-- John Doerr, *Measure What Matters*
-- Clayton Christensen / Tony Ulwick, Jobs-to-Be-Done
-- Gary Klein, Pre-Mortem / Prospective Hindsight
-- Barbara Minto, The Pyramid Principle
-- Sean Ellis, North Star Framework
-- Reforge, Growth Loops
-- Amazon, Working Backwards / 6-Pager Memos
-
----
+- [Workflows guide](docs/using-workflows.md): all commands, orchestration model, common paths
+- [Output standard](docs/output-standard.md): required sections, signature rules, decision framing
+- [Composition model](docs/composition-model.md): how skills, workflows, and agents compose
+- [Cross-tool install](docs/installing-in-other-tools.md): Cursor, Codex, Gemini CLI, others
+- [Tool connections](docs/connecting-your-tools.md): MCP setup and integration patterns
+- [Skills catalog](skills/) and [Agents](agents/): source of truth for all components
 
 ## Contributing
 
-PRs welcome. If you've got a PM skill that works well in your workflow, open a PR with:
+PRs are welcome. Before opening one, run:
 
-1. A new skill directory under the appropriate category
-2. A `SKILL.md` following the existing format (Description, When to Use, Framework, Output Format, Common Mistakes)
-3. An update to this README's skill table
+```bash
+./scripts/validate.sh
+```
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines, including how to add workflows and evaluation rubrics.
-
----
+See [CONTRIBUTING.md](CONTRIBUTING.md) for skill/workflow/rubric requirements and submission checklist.
 
 ## Acknowledgments
 
-Built on ideas from a growing community of PMs figuring out how to use AI coding agents for product work:
+Built on ideas from PM practitioners and the AI coding agent community:
 
-- [Pawel Huryn's PM Skills Marketplace](https://github.com/phuryn/pm-skills) (65 skills, 8 plugins)
-- [Dean Peters' Product-Manager-Skills](https://github.com/deanpeters/Product-Manager-Skills) (46 skills)
+- [Pawel Huryn's PM Skills Marketplace](https://github.com/phuryn/pm-skills)
+- [Dean Peters' Product-Manager-Skills](https://github.com/deanpeters/Product-Manager-Skills)
 - [Sachin Rekhi's Claude Code for PMs](https://www.sachinrekhi.com/p/claude-code-for-product-managers)
-- [prodmgmt.world](https://www.prodmgmt.world/claude-code) plugin directory
-- [ccforpms.com](https://ccforpms.com/) free PM course
+- [prodmgmt.world](https://www.prodmgmt.world/claude-code)
+- [ccforpms.com](https://ccforpms.com/)
 - [VoltAgent's awesome-claude-code-subagents](https://github.com/VoltAgent/awesome-claude-code-subagents)
-
----
 
 ## License
 

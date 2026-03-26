@@ -117,7 +117,13 @@ If you add a skill or workflow, your PR should also update:
 
 ## Testing your contribution
 
-Before submitting a PR, test your skill or workflow by running it in a Claude Code session:
+Before submitting a PR, run the repository checks first:
+
+```bash
+./scripts/validate.sh
+```
+
+Then test your skill or workflow in a Claude Code session:
 
 1. Copy your new files into a project's `.claude/` directory
 2. Set up a CLAUDE.md with product context (use one of the examples in `examples/`)
@@ -151,7 +157,7 @@ If you add a rubric, also update `manifest.json` to register it in the `evals` a
 1. Fork the repo
 2. Create a branch (`git checkout -b add-skill-name`)
 3. Add your files and update README.md + skills-map.md
-4. Test your changes
+4. Run `./scripts/validate.sh` and test your changes
 5. Open a PR with a brief description of what the skill does and what framework it's based on
 
 That's it. Keep it focused, keep it grounded in real PM practice, and it'll get merged.
