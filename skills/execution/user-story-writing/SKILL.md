@@ -152,7 +152,7 @@ Depends on: Story 1
 
 **Acceptable evidence:** PRD requirements, design mockups, user interview notes, support ticket patterns, or an approved epic with scope definition.
 
-**Insufficient evidence:** If the persona is undefined or the user need is assumed without evidence, state "Insufficient evidence for story specification" and recommend running user research or completing the PRD first.
+**Insufficient evidence:** If the persona is undefined or the user need is assumed without evidence, produce a partial artifact with unanswered sections marked `[TBD — requires: user research or persona definition]` and flag the artifact as draft-only.
 
 **Hypotheses vs. findings:**
 - **Findings:** Persona definition, core acceptance criteria, and known system constraints must be grounded in evidence.
@@ -170,7 +170,7 @@ For each user story, produce:
 **Shipwright Signature (required closing):**
 6. **Decision Frame** — story readiness recommendation (ready for sprint / needs grooming / needs split), trade-off, confidence with evidence quality, owner, decision date, revisit trigger
 7. **Unknowns & Evidence Gaps** — undefined edge case behaviors, missing design specs, unconfirmed performance thresholds
-8. **Pass/Fail Readiness** — PASS if story meets INVEST criteria, has 3+ acceptance criteria, and persona is evidence-based; FAIL if persona is generic ("a user"), acceptance criteria are untestable, or story is too large for one sprint
+8. **Pass/Fail Readiness** — PASS if story meets INVEST criteria, has 3+ acceptance criteria (at Light depth: 2+), and persona is evidence-based; FAIL if persona is generic ("a user"), acceptance criteria are untestable, or story is too large for one sprint
 9. **Recommended Next Artifact** — Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid

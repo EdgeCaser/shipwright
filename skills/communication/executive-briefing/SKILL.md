@@ -127,7 +127,7 @@ Why does this need attention NOW, not next quarter?]
 
 **Acceptable evidence:** Internal metrics, customer quotes, market research, competitive intel, financial projections with stated assumptions.
 
-**Insufficient evidence:** If you cannot quantify the cost of inaction or the expected outcome of your recommendation, state "Insufficient evidence for ROI projection" and recommend running a time-boxed analysis first.
+**Insufficient evidence:** If you cannot quantify the cost of inaction or the expected outcome of your recommendation, produce a partial artifact with unanswered sections marked `[TBD — requires: quantified cost-of-inaction analysis or outcome projection]` and flag the artifact as draft-only.
 
 **Hypotheses vs. findings:**
 - **Findings:** The Situation, Complication, and Supporting Evidence data must be grounded in verified facts.

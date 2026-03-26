@@ -155,7 +155,7 @@ Does the effect vary across important segments?
 
 **Acceptable evidence:** Raw metric values with confidence intervals, p-values or posterior probabilities, segment-level breakdowns, guardrail metric readings.
 
-**Insufficient evidence:** If sample size does not meet minimum detectable effect (MDE) requirements or the test ran fewer than 7 days, state "Insufficient evidence for a ship/no-ship decision" and recommend extending the test with a target sample size.
+**Insufficient evidence:** If sample size does not meet minimum detectable effect (MDE) requirements or the test ran fewer than 7 days, stop and recommend extending the test to reach the required sample size before running this skill. Do not produce a ship/no-ship recommendation on underpowered data.
 
 **Hypotheses vs. findings:**
 - **Findings:** Effect classification (win/loss/inconclusive), statistical significance, guardrail status — must be grounded in provided data.

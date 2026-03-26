@@ -151,7 +151,7 @@ If existing loops are insufficient, design new ones:
 
 **Acceptable evidence:** Product analytics (cycle time, conversion rates at each loop step), cohort retention data, referral/invite metrics, NRR figures, A/B test results on loop interventions.
 
-**Insufficient evidence:** If no product analytics or retention data exist, state "Insufficient evidence for Loop Evaluation and Intervention Priorities" and recommend instrumenting core loop steps before designing interventions.
+**Insufficient evidence:** If no product analytics or retention data exist, stop and recommend running the **metrics-definition** or **instrumentation-plan** skill to instrument core loop steps before attempting this skill.
 
 **Hypotheses vs. findings:**
 - **Findings:** Loop Inventory (which loops exist) and Evaluation ratings (Strong/Medium/Weak) must be grounded in observed metrics or user behavior.

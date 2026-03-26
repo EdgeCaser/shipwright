@@ -175,7 +175,7 @@ Run the OKRs through this anti-pattern checklist:
 
 **Acceptable evidence:** Existing dashboards, analytics tools, prior-quarter OKR scores, product strategy docs, company-level OKRs to cascade from, user research findings that inform outcome targets.
 
-**Insufficient evidence:** If a baseline metric cannot be sourced or estimated, state "Insufficient evidence for KR baseline" and recommend instrumenting the metric in week 1 before committing to a target.
+**Insufficient evidence:** If a baseline metric cannot be sourced or estimated, produce a partial OKR document with affected Key Results marked `[TBD — requires: baseline instrumentation for <metric name> before target can be set]` and flag the artifact as draft-only.
 
 **Hypotheses vs. findings:**
 - **Findings:** Baselines, current scores, and alignment relationships to company OKRs must be grounded in data.
@@ -193,7 +193,7 @@ Produce an OKR Document with:
 **Shipwright Signature (required closing):**
 6. **Decision Frame** — Key trade-offs in objective selection (what you're pursuing vs. what you're deferring), confidence in each target based on baseline data quality, OKR owner, cycle dates, revisit trigger
 7. **Unknowns & Evidence Gaps** — KRs lacking baselines, metrics not yet instrumented, alignment relationships assumed but unconfirmed with partner teams
-8. **Pass/Fail Readiness** — PASS if every KR has a measurable target with a known or planned baseline and each Objective connects to a company-level goal; FAIL if any KR is binary ("ship X") or has no measurement method
+8. **Pass/Fail Readiness** — PASS if every KR has a measurable target with a known or planned baseline; FAIL if any KR is binary ("ship X") or has no measurement method. (At Light depth, company-level alignment is not evaluated since the Alignment Check is omitted.)
 9. **Recommended Next Artifact** — Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid

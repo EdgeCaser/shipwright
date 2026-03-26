@@ -143,7 +143,7 @@ Questions to ask the prospect that expose competitor weaknesses:
 
 **Acceptable evidence:** Public pricing pages, analyst reports, verified customer reviews, CRM win/loss notes, sales call transcripts, competitor documentation.
 
-**Insufficient evidence:** If no win/loss data or direct customer feedback exists, state "Insufficient evidence for Win/Loss Patterns" and recommend conducting 3-5 win/loss interviews before finalizing.
+**Insufficient evidence:** If no win/loss data or direct customer feedback exists, produce a partial artifact with unanswered sections marked `[TBD — requires: win/loss interview data from 3-5 recent deals]` and flag the artifact as draft-only.
 
 **Hypotheses vs. findings:**
 - **Findings:** Feature Comparison ratings, pricing data, and Competitor Overview must be sourced.
@@ -163,7 +163,7 @@ Produce a Competitive Battlecard with:
 **Shipwright Signature (required closing):**
 8. **Decision Frame** — recommended competitive positioning stance, trade-off acknowledged, confidence level with source quality, owner (product marketing or sales enablement), decision date, revisit trigger (competitor launch or pricing change)
 9. **Unknowns & Evidence Gaps** — unverified feature claims, missing win/loss data, pricing tiers not yet confirmed
-10. **Pass/Fail Readiness** — PASS if Quick Reference, Feature Comparison, and at least 3 objection handlers are evidence-backed; FAIL if feature ratings are unverified or no win/loss patterns exist
+10. **Pass/Fail Readiness** — PASS if Quick Reference, Feature Comparison, and at least 3 objection handlers are evidence-backed; FAIL if feature ratings are unverified or no win/loss patterns exist. **Light-depth exception:** At Light depth, PASS requires only an evidence-backed Quick Reference and Feature Comparison; win/loss patterns and objection handlers are not evaluated.
 11. **Recommended Next Artifact** — Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid

@@ -170,7 +170,7 @@ Identify the single segment you'll win first before expanding:
 
 **Acceptable evidence:** Customer discovery interviews (5+), survey data, market-size estimates from credible sources (analyst reports, census data, industry publications), existing usage or sales pipeline data, competitor pricing pages.
 
-**Insufficient evidence:** If no customer interviews or usage data exist, state "Insufficient evidence for ICP and Channel Strategy" and recommend running 5-10 discovery interviews before committing channel spend.
+**Insufficient evidence:** If no customer interviews or usage data exist, stop and recommend running the **customer-interview** or **user-research** skill to conduct 5-10 discovery interviews before attempting this skill.
 
 **Hypotheses vs. findings:**
 - **Findings:** Beachhead Segment scoring and ICP qualification criteria must reference real data or interviews.
@@ -189,7 +189,7 @@ Produce a GTM Plan with:
 **Shipwright Signature (required closing):**
 7. **Decision Frame** — recommended beachhead and primary channel, trade-off vs. alternatives, confidence level with evidence quality, owner (head of product or marketing), decision date, revisit trigger (post-launch metric review)
 8. **Unknowns & Evidence Gaps** — unvalidated ICP assumptions, untested channels, missing pricing sensitivity data
-9. **Pass/Fail Readiness** — PASS if beachhead is scored with real data and messaging is grounded in customer language; FAIL if segment selection is unsupported or no trigger event is identified
+9. **Pass/Fail Readiness** — PASS if beachhead is scored with real data and messaging is grounded in customer language; FAIL if segment selection is unsupported or no trigger event is identified. **Light-depth exception:** At Light depth, PASS requires only a scored beachhead selection rationale and a core messaging framework; trigger event identification is not evaluated.
 10. **Recommended Next Artifact** — Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid

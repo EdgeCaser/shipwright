@@ -159,7 +159,7 @@ If any "Manage Closely" stakeholder moves to "Resistant":
 
 **Acceptable evidence:** 1:1 conversations, meeting behavior, email/Slack tone, org chart reporting lines, prior project history with the stakeholder, direct quotes or stated positions.
 
-**Insufficient evidence:** If a stakeholder's stance is based solely on title or assumption with no interaction data, state "Insufficient evidence for [Name]'s stance" and recommend a discovery 1:1 before assigning a quadrant.
+**Insufficient evidence:** If a stakeholder's stance is based solely on title or assumption with no interaction data, produce a partial stakeholder map with unverified stakeholders marked `[TBD — requires: discovery 1:1 with <Name> to validate stance and interest level]` and flag the artifact as draft-only.
 
 **Hypotheses vs. findings:**
 - **Findings:** Stakeholder roles, reporting lines, and observed behavior (champion/resistant/neutral) must be grounded in evidence.
@@ -177,7 +177,7 @@ Produce a Stakeholder Map with:
 **Shipwright Signature (required closing):**
 6. **Decision Frame** — Top engagement priority (which stakeholder relationship to invest in first), trade-off between breadth and depth of engagement, confidence based on evidence quality of stance assessments, map owner, date, revisit trigger
 7. **Unknowns & Evidence Gaps** — Stakeholders whose stance is assumed not observed, influence relationships not yet validated, hidden decision-makers not yet identified
-8. **Pass/Fail Readiness** — PASS if every "Manage Closely" stakeholder has a documented stance based on direct interaction and a tailored engagement plan; FAIL if any high-power stakeholder's stance is unverified assumption
+8. **Pass/Fail Readiness** — PASS if every "Manage Closely" stakeholder has a documented stance based on direct interaction; FAIL if any high-power stakeholder's stance is unverified assumption. (At Light depth, the tailored engagement plan requirement is waived since the Communication Plan is omitted.)
 9. **Recommended Next Artifact** — Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid

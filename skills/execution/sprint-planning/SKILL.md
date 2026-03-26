@@ -141,7 +141,7 @@ We'll know we succeeded when [measurable result].
 
 **Acceptable evidence:** Groomed backlog with story point estimates, team capacity spreadsheet or PTO calendar, prior sprint velocity data, and dependency status from upstream teams.
 
-**Insufficient evidence:** If stories are unestimated or the team roster is unknown, state "Insufficient evidence for sprint commitment" and recommend running backlog grooming or capacity planning first.
+**Insufficient evidence:** If stories are unestimated or the team roster is unknown, stop and recommend running backlog grooming or capacity planning before attempting this skill.
 
 **Hypotheses vs. findings:**
 - **Findings:** Team availability, known PTO, confirmed dependencies, and historical velocity must be grounded in evidence.
@@ -159,7 +159,7 @@ Produce a Sprint Plan with:
 **Shipwright Signature (required closing):**
 6. **Decision Frame** — sprint scope recommendation with capacity utilization rationale, trade-off, confidence with evidence quality, owner, decision date, revisit trigger
 7. **Unknowns & Evidence Gaps** — unconfirmed external dependencies, stories with low estimation confidence, untested capacity assumptions for new team members
-8. **Pass/Fail Readiness** — PASS if sprint goal is outcome-oriented, committed scope is within 85% capacity, and all dependencies have confirmed status; FAIL if no sprint goal exists or committed scope exceeds capacity
+8. **Pass/Fail Readiness** — PASS if sprint goal is outcome-oriented, committed scope is within 85% capacity, and all dependencies have confirmed status (at Light depth: PASS if sprint goal is outcome-oriented and committed story list has estimates; capacity utilization check and dependency confirmation are not required); FAIL if no sprint goal exists or story list has no estimates
 9. **Recommended Next Artifact** — Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid

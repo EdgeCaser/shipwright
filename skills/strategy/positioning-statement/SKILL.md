@@ -146,7 +146,7 @@ Evaluate the positioning against these questions:
 
 **Acceptable evidence:** Customer interviews or win/loss data, competitor product pages or G2/Gartner reviews, sales call recordings, usage analytics showing differentiation, published analyst comparisons.
 
-**Insufficient evidence:** If differentiation claims have no customer or market validation, state "Insufficient evidence for Unique Attributes" and recommend win/loss interviews or competitive teardowns before finalizing positioning.
+**Insufficient evidence:** If differentiation claims have no customer or market validation, stop and recommend running win/loss interviews or competitive teardowns before attempting this skill. Do not produce positioning with unvalidated differentiation claims.
 
 **Hypotheses vs. findings:**
 - **Findings:** Competitive Alternatives, Unique Attributes, and Target Customer characteristics must be grounded in observable market data or direct customer input.
@@ -166,7 +166,7 @@ Produce a positioning document with:
 **Shipwright Signature (required closing):**
 8. **Decision Frame** — Recommended positioning to commit to, category strategy trade-off, confidence with evidence quality, owner, decision date, revisit trigger
 9. **Unknowns & Evidence Gaps** — Unvalidated differentiation claims, untested category framing with buyers, assumed competitive weaknesses
-10. **Pass/Fail Readiness** — PASS if positioning is grounded in at least 3 validated unique attributes and tested against real competitive alternatives; FAIL if differentiation is aspirational with no customer or market evidence
+10. **Pass/Fail Readiness** — PASS if positioning is grounded in at least 3 validated unique attributes and tested against real competitive alternatives (at Light depth: PASS if competitive context is established and UVP is grounded in at least one differentiator — full attribute validation is deferred); FAIL if differentiation is aspirational with no customer or market evidence
 11. **Recommended Next Artifact** — Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid

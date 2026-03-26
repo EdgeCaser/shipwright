@@ -152,7 +152,7 @@ Add: Alignment status, escalation items, communication actions
 
 **Acceptable evidence:** Direct quotes from participants, screen-shared data referenced in discussion, stated commitments ("I'll do X by Friday"), explicit decisions ("We're going with option B").
 
-**Insufficient evidence:** If a decision was implied but never explicitly stated, state "Insufficient evidence for decision — confirm with [decision-maker]" and flag in Open Questions.
+**Insufficient evidence:** If a decision was implied but never explicitly stated, produce a partial artifact with the implied decision marked `[TBD — requires: explicit confirmation from decision-maker]` and flag the artifact as draft-only.
 
 **Hypotheses vs. findings:**
 - **Findings:** Decisions Made, Action Items, and the TL;DR must reflect only what was actually said or agreed.
@@ -172,7 +172,7 @@ Produce structured meeting notes with:
 **Shipwright Signature (required closing):**
 8. **Decision Frame** — key decision from this meeting, trade-offs discussed, confidence based on evidence cited in-room, decision owner, decision date, revisit trigger
 9. **Unknowns & Evidence Gaps** — questions raised but unanswered, data cited but not verified, absent stakeholders whose input is needed
-10. **Pass/Fail Readiness** — PASS if every action item has a single owner and due date and every decision has a named decision-maker; FAIL if any action item is unowned or any decision lacks attribution
+10. **Pass/Fail Readiness** — PASS if every action item has a single owner and due date and every decision has a named decision-maker; FAIL if any action item is unowned or any decision lacks attribution. **Light-depth exception:** At Light depth, PASS requires only that every action item has a single owner and due date; decision attribution is not evaluated.
 11. **Recommended Next Artifact** — Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid

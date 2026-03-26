@@ -114,7 +114,7 @@ Plot the highest-impact factors:
 
 **Acceptable evidence:** Published regulation or pending legislation, government agency announcements, industry analyst reports, macroeconomic data (central bank rates, inflation indices), trade press, peer-reviewed research, company filings.
 
-**Insufficient evidence:** If a PESTEL dimension relies only on speculation with no published source or observable trend, state "Insufficient evidence for [Dimension]" and recommend specific monitoring sources rather than fabricating factors.
+**Insufficient evidence:** If a PESTEL dimension relies only on speculation with no published source or observable trend, produce a partial artifact with unsupported dimensions marked `[TBD — requires: published sources, regulatory filings, or industry data for this dimension]` and flag the artifact as draft-only.
 
 **Hypotheses vs. findings:**
 - **Findings:** Factors scored High Impact or High Likelihood must cite a specific source, regulation, or data point.
@@ -131,7 +131,7 @@ Produce a PESTEL report with:
 **Shipwright Signature (required closing):**
 5. **Decision Frame** — Which macro factors to act on vs. monitor, key trade-off, confidence with evidence quality, owner, decision date, revisit trigger
 6. **Unknowns & Evidence Gaps** — Pending legislation outcomes, unconfirmed regulatory timelines, emerging technology trajectories without consensus
-7. **Pass/Fail Readiness** — PASS if at least 4 dimensions have sourced factors and the Priority Matrix has at least one Act Now item; FAIL if factors are generic trends not tied to the specific product or market
+7. **Pass/Fail Readiness** — PASS if at least 4 dimensions have sourced factors and the Priority Matrix has at least one Act Now item (at Light depth: PASS if the 2-3 included dimensions have sourced factors — Priority Matrix is deferred); FAIL if factors are generic trends not tied to the specific product or market
 8. **Recommended Next Artifact** — Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid

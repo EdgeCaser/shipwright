@@ -145,7 +145,7 @@ Maintain a running index:
 
 **Acceptable evidence:** Meeting notes, Slack threads, verbal accounts from participants, prior PRDs or specs that constrained the decision, relevant metrics or data referenced during discussion.
 
-**Insufficient evidence:** If the rationale behind the decision cannot be articulated beyond "we just decided," state "Insufficient evidence for Rationale" and recommend interviewing the decision-maker before finalizing the PDR.
+**Insufficient evidence:** If the rationale behind the decision cannot be articulated beyond "we just decided," produce a partial PDR with the Rationale section marked `[TBD — requires: interview with decision-maker to capture reasoning and trade-offs]` and flag the artifact as draft-only.
 
 **Hypotheses vs. findings:**
 - **Findings:** Context, Decision, Options Considered, and Rationale must reflect what actually happened.
@@ -161,7 +161,7 @@ Produce:
 **Shipwright Signature (required closing):**
 4. **Decision Frame** — Restate the chosen option as a trade-off statement ("We chose X over Y because Z"), confidence level tied to evidence quality, decision owner, decision date, revisit trigger
 5. **Unknowns & Evidence Gaps** — Consequences not yet validated, assumptions underlying the rationale, options rejected without full evaluation
-6. **Pass/Fail Readiness** — PASS if the PDR has a clear decision statement, documented rationale, and at least two options considered; FAIL if rationale is missing or only one option was evaluated
+6. **Pass/Fail Readiness** — PASS if the PDR has a clear decision statement and documented rationale; FAIL if rationale is missing. (At Light depth, Options Considered is omitted, so the two-option requirement does not apply.)
 7. **Recommended Next Artifact** — Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid

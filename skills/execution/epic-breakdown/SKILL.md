@@ -131,7 +131,7 @@ Run through these checks:
 
 **Acceptable evidence:** PRD, strategy document, stakeholder alignment deck, customer research summary, or recorded decision from a planning meeting.
 
-**Insufficient evidence:** If no success metric or objective exists for the initiative, state "Insufficient evidence for epic decomposition" and recommend running PRD Development first.
+**Insufficient evidence:** If no success metric or objective exists for the initiative, stop and recommend running PRD Development (`prd-development`) before attempting this skill.
 
 **Hypotheses vs. findings:**
 - **Findings:** Initiative objective, dependencies on existing systems, and team capacity constraints must be grounded in evidence.
@@ -149,7 +149,7 @@ Produce an Epic Breakdown Document with:
 **Shipwright Signature (required closing):**
 6. **Decision Frame** — recommended sequencing and slicing strategy, trade-off, confidence with evidence quality, owner, decision date, revisit trigger
 7. **Unknowns & Evidence Gaps** — unvalidated effort estimates, untested hypotheses, unclear cross-team dependencies
-8. **Pass/Fail Readiness** — PASS if every epic has independent value, a measurable hypothesis, and a sequenced delivery order; FAIL if any epic lacks a success metric or exceeds 8 weeks
+8. **Pass/Fail Readiness** — PASS if every epic has independent value, a measurable hypothesis, and a sequenced delivery order (at Light depth: one-line hypothesis per epic and a sequencing order are sufficient; success metrics and validation checklist are not required); FAIL if any epic lacks a hypothesis or exceeds 8 weeks
 9. **Recommended Next Artifact** — Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid

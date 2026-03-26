@@ -142,7 +142,7 @@ Counter-metrics detect when an optimization in one area causes harm in another.
 
 **Acceptable evidence:** Existing analytics data, user research findings, business KPIs, product usage logs, stakeholder interviews about what "success" means.
 
-**Insufficient evidence:** If the team cannot define what user value the product delivers or cannot instrument the proposed North Star today, state "Insufficient evidence for a North Star metric" and recommend a discovery sprint or instrumentation spike first.
+**Insufficient evidence:** If the team cannot define what user value the product delivers or cannot instrument the proposed North Star today, stop and recommend running a user-research or jobs-to-be-done discovery sprint before attempting this skill. A metrics architecture built on an unvalidated value hypothesis will mislead rather than inform.
 
 **Hypotheses vs. findings:**
 - **Findings:** Current metric baselines, existing instrumentation gaps, known data source limitations — must be grounded in evidence.

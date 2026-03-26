@@ -131,7 +131,7 @@ Best for: When different stakeholders value different criteria.
 
 **Acceptable evidence:** Usage analytics, customer feedback, stakeholder requests with business rationale, engineering estimates, prior experiment results.
 
-**Insufficient evidence:** If fewer than 3 items are provided or no context exists for any scoring dimension, state "Insufficient evidence for defensible prioritization" and recommend gathering usage data or stakeholder input before scoring.
+**Insufficient evidence:** If fewer than 3 items are provided or no context exists for any scoring dimension, stop and recommend gathering usage data or stakeholder input before attempting this skill. Do not produce a prioritized list without scorable context.
 
 **Hypotheses vs. findings:**
 - **Findings:** Final ranked order, scores backed by data (reach from analytics, effort from engineering estimates)

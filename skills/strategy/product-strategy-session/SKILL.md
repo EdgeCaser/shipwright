@@ -131,7 +131,7 @@ Equally important as what you invest in:
 
 **Acceptable evidence:** Customer research (interviews, surveys, usage data), market reports, competitive intel, internal metrics (retention, NPS, revenue trends), prior experiment results.
 
-**Insufficient evidence:** If no customer input exists (zero interviews, no usage data, no support signal), state "Insufficient evidence for customer-grounded strategy" and recommend discovery research before committing bets.
+**Insufficient evidence:** If no customer input exists (zero interviews, no usage data, no support signal), stop and recommend running customer discovery research before attempting this skill. Do not produce strategic bets without customer grounding.
 
 **Hypotheses vs. findings:**
 - **Findings:** Strategic Context (current metrics, market trajectory), customer satisfaction assessments
@@ -149,7 +149,7 @@ Produce a Product Strategy Document with:
 **Shipwright Signature (required closing):**
 6. **Decision Frame** — Primary strategic bet recommendation with trade-off (focus vs. optionality), confidence with evidence quality, owner, decision date, revisit trigger
 7. **Unknowns & Evidence Gaps** — Unvalidated assumptions behind bets, missing customer evidence, market data gaps
-8. **Pass/Fail Readiness** — PASS if each bet has a falsifiable thesis, kill criteria, and at least one evidence-backed assumption; FAIL if bets lack customer grounding or kill criteria
+8. **Pass/Fail Readiness** — PASS if each bet has a falsifiable thesis, kill criteria, and at least one evidence-backed assumption (at Light depth: PASS if each bet has a falsifiable thesis — kill criteria and full assumption mapping are deferred); FAIL if bets lack customer grounding or kill criteria
 9. **Recommended Next Artifact** — Which Shipwright skill to run next and why
 
 ## Shipwright Signature (Required)

@@ -199,7 +199,7 @@ For 6-pagers, follow Amazon's reading meeting format:
 
 **Acceptable evidence:** Customer research (interviews, surveys, usage data), market data with cited sources, competitive intel, internal metrics, experiment results.
 
-**Insufficient evidence:** If the argument rests on a single anecdote or unsourced market claim, state "Insufficient evidence for [specific claim]" and recommend targeted customer research or data pull before finalizing.
+**Insufficient evidence:** If the argument rests on a single anecdote or unsourced market claim, stop and recommend running the **user-research** or **metrics-definition** skill to gather targeted evidence before attempting this skill.
 
 **Hypotheses vs. findings:**
 - **Findings:** Data in the Argument section and Background must cite verifiable sources.
@@ -217,7 +217,7 @@ Produce a Product Narrative with:
 **Shipwright Signature (required closing):**
 6. **Decision Frame** — recommended course of action, trade-off vs. alternatives considered, confidence level with evidence quality cited, decision owner, decision date, revisit trigger
 7. **Unknowns & Evidence Gaps** — untested assumptions in the argument, missing customer segments, unvalidated market sizing
-8. **Pass/Fail Readiness** — PASS if thesis is falsifiable, at least one counterargument is steel-manned, and kill criteria are defined; FAIL if the memo lacks a clear thesis or presents no counterarguments
+8. **Pass/Fail Readiness** — PASS if thesis is falsifiable, at least one counterargument is steel-manned, and kill criteria are defined; FAIL if the memo lacks a clear thesis or presents no counterarguments. **Light-depth exception:** At Light depth, PASS requires only a falsifiable thesis and a clear recommendation; counterarguments and kill criteria are not evaluated.
 9. **Recommended Next Artifact** — Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid

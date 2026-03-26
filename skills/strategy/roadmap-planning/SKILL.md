@@ -128,7 +128,7 @@ Low confidence. Directionally interesting but not yet committed. Treated as hypo
 
 **Acceptable evidence:** Customer research, usage analytics, strategic bets from a strategy session, engineering sizing estimates, stakeholder requests with business rationale.
 
-**Insufficient evidence:** If initiatives are described only as feature names with no outcome or metric, state "Insufficient evidence for outcome-based roadmap" and recommend reframing each item as a measurable outcome before placement.
+**Insufficient evidence:** If initiatives are described only as feature names with no outcome or metric, produce a partial artifact with outcome-less items marked `[TBD — requires: measurable outcome and success metric]` and flag the artifact as draft-only.
 
 **Hypotheses vs. findings:**
 - **Findings:** Now-quarter items (committed work with known metrics and dependencies)

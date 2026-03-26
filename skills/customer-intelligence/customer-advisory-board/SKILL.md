@@ -174,7 +174,7 @@ We will share the following with CAB members by [date]:
 
 **Acceptable evidence:** Prior CAB synthesis documents, product roadmap context, recent customer research findings, NPS/CSAT trends, competitive landscape shifts, strategic planning inputs.
 
-**Insufficient evidence:** If you have no strategic questions defined and no context on what the business needs to learn, state "Insufficient evidence for CAB Objectives" and recommend a stakeholder alignment session to define learning goals before designing the agenda.
+**Insufficient evidence:** If you have no strategic questions defined and no context on what the business needs to learn, state "Insufficient evidence for CAB Objectives" and stop. Recommend running a stakeholder alignment session or the Shipwright jobs-to-be-done skill to define learning goals before attempting this skill.
 
 **Hypotheses vs. findings:**
 - **Findings:** Themes, validated assumptions, and participant sentiment from Post-Session Synthesis must be grounded in what participants actually said.
@@ -192,7 +192,7 @@ Produce a CAB Preparation Package with:
 **Shipwright Signature (required closing):**
 6. **Decision Frame** — strategic insights surfaced and options they inform, trade-offs between competing member perspectives, confidence level with evidence quality, owner, decision date, revisit trigger
 7. **Unknowns & Evidence Gaps** — strategic questions not yet answered, segments or personas unrepresented in the CAB, assumptions still untested
-8. **Pass/Fail Readiness** — PASS if strategic questions are defined, agenda is timed with discussion guides, and synthesis template is ready; FAIL if no strategic questions exist or the session is structured as a feature-request forum
+8. **Pass/Fail Readiness** — PASS if strategic questions are defined, agenda is timed with discussion guides, and synthesis template is ready (at Light depth: PASS if strategic questions are defined and at least one discussion guide is complete); FAIL if no strategic questions exist or the session is structured as a feature-request forum
 9. **Recommended Next Artifact** — Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid

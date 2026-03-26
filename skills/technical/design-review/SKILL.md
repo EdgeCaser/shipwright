@@ -266,7 +266,7 @@ Evaluate the document from each stakeholder perspective:
 
 **Acceptable evidence:** The proposal itself, supporting user research, analytics data, competitive analysis, engineering estimates, or prior review feedback.
 
-**Insufficient evidence:** If the proposal lacks defined scope or success metrics, state "Insufficient evidence for Executive and Customer Voice perspectives" and recommend completing the PRD before running the review.
+**Insufficient evidence:** If the proposal lacks defined scope or success metrics, stop and recommend running the PRD skill before attempting this skill.
 
 **Hypotheses vs. findings:**
 - **Findings:** Blockers, consensus points, and effort estimate deltas (must be grounded in the reviewed document or cited data)

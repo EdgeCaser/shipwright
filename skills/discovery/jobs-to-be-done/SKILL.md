@@ -124,7 +124,7 @@ Map what customers currently "hire" to do this job:
 
 **Acceptable evidence:** Customer interview transcripts, support tickets, survey verbatims, behavioral analytics, sales call recordings, or documented workaround observations.
 
-**Insufficient evidence:** If no customer evidence exists (only stakeholder opinions or feature requests), state "Insufficient evidence for opportunity scoring" and recommend running Discovery Interview Prep to gather behavioral data first. Job statements can still be drafted as hypotheses.
+**Insufficient evidence:** If no customer evidence exists (only stakeholder opinions or feature requests), state "Insufficient evidence for opportunity scoring" and produce a partial artifact with job statements drafted as hypotheses and scoring sections marked `[TBD — requires: customer interview data or behavioral analytics]`; flag the artifact as draft-only.
 
 **Hypotheses vs. findings:**
 - **Findings:** Opportunity scores (Step 4) and competing solutions (Step 5) must be grounded in evidence or sourced data.
@@ -164,7 +164,7 @@ When I [context], I want to [goal], So I can [outcome].
 **Shipwright Signature (required closing):**
 8. **Decision Frame** — Top underserved opportunities worth pursuing, trade-off between breadth of jobs vs. depth of scoring, confidence in opportunity scores with evidence quality, owner, decision date, revisit trigger
 9. **Unknowns & Evidence Gaps** — Job steps with no customer evidence, outcomes scored on assumption rather than data
-10. **Pass/Fail Readiness** — PASS if core job statement is solution-agnostic with at least 3 scored outcomes backed by evidence; FAIL if job statements contain product/feature names or all scores are assumed
+10. **Pass/Fail Readiness** — PASS if core job statement is solution-agnostic with at least 3 scored outcomes backed by evidence (at Light depth: PASS if core job statement is solution-agnostic with functional, emotional, and social layers articulated; outcome scoring not required); FAIL if job statements contain product/feature names or all scores are assumed
 11. **Recommended Next Artifact** — Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid

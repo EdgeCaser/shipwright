@@ -173,7 +173,7 @@ Combine leading indicators into a churn risk score:
 
 **Acceptable evidence:** Billing/subscription data, product usage analytics, exit survey responses, NPS detractor comments, win/loss interview transcripts, support ticket logs.
 
-**Insufficient evidence:** If you have churn rate numbers but zero qualitative data on why users left, state "Insufficient evidence for Root Cause Analysis" and recommend conducting exit surveys or churned-customer interviews before designing interventions.
+**Insufficient evidence:** If you have churn rate numbers but zero qualitative data on why users left, state "Insufficient evidence for Root Cause Analysis" and produce a partial artifact with the churn metrics snapshot completed and root cause and intervention sections marked `[TBD — requires: exit surveys, churned-customer interviews, or support ticket analysis]`. Flag the artifact as draft-only.
 
 **Hypotheses vs. findings:**
 - **Findings:** Churn rates, churn type breakdown, and leading indicator correlations must be grounded in data.
@@ -191,7 +191,7 @@ Produce a Churn Analysis & Retention Playbook with:
 **Shipwright Signature (required closing):**
 6. **Decision Frame** — retention investment options with expected churn impact, trade-offs (cost of intervention vs. cost of churn), confidence level with evidence quality, owner, decision date, revisit trigger
 7. **Unknowns & Evidence Gaps** — root causes with insufficient qualitative backing, segments with no exit data, untested intervention assumptions
-8. **Pass/Fail Readiness** — PASS if churn rate is quantified, top 3 root causes are evidence-backed, and at least one intervention layer is designed; FAIL if churn definition is missing or root causes are assumed without data
+8. **Pass/Fail Readiness** — PASS if churn rate is quantified, top 3 root causes are evidence-backed, and at least one intervention layer is designed (at Light depth: PASS if churn rate is quantified and top 3 root causes are identified with at least directional evidence); FAIL if churn definition is missing or root causes are assumed without data
 9. **Recommended Next Artifact** — Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid

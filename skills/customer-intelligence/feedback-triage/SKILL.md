@@ -161,7 +161,7 @@ Score each cluster for action priority:
 
 **Acceptable evidence:** Support tickets, NPS verbatims, app store reviews, feature request logs, sales call notes, social media mentions, community forum posts, churned-customer exit surveys.
 
-**Insufficient evidence:** If total feedback volume is below 20 items or comes from only one channel, state "Insufficient evidence for cross-channel triangulation" and recommend broadening collection before drawing prioritization conclusions.
+**Insufficient evidence:** If total feedback volume is below 20 items or comes from only one channel, state "Insufficient evidence for cross-channel triangulation" and stop. Recommend running a broader feedback collection effort or the Shipwright customer-journey-mapping skill to identify which channels to instrument before attempting this skill.
 
 **Hypotheses vs. findings:**
 - **Findings:** Cluster volumes, sentiment distributions, and trend directions must be grounded in the raw data.
@@ -177,9 +177,9 @@ Produce a Feedback Intelligence Report with:
 5. **Priority Matrix** — scored and ranked for action
 
 **Shipwright Signature (required closing):**
-6. **Decision Frame** — top clusters with recommended response type (fix, build, investigate), trade-offs between high-volume and high-revenue-impact items, confidence level with evidence quality, owner, decision date, revisit trigger
+6. **Decision Frame** — top clusters with response options (fix, build, investigate, or defer) and trade-offs between high-volume and high-revenue-impact items, confidence level with evidence quality, owner, decision date, revisit trigger
 7. **Unknowns & Evidence Gaps** — clusters with single-channel signal only, segments with no feedback representation, underlying needs inferred but not validated
-8. **Pass/Fail Readiness** — PASS if feedback is sourced from 2+ channels, clusters have 3+ independent items each, and priority scoring is applied; FAIL if clusters are based on a single source or fewer than 20 total items
+8. **Pass/Fail Readiness** — PASS if feedback is sourced from 2+ channels, clusters have 3+ independent items each, and priority scoring is applied (at Light depth: single-channel with 3+ items per cluster is acceptable, and priority scoring is not required); FAIL if clusters are based on fewer than 3 independent items or fewer than 20 total items
 9. **Recommended Next Artifact** — Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid

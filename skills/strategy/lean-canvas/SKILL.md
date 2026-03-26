@@ -126,7 +126,7 @@ Something that cannot be easily copied or bought:
 
 **Acceptable evidence:** Customer interviews, support tickets, survey data, competitor pricing pages, usage analytics, published market research, founder domain experience with concrete examples.
 
-**Insufficient evidence:** If the problem is stated without any customer evidence (interviews, data, or observed behavior), state "Insufficient evidence for Problem validation" and recommend at least 5 customer discovery interviews.
+**Insufficient evidence:** If the problem is stated without any customer evidence (interviews, data, or observed behavior), produce a partial artifact with unanswered sections marked `[TBD — requires: customer interviews or observed behavior data]` and flag the artifact as draft-only.
 
 **Hypotheses vs. findings:**
 - **Findings:** Problem (top 3), Customer Segments, and Existing Alternatives must be grounded in observed customer behavior or data.
@@ -142,7 +142,7 @@ Produce:
 **Shipwright Signature (required closing):**
 4. **Decision Frame** — Go/no-go recommendation on pursuing this concept, key trade-off, confidence with evidence quality, owner, decision date, revisit trigger
 5. **Unknowns & Evidence Gaps** — Unvalidated willingness-to-pay, untested channel assumptions, assumed early adopter characteristics
-6. **Pass/Fail Readiness** — PASS if Problem and Customer Segments are evidence-backed and at least one riskiest assumption has a testable experiment; FAIL if Problem is speculative with no customer evidence
+6. **Pass/Fail Readiness** — PASS if Problem and Customer Segments are evidence-backed and at least one riskiest assumption has a testable experiment (at Light depth: PASS if Problem and Customer Segments are evidence-backed — experiment design is deferred); FAIL if Problem is speculative with no customer evidence
 7. **Recommended Next Artifact** — Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid

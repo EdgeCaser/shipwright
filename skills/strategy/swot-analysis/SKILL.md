@@ -114,7 +114,7 @@ Rank the strategic options by impact and feasibility. Identify which belong on t
 
 **Acceptable evidence:** Customer feedback, usage metrics, competitive analysis, market reports, win/loss data, support ticket themes, industry benchmarks.
 
-**Insufficient evidence:** If no competitive or market context is available for the external quadrants (Opportunities/Threats), state "Insufficient evidence for external assessment" and recommend competitive research or market analysis before completing the SWOT.
+**Insufficient evidence:** If no competitive or market context is available for the external quadrants (Opportunities/Threats), produce a partial artifact with external quadrants marked `[TBD — requires: competitive research or market analysis data]` and flag the artifact as draft-only.
 
 **Hypotheses vs. findings:**
 - **Findings:** Strengths and Weaknesses backed by internal data (metrics, customer quotes, support volumes)
@@ -130,7 +130,7 @@ Produce:
 **Shipwright Signature (required closing):**
 4. **Decision Frame** — Top strategic action from cross-reference analysis with trade-off (offensive vs. defensive posture), confidence with evidence quality, owner, decision date, revisit trigger
 5. **Unknowns & Evidence Gaps** — Quadrant items based on assumption rather than data, missing competitive intel, unverified market trends
-6. **Pass/Fail Readiness** — PASS if every quadrant item cites evidence and at least one SO/WT strategy is actionable; FAIL if quadrants contain unsourced assertions or cross-reference section is missing
+6. **Pass/Fail Readiness** — PASS if every quadrant item cites evidence and at least one SO/WT strategy is actionable (at Light depth: PASS if every quadrant item cites evidence — cross-reference strategies are deferred); FAIL if quadrants contain unsourced assertions
 7. **Recommended Next Artifact** — Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid

@@ -135,7 +135,7 @@ What are the most important costs in our business model? Which key resources and
 
 **Acceptable evidence:** Internal revenue data, pricing pages, partnership agreements, customer interviews, published market sizing, team headcount or cost estimates.
 
-**Insufficient evidence:** If no customer segment data or revenue model exists, state "Insufficient evidence for Revenue Streams and Customer Segments" and recommend customer discovery interviews before completing the canvas.
+**Insufficient evidence:** If no customer segment data or revenue model exists, produce a partial artifact with unanswered sections marked `[TBD — requires: customer segment validation or revenue model data]` and flag the artifact as draft-only.
 
 **Hypotheses vs. findings:**
 - **Findings:** Customer Segments (size, contribution), Revenue Streams (price points, model), Cost Structure (known fixed/variable costs) must be grounded in evidence.
@@ -151,7 +151,7 @@ Produce:
 **Shipwright Signature (required closing):**
 4. **Decision Frame** — Which business model elements to commit to vs. experiment on, key trade-offs, confidence level with evidence quality, owner, decision date, revisit trigger
 5. **Unknowns & Evidence Gaps** — Unvalidated segment sizes, untested channel assumptions, unconfirmed partnership terms
-6. **Pass/Fail Readiness** — PASS if all 9 blocks have evidence-backed entries and dependencies are mapped; FAIL if any block relies entirely on assumptions with no supporting data
+6. **Pass/Fail Readiness** — PASS if all 9 blocks have evidence-backed entries and dependencies are mapped (at Light depth: PASS if Customer Segments, Value Propositions, and Revenue Streams have evidence-backed entries — remaining blocks are deferred); FAIL if any included block relies entirely on assumptions with no supporting data
 7. **Recommended Next Artifact** — Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid

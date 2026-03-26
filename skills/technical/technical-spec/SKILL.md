@@ -245,7 +245,7 @@ For each significant choice:
 
 **Acceptable evidence:** PRD, system architecture diagrams, existing API documentation, performance benchmarks, engineering team input on feasibility, and schema or data model context.
 
-**Insufficient evidence:** If no PRD or product brief exists, state "Insufficient evidence for Context & Motivation" and recommend completing the PRD skill first. If no engineering input is available, state "Architecture decisions are PM hypotheses only" and flag for tech lead review.
+**Insufficient evidence:** If no PRD or product brief exists, stop and recommend running the PRD skill before attempting this skill. If no engineering input is available, state "Architecture decisions are PM hypotheses only" and flag for tech lead review.
 
 **Hypotheses vs. findings:**
 - **Findings:** Components affected, API contract schemas, data model structure (must reflect current system state or confirmed engineering decisions)
@@ -264,7 +264,7 @@ Produce a Technical Specification with:
 **Shipwright Signature (required closing):**
 7. **Decision Frame** — recommended architecture approach, trade-off, confidence with evidence quality, owner, decision date, revisit trigger
 8. **Unknowns & Evidence Gaps** — unvalidated performance targets, missing data volume estimates, untested migration paths
-9. **Pass/Fail Readiness** — PASS if architecture reviewed by tech lead and API contract validated against PRD requirements; FAIL if ADRs list no alternatives considered or rollback plan is absent
+9. **Pass/Fail Readiness** — PASS if architecture reviewed by tech lead and API contract validated against PRD requirements; FAIL if ADRs list no alternatives considered or rollback plan is absent (Light depth: rollback plan requirement is waived since Rollout & Migration is omitted at Light)
 10. **Recommended Next Artifact** — Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid

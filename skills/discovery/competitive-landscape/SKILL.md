@@ -117,7 +117,7 @@ For each key competitor:
 
 **Acceptable evidence:** Public pricing pages, G2/Capterra reviews, analyst reports (Gartner, Forrester), customer win/loss interviews, job postings, press releases, SEC filings, product changelogs, direct product usage.
 
-**Insufficient evidence:** If the competitive set is based solely on internal assumptions with no external validation, state "Insufficient evidence: competitive set is unvalidated" and recommend customer interviews or win/loss analysis before treating this artifact as decision-ready.
+**Insufficient evidence:** If the competitive set is based solely on internal assumptions with no external validation, state "Insufficient evidence: competitive set is unvalidated" and produce a partial artifact with unvalidated sections marked `[TBD — requires: external validation via customer interviews, win/loss analysis, or public competitor data]` and flag the artifact as draft-only.
 
 **Hypotheses vs. findings:**
 - **Findings:** Strengths, weaknesses, and recent moves backed by observable evidence (public data, customer quotes, product tests)

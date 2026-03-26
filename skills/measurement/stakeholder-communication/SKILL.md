@@ -189,7 +189,7 @@ Level 1: Answer / Recommendation (what you want them to know or do)
 
 **Acceptable evidence:** Metric actuals vs. targets, milestone completion status, risk register entries, decision options with trade-offs, specific asks with deadlines.
 
-**Insufficient evidence:** If no metrics or concrete progress data are available, state "Insufficient evidence for a credible status update" and recommend gathering actuals from the team before sending.
+**Insufficient evidence:** If no metrics or concrete progress data are available, stop and recommend gathering metric actuals and milestone status from the team before running this skill. A status update without data trains stakeholders to ignore future updates.
 
 **Hypotheses vs. findings:**
 - **Findings:** Status (on track/at risk/off track), metric actuals, completed milestones, known risks — must be grounded in verifiable data.

@@ -129,7 +129,7 @@ Assemble insight cards into a research readout:
 
 **Acceptable evidence:** Verbatim quotes, behavioral observations, timestamped session recordings, survey free-text responses, support ticket excerpts, or analytics event logs tied to specific users or segments.
 
-**Insufficient evidence:** If fewer than 3 participants or only a single data source is available, state "Insufficient evidence for theme-level synthesis" and recommend completing additional interviews or supplementing with quantitative data before clustering.
+**Insufficient evidence:** If fewer than 3 participants or only a single data source is available, state "Insufficient evidence for theme-level synthesis" and stop and recommend completing additional interviews or supplementing with quantitative data via Discovery Interview Prep before attempting this skill.
 
 **Hypotheses vs. findings:**
 - **Findings:** Themes rated "Strong" (60%+ participants) and their insight card observations must be grounded in specific, cited evidence.

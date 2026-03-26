@@ -126,7 +126,7 @@ Every market sizing exercise must include an explicit assumption log:
 
 **Acceptable evidence:** Analyst reports (Gartner, IDC, CB Insights), government/census data, public company filings, industry association statistics, comparable company revenue disclosures, or primary research with documented sample sizes.
 
-**Insufficient evidence:** If no credible source exists for the TAM base figure, state "Insufficient evidence for TAM estimate" and recommend sourcing an industry report or running a bottom-up count from public data (e.g., LinkedIn, Census Bureau).
+**Insufficient evidence:** If no credible source exists for the TAM base figure, state "Insufficient evidence for TAM estimate" and stop and recommend sourcing an industry report (Gartner, IDC, CB Insights) or running a bottom-up count from public data (e.g., LinkedIn, Census Bureau) before attempting this skill.
 
 **Hypotheses vs. findings:**
 - **Findings:** TAM base figures and customer counts must cite a specific source with publication year.
@@ -145,7 +145,7 @@ Produce a market sizing document with:
 **Shipwright Signature (required closing):**
 7. **Decision Frame** — Whether the market justifies investment given SOM range, trade-off between market size confidence vs. speed to decision, confidence in estimates with evidence quality, owner, decision date, revisit trigger
 8. **Unknowns & Evidence Gaps** — Assumptions with HIGH sensitivity that lack primary sources, segments with no bottom-up validation
-9. **Pass/Fail Readiness** — PASS if both top-down and bottom-up estimates are present with cited sources and deltas are reconciled; FAIL if only one method used or TAM source is undocumented
+9. **Pass/Fail Readiness** — PASS if both top-down and bottom-up estimates are present with cited sources and deltas are reconciled (at Light depth: PASS if top-down TAM/SAM/SOM is present with at least one cited source; bottom-up and triangulation not required); FAIL if only one method used or TAM source is undocumented (at Light depth: FAIL if TAM source is undocumented)
 10. **Recommended Next Artifact** — Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid

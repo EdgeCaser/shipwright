@@ -156,7 +156,7 @@ Adapt the same content for different channels:
 
 **Acceptable evidence:** Git commit history, Jira/Linear ticket exports, design specs for new features, QA test reports, and performance benchmarks.
 
-**Insufficient evidence:** If no ticket list or commit history is available, state "Insufficient evidence for release notes" and recommend pulling the changelog diff from version control or the project management tool.
+**Insufficient evidence:** If no ticket list or commit history is available, stop and recommend pulling the changelog diff from version control or the project management tool before attempting this skill.
 
 **Hypotheses vs. findings:**
 - **Findings:** What changed, which bugs were fixed, and what breaking changes exist must be grounded in the commit/ticket record.
@@ -172,7 +172,7 @@ Produce:
 **Shipwright Signature (required closing):**
 4. **Decision Frame** — recommended communication priority and channel sequencing, trade-off, confidence with evidence quality, owner, decision date, revisit trigger
 5. **Unknowns & Evidence Gaps** — unconfirmed customer impact of changes, missing performance benchmarks, unclear migration paths for breaking changes
-6. **Pass/Fail Readiness** — PASS if every customer-facing change has a benefit statement and breaking changes have migration instructions; FAIL if breaking changes are undocumented or customer-facing notes use engineering jargon
+6. **Pass/Fail Readiness** — PASS if every customer-facing change has a benefit statement and breaking changes have migration instructions (at Light depth: PASS if every change has a one-line benefit statement; breaking-change migration instructions are still required if any breaking changes exist); FAIL if breaking changes are undocumented or customer-facing notes use engineering jargon
 7. **Recommended Next Artifact** — Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid

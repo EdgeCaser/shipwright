@@ -147,7 +147,7 @@ Generate a post-interview debrief template:
 
 **Acceptable evidence:** Prior interview transcripts, survey verbatims, support tickets, behavioral analytics, sales call notes, or documented stakeholder hypotheses.
 
-**Insufficient evidence:** If no discovery objective or target persona is provided, state "Insufficient evidence for interview guide generation" and recommend the PM define their learning goal using the Jobs-to-Be-Done skill first.
+**Insufficient evidence:** If no discovery objective or target persona is provided, state "Insufficient evidence for interview guide generation" and stop and recommend running the Jobs-to-Be-Done skill to define a learning goal before attempting this skill.
 
 **Hypotheses vs. findings:**
 - **Findings:** Screener criteria and "DO NOT ASK" guardrails must reflect known anti-patterns or prior research.
@@ -163,7 +163,7 @@ Produce three documents:
 **Shipwright Signature (required closing):**
 4. **Decision Frame** — Key assumptions the interview round will test, trade-off between breadth vs. depth of questioning, confidence in screener fit with evidence quality, owner, interview dates, revisit trigger
 5. **Unknowns & Evidence Gaps** — Segments not yet covered, assumptions with no interview questions mapped to them
-6. **Pass/Fail Readiness** — PASS if guide covers at least 3 Mom Test-compliant questions per discovery theme and screener filters to the target persona; FAIL if questions are leading, hypothetical, or persona is undefined
+6. **Pass/Fail Readiness** — PASS if guide covers at least 3 Mom Test-compliant questions per discovery theme and screener filters to the target persona (at Light depth: PASS if guide covers at least 3 Mom Test-compliant questions per discovery theme; screener not required); FAIL if questions are leading, hypothetical, or persona is undefined
 7. **Recommended Next Artifact** — Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid

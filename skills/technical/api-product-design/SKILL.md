@@ -262,7 +262,7 @@ docs/
 
 **Acceptable evidence:** Developer interviews or support tickets showing integration demand, existing internal API usage data, competitive API benchmarks, or documented partner requirements.
 
-**Insufficient evidence:** If no developer persona has been validated with real users or prospects, state "Insufficient evidence for API persona definition" and recommend developer discovery interviews before designing endpoints.
+**Insufficient evidence:** If no developer persona has been validated with real users or prospects, produce a partial artifact with unanswered sections marked `[TBD — requires: validated developer persona from discovery interviews]` and flag the artifact as draft-only.
 
 **Hypotheses vs. findings:**
 - **Findings:** Developer persona, JTBD, endpoint resource structure (must be grounded in validated use cases)
@@ -280,7 +280,7 @@ Produce an API Product Spec with:
 **Shipwright Signature (required closing):**
 6. **Decision Frame** — recommended API strategy (build vs. extend vs. partner), trade-off, confidence with evidence quality, owner, decision date, revisit trigger
 7. **Unknowns & Evidence Gaps** — unvalidated persona assumptions, untested rate limits, unknown integration patterns
-8. **Pass/Fail Readiness** — PASS if developer persona validated and at least one endpoint schema reviewed by engineering; FAIL if no developer has attempted the proposed getting-started flow
+8. **Pass/Fail Readiness** — PASS if developer persona validated and at least one endpoint schema reviewed by engineering; FAIL if no developer has attempted the proposed getting-started flow (Light depth: FAIL gate scopes to persona validation and endpoint schema review only, since DX/getting-started flow is omitted at Light)
 9. **Recommended Next Artifact** — Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid

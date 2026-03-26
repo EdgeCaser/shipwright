@@ -110,7 +110,7 @@ Cost: [Effort required]
 
 **Acceptable evidence:** Customer interview insights, user research synthesis themes, support ticket patterns, behavioral analytics, JTBD opportunity scores, or direct observation of user workarounds.
 
-**Insufficient evidence:** If fewer than 2 opportunities have any customer evidence, state "Insufficient evidence for opportunity prioritization" and recommend running User Research Synthesis or Discovery Interview Prep to build the evidence base.
+**Insufficient evidence:** If fewer than 2 opportunities have any customer evidence, state "Insufficient evidence for opportunity prioritization" and stop and recommend running User Research Synthesis or Discovery Interview Prep to build the evidence base before attempting this skill.
 
 **Hypotheses vs. findings:**
 - **Findings:** Opportunities (Step 2) must cite specific evidence sources. Assumptions flagged as "High confidence" must have supporting data.
@@ -129,7 +129,7 @@ Produce a structured markdown document with:
 **Shipwright Signature (required closing):**
 6. **Decision Frame** — Which opportunity-solution pair to test first, trade-off between assumption risk vs. experiment cost, confidence in opportunity prioritization with evidence quality, owner, decision date, revisit trigger
 7. **Unknowns & Evidence Gaps** — Opportunities with single-source evidence, assumption categories (desirability/viability/feasibility/usability) with no tests designed
-8. **Pass/Fail Readiness** — PASS if outcome is measurable, at least 2 opportunities have evidence, and each prioritized solution has its riskiest assumption identified with a test; FAIL if opportunities lack evidence sources or no assumptions are surfaced
+8. **Pass/Fail Readiness** — PASS if outcome is measurable, at least 2 opportunities have evidence, and each prioritized solution has its riskiest assumption identified with a test (at Light depth: PASS if outcome is measurable and at least 2 opportunities have evidence; solutions, assumptions, and tests not required); FAIL if opportunities lack evidence sources or no assumptions are surfaced (at Light depth: FAIL if outcome is not measurable or opportunities lack evidence sources)
 9. **Recommended Next Artifact** — Which Shipwright skill to run next and why
 
 Include a visual tree summary at the top using indented markdown:

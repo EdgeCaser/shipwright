@@ -180,7 +180,7 @@ A: [T-shirt size and breakdown]
 
 **Acceptable evidence:** Customer interview transcripts, support ticket volume/trends, usage analytics, churned-customer feedback, competitive teardowns, or sales call recordings.
 
-**Insufficient evidence:** If no customer evidence exists for the stated problem, state "Insufficient evidence for requirements specification" and recommend running customer discovery interviews or a Jobs-to-Be-Done analysis first.
+**Insufficient evidence:** If no customer evidence exists for the stated problem, produce a partial artifact with unanswered sections marked `[TBD — requires: customer interviews, support ticket analysis, or usage data]` and flag the artifact as draft-only.
 
 **Hypotheses vs. findings:**
 - **Findings:** Problem statement, current metric baselines, and documented customer pain must be grounded in evidence.

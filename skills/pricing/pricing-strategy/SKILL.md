@@ -188,7 +188,7 @@ Test 5-7 price points to build a demand curve.
 
 **Acceptable evidence:** Van Westendorp or Gabor-Granger survey results, win/loss data citing price, competitive pricing pages, ARPU and conversion cohorts, customer interviews mentioning willingness-to-pay, usage data showing value metric correlation.
 
-**Insufficient evidence:** If no customer data, competitive data, or usage analytics exist, state "Insufficient evidence for price point recommendation" and recommend running a Van Westendorp survey (minimum 30 respondents per segment) before setting prices.
+**Insufficient evidence:** If no customer data, competitive data, or usage analytics exist, stop and recommend running a Van Westendorp survey (minimum 30 respondents per segment) before attempting this skill. Do not produce a pricing recommendation without at least one evidence source.
 
 **Hypotheses vs. findings:**
 - **Findings:** Current state metrics, competitive pricing landscape, and value metric alignment scores must be grounded in evidence.
@@ -207,7 +207,7 @@ Produce a Pricing Strategy Document with:
 **Shipwright Signature (required closing):**
 7. **Decision Frame** — Recommended pricing model and price point, acquisition vs. revenue trade-off, confidence level with evidence quality, pricing owner, decision date, revisit trigger (e.g., competitive move, NRR shift)
 8. **Unknowns & Evidence Gaps** — WTP ranges not yet validated, segments not surveyed, competitive pricing behind sales walls
-9. **Pass/Fail Readiness** — PASS if value metric is identified, at least one model is evaluated with rationale, and a price range is defensible; FAIL if no customer or competitive evidence supports the recommendation
+9. **Pass/Fail Readiness** — PASS if value metric is identified, at least one model is evaluated with rationale, and a price range is defensible (at Light depth: PASS if value metric is identified and model recommendation has rationale — price range defensibility is deferred); FAIL if no customer or competitive evidence supports the recommendation
 10. **Recommended Next Artifact** — Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid

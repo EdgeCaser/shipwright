@@ -33,12 +33,12 @@ Every skill (`skills/**/SKILL.md`) must include these sections in order:
 3. **When to Use** — specific trigger scenarios
 4. **Depth** — Light / Standard / Deep scope table with omit rules
 5. **Framework** — core teaching material with steps and templates
-6. **Minimum Evidence Bar** — required inputs, acceptable evidence, insufficient-evidence declaration rules, hypothesis vs. finding distinctions
+6. **Minimum Evidence Bar** — required inputs, acceptable evidence, insufficient-evidence declaration with fallback behavior, hypothesis vs. finding distinctions
 7. **Output Format** — numbered artifact list + Shipwright Signature closing
 8. **Common Mistakes to Avoid** — anti-patterns
 9. **Weak vs. Strong Output** — one micro-example showing bad vs. good output
 
-The **Depth** section governs proportionality: not every problem needs every section. The **Minimum Evidence Bar** governs rigor: outputs must declare what counts as evidence and when evidence is insufficient. The **Weak vs. Strong Output** section reduces ambiguity by showing concrete examples.
+The **Depth** section governs proportionality: not every problem needs every section. The **Minimum Evidence Bar** governs rigor: outputs must declare what counts as evidence and when evidence is insufficient — and must specify a deterministic fallback: either produce a partial artifact with unanswered fields marked `[TBD — requires: specific evidence]`, or stop and recommend a prerequisite skill. The **Weak vs. Strong Output** section reduces ambiguity by showing concrete examples.
 
 ## Decision Frame (required)
 
@@ -65,7 +65,19 @@ Every skill output must close with four signature elements, numbered as a contin
 - **Pass/Fail Readiness** — Binary conditions for artifact completeness (skill-specific)
 - **Recommended Next Artifact** — Which Shipwright skill to run next and why
 
-These make outputs unmistakably Shipwright: decisive, grounded, auditable, and connected to the next step in the workflow.
+The four elements are structurally invariant — every output includes all four. But the wording must not feel copy-pasted across skills. Vary phrasing, specificity, and emphasis to match the skill's domain. The structure is the signature; formulaic language undermines it.
+
+### Pass/Fail gates must be depth-aware
+
+Pass/Fail Readiness conditions must account for the Depth setting. If a skill's Light depth explicitly permits fewer sections or lighter criteria (e.g., 2 acceptance criteria instead of 3), the Pass/Fail gate must not fail a Light-mode output for meeting Light-mode rules. Write gates as: "PASS if [standard criteria]; at Light depth, PASS if [lighter criteria]."
+
+### Recommendation boundary by category
+
+Skills in **discovery** and **customer-intelligence** categories frame implications and options but do not prescribe product actions. Their Decision Frame states a primary finding or framed options, not a directive. Downstream recommendation belongs to strategy, execution, planning, and gtm skills.
+
+Skills in all other categories may recommend specific actions.
+
+This boundary is repo-wide. Individual skills should not override it.
 
 ## Tone and style
 

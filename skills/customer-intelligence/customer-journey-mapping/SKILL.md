@@ -156,7 +156,7 @@ Critical decision points where the user decides to continue or leave:
 
 **Acceptable evidence:** Product analytics (funnels, drop-offs, TTFV), user research transcripts, session recordings, support ticket patterns, NPS/CSAT by stage, onboarding completion data.
 
-**Insufficient evidence:** If a journey stage has no analytics and no qualitative research, state "Insufficient evidence for Stage [N] detail" and recommend instrumenting that stage or conducting targeted user interviews before mapping pain points.
+**Insufficient evidence:** If a journey stage has no analytics and no qualitative research, state "Insufficient evidence for Stage [N] detail" and produce a partial artifact with evidenced stages fully mapped and unsupported stages marked `[TBD — requires: analytics instrumentation or user interviews for this stage]`. Flag the artifact as draft-only.
 
 **Hypotheses vs. findings:**
 - **Findings:** Drop-off rates, touchpoint sequences, and documented pain points must be grounded in observed data.
@@ -173,9 +173,9 @@ Produce a Customer Journey Map with:
 6. **Measurement Framework** — metrics per stage
 
 **Shipwright Signature (required closing):**
-7. **Decision Frame** — highest-leverage experience improvements with expected impact, trade-offs (quick wins vs. structural redesigns), confidence level with evidence quality, owner, decision date, revisit trigger
+7. **Decision Frame** — experience findings and improvement options with expected impact, trade-offs (quick wins vs. structural redesigns), confidence level with evidence quality, owner, decision date, revisit trigger
 8. **Unknowns & Evidence Gaps** — stages with no analytics or research coverage, emotional journey assumptions not validated with users, backstage failure points not yet mapped
-9. **Pass/Fail Readiness** — PASS if all stages have at least one evidence-backed pain point and the opportunity register is prioritized; FAIL if stages are mapped from internal assumptions with no customer data
+9. **Pass/Fail Readiness** — PASS if all stages have at least one evidence-backed pain point and the opportunity register is prioritized (at Light depth: PASS if the scoped segment has at least one evidence-backed pain point per mapped stage and opportunities are listed); FAIL if stages are mapped from internal assumptions with no customer data
 10. **Recommended Next Artifact** — Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid
