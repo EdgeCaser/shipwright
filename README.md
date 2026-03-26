@@ -100,11 +100,15 @@ shipwright/
 │
 ├── skills-map.md                        # Orchestrator routing reference
 │
+├── docs/
+│   └── connecting-your-tools.md         # MCP setup guide for PMs
+│
 ├── examples/
 │   ├── CLAUDE.md.example                # Blank product context template
 │   ├── CLAUDE.md.b2b-saas              # Filled-in example: compliance SaaS
 │   ├── CLAUDE.md.consumer-app          # Filled-in example: fitness app
-│   └── CLAUDE.md.api-platform          # Filled-in example: payments API
+│   ├── CLAUDE.md.api-platform          # Filled-in example: payments API
+│   └── mcp.json.example                # Example MCP config for team sharing
 │
 ├── LICENSE                              # MIT
 └── README.md
@@ -328,7 +332,7 @@ Each agent has a narrow job. Research gathers evidence but doesn't recommend. St
 @strategy-planner      "Draft positioning for [product] against [competitor]"
 ```
 
-**Hook up your tools via MCP.** Shipwright gets a lot more useful when agents can pull real data from Jira, Slack, Notion, Linear, or Amplitude instead of working from pasted descriptions.
+**Hook up your tools via MCP.** Shipwright gets a lot more useful when agents can pull real data from Jira, Slack, Notion, Linear, or Amplitude instead of working from pasted descriptions. See the [setup guide](docs/connecting-your-tools.md) for step-by-step instructions and an [example config](examples/mcp.json.example) for team sharing.
 
 **Build your own workflows.** The built-in commands are just markdown files that chain skills together. Copy one, swap out the skills, and you've got a custom workflow that matches how your team actually works.
 
