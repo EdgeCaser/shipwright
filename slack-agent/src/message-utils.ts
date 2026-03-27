@@ -1,6 +1,7 @@
 import { config } from './config.js';
 
-export type CommandName = 'status' | 'summarize' | 'question' | 'draft' | 'help';
+export type CommandName = 'status' | 'summarize' | 'question' | 'draft' | 'help' | 'listen';
+export type ListenMode = 'on' | 'off';
 
 export function stripMention(text: string): string {
   return text.replace(new RegExp(`<@${config.slackBotUserId}>`, 'g'), '').trim();
@@ -8,6 +9,13 @@ export function stripMention(text: string): string {
 
 export function parseCommand(text: string): { command: CommandName | null; body: string } {
   const cleaned = stripMention(text);
+  const shorthand = cleaned.match(/^(status|help|question|summarize|draft|listen)\b\s*(.*)$/i);
+  if (shorthand && !cleaned.includes(':')) {
+    return {
+      command: shorthand[1].toLowerCase() as CommandName,
+      body: shorthand[2].trim(),
+    };
+  }
   const match = cleaned.match(/^([a-zA-Z_-]+)\s*:\s*([\s\S]*)$/);
   if (!match) {
     return { command: null, body: cleaned };
@@ -24,6 +32,13 @@ export function isAllowedCommand(command: CommandName | null): boolean {
   return config.allowedCommands.includes(command);
 }
 
+export function parseListenMode(body: string): ListenMode | null {
+  const cleaned = body.trim().toLowerCase();
+  if (cleaned === 'on') return 'on';
+  if (cleaned === 'off') return 'off';
+  return null;
+}
+
 export function buildHelpText(): string {
   return [
     '*Supported commands*',
@@ -31,6 +46,8 @@ export function buildHelpText(): string {
     '- `question:` ask a direct question about the current repo or thread',
     '- `summarize:` summarize a topic or thread',
     '- `draft:` draft a short message or response',
+    '- `listen on` enable conversational replies in this thread',
+    '- `listen off` return this thread to strict command mode',
     '- `help:` show this command list',
     '',
     '*Examples*',
@@ -38,6 +55,10 @@ export function buildHelpText(): string {
     '- `@bot question: why did this worker fail?`',
     '- `@bot summarize: the current thread`',
     '- `@bot draft: a short reply to this update`',
+    '- `@bot listen on`',
+    '- `@bot listen off`',
+    '',
+    'When listening mode is on, replies in that thread are treated like `question:` automatically until the listening timeout expires.',
   ].join('\n');
 }
 

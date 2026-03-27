@@ -6,6 +6,7 @@ import {
   buildHelpText,
   chunkReply,
   isAllowedCommand,
+  parseListenMode,
   parseCommand,
   redactSecrets,
   type CommandName,
@@ -26,6 +27,7 @@ export interface AppMentionEvent {
 
 function cleanExpiredEvents() {
   state.cleanupProcessedEvents(DEDUP_TTL_MS);
+  state.cleanupListeningThreads(config.listeningTtlMs);
 }
 
 function isAllowed(event: AppMentionEvent): boolean {
@@ -69,6 +71,7 @@ function buildPrompt(command: CommandName, body: string, threadContext: string):
     question: 'Answer the question directly. If context is insufficient, ask one short clarifying question.',
     draft: 'Draft a concise message, note, or response based on the request. Do not take actions.',
     help: 'Explain the supported commands and show one short example for each.',
+    listen: 'Explain how listening mode works in this thread.',
   };
 
   return `You are a helpful assistant responding to a Slack message for personal use in a local project workspace.
@@ -105,14 +108,17 @@ export async function handleMention(event: AppMentionEvent): Promise<void> {
   const threadTs = event.thread_ts || event.ts;
   state.setProcessedEvent(event.ts, Date.now());
   const existingSession = state.getThreadSession(threadTs);
+  const listeningThread = state.isListeningThread(threadTs, config.listeningTtlMs);
   const threadContext = await fetchThreadContext(event, threadTs);
-  const { command, body } = parseCommand(event.text);
+  const parsed = parseCommand(event.text);
+  const command = parsed.command || (listeningThread ? 'question' : null);
+  const body = parsed.command ? parsed.body : parsed.body;
 
   if (!isAllowedCommand(command)) {
     await slack.chat.postMessage({
       channel: event.channel,
       thread_ts: threadTs,
-      text: 'Unsupported command. Use one of: `status:`, `summarize:`, `question:`, `draft:`, or `help:`.',
+      text: 'Unsupported command. Use one of: `status:`, `summarize:`, `question:`, `draft:`, `listen on`, `listen off`, or `help:`.',
     });
     return;
   }
@@ -124,6 +130,33 @@ export async function handleMention(event: AppMentionEvent): Promise<void> {
       text: buildHelpText(),
     });
     return;
+  }
+
+  if (command === 'listen') {
+    const mode = parseListenMode(body);
+    if (!mode) {
+      await slack.chat.postMessage({
+        channel: event.channel,
+        thread_ts: threadTs,
+        text: 'Use `listen on` to enable conversational replies in this thread, or `listen off` to return to strict command mode.',
+      });
+      return;
+    }
+
+    state.setListeningThread(threadTs, mode === 'on');
+    await slack.chat.postMessage({
+      channel: event.channel,
+      thread_ts: threadTs,
+      text:
+        mode === 'on'
+          ? `Listening mode is now on for this thread. Replies from allowlisted users will be treated like \`question:\` until it expires after ${Math.round(config.listeningTtlMs / 60000)} minutes or you send \`listen off\`.`
+          : 'Listening mode is now off for this thread. Use explicit commands again, like `question:` or `status:`.',
+    });
+    return;
+  }
+
+  if (listeningThread) {
+    state.touchListeningThread(threadTs);
   }
 
   const prompt = buildPrompt(command!, body, threadContext);

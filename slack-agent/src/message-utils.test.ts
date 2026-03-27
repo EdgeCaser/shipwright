@@ -6,7 +6,7 @@ process.env.SLACK_BOT_TOKEN = process.env.SLACK_BOT_TOKEN || 'xoxb-test';
 process.env.SLACK_BOT_USER_ID = process.env.SLACK_BOT_USER_ID || 'U_TEST';
 process.env.PROJECT_CWD = process.env.PROJECT_CWD || process.cwd();
 process.env.MAX_REPLY_CHARS = '40';
-process.env.ALLOWED_COMMANDS = 'status,question,summarize,draft,help';
+process.env.ALLOWED_COMMANDS = 'status,question,summarize,draft,help,listen';
 
 // Load after env setup so config.ts sees the test values.
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -14,6 +14,7 @@ const {
   buildHelpText,
   chunkReply,
   isAllowedCommand,
+  parseListenMode,
   parseCommand,
   redactSecrets,
 } = require('./message-utils.js');
@@ -30,9 +31,34 @@ test('parseCommand rejects free-form mentions', () => {
   assert.equal(parsed.body, 'just tell me what is happening');
 });
 
+test('parseCommand accepts status shorthand without colon', () => {
+  const parsed = parseCommand('<@U_TEST> status what is blocked?');
+  assert.equal(parsed.command, 'status');
+  assert.equal(parsed.body, 'what is blocked?');
+});
+
+test('parseCommand accepts listen command with colon body', () => {
+  const parsed = parseCommand('<@U_TEST> listen: on');
+  assert.equal(parsed.command, 'listen');
+  assert.equal(parsed.body, 'on');
+});
+
+test('parseCommand accepts listen shorthand without colon', () => {
+  const parsed = parseCommand('<@U_TEST> listen on');
+  assert.equal(parsed.command, 'listen');
+  assert.equal(parsed.body, 'on');
+});
+
+test('parseListenMode accepts on and off', () => {
+  assert.equal(parseListenMode('on'), 'on');
+  assert.equal(parseListenMode(' off '), 'off');
+  assert.equal(parseListenMode('later'), null);
+});
+
 test('isAllowedCommand respects configured allowlist', () => {
   assert.equal(isAllowedCommand('status'), true);
   assert.equal(isAllowedCommand('help'), true);
+  assert.equal(isAllowedCommand('listen'), true);
   assert.equal(isAllowedCommand(null), false);
 });
 
@@ -54,4 +80,5 @@ test('buildHelpText includes supported commands', () => {
   const text = buildHelpText();
   assert.ok(text.includes('`status:`'));
   assert.ok(text.includes('`help:`'));
+  assert.ok(text.includes('`listen on`'));
 });

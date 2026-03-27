@@ -45,6 +45,7 @@ Key behaviors:
 - command allowlist
 - read-only mode support
 - Slack reply chunking for long outputs
+- thread-scoped conversational listening mode with expiry
 
 ## Prerequisites
 
@@ -91,8 +92,9 @@ ALLOWED_USERS=U12345
 MAX_QUEUE_SIZE=20
 SLACK_CONTEXT_MESSAGES=8
 MAX_REPLY_CHARS=3000
+LISTENING_TTL_MS=3600000
 READ_ONLY_MODE=true
-ALLOWED_COMMANDS=status,question,summarize,draft,help
+ALLOWED_COMMANDS=status,question,summarize,draft,help,listen
 ```
 
 Recommended minimum settings for safe personal use:
@@ -157,6 +159,11 @@ This version includes the following hardening steps:
    - free-form mentions are rejected instead of treated as open-ended instructions
    - simple secret redaction runs before replies are posted
 
+7. Optional thread listening mode
+   - `listen on` enables conversational replies in just that thread
+   - `listen off` disables it
+   - listening mode expires automatically after `LISTENING_TTL_MS`
+
 ## Limitations
 
 - still a local automation bridge, not a hardened multi-user service
@@ -182,6 +189,8 @@ Mentions should use one of these prefixes:
 - `summarize:`
 - `question:`
 - `draft:`
+- `listen on`
+- `listen off`
 - `help:`
 
 Examples:
@@ -191,9 +200,12 @@ Examples:
 @bot question: why does this worker retry twice?
 @bot summarize: the last few messages in this thread
 @bot draft: a short reply to this stakeholder update
+@bot listen on
+reply normally in-thread without a command
+@bot listen off
 ```
 
-Messages without a supported command prefix are rejected.
+Messages without a supported command prefix are rejected unless listening mode is active for that thread. In listening mode, plain replies are treated as `question:` requests until the mode expires or is turned off.
 
 ## Build Check
 

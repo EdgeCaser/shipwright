@@ -4,11 +4,13 @@ import { config } from './config.js';
 interface StoredState {
   processedEvents: Record<string, number>;
   threadSessions: Record<string, string>;
+  listeningThreads: Record<string, number>;
 }
 
 const DEFAULT_STATE: StoredState = {
   processedEvents: {},
   threadSessions: {},
+  listeningThreads: {},
 };
 
 export class StateStore {
@@ -28,6 +30,7 @@ export class StateStore {
       return {
         processedEvents: parsed.processedEvents || {},
         threadSessions: parsed.threadSessions || {},
+        listeningThreads: parsed.listeningThreads || {},
       };
     } catch (err) {
       console.error('[state] Failed to load state, starting fresh:', err);
@@ -67,5 +70,43 @@ export class StateStore {
   setThreadSession(threadTs: string, sessionId: string) {
     this.state.threadSessions[threadTs] = sessionId;
     this.persist();
+  }
+
+  isListeningThread(threadTs: string, ttlMs: number): boolean {
+    const timestamp = this.state.listeningThreads[threadTs];
+    if (!timestamp) return false;
+    if (Date.now() - timestamp > ttlMs) {
+      delete this.state.listeningThreads[threadTs];
+      this.persist();
+      return false;
+    }
+    return true;
+  }
+
+  setListeningThread(threadTs: string, enabled: boolean) {
+    if (enabled) {
+      this.state.listeningThreads[threadTs] = Date.now();
+    } else {
+      delete this.state.listeningThreads[threadTs];
+    }
+    this.persist();
+  }
+
+  touchListeningThread(threadTs: string) {
+    if (!this.state.listeningThreads[threadTs]) return;
+    this.state.listeningThreads[threadTs] = Date.now();
+    this.persist();
+  }
+
+  cleanupListeningThreads(ttlMs: number) {
+    const now = Date.now();
+    let changed = false;
+    for (const [key, timestamp] of Object.entries(this.state.listeningThreads)) {
+      if (now - timestamp > ttlMs) {
+        delete this.state.listeningThreads[key];
+        changed = true;
+      }
+    }
+    if (changed) this.persist();
   }
 }

@@ -43,6 +43,7 @@ export const config = {
   maxQueueSize: parseIntWithDefault(process.env.MAX_QUEUE_SIZE, 20),
   slackContextMessages: parseIntWithDefault(process.env.SLACK_CONTEXT_MESSAGES, 8),
   maxReplyChars: parseIntWithDefault(process.env.MAX_REPLY_CHARS, 3000),
+  listeningTtlMs: parseIntWithDefault(process.env.LISTENING_TTL_MS, 3600000),
   readOnlyMode: (process.env.READ_ONLY_MODE || 'true').toLowerCase() !== 'false',
   allowedCommands: parseList('ALLOWED_COMMANDS'),
 };
