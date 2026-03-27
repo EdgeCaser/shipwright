@@ -14,6 +14,7 @@
 | Jobs-to-Be-Done | `skills/discovery/jobs-to-be-done/` | Framing needs as job statements, finding underserved outcomes |
 | Competitive Landscape | `skills/discovery/competitive-landscape/` | Structured competitor analysis |
 | Market Sizing | `skills/discovery/market-sizing/` | TAM/SAM/SOM estimation |
+| Workflow Questionnaire | `skills/discovery/workflow-questionnaire/` | Constraint-aware questionnaires to map prospect workflows and surface friction |
 
 ### Strategy & Planning
 | Skill | Directory | Best For |
@@ -180,6 +181,7 @@ When the user says something containing these keywords, route to the correspondi
 | "epic", "break this initiative down" | epic-breakdown |
 | "pricing experiment", "test the price", "conversion optimization" | monetization-experiments |
 | "opportunity solution tree", "OST", "discovery tree" | opportunity-solution-tree |
+| "questionnaire", "workflow discovery", "friction audit", "process mapping", "where can we automate", "workflow friction" | workflow-questionnaire |
 | "SWOT", "strengths weaknesses", "strategic assessment" | swot-analysis |
 | "business model canvas", "BMC", "9 blocks", "full business model" | business-model-canvas |
 | "personas", "who are our users", "user profiles" | /personas workflow |

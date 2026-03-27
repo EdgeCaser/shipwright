@@ -56,6 +56,7 @@ Read the following skill files for detailed frameworks when conducting research:
 - `/skills/discovery/jobs-to-be-done/SKILL.md`
 - `/skills/discovery/competitive-landscape/SKILL.md`
 - `/skills/discovery/market-sizing/SKILL.md`
+- `/skills/discovery/workflow-questionnaire/SKILL.md`
 
 ## Output Standards
 

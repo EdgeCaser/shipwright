@@ -8,7 +8,7 @@
 
 Shipwright gives PMs a real operating system for product work: framework-backed skills, orchestrated workflows, and quality gates that produce artifacts teams can execute.
 
-Under the hood, Shipwright includes 42 skills, 6 specialist agents, and 15 chained workflows. The counts matter less than the contract: evidence-first outputs, explicit decisions, pass/fail gating, and deterministic recovery.
+Under the hood, Shipwright includes 43 skills, 6 specialist agents, and 15 chained workflows. The counts matter less than the contract: evidence-first outputs, explicit decisions, pass/fail gating, and deterministic recovery.
 
 The skills are plain markdown files, so they're compatible with any AI coding tool that reads skill files (Cursor, Codex, Gemini CLI, and others). Agents, commands, and the orchestrator are Claude Code-specific.
 
@@ -146,6 +146,12 @@ bash shipwright-sync.sh --yes    # auto-update everything without prompting
 ```
 
 The sync script compares every file against the Shipwright source and reports what's changed, what's new, and what's been removed. You can update all at once or file-by-file with diffs.
+
+## Slack Agent
+
+Shipwright includes a Slack integration that lets you @mention a bot in your workspace and get responses powered by Claude Code. The bot runs locally via Socket Mode (no public URL needed), maintains conversation continuity per thread, and operates in the context of a project directory you choose.
+
+See [slack-agent/README.md](slack-agent/README.md) for setup instructions.
 
 ## Deep Reference Docs
 
