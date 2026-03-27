@@ -1,56 +1,72 @@
 # Slack Mention Agent
 
-A local service that listens for @mentions of a Slack bot and routes them to Claude Code CLI for processing. Claude generates a response, and the agent posts it back to the channel thread.
+A local service that listens for `@mentions` of a Slack bot and routes them to Claude Code CLI for processing. Claude generates a response, and the agent posts it back to the Slack thread.
+
+## Personal-Use Only
+
+This tool is intended for personal use by the authenticated Claude Code user.
+
+It is not designed to be:
+
+- a shared team service
+- a multi-user Claude proxy
+- a way for coworkers to indirectly use your Claude subscription or local authenticated session
+- an unrestricted bot in broad Slack channels
+
+The recommended pattern is:
+
+- one operator
+- one or two allowlisted channels
+- one or a few allowlisted users
+- read-only mode enabled by default
+- a small command allowlist
+
+If you want a true multi-user integration, use a proper API-key-backed product architecture instead of routing requests through a local Claude Code session.
 
 ## How It Works
 
-```
+```text
 Slack workspace
-  └─ @mention event
-       └─ Slack Socket Mode (WebSocket)
-            └─ Local Node.js service (this project)
-                 └─ Spawns: claude -p "<prompt>" --resume <session>
-                      └─ Claude generates reply text
-                           └─ Agent posts reply via Slack Web API
+  -> @mention event
+     -> Slack Socket Mode
+        -> Local Node.js service
+           -> Fetch recent thread context
+           -> Spawn Claude Code CLI in the configured project
+           -> Post the reply back to the Slack thread
 ```
 
-- **Socket Mode**: No public URL or tunnel required — runs entirely local via outbound WebSocket
-- **Session continuity**: Follow-up mentions in the same Slack thread resume the same Claude conversation
-- **Project context**: Claude runs in your chosen project directory, so it has access to that project's files and CLAUDE.md
-- **Queue processing**: Mentions are processed one at a time (FIFO) to avoid rate limits
+Key behaviors:
+
+- Socket Mode only, so no public inbound URL is required
+- session continuity by Slack thread
+- local project context via `PROJECT_CWD`
+- persistent local state for dedupe and session mapping
+- optional channel and user allowlists
+- command allowlist
+- read-only mode support
+- Slack reply chunking for long outputs
 
 ## Prerequisites
 
 - Node.js 18+
-- Claude Code CLI installed and authenticated (`claude` in PATH)
-- A Slack workspace where you can create apps
+- Claude Code CLI installed and authenticated
+- a Slack workspace where you can create apps
 
 ## Slack App Setup
 
-1. Go to [api.slack.com/apps](https://api.slack.com/apps) and create a new app (or use an existing one)
-
-2. **Enable Socket Mode**: Settings > Socket Mode > toggle On
-
-3. **Generate an App-Level Token**: Settings > Basic Information > App-Level Tokens > Generate Token
-   - Name: anything (e.g., "socket-mode")
-   - Scope: `connections:write`
-   - Copy the `xapp-...` token
-
-4. **Add Bot Token Scopes**: Features > OAuth & Permissions > Bot Token Scopes:
+1. Create or reuse a Slack app at `https://api.slack.com/apps`
+2. Enable Socket Mode
+3. Generate an app-level token with `connections:write`
+4. Add bot token scopes:
    - `app_mentions:read`
    - `channels:history`
    - `chat:write`
-   - `groups:history` (optional, for private channels)
+   - `groups:history` if private channels matter
+5. Subscribe to the `app_mention` bot event
+6. Install the app to the workspace
+7. Copy the bot user ID
 
-5. **Subscribe to events**: Features > Event Subscriptions > Enable Events > Subscribe to bot events:
-   - Add `app_mention`
-
-6. **Install the app** to your workspace (or reinstall if scopes changed)
-   - Copy the Bot User OAuth Token (`xoxb-...`)
-
-7. **Get the bot's user ID**: Click the bot's profile in Slack > ⋮ menu > Copy member ID (`U...`)
-
-## Install & Configure
+## Install
 
 ```bash
 cd slack-agent
@@ -58,18 +74,34 @@ npm install
 cp .env.example .env
 ```
 
-Edit `.env` with your values:
+## Configure
+
+Edit `.env`:
 
 ```bash
-SLACK_APP_TOKEN=xapp-...              # App-Level Token (step 3)
-SLACK_BOT_TOKEN=xoxb-...              # Bot OAuth Token (step 6)
-SLACK_BOT_USER_ID=U0123456789         # Bot's member ID (step 7)
-CLAUDE_PATH=claude                    # Full path to claude CLI if not in PATH
-CLAUDE_TIMEOUT_MS=120000              # Max time per Claude invocation
-PROJECT_CWD=/path/to/your/project    # Directory Claude runs in
+SLACK_APP_TOKEN=xapp-...
+SLACK_BOT_TOKEN=xoxb-...
+SLACK_BOT_USER_ID=U0123456789
+CLAUDE_PATH=claude
+CLAUDE_TIMEOUT_MS=120000
+PROJECT_CWD=/path/to/your/project
+STATE_PATH=/path/to/state.json
+ALLOWED_CHANNELS=C12345,C67890
+ALLOWED_USERS=U12345
+MAX_QUEUE_SIZE=20
+SLACK_CONTEXT_MESSAGES=8
+MAX_REPLY_CHARS=3000
+READ_ONLY_MODE=true
+ALLOWED_COMMANDS=status,question,summarize,draft,help
 ```
 
-`PROJECT_CWD` controls which project Claude has context for. Set it to the repo you want the bot to assist with.
+Recommended minimum settings for safe personal use:
+
+- `PROJECT_CWD`
+- `ALLOWED_CHANNELS`
+- `ALLOWED_USERS`
+- `READ_ONLY_MODE=true`
+- `ALLOWED_COMMANDS`
 
 ## Run
 
@@ -78,26 +110,95 @@ npm run build
 npm start
 ```
 
-For development with auto-reload:
+For development:
 
 ```bash
 npm run dev
 ```
 
-Then invite the bot to a channel (`/invite @YourBot`) and @mention it.
+Invite the bot to a channel and mention it there.
 
 ## Architecture
 
 | Module | Responsibility |
-|--------|---------------|
-| `src/config.ts` | Loads and validates environment variables |
-| `src/claude-runner.ts` | Spawns `claude -p` with session resume support |
-| `src/event-handler.ts` | Parses mentions, builds prompts, posts replies, tracks sessions |
-| `src/index.ts` | Socket Mode connection and FIFO mention queue |
+|---|---|
+| `src/config.ts` | Loads and validates config |
+| `src/state-store.ts` | Persists dedupe and thread session state locally |
+| `src/claude-runner.ts` | Spawns Claude Code CLI |
+| `src/event-handler.ts` | Enforces allowlists, fetches Slack context, builds prompt, posts replies |
+| `src/index.ts` | Connects to Socket Mode and manages per-thread queues |
+
+## Guardrails Added
+
+This version includes the following hardening steps:
+
+1. Authorization controls
+   - optional channel allowlist
+   - optional user allowlist
+
+2. Tighter prompt contract
+   - personal-use framing
+   - read-only mode
+   - refusal guidance for risky or secret-exposing requests
+
+3. Persistent state
+   - processed event timestamps survive restarts
+   - thread-to-session mapping survives restarts
+
+4. Explicit thread context ingestion
+   - recent Slack thread messages are fetched and included in the prompt
+
+5. Safer Slack delivery
+   - long outputs are chunked before posting
+   - queue size can be capped
+
+6. Interaction narrowing
+   - only explicit commands are accepted
+   - free-form mentions are rejected instead of treated as open-ended instructions
+   - simple secret redaction runs before replies are posted
 
 ## Limitations
 
-- **Single-user**: Designed for one person's workspace. Claude runs as the authenticated user.
-- **No streaming**: The reply appears all at once after Claude finishes.
-- **Cost**: Every mention triggers a Claude invocation. Consider which channels the bot is invited to.
-- **Token expiry**: If the Claude CLI session expires, the agent will fail until re-authenticated.
+- still a local automation bridge, not a hardened multi-user service
+- no streaming replies
+- one queue per thread, but still no broad workload scheduler
+- no deep policy engine beyond allowlists and read-only guidance
+- if your local Claude auth expires, requests will fail
+
+## Recommended Operating Rules
+
+- keep the bot out of broad team channels
+- keep `READ_ONLY_MODE=true`
+- keep `ALLOWED_COMMANDS` narrow
+- point `PROJECT_CWD` at only one repo at a time
+- do not use this with repositories containing secrets unless you understand the local risk
+- monitor logs while it is running
+
+## Supported Commands
+
+Mentions should use one of these prefixes:
+
+- `status:`
+- `summarize:`
+- `question:`
+- `draft:`
+- `help:`
+
+Examples:
+
+```text
+@bot status: what's currently broken in this repo?
+@bot question: why does this worker retry twice?
+@bot summarize: the last few messages in this thread
+@bot draft: a short reply to this stakeholder update
+```
+
+Messages without a supported command prefix are rejected.
+
+## Build Check
+
+```bash
+npm run build
+```
+
+If the build passes, the TypeScript surface is sound. That does not guarantee runtime safety, so test in a low-risk Slack channel first.

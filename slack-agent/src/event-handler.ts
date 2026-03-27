@@ -1,38 +1,19 @@
 import { WebClient } from '@slack/web-api';
 import { config } from './config.js';
 import { runClaude } from './claude-runner.js';
+import { StateStore } from './state-store.js';
+import {
+  buildHelpText,
+  chunkReply,
+  isAllowedCommand,
+  parseCommand,
+  redactSecrets,
+  type CommandName,
+} from './message-utils.js';
 
 const slack = new WebClient(config.slackBotToken);
-
-// Deduplication: track processed event timestamps with a 5-minute TTL
-const processedEvents = new Map<string, number>();
+const state = new StateStore();
 const DEDUP_TTL_MS = 5 * 60 * 1000;
-
-// Session continuity: map thread_ts -> Claude session ID
-const threadSessions = new Map<string, string>();
-
-function cleanExpiredEvents() {
-  const now = Date.now();
-  for (const [key, timestamp] of processedEvents) {
-    if (now - timestamp > DEDUP_TTL_MS) {
-      processedEvents.delete(key);
-    }
-  }
-}
-
-function stripMention(text: string): string {
-  return text.replace(new RegExp(`<@${config.slackBotUserId}>`, 'g'), '').trim();
-}
-
-function buildPrompt(event: AppMentionEvent): string {
-  const cleanedText = stripMention(event.text);
-
-  return `You are a helpful assistant responding to a Slack message.
-
-The user said: "${cleanedText}"
-
-Respond concisely and directly. Your response will be posted as a Slack message, so use Slack markdown formatting (bold with *text*, code with \`code\`, lists with bullet points). Do not include any preamble like "Here's my response" — just answer directly.`;
-}
 
 export interface AppMentionEvent {
   type: 'app_mention';
@@ -43,36 +24,131 @@ export interface AppMentionEvent {
   thread_ts?: string;
 }
 
+function cleanExpiredEvents() {
+  state.cleanupProcessedEvents(DEDUP_TTL_MS);
+}
+
+function isAllowed(event: AppMentionEvent): boolean {
+  const channelAllowed = config.allowedChannels.length === 0 || config.allowedChannels.includes(event.channel);
+  const userAllowed = config.allowedUsers.length === 0 || config.allowedUsers.includes(event.user);
+  return channelAllowed && userAllowed;
+}
+
+async function fetchThreadContext(event: AppMentionEvent, threadTs: string): Promise<string> {
+  try {
+    const replies = await slack.conversations.replies({
+      channel: event.channel,
+      ts: threadTs,
+      limit: config.slackContextMessages,
+    });
+
+    const messages = (replies.messages || [])
+      .slice(-config.slackContextMessages)
+      .map((msg) => {
+        const user = msg.user || 'unknown';
+        const text = (msg.text || '').replace(/\s+/g, ' ').trim();
+        return `${user}: ${text}`;
+      })
+      .filter(Boolean);
+
+    return messages.join('\n');
+  } catch (err) {
+    console.error('[context] Failed to fetch thread context:', err);
+    return '';
+  }
+}
+
+function buildPrompt(command: CommandName, body: string, threadContext: string): string {
+  const safeModeInstruction = config.readOnlyMode
+    ? 'You are in read-only mode. Do not make code changes, run commands, or take external actions. Answer questions, summarize, and suggest next steps only.'
+    : 'Stay cautious with actions. If the request implies code changes or commands, explicitly say that human approval is required before executing.';
+
+  const commandInstructions: Record<CommandName, string> = {
+    status: 'Return a concise status update about the current project or workstream. Prefer bullets.',
+    summarize: 'Summarize the provided topic, thread, or project context concisely and accurately.',
+    question: 'Answer the question directly. If context is insufficient, ask one short clarifying question.',
+    draft: 'Draft a concise message, note, or response based on the request. Do not take actions.',
+    help: 'Explain the supported commands and show one short example for each.',
+  };
+
+  return `You are a helpful assistant responding to a Slack message for personal use in a local project workspace.
+
+${safeModeInstruction}
+
+The user invoked command: ${command}
+Command rule: ${commandInstructions[command]}
+
+Slack thread context:
+${threadContext || '(no prior thread context available)'}
+
+Latest user message:
+"${body}"
+
+Respond concisely and directly. Your response will be posted as a Slack message, so use Slack markdown formatting (bold with *text*, code with \`code\`, lists with bullet points). Do not include any preamble like "Here's my response" - just answer directly.
+
+If the request is ambiguous, ask one short clarifying question instead of guessing.
+If the request would expose secrets, private data, or take a risky action, refuse and explain briefly.`;
+}
+
 export async function handleMention(event: AppMentionEvent): Promise<void> {
-  // Dedup check
+  if (!isAllowed(event)) {
+    console.log(`[skip] Unauthorized mention channel=${event.channel} user=${event.user}`);
+    return;
+  }
+
   cleanExpiredEvents();
-  if (processedEvents.has(event.ts)) {
+  if (state.getProcessedEvent(event.ts)) {
     console.log(`[skip] Duplicate event ${event.ts}`);
     return;
   }
-  processedEvents.set(event.ts, Date.now());
 
-  const prompt = buildPrompt(event);
   const threadTs = event.thread_ts || event.ts;
-  const existingSession = threadSessions.get(threadTs);
+  state.setProcessedEvent(event.ts, Date.now());
+  const existingSession = state.getThreadSession(threadTs);
+  const threadContext = await fetchThreadContext(event, threadTs);
+  const { command, body } = parseCommand(event.text);
+
+  if (!isAllowedCommand(command)) {
+    await slack.chat.postMessage({
+      channel: event.channel,
+      thread_ts: threadTs,
+      text: 'Unsupported command. Use one of: `status:`, `summarize:`, `question:`, `draft:`, or `help:`.',
+    });
+    return;
+  }
+
+  if (command === 'help') {
+    await slack.chat.postMessage({
+      channel: event.channel,
+      thread_ts: threadTs,
+      text: buildHelpText(),
+    });
+    return;
+  }
+
+  const prompt = buildPrompt(command!, body, threadContext);
 
   console.log(`[mention] channel=${event.channel} user=${event.user} thread=${threadTs}${existingSession ? ' (continuing session)' : ''}`);
 
   try {
     const { reply, sessionId } = await runClaude(prompt, existingSession);
 
-    // Store session ID for thread continuity
     if (sessionId) {
-      threadSessions.set(threadTs, sessionId);
+      state.setThreadSession(threadTs, sessionId);
     }
 
     console.log(`[done] Claude replied (${reply.length} chars, session=${sessionId?.slice(0, 8) || 'none'})`);
 
-    await slack.chat.postMessage({
-      channel: event.channel,
-      thread_ts: threadTs,
-      text: reply,
-    });
+    const safeReply = redactSecrets(reply);
+    const chunks = chunkReply(safeReply);
+    for (const chunk of chunks) {
+      await slack.chat.postMessage({
+        channel: event.channel,
+        thread_ts: threadTs,
+        text: chunk,
+      });
+    }
+
     console.log(`[posted] Reply sent to thread ${threadTs}`);
   } catch (err) {
     console.error(`[error] Failed for event ${event.ts}:`, err);

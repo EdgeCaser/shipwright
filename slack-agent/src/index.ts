@@ -2,29 +2,50 @@ import { SocketModeClient } from '@slack/socket-mode';
 import { config } from './config.js';
 import { handleMention, type AppMentionEvent } from './event-handler.js';
 
-// FIFO queue — one Claude process at a time
-class MentionQueue {
-  private queue: AppMentionEvent[] = [];
-  private processing = false;
+class ThreadQueueManager {
+  private queues = new Map<string, AppMentionEvent[]>();
+  private processing = new Set<string>();
 
   async add(event: AppMentionEvent) {
-    this.queue.push(event);
-    if (!this.processing) this.processNext();
+    const threadKey = event.thread_ts || event.ts;
+    const queue = this.queues.get(threadKey) || [];
+
+    if (queue.length >= config.maxQueueSize) {
+      throw new Error(`Queue is full for thread ${threadKey} (${config.maxQueueSize})`);
+    }
+
+    queue.push(event);
+    this.queues.set(threadKey, queue);
+
+    if (!this.processing.has(threadKey)) {
+      void this.processThread(threadKey);
+    }
   }
 
-  private async processNext() {
-    if (this.queue.length === 0) {
-      this.processing = false;
+  private async processThread(threadKey: string) {
+    const queue = this.queues.get(threadKey);
+    if (!queue || queue.length === 0) {
+      this.processing.delete(threadKey);
+      this.queues.delete(threadKey);
       return;
     }
-    this.processing = true;
-    const event = this.queue.shift()!;
+
+    this.processing.add(threadKey);
+    const event = queue.shift()!;
+
     try {
       await handleMention(event);
     } catch (err) {
-      console.error('[queue] Unhandled error:', err);
+      console.error(`[queue] Unhandled error in thread ${threadKey}:`, err);
     }
-    this.processNext();
+
+    if (queue.length === 0) {
+      this.processing.delete(threadKey);
+      this.queues.delete(threadKey);
+      return;
+    }
+
+    void this.processThread(threadKey);
   }
 }
 
@@ -33,11 +54,15 @@ async function main() {
     appToken: config.slackAppToken,
   });
 
-  const queue = new MentionQueue();
+  const queueManager = new ThreadQueueManager();
 
   socketClient.on('app_mention', async ({ event, ack }) => {
     await ack();
-    queue.add(event as AppMentionEvent);
+    try {
+      await queueManager.add(event as AppMentionEvent);
+    } catch (err) {
+      console.error('[queue] Rejected mention:', err);
+    }
   });
 
   await socketClient.start();
