@@ -149,9 +149,26 @@ The sync script compares every file against the Shipwright source and reports wh
 
 ## Slack Agent
 
-Shipwright includes a Slack integration that lets you @mention a bot in your workspace and get responses powered by Claude Code. The bot runs locally via Socket Mode (no public URL needed), maintains conversation continuity per thread, and operates in the context of a project directory you choose.
+Shipwright includes an optional local Slack integration in [slack-agent/](slack-agent/README.md). It lets you `@mention` a bot in Slack, route the message into Claude Code running on your machine, and post the reply back into the same thread.
 
-See [slack-agent/README.md](slack-agent/README.md) for setup instructions.
+Current behavior:
+
+- runs locally through Slack Socket Mode, so no public webhook is required
+- keeps Claude session continuity per Slack thread
+- supports strict commands like `question:` and `status:`
+- supports thread-scoped listening mode with `listen on` / `listen off`
+- uses the project directory you configure via `PROJECT_CWD`
+
+Important warning:
+
+- this Slack agent is for personal use only
+- it is not intended to be a shared Claude gateway for teammates
+- it should be limited to allowlisted users and channels
+- `READ_ONLY_MODE=true` is the recommended default
+
+If you want a team-facing Slack product, use a proper API-backed architecture instead of routing requests through a local authenticated Claude Code session.
+
+Setup, configuration, safety guidance, and supported commands are documented in [slack-agent/README.md](slack-agent/README.md).
 
 ## Deep Reference Docs
 
