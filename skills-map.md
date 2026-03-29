@@ -64,6 +64,7 @@
 ### Technical & Cross-Functional
 | Skill | Directory | Best For |
 |---|---|---|
+| Adversarial Review | `skills/technical/adversarial-review/` | Pressure-testing completed artifacts for weak evidence, hedging, scope drift, and buried risk |
 | Technical Spec | `skills/technical/technical-spec/` | Engineering-ready specifications |
 | Design Review | `skills/technical/design-review/` | 7-perspective proposal review |
 | API Product Design | `skills/technical/api-product-design/` | API endpoint and DX design |
@@ -99,6 +100,7 @@
 | **execution-driver** | Decompose work, write stories, plan sprints, produce release comms | execution/*, measurement/*, technical/technical-spec | Set strategy, conduct research |
 | **customer-intelligence** | Synthesize customer signals, detect churn, map journeys | customer-intelligence/*, measurement/* | Make product decisions, respond to customers |
 | **cross-functional-liaison** | Document decisions, communicate to stakeholders, track alignment | communication/*, planning/*, measurement/stakeholder-communication, execution/release-notes | Make strategic decisions, conduct research |
+| **red-team** | Pressure-test finished artifacts for unsupported claims, scope drift, generic analysis, and buried risk | technical/adversarial-review, evals/*, docs/failure-modes | Produce original artifacts or rewrite author work |
 
 ---
 
@@ -121,6 +123,7 @@ If the user's need doesn't fit a path, use the individual workflow table below.
 | Command | Chain | Best For | Time Required |
 |---|---|---|---|
 | `/discover` | OST → Assumptions → Prioritization → Experiments | Starting a discovery cycle | 30-60 min |
+| `/challenge` | Artifact selection → Red-team review → Verdict → Next action | Adversarial review of an existing artifact | 10-30 min |
 | `/write-prd` | Press Release → FAQ → Stories → Full PRD | New feature specification | 45-90 min |
 | `/plan-launch` | GTM → ICP → Positioning → Battlecard → Timeline | Product or feature launch | 60-90 min |
 | `/sprint` | Goal → Capacity → Selection → Risk Check | Sprint planning prep | 20-40 min |
@@ -163,6 +166,7 @@ When the user says something containing these keywords, route to the correspondi
 | "positioning", "messaging", "how do we describe ourselves" | positioning-statement |
 | "tech spec", "architecture", "hand off to engineering" | technical-spec |
 | "design review", "get feedback on this proposal" | design-review |
+| "red team", "challenge this", "pressure test", "poke holes", "stress test this artifact" | adversarial-review or /challenge when the artifact already exists |
 | "API", "developer experience", "endpoints" | api-product-design |
 | "strategy", "vision", "where are we going" | product-strategy-session |
 | "pre-mortem", "what could go wrong", "risks" | pre-mortem |
@@ -190,3 +194,10 @@ When the user says something containing these keywords, route to the correspondi
 | "OKR", "quarterly goals", "objectives and key results" | /okrs workflow |
 | "retro", "what went well", "retrospective" | /retro workflow |
 | "write a memo", "make the case", "narrative", "one-pager" | /narrative workflow |
+
+## Red-Team Routing Note
+
+Use challenge language differently depending on where the work is:
+
+- If the artifact already exists, route "red team," "pressure test," and similar language to `@red-team` or `/challenge`.
+- If the user is still creating the artifact and wants assumptions challenged during development, keep the work with the producing agent rather than spawning red-team prematurely.

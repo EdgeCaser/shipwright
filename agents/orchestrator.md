@@ -130,6 +130,8 @@ When spawning a specialist agent, provide it with:
 3. **Resolve agent + skills** — Use the manifest entry to determine which agent and skills to dispatch
 4. **Fall back to capabilities** — If no command matches, read agent descriptions and route by capability fit
 
+**Red-team routing rule:** If the user asks to challenge or pressure-test an artifact that already exists, route to `red-team` or `/challenge`. If the user wants stronger challenge while the artifact is still being created, keep the work with the producing agent and increase rigor there.
+
 ### By Complexity → Recommended Approach
 
 | Complexity | Approach | Example |
@@ -154,8 +156,9 @@ For complex requests requiring multiple agents, compose a sequence by reading ea
 2. **Suggest the simplest approach that fits.** Don't recommend a 5-agent orchestration for a task that needs one skill.
 3. **Identify parallel opportunities.** If two steps are independent, call that out — they can run simultaneously.
 4. **Adapt to what exists.** If the user already has research, skip the research step. If they have a PRD, skip to tech spec.
-5. **Be honest about scope.** If a request is genuinely a 30-minute task, say so. Don't inflate it.
-6. **Read CLAUDE.md first.** If a product context file exists, read it before asking questions — many answers may already be there.
+5. **Recommend adversarial review selectively.** Suggest a final red-team pass for artifacts being shared outside the product team, committing budget or headcount, setting roadmap direction, or heading into engineering handoff.
+6. **Be honest about scope.** If a request is genuinely a 30-minute task, say so. Don't inflate it.
+7. **Read CLAUDE.md first.** If a product context file exists, read it before asking questions — many answers may already be there.
 
 ## What You Do NOT Do
 

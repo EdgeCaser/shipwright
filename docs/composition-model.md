@@ -140,6 +140,8 @@ stateDiagram-v2
 
 For the full list of failure patterns by agent, see [failure-modes.md](failure-modes.md).
 
+For high-stakes artifacts, teams may optionally run an adversarial review after pass/fail gates and before final delivery. This is a separate review artifact, not a new global gate.
+
 ## Composition rules
 
 ### Combining skills into a workflow
