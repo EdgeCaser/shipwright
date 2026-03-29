@@ -89,6 +89,8 @@ Apply the 4 dimensions from the [universal rubric](rubric.md): Clarity, Complete
 | Actionability | 15% | The report must tell the PM what to do next |
 | Correctness | 10% | Critique must be fair and grounded |
 | Finding Specificity | 20% | Specificity is the difference between signal and noise |
-| Severity Calibration | 15% | Overstated severity destroys trust |
+| Severity Calibration | 10% | Overstated severity destroys trust |
 | Evidence Grounding | 10% | The review cannot invent objections |
 | Resolution Actionability | 10% | Every finding needs a path to resolution |
+| Coverage Discipline | 5% | The review should respect Light/Standard/Deep without turning into a teardown |
+| Non-Theatrical Rigor | 10% | Strong artifacts must be allowed to clear cleanly |

@@ -212,12 +212,13 @@ Produce a **Challenge Report** containing:
    - concrete next steps
    - which findings to route back, if any
 
-Then close with the Shipwright Signature:
+In v1, the Challenge Report is conversation-native unless the PM explicitly asks to save it to disk.
 
-6. **Decision Frame** — Proceed, defend, or escalate, with trade-off and confidence
-7. **Unknowns & Evidence Gaps** — Missing context that limited the review
-8. **Pass/Fail Readiness** — PASS if findings are evidence-backed, severity is calibrated, and each finding includes a resolution condition; FAIL if critique is generic, theatrical, or unsupported
-9. **Recommended Next Artifact** — Which Shipwright skill or agent should engage next and why
+Then close with the remaining Shipwright Signature elements:
+
+6. **Unknowns & Evidence Gaps** — Missing context that limited the review
+7. **Pass/Fail Readiness** — PASS if findings are evidence-backed, severity is calibrated, and each finding includes a resolution condition; FAIL if critique is generic, theatrical, or unsupported
+8. **Recommended Next Artifact** — Which Shipwright skill or agent should engage next and why
 
 ## Common Mistakes to Avoid
 
