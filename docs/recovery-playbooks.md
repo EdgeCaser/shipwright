@@ -1,6 +1,6 @@
 # Recovery Playbooks
 
-This is the operational layer for failure modes. Use these playbooks when outputs fail quality checks.
+This is the operational layer for failure modes. Most playbooks apply when outputs fail quality checks. Playbook 7 applies to optional adversarial review verdicts from `/challenge`.
 
 Each playbook is deterministic: trigger -> action -> expected correction.
 
@@ -10,6 +10,8 @@ Each playbook is deterministic: trigger -> action -> expected correction.
 2. Identify the failed gate(s)
 3. Apply the matching playbook below
 4. Re-run pass/fail checks
+
+If you ran `/challenge`, use Playbook 7 for `DEFEND` or `ESCALATE` verdicts. These are advisory review outcomes, not pass/fail gate failures.
 
 ---
 
@@ -126,6 +128,8 @@ Each playbook is deterministic: trigger -> action -> expected correction.
 
 **Trigger:** `/challenge` produces a Challenge Report with verdict `DEFEND` or `ESCALATE`.
 
+**Important:** In v1, red-team verdicts are advisory. They do not automatically block delivery, reopen workflows, or replace pass/fail gates. They surface objections for the PM to consider and optionally route back for revision.
+
 **Action for DEFEND:**
 
 1. Read each finding in the Challenge Report
@@ -133,22 +137,24 @@ Each playbook is deterministic: trigger -> action -> expected correction.
 3. If a producing Shipwright agent is known, pass both the original artifact and the findings verbatim to that agent:
    ```
    Here is the original artifact and a Challenge Report with findings.
-   Respond to each finding directly. Do not summarize or selectively filter.
-   For each finding: accept it and revise, dispute it with evidence, or flag it as out of scope with rationale.
-   ```
+	   Respond to each finding directly. Do not summarize or selectively filter.
+	   For each finding: accept it and revise, dispute it with evidence, or flag it as out of scope with rationale.
+	   ```
 4. If no producing agent is known, either nominate the closest Shipwright agent for the artifact type or revise manually
-5. Re-run `/challenge` at the same depth to confirm findings are resolved
+5. If you revise the artifact, re-run `/challenge` at the same depth to confirm the material findings are resolved
 
 **Action for ESCALATE:**
 
-1. Stop. Do not share or act on the artifact until the Critical finding is resolved.
-2. Read the finding that triggered ESCALATE — it should name the exact claim in doubt
-3. Determine whether the missing evidence exists or can be obtained:
+1. Pause and review the escalated objection before sharing or acting on the artifact.
+2. Treat the escalated finding as a strong warning that the artifact's core recommendation may be wrong
+3. Read the finding that triggered ESCALATE — it should name the exact claim in doubt
+4. Determine whether the missing evidence exists or can be obtained:
    - If yes: supply it and re-run the originating skill or workflow with that evidence included
    - If no: downgrade the claim to a hypothesis and restate the recommendation accordingly
-4. Re-run `/challenge` at Standard or Deep depth to confirm the Critical finding is resolved before proceeding
+5. If you revise the artifact, re-run `/challenge` at Standard or Deep depth to confirm the Critical finding is resolved
+6. If the PM chooses not to revise, document that decision explicitly and treat the remaining objection as accepted risk rather than silently ignoring it
 
-**Expected correction:** Artifact with resolved findings and a clean Challenge Report verdict, or an explicitly scoped-down recommendation where evidence does not support the original claim.
+**Expected correction:** Artifact with resolved findings and a cleaner Challenge Report verdict, or an explicitly scoped-down recommendation where evidence does not support the original claim. If the PM accepts the risk instead of revising, the decision is documented rather than treated as implicit approval.
 
 ---
 
