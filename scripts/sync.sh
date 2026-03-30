@@ -181,8 +181,13 @@ do_sync() {
         local rel="${dest_file#$dest/$dest_dir/}"
         local src_file="$src/$src_dir/$rel"
         if [ ! -f "$src_file" ]; then
-          gone "$rel (in target but removed from source)"
-          removed_files+=("$dest_file")
+          if is_ignored "$dest_dir/$rel" "$dest"; then
+            custom "$rel (locally customized, keeping despite source removal)"
+            custom_count=$((custom_count + 1))
+          else
+            gone "$rel (in target but removed from source)"
+            removed_files+=("$dest_file")
+          fi
         fi
       done < <(find "$dest/$dest_dir" -type f)
     fi
