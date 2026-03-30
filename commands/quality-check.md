@@ -26,7 +26,7 @@ Confirm the final list before scoring.
 
 ### Step 2: Score Each Artifact
 
-Read and apply `/evals/rubric.md` (the universal 4 dimensions: Clarity, Completeness, Actionability, Correctness). Use the anchored scale:
+Read and apply `/skills/measurement/artifact-quality-audit/SKILL.md`. Use the universal 4 dimensions (Clarity, Completeness, Actionability, Correctness) with the anchored scale:
 
 - **3** = weak — significant gaps or confusion
 - **6** = adequate — meets the bar, no major issues

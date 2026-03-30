@@ -8,7 +8,7 @@
 
 Shipwright gives PMs a real operating system for product work: framework-backed skills, orchestrated workflows, and quality gates that produce artifacts teams can execute.
 
-Under the hood, Shipwright includes 45 skills, 7 specialist agents, and 18 chained workflows. The counts matter less than the contract: evidence-first outputs, explicit decisions, pass/fail gating, deterministic recovery, and optional adversarial review for high-stakes artifacts.
+Under the hood, Shipwright includes 46 skills, 7 specialist agents, and 18 chained workflows. The counts matter less than the contract: evidence-first outputs, explicit decisions, pass/fail gating, deterministic recovery, and optional adversarial review for high-stakes artifacts.
 
 The skills are plain markdown files, so they're compatible with any AI coding tool that reads skill files (Cursor, Codex, Gemini CLI, and others). Agents, commands, and the orchestrator are Claude Code-specific.
 

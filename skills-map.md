@@ -51,6 +51,7 @@
 |---|---|---|
 | Metrics Dashboard | `skills/measurement/metrics-dashboard/` | North Star + input metrics architecture |
 | A/B Test Analysis | `skills/measurement/ab-test-analysis/` | Experiment result evaluation |
+| Artifact Quality Audit | `skills/measurement/artifact-quality-audit/` | Multi-artifact scoring, drift detection, quality trend analysis |
 | Retrospective Facilitator | `skills/measurement/retrospective-facilitator/` | Team retros with action items |
 | Stakeholder Communication | `skills/measurement/stakeholder-communication/` | Status updates calibrated by audience |
 
