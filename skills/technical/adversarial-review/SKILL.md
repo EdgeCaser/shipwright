@@ -205,9 +205,9 @@ Produce a **Challenge Report** containing:
    - decision date
    - revisit trigger
 4. `## Risks and Open Questions`
-   - unresolved vulnerabilities
-   - evidence gaps
-   - any shared-model or context limitations that reduce review confidence
+   - unresolved vulnerabilities in the artifact under review
+   - open questions the author or PM still needs to answer
+   - risks created if the artifact is used without revision
 5. `## Action Plan`
    - concrete next steps
    - which findings to route back, if any
@@ -216,7 +216,7 @@ In v1, the Challenge Report is conversation-native unless the PM explicitly asks
 
 Then close with the remaining Shipwright Signature elements:
 
-6. **Unknowns & Evidence Gaps** — Missing context that limited the review
+6. **Unknowns & Evidence Gaps** — Missing context, missing source evidence, or reviewer limitations that reduced confidence in the review itself
 7. **Pass/Fail Readiness** — PASS if findings are evidence-backed, severity is calibrated, and each finding includes a resolution condition; FAIL if critique is generic, theatrical, or unsupported
 8. **Recommended Next Artifact** — Which Shipwright skill or agent should engage next and why
 

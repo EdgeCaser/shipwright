@@ -86,7 +86,7 @@ Apply the 4 dimensions from the [universal rubric](rubric.md): Clarity, Complete
 |---|---|---|
 | Clarity | 10% | Review output must be easy to act on |
 | Completeness | 10% | Missing context or omitted next steps weaken the report |
-| Actionability | 15% | The report must tell the PM what to do next |
+| Actionability | 10% | The report must tell the PM what to do next |
 | Correctness | 10% | Critique must be fair and grounded |
 | Finding Specificity | 20% | Specificity is the difference between signal and noise |
 | Severity Calibration | 10% | Overstated severity destroys trust |
