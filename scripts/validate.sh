@@ -280,7 +280,8 @@ for core_skill in \
   "skills/execution/prd-development/SKILL.md" \
   "skills/strategy/product-strategy-session/SKILL.md" \
   "skills/technical/design-review/SKILL.md" \
-  "skills/measurement/ab-test-analysis/SKILL.md"; do
+  "skills/measurement/ab-test-analysis/SKILL.md" \
+  "skills/technical/adversarial-review/SKILL.md"; do
   if grep -q 'Shipwright Signature' "$core_skill"; then
     pass "Signature section present: $core_skill"
   else
