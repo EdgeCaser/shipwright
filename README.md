@@ -26,6 +26,46 @@ Shipwright is not "better prompting." It is a quality system around prompting.
 | **Recovery path** | Ad hoc rewrites | Deterministic [recovery playbooks](docs/recovery-playbooks.md) |
 | **Handoff quality** | Varies by prompt quality | Repeatable workflows with role constraints and checks |
 
+## Demo
+
+A PM was evaluating whether to build a credential verification platform. The core assumption: credential registries would allow cost-effective programmatic access. Before writing a line of code, they ran Shipwright's discovery workflow.
+
+**Input:**
+```text
+/discover I need to test whether credential registries support programmatic API access
+for a B2B verification product before we commit to a platform architecture.
+```
+
+**What the discovery-researcher agent produced** — a registry audit across 7 providers, with ToS reviewed and API terms tested:
+
+| Registry | API Available | Cost/Query | Commercial ToS | Result |
+|---|---|---|---|---|
+| AWS/Credly | Partial | $3K–$20K/yr enterprise tier | Resale explicitly prohibited | FAIL |
+| PMI | None | — | ToS inaccessible | FAIL |
+| Scrum.org | None | — | Commercial scraping prohibited | FAIL |
+| Salesforce Trailhead | None | — | "Future enhancement" | FAIL |
+| Duolingo | Institutional push only | — | No general lookup | FAIL |
+
+**Verdict: FAIL.** 0 of 7 registries support cost-effective programmatic access with commercial-use rights at <$2/query.
+
+**Decision Frame the artifact closed with:**
+```markdown
+Recommendation: Do not build platform-first. Pivot to concierge model with different unit economics.
+Trade-off: Slower scale ceiling vs. building on an assumption the registry layer cannot support.
+Confidence: High — ToS reviewed directly, API pricing confirmed, no viable path exists at current terms.
+Revisit trigger: If any major registry launches a commercial API program.
+```
+
+**Pass/Fail gate result:**
+```
+PASS — finding is grounded in direct ToS review and API pricing data, verdict is falsifiable,
+resolution condition is explicit.
+```
+
+That audit ran in one session. The alternative was discovering the same thing after building the integration layer.
+
+---
+
 ## Start Here: 3 Paths
 
 Most PM work falls into one of three patterns. If you're unsure where to begin, pick the path that matches this week's job.
@@ -121,21 +161,30 @@ Want proof before adoption? Start here:
 - [Adversarial review rubric](evals/adversarial-review.md) for calibrating Challenge Reports
 - [Failure modes](docs/failure-modes.md) and [recovery playbooks](docs/recovery-playbooks.md) for deterministic fixes
 
-### Shipwright Output Signature (Compact Example)
+### What the output signature looks like in practice
+
+Every Shipwright artifact closes with the same three blocks. Here's a real example from a competitive brief:
 
 ```markdown
 ## Decision Frame
-- Recommendation: Ship onboarding checklist v1 to all self-serve accounts this quarter.
-- Trade-off: Slower velocity on template gallery improvements for 2 sprints.
-- Decision owner/date: PM Lead (2026-03-25)
+Recommendation: Lead the first discovery call with revenue cycle friction (documentation
+accuracy, prior auth denial rate) before surfacing automation capabilities. Do not open with
+technology.
+Trade-off: A slower first meeting vs. a pitch that lands before the client has confirmed the pain.
+Confidence: High — revenue impact is quantifiable from published industry benchmarks, and
+competitor capability gap is sourced from press releases and analyst reports.
+Decision owner/date: PM (2026-03-15). Revisit after first discovery call.
 
 ## Unknowns and Evidence Gaps
-- Unknown: Activation impact for enterprise admins with SSO.
-- Evidence needed: Segment-level activation baseline + 2-week pilot telemetry.
+- EHR platform(s) in use — determines integration path
+- Payer mix breakdown — affects whether the documented revenue gap is material at this client's scale
+- Whether any value-based contracts are already in place — changes the urgency framing
 
 ## Pass/Fail Readiness
-- PASS: Problem framing tied to evidence and owner/date assigned.
-- FAIL if: recommendation has no owner/date, or unknowns are listed without a plan to resolve.
+PASS — competitive claims are sourced, revenue impact is quantified, discovery entry points are
+ranked by evidence quality, and unknowns are listed with resolution path (first call).
+FAIL condition: if competitive capability claims are taken from positioning pages only with no
+outcome data, or if revenue impact has no source.
 ```
 
 ## Keeping Your Install Up to Date
