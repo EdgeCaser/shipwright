@@ -41,6 +41,7 @@ This prevents evals from becoming optional documentation.
 | [PRD](prd.md) | PRDs from `/write-prd` | + Scope Discipline, Evidence Grounding |
 | [Strategy](strategy.md) | Strategy docs from `/strategy` | + Decision Courage, Falsifiability |
 | [Design Review](design-review.md) | Design reviews from `design-review` skill | + Perspective Coverage, Tension Surfacing |
+| [Adversarial Review](adversarial-review.md) | Challenge Reports from `adversarial-review` or `red-team` | + Finding Specificity, Severity Calibration, Evidence Grounding, Resolution Actionability |
 
 ## Scoring
 

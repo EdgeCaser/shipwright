@@ -8,7 +8,7 @@
 
 Shipwright gives PMs a real operating system for product work: framework-backed skills, orchestrated workflows, and quality gates that produce artifacts teams can execute.
 
-Under the hood, Shipwright includes 43 skills, 6 specialist agents, and 15 chained workflows. The counts matter less than the contract: evidence-first outputs, explicit decisions, pass/fail gating, and deterministic recovery.
+Under the hood, Shipwright includes 44 skills, 7 specialist agents, and 16 chained workflows. The counts matter less than the contract: evidence-first outputs, explicit decisions, pass/fail gating, deterministic recovery, and optional adversarial review for high-stakes artifacts.
 
 The skills are plain markdown files, so they're compatible with any AI coding tool that reads skill files (Cursor, Codex, Gemini CLI, and others). Agents, commands, and the orchestrator are Claude Code-specific.
 
@@ -22,6 +22,7 @@ Shipwright is not "better prompting." It is a quality system around prompting.
 | **Decision quality** | Often descriptive, not decisive | Required `Decision Frame` with recommendation + trade-off + owner/date |
 | **Evidence discipline** | Easy to mix assumptions and facts | Sourced claims + explicit unknowns |
 | **Readiness gating** | "Looks good" is subjective | Binary [pass/fail gates](evals/pass-fail.md) before scoring |
+| **Adversarial pressure** | Critique depends on the same prompt that produced the work | Optional `/challenge` workflow and red-team review for pressure-testing finished artifacts |
 | **Recovery path** | Ad hoc rewrites | Deterministic [recovery playbooks](docs/recovery-playbooks.md) |
 | **Handoff quality** | Varies by prompt quality | Repeatable workflows with role constraints and checks |
 
@@ -95,7 +96,7 @@ That's it. The orchestrator reads your CLAUDE.md, picks up your context, and rou
 You can also run workflows directly:
 
 ```text
-/discover   /write-prd   /plan-launch   /strategy   /sprint   /okrs
+/discover   /write-prd   /plan-launch   /strategy   /sprint   /okrs   /challenge
 ```
 
 For the full workflow list and behavior, see [using workflows](docs/using-workflows.md).
@@ -117,6 +118,7 @@ Want proof before adoption? Start here:
 - [Golden outputs](examples/golden-outputs/) for side-by-side baseline vs Shipwright comparisons
 - [Pass/fail gates](evals/pass-fail.md) for binary readiness checks
 - [Eval rubrics](evals/) for scored quality dimensions
+- [Adversarial review rubric](evals/adversarial-review.md) for calibrating Challenge Reports
 - [Failure modes](docs/failure-modes.md) and [recovery playbooks](docs/recovery-playbooks.md) for deterministic fixes
 
 ### Shipwright Output Signature (Compact Example)

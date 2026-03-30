@@ -114,7 +114,7 @@ echo "Checking command files match README..."
 grep -o '/[a-z-]*' README.md | sed 's/^\///' | sort -u | while read -r cmd; do
   # Skip non-command references
   case "$cmd" in
-    start|discover|write-prd|plan-launch|sprint|strategy|pricing|customer-review|tech-handoff|personas|competitive|metrics|okrs|retro|narrative)
+    start|discover|write-prd|plan-launch|sprint|strategy|pricing|customer-review|tech-handoff|personas|competitive|metrics|okrs|retro|narrative|challenge)
       if [ -f "commands/${cmd}.md" ]; then
         pass "Command file exists: commands/${cmd}.md"
       else
@@ -210,8 +210,10 @@ echo "Checking evals directory..."
 
 if [ -d "evals" ]; then
   pass "evals/ directory exists"
-  
-  for eval_file in pass-fail rubric prd strategy design-review; do
+
+  manifest_evals=$(sed -n '/"evals": \[/,/\]/p' manifest.json | tail -n +2 | grep -oE '"[a-z-]+"' | tr -d '"' || true)
+
+  for eval_file in $manifest_evals; do
     if [ -f "evals/${eval_file}.md" ]; then
       pass "Eval rubric exists: evals/${eval_file}.md"
     else
@@ -278,7 +280,8 @@ for core_skill in \
   "skills/execution/prd-development/SKILL.md" \
   "skills/strategy/product-strategy-session/SKILL.md" \
   "skills/technical/design-review/SKILL.md" \
-  "skills/measurement/ab-test-analysis/SKILL.md"; do
+  "skills/measurement/ab-test-analysis/SKILL.md" \
+  "skills/technical/adversarial-review/SKILL.md"; do
   if grep -q 'Shipwright Signature' "$core_skill"; then
     pass "Signature section present: $core_skill"
   else
