@@ -31,6 +31,8 @@ That's it. The workflow will:
 
 You can also type `/start` and describe what you need in plain language. The orchestrator will figure out which workflow to run and kick it off for you.
 
+If you already have a finished artifact and want a separate adversarial pass before sharing it, run `/challenge`.
+
 ## When to use what
 
 There are three ways to get work done in Shipwright, and they're suited to different situations:
@@ -124,6 +126,7 @@ Most PM work follows one of three patterns. Each path chains 3 workflows, where 
 | Write or review OKRs | `/okrs` |
 | Run a team retrospective | `/retro` |
 | Write a memo or executive briefing | `/narrative` |
+| Pressure-test a finished artifact | `/challenge` |
 
 If none of these fit, type `/start` and describe what you're working on. The orchestrator will either route you to the right workflow or combine individual skills into a custom plan.
 

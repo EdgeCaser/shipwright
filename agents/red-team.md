@@ -52,6 +52,7 @@ Use these files as review standards when relevant:
 - `/docs/failure-modes.md`
 - `/evals/pass-fail.md`
 - `/evals/rubric.md`
+- `/evals/adversarial-review.md`
 - artifact-specific evals in `/evals/*.md`
 
 ## Output Standards

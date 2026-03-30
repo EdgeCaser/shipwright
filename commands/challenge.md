@@ -58,7 +58,7 @@ If the verdict is `DEFEND` or `ESCALATE`, ask the PM whether they want to send t
 
 In v1 this is PM-mediated. The command does not automatically reopen the original workflow.
 
-If the PM says yes, pass the findings verbatim to the producing agent and ask it to respond to each one directly rather than summarizing or selectively filtering them.
+If the PM says yes, pass both the original artifact and the findings verbatim to the producing agent and ask it to respond to each finding directly rather than summarizing or selectively filtering them.
 
 ## Output
 
