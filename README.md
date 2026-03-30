@@ -28,41 +28,24 @@ Shipwright is not "better prompting." It is a quality system around prompting.
 
 ## Demo
 
-A PM was evaluating whether to build a credential verification platform. The core assumption: credential registries would allow cost-effective programmatic access. Before writing a line of code, they ran Shipwright's discovery workflow.
+A PM wrote a PRD recommending enterprise expansion as the top priority. Before sending it to engineering, they ran `/challenge` to pressure-test it.
 
 **Input:**
 ```text
-/discover I need to test whether credential registries support programmatic API access
-for a B2B verification product before we commit to a platform architecture.
+/challenge Review this PRD at Standard depth before I send it to the eng lead.
 ```
 
-**What the discovery-researcher agent produced** — a registry audit across 7 providers, with ToS reviewed and API terms tested:
+**What the red-team agent found:**
 
-| Registry | API Available | Cost/Query | Commercial ToS | Result |
+| Claim Challenged | Attack Vector | Severity | Why This Is Vulnerable | What Would Resolve It |
 |---|---|---|---|---|
-| AWS/Credly | Partial | $3K–$20K/yr enterprise tier | Resale explicitly prohibited | FAIL |
-| PMI | None | — | ToS inaccessible | FAIL |
-| Scrum.org | None | — | Commercial scraping prohibited | FAIL |
-| Salesforce Trailhead | None | — | "Future enhancement" | FAIL |
-| Duolingo | Institutional push only | — | No general lookup | FAIL |
+| "Enterprise is our highest-growth segment" | Evidence Integrity | Moderate | Cited market report covers the category, not this product. No enterprise-specific pipeline or win-rate data. | Cite enterprise pipeline metrics or downgrade to hypothesis. |
+| "Minimal incremental engineering cost" | Structural Honesty | Critical | SSO, audit logging, and SLA requirements are listed in the appendix but not reflected in the cost estimate or timeline. | Reconcile appendix requirements with the effort estimate or scope them out explicitly. |
+| "Self-serve onboarding will scale to enterprise" | Decision Courage | Moderate | The PRD hedges with "may require some customization" but doesn't commit to whether enterprise onboarding is self-serve or high-touch. | Make the call: self-serve with guardrails, or dedicated onboarding. State the trade-off. |
 
-**Verdict: FAIL.** 0 of 7 registries support cost-effective programmatic access with commercial-use rights at <$2/query.
+**Verdict: DEFEND.** The enterprise thesis may still be right, but the cost estimate contradicts the appendix and the growth claim lacks product-specific evidence. The PM should route findings back before treating the PRD as settled.
 
-**Decision Frame the artifact closed with:**
-```markdown
-Recommendation: Do not build platform-first. Pivot to concierge model with different unit economics.
-Trade-off: Slower scale ceiling vs. building on an assumption the registry layer cannot support.
-Confidence: High — ToS reviewed directly, API pricing confirmed, no viable path exists at current terms.
-Revisit trigger: If any major registry launches a commercial API program.
-```
-
-**Pass/Fail gate result:**
-```
-PASS — finding is grounded in direct ToS review and API pricing data, verdict is falsifiable,
-resolution condition is explicit.
-```
-
-That audit ran in one session. The alternative was discovering the same thing after building the integration layer.
+The PM sent findings back to the producing agent, which revised the cost section and downgraded the growth claim to a hypothesis. A second `/challenge` pass returned `CLEAR`.
 
 ---
 

@@ -137,10 +137,10 @@ If you ran `/challenge`, use Playbook 7 for `DEFEND` or `ESCALATE` verdicts. The
 3. If a producing Shipwright agent is known, pass both the original artifact and the findings verbatim to that agent:
    ```
    Here is the original artifact and a Challenge Report with findings.
-	   Respond to each finding directly. Do not summarize or selectively filter.
-	   For each finding: accept it and revise, dispute it with evidence, or flag it as out of scope with rationale.
-	   ```
-4. If no producing agent is known, either nominate the closest Shipwright agent for the artifact type or revise manually
+   Respond to each finding directly. Do not summarize or selectively filter.
+   For each finding: accept it and revise, dispute it with evidence, or flag it as out of scope with rationale.
+   ```
+4. If no producing agent is known, suggest the most likely agent based on artifact type (e.g., `execution-driver` for PRDs, `strategy-planner` for strategy docs, `discovery-researcher` for research artifacts). Let the PM confirm or override before dispatching.
 5. If you revise the artifact, re-run `/challenge` at the same depth to confirm the material findings are resolved
 
 **Action for ESCALATE:**

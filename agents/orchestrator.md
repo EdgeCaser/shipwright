@@ -130,7 +130,7 @@ When spawning a specialist agent, provide it with:
 3. **Resolve agent + skills** — Use the manifest entry to determine which agent and skills to dispatch
 4. **Fall back to capabilities** — If no command matches, read agent descriptions and route by capability fit
 
-**Red-team routing rule:** If the user asks to challenge or pressure-test an artifact that already exists, route to `red-team` or `/challenge`. If the user wants stronger challenge while the artifact is still being created, keep the work with the producing agent and increase rigor there.
+**Red-team routing rule:** If the user asks to challenge or pressure-test a completed artifact, route to `red-team` or `/challenge`. If the artifact is still being authored, keep the work with the producing agent and increase rigor there. If the artifact exists but the user is actively iterating, ask whether they want a formal adversarial pass now or want to finish revisions first.
 
 ### By Complexity → Recommended Approach
 

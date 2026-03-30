@@ -197,7 +197,8 @@ When the user says something containing these keywords, route to the correspondi
 
 ## Red-Team Routing Note
 
-Use challenge language differently depending on where the work is:
+Use challenge language differently depending on artifact state:
 
-- If the artifact already exists, route "red team," "pressure test," and similar language to `@red-team` or `/challenge`.
-- If the user is still creating the artifact and wants assumptions challenged during development, keep the work with the producing agent rather than spawning red-team prematurely.
+- **Completed artifact** (passed structural checks, ready for review or delivery): route to `@red-team` or `/challenge`.
+- **In-progress artifact** (still being authored, sections incomplete or placeholder): keep the work with the producing agent and increase rigor there. Do not spawn red-team until the artifact is stable enough to review.
+- **Gray zone** (artifact exists but the user is actively iterating on it): ask the PM whether they want a formal adversarial pass now or want to finish revisions first.

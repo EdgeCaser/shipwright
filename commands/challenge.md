@@ -61,7 +61,7 @@ In v1 this is PM-mediated. The command does not automatically reopen the origina
 
 If the PM says yes and a producing Shipwright agent is known, pass both the original artifact and the findings verbatim to that agent and ask it to respond to each finding directly rather than summarizing or selectively filtering them.
 
-If the PM says yes but no producing agent is known, say so explicitly and ask whether they want to nominate a Shipwright agent to revise the artifact or handle the revision manually.
+If the PM says yes but no producing agent is known, suggest the most likely agent based on artifact type (e.g., `execution-driver` for PRDs, `strategy-planner` for strategy docs, `discovery-researcher` for research artifacts, `cross-functional-liaison` for stakeholder communications). Let the PM confirm or override the suggestion before dispatching.
 
 ## Output
 
