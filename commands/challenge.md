@@ -16,6 +16,7 @@ Ask the PM:
 - What artifact should be challenged?
 - Is the artifact pasted here, available as a file path, or available from prior session context?
 - Who is the intended audience for the artifact?
+- If Shipwright produced it, which workflow or agent produced it?
 
 Do not guess by reading the most recent file in the working directory. The artifact must be explicitly identified.
 
@@ -58,7 +59,9 @@ If the verdict is `DEFEND` or `ESCALATE`, ask the PM whether they want to send t
 
 In v1 this is PM-mediated. The command does not automatically reopen the original workflow.
 
-If the PM says yes, pass both the original artifact and the findings verbatim to the producing agent and ask it to respond to each finding directly rather than summarizing or selectively filtering them.
+If the PM says yes and a producing Shipwright agent is known, pass both the original artifact and the findings verbatim to that agent and ask it to respond to each finding directly rather than summarizing or selectively filtering them.
+
+If the PM says yes but no producing agent is known, say so explicitly and ask whether they want to nominate a Shipwright agent to revise the artifact or handle the revision manually.
 
 ## Output
 

@@ -85,7 +85,7 @@ Apply the 4 dimensions from the [universal rubric](rubric.md): Clarity, Complete
 | Dimension | Weight | Rationale |
 |---|---|---|
 | Clarity | 10% | Review output must be easy to act on |
-| Completeness | 10% | Missing context or omitted next steps weaken the report |
+| Completeness | 5% | Coverage matters, but adversarial review should prioritize signal over exhaustive volume |
 | Actionability | 10% | The report must tell the PM what to do next |
 | Correctness | 10% | Critique must be fair and grounded |
 | Finding Specificity | 20% | Specificity is the difference between signal and noise |

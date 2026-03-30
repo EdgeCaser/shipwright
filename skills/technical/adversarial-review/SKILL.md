@@ -25,11 +25,11 @@ This skill produces a **Challenge Report**. A good Challenge Report creates usef
 
 | Scope | Use When | Sections to Include |
 |---|---|---|
-| **Light** | Time-sensitive review where you only want the highest-signal objections | Context + top 3 findings + Decision Frame + Action Plan + Pass/Fail Readiness + Recommended Next Artifact |
+| **Light** | Time-sensitive review where you only want the highest-signal objections | Context + condensed Analysis (top 3 findings) + Decision Frame + condensed Risks and Open Questions + Action Plan + Unknowns & Evidence Gaps + Pass/Fail Readiness + Recommended Next Artifact |
 | **Standard** | Typical adversarial review of a completed artifact | All sections with a full 5-vector sweep |
 | **Deep** | High-stakes artifact where the PM wants maximum rigor before delivery | All sections + falsification criteria for each major challenged claim + "what evidence would change my mind" notes |
 
-**Omit rules:** At Light depth, do not attempt full coverage. Surface only the strongest 3 findings across all vectors. At Deep depth, do not rewrite the artifact or produce a replacement strategy; remain in review mode.
+**Omit rules:** At Light depth, do not attempt full coverage. Surface only the strongest 3 findings across all vectors, but still include the required closing signature elements. At Deep depth, do not rewrite the artifact or produce a replacement strategy; remain in review mode.
 
 ## Framework
 
