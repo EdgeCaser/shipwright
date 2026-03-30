@@ -122,6 +122,36 @@ Each playbook is deterministic: trigger -> action -> expected correction.
 
 ---
 
+## Playbook 7: Red-team returns DEFEND or ESCALATE
+
+**Trigger:** `/challenge` produces a Challenge Report with verdict `DEFEND` or `ESCALATE`.
+
+**Action for DEFEND:**
+
+1. Read each finding in the Challenge Report
+2. Decide which findings are worth routing back (not all DEFEND findings require revision)
+3. If a producing Shipwright agent is known, pass both the original artifact and the findings verbatim to that agent:
+   ```
+   Here is the original artifact and a Challenge Report with findings.
+   Respond to each finding directly. Do not summarize or selectively filter.
+   For each finding: accept it and revise, dispute it with evidence, or flag it as out of scope with rationale.
+   ```
+4. If no producing agent is known, either nominate the closest Shipwright agent for the artifact type or revise manually
+5. Re-run `/challenge` at the same depth to confirm findings are resolved
+
+**Action for ESCALATE:**
+
+1. Stop. Do not share or act on the artifact until the Critical finding is resolved.
+2. Read the finding that triggered ESCALATE — it should name the exact claim in doubt
+3. Determine whether the missing evidence exists or can be obtained:
+   - If yes: supply it and re-run the originating skill or workflow with that evidence included
+   - If no: downgrade the claim to a hypothesis and restate the recommendation accordingly
+4. Re-run `/challenge` at Standard or Deep depth to confirm the Critical finding is resolved before proceeding
+
+**Expected correction:** Artifact with resolved findings and a clean Challenge Report verdict, or an explicitly scoped-down recommendation where evidence does not support the original claim.
+
+---
+
 ## Escalation rule
 
 If an artifact fails the same gate twice:
