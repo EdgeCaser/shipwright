@@ -127,6 +127,8 @@ Most PM work follows one of three patterns. Each path chains 3 workflows, where 
 | Run a team retrospective | `/retro` |
 | Write a memo or executive briefing | `/narrative` |
 | Pressure-test a finished artifact | `/challenge` |
+| Send a stakeholder status update | `/status` |
+| Check if output quality is drifting | `/quality-check` |
 
 If none of these fit, type `/start` and describe what you're working on. The orchestrator will either route you to the right workflow or combine individual skills into a custom plan.
 
@@ -150,8 +152,8 @@ It depends on how much context you have ready and how much back-and-forth you wa
 
 | Workflow | Typical time |
 |---|---|
-| `/sprint`, `/retro` | 15-30 min |
-| `/discover`, `/personas`, `/metrics`, `/okrs` | 30-60 min |
+| `/sprint`, `/retro`, `/status` | 15-30 min |
+| `/discover`, `/personas`, `/metrics`, `/okrs`, `/quality-check` | 30-60 min |
 | `/write-prd`, `/competitive`, `/customer-review`, `/narrative` | 45-90 min |
 | `/plan-launch`, `/strategy`, `/pricing` | 60-90 min |
 | `/tech-handoff` | 90-180 min |

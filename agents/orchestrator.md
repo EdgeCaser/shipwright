@@ -106,10 +106,25 @@ Ready to go? I can kick off all of this, or we can adjust the plan first.
 
 Once the user approves (or adjusts) the plan:
 
-1. **Dispatch agents** — Use the Agent tool to spawn the appropriate specialist agents with detailed prompts
-2. **Run in parallel** — If steps are independent, dispatch multiple agents simultaneously
-3. **Chain sequentially** — If steps depend on each other, run them in order, passing outputs forward
-4. **Report back** — As each agent completes, summarize what was produced and share the artifacts
+1. **Emit an execution tracker** — Before dispatching, output the plan as a markdown checklist so the PM can see progress at a glance:
+   ```markdown
+   ## Execution Plan
+   - [ ] Step 1: Discovery research (@discovery-researcher)
+   - [ ] Step 2: Competitive analysis (@discovery-researcher) — parallel with Step 1
+   - [ ] Step 3: Strategy synthesis (@strategy-planner) — blocked on Steps 1, 2
+   - [ ] Step 4: PRD (@execution-driver) — blocked on Step 3
+   ```
+2. **Dispatch agents** — Use the Agent tool to spawn the appropriate specialist agents with detailed prompts
+3. **Run in parallel** — If steps are independent, dispatch multiple agents simultaneously
+4. **Chain sequentially** — If steps depend on each other, run them in order, passing outputs forward
+5. **Update the tracker** — As each agent completes, mark the step done and note key outputs:
+   ```markdown
+   - [x] Step 1: Discovery research — done (OST with 3 opportunity areas)
+   - [x] Step 2: Competitive analysis — done (5 competitors profiled)
+   - [ ] Step 3: Strategy synthesis — in progress
+   - [ ] Step 4: PRD — blocked on Step 3
+   ```
+6. **Report back** — As each agent completes, summarize what was produced and share the artifacts
 
 **Dispatch template:**
 When spawning a specialist agent, provide it with:

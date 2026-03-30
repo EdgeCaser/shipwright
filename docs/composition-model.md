@@ -212,6 +212,24 @@ The `manifest.json` file maps workflows to agents via the `routing` section:
 - Multi-agent workflows use `"agents"` (array). The first agent is primary.
 - `"skills"` lists the key skills used (for orchestrator routing, not enforcement).
 
+### Tracking parallel execution
+
+When the orchestrator dispatches multiple agents (in parallel or sequence), it emits an **execution tracker** — a markdown checklist that shows what's running, what's done, and what's blocked. This is not a database; it's a convention the orchestrator follows so the PM can see progress at a glance.
+
+```markdown
+## Execution Plan
+- [x] Step 1: Discovery research (@discovery-researcher) — done (OST with 3 areas)
+- [x] Step 2: Competitive analysis (@discovery-researcher) — done, parallel with Step 1
+- [ ] Step 3: Strategy synthesis (@strategy-planner) — in progress, blocked on Steps 1, 2
+- [ ] Step 4: PRD (@execution-driver) — blocked on Step 3
+```
+
+**Rules:**
+- Emit the tracker before dispatching the first agent.
+- Update it as each step completes, marking `[x]` and noting key outputs.
+- Mark blocked steps explicitly so the PM knows what's waiting.
+- If a step fails or needs PM input, mark it with a note instead of silently stalling.
+
 ### Creating multi-agent workflows
 
 Some workflows need multiple agents. The `/plan-launch` workflow uses both `strategy-planner` (for positioning and GTM) and `execution-driver` (for timeline and launch tasks).

@@ -32,6 +32,7 @@ MAPPINGS=(
 )
 
 CONFIG_FILE=".shipwright-source"
+IGNORE_FILE=".shipwright-ignore"
 SELF_NAME="shipwright-sync.sh"
 
 # ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -42,6 +43,20 @@ ok()   { echo -e "  ${GREEN}OK${NC} $1"; }
 stale(){ echo -e "  ${YELLOW}STALE${NC} $1"; }
 new()  { echo -e "  ${RED}NEW${NC} $1"; }
 gone() { echo -e "  ${YELLOW}REMOVED${NC} $1"; }
+custom() { echo -e "  ${CYAN}CUSTOM${NC} $1"; }
+
+is_ignored() {
+  local file="$1" dest="$2"
+  [ -f "$dest/$IGNORE_FILE" ] || return 1
+  while IFS= read -r pattern; do
+    pattern="$(echo "$pattern" | sed 's/#.*//' | xargs)"
+    [ -z "$pattern" ] && continue
+    if [[ "$file" == $pattern ]]; then
+      return 0
+    fi
+  done < "$dest/$IGNORE_FILE"
+  return 1
+}
 
 prompt_yn() {
   local msg="$1" default="${2:-n}"
@@ -128,6 +143,7 @@ do_sync() {
   local new_files=()
   local removed_files=()
   local ok_count=0
+  local custom_count=0
 
   for mapping in "${MAPPINGS[@]}"; do
     local src_dir="${mapping%%:*}"
@@ -145,7 +161,10 @@ do_sync() {
       local rel="${src_file#$src/$src_dir/}"
       local dest_file="$dest/$dest_dir/$rel"
 
-      if [ ! -f "$dest_file" ]; then
+      if is_ignored "$dest_dir/$rel" "$dest"; then
+        custom "$rel (locally customized, skipping)"
+        custom_count=$((custom_count + 1))
+      elif [ ! -f "$dest_file" ]; then
         new "$rel (exists in source, missing in target)"
         new_files+=("$src/$src_dir/$rel|$dest/$dest_dir/$rel")
       elif ! diff -q "$src_file" "$dest_file" > /dev/null 2>&1; then
@@ -186,6 +205,7 @@ do_sync() {
   echo -e "  ${YELLOW}Changed:${NC}    ${#stale_files[@]} files"
   echo -e "  ${RED}New:${NC}        ${#new_files[@]} files"
   echo -e "  ${YELLOW}Removed:${NC}   ${#removed_files[@]} files"
+  echo -e "  ${CYAN}Custom:${NC}     $custom_count files"
   echo ""
 
   local total_actionable=$(( ${#stale_files[@]} + ${#new_files[@]} + ${#removed_files[@]} ))
@@ -294,6 +314,11 @@ case "${1:-}" in
     echo ""
     echo "Auto-update without prompting:"
     echo "  bash shipwright-sync.sh --yes"
+    echo ""
+    echo "Skip locally customized files:"
+    echo "  Create .shipwright-ignore with one path per line (relative to project root)."
+    echo "  Example: .claude/skills/strategy/pricing-strategy/SKILL.md"
+    echo "  Ignored files show as CUSTOM in sync output and are never overwritten."
     ;;
   "")
     do_sync

@@ -112,7 +112,7 @@ export async function handleMention(event: AppMentionEvent): Promise<void> {
   const threadContext = await fetchThreadContext(event, threadTs);
   const parsed = parseCommand(event.text);
   const command = parsed.command || (listeningThread ? 'question' : null);
-  const body = parsed.command ? parsed.body : parsed.body;
+  const body = parsed.body;
 
   if (!isAllowedCommand(command)) {
     await slack.chat.postMessage({

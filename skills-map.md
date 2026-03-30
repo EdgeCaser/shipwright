@@ -27,6 +27,7 @@
 | Prioritization Advisor | `skills/strategy/prioritization-advisor/` | RICE, ICE, Kano, MoSCoW scoring |
 | SWOT Analysis | `skills/strategy/swot-analysis/` | Strengths, weaknesses, opportunities, threats with strategic options |
 | Business Model Canvas | `skills/strategy/business-model-canvas/` | Full 9-block business model mapping |
+| Build-vs-Buy Analysis | `skills/strategy/build-vs-buy-analysis/` | Build, buy, or integrate decision with TCO and strategic fit |
 
 ### Execution & Delivery
 | Skill | Directory | Best For |
@@ -137,6 +138,8 @@ If the user's need doesn't fit a path, use the individual workflow table below.
 | `/okrs` | Context → Draft → Anti-Pattern Audit → Alignment Check | OKR authoring and review | 30-60 min |
 | `/retro` | Format → Observations → Patterns → Actions | Team retrospective facilitation | 20-40 min |
 | `/narrative` | Format → Draft (Briefing or 6-Pager) → Review | Product narratives for decisions | 30-90 min |
+| `/status` | Context → Draft → Honesty Check | Stakeholder status updates | 15-30 min |
+| `/quality-check` | Identify Artifacts → Score → Trend → Recommend | Artifact quality audit and drift detection | 20-40 min |
 
 ---
 
@@ -188,6 +191,9 @@ When the user says something containing these keywords, route to the correspondi
 | "questionnaire", "workflow discovery", "friction audit", "process mapping", "where can we automate", "workflow friction" | workflow-questionnaire |
 | "SWOT", "strengths weaknesses", "strategic assessment" | swot-analysis |
 | "business model canvas", "BMC", "9 blocks", "full business model" | business-model-canvas |
+| "build or buy", "build vs buy", "vendor vs in-house", "should we build", "buy or integrate" | build-vs-buy-analysis |
+| "status update", "weekly update", "stakeholder update", "progress report" | /status workflow |
+| "quality check", "are outputs getting worse", "artifact quality", "quality drift" | /quality-check workflow |
 | "personas", "who are our users", "user profiles" | /personas workflow |
 | "competitive analysis", "who are we up against" | /competitive workflow |
 | "metrics framework", "what should we track", "dashboard design" | /metrics workflow |

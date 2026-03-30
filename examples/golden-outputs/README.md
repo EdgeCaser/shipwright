@@ -22,6 +22,7 @@ Each example shows:
 | [Strategy](strategy.md) | `/strategy` workflow | Falsifiable bets with kill criteria replace vague strategic direction; boundaries make the strategy actionable |
 | [Design Review](design-review.md) | `design-review` skill | 7-perspective review catches blind spots that single-perspective reviews miss; forced verdicts prevent hand-waving |
 | [A/B Analysis](ab-analysis.md) | `ab-test-analysis` skill | Structured rigor checks prevent premature ship decisions; segment analysis and guardrails catch hidden regressions |
+| [Adversarial Review](adversarial-review.md) | `adversarial-review` skill | 5-vector sweep with calibrated severity replaces theatrical skepticism; specific claims challenged with resolution conditions |
 
 ## How to read these
 

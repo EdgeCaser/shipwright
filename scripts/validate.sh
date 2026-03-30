@@ -114,7 +114,7 @@ echo "Checking command files match README..."
 grep -o '/[a-z-]*' README.md | sed 's/^\///' | sort -u | while read -r cmd; do
   # Skip non-command references
   case "$cmd" in
-    start|discover|write-prd|plan-launch|sprint|strategy|pricing|customer-review|tech-handoff|personas|competitive|metrics|okrs|retro|narrative|challenge)
+    start|discover|write-prd|plan-launch|sprint|strategy|pricing|customer-review|tech-handoff|personas|competitive|metrics|okrs|retro|narrative|challenge|status|quality-check)
       if [ -f "commands/${cmd}.md" ]; then
         pass "Command file exists: commands/${cmd}.md"
       else
@@ -239,7 +239,7 @@ echo "Checking golden outputs..."
 if [ -d "examples/golden-outputs" ]; then
   pass "examples/golden-outputs/ directory exists"
   
-  for output_file in prd strategy design-review ab-analysis; do
+  for output_file in prd strategy design-review ab-analysis adversarial-review; do
     if [ -f "examples/golden-outputs/${output_file}.md" ]; then
       pass "Golden output exists: examples/golden-outputs/${output_file}.md"
     else
@@ -281,7 +281,13 @@ for core_skill in \
   "skills/strategy/product-strategy-session/SKILL.md" \
   "skills/technical/design-review/SKILL.md" \
   "skills/measurement/ab-test-analysis/SKILL.md" \
-  "skills/technical/adversarial-review/SKILL.md"; do
+  "skills/technical/adversarial-review/SKILL.md" \
+  "skills/gtm/go-to-market-strategy/SKILL.md" \
+  "skills/pricing/pricing-strategy/SKILL.md" \
+  "skills/customer-intelligence/churn-analysis/SKILL.md" \
+  "skills/discovery/competitive-landscape/SKILL.md" \
+  "skills/strategy/roadmap-planning/SKILL.md" \
+  "skills/strategy/build-vs-buy-analysis/SKILL.md"; do
   if grep -q 'Shipwright Signature' "$core_skill"; then
     pass "Signature section present: $core_skill"
   else
