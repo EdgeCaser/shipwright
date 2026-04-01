@@ -29,7 +29,7 @@ Produce a short competitive brief covering:
 ### Step 2: Collect Competitive Evidence
 If fresh public-web evidence is required, use the local research collector first and only use interactive browsing for unresolved gaps.
 
-Read and apply `/skills/discovery/competitive-landscape/SKILL.md`.
+Using the same `/skills/discovery/competitive-landscape/SKILL.md` framework, gather the evidence basis for the in-scope competitors and alternatives.
 
 Produce an evidence basis containing:
 - competitor positioning and segmentation
