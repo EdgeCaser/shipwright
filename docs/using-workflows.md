@@ -140,6 +140,7 @@ Use these patterns to keep sessions moving:
 
 - Run a known workflow directly instead of asking `/start` to rediscover it.
 - Split web-heavy work into phases: research first, synthesis second, packaging third.
+- Expect `/pricing` and `/competitive` to do this explicitly when fresh external evidence is needed.
 - Ask for one primary deliverable per run: market sizing or competitive landscape, not both plus a memo.
 - Let the agent return findings inline before asking it to save or polish the output.
 
@@ -165,8 +166,8 @@ It depends on how much context you have ready and how much back-and-forth you wa
 |---|---|
 | `/sprint`, `/retro`, `/status` | 15-30 min |
 | `/discover`, `/personas`, `/metrics`, `/okrs`, `/quality-check` | 30-60 min |
-| `/write-prd`, `/competitive`, `/customer-review`, `/narrative` | 45-90 min |
-| `/plan-launch`, `/strategy`, `/pricing` | 60-90 min |
+| `/write-prd`, `/customer-review`, `/narrative` | 45-90 min |
+| `/competitive`, `/plan-launch`, `/strategy`, `/pricing` | 60-120 min |
 | `/tech-handoff` | 90-180 min |
 
 These times assume you're actively participating. The agent needs your input at each step, so leaving and coming back will add time.

@@ -130,11 +130,11 @@ If the user's need doesn't fit a path, use the individual workflow table below.
 | `/plan-launch` | GTM → ICP → Positioning → Battlecard → Timeline | Product or feature launch | 60-90 min |
 | `/sprint` | Goal → Capacity → Selection → Risk Check | Sprint planning prep | 20-40 min |
 | `/strategy` | Vision → Bets → Boundaries → Pre-Mortem → Success Criteria | Strategy development | 60-120 min |
-| `/pricing` | Value Metric → Model → Competitive → WTP → Packaging → Experiment | Pricing strategy with validation plan | 60-90 min |
+| `/pricing` | Evidence Basis → Value Metric → Model → WTP → Packaging → Experiment | Pricing strategy with evidence-backed validation plan | 60-120 min |
 | `/customer-review` | Feedback → Journey → Churn → Exec Briefing | Customer intelligence report | 45-90 min |
 | `/tech-handoff` | PRD → Tech Spec → Design Review → Epics → Stories | Complete engineering handoff package | 90-180 min |
 | `/personas` | Inputs → Persona Profiles → JTBD Mapping → Validation | Building user personas | 30-60 min |
-| `/competitive` | Landscape → Battlecards → Positioning Review | Competitive intelligence package | 45-90 min |
+| `/competitive` | Evidence Basis → Landscape → Battlecards → Positioning Review | Competitive intelligence package grounded in a fresh evidence pass when needed | 60-120 min |
 | `/metrics` | North Star → Input Metrics → Guardrails → Dashboard Spec | Metrics framework design | 30-60 min |
 | `/okrs` | Context → Draft → Anti-Pattern Audit → Alignment Check | OKR authoring and review | 30-60 min |
 | `/retro` | Format → Observations → Patterns → Actions | Team retrospective facilitation | 20-40 min |
