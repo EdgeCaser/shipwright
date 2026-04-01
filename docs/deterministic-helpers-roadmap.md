@@ -12,12 +12,13 @@ Shipwright now has a collector-level research cache in `scripts/collect-research
 - stored under `.shipwright/cache/research/v1/`
 - reused within a freshness window instead of recollecting identical evidence
 - designed to fail soft when the cache is missing, stale, corrupt, or not writable
+- emits a collector-layer `facts.json` sidecar with atomic, source-attributed pricing/product/date facts when extraction is deterministic enough to support them
 
 ## Near-term implementation backlog
 
 If Shipwright continues investing in deterministic acceleration, the next highest-value additions are:
 
-1. Structured fact extractor for prices, dates, review counts, acquisitions, and product names.
+1. Broaden the structured fact extractor beyond the v1 pricing/product/date field set into review counts, acquisitions, and richer pricing/page adapters.
 2. Citation and signature validator for final artifacts.
 3. Source adapters for high-value structured sites like Unity Asset Store, Fab, and major vendor pricing pages.
 4. Checkpoint and resume support for multi-phase runs.

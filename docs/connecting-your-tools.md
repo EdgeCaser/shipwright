@@ -115,6 +115,7 @@ What it does:
 - fetches the top pages in parallel
 - extracts a compact source digest
 - writes `evidence.json` and `evidence.md` under `.shipwright/research/`
+- writes `facts.json` with sparse, source-attributed pricing/product/date facts when they can be extracted deterministically
 - caches canonical evidence packs under `.shipwright/cache/research/v1/`
 - escalates automatically from the primary query to broader subqueries and then to gap-only follow-up recommendations when needed
 
@@ -149,7 +150,7 @@ node .claude/scripts/collect-research.mjs \
   --max-results 5
 ```
 
-This produces a compact evidence pack the model can synthesize instead of spending a long sequence of `WebSearch` and `WebFetch` calls on the same task.
+This produces a compact evidence pack plus a machine-readable `facts.json` sidecar the model can synthesize instead of spending a long sequence of `WebSearch` and `WebFetch` calls on the same task.
 
 The collector cache is local to the repo and keyed by the normalized query plus provider and retrieval settings. By default, a cache entry is reusable for 24 hours:
 

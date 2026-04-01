@@ -7,6 +7,7 @@ import test from 'node:test';
 import {
   buildCacheKey,
   collectResearch,
+  extractFactsPack,
   readCachePack,
 } from '../scripts/collect-research.mjs';
 
@@ -33,6 +34,32 @@ function createProviderPlan(overrides = {}) {
     providers: ['brave'],
     providerStatus: 'configured',
     providerNote: '',
+    ...overrides,
+  };
+}
+
+function createEvidencePack(overrides = {}) {
+  return {
+    generatedAt: '2026-04-01T00:00:00.000Z',
+    query: 'acme pricing',
+    mode: 'standard',
+    providerRequest: 'brave',
+    providerStatus: 'configured',
+    providersAttempted: ['brave'],
+    escalation: {
+      status: 'complete',
+      nextAction: 'Programmatic retrieval reached the target evidence threshold.',
+      suggestedInteractiveQueries: [],
+      coverage: {
+        totalResults: 1,
+        successfulFetches: 1,
+        usableSources: 1,
+        uniqueDomains: 1,
+        thinCoverage: false,
+      },
+      stages: [],
+    },
+    results: [],
     ...overrides,
   };
 }
@@ -147,6 +174,96 @@ test('buildCacheKey changes when keyed inputs change', { concurrency: false }, (
   assert.notEqual(baseKey, buildCacheKey(baseArgs, createProviderPlan({ providers: ['brave', 'tavily'] })));
 });
 
+test('extractFactsPack emits attributed atomic pricing facts from representative evidence', { concurrency: false }, () => {
+  const factsPack = extractFactsPack(createEvidencePack({
+    results: [
+      {
+        title: 'Acme Pricing',
+        url: 'https://acme.com/pricing',
+        searchSnippet: 'Starter starts at $29 per user / month for small teams.',
+        published: '2026-03-15',
+        fetched: {
+          ok: true,
+          status: 200,
+          finalUrl: 'https://acme.com/pricing',
+        },
+        extracted: {
+          title: 'Pricing | Acme',
+          description: 'Plans for growing teams.',
+          excerpt: 'Starter - $29 per user / month for up to 10 seats.\nBusiness plans are available for larger teams.',
+          wordCount: 20,
+        },
+      },
+    ],
+  }), {
+    extractedAt: '2026-04-01T00:00:00.000Z',
+    sourcePackPath: '/tmp/evidence.json',
+  });
+
+  assert.equal(factsPack.meta.version, 1);
+  assert.equal(factsPack.meta.sourcePackPath, '/tmp/evidence.json');
+  assert.match(factsPack.meta.coverageHint, /usable=1/);
+
+  assert.ok(factsPack.facts.find((fact) => fact.field === 'company' && fact.value === 'Acme'));
+  assert.ok(factsPack.facts.find((fact) => fact.field === 'product' && fact.value === 'Acme'));
+  assert.ok(factsPack.facts.find((fact) => fact.field === 'plan_name' && fact.value === 'Starter'));
+  assert.ok(factsPack.facts.find((fact) => fact.field === 'price' && fact.value === '29'));
+  assert.ok(factsPack.facts.find((fact) => fact.field === 'currency' && fact.value === 'USD'));
+  assert.ok(factsPack.facts.find((fact) => fact.field === 'billing_period' && fact.value === 'user/month'));
+  assert.ok(factsPack.facts.find((fact) => fact.field === 'published_or_observed_date' && fact.value === '2026-03-15'));
+
+  for (const fact of factsPack.facts) {
+    assert.ok(fact.source_url);
+    assert.ok(fact.excerpt);
+    assert.equal(fact.observed_at, '2026-04-01T00:00:00.000Z');
+  }
+});
+
+test('extractFactsPack stays sparse when values are ambiguous or missing', { concurrency: false }, () => {
+  const factsPack = extractFactsPack(createEvidencePack({
+    query: 'generic market overview',
+    escalation: {
+      status: 'needs-interactive-followup',
+      nextAction: 'Use interactive WebSearch/WebFetch only for the unresolved gaps.',
+      suggestedInteractiveQueries: ['generic market overview pricing'],
+      coverage: {
+        totalResults: 1,
+        successfulFetches: 1,
+        usableSources: 0,
+        uniqueDomains: 1,
+        thinCoverage: true,
+      },
+      stages: [],
+    },
+    results: [
+      {
+        title: 'Market overview',
+        url: 'https://example.com/blog/post',
+        searchSnippet: 'Pricing ranges from $20 to $40 depending on usage.',
+        published: '3 days ago',
+        fetched: {
+          ok: true,
+          status: 200,
+          finalUrl: 'https://example.com/blog/post',
+        },
+        extracted: {
+          title: 'Market overview',
+          description: 'Broad overview without stable product facts.',
+          excerpt: 'Pricing ranges from $20 to $40 depending on usage and contract length.',
+          wordCount: 12,
+        },
+      },
+    ],
+  }), {
+    extractedAt: '2026-04-01T00:00:00.000Z',
+    sourcePackPath: '/tmp/evidence.json',
+  });
+
+  assert.equal(factsPack.facts.length, 0);
+  assert.match(factsPack.meta.notes.join(' '), /No deterministic facts were extracted/);
+  assert.match(factsPack.meta.notes.join(' '), /Coverage was thin/);
+});
+
 test('configured-provider run writes cache on miss and reuses it on hit without network calls', { concurrency: false }, async (t) => {
   const cwd = await createTempDir(t);
   setEnvForTest(t, {
@@ -164,11 +281,19 @@ test('configured-provider run writes cache on miss and reuses it on hit without 
   assert.equal(first.pack.cache.status, 'miss');
   assert.equal(first.pack.cache.persisted, true);
   assert.equal(calls.length, 2);
+  assert.equal(first.factsPathLabel, path.join('research-output', 'facts.json'));
 
   const cacheKey = buildCacheKey(createArgs(), createProviderPlan());
   const cachedPack = await readCachePack(path.join(cwd, '.shipwright', 'cache', 'research', 'v1', cacheKey));
   assert.ok(cachedPack);
   assert.equal(cachedPack.cache.status, 'miss');
+
+  const factsJson = JSON.parse(await readFile(first.factsPath, 'utf8'));
+  assert.equal(factsJson.meta.query, 'mid-market AI support pricing');
+  assert.ok(factsJson.facts.every((fact) => Boolean(fact.source_url)));
+
+  const cachedFactsJson = JSON.parse(await readFile(path.join(cwd, '.shipwright', 'cache', 'research', 'v1', cacheKey, 'facts.json'), 'utf8'));
+  assert.equal(cachedFactsJson.meta.query, 'mid-market AI support pricing');
 
   globalThis.fetch = async () => {
     throw new Error('Fetch should not be called on a cache hit.');
@@ -188,6 +313,9 @@ test('configured-provider run writes cache on miss and reuses it on hit without 
   const markdown = await readFile(path.join(cwd, 'research-output-hit', 'evidence.md'), 'utf8');
   assert.match(markdown, /## Cache Summary/);
   assert.match(markdown, /- Status: hit/);
+
+  const hitFactsJson = JSON.parse(await readFile(path.join(cwd, 'research-output-hit', 'facts.json'), 'utf8'));
+  assert.equal(hitFactsJson.meta.sourcePackPath, path.join(cwd, 'research-output-hit', 'evidence.json'));
 });
 
 test('stale cache entry refreshes and preserves previous cache metadata', { concurrency: false }, async (t) => {
@@ -289,6 +417,10 @@ test('no-provider run writes output but does not create a cache entry', { concur
 
   const json = await readFile(path.join(cwd, 'research-output-no-provider', 'evidence.json'), 'utf8');
   assert.match(json, /"providerStatus": "not-configured"/);
+
+  const factsJson = JSON.parse(await readFile(path.join(cwd, 'research-output-no-provider', 'facts.json'), 'utf8'));
+  assert.equal(factsJson.facts.length, 0);
+  assert.match(factsJson.meta.notes.join(' '), /No search provider configured/);
 });
 
 test('clear-cache removes cached entries without requiring a query', { concurrency: false }, async (t) => {

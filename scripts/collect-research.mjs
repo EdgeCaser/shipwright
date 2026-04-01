@@ -43,6 +43,7 @@ Providers:
 Outputs:
   evidence.json               Structured machine-readable results
   evidence.md                 AI-ready source digest
+  facts.json                  Atomic source-attributed facts derived from evidence.json
 
 Behavior:
   Loads .env from the current working directory if present.
@@ -193,15 +194,17 @@ export async function collectResearch(rawArgs, options = {}) {
   }
 
   const output = resolveOutputPaths(args.query, args.outDir, cwd);
-  await writePackFiles(output.outDir, pack);
+  await writePackFiles(output.outDir, pack, { artifactNow: now });
 
   return {
     pack,
     outDir: output.outDir,
     jsonPath: output.jsonPath,
     mdPath: output.mdPath,
+    factsPath: output.factsPath,
     jsonPathLabel: output.jsonPathLabel,
     mdPathLabel: output.mdPathLabel,
+    factsPathLabel: output.factsPathLabel,
   };
 }
 
@@ -240,8 +243,10 @@ function resolveOutputPaths(query, outDir, cwd) {
     outDir: outputDir,
     jsonPath: path.join(outputDir, 'evidence.json'),
     mdPath: path.join(outputDir, 'evidence.md'),
+    factsPath: path.join(outputDir, 'facts.json'),
     jsonPathLabel: path.join(outputDirValue, 'evidence.json'),
     mdPathLabel: path.join(outputDirValue, 'evidence.md'),
+    factsPathLabel: path.join(outputDirValue, 'facts.json'),
   };
 }
 
@@ -406,7 +411,7 @@ async function finalizeCollectedPack({
   });
 
   try {
-    await writeCachePack(resolveCacheDir(cwd, cacheKey), persistedPack);
+    await writeCachePack(resolveCacheDir(cwd, cacheKey), persistedPack, { artifactNow: now });
     return persistedPack;
   } catch (error) {
     logCacheNote(
@@ -452,10 +457,18 @@ function hoursToMs(hours) {
   return hours * 60 * 60 * 1000;
 }
 
-async function writePackFiles(dir, pack) {
+async function writePackFiles(dir, pack, options = {}) {
+  const artifactNow = resolveNow(options.artifactNow || pack.generatedAt).toISOString();
+  const evidenceJsonPath = path.join(dir, 'evidence.json');
+  const factsPack = extractFactsPack(pack, {
+    extractedAt: artifactNow,
+    sourcePackPath: evidenceJsonPath,
+  });
+
   await mkdir(dir, { recursive: true });
-  await writeFile(path.join(dir, 'evidence.json'), `${JSON.stringify(pack, null, 2)}\n`, 'utf8');
+  await writeFile(evidenceJsonPath, `${JSON.stringify(pack, null, 2)}\n`, 'utf8');
   await writeFile(path.join(dir, 'evidence.md'), renderMarkdown(pack), 'utf8');
+  await writeFile(path.join(dir, 'facts.json'), `${JSON.stringify(factsPack, null, 2)}\n`, 'utf8');
 }
 
 async function pathExists(target) {
@@ -482,8 +495,8 @@ export async function readCachePack(cacheDir) {
   }
 }
 
-export async function writeCachePack(cacheDir, pack) {
-  await writePackFiles(cacheDir, pack);
+export async function writeCachePack(cacheDir, pack, options = {}) {
+  await writePackFiles(cacheDir, pack, options);
 }
 
 function formatAgeMs(ageMs) {
@@ -501,7 +514,12 @@ function logCacheNote(logger, message) {
 }
 
 function logCollectionSummary(result, logger) {
-  const { pack, jsonPathLabel, mdPathLabel } = result;
+  const {
+    pack,
+    jsonPathLabel,
+    mdPathLabel,
+    factsPathLabel,
+  } = result;
 
   logger.log(`Collected ${pack.results.length} result(s) using ${formatProvidersAttempted(pack.providersAttempted)}.`);
   if (pack.cache) {
@@ -519,6 +537,7 @@ function logCollectionSummary(result, logger) {
   }
   logger.log(`JSON: ${jsonPathLabel}`);
   logger.log(`Markdown: ${mdPathLabel}`);
+  logger.log(`Facts: ${factsPathLabel}`);
 }
 
 async function runEscalatingResearch(args, providerPlan, options = {}) {
@@ -1406,6 +1425,423 @@ function unique(items) {
 
 function formatProvidersAttempted(providers) {
   return providers.length > 0 ? providers.join(', ') : 'none';
+}
+
+export function extractFactsPack(pack, options = {}) {
+  const extractedAt = resolveNow(options.extractedAt || pack?.generatedAt).toISOString();
+  const facts = dedupeFacts(extractFacts(pack, extractedAt));
+
+  return {
+    meta: {
+      version: 1,
+      query: pack?.query || '',
+      provider: determineFactsProvider(pack),
+      mode: pack?.mode || '',
+      extractedAt,
+      sourcePackPath: options.sourcePackPath || '',
+      coverageHint: buildCoverageHint(pack),
+      notes: buildFactsNotes(pack, facts),
+    },
+    facts,
+  };
+}
+
+function determineFactsProvider(pack) {
+  if (Array.isArray(pack?.providersAttempted) && pack.providersAttempted.length > 0) {
+    return pack.providersAttempted.join(',');
+  }
+  return pack?.providerRequest || '';
+}
+
+function buildCoverageHint(pack) {
+  const coverage = pack?.escalation?.coverage;
+  const parts = [];
+
+  if (pack?.escalation?.status) parts.push(pack.escalation.status);
+  if (Number.isFinite(coverage?.usableSources)) parts.push(`usable=${coverage.usableSources}`);
+  if (Number.isFinite(coverage?.uniqueDomains)) parts.push(`domains=${coverage.uniqueDomains}`);
+  if (coverage?.thinCoverage) parts.push('thin');
+
+  return parts.join('; ');
+}
+
+function buildFactsNotes(pack, facts) {
+  const notes = [];
+
+  if (pack?.providerNote) {
+    notes.push(pack.providerNote);
+  }
+
+  if (pack?.escalation?.coverage?.thinCoverage) {
+    notes.push('Coverage was thin; facts may be incomplete.');
+  }
+
+  if (facts.length === 0) {
+    notes.push('No deterministic facts were extracted from the collected evidence.');
+  }
+
+  return unique(notes);
+}
+
+function extractFacts(pack, observedAt) {
+  const facts = [];
+  const results = Array.isArray(pack?.results) ? pack.results : [];
+
+  for (const result of results) {
+    const sourceUrl = result?.fetched?.finalUrl || result?.url || '';
+    if (!sourceUrl) continue;
+
+    facts.push(...extractIdentityFacts(result, sourceUrl, observedAt));
+
+    const publishedDateFact = extractPublishedDateFact(result, sourceUrl, observedAt);
+    if (publishedDateFact) facts.push(publishedDateFact);
+
+    facts.push(...extractPricingFacts(result, sourceUrl, observedAt));
+  }
+
+  return facts;
+}
+
+function extractIdentityFacts(result, sourceUrl, observedAt) {
+  const titleCandidates = unique([
+    cleanInlineText(result?.extracted?.title || ''),
+    cleanInlineText(result?.title || ''),
+  ]);
+  const domainRoot = extractDomainRootToken(sourceUrl);
+
+  for (const title of titleCandidates) {
+    const product = parsePricingTitleIdentity(title);
+    if (!product) continue;
+
+    const facts = [];
+    const company = deriveCompanyFromProduct(product, title, domainRoot);
+
+    if (company) {
+      facts.push(createFact({
+        field: 'company',
+        value: company,
+        sourceUrl,
+        excerpt: title,
+        observedAt,
+        confidenceHint: company.toLowerCase() === product.toLowerCase() ? 'high' : 'medium',
+      }));
+    }
+
+    facts.push(createFact({
+      field: 'product',
+      value: product,
+      sourceUrl,
+      excerpt: title,
+      observedAt,
+      confidenceHint: 'high',
+    }));
+
+    return facts.filter(Boolean);
+  }
+
+  return [];
+}
+
+function extractPublishedDateFact(result, sourceUrl, observedAt) {
+  const rawPublished = cleanInlineText(result?.published || '');
+  const normalizedDate = normalizeFactDate(rawPublished);
+
+  if (!normalizedDate) return null;
+
+  return createFact({
+    field: 'published_or_observed_date',
+    value: normalizedDate,
+    sourceUrl,
+    excerpt: `Published: ${rawPublished}`,
+    observedAt,
+    confidenceHint: /^\d{4}-\d{2}-\d{2}/.test(rawPublished) ? 'high' : 'medium',
+  });
+}
+
+function extractPricingFacts(result, sourceUrl, observedAt) {
+  const facts = [];
+
+  for (const segment of collectPricingSegments(result)) {
+    facts.push(...extractPriceFactsFromLine(segment, sourceUrl, observedAt));
+  }
+
+  return facts;
+}
+
+function collectPricingSegments(result) {
+  return unique([
+    cleanInlineText(result?.searchSnippet || ''),
+    cleanInlineText(result?.extracted?.description || ''),
+    ...splitExcerptLines(result?.extracted?.excerpt || ''),
+  ]);
+}
+
+function splitExcerptLines(excerpt) {
+  return excerpt
+    .split(/\n+/)
+    .flatMap((line) => line.split(/\s+\|\s+/))
+    .map((line) => cleanInlineText(line))
+    .filter(Boolean);
+}
+
+function extractPriceFactsFromLine(line, sourceUrl, observedAt) {
+  const matches = Array.from(line.matchAll(/(?:\b(USD|EUR|GBP)\b\s*|([$€£])\s*)(\d{1,3}(?:,\d{3})*(?:\.\d{1,2})?)/gi));
+
+  if (matches.length !== 1) return [];
+  if (hasAmbiguousPriceContext(line)) return [];
+
+  const match = matches[0];
+  const currency = normalizeCurrency(match[1] || match[2] || '');
+  const price = (match[3] || '').replace(/,/g, '');
+  const matchIndex = match.index ?? 0;
+  const tail = line.slice(matchIndex + match[0].length, matchIndex + match[0].length + 60);
+  const planName = detectPlanName(line, matchIndex);
+  const billingPeriod = normalizeBillingPeriod(tail);
+  const confidenceHint = billingPeriod ? 'high' : 'medium';
+  const excerpt = truncate(line, 180);
+  const facts = [];
+
+  if (planName) {
+    facts.push(createFact({
+      field: 'plan_name',
+      value: planName,
+      sourceUrl,
+      excerpt,
+      observedAt,
+      confidenceHint,
+    }));
+  }
+
+  facts.push(createFact({
+    field: 'price',
+    value: price,
+    sourceUrl,
+    excerpt,
+    observedAt,
+    confidenceHint,
+  }));
+
+  if (currency) {
+    facts.push(createFact({
+      field: 'currency',
+      value: currency,
+      sourceUrl,
+      excerpt,
+      observedAt,
+      confidenceHint,
+    }));
+  }
+
+  if (billingPeriod) {
+    facts.push(createFact({
+      field: 'billing_period',
+      value: billingPeriod,
+      sourceUrl,
+      excerpt,
+      observedAt,
+      confidenceHint,
+    }));
+  }
+
+  return facts.filter(Boolean);
+}
+
+function hasAmbiguousPriceContext(line) {
+  return /(?:[$€£]|USD|EUR|GBP)\s*\d[\d,.]*(?:\s*[-–]\s*|\s+to\s+)\d/i.test(line)
+    || /\bbetween\b/i.test(line);
+}
+
+function detectPlanName(line, priceIndex) {
+  const prefix = line.slice(0, priceIndex);
+  const matches = Array.from(prefix.matchAll(/\b(Free|Basic|Starter|Standard|Pro|Professional|Premium|Business|Team|Enterprise|Growth|Plus|Advanced|Scale)\b/gi));
+
+  if (matches.length === 0) return '';
+
+  const match = matches[matches.length - 1];
+  if ((priceIndex - (match.index ?? 0)) > 40) return '';
+  return cleanInlineText(match[0]);
+}
+
+function normalizeCurrency(token) {
+  const upper = cleanInlineText(token).toUpperCase();
+  if (upper === '$' || upper === 'USD') return 'USD';
+  if (upper === '€' || upper === 'EUR') return 'EUR';
+  if (upper === '£' || upper === 'GBP') return 'GBP';
+  return '';
+}
+
+function normalizeBillingPeriod(input) {
+  const lower = cleanInlineText(input).toLowerCase();
+
+  let match = lower.match(/(?:per\s+|\/\s*)(user|seat)\s*(?:\/|per\s+)?\s*(month|mo|year|yr|monthly|yearly|annually|annual)/);
+  if (match) {
+    return `${match[1]}/${normalizePeriodToken(match[2])}`;
+  }
+
+  match = lower.match(/\b(user|seat)\s*\/\s*(month|mo|year|yr|monthly|yearly|annually|annual)\b/);
+  if (match) {
+    return `${match[1]}/${normalizePeriodToken(match[2])}`;
+  }
+
+  match = lower.match(/\b(per\s+|\/\s*)(month|mo|year|yr|monthly|yearly|annually|annual)\b/);
+  if (match) {
+    return normalizePeriodToken(match[2]);
+  }
+
+  if (/\bmonthly\b/.test(lower)) return 'month';
+  if (/\b(yearly|annually|annual)\b/.test(lower)) return 'year';
+  if (/\bper user\b|\b\/user\b/.test(lower)) return 'user';
+  if (/\bper seat\b|\b\/seat\b/.test(lower)) return 'seat';
+
+  return '';
+}
+
+function normalizePeriodToken(token) {
+  const lower = token.toLowerCase();
+  if (['month', 'mo', 'monthly'].includes(lower)) return 'month';
+  if (['year', 'yr', 'yearly', 'annually', 'annual'].includes(lower)) return 'year';
+  return lower;
+}
+
+function parsePricingTitleIdentity(title) {
+  const directPrefix = title.match(/^(.+?)\s+(pricing|plans?)\b/i);
+  if (directPrefix) {
+    return cleanIdentityCandidate(directPrefix[1]);
+  }
+
+  const directSuffix = title.match(/\b(pricing|plans?)\b\s*[-|:]\s*(.+)$/i);
+  if (directSuffix) {
+    return cleanIdentityCandidate(directSuffix[2]);
+  }
+
+  const segments = title
+    .split(/\s*[-|:]\s*/)
+    .map((segment) => cleanInlineText(segment))
+    .filter(Boolean);
+
+  for (let index = 0; index < segments.length; index += 1) {
+    if (!/\b(pricing|plans?)\b/i.test(segments[index])) continue;
+
+    const previous = cleanIdentityCandidate(segments[index - 1] || '');
+    if (previous) return previous;
+
+    const next = cleanIdentityCandidate(segments[index + 1] || '');
+    if (next) return next;
+  }
+
+  return '';
+}
+
+function cleanIdentityCandidate(value) {
+  const cleaned = cleanInlineText(
+    value
+      .replace(/\b(pricing|plans?|compare|comparison)\b/gi, ' ')
+      .replace(/[()]/g, ' '),
+  );
+
+  if (!isValidIdentityCandidate(cleaned)) return '';
+  return cleaned;
+}
+
+function isValidIdentityCandidate(value) {
+  if (!value) return false;
+  if (!/[A-Za-z]/.test(value)) return false;
+  if (countWords(value) > 5) return false;
+  if (value.length > 60) return false;
+
+  const lower = value.toLowerCase();
+  return ![
+    'pricing',
+    'plans',
+    'plan',
+    'compare',
+    'comparison',
+    'features',
+  ].includes(lower);
+}
+
+function extractDomainRootToken(rawUrl) {
+  const domain = extractDomain(rawUrl);
+  const parts = domain.split('.').filter(Boolean);
+
+  if (parts.length === 0) return '';
+  if (parts.length >= 3 && parts[parts.length - 1].length === 2 && parts[parts.length - 2].length <= 3) {
+    return normalizeAlphaNumeric(parts[parts.length - 3]);
+  }
+  return normalizeAlphaNumeric(parts[parts.length - 2] || parts[0]);
+}
+
+function deriveCompanyFromProduct(product, title, domainRoot) {
+  if (!domainRoot) return '';
+
+  for (const token of unique([
+    ...product.split(/\s+/),
+    ...title.split(/\s+/),
+  ].map((item) => item.replace(/[^A-Za-z0-9]/g, '')))) {
+    if (normalizeAlphaNumeric(token) === domainRoot) {
+      return token;
+    }
+  }
+
+  if (normalizeAlphaNumeric(product) === domainRoot) {
+    return product;
+  }
+
+  return '';
+}
+
+function normalizeAlphaNumeric(value) {
+  return value.toLowerCase().replace(/[^a-z0-9]/g, '');
+}
+
+function normalizeFactDate(value) {
+  if (!value) return '';
+  if (!/\d{4}/.test(value) && !/^\d{4}-\d{2}-\d{2}/.test(value)) return '';
+
+  const parsed = Date.parse(value);
+  if (!Number.isFinite(parsed)) return '';
+
+  return new Date(parsed).toISOString().slice(0, 10);
+}
+
+function createFact({
+  field,
+  value,
+  sourceUrl,
+  excerpt,
+  observedAt,
+  confidenceHint,
+}) {
+  if (!field || !value || !sourceUrl) return null;
+
+  return {
+    field,
+    value: String(value),
+    source_url: sourceUrl,
+    excerpt: truncate(cleanInlineText(excerpt || ''), 180),
+    observed_at: observedAt,
+    confidence_hint: confidenceHint || 'medium',
+  };
+}
+
+function dedupeFacts(facts) {
+  const seen = new Set();
+  const deduped = [];
+
+  for (const fact of facts) {
+    if (!fact?.source_url) continue;
+    const key = [
+      fact.field,
+      fact.value,
+      fact.source_url,
+    ].join('::');
+
+    if (seen.has(key)) continue;
+    seen.add(key);
+    deduped.push(fact);
+  }
+
+  return deduped;
 }
 
 function renderMarkdown(pack) {
