@@ -84,10 +84,7 @@ When a significant signal emerges:
 - Every theme needs 3+ independent data points to be reported
 - Always tag: source channel, customer segment, date range
 - Track confidence: HIGH (cross-channel confirmation) / MEDIUM (single channel, strong signal) / LOW (emerging, monitor)
-- When public-web evidence is used, include a short **Retrieval Trace** in the report noting:
-  - whether the local collector was used
-  - whether it reported cache `hit`, `miss`, or `refresh`
-  - whether any interactive follow-up was required
+- When public-web evidence is used, include short **Retrieval Notes** only when notable or explicitly useful to the PM, for example collector fallback, cache refresh, or interactive follow-up.
 
 ### Time & Search Budget
 - Start with raw customer data the PM provides before using public web sources.

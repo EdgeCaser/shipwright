@@ -153,7 +153,7 @@ When spawning a specialist agent, provide it with:
 - Any product context from CLAUDE.md
 - The execution budget: whether this is quick/standard/deep, whether web research is allowed, and the maximum number of targeted searches for this step
 - The retrieval protocol: first run the local research collector if available; read the generated evidence pack; use interactive WebSearch or WebFetch only if the collector returns `needs-interactive-followup` or the helper command itself fails
-- A reporting requirement for public-web work: include a short retrieval trace stating whether the collector was used, whether it reported cache hit/miss/refresh, and whether interactive follow-up was required
+- A reporting requirement for public-web work: include short retrieval notes only when notable, for example cache refresh, collector fallback, interactive follow-up, or explicit PM interest in retrieval details
 
 **Depth propagation rule:**
 
@@ -176,7 +176,7 @@ Only if the pack reports `needs-interactive-followup`, or the helper command fai
 Do not start with broad WebSearch fan-out when the local collector is available.
 Cap post-helper follow-up to a very small gap-closing pass unless the PM explicitly asks for exhaustive depth.
 Use `--mode deep` when the PM explicitly requested deep/thorough/exhaustive research; otherwise use `--mode auto`.
-Report a short retrieval trace in the output: collector used or not, cache hit/miss/refresh if shown, and any interactive follow-up used.
+If retrieval behavior is notable, report it briefly in the output: cache refresh, collector fallback/failure, or interactive follow-up after the evidence pack. Do not add a plumbing note for a routine collector run that answered the question cleanly.
 ```
 
 ## Skill Map — Need-to-Skill Routing

@@ -36,7 +36,7 @@ Produce an evidence basis containing:
 - free tier or trial structure
 - packaging patterns and upgrade triggers
 - major evidence gaps
-- a short retrieval trace noting whether the collector was used, whether it reported a cache hit/miss/refresh, and whether any interactive follow-up was needed
+- retrieval notes only when notable, for example cache refresh, collector fallback, or interactive follow-up
 
 If the PM already has current pricing evidence, skip the public-web pass and cite the supplied inputs instead.
 
@@ -71,7 +71,7 @@ Design a controlled experiment to test the pricing in-market: hypothesis, varian
 
 Produce a **Pricing Strategy Document** containing:
 1. Pricing Objectives & Current State
-2. Evidence Basis & Retrieval Trace
+2. Evidence Basis
 3. Value Metric Recommendation
 4. Model Comparison & Recommendation
 5. Competitive Pricing Constraints & Positioning Implications
