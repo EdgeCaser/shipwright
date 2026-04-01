@@ -159,6 +159,12 @@ The collector cache is local to the repo and keyed by the normalized query plus 
 
 If you want a different freshness window, pass `--cache-ttl-hours <n>`.
 
+If the cache grows larger than you want locally, clear it with:
+
+```bash
+node scripts/collect-research.mjs --clear-cache
+```
+
 When the helper still cannot gather enough usable sources, or no provider is configured, it records `needs-interactive-followup` plus suggested follow-up queries. Agents should then use interactive browsing only for those remaining gaps.
 
 If no provider is configured, the helper still writes the fallback evidence pack for the current run, but it does not cache that no-provider fallback output.

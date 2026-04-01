@@ -290,3 +290,41 @@ test('no-provider run writes output but does not create a cache entry', { concur
   const json = await readFile(path.join(cwd, 'research-output-no-provider', 'evidence.json'), 'utf8');
   assert.match(json, /"providerStatus": "not-configured"/);
 });
+
+test('clear-cache removes cached entries without requiring a query', { concurrency: false }, async (t) => {
+  const cwd = await createTempDir(t);
+  setEnvForTest(t, {
+    BRAVE_SEARCH_API_KEY: 'test-brave-key',
+    TAVILY_API_KEY: undefined,
+  });
+
+  mockProviderFetch(t);
+  await collectResearch(createArgs(), {
+    cwd,
+    now: new Date('2026-04-01T00:00:00.000Z'),
+    logger: NOOP_LOGGER,
+  });
+
+  const cacheKey = buildCacheKey(createArgs(), createProviderPlan());
+  const cacheDir = path.join(cwd, '.shipwright', 'cache', 'research', 'v1', cacheKey);
+  assert.ok(await readCachePack(cacheDir));
+
+  const cleared = await collectResearch({ clearCache: true }, {
+    cwd,
+    now: new Date('2026-04-01T03:00:00.000Z'),
+    logger: NOOP_LOGGER,
+  });
+
+  assert.equal(cleared.cacheCleared, true);
+  assert.equal(cleared.cleared, true);
+  assert.equal(await readCachePack(cacheDir), null);
+
+  const clearedAgain = await collectResearch({ clearCache: true }, {
+    cwd,
+    now: new Date('2026-04-01T04:00:00.000Z'),
+    logger: NOOP_LOGGER,
+  });
+
+  assert.equal(clearedAgain.cacheCleared, true);
+  assert.equal(clearedAgain.cleared, false);
+});

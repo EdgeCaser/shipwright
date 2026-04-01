@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { createHash } from 'crypto';
-import { mkdir, readFile, writeFile } from 'fs/promises';
+import { mkdir, readFile, rm, stat, writeFile } from 'fs/promises';
 import path from 'path';
 import { pathToFileURL } from 'url';
 
@@ -32,6 +32,7 @@ Options:
   --out-dir <path>            Output directory (default: .shipwright/research/<slug>-<timestamp>)
   --excerpt-chars <n>         Max chars per extracted excerpt (default: 1200)
   --cache-ttl-hours <n>       Fresh cache window in hours (default: 24)
+  --clear-cache               Remove all entries under .shipwright/cache/research/v1 and exit
   --help                      Show this message
 
 Providers:
@@ -79,6 +80,7 @@ function createDefaultArgs() {
     outDir: '',
     excerptChars: DEFAULTS.excerptChars,
     cacheTtlHours: DEFAULTS.cacheTtlHours,
+    clearCache: false,
     help: false,
   };
 }
@@ -100,6 +102,10 @@ async function main(argv = process.argv.slice(2), options = {}) {
 
   const result = await collectResearch(args, options);
   const logger = options.logger || console;
+  if (result.cacheCleared) {
+    logger.log(`${result.cleared ? 'Cleared' : 'Cache already empty'}: ${result.cacheDirLabel}`);
+    return result;
+  }
   logCollectionSummary(result, logger);
   return result;
 }
@@ -141,6 +147,10 @@ export async function collectResearch(rawArgs, options = {}) {
   const cwd = options.cwd || process.cwd();
   const now = resolveNow(options.now);
   const logger = options.logger || console;
+
+  if (args.clearCache) {
+    return clearResearchCache({ cwd, logger });
+  }
 
   if (!args.query) {
     throw new Error('Missing required --query. Run with --help for usage.');
@@ -192,6 +202,28 @@ export async function collectResearch(rawArgs, options = {}) {
     mdPath: output.mdPath,
     jsonPathLabel: output.jsonPathLabel,
     mdPathLabel: output.mdPathLabel,
+  };
+}
+
+async function clearResearchCache({ cwd, logger }) {
+  const cacheDir = path.resolve(cwd, CACHE_ROOT);
+  const existed = await pathExists(cacheDir);
+
+  try {
+    await rm(cacheDir, { recursive: true, force: true });
+  } catch (error) {
+    logCacheNote(
+      logger,
+      `Unable to clear cache directory ${cacheDir}: ${error instanceof Error ? error.message : String(error)}`,
+    );
+    throw error;
+  }
+
+  return {
+    cacheCleared: true,
+    cleared: existed,
+    cacheDir,
+    cacheDirLabel: CACHE_ROOT,
   };
 }
 
@@ -424,6 +456,18 @@ async function writePackFiles(dir, pack) {
   await mkdir(dir, { recursive: true });
   await writeFile(path.join(dir, 'evidence.json'), `${JSON.stringify(pack, null, 2)}\n`, 'utf8');
   await writeFile(path.join(dir, 'evidence.md'), renderMarkdown(pack), 'utf8');
+}
+
+async function pathExists(target) {
+  try {
+    await stat(target);
+    return true;
+  } catch (error) {
+    if (error && typeof error === 'object' && error.code === 'ENOENT') {
+      return false;
+    }
+    throw error;
+  }
 }
 
 export async function readCachePack(cacheDir) {
@@ -727,6 +771,9 @@ function parseArgs(argv) {
         break;
       case '--cache-ttl-hours':
         args.cacheTtlHours = parseNumber(argv[++i], '--cache-ttl-hours');
+        break;
+      case '--clear-cache':
+        args.clearCache = true;
         break;
       case '--help':
       case '-h':
