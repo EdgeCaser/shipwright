@@ -22,11 +22,12 @@ Use this skill for web-heavy product, market, and business research in Codex.
    - `node .codex/scripts/collect-research.mjs --query "<primary query>" --mode auto`
    - otherwise `node scripts/collect-research.mjs --query "<primary query>" --mode auto`
    - otherwise `node .claude/scripts/collect-research.mjs --query "<primary query>" --mode auto`
-3. Read the generated evidence pack.
-4. If the evidence pack is usable, synthesize from it without starting a broad `Web Search` pass.
-5. Only if the evidence pack still has material gaps should you use interactive browsing.
-6. Keep any follow-up browsing gap-focused rather than restarting the whole search pass.
-7. Treat raw `Web Search` as fallback, not first-pass retrieval, whenever the local collector is available.
+3. If `facts.json` exists alongside the evidence pack, read it first and use any extracted facts directly before synthesizing from the full evidence pack.
+4. Read the generated evidence pack.
+5. If the evidence pack is usable, synthesize from it without starting a broad `Web Search` pass.
+6. Only if the evidence pack still has material gaps should you use interactive browsing.
+7. Keep any follow-up browsing gap-focused rather than restarting the whole search pass.
+8. Treat raw `Web Search` as fallback, not first-pass retrieval, whenever the local collector is available.
 
 ## Synthesis Rules
 
