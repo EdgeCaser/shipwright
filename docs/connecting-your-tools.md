@@ -107,7 +107,7 @@ Inside a Claude Code session, type `/mcp` to see which connections are active an
 
 For public-web research, you can offload search and page retrieval to a local helper so Shipwright stays conversational while spending fewer tool calls on raw retrieval.
 
-Shipwright includes `scripts/collect-research.mjs` in the repo and installs it to `.claude/scripts/collect-research.mjs` when you use `scripts/sync.sh --install`.
+Shipwright includes `scripts/collect-research.mjs` in the repo and installs it to `.claude/scripts/collect-research.mjs` plus `.codex/scripts/collect-research.mjs` when you use `scripts/sync.sh --install`.
 
 What it does:
 
@@ -132,6 +132,12 @@ export BRAVE_SEARCH_API_KEY=...
 export TAVILY_API_KEY=...
 ```
 
+If you prefer a local env file, `scripts/collect-research.mjs` also auto-loads `.env` from the current working directory. Example:
+
+```bash
+BRAVE_SEARCH_API_KEY=...
+```
+
 Then an agent can call the helper with Bash using a prompt that still feels conversational to the PM. Example:
 
 ```bash
@@ -143,6 +149,8 @@ node .claude/scripts/collect-research.mjs \
 This produces a compact evidence pack the model can synthesize instead of spending a long sequence of `WebSearch` and `WebFetch` calls on the same task.
 
 When the helper still cannot gather enough usable sources, it records `needs-interactive-followup` plus suggested follow-up queries. Agents should then use interactive browsing only for those remaining gaps.
+
+In Codex, this same pattern can be triggered from plain-language prompts when the project has a Shipwright-aware `AGENTS.md` and the helper exists at `.codex/scripts/collect-research.mjs` or `scripts/collect-research.mjs`.
 
 ## What to connect first
 

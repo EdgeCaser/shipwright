@@ -54,7 +54,29 @@ mkdir -p your-project/.codex/skills/
 cp -r shipwright/skills/ your-project/.codex/skills/
 ```
 
-Same as Cursor: reference skills by path when you want to use a specific framework.
+If you want Shipwright's local research helper in Codex too, also copy:
+
+```bash
+mkdir -p your-project/.codex/scripts/
+cp -r shipwright/scripts/ your-project/.codex/scripts/
+```
+
+For the most conversational experience, also copy `shipwright/AGENTS.md` into the project root or merge its Shipwright section into your existing project `AGENTS.md`. That lets plain-language Codex prompts route through Shipwright guidance without requiring slash commands.
+
+Once those files are present, you have two ways to use Shipwright in Codex:
+
+- Conversational mode: ask in plain English and let `AGENTS.md` steer Codex
+- Explicit mode: reference a specific skill path when you want an exact framework
+
+Examples:
+
+```text
+Help me assess whether a bird flock simulation engine is an attractive business.
+```
+
+```text
+Read .codex/skills/discovery/market-sizing/SKILL.md and .codex/skills/discovery/competitive-landscape/SKILL.md, then assess whether a bird flock simulation engine is an attractive business.
+```
 
 ## Gemini CLI
 
@@ -94,6 +116,8 @@ cp -r shipwright/skills/ your-project/.kiro/skills/
 | Evaluation rubrics (evals/) | Yes | Yes |
 | Pass/fail quality gates | Yes | Yes |
 | MCP integrations | Varies by tool | Yes |
+
+Codex note: repository `AGENTS.md` plus `.codex/skills/` can still provide a conversational Shipwright experience, but that is a Codex-native instruction layer, not the Claude Code `/start` orchestrator.
 
 ## Standalone mode (any tool)
 
@@ -155,5 +179,6 @@ For consistent output signature, use [docs/output-standard.md](output-standard.m
 ## Tips for non-Claude tools
 
 - **Be explicit.** In Claude Code, the orchestrator routes to the right skill automatically. In other tools, tell the agent which skill file to use.
+- **Use AGENTS when the tool supports it.** In Codex, a project-level `AGENTS.md` is the best way to make plain-language prompts feel conversational without having to name a skill every time.
 - **Provide product context.** Copy the `CLAUDE.md.example` template and fill it in. Most AI coding agents read a context file from the project root. Rename it if needed (some tools use `CONTEXT.md` or similar), but the product context format works the same way.
 - **Use the composition model.** If you want to build your own multi-step processes, read [docs/composition-model.md](composition-model.md) for the mental model behind how skills, workflows, and agents relate.

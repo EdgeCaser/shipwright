@@ -87,12 +87,23 @@ When a significant signal emerges:
 
 ### Time & Search Budget
 - Start with raw customer data the PM provides before using public web sources.
-- When `.claude/scripts/collect-research.mjs` or `scripts/collect-research.mjs` exists and a supported search API key is configured, use it via Bash to build an evidence pack before falling back to interactive WebSearch or WebFetch.
+- When `.claude/scripts/collect-research.mjs` or `scripts/collect-research.mjs` exists and a supported search API key is configured, you must use it via Bash to build an evidence pack before falling back to interactive WebSearch or WebFetch.
 - When public web signals are needed, limit the initial pass to the minimum channels required to answer the question and stop once the pattern is clear.
 - Keep the run focused on one reporting objective at a time: for example, churn diagnosis or app review synthesis, not both plus a full executive memo.
 - Return findings inline in chat. Do not create or update files unless the PM explicitly asks for a saved artifact.
 - Temporary evidence-pack files created by the helper script are allowed; treat them as retrieval support artifacts, not final deliverables.
 - If the helper reports `needs-interactive-followup`, use interactive WebSearch or WebFetch only for the suggested follow-up queries or the specific unresolved gaps.
+
+### Retrieval Protocol
+For public-web signal gathering, follow this order strictly:
+
+1. Check for `.claude/scripts/collect-research.mjs`, then `scripts/collect-research.mjs`.
+2. If found and a supported search API key is configured, run the helper first with the primary query:
+   - `node .claude/scripts/collect-research.mjs --query "<primary query>" --mode auto`
+   - or `node scripts/collect-research.mjs --query "<primary query>" --mode auto`
+3. Read the generated `evidence.md` or `evidence.json` and synthesize from that evidence pack.
+4. Only if the pack reports `needs-interactive-followup` may you use WebSearch or WebFetch, and then only for the unresolved gaps and suggested follow-up queries.
+5. Do not begin a task with a broad batch of WebSearch calls when the helper is available.
 
 ### What You Do NOT Do
 - **You do not make product decisions.** You surface intelligence; the PM decides.

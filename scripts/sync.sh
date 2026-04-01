@@ -25,11 +25,13 @@ NC='\033[0m'
 # Each entry is "source_dir:dest_dir" relative to their respective roots.
 MAPPINGS=(
   "skills:.claude/skills"
+  "skills:.codex/skills"
   "agents:.claude/agents"
   "commands:.claude/commands"
   "docs:.claude/docs"
   "evals:.claude/evals"
   "scripts:.claude/scripts"
+  "scripts:.codex/scripts"
 )
 
 CONFIG_FILE=".shipwright-source"

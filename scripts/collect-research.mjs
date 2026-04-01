@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { mkdir, writeFile } from 'fs/promises';
+import { mkdir, readFile, writeFile } from 'fs/promises';
 import path from 'path';
 
 const HELP_TEXT = `Shipwright research collector
@@ -39,6 +39,9 @@ Providers:
 Outputs:
   evidence.json               Structured machine-readable results
   evidence.md                 AI-ready source digest
+
+Behavior:
+  Loads .env from the current working directory if present.
 `;
 
 const DEFAULTS = {
@@ -54,6 +57,8 @@ const DEFAULTS = {
 };
 
 async function main() {
+  await loadDotenv(path.resolve(process.cwd(), '.env'));
+
   const args = parseArgs(process.argv.slice(2));
 
   if (args.help) {
@@ -79,6 +84,38 @@ async function main() {
   console.log(`Coverage status: ${pack.escalation.status}`);
   console.log(`JSON: ${jsonPath}`);
   console.log(`Markdown: ${mdPath}`);
+}
+
+async function loadDotenv(filePath) {
+  let contents = '';
+
+  try {
+    contents = await readFile(filePath, 'utf8');
+  } catch {
+    return;
+  }
+
+  for (const rawLine of contents.split(/\r?\n/)) {
+    const line = rawLine.trim();
+    if (!line || line.startsWith('#')) continue;
+
+    const normalized = line.startsWith('export ') ? line.slice(7).trim() : line;
+    const separatorIndex = normalized.indexOf('=');
+    if (separatorIndex <= 0) continue;
+
+    const key = normalized.slice(0, separatorIndex).trim();
+    if (!key || process.env[key]) continue;
+
+    let value = normalized.slice(separatorIndex + 1).trim();
+    if (
+      (value.startsWith('"') && value.endsWith('"')) ||
+      (value.startsWith("'") && value.endsWith("'"))
+    ) {
+      value = value.slice(1, -1);
+    }
+
+    process.env[key] = value;
+  }
 }
 
 async function runEscalatingResearch(args, providers) {

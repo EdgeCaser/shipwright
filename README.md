@@ -10,7 +10,7 @@ Shipwright gives PMs a real operating system for product work: framework-backed 
 
 Under the hood, Shipwright includes 46 skills, 7 specialist agents, and 18 chained workflows. The counts matter less than the contract: evidence-first outputs, explicit decisions, pass/fail gating, deterministic recovery, and optional adversarial review for high-stakes artifacts.
 
-The skills are plain markdown files, so they're compatible with any AI coding tool that reads skill files (Cursor, Codex, Gemini CLI, and others). Agents, commands, and the orchestrator are Claude Code-specific.
+The skills are plain markdown files, so they're compatible with any AI coding tool that reads skill files (Cursor, Codex, Gemini CLI, and others). Agents, commands, and the original `/start` orchestrator are Claude Code-specific. This repo also includes a Codex-native bridge via [AGENTS.md](AGENTS.md) so plain-language prompts in Codex can still route through Shipwright's bounded research and framework selection.
 
 ## Why this beats raw AI
 
@@ -102,6 +102,8 @@ cp -r shipwright/scripts/ your-project/.claude/scripts/
 ```
 
 Using a different tool? See the [cross-tool install guide](docs/installing-in-other-tools.md).
+
+If you are running directly from this repo in Codex, you do not need slash commands. The project-level [AGENTS.md](AGENTS.md) tells Codex to treat plain-language PM prompts as Shipwright work and to use the local research collector before broad interactive browsing when it is available.
 
 ### 2) Add product context and go
 

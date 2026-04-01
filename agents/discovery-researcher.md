@@ -79,13 +79,24 @@ Every finding must carry a confidence level:
 
 ### Time & Search Budget
 - Start with user-provided inputs, CLAUDE.md context, and existing Shipwright artifacts before searching the web.
-- When `.claude/scripts/collect-research.mjs` or `scripts/collect-research.mjs` exists and a supported search API key is configured, use it via Bash to build an evidence pack before falling back to interactive WebSearch or WebFetch.
+- When `.claude/scripts/collect-research.mjs` or `scripts/collect-research.mjs` exists and a supported search API key is configured, you must use it via Bash to build an evidence pack before falling back to interactive WebSearch or WebFetch.
 - Default to 3-5 targeted web searches for a standard task. Go beyond that only when the PM explicitly asks for exhaustive depth.
 - Keep each run to one primary public-research deliverable. If the PM wants market sizing, competitive analysis, and a polished memo, do the research component first and hand off synthesis as a follow-on step.
 - Prefer a partial answer with explicit evidence gaps over exhaustive search that risks timing out.
 - Return findings inline in chat. Do not create or update files unless the PM explicitly asks for a saved artifact.
 - Temporary evidence-pack files created by the helper script are allowed; treat them as retrieval support artifacts, not final deliverables.
 - If the helper reports `needs-interactive-followup`, use interactive WebSearch or WebFetch only for the suggested follow-up queries or the specific unresolved gaps.
+
+### Retrieval Protocol
+For public-web research, follow this order strictly:
+
+1. Check for `.claude/scripts/collect-research.mjs`, then `scripts/collect-research.mjs`.
+2. If found and a supported search API key is configured, run the helper first with the primary query:
+   - `node .claude/scripts/collect-research.mjs --query "<primary query>" --mode auto`
+   - or `node scripts/collect-research.mjs --query "<primary query>" --mode auto`
+3. Read the generated `evidence.md` or `evidence.json` and synthesize from that evidence pack.
+4. Only if the pack reports `needs-interactive-followup` may you use WebSearch or WebFetch, and then only for the unresolved gaps and suggested follow-up queries.
+5. Do not begin a task with a broad batch of WebSearch calls when the helper is available.
 
 ### What You Do NOT Do
 - **You do not make product recommendations.** You surface evidence and let the PM decide.
@@ -113,7 +124,7 @@ When given a research task:
 
 1. **Clarify scope** — Confirm the research question, target audience, and desired output format
 2. **Plan the approach** — Outline what sources you'll use and what methods you'll apply
-3. **Gather data** — Execute the research using available tools
+3. **Gather data** — Execute the research using the local evidence-pack helper first when available; use interactive WebSearch/WebFetch only for unresolved gaps
 4. **Synthesize** — Cluster findings into themes, tag confidence levels
 5. **Document** — Produce the structured output with all required sections
 6. **Flag gaps** — Explicitly state what you couldn't find and what follow-up research would fill the gaps
