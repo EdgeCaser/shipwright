@@ -140,7 +140,7 @@ When a task needs fresh public research, keep the first pass narrow:
 
 This keeps web-heavy work bounded and reduces timeout risk on broad requests.
 
-If you want to reduce search latency further without changing the conversational UX, Shipwright also includes `scripts/collect-research.mjs`, which can build a compact evidence pack from programmatic web search before the model synthesizes it. The helper now escalates automatically from a small first pass to broader subqueries and only asks the model to browse interactively for the remaining gaps. If no Brave or Tavily key is configured, it now degrades gracefully by writing a `needs-interactive-followup` pack instead of failing hard.
+If you want to reduce search latency further without changing the conversational UX, Shipwright also includes `scripts/collect-research.mjs`, which can build a compact evidence pack from programmatic web search before the model synthesizes it. The helper now escalates automatically from a small first pass to broader subqueries, caches fresh evidence packs under `.shipwright/cache/research/v1/` for 24 hours by default, and only asks the model to browse interactively for the remaining gaps. If no Brave or Tavily key is configured, it still degrades gracefully by writing a `needs-interactive-followup` pack instead of failing hard, and those no-provider fallback packs are not cached.
 
 ## Standalone Mode (Any Tool)
 

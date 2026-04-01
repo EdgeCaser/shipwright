@@ -115,6 +115,7 @@ What it does:
 - fetches the top pages in parallel
 - extracts a compact source digest
 - writes `evidence.json` and `evidence.md` under `.shipwright/research/`
+- caches canonical evidence packs under `.shipwright/cache/research/v1/`
 - escalates automatically from the primary query to broader subqueries and then to gap-only follow-up recommendations when needed
 
 What the AI still does:
@@ -150,7 +151,17 @@ node .claude/scripts/collect-research.mjs \
 
 This produces a compact evidence pack the model can synthesize instead of spending a long sequence of `WebSearch` and `WebFetch` calls on the same task.
 
+The collector cache is local to the repo and keyed by the normalized query plus provider and retrieval settings. By default, a cache entry is reusable for 24 hours:
+
+- `hit` means the collector reused a fresh cached evidence pack and wrote a served copy to the requested output directory
+- `miss` means no matching cache entry was available, so the collector ran normal retrieval and then cached the result
+- `refresh` means a matching cache entry existed but was older than the TTL, so the collector recollected and replaced it
+
+If you want a different freshness window, pass `--cache-ttl-hours <n>`.
+
 When the helper still cannot gather enough usable sources, or no provider is configured, it records `needs-interactive-followup` plus suggested follow-up queries. Agents should then use interactive browsing only for those remaining gaps.
+
+If no provider is configured, the helper still writes the fallback evidence pack for the current run, but it does not cache that no-provider fallback output.
 
 In Codex, this same pattern can be triggered from plain-language prompts when the project has a Shipwright-aware `AGENTS.md` and the helper exists at `.codex/scripts/collect-research.mjs` or `scripts/collect-research.mjs`.
 

@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 
+import { createHash } from 'crypto';
 import { mkdir, readFile, writeFile } from 'fs/promises';
 import path from 'path';
+import { pathToFileURL } from 'url';
 
 const HELP_TEXT = `Shipwright research collector
 
@@ -29,6 +31,7 @@ Options:
   --min-usable-sources <n>    Target number of usable sources before stopping (default: 3)
   --out-dir <path>            Output directory (default: .shipwright/research/<slug>-<timestamp>)
   --excerpt-chars <n>         Max chars per extracted excerpt (default: 1200)
+  --cache-ttl-hours <n>       Fresh cache window in hours (default: 24)
   --help                      Show this message
 
 Providers:
@@ -56,39 +59,49 @@ const DEFAULTS = {
   excerptChars: 1200,
   subqueryLimit: 3,
   minUsableSources: 3,
+  cacheTtlHours: 24,
 };
 
-async function main() {
-  await loadDotenv(path.resolve(process.cwd(), '.env'));
+const CACHE_VERSION = 'v1';
+const CACHE_ROOT = path.join('.shipwright', 'cache', 'research', CACHE_VERSION);
 
-  const args = parseArgs(process.argv.slice(2));
+function createDefaultArgs() {
+  return {
+    query: '',
+    provider: DEFAULTS.provider,
+    mode: DEFAULTS.mode,
+    maxResults: DEFAULTS.maxResults,
+    maxPages: DEFAULTS.maxPages,
+    concurrency: DEFAULTS.concurrency,
+    timeoutMs: DEFAULTS.timeoutMs,
+    subqueryLimit: DEFAULTS.subqueryLimit,
+    minUsableSources: DEFAULTS.minUsableSources,
+    outDir: '',
+    excerptChars: DEFAULTS.excerptChars,
+    cacheTtlHours: DEFAULTS.cacheTtlHours,
+    help: false,
+  };
+}
+
+function normalizeArgs(input = {}) {
+  return {
+    ...createDefaultArgs(),
+    ...input,
+  };
+}
+
+async function main(argv = process.argv.slice(2), options = {}) {
+  const args = parseArgs(argv);
 
   if (args.help) {
     console.log(HELP_TEXT);
-    return;
+    return { helpShown: true };
   }
 
-  if (!args.query) {
-    throw new Error('Missing required --query. Run with --help for usage.');
-  }
-
-  const providerPlan = resolveProviderPlan(args.provider);
-  const outDir = args.outDir || defaultOutDir(args.query);
-  const pack = await runEscalatingResearch(args, providerPlan);
-
-  await mkdir(outDir, { recursive: true });
-  const jsonPath = path.join(outDir, 'evidence.json');
-  const mdPath = path.join(outDir, 'evidence.md');
-  await writeFile(jsonPath, `${JSON.stringify(pack, null, 2)}\n`, 'utf8');
-  await writeFile(mdPath, renderMarkdown(pack), 'utf8');
-
-  console.log(`Collected ${pack.results.length} result(s) using ${formatProvidersAttempted(pack.providersAttempted)}.`);
-  console.log(`Coverage status: ${pack.escalation.status}`);
-  if (pack.providerNote) {
-    console.log(`Provider note: ${pack.providerNote}`);
-  }
-  console.log(`JSON: ${jsonPath}`);
-  console.log(`Markdown: ${mdPath}`);
+  const result = await collectResearch(args, options);
+  const logger = options.logger || console;
+  logCollectionSummary(result, logger);
+  return result;
 }
 
 async function loadDotenv(filePath) {
@@ -123,8 +136,350 @@ async function loadDotenv(filePath) {
   }
 }
 
-async function runEscalatingResearch(args, providerPlan) {
-  const initialMaxPages = args.maxPages ?? args.maxResults;
+export async function collectResearch(rawArgs, options = {}) {
+  const args = normalizeArgs(rawArgs);
+  const cwd = options.cwd || process.cwd();
+  const now = resolveNow(options.now);
+  const logger = options.logger || console;
+
+  if (!args.query) {
+    throw new Error('Missing required --query. Run with --help for usage.');
+  }
+
+  await loadDotenv(path.resolve(cwd, '.env'));
+
+  const providerPlan = resolveProviderPlan(args.provider);
+  const cacheKey = buildCacheKey(args, providerPlan);
+  const cacheState = await resolveCacheState({
+    cacheKey,
+    cacheTtlHours: args.cacheTtlHours,
+    cwd,
+    now,
+    providerPlan,
+    logger,
+  });
+
+  let pack;
+  if (cacheState.status === 'hit') {
+    pack = buildHitPack({
+      cachedPack: cacheState.pack,
+      cacheKey,
+      cacheTtlHours: args.cacheTtlHours,
+      now,
+      storedAt: cacheState.storedAt,
+      ageMs: cacheState.ageMs,
+    });
+  } else {
+    const basePack = await runEscalatingResearch(args, providerPlan, { now });
+    pack = await finalizeCollectedPack({
+      basePack,
+      cacheKey,
+      cacheState,
+      cacheTtlHours: args.cacheTtlHours,
+      cwd,
+      now,
+      logger,
+    });
+  }
+
+  const output = resolveOutputPaths(args.query, args.outDir, cwd);
+  await writePackFiles(output.outDir, pack);
+
+  return {
+    pack,
+    outDir: output.outDir,
+    jsonPath: output.jsonPath,
+    mdPath: output.mdPath,
+    jsonPathLabel: output.jsonPathLabel,
+    mdPathLabel: output.mdPathLabel,
+  };
+}
+
+function resolveNow(value) {
+  if (!value) return new Date();
+  if (value instanceof Date) return new Date(value.getTime());
+  return new Date(value);
+}
+
+function resolveOutputPaths(query, outDir, cwd) {
+  const outputDirValue = outDir || defaultOutDir(query);
+  const outputDir = path.resolve(cwd, outputDirValue);
+  return {
+    outDir: outputDir,
+    jsonPath: path.join(outputDir, 'evidence.json'),
+    mdPath: path.join(outputDir, 'evidence.md'),
+    jsonPathLabel: path.join(outputDirValue, 'evidence.json'),
+    mdPathLabel: path.join(outputDirValue, 'evidence.md'),
+  };
+}
+
+function resolveMaxPages(args) {
+  return args.maxPages ?? args.maxResults;
+}
+
+function normalizeCacheQuery(query) {
+  return cleanInlineText(query).toLowerCase();
+}
+
+function createCacheFingerprint(args, providerPlan) {
+  return {
+    query: normalizeCacheQuery(args.query),
+    providerRequest: args.provider,
+    providers: [...(providerPlan.providers || [])],
+    mode: args.mode,
+    settings: {
+      maxResults: args.maxResults,
+      maxPages: resolveMaxPages(args),
+      timeoutMs: args.timeoutMs,
+      subqueryLimit: args.subqueryLimit,
+      minUsableSources: args.minUsableSources,
+      excerptChars: args.excerptChars,
+    },
+  };
+}
+
+export function buildCacheKey(rawArgs, providerPlan) {
+  const args = normalizeArgs(rawArgs);
+  const fingerprint = JSON.stringify(createCacheFingerprint(args, providerPlan));
+  return createHash('sha256').update(fingerprint).digest('hex');
+}
+
+function resolveCacheDir(cwd, cacheKey) {
+  return path.resolve(cwd, CACHE_ROOT, cacheKey);
+}
+
+function getPackStoredAt(pack) {
+  return pack?.cache?.storedAt || pack?.generatedAt || null;
+}
+
+function calculateAgeMs(now, storedAt) {
+  if (!storedAt) return Number.NaN;
+  const storedTime = new Date(storedAt).getTime();
+  if (!Number.isFinite(storedTime)) return Number.NaN;
+  return Math.max(0, now.getTime() - storedTime);
+}
+
+async function resolveCacheState({
+  cacheKey,
+  cacheTtlHours,
+  cwd,
+  now,
+  providerPlan,
+  logger,
+}) {
+  const cacheDir = resolveCacheDir(cwd, cacheKey);
+
+  if (providerPlan.providerStatus === 'not-configured') {
+    return {
+      status: 'miss',
+      cacheDir,
+      skipReason: 'provider-not-configured',
+    };
+  }
+
+  let pack;
+  try {
+    pack = await readCachePack(cacheDir);
+  } catch (error) {
+    logCacheNote(
+      logger,
+      `Ignoring invalid cache entry for ${cacheKey}: ${error instanceof Error ? error.message : String(error)}`,
+    );
+    return {
+      status: 'miss',
+      cacheDir,
+      skipReason: 'invalid-cache-entry',
+    };
+  }
+
+  if (!pack) {
+    return {
+      status: 'miss',
+      cacheDir,
+    };
+  }
+
+  const storedAt = getPackStoredAt(pack);
+  const ageMs = calculateAgeMs(now, storedAt);
+  if (!Number.isFinite(ageMs)) {
+    logCacheNote(logger, `Ignoring cache entry for ${cacheKey} because storedAt is invalid.`);
+    return {
+      status: 'miss',
+      cacheDir,
+      skipReason: 'invalid-cache-entry',
+    };
+  }
+
+  if (ageMs <= hoursToMs(cacheTtlHours)) {
+    return {
+      status: 'hit',
+      cacheDir,
+      pack,
+      storedAt,
+      ageMs,
+    };
+  }
+
+  return {
+    status: 'refresh',
+    cacheDir,
+    pack,
+    storedAt,
+    ageMs,
+  };
+}
+
+async function finalizeCollectedPack({
+  basePack,
+  cacheKey,
+  cacheState,
+  cacheTtlHours,
+  cwd,
+  now,
+  logger,
+}) {
+  const cacheStatus = cacheState.status === 'refresh' ? 'refresh' : 'miss';
+  const previous = cacheState.status === 'refresh'
+    ? {
+        previousStoredAt: cacheState.storedAt,
+        previousAgeMs: cacheState.ageMs,
+      }
+    : {};
+
+  if (basePack.providerStatus === 'not-configured') {
+    return withCacheMetadata(basePack, {
+      version: CACHE_VERSION,
+      key: cacheKey,
+      status: cacheStatus,
+      ttlHours: cacheTtlHours,
+      servedAt: now.toISOString(),
+      storedAt: null,
+      ageMs: null,
+      persisted: false,
+      skipReason: cacheState.skipReason || 'provider-not-configured',
+      ...previous,
+    });
+  }
+
+  const persistedPack = withCacheMetadata(basePack, {
+    version: CACHE_VERSION,
+    key: cacheKey,
+    status: cacheStatus,
+    ttlHours: cacheTtlHours,
+    servedAt: now.toISOString(),
+    storedAt: now.toISOString(),
+    ageMs: 0,
+    persisted: true,
+    ...previous,
+  });
+
+  try {
+    await writeCachePack(resolveCacheDir(cwd, cacheKey), persistedPack);
+    return persistedPack;
+  } catch (error) {
+    logCacheNote(
+      logger,
+      `Unable to persist cache entry for ${cacheKey}: ${error instanceof Error ? error.message : String(error)}`,
+    );
+    return withCacheMetadata(basePack, {
+      version: CACHE_VERSION,
+      key: cacheKey,
+      status: cacheStatus,
+      ttlHours: cacheTtlHours,
+      servedAt: now.toISOString(),
+      storedAt: null,
+      ageMs: null,
+      persisted: false,
+      skipReason: 'cache-write-failed',
+      ...previous,
+    });
+  }
+}
+
+function buildHitPack({ cachedPack, cacheKey, cacheTtlHours, now, storedAt, ageMs }) {
+  return withCacheMetadata(cachedPack, {
+    version: CACHE_VERSION,
+    key: cacheKey,
+    status: 'hit',
+    ttlHours: cacheTtlHours,
+    servedAt: now.toISOString(),
+    storedAt,
+    ageMs,
+    persisted: true,
+  });
+}
+
+function withCacheMetadata(pack, cache) {
+  return {
+    ...pack,
+    cache,
+  };
+}
+
+function hoursToMs(hours) {
+  return hours * 60 * 60 * 1000;
+}
+
+async function writePackFiles(dir, pack) {
+  await mkdir(dir, { recursive: true });
+  await writeFile(path.join(dir, 'evidence.json'), `${JSON.stringify(pack, null, 2)}\n`, 'utf8');
+  await writeFile(path.join(dir, 'evidence.md'), renderMarkdown(pack), 'utf8');
+}
+
+export async function readCachePack(cacheDir) {
+  try {
+    const contents = await readFile(path.join(cacheDir, 'evidence.json'), 'utf8');
+    return JSON.parse(contents);
+  } catch (error) {
+    if (error && typeof error === 'object' && error.code === 'ENOENT') {
+      return null;
+    }
+    throw error;
+  }
+}
+
+export async function writeCachePack(cacheDir, pack) {
+  await writePackFiles(cacheDir, pack);
+}
+
+function formatAgeMs(ageMs) {
+  if (!Number.isFinite(ageMs) || ageMs === null) return 'n/a';
+  if (ageMs < 1000) return `${ageMs}ms`;
+  if (ageMs < 60_000) return `${Math.round(ageMs / 1000)}s`;
+  if (ageMs < 3_600_000) return `${Math.round(ageMs / 60_000)}m`;
+  return `${(ageMs / 3_600_000).toFixed(ageMs >= 10 * 3_600_000 ? 0 : 1)}h`;
+}
+
+function logCacheNote(logger, message) {
+  if (typeof logger?.warn === 'function') {
+    logger.warn(`Cache note: ${message}`);
+  }
+}
+
+function logCollectionSummary(result, logger) {
+  const { pack, jsonPathLabel, mdPathLabel } = result;
+
+  logger.log(`Collected ${pack.results.length} result(s) using ${formatProvidersAttempted(pack.providersAttempted)}.`);
+  if (pack.cache) {
+    const ageText = pack.cache.storedAt
+      ? ` (age ${formatAgeMs(pack.cache.ageMs)}, ttl ${pack.cache.ttlHours}h)`
+      : ` (ttl ${pack.cache.ttlHours}h)`;
+    logger.log(`Cache: ${pack.cache.status}${ageText}`);
+    if (!pack.cache.persisted && pack.cache.skipReason) {
+      logger.log(`Cache note: ${pack.cache.skipReason}`);
+    }
+  }
+  logger.log(`Coverage status: ${pack.escalation.status}`);
+  if (pack.providerNote) {
+    logger.log(`Provider note: ${pack.providerNote}`);
+  }
+  logger.log(`JSON: ${jsonPathLabel}`);
+  logger.log(`Markdown: ${mdPathLabel}`);
+}
+
+async function runEscalatingResearch(args, providerPlan, options = {}) {
+  const generatedAt = resolveNow(options.now).toISOString();
+  const initialMaxPages = resolveMaxPages(args);
   const followupQueries = buildInteractiveFollowupQueries(args.query);
   const secondaryQueries = buildAutomaticSubqueries(args.query, args.subqueryLimit);
   const providers = providerPlan.providers;
@@ -134,6 +489,7 @@ async function runEscalatingResearch(args, providerPlan) {
   if (providers.length === 0) {
     return buildNoProviderPack({
       args,
+      generatedAt,
       initialMaxPages,
       followupQueries,
       providerNote: providerPlan.providerNote,
@@ -198,7 +554,7 @@ async function runEscalatingResearch(args, providerPlan) {
     : 'Programmatic retrieval reached the target evidence threshold.';
 
   return {
-    generatedAt: new Date().toISOString(),
+    generatedAt,
     query: args.query,
     mode: args.mode,
     providerRequest: args.provider,
@@ -226,7 +582,7 @@ async function runEscalatingResearch(args, providerPlan) {
   };
 }
 
-function buildNoProviderPack({ args, initialMaxPages, followupQueries, providerNote }) {
+function buildNoProviderPack({ args, generatedAt, initialMaxPages, followupQueries, providerNote }) {
   const coverage = {
     totalResults: 0,
     successfulFetches: 0,
@@ -236,7 +592,7 @@ function buildNoProviderPack({ args, initialMaxPages, followupQueries, providerN
   };
 
   return {
-    generatedAt: new Date().toISOString(),
+    generatedAt,
     query: args.query,
     mode: args.mode,
     providerRequest: args.provider,
@@ -330,20 +686,7 @@ async function runStage({
 }
 
 function parseArgs(argv) {
-  const args = {
-    query: '',
-    provider: DEFAULTS.provider,
-    mode: DEFAULTS.mode,
-    maxResults: DEFAULTS.maxResults,
-    maxPages: DEFAULTS.maxPages,
-    concurrency: DEFAULTS.concurrency,
-    timeoutMs: DEFAULTS.timeoutMs,
-    subqueryLimit: DEFAULTS.subqueryLimit,
-    minUsableSources: DEFAULTS.minUsableSources,
-    outDir: '',
-    excerptChars: DEFAULTS.excerptChars,
-    help: false,
-  };
+  const args = createDefaultArgs();
 
   for (let i = 0; i < argv.length; i += 1) {
     const token = argv[i];
@@ -381,6 +724,9 @@ function parseArgs(argv) {
         break;
       case '--excerpt-chars':
         args.excerptChars = parseNumber(argv[++i], '--excerpt-chars');
+        break;
+      case '--cache-ttl-hours':
+        args.cacheTtlHours = parseNumber(argv[++i], '--cache-ttl-hours');
         break;
       case '--help':
       case '-h':
@@ -1026,6 +1372,28 @@ function renderMarkdown(pack) {
     `- Providers attempted: ${formatProvidersAttempted(pack.providersAttempted)}`,
     `- Results collected: ${pack.results.length}`,
     '',
+  ];
+
+  if (pack.cache) {
+    lines.push('## Cache Summary', '');
+    lines.push(`- Status: ${pack.cache.status}`);
+    lines.push(`- TTL hours: ${pack.cache.ttlHours}`);
+    lines.push(`- Cache key: ${pack.cache.key}`);
+    lines.push(`- Persisted: ${pack.cache.persisted ? 'yes' : 'no'}`);
+    lines.push(`- Served at: ${pack.cache.servedAt}`);
+    if (pack.cache.storedAt) lines.push(`- Stored at: ${pack.cache.storedAt}`);
+    if (pack.cache.ageMs !== null && pack.cache.ageMs !== undefined) {
+      lines.push(`- Age: ${formatAgeMs(pack.cache.ageMs)}`);
+    }
+    if (pack.cache.previousStoredAt) lines.push(`- Previous stored at: ${pack.cache.previousStoredAt}`);
+    if (pack.cache.previousAgeMs !== null && pack.cache.previousAgeMs !== undefined) {
+      lines.push(`- Previous age: ${formatAgeMs(pack.cache.previousAgeMs)}`);
+    }
+    if (pack.cache.skipReason) lines.push(`- Note: ${pack.cache.skipReason}`);
+    lines.push('');
+  }
+
+  lines.push(
     '## Escalation Summary',
     '',
     `- Status: ${pack.escalation.status}`,
@@ -1036,7 +1404,7 @@ function renderMarkdown(pack) {
     '',
     '## Escalation Stages',
     '',
-  ];
+  );
 
   for (const stage of pack.escalation.stages) {
     lines.push(`### ${stage.level} - ${stage.strategy}`);
@@ -1120,7 +1488,14 @@ function escapePipes(value) {
   return value.replace(/\|/g, '\\|');
 }
 
-main().catch((error) => {
-  console.error(error instanceof Error ? error.message : String(error));
-  process.exitCode = 1;
-});
+function isDirectRun() {
+  if (!process.argv[1]) return false;
+  return import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href;
+}
+
+if (isDirectRun()) {
+  main().catch((error) => {
+    console.error(error instanceof Error ? error.message : String(error));
+    process.exitCode = 1;
+  });
+}
