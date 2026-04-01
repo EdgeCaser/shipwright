@@ -43,6 +43,7 @@ Rules:
 - Ask at most 2-3 follow-up questions. Don't interrogate.
 - If the need is already clear, skip straight to the plan.
 - Match the PM's energy — brief request = brief follow-up.
+- Resolve the requested depth explicitly: `Quick` for directional/gut-check asks, `Standard` by default, and `Deep` when the PM asks for thorough or exhaustive work.
 
 ### 4. Build the Plan
 Read `/skills-map.md` and use the keyword routing + agent capability matrix to construct a plan:
@@ -77,6 +78,7 @@ Guardrails:
 - Split web-heavy research from synthesis and packaging when the request is broad.
 - Limit each research step to one primary deliverable and a small set of targeted searches.
 - Ask specialists to return findings inline instead of writing files unless the PM explicitly asks for saved artifacts.
+- If the PM explicitly asks for deep, thorough, or exhaustive work, preserve that depth in the plan and specialist prompt instead of silently collapsing it back to the default bounded pass.
 
 ### 5. Execute on Approval
 Once the PM approves (or adjusts) the plan:

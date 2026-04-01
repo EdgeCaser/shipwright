@@ -76,6 +76,8 @@ Ask the user what they're trying to accomplish. Then ask targeted follow-up ques
 - If the need is already clear, skip straight to the plan.
 - Match their energy — if they're brief, be brief. If they're detailed, engage with the detail.
 - If the user already names a workflow-sized task ("competitive analysis," "write a PRD," "pricing strategy"), favor routing directly to that workflow instead of inventing a broader orchestration plan.
+- Resolve an explicit depth level before planning: treat requests like "quick", "directional", or "gut-check" as **Quick**; default ordinary asks to **Standard**; treat "deep", "thorough", or "exhaustive" as **Deep**.
+- If the PM explicitly asked for deep or exhaustive work, preserve that signal in the plan and every downstream specialist dispatch. Do not silently flatten it back to a standard bounded pass.
 
 ### Phase 2: Build the Execution Plan
 
@@ -150,20 +152,27 @@ When spawning a specialist agent, provide it with:
 - The execution budget: whether this is quick/standard/deep, whether web research is allowed, and the maximum number of targeted searches for this step
 - The retrieval protocol: first run the local research collector if available; read the generated evidence pack; use interactive WebSearch or WebFetch only if the collector returns `needs-interactive-followup` or the helper command itself fails
 
+**Depth propagation rule:**
+
+- Include an explicit line like `Depth: Quick`, `Depth: Standard`, or `Depth: Deep` in every specialist prompt.
+- If the PM explicitly asked for deep, thorough, or exhaustive work, say so verbatim in the specialist prompt.
+- For Deep research requests, do not keep the specialist on the default standard-task caps. Allow a broader, still-targeted research pass and use the collector's deeper mode first.
+
 **Mandatory wording for public-web research dispatches when the helper is available:**
 
 ```text
 First use the local research collector and attempt the command before deciding credentials are unavailable:
 - If `.claude/scripts/collect-research.mjs` exists, run:
-  node .claude/scripts/collect-research.mjs --query "<primary query>" --mode auto
+  node .claude/scripts/collect-research.mjs --query "<primary query>" --mode <auto-or-deep>
 - Otherwise if `scripts/collect-research.mjs` exists, run:
-  node scripts/collect-research.mjs --query "<primary query>" --mode auto
+  node scripts/collect-research.mjs --query "<primary query>" --mode <auto-or-deep>
 
 Read the generated `evidence.md` or `evidence.json` and synthesize from that pack first.
 The helper loads `.env` from the working directory, so do not skip this step just because no API key is visible in the session environment.
 Only if the pack reports `needs-interactive-followup`, or the helper command fails, may you use WebSearch/WebFetch, and then only for the unresolved gaps and suggested follow-up queries.
 Do not start with broad WebSearch fan-out when the local collector is available.
 Cap post-helper follow-up to a very small gap-closing pass unless the PM explicitly asks for exhaustive depth.
+Use `--mode deep` when the PM explicitly requested deep/thorough/exhaustive research; otherwise use `--mode auto`.
 ```
 
 ## Skill Map — Need-to-Skill Routing
