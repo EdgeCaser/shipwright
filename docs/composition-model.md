@@ -104,6 +104,8 @@ The orchestrator (`/start`) sits above workflows and agents. It routes work to t
 - Routes, doesn't produce. The orchestrator never creates artifacts — it dispatches to agents and workflows.
 - Parallel execution. When steps don't depend on each other, the orchestrator runs them in parallel.
 - Simplicity preference. It suggests the simplest approach that fits: one skill > one workflow > multi-agent orchestration.
+- Phased execution. When web-heavy research threatens the time budget, it splits research, synthesis, and packaging into separate phases.
+- Single dispatcher. The orchestrator dispatches agents; specialist agents return artifacts inline instead of recursively spawning more agents.
 
 **Location:** `agents/orchestrator.md` + `commands/start.md` + `skills-map.md`
 

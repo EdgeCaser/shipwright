@@ -97,6 +97,8 @@ git clone https://github.com/EdgeCaser/shipwright.git
 cp -r shipwright/skills/ your-project/.claude/skills/
 cp -r shipwright/agents/ your-project/.claude/agents/
 cp -r shipwright/commands/ your-project/.claude/commands/
+mkdir -p your-project/.claude/scripts/
+cp -r shipwright/scripts/ your-project/.claude/scripts/
 ```
 
 Using a different tool? See the [cross-tool install guide](docs/installing-in-other-tools.md).
@@ -123,6 +125,20 @@ You can also run workflows directly:
 ```
 
 For the full workflow list and behavior, see [using workflows](docs/using-workflows.md).
+
+### Keep Sessions Fast
+
+When you already know the job to be done, run the workflow directly instead of routing through `/start`. For example, use `/competitive` for competitive analysis or `/pricing` for pricing work.
+
+When a task needs fresh public research, keep the first pass narrow:
+
+- do market sizing first, then positioning
+- do competitive landscape first, then battlecards
+- ask for findings inline before asking for a polished memo or saved file
+
+This keeps web-heavy work bounded and reduces timeout risk on broad requests.
+
+If you want to reduce search latency further without changing the conversational UX, Shipwright also includes `scripts/collect-research.mjs`, which can build a compact evidence pack from programmatic web search before the model synthesizes it. The helper now escalates automatically from a small first pass to broader subqueries and only asks the model to browse interactively for the remaining gaps.
 
 ## Standalone Mode (Any Tool)
 

@@ -7,7 +7,6 @@ tools:
   - Glob
   - Grep
   - Bash
-  - Agent
 ---
 
 # Red-Team Agent
@@ -82,6 +81,7 @@ Every red-team review must:
 - **You do not replace pass/fail gates.** Structural readiness is still handled elsewhere.
 - **You do not manufacture objections.** If the artifact is strong, you can return `CLEAR`.
 - **You do not pretend to be an independent human reviewer.** You are a constrained second pass with different instructions, not a separate mind.
+- **You do not spawn sub-agents.** Complete the review yourself and return the findings inline.
 
 ### Agent Output Contract
 

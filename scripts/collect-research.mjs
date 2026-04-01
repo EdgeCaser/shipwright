@@ -1,0 +1,978 @@
+#!/usr/bin/env node
+
+import { mkdir, writeFile } from 'fs/promises';
+import path from 'path';
+
+const HELP_TEXT = `Shipwright research collector
+
+Build a compact evidence pack from programmatic web search so the model can
+spend fewer tool calls and fewer tokens on raw retrieval.
+
+The collector uses an internal escalation ladder:
+  L1: primary query, small budget
+  L2: automatic subqueries, same provider
+  L3: secondary provider or deeper follow-up queries
+  L4: explicit interactive-search follow-up recommendations
+
+Usage:
+  node scripts/collect-research.mjs --query "mid-market AI support pricing"
+
+Options:
+  --query <text>              Required. Search query to run.
+  --provider <name>           brave | tavily | auto (default: auto)
+  --mode <name>               standard | auto | deep (default: auto)
+  --max-results <n>           Search results to collect in the first pass (default: 5)
+  --max-pages <n>             Pages to fetch and extract in the first pass (default: same as max-results)
+  --concurrency <n>           Parallel page fetches (default: 3)
+  --timeout-ms <n>            Per-request timeout in ms (default: 12000)
+  --subquery-limit <n>        Automatic subqueries to try in escalated passes (default: 3)
+  --min-usable-sources <n>    Target number of usable sources before stopping (default: 3)
+  --out-dir <path>            Output directory (default: .shipwright/research/<slug>-<timestamp>)
+  --excerpt-chars <n>         Max chars per extracted excerpt (default: 1200)
+  --help                      Show this message
+
+Providers:
+  brave   Uses BRAVE_SEARCH_API_KEY
+  tavily  Uses TAVILY_API_KEY
+  auto    Uses the first configured provider and can escalate to the second
+
+Outputs:
+  evidence.json               Structured machine-readable results
+  evidence.md                 AI-ready source digest
+`;
+
+const DEFAULTS = {
+  provider: 'auto',
+  mode: 'auto',
+  maxResults: 5,
+  maxPages: undefined,
+  concurrency: 3,
+  timeoutMs: 12000,
+  excerptChars: 1200,
+  subqueryLimit: 3,
+  minUsableSources: 3,
+};
+
+async function main() {
+  const args = parseArgs(process.argv.slice(2));
+
+  if (args.help) {
+    console.log(HELP_TEXT);
+    return;
+  }
+
+  if (!args.query) {
+    throw new Error('Missing required --query. Run with --help for usage.');
+  }
+
+  const providers = resolveProviderPlan(args.provider);
+  const outDir = args.outDir || defaultOutDir(args.query);
+  const pack = await runEscalatingResearch(args, providers);
+
+  await mkdir(outDir, { recursive: true });
+  const jsonPath = path.join(outDir, 'evidence.json');
+  const mdPath = path.join(outDir, 'evidence.md');
+  await writeFile(jsonPath, `${JSON.stringify(pack, null, 2)}\n`, 'utf8');
+  await writeFile(mdPath, renderMarkdown(pack), 'utf8');
+
+  console.log(`Collected ${pack.results.length} result(s) using ${pack.providersAttempted.join(', ')}.`);
+  console.log(`Coverage status: ${pack.escalation.status}`);
+  console.log(`JSON: ${jsonPath}`);
+  console.log(`Markdown: ${mdPath}`);
+}
+
+async function runEscalatingResearch(args, providers) {
+  const initialMaxPages = args.maxPages ?? args.maxResults;
+  const secondaryQueries = buildAutomaticSubqueries(args.query, args.subqueryLimit);
+  const followupQueries = buildInteractiveFollowupQueries(args.query);
+  const stages = [];
+  let results = [];
+
+  results = await runStage({
+    results,
+    queries: [args.query],
+    provider: providers[0],
+    level: 'L1',
+    strategy: 'primary-query',
+    searchResultsPerQuery: args.maxResults,
+    fetchLimit: initialMaxPages,
+    args,
+    stages,
+  });
+
+  let coverage = summarizeCoverage(results);
+
+  if (shouldRunLevelTwo(args.mode, coverage, args.minUsableSources) && secondaryQueries.length > 0) {
+    results = await runStage({
+      results,
+      queries: secondaryQueries,
+      provider: providers[0],
+      level: 'L2',
+      strategy: 'expanded-subqueries',
+      searchResultsPerQuery: Math.max(4, Math.min(args.maxResults, 6)),
+      fetchLimit: Math.max(initialMaxPages + 2, args.minUsableSources + 2),
+      args,
+      stages,
+    });
+    coverage = summarizeCoverage(results);
+  }
+
+  if (shouldRunLevelThree(args.mode, coverage, args.minUsableSources)) {
+    const levelThreeProvider = providers[1] || providers[0];
+    const levelThreeQueries = providers[1]
+      ? [args.query, ...secondaryQueries.slice(0, Math.min(2, secondaryQueries.length))]
+      : followupQueries.slice(0, Math.max(2, Math.min(args.subqueryLimit, 4)));
+
+    results = await runStage({
+      results,
+      queries: unique(levelThreeQueries),
+      provider: levelThreeProvider,
+      level: 'L3',
+      strategy: providers[1] ? 'secondary-provider' : 'deep-followup-queries',
+      searchResultsPerQuery: Math.max(args.maxResults, 6),
+      fetchLimit: Math.max(initialMaxPages + 3, args.minUsableSources + 3),
+      args,
+      stages,
+    });
+    coverage = summarizeCoverage(results);
+  }
+
+  const status = coverage.usableSources >= args.minUsableSources
+    ? stages.length > 1 ? 'escalated-complete' : 'complete'
+    : 'needs-interactive-followup';
+
+  const nextAction = status === 'needs-interactive-followup'
+    ? 'Use interactive WebSearch/WebFetch only for the unresolved gaps and suggested follow-up queries.'
+    : 'Programmatic retrieval reached the target evidence threshold.';
+
+  return {
+    generatedAt: new Date().toISOString(),
+    query: args.query,
+    mode: args.mode,
+    providerRequest: args.provider,
+    providersAttempted: unique(stages.map((stage) => stage.provider)),
+    budget: {
+      maxResults: args.maxResults,
+      maxPages: initialMaxPages,
+      concurrency: args.concurrency,
+      timeoutMs: args.timeoutMs,
+      subqueryLimit: args.subqueryLimit,
+      minUsableSources: args.minUsableSources,
+    },
+    escalation: {
+      status,
+      nextAction,
+      suggestedInteractiveQueries: status === 'needs-interactive-followup'
+        ? followupQueries
+        : [],
+      coverage,
+      stages,
+    },
+    results,
+  };
+}
+
+async function runStage({
+  results,
+  queries,
+  provider,
+  level,
+  strategy,
+  searchResultsPerQuery,
+  fetchLimit,
+  args,
+  stages,
+}) {
+  const candidateGroups = await mapLimit(
+    queries,
+    Math.min(args.concurrency, Math.max(1, queries.length)),
+    async (query) => {
+      const matches = await search(provider, query, searchResultsPerQuery, args.timeoutMs);
+      return matches.map((result, index) => ({
+        ...result,
+        search: {
+          query,
+          provider,
+          level,
+          strategy,
+          sourceRank: index + 1,
+        },
+      }));
+    },
+  );
+
+  const candidates = candidateGroups.flat();
+  const fetchCandidates = pickFetchCandidates(candidates, results, fetchLimit);
+  const fetched = await mapLimit(
+    fetchCandidates,
+    args.concurrency,
+    (candidate) => fetchAndExtract(candidate, args.timeoutMs, args.excerptChars),
+  );
+
+  const merged = mergeResults(results, candidates, fetched);
+  const coverage = summarizeCoverage(merged);
+  stages.push({
+    level,
+    strategy,
+    provider,
+    queries,
+    candidateCount: candidates.length,
+    fetchedCount: fetched.length,
+    usableSourcesAfterStage: coverage.usableSources,
+    successfulFetchesAfterStage: coverage.successfulFetches,
+    uniqueDomainsAfterStage: coverage.uniqueDomains,
+  });
+
+  return merged;
+}
+
+function parseArgs(argv) {
+  const args = {
+    query: '',
+    provider: DEFAULTS.provider,
+    mode: DEFAULTS.mode,
+    maxResults: DEFAULTS.maxResults,
+    maxPages: DEFAULTS.maxPages,
+    concurrency: DEFAULTS.concurrency,
+    timeoutMs: DEFAULTS.timeoutMs,
+    subqueryLimit: DEFAULTS.subqueryLimit,
+    minUsableSources: DEFAULTS.minUsableSources,
+    outDir: '',
+    excerptChars: DEFAULTS.excerptChars,
+    help: false,
+  };
+
+  for (let i = 0; i < argv.length; i += 1) {
+    const token = argv[i];
+
+    switch (token) {
+      case '--query':
+        args.query = argv[++i] || '';
+        break;
+      case '--provider':
+        args.provider = argv[++i] || DEFAULTS.provider;
+        break;
+      case '--mode':
+        args.mode = parseMode(argv[++i]);
+        break;
+      case '--max-results':
+        args.maxResults = parseNumber(argv[++i], '--max-results');
+        break;
+      case '--max-pages':
+        args.maxPages = parseNumber(argv[++i], '--max-pages');
+        break;
+      case '--concurrency':
+        args.concurrency = parseNumber(argv[++i], '--concurrency');
+        break;
+      case '--timeout-ms':
+        args.timeoutMs = parseNumber(argv[++i], '--timeout-ms');
+        break;
+      case '--subquery-limit':
+        args.subqueryLimit = parseNumber(argv[++i], '--subquery-limit');
+        break;
+      case '--min-usable-sources':
+        args.minUsableSources = parseNumber(argv[++i], '--min-usable-sources');
+        break;
+      case '--out-dir':
+        args.outDir = argv[++i] || '';
+        break;
+      case '--excerpt-chars':
+        args.excerptChars = parseNumber(argv[++i], '--excerpt-chars');
+        break;
+      case '--help':
+      case '-h':
+        args.help = true;
+        break;
+      default:
+        throw new Error(`Unknown argument: ${token}`);
+    }
+  }
+
+  return args;
+}
+
+function parseMode(value) {
+  if (!['standard', 'auto', 'deep'].includes(value || '')) {
+    throw new Error(`Invalid --mode: ${value}. Expected standard, auto, or deep.`);
+  }
+  return value;
+}
+
+function parseNumber(value, flagName) {
+  const parsed = Number.parseInt(value || '', 10);
+  if (!Number.isFinite(parsed) || parsed <= 0) {
+    throw new Error(`Invalid value for ${flagName}: ${value}`);
+  }
+  return parsed;
+}
+
+function resolveProviderPlan(requested) {
+  if (requested && requested !== 'auto') {
+    assertProviderConfigured(requested);
+    return [requested];
+  }
+
+  const providers = [];
+  if (process.env.BRAVE_SEARCH_API_KEY) providers.push('brave');
+  if (process.env.TAVILY_API_KEY) providers.push('tavily');
+
+  if (providers.length === 0) {
+    throw new Error(
+      'No search provider configured. Set BRAVE_SEARCH_API_KEY or TAVILY_API_KEY, or pass --provider with a configured provider.',
+    );
+  }
+
+  return providers;
+}
+
+function assertProviderConfigured(provider) {
+  if (provider === 'brave' && !process.env.BRAVE_SEARCH_API_KEY) {
+    throw new Error('Provider "brave" requires BRAVE_SEARCH_API_KEY.');
+  }
+  if (provider === 'tavily' && !process.env.TAVILY_API_KEY) {
+    throw new Error('Provider "tavily" requires TAVILY_API_KEY.');
+  }
+  if (!['brave', 'tavily'].includes(provider)) {
+    throw new Error(`Unsupported provider: ${provider}`);
+  }
+}
+
+function defaultOutDir(query) {
+  const slug = slugify(query).slice(0, 60) || 'research';
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+  return path.join('.shipwright', 'research', `${slug}-${timestamp}`);
+}
+
+function slugify(value) {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+function shouldRunLevelTwo(mode, coverage, minUsableSources) {
+  if (mode === 'standard') return false;
+  if (mode === 'deep') return true;
+  return coverage.usableSources < minUsableSources;
+}
+
+function shouldRunLevelThree(mode, coverage, minUsableSources) {
+  if (mode === 'standard') return false;
+  if (mode === 'deep') return true;
+  return coverage.usableSources < minUsableSources;
+}
+
+function buildAutomaticSubqueries(query, limit) {
+  const normalized = cleanInlineText(query);
+  const lower = normalized.toLowerCase();
+  let suggestions = [];
+
+  if (containsAny(lower, ['pricing', 'price', 'packaging', 'plan'])) {
+    suggestions = [
+      `${normalized} pricing`,
+      `${normalized} plans`,
+      `${normalized} comparison`,
+      `${normalized} enterprise pricing`,
+    ];
+  } else if (containsAny(lower, ['market size', 'tam', 'sam', 'som', 'cagr', 'forecast'])) {
+    suggestions = [
+      `${normalized} market size`,
+      `${normalized} industry report`,
+      `${normalized} forecast`,
+      `${normalized} CAGR`,
+    ];
+  } else if (containsAny(lower, ['competitor', 'competitive', 'alternatives', 'vs'])) {
+    suggestions = [
+      `${normalized} competitors`,
+      `${normalized} alternatives`,
+      `${normalized} comparison`,
+      `${normalized} review`,
+    ];
+  } else if (containsAny(lower, ['review', 'reddit', 'forum', 'sentiment', 'feedback'])) {
+    suggestions = [
+      `${normalized} reviews`,
+      `${normalized} reddit`,
+      `${normalized} forum discussion`,
+      `${normalized} complaints`,
+    ];
+  } else if (containsAny(lower, ['regulation', 'regulatory', 'compliance', 'legal', 'policy'])) {
+    suggestions = [
+      `${normalized} regulation`,
+      `${normalized} compliance`,
+      `${normalized} policy`,
+      `${normalized} legal analysis`,
+    ];
+  } else {
+    suggestions = [
+      `${normalized} market overview`,
+      `${normalized} competitors`,
+      `${normalized} pricing`,
+      `${normalized} customer reviews`,
+    ];
+  }
+
+  return unique(
+    suggestions.filter((item) => item.toLowerCase() !== lower),
+  ).slice(0, limit);
+}
+
+function buildInteractiveFollowupQueries(query) {
+  const normalized = cleanInlineText(query);
+  const lower = normalized.toLowerCase();
+  const suggestions = [...buildAutomaticSubqueries(query, 2)];
+
+  if (containsAny(lower, ['pricing', 'price', 'packaging', 'plan'])) {
+    suggestions.push(`${normalized} site:g2.com pricing`);
+    suggestions.push(`${normalized} site:capterra.com pricing`);
+  } else if (containsAny(lower, ['market size', 'tam', 'sam', 'som', 'cagr', 'forecast'])) {
+    suggestions.push(`${normalized} filetype:pdf report`);
+    suggestions.push(`${normalized} analyst report`);
+  } else if (containsAny(lower, ['competitor', 'competitive', 'alternatives', 'vs'])) {
+    suggestions.push(`${normalized} site:g2.com alternatives`);
+    suggestions.push(`${normalized} site:capterra.com alternatives`);
+  } else if (containsAny(lower, ['review', 'reddit', 'forum', 'sentiment', 'feedback'])) {
+    suggestions.push(`${normalized} site:reddit.com`);
+    suggestions.push(`${normalized} site:news.ycombinator.com`);
+  } else {
+    suggestions.push(`${normalized} filetype:pdf`);
+    suggestions.push(`${normalized} site:reddit.com`);
+  }
+
+  return unique(suggestions).slice(0, 4);
+}
+
+function containsAny(haystack, needles) {
+  return needles.some((needle) => haystack.includes(needle));
+}
+
+async function search(provider, query, maxResults, timeoutMs) {
+  if (provider === 'brave') {
+    return braveSearch(query, maxResults, timeoutMs);
+  }
+  if (provider === 'tavily') {
+    return tavilySearch(query, maxResults, timeoutMs);
+  }
+  throw new Error(`Unsupported provider: ${provider}`);
+}
+
+async function braveSearch(query, maxResults, timeoutMs) {
+  const url = new URL('https://api.search.brave.com/res/v1/web/search');
+  url.searchParams.set('q', query);
+  url.searchParams.set('count', String(maxResults));
+  url.searchParams.set('search_lang', 'en');
+  url.searchParams.set('country', 'us');
+
+  const response = await fetchWithTimeout(url.toString(), {
+    headers: {
+      Accept: 'application/json',
+      'X-Subscription-Token': process.env.BRAVE_SEARCH_API_KEY,
+      'User-Agent': 'ShipwrightResearchCollector/1.0',
+    },
+  }, timeoutMs);
+
+  const payload = await readJson(response);
+  const results = payload.web?.results || [];
+
+  return results.map((item, index) => ({
+    rank: index + 1,
+    title: item.title || item.profile?.name || item.url,
+    url: item.url,
+    site: item.profile?.name || '',
+    searchSnippet: cleanInlineText(item.description || ''),
+    published: item.age || item.page_age || '',
+  }));
+}
+
+async function tavilySearch(query, maxResults, timeoutMs) {
+  const response = await fetchWithTimeout('https://api.tavily.com/search', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      'User-Agent': 'ShipwrightResearchCollector/1.0',
+    },
+    body: JSON.stringify({
+      api_key: process.env.TAVILY_API_KEY,
+      query,
+      search_depth: 'basic',
+      max_results: maxResults,
+      include_answer: false,
+      include_raw_content: false,
+    }),
+  }, timeoutMs);
+
+  const payload = await readJson(response);
+  const results = payload.results || [];
+
+  return results.map((item, index) => ({
+    rank: index + 1,
+    title: item.title || item.url,
+    url: item.url,
+    site: '',
+    searchSnippet: cleanInlineText(item.content || ''),
+    published: item.published_date || '',
+  }));
+}
+
+function pickFetchCandidates(candidates, existingResults, fetchLimit) {
+  const fetchedKeys = new Set(
+    existingResults
+      .filter((result) => result.fetched)
+      .map((result) => normalizeUrl(result.fetched.finalUrl || result.url)),
+  );
+  const seenKeys = new Set();
+  const selected = [];
+
+  for (const candidate of candidates) {
+    const key = normalizeUrl(candidate.url);
+    if (!key || seenKeys.has(key)) continue;
+    seenKeys.add(key);
+    if (fetchedKeys.has(key)) continue;
+    selected.push(candidate);
+    if (selected.length >= fetchLimit) break;
+  }
+
+  return selected;
+}
+
+async function fetchAndExtract(result, timeoutMs, excerptChars) {
+  try {
+    const response = await fetchWithTimeout(result.url, {
+      headers: {
+        Accept: 'text/html,application/xhtml+xml,text/plain;q=0.9,*/*;q=0.8',
+        'User-Agent': 'ShipwrightResearchCollector/1.0',
+      },
+      redirect: 'follow',
+    }, timeoutMs);
+
+    const body = await response.text();
+    const contentType = response.headers.get('content-type') || '';
+    const extracted = extractPage(body, contentType, excerptChars);
+
+    return {
+      ...result,
+      fetched: {
+        ok: response.ok,
+        status: response.status,
+        finalUrl: response.url,
+        contentType,
+      },
+      extracted,
+    };
+  } catch (error) {
+    return {
+      ...result,
+      fetched: {
+        ok: false,
+        error: error instanceof Error ? error.message : String(error),
+      },
+      extracted: {
+        title: result.title,
+        description: '',
+        excerpt: '',
+        wordCount: 0,
+      },
+    };
+  }
+}
+
+function mergeResults(existingResults, candidates, fetchedResults) {
+  const merged = new Map();
+
+  for (const result of existingResults) {
+    const key = normalizeUrl(result.fetched?.finalUrl || result.url);
+    merged.set(key, {
+      ...result,
+      searchHistory: [...(result.searchHistory || [])],
+    });
+  }
+
+  for (const candidate of candidates) {
+    const key = normalizeUrl(candidate.url);
+    const current = merged.get(key);
+
+    if (!current) {
+      merged.set(key, {
+        ...candidate,
+        searchHistory: [candidate.search],
+      });
+      continue;
+    }
+
+    current.searchHistory = mergeSearchHistory(current.searchHistory || [], candidate.search);
+    if (!current.searchSnippet && candidate.searchSnippet) current.searchSnippet = candidate.searchSnippet;
+    if (!current.published && candidate.published) current.published = candidate.published;
+    if (!current.site && candidate.site) current.site = candidate.site;
+    if (!current.title && candidate.title) current.title = candidate.title;
+    if (!current.search) current.search = candidate.search;
+  }
+
+  for (const fetched of fetchedResults) {
+    const key = normalizeUrl(fetched.fetched?.finalUrl || fetched.url);
+    const current = merged.get(key);
+    if (!current) {
+      merged.set(key, {
+        ...fetched,
+        searchHistory: [fetched.search],
+      });
+      continue;
+    }
+
+    current.fetched = fetched.fetched;
+    current.extracted = fetched.extracted;
+    if (!current.title && fetched.title) current.title = fetched.title;
+    if (!current.searchSnippet && fetched.searchSnippet) current.searchSnippet = fetched.searchSnippet;
+  }
+
+  return Array.from(merged.values()).map((result, index) => ({
+    ...result,
+    rank: index + 1,
+  }));
+}
+
+function mergeSearchHistory(existing, incoming) {
+  const items = [...existing];
+  const serialized = new Set(items.map((item) => JSON.stringify(item)));
+  const encodedIncoming = JSON.stringify(incoming);
+  if (!serialized.has(encodedIncoming)) {
+    items.push(incoming);
+  }
+  return items;
+}
+
+function summarizeCoverage(results) {
+  const successfulFetches = results.filter((result) => result.fetched?.ok).length;
+  const usableSources = results.filter(isUsableSource).length;
+  const uniqueDomains = new Set(
+    results
+      .filter(isUsableSource)
+      .map((result) => extractDomain(result.fetched?.finalUrl || result.url))
+      .filter(Boolean),
+  ).size;
+
+  return {
+    totalResults: results.length,
+    successfulFetches,
+    usableSources,
+    uniqueDomains,
+    thinCoverage: usableSources < 3,
+  };
+}
+
+function isUsableSource(result) {
+  const excerptWords = result.extracted?.wordCount || 0;
+  const snippetLength = (result.searchSnippet || '').length;
+  const successfulFetch = result.fetched?.ok === true;
+
+  if (successfulFetch && excerptWords >= 30) return true;
+  if (!result.fetched && snippetLength >= 120) return true;
+  if (successfulFetch && snippetLength >= 120) return true;
+  return false;
+}
+
+function extractPage(body, contentType, excerptChars) {
+  if (!contentType.includes('html') && !contentType.includes('text/plain')) {
+    return {
+      title: '',
+      description: '',
+      excerpt: '',
+      wordCount: 0,
+    };
+  }
+
+  if (contentType.includes('text/plain')) {
+    const excerpt = truncate(cleanInlineText(body), excerptChars);
+    return {
+      title: '',
+      description: '',
+      excerpt,
+      wordCount: countWords(excerpt),
+    };
+  }
+
+  const title = extractTagText(body, 'title');
+  const description = extractMetaDescription(body);
+  const lines = htmlToLines(body);
+  const excerpt = buildExcerpt(lines, excerptChars);
+
+  return {
+    title,
+    description,
+    excerpt,
+    wordCount: countWords(excerpt),
+  };
+}
+
+function extractTagText(html, tagName) {
+  const pattern = new RegExp(`<${tagName}[^>]*>([\\s\\S]*?)</${tagName}>`, 'i');
+  const match = html.match(pattern);
+  return match ? cleanInlineText(decodeEntities(match[1])) : '';
+}
+
+function extractMetaDescription(html) {
+  const patterns = [
+    /<meta[^>]+name=["']description["'][^>]+content=["']([^"']*)["'][^>]*>/i,
+    /<meta[^>]+content=["']([^"']*)["'][^>]+name=["']description["'][^>]*>/i,
+    /<meta[^>]+property=["']og:description["'][^>]+content=["']([^"']*)["'][^>]*>/i,
+    /<meta[^>]+content=["']([^"']*)["'][^>]+property=["']og:description["'][^>]*>/i,
+  ];
+
+  for (const pattern of patterns) {
+    const match = html.match(pattern);
+    if (match) {
+      return cleanInlineText(decodeEntities(match[1]));
+    }
+  }
+
+  return '';
+}
+
+function htmlToLines(html) {
+  const text = html
+    .replace(/<!--[\s\S]*?-->/g, ' ')
+    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<noscript[\s\S]*?<\/noscript>/gi, ' ')
+    .replace(/<svg[\s\S]*?<\/svg>/gi, ' ')
+    .replace(/<template[\s\S]*?<\/template>/gi, ' ')
+    .replace(/<nav[\s\S]*?<\/nav>/gi, ' ')
+    .replace(/<footer[\s\S]*?<\/footer>/gi, ' ')
+    .replace(/<header[\s\S]*?<\/header>/gi, ' ')
+    .replace(/<(br|\/p|\/div|\/li|\/section|\/article|\/h[1-6]|\/tr|\/ul|\/ol)>/gi, '\n')
+    .replace(/<[^>]+>/g, ' ');
+
+  return decodeEntities(text)
+    .split(/\n+/)
+    .map((line) => cleanInlineText(line))
+    .filter((line) => line.length >= 40);
+}
+
+function buildExcerpt(lines, excerptChars) {
+  const selected = [];
+  let used = 0;
+
+  for (const line of lines) {
+    if (used >= excerptChars) break;
+    const next = truncate(line, Math.max(excerptChars - used, 0));
+    if (!next) continue;
+    selected.push(next);
+    used += next.length + 1;
+  }
+
+  return truncate(selected.join('\n'), excerptChars);
+}
+
+function decodeEntities(input) {
+  const named = {
+    amp: '&',
+    lt: '<',
+    gt: '>',
+    quot: '"',
+    apos: "'",
+    nbsp: ' ',
+    ndash: '-',
+    mdash: '-',
+    hellip: '...',
+    rsquo: "'",
+    lsquo: "'",
+    rdquo: '"',
+    ldquo: '"',
+    copy: '(c)',
+    reg: '(r)',
+    trade: '(tm)',
+  };
+
+  return input.replace(/&(#x?[0-9a-fA-F]+|\w+);/g, (_, entity) => {
+    if (entity.startsWith('#x') || entity.startsWith('#X')) {
+      return String.fromCodePoint(Number.parseInt(entity.slice(2), 16));
+    }
+    if (entity.startsWith('#')) {
+      return String.fromCodePoint(Number.parseInt(entity.slice(1), 10));
+    }
+    return named[entity] || `&${entity};`;
+  });
+}
+
+function cleanInlineText(input) {
+  return input.replace(/\s+/g, ' ').trim();
+}
+
+function truncate(input, maxChars) {
+  if (!input || input.length <= maxChars) return input;
+  return `${input.slice(0, Math.max(0, maxChars - 3)).trimEnd()}...`;
+}
+
+function countWords(input) {
+  if (!input) return 0;
+  return input.split(/\s+/).filter(Boolean).length;
+}
+
+async function fetchWithTimeout(url, options, timeoutMs) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    return await fetch(url, {
+      ...options,
+      signal: controller.signal,
+    });
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+async function readJson(response) {
+  if (!response.ok) {
+    const body = await response.text();
+    throw new Error(`Search request failed (${response.status}): ${truncate(body, 300)}`);
+  }
+  return response.json();
+}
+
+async function mapLimit(items, limit, mapper) {
+  const results = new Array(items.length);
+  let nextIndex = 0;
+
+  async function worker() {
+    while (nextIndex < items.length) {
+      const current = nextIndex;
+      nextIndex += 1;
+      results[current] = await mapper(items[current], current);
+    }
+  }
+
+  const workers = Array.from({ length: Math.min(limit, items.length) }, () => worker());
+  await Promise.all(workers);
+  return results;
+}
+
+function normalizeUrl(rawUrl) {
+  try {
+    const url = new URL(rawUrl);
+    url.hash = '';
+    const trackingParams = [
+      'utm_source',
+      'utm_medium',
+      'utm_campaign',
+      'utm_term',
+      'utm_content',
+      'gclid',
+      'fbclid',
+      'ref',
+    ];
+    for (const key of trackingParams) {
+      url.searchParams.delete(key);
+    }
+    url.hostname = url.hostname.replace(/^www\./, '');
+    url.pathname = url.pathname.replace(/\/+$/, '') || '/';
+    const normalized = url.toString();
+    return normalized.endsWith('/') ? normalized.slice(0, -1) : normalized;
+  } catch {
+    return rawUrl;
+  }
+}
+
+function extractDomain(rawUrl) {
+  try {
+    return new URL(rawUrl).hostname.replace(/^www\./, '');
+  } catch {
+    return '';
+  }
+}
+
+function unique(items) {
+  return Array.from(new Set(items.filter(Boolean)));
+}
+
+function renderMarkdown(pack) {
+  const lines = [
+    '# Evidence Pack',
+    '',
+    `- Query: ${pack.query}`,
+    `- Generated: ${pack.generatedAt}`,
+    `- Mode: ${pack.mode}`,
+    `- Providers attempted: ${pack.providersAttempted.join(', ')}`,
+    `- Results collected: ${pack.results.length}`,
+    '',
+    '## Escalation Summary',
+    '',
+    `- Status: ${pack.escalation.status}`,
+    `- Next action: ${pack.escalation.nextAction}`,
+    `- Usable sources: ${pack.escalation.coverage.usableSources}`,
+    `- Successful fetches: ${pack.escalation.coverage.successfulFetches}`,
+    `- Unique domains: ${pack.escalation.coverage.uniqueDomains}`,
+    '',
+    '## Escalation Stages',
+    '',
+  ];
+
+  for (const stage of pack.escalation.stages) {
+    lines.push(`### ${stage.level} - ${stage.strategy}`);
+    lines.push(`- Provider: ${stage.provider}`);
+    lines.push(`- Queries: ${stage.queries.join(' | ')}`);
+    lines.push(`- Search candidates: ${stage.candidateCount}`);
+    lines.push(`- Pages fetched: ${stage.fetchedCount}`);
+    lines.push(`- Usable sources after stage: ${stage.usableSourcesAfterStage}`);
+    lines.push('');
+  }
+
+  if (pack.escalation.suggestedInteractiveQueries.length > 0) {
+    lines.push('## Suggested Interactive Follow-Up Queries', '');
+    for (const query of pack.escalation.suggestedInteractiveQueries) {
+      lines.push(`- ${query}`);
+    }
+    lines.push('');
+  }
+
+  lines.push(
+    '## Source Table',
+    '',
+    '| # | Title | URL | Search Snippet |',
+    '|---|---|---|---|',
+  );
+
+  for (const result of pack.results) {
+    lines.push(
+      `| ${result.rank} | ${escapePipes(result.title || '')} | ${escapePipes(result.url || '')} | ${escapePipes(result.searchSnippet || '')} |`,
+    );
+  }
+
+  lines.push('', '## AI-Ready Digest', '');
+
+  for (const result of pack.results) {
+    lines.push(`### ${result.rank}. ${result.title || result.url}`);
+    lines.push(`- URL: ${result.url}`);
+    if (result.published) lines.push(`- Published: ${result.published}`);
+    if (result.site) lines.push(`- Source: ${result.site}`);
+    if (result.search?.query) lines.push(`- Found via: ${result.search.query}`);
+    if (result.searchSnippet) lines.push(`- Search snippet: ${result.searchSnippet}`);
+    if (result.fetched?.ok === false && result.fetched?.error) {
+      lines.push(`- Fetch status: failed (${result.fetched.error})`);
+    } else if (result.fetched?.status) {
+      lines.push(`- Fetch status: ${result.fetched.status}`);
+    }
+    if (result.extracted?.description) {
+      lines.push(`- Page description: ${result.extracted.description}`);
+    }
+    if (result.extracted?.excerpt) {
+      lines.push('- Extracted excerpt:');
+      lines.push('');
+      lines.push(result.extracted.excerpt);
+      lines.push('');
+    } else {
+      lines.push('- Extracted excerpt: unavailable');
+      lines.push('');
+    }
+  }
+
+  return `${lines.join('\n')}\n`;
+}
+
+function escapePipes(value) {
+  return value.replace(/\|/g, '\\|');
+}
+
+main().catch((error) => {
+  console.error(error instanceof Error ? error.message : String(error));
+  process.exitCode = 1;
+});

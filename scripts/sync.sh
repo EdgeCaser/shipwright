@@ -29,6 +29,7 @@ MAPPINGS=(
   "commands:.claude/commands"
   "docs:.claude/docs"
   "evals:.claude/evals"
+  "scripts:.claude/scripts"
 )
 
 CONFIG_FILE=".shipwright-source"

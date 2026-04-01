@@ -7,6 +7,8 @@ description: "Launch the Shipwright orchestrator. Greets the PM, asks what they'
 
 Run this command at the beginning of any session to activate the Shipwright orchestrator. It acts as a concierge: it understands what you need, maps your request to the right skills and agents, builds an execution plan, and dispatches work on your approval.
 
+Use `/start` when you need routing help or a phased plan. If you already know you want `/competitive`, `/pricing`, `/write-prd`, or another specific workflow, running that command directly is usually faster and less likely to time out.
+
 ## What Happens
 
 ### 1. Load Context
@@ -70,6 +72,12 @@ which chains these skills together in a single workflow.
 Ready to go? I can kick off all of this, or we can adjust the plan first.
 ```
 
+Guardrails:
+- Prefer one workflow or one specialist when the ask already maps cleanly.
+- Split web-heavy research from synthesis and packaging when the request is broad.
+- Limit each research step to one primary deliverable and a small set of targeted searches.
+- Ask specialists to return findings inline instead of writing files unless the PM explicitly asks for saved artifacts.
+
 ### 5. Execute on Approval
 Once the PM approves (or adjusts) the plan:
 1. Dispatch specialist agents using the Agent tool with detailed prompts
@@ -102,3 +110,4 @@ For the full routing map, see `/skills-map.md`.
 4. **Adapt to what exists.** If the PM already has research, skip research. If they have a PRD, skip to tech spec.
 5. **Be honest about scope.** A 30-minute task is a 30-minute task. Don't inflate.
 6. **Read CLAUDE.md first.** Product context informs routing and eliminates redundant questions.
+7. **Keep runs bounded.** Broad asks should be decomposed into phases rather than one exhaustive run.

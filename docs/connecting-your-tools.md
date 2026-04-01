@@ -103,6 +103,47 @@ claude mcp remove linear   # disconnect a tool
 
 Inside a Claude Code session, type `/mcp` to see which connections are active and what tools they provide.
 
+## Programmatic web research without changing the UX
+
+For public-web research, you can offload search and page retrieval to a local helper so Shipwright stays conversational while spending fewer tool calls on raw retrieval.
+
+Shipwright includes `scripts/collect-research.mjs` in the repo and installs it to `.claude/scripts/collect-research.mjs` when you use `scripts/sync.sh --install`.
+
+What it does:
+
+- runs a programmatic web search
+- fetches the top pages in parallel
+- extracts a compact source digest
+- writes `evidence.json` and `evidence.md` under `.shipwright/research/`
+- escalates automatically from the primary query to broader subqueries and then to gap-only follow-up recommendations when needed
+
+What the AI still does:
+
+- judge relevance
+- reconcile conflicting evidence
+- synthesize findings
+- write the final answer
+
+Set one of these environment variables before starting Claude Code:
+
+```bash
+export BRAVE_SEARCH_API_KEY=...
+# or
+export TAVILY_API_KEY=...
+```
+
+Then an agent can call the helper with Bash using a prompt that still feels conversational to the PM. Example:
+
+```bash
+node .claude/scripts/collect-research.mjs \
+  --query "AI-powered customer support tools for mid-market SaaS pricing" \
+  --max-results 5
+```
+
+This produces a compact evidence pack the model can synthesize instead of spending a long sequence of `WebSearch` and `WebFetch` calls on the same task.
+
+When the helper still cannot gather enough usable sources, it records `needs-interactive-followup` plus suggested follow-up queries. Agents should then use interactive browsing only for those remaining gaps.
+
 ## What to connect first
 
 If you're not sure where to start, pick based on what you use Shipwright for most:
