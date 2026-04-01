@@ -44,6 +44,7 @@ Outputs:
   evidence.json               Structured machine-readable results
   evidence.md                 AI-ready source digest
   facts.json                  Atomic source-attributed facts derived from evidence.json
+                               v1 emits only high and medium confidence_hint values
 
 Behavior:
   Loads .env from the current working directory if present.
