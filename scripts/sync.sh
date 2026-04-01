@@ -34,6 +34,10 @@ MAPPINGS=(
   "scripts:.codex/scripts"
 )
 
+OVERLAY_MAPPINGS=(
+  ".codex/skills:.codex/skills"
+)
+
 CONFIG_FILE=".shipwright-source"
 IGNORE_FILE=".shipwright-ignore"
 SELF_NAME="shipwright-sync.sh"
@@ -47,6 +51,10 @@ stale(){ echo -e "  ${YELLOW}STALE${NC} $1"; }
 new()  { echo -e "  ${RED}NEW${NC} $1"; }
 gone() { echo -e "  ${YELLOW}REMOVED${NC} $1"; }
 custom() { echo -e "  ${CYAN}CUSTOM${NC} $1"; }
+
+all_mappings() {
+  printf '%s\n' "${MAPPINGS[@]}" "${OVERLAY_MAPPINGS[@]}"
+}
 
 is_ignored() {
   local file="$1" dest="$2"
@@ -75,6 +83,22 @@ prompt_yn() {
   done
 }
 
+source_exists_for_dest_rel() {
+  local src="$1" dest_dir="$2" rel="$3"
+  local mapping src_dir mapped_dest
+
+  while IFS= read -r mapping; do
+    src_dir="${mapping%%:*}"
+    mapped_dest="${mapping##*:}"
+
+    if [ "$mapped_dest" = "$dest_dir" ] && [ -f "$src/$src_dir/$rel" ]; then
+      return 0
+    fi
+  done < <(all_mappings)
+
+  return 1
+}
+
 AUTO_YES=0
 
 # ─── Install mode ─────────────────────────────────────────────────────────────
@@ -100,7 +124,7 @@ do_install() {
   ok "Copied $SELF_NAME"
 
   # Copy all mapped directories
-  for mapping in "${MAPPINGS[@]}"; do
+  while IFS= read -r mapping; do
     local src_dir="${mapping%%:*}"
     local dest_dir="${mapping##*:}"
 
@@ -111,7 +135,7 @@ do_install() {
       count=$(find "$src/$src_dir" -type f | wc -l | tr -d ' ')
       ok "Copied $src_dir/ → $dest_dir/ ($count files)"
     fi
-  done
+  done < <(all_mappings)
 
   echo ""
   echo -e "${GREEN}${BOLD}Install complete.${NC}"
@@ -148,7 +172,7 @@ do_sync() {
   local ok_count=0
   local custom_count=0
 
-  for mapping in "${MAPPINGS[@]}"; do
+  while IFS= read -r mapping; do
     local src_dir="${mapping%%:*}"
     local dest_dir="${mapping##*:}"
 
@@ -182,8 +206,7 @@ do_sync() {
     if [ -d "$dest/$dest_dir" ]; then
       while IFS= read -r dest_file; do
         local rel="${dest_file#$dest/$dest_dir/}"
-        local src_file="$src/$src_dir/$rel"
-        if [ ! -f "$src_file" ]; then
+        if ! source_exists_for_dest_rel "$src" "$dest_dir" "$rel"; then
           if is_ignored "$dest_dir/$rel" "$dest"; then
             custom "$rel (locally customized, keeping despite source removal)"
             custom_count=$((custom_count + 1))
@@ -196,7 +219,7 @@ do_sync() {
     fi
 
     echo ""
-  done
+  done < <(all_mappings)
 
   # Check if the sync script itself is outdated
   if [ -f "$src/scripts/sync.sh" ] && [ -f "$dest/$SELF_NAME" ]; then
@@ -227,28 +250,34 @@ do_sync() {
 
   if prompt_yn "Update all $total_actionable file(s)?"; then
     # Update changed files
-    for entry in "${stale_files[@]}"; do
-      local from="${entry%%|*}"
-      local to="${entry##*|}"
-      mkdir -p "$(dirname "$to")"
-      cp "$from" "$to"
-      echo -e "  ${GREEN}Updated${NC} $to"
-    done
+    if [ "${#stale_files[@]}" -gt 0 ]; then
+      for entry in "${stale_files[@]}"; do
+        local from="${entry%%|*}"
+        local to="${entry##*|}"
+        mkdir -p "$(dirname "$to")"
+        cp "$from" "$to"
+        echo -e "  ${GREEN}Updated${NC} $to"
+      done
+    fi
 
     # Copy new files
-    for entry in "${new_files[@]}"; do
-      local from="${entry%%|*}"
-      local to="${entry##*|}"
-      mkdir -p "$(dirname "$to")"
-      cp "$from" "$to"
-      echo -e "  ${GREEN}Added${NC} $to"
-    done
+    if [ "${#new_files[@]}" -gt 0 ]; then
+      for entry in "${new_files[@]}"; do
+        local from="${entry%%|*}"
+        local to="${entry##*|}"
+        mkdir -p "$(dirname "$to")"
+        cp "$from" "$to"
+        echo -e "  ${GREEN}Added${NC} $to"
+      done
+    fi
 
     # Remove deleted files
-    for file in "${removed_files[@]}"; do
-      rm "$file"
-      echo -e "  ${GREEN}Removed${NC} $file"
-    done
+    if [ "${#removed_files[@]}" -gt 0 ]; then
+      for file in "${removed_files[@]}"; do
+        rm "$file"
+        echo -e "  ${GREEN}Removed${NC} $file"
+      done
+    fi
 
     echo ""
     echo -e "${GREEN}${BOLD}Sync complete.${NC}"
@@ -256,44 +285,50 @@ do_sync() {
     # Offer one-by-one
     echo ""
     if prompt_yn "Update files individually instead?"; then
-      for entry in "${stale_files[@]}"; do
-        local from="${entry%%|*}"
-        local to="${entry##*|}"
-        echo ""
-        echo -e "${BOLD}Changed:${NC} ${to#$dest/}"
-        diff --color=auto "$to" "$from" 2>/dev/null | head -30
-        if prompt_yn "  Update this file?"; then
-          cp "$from" "$to"
-          echo -e "  ${GREEN}Updated${NC}"
-        else
-          echo "  Skipped"
-        fi
-      done
+      if [ "${#stale_files[@]}" -gt 0 ]; then
+        for entry in "${stale_files[@]}"; do
+          local from="${entry%%|*}"
+          local to="${entry##*|}"
+          echo ""
+          echo -e "${BOLD}Changed:${NC} ${to#$dest/}"
+          diff --color=auto "$to" "$from" 2>/dev/null | head -30
+          if prompt_yn "  Update this file?"; then
+            cp "$from" "$to"
+            echo -e "  ${GREEN}Updated${NC}"
+          else
+            echo "  Skipped"
+          fi
+        done
+      fi
 
-      for entry in "${new_files[@]}"; do
-        local from="${entry%%|*}"
-        local to="${entry##*|}"
-        echo ""
-        echo -e "${BOLD}New:${NC} ${to#$dest/}"
-        if prompt_yn "  Add this file?"; then
-          mkdir -p "$(dirname "$to")"
-          cp "$from" "$to"
-          echo -e "  ${GREEN}Added${NC}"
-        else
-          echo "  Skipped"
-        fi
-      done
+      if [ "${#new_files[@]}" -gt 0 ]; then
+        for entry in "${new_files[@]}"; do
+          local from="${entry%%|*}"
+          local to="${entry##*|}"
+          echo ""
+          echo -e "${BOLD}New:${NC} ${to#$dest/}"
+          if prompt_yn "  Add this file?"; then
+            mkdir -p "$(dirname "$to")"
+            cp "$from" "$to"
+            echo -e "  ${GREEN}Added${NC}"
+          else
+            echo "  Skipped"
+          fi
+        done
+      fi
 
-      for file in "${removed_files[@]}"; do
-        echo ""
-        echo -e "${BOLD}Removed from source:${NC} ${file#$dest/}"
-        if prompt_yn "  Delete this file?"; then
-          rm "$file"
-          echo -e "  ${GREEN}Removed${NC}"
-        else
-          echo "  Skipped"
-        fi
-      done
+      if [ "${#removed_files[@]}" -gt 0 ]; then
+        for file in "${removed_files[@]}"; do
+          echo ""
+          echo -e "${BOLD}Removed from source:${NC} ${file#$dest/}"
+          if prompt_yn "  Delete this file?"; then
+            rm "$file"
+            echo -e "  ${GREEN}Removed${NC}"
+          else
+            echo "  Skipped"
+          fi
+        done
+      fi
     else
       echo "No changes made."
     fi
