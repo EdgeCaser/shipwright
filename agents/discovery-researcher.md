@@ -61,6 +61,10 @@ Read the following skill files for detailed frameworks when conducting research:
 Every research output must include:
 1. **Executive summary** — 3-5 bullet top-line findings
 2. **Methodology** — how the research was conducted, sources used
+   Include a short **Retrieval Trace** whenever public-web evidence was used:
+   - whether the local collector was used
+   - whether the collector reported cache `hit`, `miss`, or `refresh`
+   - whether interactive follow-up was needed after the evidence pack
 3. **Detailed findings** — structured by theme, with evidence
 4. **Key uncertainties** — what you couldn't verify or where evidence is thin
 5. **Recommended next steps** — what research should come next (NOT product recommendations)

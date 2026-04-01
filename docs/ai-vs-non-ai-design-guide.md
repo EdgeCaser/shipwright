@@ -41,6 +41,18 @@ Can we score the output mechanically?
 
 If the answer is yes, prefer a deterministic helper first.
 
+## Architecture pattern to prefer
+
+The default system pattern should be:
+
+1. Deterministic preflight classifies the request.
+2. Deterministic helpers gather and normalize evidence.
+3. AI synthesizes from compact structured artifacts.
+4. Deterministic postflight validates the output.
+5. AI revises only if validation or judgment gaps remain.
+
+This is the target shape for research-heavy flows.
+
 ## Shipwright design principles
 
 Any future acceleration work should preserve these principles:
@@ -67,7 +79,7 @@ These are good AI jobs and should remain agentic by default:
 
 Do not try to replace these with rules engines unless the problem has become narrow enough to be scored deterministically.
 
-## Best bets
+## Highest-leverage deterministic work
 
 These are the highest-leverage non-AI opportunities for Shipwright.
 
@@ -114,7 +126,7 @@ Why it matters:
 - makes validation possible
 - makes downstream tools reusable
 
-### 3. Marketplace and vendor adapters
+### 3. Structured-source adapters
 
 Many sources Shipwright cares about are highly structured:
 
@@ -127,13 +139,11 @@ Many sources Shipwright cares about are highly structured:
 
 These are often better served by small parsers or field extractors than by repeated AI reads.
 
-### 4. Output scaffolding
+### 4. Output scaffolding and validation
 
 Document skeletons, section ordering, table shells, and appendix structures should be generated deterministically.
 
 AI should fill in reasoning, not burn tokens on boilerplate.
-
-### 5. Validation and linting
 
 Many Shipwright quality checks are deterministic:
 
@@ -147,7 +157,7 @@ Many Shipwright quality checks are deterministic:
 
 These should be checked mechanically before asking AI to revise.
 
-### 6. Caching
+### 5. Caching and reuse
 
 Cache by:
 
@@ -163,7 +173,7 @@ Why it matters:
 - retries become faster
 - broad prompts can reuse prior evidence packs
 
-### 7. Resume and checkpointing
+### 6. Resume and checkpointing
 
 Long workflows should save phase outputs so the system can restart from:
 
@@ -173,156 +183,17 @@ Long workflows should save phase outputs so the system can restart from:
 
 instead of restarting the entire run.
 
-## Impact layers
+For workflow-specific helper ideas and backlog items, see [Deterministic Helpers Roadmap](deterministic-helpers-roadmap.md).
+
+## Recommended order of investment
 
 These layers are the recommended order for future system improvement.
 
-### Layer 1: Retrieval offload
-
-Move public-web retrieval into scripts and adapters.
-
-Expected impact:
-
-- highest immediate timeout reduction
-- fewer interactive search calls
-- better parallelism
-
-Examples:
-
-- `collect-research.mjs`
-- marketplace search helpers
-- official-page fetchers
-
-### Layer 2: Fact normalization
-
-Turn retrieved material into stable structured facts.
-
-Expected impact:
-
-- smaller prompts
-- less hallucination pressure
-- easier validation
-
-Examples:
-
-- pricing extractors
-- acquisition event extractors
-- competitor matrix builders
-
-### Layer 3: Workflow splitting
-
-Automatically separate research, synthesis, and packaging into distinct phases.
-
-Expected impact:
-
-- lower timeout risk on broad requests
-- easier retries
-- clearer progress reporting
-
-Examples:
-
-- research pass first
-- strategy memo second
-- polished export third
-
-### Layer 4: Deterministic postflight
-
-Run linting and readiness checks before or after AI synthesis.
-
-Expected impact:
-
-- fewer wasted retries
-- more stable artifact quality
-- cheaper fixes
-
-Examples:
-
-- citation checker
-- confidence-tag checker
-- signature checker
-
-### Layer 5: Cache and resume
-
-Persist outputs so expensive work is not repeated.
-
-Expected impact:
-
-- biggest medium-term speed gain
-- better reliability for large jobs
-- better UX for iterative refinement
-
-## Good non-AI candidates by workflow
-
-These are especially strong places to add deterministic helpers.
-
-### `/market-sizing`
-
-- formula engine
-- assumption table scaffolding
-- source register generation
-- top-down and bottom-up math templates
-
-### `/competitive`
-
-- competitor matrix builder
-- pricing-page parser
-- feature table normalizer
-- acquisition and funding timeline collector
-
-### `/pricing`
-
-- plan and package extraction
-- pricing diff across competitors
-- seat and usage model normalizer
-- historical pricing snapshot cache
-
-### `/customer-review`
-
-- review ingestion
-- deduping
-- sentiment pre-bucketing
-- theme counts
-- date and segment slicing
-
-### `/challenge`
-
-- claim-to-citation checker
-- unsupported-number checker
-- contradiction detector
-- missing-risk-section checker
-
-### `/status`
-
-- artifact inventory
-- freshness check
-- missing dependency detection
-- changed-source summary
-
-### `/quality-check`
-
-- signature linting
-- structure validation
-- confidence-tag coverage
-- citation presence and formatting
-
-### `/tech-handoff`
-
-- section completeness checker
-- acceptance-criteria linting
-- dependency extraction
-- epic/story count sanity checks
-
-## Architecture pattern to prefer
-
-The default system pattern should be:
-
-1. Deterministic preflight classifies the request.
-2. Deterministic helpers gather and normalize evidence.
-3. AI synthesizes from compact structured artifacts.
-4. Deterministic postflight validates the output.
-5. AI revises only if validation or judgment gaps remain.
-
-This is the target shape for research-heavy flows.
+1. Retrieval offload: highest immediate timeout reduction, fewer interactive search calls, better parallelism.
+2. Fact normalization: smaller prompts, less hallucination pressure, easier validation.
+3. Workflow splitting: lower timeout risk on broad asks, easier retries, clearer progress reporting.
+4. Deterministic postflight: fewer wasted retries, more stable artifact quality, cheaper fixes.
+5. Cache and resume: biggest medium-term speed gain, better reliability for iterative refinement.
 
 ## Practical heuristics for future sessions
 
@@ -344,16 +215,6 @@ If a future session is trying to reduce timeout risk, follow this order:
 - Do not make provider setup mandatory for basic usability if a graceful fallback is possible.
 - Do not hide evidence gaps. Surface them explicitly.
 
-## Recommended next implementation steps
-
-If Shipwright continues investing in this direction, the next highest-value additions are:
-
-1. Research cache keyed by query plus provider plus freshness window.
-2. Structured fact extractor for prices, dates, review counts, acquisitions, and product names.
-3. Citation and signature validator for final artifacts.
-4. Source adapters for high-value structured sites like Unity Asset Store, Fab, and major vendor pricing pages.
-5. Checkpoint and resume support for multi-phase runs.
-
 ## Success metrics
 
 Use these to judge whether the architecture is improving:
@@ -366,6 +227,10 @@ Use these to judge whether the architecture is improving:
 - time to first useful answer
 - percent of runs that end with explicit evidence gaps instead of timeout
 
+## Roadmap and backlog
+
+For workflow-specific helper candidates and the current deterministic-helper backlog, see [Deterministic Helpers Roadmap](deterministic-helpers-roadmap.md).
+
 ## Current working default
 
 Until a better pattern replaces it, this should be the default Shipwright stance:
@@ -375,4 +240,3 @@ Until a better pattern replaces it, this should be the default Shipwright stance
 - AI should synthesize from those artifacts
 - interactive browsing should be a fallback, not the first move
 - all fallback paths should stay usable even when optional configuration is missing
-
