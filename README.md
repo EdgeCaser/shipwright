@@ -227,6 +227,7 @@ Setup, configuration, safety guidance, and supported commands are documented in 
 - [Workflows guide](docs/using-workflows.md): all commands, orchestration model, common paths
 - [Output standard](docs/output-standard.md): required sections, signature rules, decision framing
 - [Composition model](docs/composition-model.md): how skills, workflows, and agents compose
+- [AI vs non-AI guide](docs/ai-vs-non-ai-design-guide.md): what to automate deterministically, what to keep agentic, and where to invest next
 - [Cross-tool install](docs/installing-in-other-tools.md): Cursor, Codex, Gemini CLI, others
 - [Tool connections](docs/connecting-your-tools.md): MCP setup and integration patterns
 - [Skills catalog](skills/) and [Agents](agents/): source of truth for all components
