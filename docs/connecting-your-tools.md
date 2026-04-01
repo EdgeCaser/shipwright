@@ -138,6 +138,8 @@ If you prefer a local env file, `scripts/collect-research.mjs` also auto-loads `
 BRAVE_SEARCH_API_KEY=...
 ```
 
+If you do not configure a provider key, the helper still runs and writes a fallback evidence pack with `needs-interactive-followup` plus suggested queries. That keeps the workflow conversational while nudging the agent onto interactive WebSearch or WebFetch only for the remaining gaps.
+
 Then an agent can call the helper with Bash using a prompt that still feels conversational to the PM. Example:
 
 ```bash
@@ -148,7 +150,7 @@ node .claude/scripts/collect-research.mjs \
 
 This produces a compact evidence pack the model can synthesize instead of spending a long sequence of `WebSearch` and `WebFetch` calls on the same task.
 
-When the helper still cannot gather enough usable sources, it records `needs-interactive-followup` plus suggested follow-up queries. Agents should then use interactive browsing only for those remaining gaps.
+When the helper still cannot gather enough usable sources, or no provider is configured, it records `needs-interactive-followup` plus suggested follow-up queries. Agents should then use interactive browsing only for those remaining gaps.
 
 In Codex, this same pattern can be triggered from plain-language prompts when the project has a Shipwright-aware `AGENTS.md` and the helper exists at `.codex/scripts/collect-research.mjs` or `scripts/collect-research.mjs`.
 

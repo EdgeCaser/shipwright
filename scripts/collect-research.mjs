@@ -42,6 +42,8 @@ Outputs:
 
 Behavior:
   Loads .env from the current working directory if present.
+  If no provider is configured, still writes a fallback evidence pack with
+  'needs-interactive-followup' instead of failing.
 `;
 
 const DEFAULTS = {
@@ -70,9 +72,9 @@ async function main() {
     throw new Error('Missing required --query. Run with --help for usage.');
   }
 
-  const providers = resolveProviderPlan(args.provider);
+  const providerPlan = resolveProviderPlan(args.provider);
   const outDir = args.outDir || defaultOutDir(args.query);
-  const pack = await runEscalatingResearch(args, providers);
+  const pack = await runEscalatingResearch(args, providerPlan);
 
   await mkdir(outDir, { recursive: true });
   const jsonPath = path.join(outDir, 'evidence.json');
@@ -80,8 +82,11 @@ async function main() {
   await writeFile(jsonPath, `${JSON.stringify(pack, null, 2)}\n`, 'utf8');
   await writeFile(mdPath, renderMarkdown(pack), 'utf8');
 
-  console.log(`Collected ${pack.results.length} result(s) using ${pack.providersAttempted.join(', ')}.`);
+  console.log(`Collected ${pack.results.length} result(s) using ${formatProvidersAttempted(pack.providersAttempted)}.`);
   console.log(`Coverage status: ${pack.escalation.status}`);
+  if (pack.providerNote) {
+    console.log(`Provider note: ${pack.providerNote}`);
+  }
   console.log(`JSON: ${jsonPath}`);
   console.log(`Markdown: ${mdPath}`);
 }
@@ -118,12 +123,22 @@ async function loadDotenv(filePath) {
   }
 }
 
-async function runEscalatingResearch(args, providers) {
+async function runEscalatingResearch(args, providerPlan) {
   const initialMaxPages = args.maxPages ?? args.maxResults;
-  const secondaryQueries = buildAutomaticSubqueries(args.query, args.subqueryLimit);
   const followupQueries = buildInteractiveFollowupQueries(args.query);
+  const secondaryQueries = buildAutomaticSubqueries(args.query, args.subqueryLimit);
+  const providers = providerPlan.providers;
   const stages = [];
   let results = [];
+
+  if (providers.length === 0) {
+    return buildNoProviderPack({
+      args,
+      initialMaxPages,
+      followupQueries,
+      providerNote: providerPlan.providerNote,
+    });
+  }
 
   results = await runStage({
     results,
@@ -187,6 +202,8 @@ async function runEscalatingResearch(args, providers) {
     query: args.query,
     mode: args.mode,
     providerRequest: args.provider,
+    providerStatus: providerPlan.providerStatus,
+    providerNote: providerPlan.providerNote,
     providersAttempted: unique(stages.map((stage) => stage.provider)),
     budget: {
       maxResults: args.maxResults,
@@ -206,6 +223,55 @@ async function runEscalatingResearch(args, providers) {
       stages,
     },
     results,
+  };
+}
+
+function buildNoProviderPack({ args, initialMaxPages, followupQueries, providerNote }) {
+  const coverage = {
+    totalResults: 0,
+    successfulFetches: 0,
+    usableSources: 0,
+    uniqueDomains: 0,
+    thinCoverage: true,
+  };
+
+  return {
+    generatedAt: new Date().toISOString(),
+    query: args.query,
+    mode: args.mode,
+    providerRequest: args.provider,
+    providerStatus: 'not-configured',
+    providerNote,
+    providersAttempted: [],
+    budget: {
+      maxResults: args.maxResults,
+      maxPages: initialMaxPages,
+      concurrency: args.concurrency,
+      timeoutMs: args.timeoutMs,
+      subqueryLimit: args.subqueryLimit,
+      minUsableSources: args.minUsableSources,
+    },
+    escalation: {
+      status: 'needs-interactive-followup',
+      nextAction: 'No programmatic search provider is configured. Use interactive WebSearch/WebFetch only for the suggested follow-up queries or configure BRAVE_SEARCH_API_KEY/TAVILY_API_KEY and rerun the collector.',
+      suggestedInteractiveQueries: followupQueries,
+      coverage,
+      stages: [
+        {
+          level: 'L0',
+          strategy: 'no-configured-provider',
+          provider: 'none',
+          queries: [args.query],
+          candidateCount: 0,
+          fetchedCount: 0,
+          usableSourcesAfterStage: 0,
+          successfulFetchesAfterStage: 0,
+          uniqueDomainsAfterStage: 0,
+          note: providerNote,
+        },
+      ],
+    },
+    results: [],
   };
 }
 
@@ -345,8 +411,20 @@ function parseNumber(value, flagName) {
 
 function resolveProviderPlan(requested) {
   if (requested && requested !== 'auto') {
-    assertProviderConfigured(requested);
-    return [requested];
+    assertSupportedProvider(requested);
+    if (isProviderConfigured(requested)) {
+      return {
+        providers: [requested],
+        providerStatus: 'configured',
+        providerNote: '',
+      };
+    }
+
+    return {
+      providers: [],
+      providerStatus: 'not-configured',
+      providerNote: `Provider "${requested}" is not configured. Set ${providerEnvVar(requested)} or rerun with --provider auto after configuring a provider.`,
+    };
   }
 
   const providers = [];
@@ -354,24 +432,36 @@ function resolveProviderPlan(requested) {
   if (process.env.TAVILY_API_KEY) providers.push('tavily');
 
   if (providers.length === 0) {
-    throw new Error(
-      'No search provider configured. Set BRAVE_SEARCH_API_KEY or TAVILY_API_KEY, or pass --provider with a configured provider.',
-    );
+    return {
+      providers: [],
+      providerStatus: 'not-configured',
+      providerNote: 'No search provider configured. Set BRAVE_SEARCH_API_KEY or TAVILY_API_KEY to enable programmatic collection.',
+    };
   }
 
-  return providers;
+  return {
+    providers,
+    providerStatus: 'configured',
+    providerNote: '',
+  };
 }
 
-function assertProviderConfigured(provider) {
-  if (provider === 'brave' && !process.env.BRAVE_SEARCH_API_KEY) {
-    throw new Error('Provider "brave" requires BRAVE_SEARCH_API_KEY.');
-  }
-  if (provider === 'tavily' && !process.env.TAVILY_API_KEY) {
-    throw new Error('Provider "tavily" requires TAVILY_API_KEY.');
-  }
+function assertSupportedProvider(provider) {
   if (!['brave', 'tavily'].includes(provider)) {
     throw new Error(`Unsupported provider: ${provider}`);
   }
+}
+
+function isProviderConfigured(provider) {
+  if (provider === 'brave') return Boolean(process.env.BRAVE_SEARCH_API_KEY);
+  if (provider === 'tavily') return Boolean(process.env.TAVILY_API_KEY);
+  return false;
+}
+
+function providerEnvVar(provider) {
+  if (provider === 'brave') return 'BRAVE_SEARCH_API_KEY';
+  if (provider === 'tavily') return 'TAVILY_API_KEY';
+  return 'UNKNOWN_PROVIDER_ENV';
 }
 
 function defaultOutDir(query) {
@@ -921,6 +1011,10 @@ function unique(items) {
   return Array.from(new Set(items.filter(Boolean)));
 }
 
+function formatProvidersAttempted(providers) {
+  return providers.length > 0 ? providers.join(', ') : 'none';
+}
+
 function renderMarkdown(pack) {
   const lines = [
     '# Evidence Pack',
@@ -928,7 +1022,8 @@ function renderMarkdown(pack) {
     `- Query: ${pack.query}`,
     `- Generated: ${pack.generatedAt}`,
     `- Mode: ${pack.mode}`,
-    `- Providers attempted: ${pack.providersAttempted.join(', ')}`,
+    `- Provider status: ${pack.providerStatus || 'configured'}`,
+    `- Providers attempted: ${formatProvidersAttempted(pack.providersAttempted)}`,
     `- Results collected: ${pack.results.length}`,
     '',
     '## Escalation Summary',
@@ -950,6 +1045,7 @@ function renderMarkdown(pack) {
     lines.push(`- Search candidates: ${stage.candidateCount}`);
     lines.push(`- Pages fetched: ${stage.fetchedCount}`);
     lines.push(`- Usable sources after stage: ${stage.usableSourcesAfterStage}`);
+    if (stage.note) lines.push(`- Note: ${stage.note}`);
     lines.push('');
   }
 
@@ -968,37 +1064,52 @@ function renderMarkdown(pack) {
     '|---|---|---|---|',
   );
 
-  for (const result of pack.results) {
-    lines.push(
-      `| ${result.rank} | ${escapePipes(result.title || '')} | ${escapePipes(result.url || '')} | ${escapePipes(result.searchSnippet || '')} |`,
-    );
+  if (pack.results.length === 0) {
+    lines.push('| - | No programmatic results collected in this run | - | Configure a provider or use the suggested interactive follow-up queries |');
+  } else {
+    for (const result of pack.results) {
+      lines.push(
+        `| ${result.rank} | ${escapePipes(result.title || '')} | ${escapePipes(result.url || '')} | ${escapePipes(result.searchSnippet || '')} |`,
+      );
+    }
   }
 
   lines.push('', '## AI-Ready Digest', '');
 
-  for (const result of pack.results) {
-    lines.push(`### ${result.rank}. ${result.title || result.url}`);
-    lines.push(`- URL: ${result.url}`);
-    if (result.published) lines.push(`- Published: ${result.published}`);
-    if (result.site) lines.push(`- Source: ${result.site}`);
-    if (result.search?.query) lines.push(`- Found via: ${result.search.query}`);
-    if (result.searchSnippet) lines.push(`- Search snippet: ${result.searchSnippet}`);
-    if (result.fetched?.ok === false && result.fetched?.error) {
-      lines.push(`- Fetch status: failed (${result.fetched.error})`);
-    } else if (result.fetched?.status) {
-      lines.push(`- Fetch status: ${result.fetched.status}`);
+  if (pack.results.length === 0) {
+    lines.push('No programmatic sources were collected in this run.');
+    if (pack.providerNote) {
+      lines.push('');
+      lines.push(`Reason: ${pack.providerNote}`);
     }
-    if (result.extracted?.description) {
-      lines.push(`- Page description: ${result.extracted.description}`);
-    }
-    if (result.extracted?.excerpt) {
-      lines.push('- Extracted excerpt:');
-      lines.push('');
-      lines.push(result.extracted.excerpt);
-      lines.push('');
-    } else {
-      lines.push('- Extracted excerpt: unavailable');
-      lines.push('');
+    lines.push('');
+    lines.push('Use the suggested interactive follow-up queries above, or configure a search provider and rerun the collector.');
+    lines.push('');
+  } else {
+    for (const result of pack.results) {
+      lines.push(`### ${result.rank}. ${result.title || result.url}`);
+      lines.push(`- URL: ${result.url}`);
+      if (result.published) lines.push(`- Published: ${result.published}`);
+      if (result.site) lines.push(`- Source: ${result.site}`);
+      if (result.search?.query) lines.push(`- Found via: ${result.search.query}`);
+      if (result.searchSnippet) lines.push(`- Search snippet: ${result.searchSnippet}`);
+      if (result.fetched?.ok === false && result.fetched?.error) {
+        lines.push(`- Fetch status: failed (${result.fetched.error})`);
+      } else if (result.fetched?.status) {
+        lines.push(`- Fetch status: ${result.fetched.status}`);
+      }
+      if (result.extracted?.description) {
+        lines.push(`- Page description: ${result.extracted.description}`);
+      }
+      if (result.extracted?.excerpt) {
+        lines.push('- Extracted excerpt:');
+        lines.push('');
+        lines.push(result.extracted.excerpt);
+        lines.push('');
+      } else {
+        lines.push('- Extracted excerpt: unavailable');
+        lines.push('');
+      }
     }
   }
 
