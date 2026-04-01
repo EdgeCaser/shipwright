@@ -44,13 +44,18 @@ If fresh public-web evidence is needed, follow this protocol in order:
    - `node .codex/scripts/collect-research.mjs --query "<primary query>" --mode auto`
    - otherwise `node scripts/collect-research.mjs --query "<primary query>" --mode auto`
    - otherwise `node .claude/scripts/collect-research.mjs --query "<primary query>" --mode auto`
-2. If `facts.json` exists alongside the evidence pack, read it first and use any extracted facts directly before synthesizing from the full evidence pack.
-3. Read the generated `evidence.md` or `evidence.json`.
-4. Synthesize from that evidence pack first.
-5. Do not use `Web Search` before attempting the collector when the helper exists and a key is configured.
-6. Use interactive browsing only for unresolved gaps, collector failure, or `needs-interactive-followup`.
-7. If you must browse interactively, keep the queries gap-focused and limited.
-8. If the evidence pack was usable, do not replace it with a new broad raw-search pass.
+2. If `facts.json` exists alongside the evidence pack, read it first and use it as a structured shortcut before synthesizing from the full evidence pack.
+3. Interpret `facts.json` by `confidence_hint`:
+   - `high`: use directly for structured fields, tables, and summaries, while keeping source attribution.
+   - `medium`: treat as provisional; verify against the cited evidence pack entry before relying on it for a material claim, comparison, or recommendation.
+   - `low`: treat as a lead only; do not present it as settled unless corroborated from the evidence pack or another source.
+   - if `confidence_hint` is missing, treat it as `medium`.
+4. Read the generated `evidence.md` or `evidence.json`.
+5. Synthesize from that evidence pack first.
+6. Do not use `Web Search` before attempting the collector when the helper exists and a key is configured.
+7. Use interactive browsing only for unresolved gaps, collector failure, or `needs-interactive-followup`.
+8. If you must browse interactively, keep the queries gap-focused and limited.
+9. If the evidence pack was usable, do not replace it with a new broad raw-search pass.
 
 ## Interaction Style
 

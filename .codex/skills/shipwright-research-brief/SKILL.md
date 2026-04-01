@@ -22,12 +22,17 @@ Use this skill for web-heavy product, market, and business research in Codex.
    - `node .codex/scripts/collect-research.mjs --query "<primary query>" --mode auto`
    - otherwise `node scripts/collect-research.mjs --query "<primary query>" --mode auto`
    - otherwise `node .claude/scripts/collect-research.mjs --query "<primary query>" --mode auto`
-3. If `facts.json` exists alongside the evidence pack, read it first and use any extracted facts directly before synthesizing from the full evidence pack.
-4. Read the generated evidence pack.
-5. If the evidence pack is usable, synthesize from it without starting a broad `Web Search` pass.
-6. Only if the evidence pack still has material gaps should you use interactive browsing.
-7. Keep any follow-up browsing gap-focused rather than restarting the whole search pass.
-8. Treat raw `Web Search` as fallback, not first-pass retrieval, whenever the local collector is available.
+3. If `facts.json` exists alongside the evidence pack, read it first and use it as a structured shortcut before synthesizing from the full evidence pack.
+4. Interpret `facts.json` by `confidence_hint`:
+   - `high`: use directly for structured fields, tables, and summaries, while keeping source attribution.
+   - `medium`: treat as provisional; verify against the cited evidence pack entry before relying on it for a material claim, comparison, or recommendation.
+   - `low`: treat as a lead only; do not present it as settled unless corroborated from the evidence pack or another source.
+   - if `confidence_hint` is missing, treat it as `medium`.
+5. Read the generated evidence pack.
+6. If the evidence pack is usable, synthesize from it without starting a broad `Web Search` pass.
+7. Only if the evidence pack still has material gaps should you use interactive browsing.
+8. Keep any follow-up browsing gap-focused rather than restarting the whole search pass.
+9. Treat raw `Web Search` as fallback, not first-pass retrieval, whenever the local collector is available.
 
 ## Synthesis Rules
 
