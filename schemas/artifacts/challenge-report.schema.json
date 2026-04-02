@@ -1,0 +1,132 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Shipwright Challenge Report Artifact",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "artifact_type",
+    "mode",
+    "depth",
+    "metadata",
+    "decision_frame",
+    "unknowns",
+    "pass_fail_readiness",
+    "evidence",
+    "payload"
+  ],
+  "properties": {
+    "schema_version": { "type": "string" },
+    "artifact_type": { "type": "string", "enum": ["challenge-report"] },
+    "mode": { "type": "string", "enum": ["fast", "rigorous"] },
+    "depth": { "type": "string", "enum": ["quick", "light", "standard", "deep"] },
+    "metadata": {
+      "type": "object",
+      "required": ["title", "status", "authors", "updated_at"],
+      "properties": {
+        "title": { "type": "string" },
+        "status": {
+          "type": "string",
+          "enum": ["draft", "in-review", "approved", "exploratory-draft"]
+        },
+        "authors": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string" }
+        },
+        "updated_at": { "type": "string" }
+      }
+    },
+    "decision_frame": {
+      "type": "object",
+      "required": ["recommendation", "tradeoff", "confidence", "owner", "decision_date"],
+      "properties": {
+        "recommendation": { "type": "string" },
+        "tradeoff": { "type": "string" },
+        "confidence": { "type": "string", "enum": ["low", "medium", "high"] },
+        "owner": { "type": "string" },
+        "decision_date": { "type": "string" },
+        "revisit_trigger": { "type": "string" }
+      }
+    },
+    "unknowns": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "pass_fail_readiness": {
+      "type": "object",
+      "required": ["status", "reason"],
+      "properties": {
+        "status": { "type": "string", "enum": ["PASS", "FAIL"] },
+        "reason": { "type": "string" }
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["evidence_id", "kind", "source_ref", "confidence", "supports"],
+        "properties": {
+          "evidence_id": { "type": "string" },
+          "kind": {
+            "type": "string",
+            "enum": ["metric", "interview", "research", "experiment", "document", "assumption"]
+          },
+          "source_ref": { "type": "string" },
+          "confidence": { "type": "string", "enum": ["low", "medium", "high"] },
+          "supports": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string" }
+          }
+        }
+      }
+    },
+    "payload": {
+      "type": "object",
+      "required": ["reviewed_artifact", "depth", "findings", "verdict", "action_plan"],
+      "properties": {
+        "reviewed_artifact": {
+          "type": "object",
+          "required": ["title", "artifact_type"],
+          "properties": {
+            "title": { "type": "string" },
+            "artifact_type": { "type": "string" }
+          }
+        },
+        "depth": { "type": "string", "enum": ["light", "standard", "deep"] },
+        "findings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "finding_id",
+              "claim",
+              "vector",
+              "severity",
+              "rationale",
+              "resolution_condition",
+              "evidence_ids"
+            ],
+            "properties": {
+              "finding_id": { "type": "string" },
+              "claim": { "type": "string" },
+              "vector": { "type": "string" },
+              "severity": { "type": "string", "enum": ["critical", "moderate", "low"] },
+              "rationale": { "type": "string" },
+              "resolution_condition": { "type": "string" },
+              "evidence_ids": {
+                "type": "array",
+                "items": { "type": "string" }
+              }
+            }
+          }
+        },
+        "verdict": { "type": "string" },
+        "action_plan": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    }
+  }
+}

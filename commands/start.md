@@ -1,11 +1,11 @@
 ---
 name: start
-description: "Launch the Shipwright orchestrator. Greets the PM, asks what they're working on, builds an execution plan, and dispatches the right agents."
+description: "Launch the Shipwright orchestrator. Greets the PM, asks what they're working on, chooses Fast or Rigorous execution, and only builds a plan when the work actually needs one."
 ---
 
 # /start — Launch Shipwright
 
-Run this command at the beginning of any session to activate the Shipwright orchestrator. It acts as a concierge: it understands what you need, maps your request to the right skills and agents, builds an execution plan, and dispatches work on your approval.
+Run this command at the beginning of any session to activate the Shipwright orchestrator. It acts as a concierge: it understands what you need, maps your request to the right skills and agents, chooses Fast or Rigorous execution, and only builds an execution plan when the work actually needs one.
 
 Use `/start` when you need routing help or a phased plan. If you already know you want `/competitive`, `/pricing`, `/write-prd`, or another specific workflow, running that command directly is usually faster and less likely to time out. For fresh market, competitive, or pricing work, `/start` should usually propose research first and synthesis second instead of one giant run.
 
@@ -41,12 +41,42 @@ Ask targeted follow-ups to understand:
 
 Rules:
 - Ask at most 2-3 follow-up questions. Don't interrogate.
-- If the need is already clear, skip straight to the plan.
+- If the need is already clear, skip straight to mode selection.
 - Match the PM's energy — brief request = brief follow-up.
-- Resolve the requested depth explicitly: `Quick` for directional/gut-check asks, `Standard` by default, and `Deep` when the PM asks for thorough or exhaustive work.
+- Resolve the requested depth only after deciding whether the work is `Fast` or `Rigorous`: `Quick` for directional/gut-check asks, `Standard` by default, and `Deep` when the PM asks for thorough or exhaustive work.
 
-### 4. Build the Plan
-Read `/skills-map.md` and use the keyword routing + agent capability matrix to construct a plan:
+### 4. Choose Execution Mode
+
+If `scripts/route-request.mjs` exists, run:
+
+```bash
+node scripts/route-request.mjs "<user request>" --format json
+```
+
+Routing rule:
+
+- If `routeConfidence = HIGH` and `autoEscalate = false`, use **Fast** mode and route directly.
+- Otherwise use **Rigorous** mode and build a plan.
+
+Always use Rigorous mode when:
+
+- fresh public-web research is required
+- the artifact recommends budget, headcount, or roadmap choices
+- the output is an engineering handoff artifact or directly feeds one
+- the audience includes leadership, board, sales, customers, or engineering outside product
+- the task spans multiple workflows or agents
+
+### 5A. Direct Fast Route
+
+For Fast mode:
+
+- state the chosen workflow or skill briefly
+- execute directly
+- only ask a clarifying question if a required input is missing
+
+### 5B. Build the Rigorous Plan
+
+Read `/skills-map.md` and use the routing helper result plus the agent capability matrix to construct a plan:
 
 ```markdown
 ## Shipwright Plan: [Title]
@@ -81,8 +111,12 @@ Guardrails:
 - Ask specialists to return findings inline instead of writing files unless the PM explicitly asks for saved artifacts.
 - If the PM explicitly asks for deep, thorough, or exhaustive work, preserve that depth in the plan and specialist prompt instead of silently collapsing it back to the default bounded pass.
 
-### 5. Execute on Approval
-Once the PM approves (or adjusts) the plan:
+### 6. Execute
+
+If you built a Rigorous plan, wait for PM approval or adjustment before dispatching.
+
+If you routed directly in Fast mode, execute immediately.
+
 1. Dispatch specialist agents using the Agent tool with detailed prompts
 2. Run independent steps in parallel where possible
 3. Chain dependent steps sequentially, passing outputs forward
@@ -107,7 +141,7 @@ For the full routing map, see `/skills-map.md`.
 
 ## Operating Principles
 
-1. **Always present a plan before executing.** Never dispatch agents without approval.
+1. **Do not force a plan for obvious asks.** High-confidence Fast-mode requests should route directly.
 2. **Suggest the simplest approach that fits.** One skill > one workflow > multi-agent orchestration.
 3. **Identify parallel opportunities.** Independent steps should run simultaneously.
 4. **Adapt to what exists.** If the PM already has research, skip research. If they have a PRD, skip to tech spec.

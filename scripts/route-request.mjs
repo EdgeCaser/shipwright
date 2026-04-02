@@ -1,0 +1,297 @@
+#!/usr/bin/env node
+
+import path from 'node:path';
+import { pathToFileURL } from 'node:url';
+
+const ROUTE_RULES = [
+  {
+    route: 'write-prd',
+    kind: 'workflow',
+    exactPatterns: [/\b\/write-prd\b/i, /\bwrite\s+(?:a\s+)?prd\b/i, /\bproduct requirements doc(?:ument)?\b/i],
+    keywords: ['prd', 'requirements', 'spec', 'feature'],
+  },
+  {
+    route: 'sprint',
+    kind: 'workflow',
+    exactPatterns: [/\b\/sprint\b/i, /\bsprint planning\b/i],
+    keywords: ['sprint', 'planning', 'commitment', 'capacity'],
+  },
+  {
+    route: 'strategy',
+    kind: 'workflow',
+    exactPatterns: [/\b\/strategy\b/i, /\bproduct strategy\b/i, /\bstrategic bets\b/i],
+    keywords: ['strategy', 'vision', 'bets', 'boundaries'],
+  },
+  {
+    route: 'pricing',
+    kind: 'workflow',
+    exactPatterns: [/\b\/pricing\b/i, /\bpricing strategy\b/i],
+    keywords: ['pricing', 'package', 'plans', 'monetization'],
+  },
+  {
+    route: 'competitive',
+    kind: 'workflow',
+    exactPatterns: [/\b\/competitive\b/i, /\bcompetitive analysis\b/i],
+    keywords: ['competitive', 'competitor', 'comparison', 'landscape'],
+  },
+  {
+    route: 'metrics',
+    kind: 'workflow',
+    exactPatterns: [/\b\/metrics\b/i, /\bmetrics framework\b/i, /\bnorth star\b/i],
+    keywords: ['metrics', 'dashboard', 'north star', 'guardrail'],
+  },
+  {
+    route: 'okrs',
+    kind: 'workflow',
+    exactPatterns: [/\b\/okrs\b/i, /\bwrite okrs\b/i, /\bobjectives and key results\b/i],
+    keywords: ['okr', 'okrs', 'objectives', 'key results'],
+  },
+  {
+    route: 'retro',
+    kind: 'workflow',
+    exactPatterns: [/\b\/retro\b/i, /\bretrospective\b/i],
+    keywords: ['retro', 'retrospective', 'what went well', 'action items'],
+  },
+  {
+    route: 'status',
+    kind: 'workflow',
+    exactPatterns: [/\b\/status\b/i, /\bstatus update\b/i],
+    keywords: ['status', 'update', 'stakeholder', 'progress'],
+  },
+  {
+    route: 'challenge',
+    kind: 'workflow',
+    exactPatterns: [/\b\/challenge\b/i, /\bpressure[- ]test\b/i, /\bchallenge this\b/i],
+    keywords: ['challenge', 'red team', 'stress test', 'critique'],
+  },
+  {
+    route: 'tech-handoff',
+    kind: 'workflow',
+    exactPatterns: [/\b\/tech-handoff\b/i, /\btech handoff\b/i, /\bhand off to engineering\b/i],
+    keywords: ['engineering', 'handoff', 'technical spec', 'epics'],
+  },
+  {
+    route: 'customer-review',
+    kind: 'workflow',
+    exactPatterns: [/\b\/customer-review\b/i, /\bcustomer intelligence\b/i],
+    keywords: ['customer', 'feedback', 'churn', 'journey'],
+  },
+  {
+    route: 'plan-launch',
+    kind: 'workflow',
+    exactPatterns: [/\b\/plan-launch\b/i, /\blaunch plan\b/i, /\bgo to market\b/i],
+    keywords: ['launch', 'gtm', 'go to market', 'battlecard'],
+  },
+  {
+    route: 'discover',
+    kind: 'workflow',
+    exactPatterns: [/\b\/discover\b/i, /\bdiscovery\b/i, /\bopportunity solution tree\b/i],
+    keywords: ['discover', 'discovery', 'opportunity', 'experiment'],
+  },
+  {
+    route: 'personas',
+    kind: 'workflow',
+    exactPatterns: [/\b\/personas\b/i, /\bjobs to be done\b/i],
+    keywords: ['persona', 'personas', 'jtbd', 'jobs to be done'],
+  },
+  {
+    route: 'narrative',
+    kind: 'workflow',
+    exactPatterns: [/\b\/narrative\b/i, /\bexecutive briefing\b/i, /\b6-pager\b/i],
+    keywords: ['memo', 'narrative', 'briefing', 'one-pager'],
+  },
+  {
+    route: 'release-notes',
+    kind: 'skill',
+    exactPatterns: [/\brelease notes\b/i, /\bchangelog\b/i],
+    keywords: ['release', 'notes', 'changelog', 'shipped'],
+  },
+];
+
+export function routeRequest(input, options = {}) {
+  const text = String(input || '').trim();
+  if (!text) {
+    return buildEmptyResult(text);
+  }
+
+  const normalized = text.toLowerCase();
+  const matches = ROUTE_RULES.map((rule) => matchRule(rule, normalized))
+    .filter((result) => result.score > 0 || result.exactMatch);
+  matches.sort((a, b) => b.sortScore - a.sortScore || a.route.localeCompare(b.route));
+
+  const winner = matches[0] || null;
+  const tiedTop = winner
+    ? matches.filter((candidate) => candidate.sortScore === winner.sortScore)
+    : [];
+
+  const blockers = [
+    ...inferBlockers(normalized, winner, options),
+  ];
+  const escalateReasons = inferAutoEscalationReasons(normalized, winner, options);
+
+  let routeConfidence = 'LOW';
+  if (winner && tiedTop.length === 1) {
+    if ((winner.exactMatch || winner.keywordHits.length >= 2) && blockers.length === 0) {
+      routeConfidence = 'HIGH';
+    } else {
+      routeConfidence = 'MEDIUM';
+    }
+  }
+
+  return {
+    input: text,
+    topRoute: winner ? { route: winner.route, kind: winner.kind } : null,
+    routeConfidence,
+    blockers,
+    autoEscalate: escalateReasons.length > 0,
+    escalateReasons,
+    matchedRoutes: matches.map((match) => ({
+      route: match.route,
+      kind: match.kind,
+      exactMatch: match.exactMatch,
+      keywordHits: match.keywordHits,
+      score: match.sortScore,
+    })),
+  };
+}
+
+function buildEmptyResult(input) {
+  return {
+    input,
+    topRoute: null,
+    routeConfidence: 'LOW',
+    blockers: [],
+    autoEscalate: false,
+    escalateReasons: [],
+    matchedRoutes: [],
+  };
+}
+
+function matchRule(rule, normalizedInput) {
+  const exactMatch = rule.exactPatterns.some((pattern) => pattern.test(normalizedInput));
+  const keywordHits = rule.keywords.filter((keyword) => containsKeyword(normalizedInput, keyword));
+  const sortScore = (exactMatch ? 100 : 0) + keywordHits.length;
+
+  return {
+    route: rule.route,
+    kind: rule.kind,
+    exactMatch,
+    keywordHits,
+    score: exactMatch || keywordHits.length > 0 ? 1 : 0,
+    sortScore,
+  };
+}
+
+function containsKeyword(input, keyword) {
+  if (keyword.includes(' ')) {
+    return input.includes(keyword.toLowerCase());
+  }
+
+  const pattern = new RegExp(`\\b${escapeRegex(keyword.toLowerCase())}\\b`, 'i');
+  return pattern.test(input);
+}
+
+function inferBlockers(input, winner, options) {
+  const blockers = [];
+  if (!winner) {
+    blockers.push('no-deterministic-route');
+    return blockers;
+  }
+
+  const researchSignals = ['market', 'tam', 'sam', 'som', 'pricing', 'competitive', 'competitor', 'research'];
+  if (researchSignals.some((signal) => containsKeyword(input, signal))) {
+    blockers.push('external-research-required');
+  }
+
+  if (winner.route === 'plan-launch' || winner.route === 'tech-handoff') {
+    blockers.push('multi-step-dependency');
+  }
+
+  if (Array.isArray(options.missingInputs) && options.missingInputs.length > 0) {
+    blockers.push('missing-mandatory-input');
+  }
+
+  if (/\b(board|leadership|executive|exec|ceo|vp|sales|customer|engineering)\b/i.test(input)) {
+    blockers.push('audience-outside-product');
+  }
+
+  return Array.from(new Set(blockers));
+}
+
+function inferAutoEscalationReasons(input, winner, options) {
+  const reasons = [];
+
+  if (/\b(market|tam|sam|som|pricing|competitive|competitor|research)\b/i.test(input)) {
+    reasons.push('external-research-required');
+  }
+
+  if (/\b(budget|headcount|roadmap|approve|approval|funding)\b/i.test(input)) {
+    reasons.push('budget-or-roadmap-decision');
+  }
+
+  if (winner?.route === 'tech-handoff' || /\b(tech handoff|technical spec|hand off to engineering|engineering handoff)\b/i.test(input)) {
+    reasons.push('engineering-handoff-artifact');
+  }
+
+  const contradictionWarningCount = Number(options.contradictionWarningCount || 0);
+  if (Number.isFinite(contradictionWarningCount) && contradictionWarningCount >= 2) {
+    reasons.push('validator-contradictions');
+  }
+
+  if (/\b(board|leadership|executive|exec|ceo|vp|sales|customer|engineering)\b/i.test(input)) {
+    reasons.push('stakeholder-audience-outside-product');
+  }
+
+  return Array.from(new Set(reasons));
+}
+
+function escapeRegex(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+async function main(argv = process.argv.slice(2)) {
+  const formatFlag = argv.findIndex((entry) => entry === '--format');
+  const contradictionFlag = argv.findIndex((entry) => entry === '--contradiction-warning-count');
+  const outputFormat = formatFlag !== -1 && argv[formatFlag + 1] ? argv[formatFlag + 1] : 'text';
+  const contradictionWarningCount =
+    contradictionFlag !== -1 && argv[contradictionFlag + 1]
+      ? Number(argv[contradictionFlag + 1])
+      : 0;
+
+  const input = argv.filter((entry, index) => {
+    if (entry.startsWith('--')) return false;
+    if (formatFlag !== -1 && index === formatFlag + 1) return false;
+    if (contradictionFlag !== -1 && index === contradictionFlag + 1) return false;
+    return true;
+  }).join(' ').trim();
+
+  if (!input) {
+    console.error('Usage: node scripts/route-request.mjs "<request>" [--format json] [--contradiction-warning-count 2]');
+    process.exitCode = 1;
+    return;
+  }
+
+  const result = routeRequest(input, { contradictionWarningCount });
+  if (outputFormat === 'json') {
+    console.log(JSON.stringify(result, null, 2));
+    return;
+  }
+
+  console.log(`topRoute: ${result.topRoute ? `${result.topRoute.kind}:${result.topRoute.route}` : 'none'}`);
+  console.log(`routeConfidence: ${result.routeConfidence}`);
+  console.log(`autoEscalate: ${result.autoEscalate ? 'yes' : 'no'}`);
+  if (result.blockers.length > 0) console.log(`blockers: ${result.blockers.join(', ')}`);
+  if (result.escalateReasons.length > 0) console.log(`escalateReasons: ${result.escalateReasons.join(', ')}`);
+}
+
+function isDirectRun() {
+  if (!process.argv[1]) return false;
+  return import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href;
+}
+
+if (isDirectRun()) {
+  main().catch((error) => {
+    console.error(error instanceof Error ? error.message : String(error));
+    process.exitCode = 1;
+  });
+}

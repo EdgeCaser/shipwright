@@ -353,3 +353,313 @@ The market is worth $12 billion and continues to grow.
     assert.ok(typeof issue.excerpt === 'string');
   }
 });
+
+function buildStructuredMarkdown(artifact) {
+  return `
+# Artifact
+
+Body copy here.
+
+<!-- shipwright:artifact
+${JSON.stringify(artifact, null, 2)}
+-->
+  `.trim();
+}
+
+function createValidPrdArtifact() {
+  return {
+    schema_version: '2.0.0',
+    artifact_type: 'prd',
+    mode: 'fast',
+    depth: 'standard',
+    metadata: {
+      title: 'Self-serve SSO PRD',
+      status: 'draft',
+      authors: ['PM'],
+      updated_at: '2026-04-02',
+    },
+    decision_frame: {
+      recommendation: 'Ship SSO first',
+      tradeoff: 'Narrower scope vs broader coverage',
+      confidence: 'medium',
+      owner: 'PM',
+      decision_date: '2026-04-02',
+    },
+    unknowns: ['Unknown admin demand'],
+    pass_fail_readiness: {
+      status: 'PASS',
+      reason: 'Core sections are present.',
+    },
+    evidence: [
+      {
+        evidence_id: 'ev-1',
+        kind: 'research',
+        source_ref: 'customer-interviews',
+        confidence: 'high',
+        supports: ['decision_frame.recommendation', 'problem-1', 'metric-activation'],
+      },
+    ],
+    payload: {
+      problem_statement: {
+        problem_id: 'problem-1',
+        text: 'Admins churn when SSO is missing.',
+      },
+      customer_evidence_ids: ['ev-1'],
+      success_metrics: [
+        {
+          metric_id: 'metric-activation',
+          name: 'Activation Rate',
+          segment: 'mid-market',
+          unit: '%',
+          timeframe: 'quarterly',
+          baseline: 12,
+          target: 20,
+          evidence_ids: ['ev-1'],
+        },
+      ],
+      scope: {
+        in: ['SAML login'],
+        out: ['SCIM provisioning'],
+      },
+      open_questions: ['Which IdPs matter most?'],
+      target_segment: 'mid-market',
+    },
+  };
+}
+
+function createRelatedStrategyArtifact(overrides = {}) {
+  return {
+    schema_version: '2.0.0',
+    artifact_type: 'strategy',
+    mode: 'rigorous',
+    depth: 'standard',
+    metadata: {
+      title: 'Mid-market strategy',
+      status: 'approved',
+      authors: ['PM'],
+      updated_at: '2026-04-02',
+    },
+    decision_frame: {
+      recommendation: 'Focus on mid-market',
+      tradeoff: 'Focus vs optionality',
+      confidence: 'high',
+      owner: 'PM',
+      decision_date: '2026-04-02',
+    },
+    unknowns: [],
+    pass_fail_readiness: {
+      status: 'PASS',
+      reason: 'Strategy approved.',
+    },
+    evidence: [
+      {
+        evidence_id: 'ev-strategy-1',
+        kind: 'research',
+        source_ref: 'market-review',
+        confidence: 'high',
+        supports: ['decision_frame.recommendation', 'bet-1'],
+      },
+    ],
+    payload: {
+      vision: 'Win mid-market IT teams.',
+      context: {
+        current_state: {
+          product_stage: 'growth',
+        },
+      },
+      primary_segment: 'mid-market',
+      bets: [
+        {
+          bet_id: 'bet-1',
+          name: 'SSO wedge',
+          thesis: 'SSO will unlock expansion.',
+          assumptions: ['Admins care about SSO'],
+          investment_level: 'major',
+          success_metric: {
+            metric_id: 'metric-activation',
+            name: 'Activation Rate',
+            segment: 'mid-market',
+            unit: '%',
+            timeframe: 'quarterly',
+            baseline: 18,
+            target: 28,
+          },
+          kill_criteria: 'If activation stays flat after launch.',
+          evidence_ids: ['ev-strategy-1'],
+        },
+      ],
+      boundaries: {
+        not_doing: ['Enterprise services motion'],
+      },
+      review_cadence: {
+        weekly: 'Check pipeline',
+        monthly: 'Review progress',
+        quarterly: 'Revisit bets',
+      },
+      ...overrides.payload,
+    },
+    ...overrides,
+  };
+}
+
+function createChallengeReportArtifact() {
+  return {
+    schema_version: '2.0.0',
+    artifact_type: 'challenge-report',
+    mode: 'rigorous',
+    depth: 'standard',
+    metadata: {
+      title: 'Challenge report',
+      status: 'approved',
+      authors: ['Red-team'],
+      updated_at: '2026-04-02',
+    },
+    decision_frame: {
+      recommendation: 'Defend before shipping',
+      tradeoff: 'More revision time vs stronger handoff',
+      confidence: 'high',
+      owner: 'PM',
+      decision_date: '2026-04-02',
+    },
+    unknowns: [],
+    pass_fail_readiness: {
+      status: 'PASS',
+      reason: 'Review completed.',
+    },
+    evidence: [
+      {
+        evidence_id: 'ev-challenge-1',
+        kind: 'document',
+        source_ref: 'prd-review',
+        confidence: 'high',
+        supports: ['decision_frame.recommendation', 'finding-1'],
+      },
+    ],
+    payload: {
+      reviewed_artifact: {
+        title: 'Self-serve SSO PRD',
+        artifact_type: 'prd',
+      },
+      depth: 'standard',
+      findings: [
+        {
+          finding_id: 'finding-1',
+          claim: 'Enterprise growth is immediate.',
+          vector: 'Evidence Integrity',
+          severity: 'critical',
+          rationale: 'The evidence only supports mid-market demand.',
+          resolution_condition: 'Downgrade to hypothesis or add enterprise evidence.',
+          evidence_ids: ['ev-challenge-1'],
+        },
+      ],
+      verdict: 'DEFEND',
+      action_plan: ['Revise evidence claims'],
+    },
+  };
+}
+
+test('validateArtifact warns when structured artifact is expected but absent', { concurrency: false }, () => {
+  const text = `
+# PRD
+
+No structured payload here.
+  `.trim();
+
+  const { issues } = validateArtifact(text, { expectStructured: true });
+  assert.ok(issues.some((issue) => issue.type === IssueType.MISSING_STRUCTURED_ARTIFACT));
+});
+
+test('validateArtifact errors on invalid structured schema', { concurrency: false }, () => {
+  const artifact = createValidPrdArtifact();
+  delete artifact.decision_frame.owner;
+
+  const { issues } = validateArtifact(buildStructuredMarkdown(artifact), {
+    expectStructured: true,
+    artifactType: 'prd',
+  });
+
+  assert.ok(issues.some((issue) => issue.type === IssueType.INVALID_STRUCTURED_ARTIFACT));
+  assert.ok(issues.some((issue) => issue.severity === Severity.ERROR));
+});
+
+test('validateArtifact errors when required evidence linkage is missing', { concurrency: false }, () => {
+  const artifact = createValidPrdArtifact();
+  artifact.evidence = [];
+  artifact.payload.customer_evidence_ids = [];
+  artifact.payload.success_metrics[0].evidence_ids = [];
+
+  const { issues } = validateArtifact(buildStructuredMarkdown(artifact), {
+    expectStructured: true,
+    artifactType: 'prd',
+  });
+
+  assert.ok(issues.some((issue) => issue.type === IssueType.MISSING_EVIDENCE));
+});
+
+test('validateArtifact warns on metric contradiction against related artifact', { concurrency: false }, () => {
+  const artifact = createValidPrdArtifact();
+  const related = createRelatedStrategyArtifact();
+
+  const { issues } = validateArtifact(buildStructuredMarkdown(artifact), {
+    expectStructured: true,
+    artifactType: 'prd',
+    relatedArtifacts: [related],
+  });
+
+  assert.ok(issues.some((issue) => issue.type === IssueType.METRIC_CONTRADICTION));
+});
+
+test('validateArtifact warns on segment contradiction against related strategy', { concurrency: false }, () => {
+  const artifact = createValidPrdArtifact();
+  const related = createRelatedStrategyArtifact({
+    payload: {
+      primary_segment: 'enterprise',
+    },
+  });
+
+  const { issues } = validateArtifact(buildStructuredMarkdown(artifact), {
+    expectStructured: true,
+    artifactType: 'prd',
+    relatedArtifacts: [related],
+  });
+
+  assert.ok(issues.some((issue) => issue.type === IssueType.SEGMENT_CONTRADICTION));
+});
+
+test('validateArtifact errors when critical challenge finding has no resolution state', { concurrency: false }, () => {
+  const artifact = createValidPrdArtifact();
+  const challenge = createChallengeReportArtifact();
+
+  const { issues } = validateArtifact(buildStructuredMarkdown(artifact), {
+    expectStructured: true,
+    artifactType: 'prd',
+    relatedArtifacts: [challenge],
+  });
+
+  const issue = issues.find((entry) => entry.type === IssueType.CHALLENGE_FINDING_UNRESOLVED);
+  assert.ok(issue);
+  assert.equal(issue.severity, Severity.ERROR);
+});
+
+test('validateArtifact accepts resolved challenge finding state', { concurrency: false }, () => {
+  const artifact = createValidPrdArtifact();
+  artifact.challenge_resolution = [
+    {
+      finding_id: 'finding-1',
+      state: 'resolved',
+      note: 'Downgraded enterprise claim to hypothesis.',
+    },
+  ];
+
+  const challenge = createChallengeReportArtifact();
+  const { issues } = validateArtifact(buildStructuredMarkdown(artifact), {
+    expectStructured: true,
+    artifactType: 'prd',
+    relatedArtifacts: [challenge],
+  });
+
+  assert.equal(
+    issues.filter((entry) => entry.type === IssueType.CHALLENGE_FINDING_UNRESOLVED).length,
+    0,
+  );
+});
