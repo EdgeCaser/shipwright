@@ -156,6 +156,7 @@ Use standalone mode for one framework and one question. Move up to workflows whe
 
 Want proof before adoption? Start here:
 
+- [Case studies](case-studies/) for real-world proof points from production use
 - [Golden outputs](examples/golden-outputs/) for side-by-side baseline vs Shipwright comparisons
 - [Pass/fail gates](evals/pass-fail.md) for binary readiness checks
 - [Eval rubrics](evals/) for scored quality dimensions
