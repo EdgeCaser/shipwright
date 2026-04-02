@@ -428,6 +428,11 @@ function createValidPrdArtifact() {
 }
 
 function createRelatedStrategyArtifact(overrides = {}) {
+  const {
+    payload: payloadOverrides = {},
+    ...restOverrides
+  } = overrides;
+
   return {
     schema_version: '2.0.0',
     artifact_type: 'strategy',
@@ -496,9 +501,9 @@ function createRelatedStrategyArtifact(overrides = {}) {
         monthly: 'Review progress',
         quarterly: 'Revisit bets',
       },
-      ...overrides.payload,
+      ...payloadOverrides,
     },
-    ...overrides,
+    ...restOverrides,
   };
 }
 
@@ -662,4 +667,54 @@ test('validateArtifact accepts resolved challenge finding state', { concurrency:
     issues.filter((entry) => entry.type === IssueType.CHALLENGE_FINDING_UNRESOLVED).length,
     0,
   );
+});
+
+test('validateArtifact errors when waived challenge finding omits waiver metadata', { concurrency: false }, () => {
+  const artifact = createValidPrdArtifact();
+  artifact.challenge_resolution = [
+    {
+      finding_id: 'finding-1',
+      state: 'waived',
+      note: 'Accepting this risk for now.',
+    },
+  ];
+
+  const challenge = createChallengeReportArtifact();
+  const { issues } = validateArtifact(buildStructuredMarkdown(artifact), {
+    expectStructured: true,
+    artifactType: 'prd',
+    relatedArtifacts: [challenge],
+  });
+
+  const issue = issues.find((entry) =>
+    entry.type === IssueType.CHALLENGE_FINDING_UNRESOLVED &&
+    entry.message.includes('waiver_reason and owner'),
+  );
+  assert.ok(issue);
+  assert.equal(issue.severity, Severity.ERROR);
+});
+
+test('validateArtifact errors when critical challenge finding is deferred', { concurrency: false }, () => {
+  const artifact = createValidPrdArtifact();
+  artifact.challenge_resolution = [
+    {
+      finding_id: 'finding-1',
+      state: 'deferred',
+      note: 'Will revisit after launch.',
+    },
+  ];
+
+  const challenge = createChallengeReportArtifact();
+  const { issues } = validateArtifact(buildStructuredMarkdown(artifact), {
+    expectStructured: true,
+    artifactType: 'prd',
+    relatedArtifacts: [challenge],
+  });
+
+  const issue = issues.find((entry) =>
+    entry.type === IssueType.CHALLENGE_FINDING_UNRESOLVED &&
+    entry.message.includes('still deferred'),
+  );
+  assert.ok(issue);
+  assert.equal(issue.severity, Severity.ERROR);
 });

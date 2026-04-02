@@ -32,6 +32,8 @@ If `scripts/route-request.mjs` exists, use it with Bash before deciding whether 
 node scripts/route-request.mjs "<user request>" --format json
 ```
 
+Expected canonical helper path: repo-root `scripts/route-request.mjs`. If it is missing, fall back to manual routing heuristics rather than inventing a new helper path.
+
 Treat the helper's `routeConfidence`, `blockers`, and `autoEscalate` fields as the default routing policy when it returns a usable result.
 
 ## Latency & Timeout Guardrails

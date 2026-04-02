@@ -3,6 +3,11 @@
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
+const RESEARCH_SIGNALS = ['market', 'tam', 'sam', 'som', 'pricing', 'competitive', 'competitor', 'research'];
+const AUDIENCE_OUTSIDE_PRODUCT_RE = /\b(board|leadership|executive|exec|ceo|vp|sales|customer|engineering)\b/i;
+const BUDGET_OR_ROADMAP_RE = /\b(budget|headcount|roadmap|approve|approval|funding)\b/i;
+const ENGINEERING_HANDOFF_RE = /\b(tech handoff|technical spec|hand off to engineering|engineering handoff)\b/i;
+
 const ROUTE_RULES = [
   {
     route: 'write-prd',
@@ -108,6 +113,14 @@ const ROUTE_RULES = [
   },
 ];
 
+const PREPARED_ROUTE_RULES = ROUTE_RULES.map((rule) => ({
+  ...rule,
+  compiledKeywords: rule.keywords.map((keyword) => ({
+    keyword,
+    pattern: compileKeywordPattern(keyword),
+  })),
+}));
+
 export function routeRequest(input, options = {}) {
   const text = String(input || '').trim();
   if (!text) {
@@ -115,7 +128,7 @@ export function routeRequest(input, options = {}) {
   }
 
   const normalized = text.toLowerCase();
-  const matches = ROUTE_RULES.map((rule) => matchRule(rule, normalized))
+  const matches = PREPARED_ROUTE_RULES.map((rule) => matchRule(rule, normalized))
     .filter((result) => result.score > 0 || result.exactMatch);
   matches.sort((a, b) => b.sortScore - a.sortScore || a.route.localeCompare(b.route));
 
@@ -124,10 +137,9 @@ export function routeRequest(input, options = {}) {
     ? matches.filter((candidate) => candidate.sortScore === winner.sortScore)
     : [];
 
-  const blockers = [
-    ...inferBlockers(normalized, winner, options),
-  ];
-  const escalateReasons = inferAutoEscalationReasons(normalized, winner, options);
+  const signals = detectRequestSignals(normalized, winner, options);
+  const blockers = inferBlockers(winner, signals);
+  const escalateReasons = inferAutoEscalationReasons(signals);
 
   let routeConfidence = 'LOW';
   if (winner && tiedTop.length === 1) {
@@ -169,7 +181,9 @@ function buildEmptyResult(input) {
 
 function matchRule(rule, normalizedInput) {
   const exactMatch = rule.exactPatterns.some((pattern) => pattern.test(normalizedInput));
-  const keywordHits = rule.keywords.filter((keyword) => containsKeyword(normalizedInput, keyword));
+  const keywordHits = rule.compiledKeywords
+    .filter(({ pattern }) => matchKeywordPattern(normalizedInput, pattern))
+    .map(({ keyword }) => keyword);
   const sortScore = (exactMatch ? 100 : 0) + keywordHits.length;
 
   return {
@@ -182,67 +196,67 @@ function matchRule(rule, normalizedInput) {
   };
 }
 
-function containsKeyword(input, keyword) {
-  if (keyword.includes(' ')) {
-    return input.includes(keyword.toLowerCase());
-  }
-
-  const pattern = new RegExp(`\\b${escapeRegex(keyword.toLowerCase())}\\b`, 'i');
-  return pattern.test(input);
+function detectRequestSignals(input, winner, options) {
+  const contradictionWarningCount = Number(options.contradictionWarningCount || 0);
+  return {
+    requiresExternalResearch: hasAnyKeyword(input, RESEARCH_SIGNALS),
+    multiStepDependency: winner ? winner.route === 'plan-launch' || winner.route === 'tech-handoff' : false,
+    missingMandatoryInput: Array.isArray(options.missingInputs) && options.missingInputs.length > 0,
+    audienceOutsideProduct: AUDIENCE_OUTSIDE_PRODUCT_RE.test(input),
+    budgetOrRoadmapDecision: BUDGET_OR_ROADMAP_RE.test(input),
+    engineeringHandoffArtifact: Boolean(winner?.route === 'tech-handoff' || ENGINEERING_HANDOFF_RE.test(input)),
+    validatorContradictions: Number.isFinite(contradictionWarningCount) && contradictionWarningCount >= 2,
+  };
 }
 
-function inferBlockers(input, winner, options) {
+function inferBlockers(winner, signals) {
   const blockers = [];
   if (!winner) {
     blockers.push('no-deterministic-route');
     return blockers;
   }
 
-  const researchSignals = ['market', 'tam', 'sam', 'som', 'pricing', 'competitive', 'competitor', 'research'];
-  if (researchSignals.some((signal) => containsKeyword(input, signal))) {
-    blockers.push('external-research-required');
-  }
+  if (signals.requiresExternalResearch) blockers.push('external-research-required');
+  if (signals.multiStepDependency) blockers.push('multi-step-dependency');
+  if (signals.missingMandatoryInput) blockers.push('missing-mandatory-input');
+  if (signals.audienceOutsideProduct) blockers.push('audience-outside-product');
 
-  if (winner.route === 'plan-launch' || winner.route === 'tech-handoff') {
-    blockers.push('multi-step-dependency');
-  }
-
-  if (Array.isArray(options.missingInputs) && options.missingInputs.length > 0) {
-    blockers.push('missing-mandatory-input');
-  }
-
-  if (/\b(board|leadership|executive|exec|ceo|vp|sales|customer|engineering)\b/i.test(input)) {
-    blockers.push('audience-outside-product');
-  }
-
-  return Array.from(new Set(blockers));
+  return blockers;
 }
 
-function inferAutoEscalationReasons(input, winner, options) {
+function inferAutoEscalationReasons(signals) {
   const reasons = [];
 
-  if (/\b(market|tam|sam|som|pricing|competitive|competitor|research)\b/i.test(input)) {
-    reasons.push('external-research-required');
+  if (signals.requiresExternalResearch) reasons.push('external-research-required');
+  if (signals.budgetOrRoadmapDecision) reasons.push('budget-or-roadmap-decision');
+  if (signals.engineeringHandoffArtifact) reasons.push('engineering-handoff-artifact');
+  if (signals.validatorContradictions) reasons.push('validator-contradictions');
+  if (signals.audienceOutsideProduct) reasons.push('stakeholder-audience-outside-product');
+
+  return reasons;
+}
+
+function hasAnyKeyword(input, keywords) {
+  return keywords.some((keyword) => containsKeyword(input, keyword));
+}
+
+function containsKeyword(input, keyword) {
+  return matchKeywordPattern(input, compileKeywordPattern(keyword));
+}
+
+function compileKeywordPattern(keyword) {
+  if (keyword.includes(' ')) {
+    return keyword.toLowerCase();
   }
 
-  if (/\b(budget|headcount|roadmap|approve|approval|funding)\b/i.test(input)) {
-    reasons.push('budget-or-roadmap-decision');
-  }
+  return new RegExp(`\\b${escapeRegex(keyword.toLowerCase())}\\b`, 'i');
+}
 
-  if (winner?.route === 'tech-handoff' || /\b(tech handoff|technical spec|hand off to engineering|engineering handoff)\b/i.test(input)) {
-    reasons.push('engineering-handoff-artifact');
+function matchKeywordPattern(input, pattern) {
+  if (typeof pattern === 'string') {
+    return input.includes(pattern);
   }
-
-  const contradictionWarningCount = Number(options.contradictionWarningCount || 0);
-  if (Number.isFinite(contradictionWarningCount) && contradictionWarningCount >= 2) {
-    reasons.push('validator-contradictions');
-  }
-
-  if (/\b(board|leadership|executive|exec|ceo|vp|sales|customer|engineering)\b/i.test(input)) {
-    reasons.push('stakeholder-audience-outside-product');
-  }
-
-  return Array.from(new Set(reasons));
+  return pattern.test(input);
 }
 
 function escapeRegex(value) {

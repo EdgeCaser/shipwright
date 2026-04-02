@@ -5,7 +5,7 @@ import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
-const ARTIFACT_COMMENT_RE = /<!--\s*shipwright:artifact\s*([\s\S]*?)-->/m;
+const ARTIFACT_COMMENT_RE = /<!--\s*shipwright:artifact\s*([\s\S]*?)-->/;
 
 const SCHEMA_FILE_BY_TYPE = Object.freeze({
   prd: 'prd.schema.json',
