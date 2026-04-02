@@ -90,7 +90,10 @@ async function getAdapters() {
     const mod = await import('./source-adapters.mjs');
     _adaptersCache = mod;
   } catch {
-    _adaptersCache = { applySourceAdapter: () => null };
+    _adaptersCache = {
+      applySourceAdapter: () => null,
+      applyAsyncSourceAdapter: async () => null,
+    };
   }
   return _adaptersCache;
 }
@@ -1133,7 +1136,11 @@ async function fetchAndExtract(result, timeoutMs, excerptChars) {
     let adapterData = null;
     try {
       const adapters = await getAdapters();
-      adapterData = adapters.applySourceAdapter(response.url, body);
+      const applyAdapter =
+        adapters.applyAsyncSourceAdapter || adapters.applySourceAdapter;
+      adapterData = await applyAdapter(response.url, body, {
+        fetcher: (url, init) => fetchWithTimeout(url, init, timeoutMs),
+      });
     } catch {
       // adapter failure is silent
     }

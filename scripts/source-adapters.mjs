@@ -8,10 +8,10 @@
  *
  * All adapters fail soft. A parse error in one adapter does not prevent
  * others from running. If no adapter matches or extracts anything useful,
- * applySourceAdapter returns null.
+ * applySourceAdapter / applyAsyncSourceAdapter return null.
  *
  * Integration:
- *   collect-research.mjs calls applySourceAdapter(url, html) inside
+ *   collect-research.mjs calls applyAsyncSourceAdapter(url, html) inside
  *   fetchAndExtract, stores the result as result.adapterData, then converts
  *   fields to facts via extractAdapterFacts in its extractFacts pipeline.
  *
@@ -75,6 +75,34 @@ export function applySourceAdapter(url, html) {
   try {
     if (isPypiProjectUrl(url)) {
       const result = extractPypiAdapter(url, html);
+      if (result && result.fields.length > 0) return result;
+    }
+  } catch {
+    // fail soft
+  }
+
+  return null;
+}
+
+/**
+ * Apply source adapters, including async enrichers that may use an official API.
+ *
+ * Synchronous HTML/schema adapters run first. Async/API-based adapters only run
+ * when no higher-priority sync adapter matched.
+ *
+ * @param {string} url - Final URL after redirects
+ * @param {string} html - Raw HTML body
+ * @param {object} [options]
+ * @param {(url: string, init?: RequestInit) => Promise<Response>} [options.fetcher]
+ * @returns {Promise<AdapterResult | null>}
+ */
+export async function applyAsyncSourceAdapter(url, html, options = {}) {
+  const syncResult = applySourceAdapter(url, html);
+  if (syncResult) return syncResult;
+
+  try {
+    if (isCratesIoCrateUrl(url)) {
+      const result = await extractCratesIoAdapter(url, options);
       if (result && result.fields.length > 0) return result;
     }
   } catch {
@@ -349,6 +377,100 @@ function extractPypiPublishedDate(htmlFragment) {
   if (!textMatch) return '';
 
   return normalizeAdapterDate(textMatch[1]);
+}
+
+// ---------------------------------------------------------------------------
+// crates.io adapter
+// ---------------------------------------------------------------------------
+
+function isCratesIoCrateUrl(url) {
+  return Boolean(extractCratesIoCrateName(url));
+}
+
+function extractCratesIoCrateName(url) {
+  try {
+    const u = new URL(url);
+    const parts = u.pathname.split('/').filter(Boolean);
+    if (u.hostname !== 'crates.io' || parts.length < 2 || parts[0] !== 'crates') {
+      return '';
+    }
+
+    return parts[1] ? decodeURIComponent(parts[1]) : '';
+  } catch {
+    return '';
+  }
+}
+
+/**
+ * Extract structured facts from the official crates.io API.
+ *
+ * Raw crates.io pages are JavaScript-dependent and may reject generic scraping,
+ * so we rely on the public crate metadata endpoint for stable access.
+ *
+ * @param {string} url
+ * @param {object} [options]
+ * @param {(url: string, init?: RequestInit) => Promise<Response>} [options.fetcher]
+ * @returns {Promise<AdapterResult | null>}
+ */
+async function extractCratesIoAdapter(url, options = {}) {
+  const crateName = extractCratesIoCrateName(url);
+  if (!crateName) return null;
+
+  const fetcher = options.fetcher || fetch;
+  const response = await fetcher(
+    `https://crates.io/api/v1/crates/${encodeURIComponent(crateName)}`,
+    {
+      headers: {
+        Accept: 'application/json',
+        'User-Agent': 'ShipwrightResearchCollector/1.0 (+https://github.com/ianbrillembourg/shipwright)',
+      },
+    },
+  );
+
+  if (!response?.ok) return null;
+
+  const payload = await response.json();
+  const crate = payload?.crate;
+  if (!crate || typeof crate !== 'object') return null;
+
+  const fields = [];
+  const productName = String(crate.name || crate.id || crateName).trim();
+  if (productName) {
+    fields.push({ field: 'product_name', value: productName, confidence: 'high' });
+  }
+
+  const version = String(
+    crate.max_stable_version || crate.max_version || crate.newest_version || crate.default_version || '',
+  ).trim();
+  if (version) {
+    fields.push({ field: 'version', value: version, confidence: 'high' });
+  }
+
+  const publishedDate = extractCratesIoPublishedDate(payload, version);
+  if (publishedDate) {
+    fields.push({
+      field: 'published_or_observed_date',
+      value: publishedDate,
+      confidence: 'high',
+    });
+  }
+
+  if (fields.length === 0) return null;
+  return { adapterName: 'crates-io-api', fields: dedupeAdapterFields(fields) };
+}
+
+function extractCratesIoPublishedDate(payload, version) {
+  const versions = Array.isArray(payload?.versions) ? payload.versions : [];
+  const preferredVersion = version
+    ? versions.find((entry) => entry && entry.num === version && !entry.yanked)
+    : null;
+  const fallbackVersion = versions.find((entry) => entry && !entry.yanked) || versions[0];
+  const publishedAt =
+    preferredVersion?.created_at ||
+    fallbackVersion?.created_at ||
+    payload?.crate?.updated_at;
+
+  return normalizeAdapterDate(publishedAt);
 }
 
 // ---------------------------------------------------------------------------

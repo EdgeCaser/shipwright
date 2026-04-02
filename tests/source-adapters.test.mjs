@@ -1,7 +1,10 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import { applySourceAdapter } from '../scripts/source-adapters.mjs';
+import {
+  applyAsyncSourceAdapter,
+  applySourceAdapter,
+} from '../scripts/source-adapters.mjs';
 
 // ---------------------------------------------------------------------------
 // JSON-LD adapter — Product with Offer
@@ -394,4 +397,140 @@ test('applySourceAdapter prefers JSON-LD over PyPI when both match', { concurren
 
   assert.ok(result);
   assert.equal(result.adapterName, 'json-ld', 'JSON-LD should take priority over PyPI adapter');
+});
+
+// ---------------------------------------------------------------------------
+// crates.io adapter
+// ---------------------------------------------------------------------------
+
+test('applyAsyncSourceAdapter extracts product_name, version, and published_or_observed_date from crates.io API', { concurrency: false }, async () => {
+  const result = await applyAsyncSourceAdapter(
+    'https://crates.io/crates/serde',
+    '<html><body>For full functionality of this site it is necessary to enable JavaScript.</body></html>',
+    {
+      fetcher: async () => ({
+        ok: true,
+        async json() {
+          return {
+            crate: {
+              id: 'serde',
+              name: 'serde',
+              max_stable_version: '1.0.228',
+              updated_at: '2025-09-27T16:51:35.265429Z',
+            },
+            versions: [
+              {
+                num: '1.0.228',
+                created_at: '2025-09-27T16:51:35.265429Z',
+                yanked: false,
+              },
+            ],
+          };
+        },
+      }),
+    },
+  );
+
+  assert.ok(result, 'should return a result for a crates.io crate page');
+  assert.equal(result.adapterName, 'crates-io-api');
+  assert.ok(result.fields.find((f) => f.field === 'product_name' && f.value === 'serde'));
+  assert.ok(result.fields.find((f) => f.field === 'version' && f.value === '1.0.228'));
+  assert.ok(
+    result.fields.find((f) =>
+      f.field === 'published_or_observed_date' && f.value === '2025-09-27'),
+  );
+});
+
+test('applyAsyncSourceAdapter falls back to latest non-yanked crates.io version date when selected version is missing', { concurrency: false }, async () => {
+  const result = await applyAsyncSourceAdapter(
+    'https://crates.io/crates/example',
+    '<html></html>',
+    {
+      fetcher: async () => ({
+        ok: true,
+        async json() {
+          return {
+            crate: {
+              id: 'example',
+              max_stable_version: '2.0.0',
+              updated_at: '2026-02-01T00:00:00Z',
+            },
+            versions: [
+              { num: '1.9.0', created_at: '2026-01-15T00:00:00Z', yanked: false },
+              { num: '2.0.0', created_at: '2026-02-01T00:00:00Z', yanked: true },
+            ],
+          };
+        },
+      }),
+    },
+  );
+
+  assert.ok(result);
+  assert.ok(
+    result.fields.find((f) =>
+      f.field === 'published_or_observed_date' && f.value === '2026-01-15'),
+  );
+});
+
+test('applyAsyncSourceAdapter does not apply crates.io adapter to non-crates URLs', { concurrency: false }, async () => {
+  let called = false;
+  const result = await applyAsyncSourceAdapter(
+    'https://example.com/crates/serde',
+    '<html></html>',
+    {
+      fetcher: async () => {
+        called = true;
+        return { ok: true, async json() { return {}; } };
+      },
+    },
+  );
+
+  assert.equal(result, null);
+  assert.equal(called, false, 'non-crates URLs should not trigger the crates.io API fetch');
+});
+
+test('applyAsyncSourceAdapter prefers JSON-LD over crates.io API when both match', { concurrency: false }, async () => {
+  let called = false;
+  const html = `
+    <html>
+    <head>
+      <script type="application/ld+json">
+        { "@type": "SoftwareApplication", "name": "Serde App", "offers": { "price": "0" } }
+      </script>
+    </head>
+    <body>crate page shell</body>
+    </html>
+  `;
+
+  const result = await applyAsyncSourceAdapter(
+    'https://crates.io/crates/serde',
+    html,
+    {
+      fetcher: async () => {
+        called = true;
+        return { ok: true, async json() { return {}; } };
+      },
+    },
+  );
+
+  assert.ok(result);
+  assert.equal(result.adapterName, 'json-ld');
+  assert.equal(called, false, 'sync adapters should win before crates.io API is queried');
+});
+
+test('applyAsyncSourceAdapter fails soft when crates.io API returns a non-ok response', { concurrency: false }, async () => {
+  const result = await applyAsyncSourceAdapter(
+    'https://crates.io/crates/serde',
+    '<html></html>',
+    {
+      fetcher: async () => ({
+        ok: false,
+        async json() {
+          throw new Error('should not be called');
+        },
+      }),
+    },
+  );
+
+  assert.equal(result, null);
 });

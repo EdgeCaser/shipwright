@@ -24,12 +24,12 @@ Shipwright now has a collector-level research cache in `scripts/collect-research
 | `price` | pricing text pattern + JSON-LD | high/medium |
 | `currency` | pricing text pattern + JSON-LD | high/medium |
 | `billing_period` | pricing text pattern | high/medium |
-| `published_or_observed_date` | result.published field; PyPI page HTML | high/medium |
+| `published_or_observed_date` | result.published field; PyPI page HTML; crates.io API | high/medium |
 | `product_name` | JSON-LD Product/SoftwareApplication | high |
 | `star_rating` | JSON-LD AggregateRating; text patterns | high/medium |
 | `review_count` | JSON-LD AggregateRating; text patterns | high/medium |
 | `weekly_downloads` | npm page HTML (SSR'd) | medium |
-| `version` | npm/PyPI page HTML / JSON-LD | high/medium |
+| `version` | npm/PyPI page HTML; crates.io API; JSON-LD | high/medium |
 | `acquisition_event` | text patterns (active/passive voice) | medium |
 | `acquisition_date` | year near acquisition mention | medium |
 | `acquirer` | text patterns | medium |
@@ -49,6 +49,9 @@ is discarded, and writes structured fields to `result.adapterData`:
   package pages (server-rendered, stable structure).
 - **PyPI adapter** — extracts package name, latest version, and release date
   from pypi.org project pages (server-rendered, stable structure).
+- **crates.io adapter** — extracts crate name, latest version, and release date
+  via the official crates.io API because raw crate pages are JavaScript-dependent
+  and scraping-restricted.
 
 The adapter module loads lazily from `collect-research.mjs`. If the file is
 missing on a partial deployment, the collector continues without adapters (fail soft).
@@ -128,8 +131,6 @@ highest-value additions are:
    so the system can restart from `research-complete` or `synthesis-complete`
    instead of rerunning the entire pipeline.
 2. **Additional source adapters** — extend the adapter pattern with:
-   - crates.io package pages (same pattern as npm/PyPI; useful for open-source
-     competitive analysis)
    - Stripe / GitHub pricing pages (investigate static-HTML structure; may require
      per-page field mapping)
    - G2 / Capterra product pages (currently rely on JSON-LD; add fallback text
