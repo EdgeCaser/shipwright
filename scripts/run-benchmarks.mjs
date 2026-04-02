@@ -4,6 +4,7 @@ import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
+import { computeBlindRatingFromRaters } from './blind-review-utils.mjs';
 import { extractStructuredArtifact } from './extract-structured-artifact.mjs';
 import {
   IssueType,
@@ -14,13 +15,6 @@ import {
 export const DEFAULT_SCENARIO_DIR = path.resolve('benchmarks', 'scenarios');
 export const DEFAULT_SCORING_SPEC_REF = 'docs/shipwright-v2-benchmark-scoring-spec.md';
 export const DEFAULT_PROOF_METHOD_REF = 'docs/shipwright-v2-proof-method.md';
-
-const SCORE_DIMENSIONS = Object.freeze([
-  'decision_usefulness',
-  'evidence_discipline',
-  'internal_consistency',
-  'actionability',
-]);
 
 const CONTRADICTION_TYPES = new Set([
   IssueType.METRIC_CONTRADICTION,
@@ -696,34 +690,7 @@ function countContradictions(issues) {
 
 function computeBlindRating(blindReview, passKey) {
   if (!blindReview) return null;
-
-  const raters = Array.isArray(blindReview.raters) ? blindReview.raters : [];
-  if (raters.length < 3) {
-    throw new Error('Blind review requires at least 3 raters.');
-  }
-
-  let total = 0;
-  for (const rater of raters) {
-    const passScores = rater?.[passKey];
-    if (!passScores || typeof passScores !== 'object') {
-      throw new Error(`Blind review is missing ${passKey} scores for rater "${rater?.rater_id || 'unknown'}".`);
-    }
-
-    let raterTotal = 0;
-    for (const dimension of SCORE_DIMENSIONS) {
-      const score = passScores[dimension];
-      if (!Number.isFinite(score) || score < 1 || score > 5) {
-        throw new Error(
-          `Blind review score must be between 1 and 5 for ${dimension}.`,
-        );
-      }
-      raterTotal += score;
-    }
-
-    total += raterTotal / SCORE_DIMENSIONS.length;
-  }
-
-  return roundToOneDecimal((total / raters.length / 5) * 100);
+  return computeBlindRatingFromRaters(blindReview.raters, passKey);
 }
 
 function deriveScenarioStatus(finalPass) {

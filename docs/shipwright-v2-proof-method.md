@@ -2,6 +2,8 @@
 
 Shipwright v2 proof artifacts must clear a higher bar than internal demos. This document defines that bar.
 
+Operational steps for collecting those inputs live in `docs/shipwright-v2-proof-runbook.md`.
+
 ## Baseline Provenance
 
 A baseline comparison is publishable only when the baseline artifacts are produced outside Shipwright's own orchestration and are traceable to a real comparison method.

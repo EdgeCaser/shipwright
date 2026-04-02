@@ -12,6 +12,7 @@ Each scenario lives in `benchmarks/scenarios/` and points to:
 The harness in `scripts/run-benchmarks.mjs` validates those fixtures with the existing runtime validator and emits the required result shape from `docs/shipwright-v2-benchmark-scoring-spec.md`.
 
 Proof-pack rules and publishability criteria live in `docs/shipwright-v2-proof-method.md`.
+The operational workflow for collecting real baseline and blind-review inputs lives in `docs/shipwright-v2-proof-runbook.md`.
 
 ## Fixture Rules
 
@@ -30,6 +31,8 @@ node scripts/run-benchmarks.mjs --format json
 node scripts/run-benchmarks.mjs --out benchmarks/results/latest.json --format json
 node scripts/run-benchmarks.mjs --publish --out benchmarks/results/publish-ready.json --format json
 node scripts/run-benchmarks.mjs --publish --baseline benchmarks/baselines/example.json --out benchmarks/results/compared.json --format json
+node scripts/prepare-blind-review.mjs --out-dir benchmarks/reviews/runs/example
+node scripts/compile-blind-review.mjs --current-summary benchmarks/results/current-pre-review.json --baseline-summary benchmarks/baselines/strong-prompt-v1/suite-summary-pre-review.json --admin-manifest benchmarks/reviews/runs/example/admin-manifest.json --reviews-dir benchmarks/reviews/runs/example/responses --current-out benchmarks/results/current-reviewed.json --baseline-out benchmarks/baselines/strong-prompt-v1/suite-summary-reviewed.json
 ```
 
 ## Scenario Shape
