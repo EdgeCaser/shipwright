@@ -116,6 +116,19 @@ test('formatFactsBlock renders medium confidence annotation', { concurrency: fal
   assert.ok(result.includes('[medium]'));
 });
 
+test('formatFactsBlock does not imply USD when currency is missing', { concurrency: false }, () => {
+  const pack = {
+    meta: { query: 'test' },
+    facts: [
+      { field: 'plan_name', value: 'Starter', source_url: 'https://example.com/pricing', excerpt: 'Starter 29/month', confidence_hint: 'high' },
+      { field: 'price', value: '29', source_url: 'https://example.com/pricing', excerpt: 'Starter 29/month', confidence_hint: 'high' },
+    ],
+  };
+  const result = formatFactsBlock(pack, { format: 'block' });
+  assert.ok(result.includes('Starter: 29'));
+  assert.ok(!result.includes('Starter: $29'));
+});
+
 // ---------------------------------------------------------------------------
 // Identity resolution
 // ---------------------------------------------------------------------------
@@ -201,7 +214,9 @@ test('formatFactsBlock groups facts from different domains separately', { concur
     meta: { query: 'compare pricing' },
     facts: [
       { field: 'price', value: '29', source_url: 'https://site-a.com/pricing', excerpt: 'Starter: $29', confidence_hint: 'high' },
+      { field: 'currency', value: 'USD', source_url: 'https://site-a.com/pricing', excerpt: 'Starter: $29', confidence_hint: 'high' },
       { field: 'price', value: '49', source_url: 'https://site-b.com/pricing', excerpt: 'Basic: $49', confidence_hint: 'high' },
+      { field: 'currency', value: 'USD', source_url: 'https://site-b.com/pricing', excerpt: 'Basic: $49', confidence_hint: 'high' },
     ],
   };
   const result = formatFactsBlock(pack, { format: 'block' });

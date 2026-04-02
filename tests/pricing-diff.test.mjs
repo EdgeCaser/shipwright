@@ -1,4 +1,8 @@
 import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
+import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
 import test from 'node:test';
 
 import { buildPricingDiff } from '../scripts/pricing-diff.mjs';
@@ -127,8 +131,8 @@ test('buildPricingDiff marks No free tier for paid-only products', { concurrency
 // ---------------------------------------------------------------------------
 
 test('buildPricingDiff renders multiple competitors', { concurrency: false }, () => {
-  const packA = makePack('Acme', [{ name: 'Starter', price: '29' }]);
-  const packB = makePack('Rival', [{ name: 'Basic', price: '49' }]);
+  const packA = makePack('Acme', [{ name: 'Starter', price: '29', currency: 'USD' }]);
+  const packB = makePack('Rival', [{ name: 'Basic', price: '49', currency: 'USD' }]);
   const result = buildPricingDiff([packA, packB]);
   assert.ok(result.includes('Acme'));
   assert.ok(result.includes('Rival'));
@@ -211,6 +215,13 @@ test('buildPricingDiff uses GBP symbol for GBP currency', { concurrency: false }
   assert.ok(result.includes('£20'));
 });
 
+test('buildPricingDiff does not imply USD when currency is missing', { concurrency: false }, () => {
+  const pack = makePack('Acme', [{ name: 'Starter', price: '29' }]);
+  const result = buildPricingDiff([pack]);
+  assert.ok(result.includes('| Acme | Starter | 29 | high |'));
+  assert.ok(!result.includes('| Acme | Starter | $29 | high |'));
+});
+
 // ---------------------------------------------------------------------------
 // Coverage notes metadata
 // ---------------------------------------------------------------------------
@@ -225,4 +236,35 @@ test('buildPricingDiff includes research query in coverage notes', { concurrency
   const pack = makePack('Acme', [{ name: 'Pro', price: '99' }], { query: 'Acme pricing research' });
   const result = buildPricingDiff([pack]);
   assert.ok(result.includes('Acme pricing research'));
+});
+
+// ---------------------------------------------------------------------------
+// CLI directory discovery
+// ---------------------------------------------------------------------------
+
+test('pricing-diff --dir only loads discovered facts files', { concurrency: false }, async (t) => {
+  const dir = await mkdtemp(path.join(os.tmpdir(), 'shipwright-pricing-diff-'));
+  t.after(async () => {
+    await rm(dir, { recursive: true, force: true });
+  });
+
+  const acmeDir = path.join(dir, 'acme');
+  const rivalDir = path.join(dir, 'rival');
+  const emptyDir = path.join(dir, 'empty');
+  await mkdir(acmeDir, { recursive: true });
+  await mkdir(rivalDir, { recursive: true });
+  await mkdir(emptyDir, { recursive: true });
+  await writeFile(path.join(acmeDir, 'facts.json'), `${JSON.stringify(makePack('Acme', [{ name: 'Starter', price: '29', currency: 'USD' }]), null, 2)}\n`, 'utf8');
+  await writeFile(path.join(rivalDir, 'facts.json'), `${JSON.stringify(makePack('Rival', [{ name: 'Basic', price: '49', currency: 'USD' }]), null, 2)}\n`, 'utf8');
+
+  const result = spawnSync(process.execPath, ['scripts/pricing-diff.mjs', '--dir', dir], {
+    cwd: '/Users/ianbrillembourg/Documents/GitHub/shipwright',
+    encoding: 'utf8',
+  });
+
+  assert.equal(result.status, 0, result.stderr);
+  assert.match(result.stdout, /Acme/);
+  assert.match(result.stdout, /Rival/);
+  assert.doesNotMatch(result.stderr, /EISDIR/);
+  assert.doesNotMatch(result.stderr, /Skipping/);
 });

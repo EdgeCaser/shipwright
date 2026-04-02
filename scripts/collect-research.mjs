@@ -835,10 +835,22 @@ function parseArgs(argv) {
 }
 
 function parseMode(value) {
-  if (!['standard', 'auto', 'deep'].includes(value || '')) {
+  const normalized = normalizeModeAlias(value);
+  if (!['standard', 'auto', 'deep'].includes(normalized || '')) {
     throw new Error(`Invalid --mode: ${value}. Expected standard, auto, or deep.`);
   }
-  return value;
+  return normalized;
+}
+
+function normalizeModeAlias(value) {
+  const normalized = String(value || '').trim().toLowerCase();
+  if (!normalized) return normalized;
+
+  if (['pricing', 'research', 'news', 'general'].includes(normalized)) {
+    return 'auto';
+  }
+
+  return normalized;
 }
 
 function parseNumber(value, flagName) {

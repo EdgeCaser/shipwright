@@ -145,7 +145,8 @@ If structured research facts are available from a prior `collect-research.mjs` r
 node scripts/pricing-diff.mjs \
   .shipwright/research/competitor-a/facts.json \
   .shipwright/research/competitor-b/facts.json
-# or: node scripts/pricing-diff.mjs --dir .shipwright/research/
+# or, if you staged only the intended packs together:
+# node scripts/pricing-diff.mjs --dir path/to/comparison-set/
 ```
 
 The output is a ready-to-cite markdown table covering plan names, prices, billing periods, free tier presence, and confidence levels. Paste it directly into the Competitive Pricing Landscape section. If facts files are not available, build the table manually below.

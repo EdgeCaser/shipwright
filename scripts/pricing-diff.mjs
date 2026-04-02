@@ -10,7 +10,7 @@
  *
  * Usage (CLI):
  *   node scripts/pricing-diff.mjs facts-a.json facts-b.json [facts-c.json ...]
- *   node scripts/pricing-diff.mjs --dir .shipwright/research/
+ *   node scripts/pricing-diff.mjs --dir path/to/comparison-set/
  *
  * Usage (programmatic):
  *   import { buildPricingDiff } from './pricing-diff.mjs';
@@ -27,7 +27,7 @@
  *       .shipwright/research/rival-pricing/facts.json
  */
 
-import { readFile, readdir } from 'node:fs/promises';
+import { access, readFile, readdir } from 'node:fs/promises';
 import { pathToFileURL } from 'node:url';
 import path from 'node:path';
 
@@ -99,7 +99,8 @@ export function buildPricingDiff(factsPacks) {
 
 /**
  * Extract a structured summary from one facts pack.
- * Returns null if no pricing data is found.
+ * Returns a source summary even when no pricing rows are found so callers
+ * can still see coverage gaps in the final output.
  */
 function extractSourceSummary(factsPack) {
   if (!factsPack || !Array.isArray(factsPack.facts)) return null;
@@ -209,8 +210,7 @@ function buildPricingTable(sources, { hasBilling, hasFree }) {
     for (let i = 0; i < source.plans.length; i += 1) {
       const plan = source.plans[i];
       const label = i === 0 ? source.label : '';
-      const symbol = currencySymbol(plan.currency);
-      const price = `${symbol}${plan.price}`;
+      const price = formatPrice(plan.price, plan.currency);
       const row = [label, plan.plan_name || '—', price];
       if (hasBilling) row.push(plan.billing_period || '—');
       if (hasFree) {
@@ -251,11 +251,15 @@ function buildReviewTable(sources) {
 // ---------------------------------------------------------------------------
 
 function currencySymbol(code) {
-  if (!code) return '$';
+  if (!code) return '';
   if (code === 'USD') return '$';
   if (code === 'EUR') return '€';
   if (code === 'GBP') return '£';
   return `${code} `;
+}
+
+function formatPrice(value, currency) {
+  return `${currencySymbol(currency)}${value}`;
 }
 
 function formatNumber(value) {
@@ -269,21 +273,23 @@ function formatNumber(value) {
 // ---------------------------------------------------------------------------
 
 async function main(argv = process.argv.slice(2)) {
-  // Collect file paths (args that don't start with --)
-  let filePaths = argv.filter((a) => !a.startsWith('--'));
+  let filePaths;
+  let dir;
 
-  // --dir mode: discover all facts.json files in immediate subdirs
-  const dirIdx = argv.indexOf('--dir');
-  if (dirIdx !== -1 && argv[dirIdx + 1]) {
-    const dir = path.resolve(argv[dirIdx + 1]);
+  try {
+    ({ filePaths, dir } = parseCliArgs(argv));
+  } catch (error) {
+    console.error(error instanceof Error ? error.message : String(error));
+    process.exitCode = 1;
+    return;
+  }
+
+  if (dir) {
     try {
-      const entries = await readdir(dir, { withFileTypes: true });
-      const discovered = entries
-        .filter((e) => e.isDirectory())
-        .map((e) => path.join(dir, e.name, 'facts.json'));
+      const discovered = await discoverFactsPaths(dir);
       filePaths = [...filePaths, ...discovered];
     } catch (error) {
-      console.error(`Cannot read directory: ${argv[dirIdx + 1]}: ${error instanceof Error ? error.message : String(error)}`);
+      console.error(`Cannot read directory: ${dir}: ${error instanceof Error ? error.message : String(error)}`);
       process.exitCode = 1;
       return;
     }
@@ -292,7 +298,7 @@ async function main(argv = process.argv.slice(2)) {
   if (filePaths.length < 1) {
     console.error(
       'Usage: node scripts/pricing-diff.mjs <facts1.json> [facts2.json ...]\n' +
-      '       node scripts/pricing-diff.mjs --dir .shipwright/research/',
+      '       node scripts/pricing-diff.mjs --dir path/to/comparison-set/',
     );
     process.exitCode = 1;
     return;
@@ -315,6 +321,64 @@ async function main(argv = process.argv.slice(2)) {
   }
 
   console.log(buildPricingDiff(factsPacks));
+}
+
+function parseCliArgs(argv) {
+  const filePaths = [];
+  let dir = '';
+
+  for (let i = 0; i < argv.length; i += 1) {
+    const token = argv[i];
+
+    if (token === '--dir') {
+      dir = argv[i + 1] || '';
+      if (!dir) {
+        throw new Error('Missing value for --dir.');
+      }
+      i += 1;
+      continue;
+    }
+
+    if (token.startsWith('--')) {
+      throw new Error(`Unknown argument: ${token}`);
+    }
+
+    filePaths.push(token);
+  }
+
+  return { filePaths, dir };
+}
+
+async function discoverFactsPaths(dir) {
+  const resolvedDir = path.resolve(dir);
+  const discovered = [];
+  const directFactsPath = path.join(resolvedDir, 'facts.json');
+
+  if (await pathExists(directFactsPath)) {
+    discovered.push(directFactsPath);
+  }
+
+  const entries = await readdir(resolvedDir, { withFileTypes: true });
+  const sortedEntries = entries.sort((a, b) => a.name.localeCompare(b.name));
+
+  for (const entry of sortedEntries) {
+    if (!entry.isDirectory()) continue;
+    const factsPath = path.join(resolvedDir, entry.name, 'facts.json');
+    if (await pathExists(factsPath)) {
+      discovered.push(factsPath);
+    }
+  }
+
+  return discovered;
+}
+
+async function pathExists(targetPath) {
+  try {
+    await access(targetPath);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 function isDirectRun() {

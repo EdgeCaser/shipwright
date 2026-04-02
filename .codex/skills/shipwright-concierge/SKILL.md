@@ -41,9 +41,10 @@ This skill gives Codex a conversational Shipwright entry point. Use it when the 
 If fresh public-web evidence is needed, follow this protocol in order:
 
 1. First run the local research collector if available:
-   - `node .codex/scripts/collect-research.mjs --query "<primary query>" --mode auto`
-   - otherwise `node scripts/collect-research.mjs --query "<primary query>" --mode auto`
+   - `node scripts/collect-research.mjs --query "<primary query>" --mode auto`
+   - otherwise `node .codex/scripts/collect-research.mjs --query "<primary query>" --mode auto`
    - otherwise `node .claude/scripts/collect-research.mjs --query "<primary query>" --mode auto`
+   - Prefer the repo-level `scripts/collect-research.mjs` when available because it writes `facts.json`; the `.codex` and `.claude` copies are fallback collectors and may only emit the evidence pack.
 2. If `facts.json` exists alongside the evidence pack, read it first and use it as a structured shortcut before synthesizing from the full evidence pack.
 3. Interpret `facts.json` by `confidence_hint`:
    - `high`: use directly for structured fields, tables, and summaries, while keeping source attribution.

@@ -22,7 +22,7 @@
  *
  *   Example:
  *     const { requestType, suggestedMode, collectorHints } = classifyRequest(query);
- *     // suggestedMode → 'pricing' | 'research' | 'news' | 'general'
+ *     // suggestedMode → 'standard' | 'auto' | 'deep'
  */
 
 import { pathToFileURL } from 'node:url';
@@ -40,7 +40,7 @@ import path from 'node:path';
  * @typedef {object} Classification
  * @property {RequestType} requestType
  * @property {number} confidence - 0–1, how strongly this type was matched
- * @property {string} suggestedMode - collector mode hint: 'pricing'|'research'|'news'|'general'
+ * @property {string} suggestedMode - collector mode hint: 'standard'|'auto'|'deep'
  * @property {string[]} priorityFacts - fact fields most likely to be useful
  * @property {object} collectorHints - key/value config hints for the collector
  * @property {string[]} matchedSignals - which patterns fired (for debugging)
@@ -58,7 +58,7 @@ import path from 'node:path';
 const RULES = [
   {
     type: 'pricing',
-    mode: 'pricing',
+    mode: 'auto',
     priorityFacts: ['plan_name', 'price', 'currency', 'billing_period', 'product_name'],
     collectorHints: { preferPricingPages: true, includeJsonLd: true },
     signals: [
@@ -75,7 +75,7 @@ const RULES = [
   },
   {
     type: 'competitive',
-    mode: 'research',
+    mode: 'deep',
     priorityFacts: ['product_name', 'company', 'plan_name', 'price', 'star_rating', 'review_count'],
     collectorHints: { includeJsonLd: true, includeReviews: true },
     signals: [
@@ -90,7 +90,7 @@ const RULES = [
   },
   {
     type: 'market-size',
-    mode: 'research',
+    mode: 'deep',
     priorityFacts: ['company', 'product_name', 'published_or_observed_date'],
     collectorHints: { preferAnalystReports: true },
     signals: [
@@ -106,7 +106,7 @@ const RULES = [
   },
   {
     type: 'acquisition',
-    mode: 'news',
+    mode: 'auto',
     priorityFacts: ['acquisition_event', 'acquisition_date', 'acquirer', 'acquired_company', 'company'],
     collectorHints: { preferNewsPages: true, preferRecentResults: true },
     signals: [
@@ -120,7 +120,7 @@ const RULES = [
   },
   {
     type: 'funding',
-    mode: 'news',
+    mode: 'auto',
     priorityFacts: ['funding_event', 'company', 'product_name', 'acquisition_event'],
     collectorHints: { preferNewsPages: true, preferRecentResults: true },
     signals: [
@@ -136,7 +136,7 @@ const RULES = [
   },
   {
     type: 'reviews',
-    mode: 'research',
+    mode: 'auto',
     priorityFacts: ['star_rating', 'review_count', 'product_name', 'company'],
     collectorHints: { includeJsonLd: true, preferReviewSites: true },
     signals: [
@@ -202,7 +202,7 @@ export function classifyRequest(query) {
 
   const { rule, matchedSignals } = hits.get(bestType);
 
-  // Confidence: 1 match = 0.6, 2+ = 0.8, 3+ = 1.0 (capped)
+  // Confidence rises with additional matched signals and caps at 1.0.
   const confidence = Math.min(1.0, 0.5 + bestCount * 0.17);
 
   return buildResult(bestType, confidence, matchedSignals, rule);
@@ -215,37 +215,37 @@ export function classifyRequest(query) {
 function buildResult(type, confidence, matchedSignals, rule = null) {
   const defaults = {
     pricing: {
-      mode: 'pricing',
+      mode: 'auto',
       priorityFacts: ['plan_name', 'price', 'currency', 'billing_period', 'product_name'],
       collectorHints: { preferPricingPages: true, includeJsonLd: true },
     },
     competitive: {
-      mode: 'research',
+      mode: 'deep',
       priorityFacts: ['product_name', 'company', 'plan_name', 'price', 'star_rating', 'review_count'],
       collectorHints: { includeJsonLd: true, includeReviews: true },
     },
     'market-size': {
-      mode: 'research',
+      mode: 'deep',
       priorityFacts: ['company', 'product_name', 'published_or_observed_date'],
       collectorHints: { preferAnalystReports: true },
     },
     acquisition: {
-      mode: 'news',
+      mode: 'auto',
       priorityFacts: ['acquisition_event', 'acquisition_date', 'acquirer', 'acquired_company'],
       collectorHints: { preferNewsPages: true, preferRecentResults: true },
     },
     funding: {
-      mode: 'news',
+      mode: 'auto',
       priorityFacts: ['funding_event', 'company', 'product_name'],
       collectorHints: { preferNewsPages: true, preferRecentResults: true },
     },
     reviews: {
-      mode: 'research',
+      mode: 'auto',
       priorityFacts: ['star_rating', 'review_count', 'product_name', 'company'],
       collectorHints: { includeJsonLd: true, preferReviewSites: true },
     },
     general: {
-      mode: 'general',
+      mode: 'auto',
       priorityFacts: ['company', 'product_name', 'published_or_observed_date'],
       collectorHints: {},
     },

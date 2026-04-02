@@ -92,7 +92,7 @@ optional Review Signals table, and per-source Coverage Notes.
 
 ```
 node scripts/pricing-diff.mjs facts-a.json facts-b.json
-node scripts/pricing-diff.mjs --dir .shipwright/research/
+node scripts/pricing-diff.mjs --dir path/to/comparison-set/
 ```
 
 Wired into:
@@ -103,7 +103,8 @@ Wired into:
 ### Request classifier (`scripts/classify-request.mjs`)
 
 Pattern-matches a query string to a request type and returns collector hints.
-No network calls. Returns: `requestType`, `suggestedMode`, `priorityFacts`,
+No network calls. Returns: `requestType`, collector-compatible `suggestedMode`
+(`standard`, `auto`, or `deep`), `priorityFacts`,
 `collectorHints`, `matchedSignals`, `confidence`.
 
 Request types: `pricing`, `competitive`, `market-size`, `acquisition`, `funding`, `reviews`, `general`

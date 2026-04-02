@@ -188,8 +188,7 @@ function renderBlock(meta, groups, allFacts) {
     const tuples = reconstructPricingTuples(domainFacts);
     for (const tuple of tuples) {
       const label = tuple.plan_name ? `${tuple.plan_name}: ` : '';
-      const symbol = currencySymbol(tuple.currency);
-      const price = `${symbol}${tuple.price}`;
+      const price = formatPrice(tuple.price, tuple.currency);
       const billing = tuple.billing_period ? `/${tuple.billing_period}` : '';
       const conf = tuple.confidence === 'medium' ? ' [medium]' : '';
       lines.push(`  ${label}${price}${billing}${conf}`);
@@ -262,8 +261,7 @@ function renderMarkdown(meta, groups, allFacts) {
     const tuples = reconstructPricingTuples(domainFacts);
     for (const tuple of tuples) {
       const label = tuple.plan_name || 'Plan';
-      const symbol = currencySymbol(tuple.currency);
-      const price = `${symbol}${tuple.price}`;
+      const price = formatPrice(tuple.price, tuple.currency);
       const billing = tuple.billing_period ? `/${tuple.billing_period}` : '';
       const conf = tuple.confidence === 'medium' ? ' *(medium confidence)*' : '';
       lines.push(`- **${label}:** ${price}${billing}${conf}`);
@@ -320,11 +318,15 @@ function extractDomain(url) {
 }
 
 function currencySymbol(code) {
-  if (!code) return '$';
+  if (!code) return '';
   if (code === 'USD') return '$';
   if (code === 'EUR') return '€';
   if (code === 'GBP') return '£';
   return `${code} `;
+}
+
+function formatPrice(value, currency) {
+  return `${currencySymbol(currency)}${value}`;
 }
 
 function formatNumber(value) {

@@ -34,7 +34,7 @@ test('classifyRequest identifies competitive query with "alternatives" language'
 test('classifyRequest identifies market-size queries', { concurrency: false }, () => {
   const result = classifyRequest('total addressable market for developer tools');
   assert.equal(result.requestType, 'market-size');
-  assert.equal(result.suggestedMode, 'research');
+  assert.equal(result.suggestedMode, 'deep');
 });
 
 test('classifyRequest identifies market-size query with TAM acronym', { concurrency: false }, () => {
@@ -45,7 +45,7 @@ test('classifyRequest identifies market-size query with TAM acronym', { concurre
 test('classifyRequest identifies acquisition queries', { concurrency: false }, () => {
   const result = classifyRequest('who acquired Figma');
   assert.equal(result.requestType, 'acquisition');
-  assert.equal(result.suggestedMode, 'news');
+  assert.equal(result.suggestedMode, 'auto');
   assert.ok(result.priorityFacts.includes('acquirer'));
   assert.ok(result.priorityFacts.includes('acquired_company'));
 });
@@ -58,7 +58,7 @@ test('classifyRequest identifies acquisition query with "merger" language', { co
 test('classifyRequest identifies funding queries', { concurrency: false }, () => {
   const result = classifyRequest('Linear raised Series B funding');
   assert.equal(result.requestType, 'funding');
-  assert.equal(result.suggestedMode, 'news');
+  assert.equal(result.suggestedMode, 'auto');
   assert.ok(result.priorityFacts.includes('funding_event'));
 });
 
@@ -85,17 +85,17 @@ test('classifyRequest identifies G2 review query', { concurrency: false }, () =>
 
 test('classifyRequest returns pricing suggestedMode for pricing queries', { concurrency: false }, () => {
   const result = classifyRequest('Stripe pricing tiers');
-  assert.equal(result.suggestedMode, 'pricing');
+  assert.equal(result.suggestedMode, 'auto');
 });
 
-test('classifyRequest returns news suggestedMode for acquisition queries', { concurrency: false }, () => {
+test('classifyRequest returns auto suggestedMode for acquisition queries', { concurrency: false }, () => {
   const result = classifyRequest('Adobe acquired Figma deal');
-  assert.equal(result.suggestedMode, 'news');
+  assert.equal(result.suggestedMode, 'auto');
 });
 
-test('classifyRequest returns research suggestedMode for market-size queries', { concurrency: false }, () => {
+test('classifyRequest returns deep suggestedMode for market-size queries', { concurrency: false }, () => {
   const result = classifyRequest('CAGR for cloud infrastructure market forecast');
-  assert.equal(result.suggestedMode, 'research');
+  assert.equal(result.suggestedMode, 'deep');
 });
 
 // ---------------------------------------------------------------------------
@@ -146,7 +146,7 @@ test('classifyRequest falls back to general for unrecognized queries', { concurr
   const result = classifyRequest('hello world');
   assert.equal(result.requestType, 'general');
   assert.equal(result.confidence, 0);
-  assert.equal(result.suggestedMode, 'general');
+  assert.equal(result.suggestedMode, 'auto');
 });
 
 // ---------------------------------------------------------------------------
@@ -194,5 +194,23 @@ test('classifyRequest includes requestType field in all results', { concurrency:
   for (const q of queries) {
     const { requestType } = classifyRequest(q);
     assert.ok(VALID_TYPES.has(requestType), `unknown requestType "${requestType}" for query "${q}"`);
+  }
+});
+
+test('classifyRequest suggestedMode stays collector-compatible', { concurrency: false }, () => {
+  const VALID_MODES = new Set(['standard', 'auto', 'deep']);
+  const queries = [
+    'Stripe pricing tiers',
+    'Figma vs Sketch comparison',
+    'TAM for developer tools',
+    'who acquired Figma',
+    'Series B funding in developer tools',
+    'G2 reviews for Salesforce',
+    'hello world',
+  ];
+
+  for (const query of queries) {
+    const { suggestedMode } = classifyRequest(query);
+    assert.ok(VALID_MODES.has(suggestedMode), `invalid suggestedMode "${suggestedMode}" for "${query}"`);
   }
 });
