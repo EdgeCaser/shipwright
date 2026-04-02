@@ -11,8 +11,9 @@ import {
   validateArtifact,
 } from './validate-artifact.mjs';
 
-const DEFAULT_SCENARIO_DIR = path.resolve('benchmarks', 'scenarios');
-const DEFAULT_SCORING_SPEC_REF = 'docs/shipwright-v2-benchmark-scoring-spec.md';
+export const DEFAULT_SCENARIO_DIR = path.resolve('benchmarks', 'scenarios');
+export const DEFAULT_SCORING_SPEC_REF = 'docs/shipwright-v2-benchmark-scoring-spec.md';
+export const DEFAULT_PROOF_METHOD_REF = 'docs/shipwright-v2-proof-method.md';
 
 const SCORE_DIMENSIONS = Object.freeze([
   'decision_usefulness',
@@ -31,6 +32,33 @@ const USABILITY_BLOCKING_WARNING_TYPES = new Set([
   IssueType.MISSING_SECTION,
   IssueType.MISSING_STRUCTURED_ARTIFACT,
 ]);
+
+const VALID_STATUSES = new Set(['PASS', 'FAIL', 'DNF']);
+const VALID_THRESHOLD_STATUSES = new Set(['provisional', 'final']);
+
+export function createDefaultProvenance() {
+  return {
+    method_ref: DEFAULT_PROOF_METHOD_REF,
+    artifact_generation: {
+      independent: false,
+      notes: 'Default local benchmark run; not an independent baseline.',
+    },
+    blind_review: {
+      independent: false,
+      blinded: false,
+      notes: 'No independent blinded review process established.',
+    },
+  };
+}
+
+export function createDefaultThresholdPolicy() {
+  return {
+    status: 'provisional',
+    spec_ref: DEFAULT_SCORING_SPEC_REF,
+    notes:
+      'First live comparison uses unchanged thresholds but they remain provisional until one real blind run is completed.',
+  };
+}
 
 export async function loadBenchmarkScenario(filePath) {
   const resolved = path.resolve(filePath);
@@ -62,7 +90,176 @@ export async function loadBenchmarkScenario(filePath) {
   };
 }
 
-export async function runBenchmarkScenario(scenario, options = {}) {
+export async function loadBenchmarkSuiteSummary(filePath, options = {}) {
+  const resolved = path.resolve(filePath);
+  let raw;
+
+  try {
+    raw = JSON.parse(await readFile(resolved, 'utf8'));
+  } catch (error) {
+    throw new Error(
+      `${options.label || 'Benchmark suite summary'} could not be read: ${
+        error instanceof Error ? error.message : String(error)
+      }`,
+    );
+  }
+
+  return validateBenchmarkSuiteSummary(raw, {
+    label: options.label || `Benchmark suite summary (${resolved})`,
+  });
+}
+
+export function buildBenchmarkSuiteSummary(options = {}) {
+  const {
+    results = [],
+    generatedAt = new Date().toISOString(),
+    scoringSpecRef = DEFAULT_SCORING_SPEC_REF,
+    provenance = createDefaultProvenance(),
+    thresholdPolicy = createDefaultThresholdPolicy(),
+  } = options;
+
+  const statusCounts = { PASS: 0, FAIL: 0, DNF: 0 };
+  for (const result of results) {
+    if (result?.status && statusCounts[result.status] !== undefined) {
+      statusCounts[result.status] += 1;
+    }
+  }
+
+  return {
+    generated_at: generatedAt,
+    scoring_spec_ref: scoringSpecRef,
+    scenario_count: results.length,
+    status_counts: statusCounts,
+    mean_first_pass_blind_rating: computeMean(
+      results.map((result) => result?.first_pass?.blind_rating),
+    ),
+    mean_final_pass_blind_rating: computeMean(
+      results.map((result) => result?.final_pass?.blind_rating),
+    ),
+    provenance: normalizeProvenance(provenance),
+    threshold_policy: normalizeThresholdPolicy(thresholdPolicy),
+    publishable_proof_ready: false,
+    results,
+  };
+}
+
+export function validateBenchmarkSuiteSummary(summary, options = {}) {
+  const label = options.label || 'Benchmark suite summary';
+
+  if (!summary || typeof summary !== 'object' || Array.isArray(summary)) {
+    throw new Error(`${label} must be a JSON object.`);
+  }
+
+  if (!Array.isArray(summary.results)) {
+    throw new Error(`${label} is missing a results array.`);
+  }
+
+  if (!summary.provenance) {
+    throw new Error(
+      `${label} is missing provenance metadata. Pre-schema summaries must be regenerated or upgraded before use.`,
+    );
+  }
+
+  if (!summary.threshold_policy) {
+    throw new Error(
+      `${label} is missing threshold_policy metadata. Pre-schema summaries must be regenerated or upgraded before use.`,
+    );
+  }
+
+  validateProvenance(summary.provenance, label);
+  validateThresholdPolicy(summary.threshold_policy, label);
+
+  if (!Number.isInteger(summary.scenario_count) || summary.scenario_count < 0) {
+    throw new Error(`${label} has an invalid scenario_count.`);
+  }
+
+  if (summary.scenario_count !== summary.results.length) {
+    throw new Error(`${label} scenario_count does not match results length.`);
+  }
+
+  for (const result of summary.results) {
+    validateScenarioResult(result, label);
+  }
+
+  return summary;
+}
+
+export function compareBenchmarkSuites(currentSummary, baselineSummary) {
+  const current = validateBenchmarkSuiteSummary(currentSummary, {
+    label: 'Current benchmark summary',
+  });
+  const baseline = validateBenchmarkSuiteSummary(baselineSummary, {
+    label: 'Baseline benchmark summary',
+  });
+
+  const currentResultsById = mapResultsByScenarioId(current.results, 'Current benchmark summary');
+  const baselineResultsById = mapResultsByScenarioId(
+    baseline.results,
+    'Baseline benchmark summary',
+  );
+  assertMatchingScenarioSets(currentResultsById, baselineResultsById);
+
+  const firstPassBlindRatingDelta = computeNumericDelta(
+    current.mean_first_pass_blind_rating,
+    baseline.mean_first_pass_blind_rating,
+  );
+  const firstPassUsableRateDelta = computeNumericDelta(
+    computeFirstPassUsableRate(current.results),
+    computeFirstPassUsableRate(baseline.results),
+  );
+  const firstPassValidatorErrorRateDelta = computeNumericDelta(
+    computeFirstPassValidatorErrorRate(current.results),
+    computeFirstPassValidatorErrorRate(baseline.results),
+  );
+
+  const comparison = {
+    metrics: {
+      first_pass_blind_rating: buildMetricComparison(
+        current.mean_first_pass_blind_rating,
+        baseline.mean_first_pass_blind_rating,
+        'points',
+      ),
+      first_pass_usable_rate: buildMetricComparison(
+        computeFirstPassUsableRate(current.results),
+        computeFirstPassUsableRate(baseline.results),
+        'percentage_points',
+      ),
+      first_pass_validator_error_rate: buildMetricComparison(
+        computeFirstPassValidatorErrorRate(current.results),
+        computeFirstPassValidatorErrorRate(baseline.results),
+        'percentage_points',
+      ),
+      mean_time_to_first_usable_seconds: buildMetricComparison(
+        computeMean(current.results.map((result) => result.final_pass.time_to_first_usable_artifact_seconds)),
+        computeMean(baseline.results.map((result) => result.final_pass.time_to_first_usable_artifact_seconds)),
+        'seconds',
+      ),
+      mean_revision_count: buildMetricComparison(
+        computeMean(current.results.map((result) => result.final_pass.revision_count)),
+        computeMean(baseline.results.map((result) => result.final_pass.revision_count)),
+        'count',
+      ),
+    },
+    materially_worse_first_pass:
+      (Number.isFinite(firstPassBlindRatingDelta) && firstPassBlindRatingDelta <= -10) ||
+      (Number.isFinite(firstPassUsableRateDelta) && firstPassUsableRateDelta <= -20) ||
+      (Number.isFinite(firstPassValidatorErrorRateDelta) && firstPassValidatorErrorRateDelta >= 20),
+    scenario_status_changes: collectScenarioStatusChanges(
+      currentResultsById,
+      baselineResultsById,
+    ),
+    publishable_proof_ready:
+      summaryHasIndependentProvenance(current) && summaryHasIndependentProvenance(baseline),
+    comparison_interpretation:
+      current.threshold_policy.status === 'final' && baseline.threshold_policy.status === 'final'
+        ? 'final'
+        : 'provisional',
+  };
+
+  return comparison;
+}
+
+export async function runBenchmarkScenario(scenario) {
   const scenarioRecord = scenario?.source_path
     ? scenario
     : await loadBenchmarkScenario(scenario);
@@ -82,10 +279,9 @@ export async function runBenchmarkScenario(scenario, options = {}) {
     blindReview,
   );
 
-  const status = deriveScenarioStatus(finalPass);
-  const result = {
+  return {
     scenario_id: scenarioRecord.id,
-    status,
+    status: deriveScenarioStatus(finalPass),
     first_pass: {
       usable: firstPass.usable,
       validator_error_count: firstPass.validator_error_count,
@@ -128,13 +324,14 @@ export async function runBenchmarkScenario(scenario, options = {}) {
       final_pass_issue_types: finalPass.issues.map((issue) => issue.type),
     },
   };
-
-  return result;
 }
 
 export async function runBenchmarkSuite(options = {}) {
   const scenarioDir = path.resolve(options.scenarioDir || DEFAULT_SCENARIO_DIR);
   const scenarioIds = new Set(options.scenarioIds || []);
+  const publish = Boolean(options.publish);
+  const baselineSummary = options.baselineSummary || null;
+
   const scenarioFiles = await discoverScenarioFiles(scenarioDir);
   const selectedScenarioFiles = scenarioFiles.filter((filePath) => {
     if (scenarioIds.size === 0) return true;
@@ -151,32 +348,277 @@ export async function runBenchmarkSuite(options = {}) {
     results.push(await runBenchmarkScenario(scenario));
   }
 
-  const statusCounts = { PASS: 0, FAIL: 0, DNF: 0 };
-  for (const result of results) {
-    statusCounts[result.status] += 1;
+  const summary = buildBenchmarkSuiteSummary({
+    results,
+    provenance: options.provenance,
+    thresholdPolicy: options.thresholdPolicy,
+  });
+
+  if (publish) {
+    ensureNumericBlindRatings(summary, 'Current benchmark summary');
   }
 
-  const summary = {
-    generated_at: new Date().toISOString(),
-    scoring_spec_ref: DEFAULT_SCORING_SPEC_REF,
-    scenario_count: results.length,
-    status_counts: statusCounts,
-    mean_first_pass_blind_rating: computeMean(
-      results.map((result) => result.first_pass.blind_rating),
-    ),
-    mean_final_pass_blind_rating: computeMean(
-      results.map((result) => result.final_pass.blind_rating),
-    ),
-    results,
-  };
+  if (baselineSummary) {
+    const comparison = compareBenchmarkSuites(summary, baselineSummary);
+    summary.comparison = comparison;
+    summary.publishable_proof_ready = comparison.publishable_proof_ready;
+    summary.comparison_interpretation = comparison.comparison_interpretation;
+  } else {
+    summary.publishable_proof_ready = false;
+  }
 
   if (options.outPath) {
     const outPath = path.resolve(options.outPath);
     await mkdir(path.dirname(outPath), { recursive: true });
-    await writeFile(`${outPath}`, `${JSON.stringify(summary, null, 2)}\n`, 'utf8');
+    await writeFile(outPath, `${JSON.stringify(summary, null, 2)}\n`, 'utf8');
   }
 
   return summary;
+}
+
+function normalizeProvenance(provenance) {
+  const defaults = createDefaultProvenance();
+  return {
+    method_ref:
+      typeof provenance?.method_ref === 'string' && provenance.method_ref.trim().length > 0
+        ? provenance.method_ref
+        : defaults.method_ref,
+    artifact_generation: {
+      independent:
+        typeof provenance?.artifact_generation?.independent === 'boolean'
+          ? provenance.artifact_generation.independent
+          : defaults.artifact_generation.independent,
+      notes:
+        typeof provenance?.artifact_generation?.notes === 'string'
+          ? provenance.artifact_generation.notes
+          : defaults.artifact_generation.notes,
+    },
+    blind_review: {
+      independent:
+        typeof provenance?.blind_review?.independent === 'boolean'
+          ? provenance.blind_review.independent
+          : defaults.blind_review.independent,
+      blinded:
+        typeof provenance?.blind_review?.blinded === 'boolean'
+          ? provenance.blind_review.blinded
+          : defaults.blind_review.blinded,
+      notes:
+        typeof provenance?.blind_review?.notes === 'string'
+          ? provenance.blind_review.notes
+          : defaults.blind_review.notes,
+    },
+  };
+}
+
+function normalizeThresholdPolicy(thresholdPolicy) {
+  const defaults = createDefaultThresholdPolicy();
+  return {
+    status:
+      typeof thresholdPolicy?.status === 'string' &&
+      VALID_THRESHOLD_STATUSES.has(thresholdPolicy.status)
+        ? thresholdPolicy.status
+        : defaults.status,
+    spec_ref:
+      typeof thresholdPolicy?.spec_ref === 'string' && thresholdPolicy.spec_ref.trim().length > 0
+        ? thresholdPolicy.spec_ref
+        : defaults.spec_ref,
+    notes:
+      typeof thresholdPolicy?.notes === 'string'
+        ? thresholdPolicy.notes
+        : defaults.notes,
+  };
+}
+
+function validateProvenance(provenance, label) {
+  if (!provenance || typeof provenance !== 'object' || Array.isArray(provenance)) {
+    throw new Error(`${label} has invalid provenance metadata.`);
+  }
+
+  if (typeof provenance.method_ref !== 'string' || provenance.method_ref.trim().length === 0) {
+    throw new Error(`${label} has invalid provenance.method_ref.`);
+  }
+
+  if (typeof provenance.artifact_generation?.independent !== 'boolean') {
+    throw new Error(`${label} has invalid provenance.artifact_generation.independent.`);
+  }
+
+  if (typeof provenance.blind_review?.independent !== 'boolean') {
+    throw new Error(`${label} has invalid provenance.blind_review.independent.`);
+  }
+
+  if (typeof provenance.blind_review?.blinded !== 'boolean') {
+    throw new Error(`${label} has invalid provenance.blind_review.blinded.`);
+  }
+}
+
+function validateThresholdPolicy(thresholdPolicy, label) {
+  if (!thresholdPolicy || typeof thresholdPolicy !== 'object' || Array.isArray(thresholdPolicy)) {
+    throw new Error(`${label} has invalid threshold_policy metadata.`);
+  }
+
+  if (!VALID_THRESHOLD_STATUSES.has(thresholdPolicy.status)) {
+    throw new Error(`${label} has invalid threshold_policy.status.`);
+  }
+
+  if (
+    typeof thresholdPolicy.spec_ref !== 'string' ||
+    thresholdPolicy.spec_ref.trim().length === 0
+  ) {
+    throw new Error(`${label} has invalid threshold_policy.spec_ref.`);
+  }
+}
+
+function validateScenarioResult(result, label) {
+  if (!result || typeof result !== 'object' || Array.isArray(result)) {
+    throw new Error(`${label} contains an invalid scenario result.`);
+  }
+
+  if (typeof result.scenario_id !== 'string' || result.scenario_id.trim().length === 0) {
+    throw new Error(`${label} contains a scenario result without scenario_id.`);
+  }
+
+  if (!VALID_STATUSES.has(result.status)) {
+    throw new Error(`${label} contains invalid status for scenario "${result.scenario_id}".`);
+  }
+
+  validatePassShape(result.first_pass, result.scenario_id, 'first_pass', label);
+  validatePassShape(result.final_pass, result.scenario_id, 'final_pass', label);
+}
+
+function validatePassShape(pass, scenarioId, passKey, label) {
+  if (!pass || typeof pass !== 'object' || Array.isArray(pass)) {
+    throw new Error(`${label} is missing ${passKey} for scenario "${scenarioId}".`);
+  }
+
+  if (typeof pass.usable !== 'boolean') {
+    throw new Error(`${label} has invalid ${passKey}.usable for scenario "${scenarioId}".`);
+  }
+
+  for (const field of ['validator_error_count', 'contradiction_count']) {
+    if (!Number.isInteger(pass[field]) || pass[field] < 0) {
+      throw new Error(`${label} has invalid ${passKey}.${field} for scenario "${scenarioId}".`);
+    }
+  }
+
+  if (
+    pass.blind_rating !== null &&
+    pass.blind_rating !== undefined &&
+    (!Number.isFinite(pass.blind_rating) || pass.blind_rating < 0)
+  ) {
+    throw new Error(`${label} has invalid ${passKey}.blind_rating for scenario "${scenarioId}".`);
+  }
+
+  if (passKey === 'final_pass') {
+    if (
+      pass.time_to_first_usable_artifact_seconds !== null &&
+      pass.time_to_first_usable_artifact_seconds !== undefined &&
+      (!Number.isFinite(pass.time_to_first_usable_artifact_seconds) ||
+        pass.time_to_first_usable_artifact_seconds < 0)
+    ) {
+      throw new Error(
+        `${label} has invalid final_pass.time_to_first_usable_artifact_seconds for scenario "${scenarioId}".`,
+      );
+    }
+
+    if (!Number.isInteger(pass.revision_count) || pass.revision_count < 0) {
+      throw new Error(`${label} has invalid final_pass.revision_count for scenario "${scenarioId}".`);
+    }
+  }
+}
+
+function summaryHasIndependentProvenance(summary) {
+  return Boolean(
+    summary?.provenance?.artifact_generation?.independent &&
+      summary?.provenance?.blind_review?.independent &&
+      summary?.provenance?.blind_review?.blinded,
+  );
+}
+
+function ensureNumericBlindRatings(summary, label) {
+  for (const result of summary.results) {
+    if (!Number.isFinite(result.first_pass.blind_rating)) {
+      throw new Error(
+        `${label} cannot be published because scenario "${result.scenario_id}" is missing a numeric first_pass.blind_rating.`,
+      );
+    }
+    if (!Number.isFinite(result.final_pass.blind_rating)) {
+      throw new Error(
+        `${label} cannot be published because scenario "${result.scenario_id}" is missing a numeric final_pass.blind_rating.`,
+      );
+    }
+  }
+}
+
+function buildMetricComparison(current, baseline, unit) {
+  return {
+    current: current ?? null,
+    baseline: baseline ?? null,
+    delta: computeNumericDelta(current, baseline),
+    unit,
+  };
+}
+
+function computeFirstPassUsableRate(results) {
+  if (!Array.isArray(results) || results.length === 0) return null;
+  return roundToOneDecimal(
+    (results.filter((result) => result.first_pass.usable).length / results.length) * 100,
+  );
+}
+
+function computeFirstPassValidatorErrorRate(results) {
+  if (!Array.isArray(results) || results.length === 0) return null;
+  return roundToOneDecimal(
+    (results.filter((result) => result.first_pass.validator_error_count > 0).length /
+      results.length) *
+      100,
+  );
+}
+
+function mapResultsByScenarioId(results, label) {
+  const byId = new Map();
+  for (const result of results) {
+    if (byId.has(result.scenario_id)) {
+      throw new Error(`${label} contains duplicate scenario_id "${result.scenario_id}".`);
+    }
+    byId.set(result.scenario_id, result);
+  }
+  return byId;
+}
+
+function assertMatchingScenarioSets(currentResultsById, baselineResultsById) {
+  const currentIds = [...currentResultsById.keys()].sort();
+  const baselineIds = [...baselineResultsById.keys()].sort();
+
+  if (currentIds.length !== baselineIds.length) {
+    throw new Error(
+      'Current and baseline summaries must cover the same scenario ids before comparison.',
+    );
+  }
+
+  for (let index = 0; index < currentIds.length; index += 1) {
+    if (currentIds[index] !== baselineIds[index]) {
+      throw new Error(
+        'Current and baseline summaries must cover the same scenario ids before comparison.',
+      );
+    }
+  }
+}
+
+function collectScenarioStatusChanges(currentResultsById, baselineResultsById) {
+  const changes = [];
+  for (const scenarioId of [...currentResultsById.keys()].sort()) {
+    const current = currentResultsById.get(scenarioId);
+    const baseline = baselineResultsById.get(scenarioId);
+    if (current.status === baseline.status) continue;
+
+    changes.push({
+      scenario_id: scenarioId,
+      current_status: current.status,
+      baseline_status: baseline.status,
+    });
+  }
+
+  return changes;
 }
 
 function normalizeTimeToFirstUsable(value, scenarioId) {
@@ -291,12 +733,12 @@ function deriveScenarioStatus(finalPass) {
   return readinessStatus === 'FAIL' ? 'FAIL' : 'PASS';
 }
 
-function computeNumericDelta(finalValue, firstValue) {
-  if (!Number.isFinite(finalValue) || !Number.isFinite(firstValue)) {
+function computeNumericDelta(currentValue, baselineValue) {
+  if (!Number.isFinite(currentValue) || !Number.isFinite(baselineValue)) {
     return null;
   }
 
-  return roundToOneDecimal(finalValue - firstValue);
+  return roundToOneDecimal(currentValue - baselineValue);
 }
 
 function computeMean(values) {
@@ -363,10 +805,10 @@ function resolveScenarioPath(scenario, relativePath) {
 
 function collectFlagValues(argv, flagName) {
   const values = [];
-  for (let i = 0; i < argv.length; i += 1) {
-    if (argv[i] === flagName && argv[i + 1]) {
-      values.push(argv[i + 1]);
-      i += 1;
+  for (let index = 0; index < argv.length; index += 1) {
+    if (argv[index] === flagName && argv[index + 1]) {
+      values.push(argv[index + 1]);
+      index += 1;
     }
   }
   return values;
@@ -382,7 +824,18 @@ function formatSuiteSummary(summary) {
   const lines = [
     `Benchmark suite: ${summary.scenario_count} scenario(s)`,
     `Status counts: PASS ${summary.status_counts.PASS} | FAIL ${summary.status_counts.FAIL} | DNF ${summary.status_counts.DNF}`,
+    `Publishable proof ready: ${summary.publishable_proof_ready ? 'yes' : 'no'}`,
+    `Threshold policy: ${summary.threshold_policy.status}`,
   ];
+
+  if (summary.comparison) {
+    lines.push(
+      `Comparison interpretation: ${summary.comparison_interpretation}`,
+    );
+    lines.push(
+      `Materially worse first pass: ${summary.comparison.materially_worse_first_pass ? 'yes' : 'no'}`,
+    );
+  }
 
   for (const result of summary.results) {
     lines.push(
@@ -398,11 +851,22 @@ async function main(argv = process.argv.slice(2)) {
   const outPath = readFlagValue(argv, '--out', null);
   const format = readFlagValue(argv, '--format', 'text');
   const scenarioIds = collectFlagValues(argv, '--scenario');
+  const publish = argv.includes('--publish');
+  const baselinePath = readFlagValue(argv, '--baseline', null);
+
+  let baselineSummary = null;
+  if (baselinePath) {
+    baselineSummary = await loadBenchmarkSuiteSummary(baselinePath, {
+      label: 'Baseline benchmark summary',
+    });
+  }
 
   const summary = await runBenchmarkSuite({
     scenarioDir,
     scenarioIds,
     outPath,
+    publish,
+    baselineSummary,
   });
 
   if (format === 'json') {
