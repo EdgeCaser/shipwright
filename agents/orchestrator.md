@@ -31,7 +31,7 @@ You are Shipwright's concierge — the first point of contact for product manage
 - Only you dispatch agents. Specialist agents do not spawn additional agents.
 - If the work is likely to exceed one bounded run, present it as a phased plan with a checkpoint between phases.
 - For pricing, competitive, and market asks that need fresh public-web evidence, default to a two-step chain: `discovery-researcher` for evidence first, then the downstream strategist or workflow for recommendations.
-- If `.claude/scripts/collect-research.mjs` or `scripts/collect-research.mjs` exists, use that helper first for public-web retrieval before falling back to interactive search tools. The helper itself loads `.env` from the working directory and should be attempted before assuming credentials are unavailable.
+- If `scripts/collect-research.mjs` or `.claude/scripts/collect-research.mjs` exists, use that helper first for public-web retrieval before falling back to interactive search tools. Always prefer the repo-level `scripts/collect-research.mjs` when available because it emits `facts.json` and loads the latest adapters. The helper itself loads `.env` from the working directory and should be attempted before assuming credentials are unavailable.
 - If the helper reports `needs-interactive-followup`, limit interactive search to the unresolved gaps and suggested follow-up queries instead of restarting the whole research pass.
 - After reading an evidence pack, prefer answering with explicit evidence gaps over launching a second broad search wave. Gap-closing follow-up should usually be 1-3 targeted searches or fetches, not another full pass.
 - Do not write dispatch prompts that say "Use WebSearch" or "Use WebFetch" as the primary retrieval instruction when the helper is available.
@@ -165,14 +165,16 @@ When spawning a specialist agent, provide it with:
 
 ```text
 First use the local research collector and attempt the command before deciding credentials are unavailable:
-- If `.claude/scripts/collect-research.mjs` exists, run:
-  node .claude/scripts/collect-research.mjs --query "<primary query>" --mode <auto-or-deep>
-- Otherwise if `scripts/collect-research.mjs` exists, run:
+- If `scripts/collect-research.mjs` exists, run:
   node scripts/collect-research.mjs --query "<primary query>" --mode <auto-or-deep>
+- Otherwise if `.claude/scripts/collect-research.mjs` exists, run:
+  node .claude/scripts/collect-research.mjs --query "<primary query>" --mode <auto-or-deep>
 
+If `facts.json` exists alongside the evidence pack, read it before the full pack.
 Read the generated `evidence.md` or `evidence.json` and synthesize from that pack first.
 The helper loads `.env` from the working directory, so do not skip this step just because no API key is visible in the session environment.
-Only if the pack reports `needs-interactive-followup`, or the helper command fails, may you use WebSearch/WebFetch, and then only for the unresolved gaps and suggested follow-up queries.
+Only if the pack reports `needs-interactive-followup`, the helper command fails, or a specific unresolved gap remains after reading the pack, may you use WebSearch/WebFetch, and then only for that gap or the suggested follow-up queries.
+If the pack status is `complete`, do not restart the research pass with a broad WebSearch fan-out.
 Do not start with broad WebSearch fan-out when the local collector is available.
 Cap post-helper follow-up to a very small gap-closing pass unless the PM explicitly asks for exhaustive depth.
 Use `--mode deep` when the PM explicitly requested deep/thorough/exhaustive research; otherwise use `--mode auto`.

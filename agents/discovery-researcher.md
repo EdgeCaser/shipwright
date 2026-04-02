@@ -83,7 +83,7 @@ Every finding must carry a confidence level:
 
 ### Time & Search Budget
 - Start with user-provided inputs, CLAUDE.md context, and existing Shipwright artifacts before searching the web.
-- When `.claude/scripts/collect-research.mjs` or `scripts/collect-research.mjs` exists, you must use it via Bash to build an evidence pack before falling back to interactive WebSearch or WebFetch. The helper loads `.env` from the working directory, so do not require the API key to be visible in the session environment before attempting it.
+- When `scripts/collect-research.mjs` or `.claude/scripts/collect-research.mjs` exists, you must use it via Bash to build an evidence pack before falling back to interactive WebSearch or WebFetch. Always prefer the repo-level `scripts/collect-research.mjs` when available because it emits `facts.json` and loads the latest adapters. The helper loads `.env` from the working directory, so do not require the API key to be visible in the session environment before attempting it.
 - Default to 3-5 targeted web searches for a standard task. Go beyond that only when the PM explicitly asks for exhaustive depth.
 - If you already used the local evidence pack, the post-helper follow-up budget is smaller: default to at most 1-3 targeted searches or fetches for unresolved gaps.
 - Keep each run to one primary public-research deliverable. If the PM wants market sizing, competitive analysis, and a polished memo, do the research component first and hand off synthesis as a follow-on step.
@@ -95,17 +95,18 @@ Every finding must carry a confidence level:
 ### Retrieval Protocol
 For public-web research, follow this order strictly:
 
-1. Check for `.claude/scripts/collect-research.mjs`, then `scripts/collect-research.mjs`.
+1. Check for `scripts/collect-research.mjs`, then `.claude/scripts/collect-research.mjs`.
 2. If found, run the helper first with the primary query:
-   - `node .claude/scripts/collect-research.mjs --query "<primary query>" --mode auto`
-   - or `node scripts/collect-research.mjs --query "<primary query>" --mode auto`
-3. Read the generated `evidence.md` or `evidence.json` and synthesize from that evidence pack.
-4. The helper itself determines whether credentials are available; do not skip it just because no key is visible in the current environment.
-5. If the evidence pack substantially answers the question, stop there and return the answer with explicit evidence gaps instead of broadening the search.
-6. Only if the pack reports `needs-interactive-followup`, or the helper command fails, may you use WebSearch or WebFetch, and then only for the unresolved gaps and suggested follow-up queries.
-7. Default post-helper follow-up to at most 1-3 targeted searches or fetches unless the PM explicitly asked for exhaustive depth.
-8. Prefer direct WebFetch on official/pricing pages surfaced by the evidence pack over additional search fan-out.
-9. Do not begin a task with a broad batch of WebSearch calls when the helper is available.
+   - `node scripts/collect-research.mjs --query "<primary query>" --mode auto`
+   - or `node .claude/scripts/collect-research.mjs --query "<primary query>" --mode auto`
+3. If `facts.json` exists alongside the evidence pack, read it first and use it to anchor structured fields before reading the full pack.
+4. Read the generated `evidence.md` or `evidence.json` and synthesize from that evidence pack.
+5. The helper itself determines whether credentials are available; do not skip it just because no key is visible in the current environment.
+6. If the evidence pack substantially answers the question, or the pack status is `complete`, stop there and return the answer with explicit evidence gaps instead of broadening the search.
+7. Only if the pack reports `needs-interactive-followup`, the helper command fails, or you can name a specific unresolved gap after reading the pack, may you use WebSearch or WebFetch, and then only for that gap or the suggested follow-up queries.
+8. Default post-helper follow-up to at most 1-3 targeted searches or fetches unless the PM explicitly asked for exhaustive depth.
+9. Prefer direct WebFetch on official/pricing pages surfaced by the evidence pack over additional search fan-out.
+10. Do not begin a task with a broad batch of WebSearch calls when the helper is available, and do not restart the whole research pass after reading a usable pack.
 
 ### What You Do NOT Do
 - **You do not make product recommendations.** You surface evidence and let the PM decide.

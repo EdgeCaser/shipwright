@@ -28,22 +28,24 @@ If the user is modifying Shipwright itself or asking an ordinary software-engine
 When fresh public-web evidence is needed, this protocol is mandatory:
 
 1. If one of these exists and a supported search API key is configured, run the local collector first:
-   - `.codex/scripts/collect-research.mjs`
    - `scripts/collect-research.mjs`
+   - `.codex/scripts/collect-research.mjs`
    - `.claude/scripts/collect-research.mjs`
 2. Start with one primary query and `--mode auto`.
-3. Read the generated `evidence.md` or `evidence.json` and synthesize from that pack first.
-4. Before using interactive browsing, shell out to the collector with an actual command, for example:
+3. If `facts.json` exists, read it before the full evidence pack and use it as the structured shortcut.
+4. Read the generated `evidence.md` or `evidence.json` and synthesize from that pack first.
+5. Before using interactive browsing, shell out to the collector with an actual command, for example:
    - `node scripts/collect-research.mjs --query "<primary query>" --mode auto`
-5. Interactive web search is allowed only if at least one of these is true:
+6. Interactive web search is allowed only if at least one of these is true:
    - the collector script does not exist
    - no supported API key is configured
    - the collector errors or times out
    - the evidence pack explicitly reports `needs-interactive-followup`
-6. If interactive web search becomes necessary, keep it to the unresolved gaps only. Do not restart the whole research pass.
-7. Do not start with a broad fan-out of raw web searches when the collector is available.
-8. If the collector produced a usable evidence pack, do not do raw `Web Search` as a substitute for reading it.
-9. In a substantial research answer, mention that you used the local evidence pack when you did.
+   - you can name a specific unresolved gap after reading the evidence pack and any `facts.json` sidecar
+7. If interactive web search becomes necessary, keep it to the unresolved gaps only. Do not restart the whole research pass.
+8. Do not start with a broad fan-out of raw web searches when the collector is available.
+9. If the collector produced a usable evidence pack with `Status: complete`, do not do raw `Web Search` as a substitute for reading it.
+10. In a substantial research answer, mention that you used the local evidence pack when you did.
 
 ## Bounded Execution
 

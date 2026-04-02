@@ -107,7 +107,7 @@ Inside a Claude Code session, type `/mcp` to see which connections are active an
 
 For public-web research, you can offload search and page retrieval to a local helper so Shipwright stays conversational while spending fewer tool calls on raw retrieval.
 
-Shipwright includes `scripts/collect-research.mjs` in the repo and installs it to `.claude/scripts/collect-research.mjs` plus `.codex/scripts/collect-research.mjs` when you use `scripts/sync.sh --install`.
+Shipwright includes `scripts/collect-research.mjs` in the repo and installs it to `.claude/scripts/collect-research.mjs` plus `.codex/scripts/collect-research.mjs` when you use `scripts/sync.sh --install`. In-repo, prefer `scripts/collect-research.mjs` first; the `.claude` and `.codex` copies are compatibility fallbacks.
 
 What it does:
 
@@ -147,7 +147,7 @@ If you do not configure a provider key, the helper still runs and writes a fallb
 Then an agent can call the helper with Bash using a prompt that still feels conversational to the PM. Example:
 
 ```bash
-node .claude/scripts/collect-research.mjs \
+node scripts/collect-research.mjs \
   --query "AI-powered customer support tools for mid-market SaaS pricing" \
   --max-results 5
 ```
