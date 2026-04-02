@@ -307,3 +307,91 @@ test('applySourceAdapter prefers JSON-LD over npm when both match', { concurrenc
   assert.ok(result);
   assert.equal(result.adapterName, 'json-ld', 'JSON-LD should take priority over npm adapter');
 });
+
+// ---------------------------------------------------------------------------
+// PyPI adapter
+// ---------------------------------------------------------------------------
+
+test('applySourceAdapter extracts product_name, version, and published_or_observed_date from PyPI project page', { concurrency: false }, () => {
+  const html = `
+    <html>
+    <body>
+      <h1 class="package-header__name">
+        requests
+        2.33.1
+      </h1>
+      <p class="package-header__date">
+        Released:
+        <time datetime="2026-03-30T00:00:00+0000">Mar 30, 2026</time>
+      </p>
+    </body>
+    </html>
+  `;
+
+  const result = applySourceAdapter('https://pypi.org/project/requests/', html);
+
+  assert.ok(result, 'should return a result for a PyPI project page');
+  assert.equal(result.adapterName, 'pypi');
+  assert.ok(result.fields.find((f) => f.field === 'product_name' && f.value === 'requests'));
+  assert.ok(result.fields.find((f) => f.field === 'version' && f.value === '2.33.1'));
+
+  const publishedDate = result.fields.find((f) =>
+    f.field === 'published_or_observed_date' && f.value === '2026-03-30');
+  assert.ok(publishedDate);
+  assert.equal(publishedDate.confidence, 'high');
+});
+
+test('applySourceAdapter falls back to visible release date text on PyPI project page', { concurrency: false }, () => {
+  const html = `
+    <html>
+    <body>
+      <h1 class="package-header__name">urllib3 2.2.2</h1>
+      <p class="package-header__date">Released: Jun 17, 2024</p>
+    </body>
+    </html>
+  `;
+
+  const result = applySourceAdapter('https://pypi.org/project/urllib3/', html);
+
+  assert.ok(result);
+  assert.equal(result.adapterName, 'pypi');
+  assert.ok(result.fields.find((f) => f.field === 'published_or_observed_date' && f.value === '2024-06-17'));
+});
+
+test('applySourceAdapter does not apply PyPI adapter to non-PyPI URLs', { concurrency: false }, () => {
+  const html = `
+    <html>
+    <body>
+      <h1 class="package-header__name">requests 2.33.1</h1>
+      <p class="package-header__date">Released: Mar 30, 2026</p>
+    </body>
+    </html>
+  `;
+
+  const result = applySourceAdapter('https://example.com/project/requests/', html);
+
+  if (result) {
+    assert.notEqual(result.adapterName, 'pypi');
+  }
+});
+
+test('applySourceAdapter prefers JSON-LD over PyPI when both match', { concurrency: false }, () => {
+  const html = `
+    <html>
+    <head>
+      <script type="application/ld+json">
+        { "@type": "SoftwareApplication", "name": "Requests SDK", "offers": { "price": "0" } }
+      </script>
+    </head>
+    <body>
+      <h1 class="package-header__name">requests 2.33.1</h1>
+      <p class="package-header__date">Released: Mar 30, 2026</p>
+    </body>
+    </html>
+  `;
+
+  const result = applySourceAdapter('https://pypi.org/project/requests/', html);
+
+  assert.ok(result);
+  assert.equal(result.adapterName, 'json-ld', 'JSON-LD should take priority over PyPI adapter');
+});

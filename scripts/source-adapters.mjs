@@ -71,6 +71,16 @@ export function applySourceAdapter(url, html) {
     // fail soft
   }
 
+  // PyPI project pages: SSR'd, version and release date available in HTML.
+  try {
+    if (isPypiProjectUrl(url)) {
+      const result = extractPypiAdapter(url, html);
+      if (result && result.fields.length > 0) return result;
+    }
+  } catch {
+    // fail soft
+  }
+
   return null;
 }
 
@@ -255,6 +265,93 @@ function extractNpmAdapter(_url, html) {
 }
 
 // ---------------------------------------------------------------------------
+// PyPI adapter
+// ---------------------------------------------------------------------------
+
+function isPypiProjectUrl(url) {
+  try {
+    const u = new URL(url);
+    const parts = u.pathname.split('/').filter(Boolean);
+    return u.hostname === 'pypi.org' && parts.length >= 2 && parts[0] === 'project';
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Extract structured facts from a PyPI project page.
+ *
+ * PyPI project pages are server-rendered. Package name and version appear in
+ * the header, and the current release date is exposed near the header time tag.
+ *
+ * @param {string} _url
+ * @param {string} html
+ * @returns {AdapterResult | null}
+ */
+function extractPypiAdapter(_url, html) {
+  const fields = [];
+
+  const headerMatch = html.match(
+    /<h1[^>]*package-header__name[^>]*>([\s\S]{0,300}?)<\/h1>/i,
+  );
+  if (headerMatch) {
+    const headerText = cleanAdapterText(headerMatch[1]);
+    const versionMatch = headerText.match(/^(.+?)\s+([0-9][0-9A-Za-z.!+_-]*)$/);
+
+    if (versionMatch) {
+      const productName = versionMatch[1].trim();
+      const version = versionMatch[2].trim();
+
+      if (productName) {
+        fields.push({
+          field: 'product_name',
+          value: productName,
+          confidence: 'high',
+        });
+      }
+
+      if (version) {
+        fields.push({ field: 'version', value: version, confidence: 'high' });
+      }
+    }
+  }
+
+  const dateBlockMatch = html.match(
+    /<p[^>]*package-header__date[^>]*>([\s\S]{0,300}?)<\/p>/i,
+  );
+  if (dateBlockMatch) {
+    const publishedDate = extractPypiPublishedDate(dateBlockMatch[1]);
+    if (publishedDate) {
+      fields.push({
+        field: 'published_or_observed_date',
+        value: publishedDate,
+        confidence: 'high',
+      });
+    }
+  }
+
+  if (fields.length === 0) return null;
+  return { adapterName: 'pypi', fields: dedupeAdapterFields(fields) };
+}
+
+function extractPypiPublishedDate(htmlFragment) {
+  const datetimeMatch = htmlFragment.match(
+    /<time[^>]+datetime=["']([^"']+)["']/i,
+  );
+  if (datetimeMatch) {
+    const normalized = normalizeAdapterDate(datetimeMatch[1]);
+    if (normalized) return normalized;
+  }
+
+  const textMatch = cleanAdapterText(htmlFragment).match(
+    /Released:\s*([A-Za-z]{3,9}\s+\d{1,2},\s+\d{4})/i,
+  );
+  if (!textMatch) return '';
+
+  return normalizeAdapterDate(textMatch[1]);
+}
+
+// ---------------------------------------------------------------------------
 // Shared utilities
 // ---------------------------------------------------------------------------
 
@@ -306,6 +403,24 @@ function normalizeJsonLdCurrency(token) {
   // Accept any 3-letter ISO code
   if (/^[A-Z]{3}$/.test(upper)) return upper;
   return '';
+}
+
+function cleanAdapterText(value) {
+  return String(value || '')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/&amp;/gi, '&')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function normalizeAdapterDate(value) {
+  if (!value) return '';
+
+  const parsed = Date.parse(value);
+  if (!Number.isFinite(parsed)) return '';
+
+  return new Date(parsed).toISOString().slice(0, 10);
 }
 
 /**
