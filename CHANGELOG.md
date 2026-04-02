@@ -1,5 +1,30 @@
 # Changelog
 
+## v2.0.0 - 2026-04-02
+
+### Added
+- **Benchmark harness**: 6 scored scenarios with fixture corpus, blind-review pipeline, and `docs/shipwright-v2-benchmark-scoring-spec.md`
+- **Proof framework**: `docs/shipwright-v2-proof-method.md`, `docs/shipwright-v2-proof-runbook.md`, `docs/shipwright-v2-technical-spec.md`, `docs/shipwright-v2-strategy-brief.md`
+- **Deterministic integration layer**: `scripts/classify-request.mjs`, `scripts/format-facts.mjs`, `scripts/pricing-diff.mjs` — structured fact extraction decoupled from LLM judgment
+- **Source adapters**: PyPI and crates.io research adapters in `scripts/source-adapters.mjs`
+- **Collector-layer research**: `scripts/collect-research.mjs` with cache, bounded escalation, and env loading
+- **Artifact validation**: `scripts/validate-artifact.mjs` with JSON schemas for PRD, Strategy, and Challenge Report (`schemas/artifacts/`)
+- **Red-team adversarial review**: `skills/technical/adversarial-review.md`, `evals/adversarial-review.md`, `examples/golden-outputs/adversarial-review.md`, recovery playbook for DEFEND/ESCALATE verdicts
+- **Quality-check skill**: `skills/measurement/artifact-quality-audit.md` and `/quality-check` workflow command
+- **Slack mention agent**: full TypeScript Socket Mode agent in `slack-agent/` — command allowlists, channel/user allowlists, thread listening with TTL, per-thread session continuity
+- **CI/CD**: GitHub Actions workflows for validation (`validate.yml`) and Claude code review (`claude-code-review.yml`, `claude.yml`)
+- **AI vs non-AI design guide**: `docs/ai-vs-non-ai-design-guide.md`
+- **Blind-review utilities**: `scripts/compile-blind-review.mjs`, `scripts/prepare-blind-review.mjs`, `scripts/generate-proof-pack.mjs`
+- **Request routing**: `scripts/route-request.mjs` with deterministic skill dispatch
+- **Self-updating sync**: `scripts/sync.sh` for downstream installs
+- **Full test suite**: 13 test files covering all scripts (classify, collect, compile, extract, format, pricing-diff, route, benchmarks, source adapters, validate)
+
+### Changed
+- All 42 skills updated with depth enforcement, evidence bar, Shipwright signature, and micro-examples
+- Agent contracts hardened with explicit handoffs and operational failure remediation (`AGENTS.md`)
+- Research flows enforce collector-first with bounded escalation (no unbounded WebSearch loops)
+- `docs/composition-model.md` extended with deterministic helper primitives
+
 ## v1.2.0 - 2026-03-25
 
 ### Added
