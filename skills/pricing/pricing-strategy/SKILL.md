@@ -139,6 +139,18 @@ Test 5-7 price points to build a demand curve.
 
 ### Step 5: Competitive Pricing Analysis
 
+If structured research facts are available from a prior `collect-research.mjs` run, generate the comparison table deterministically instead of by hand:
+
+```bash
+node scripts/pricing-diff.mjs \
+  .shipwright/research/competitor-a/facts.json \
+  .shipwright/research/competitor-b/facts.json
+# or, if you staged only the intended packs together:
+# node scripts/pricing-diff.mjs --dir path/to/comparison-set/
+```
+
+The output is a ready-to-cite markdown table covering plan names, prices, billing periods, free tier presence, and confidence levels. Paste it directly into the Competitive Pricing Landscape section. If facts files are not available, build the table manually below.
+
 ```markdown
 ## Competitive Pricing Landscape
 

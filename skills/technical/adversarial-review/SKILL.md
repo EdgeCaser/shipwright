@@ -33,6 +33,16 @@ This skill produces a **Challenge Report**. A good Challenge Report creates usef
 
 ## Framework
 
+### Pre-Check: Run the Deterministic Validator
+
+Before reviewing manually, run the postflight validator if the artifact is available as a file:
+
+```bash
+node scripts/validate-artifact.mjs path/to/artifact.md
+```
+
+The validator flags unsupported dollar figures and numeric claims without nearby citation markers, and checks for missing expected sections. Any flagged issues are automatically Evidence Integrity candidates — include them in the findings table in Step 3 rather than re-deriving them by hand. If the validator finds no issues, note that and proceed. This step is optional but saves review time on high-volume citation work.
+
 ### Step 1: Define the Review Scope
 
 Start by naming what is under review and what standard it should be held to.

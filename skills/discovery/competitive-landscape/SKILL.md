@@ -66,6 +66,18 @@ Build a comparison grid across the capabilities that matter to your target buyer
 
 ### Step 3: Positioning Analysis
 
+If structured research facts are available from a prior `collect-research.mjs` run, generate a structured pricing comparison before filling out the positioning map:
+
+```bash
+node scripts/pricing-diff.mjs \
+  .shipwright/research/competitor-a/facts.json \
+  .shipwright/research/competitor-b/facts.json
+```
+
+If you staged only the intended packs into a comparison-specific directory, you can also use `node scripts/pricing-diff.mjs --dir path/to/comparison-set/`.
+
+Use the output table to populate the Pricing model and Price range fields below rather than estimating. If facts files are not available, fill those fields from public pricing pages.
+
 For each competitor, map:
 
 ```markdown
@@ -74,7 +86,7 @@ For each competitor, map:
 **Target persona:** [Who they sell to]
 **Key differentiator:** [What they claim is unique]
 **Pricing model:** [Free / Freemium / Usage / Seat / Enterprise]
-**Price range:** [Estimated]
+**Price range:** [Estimated — or see pricing-diff table above]
 **Sales motion:** [PLG / Sales-led / Hybrid]
 **Messaging themes:** [What they emphasize in marketing]
 ```
