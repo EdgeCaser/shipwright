@@ -48,6 +48,16 @@ Identify which artifacts to score:
 
 If the PM has not specified artifacts, offer to review the last 3-5 from the current project. Confirm the list before scoring.
 
+### Step 1b: Run the Deterministic Pre-Pass
+
+Before scoring manually, run the postflight validator on each artifact file:
+
+```bash
+node scripts/validate-artifact.mjs path/to/artifact.md
+```
+
+The validator produces machine-generated issue counts for unsupported claims and missing sections. Use these counts as a floor for the **Correctness** dimension — an artifact flagged for multiple unsupported dollar figures cannot score above 6 on Correctness without PM-reviewed justification. If the artifact has a `## Sources` / `## References` / `## Evidence` section, citation checks are skipped and that penalty does not apply. Record the validator output alongside each artifact in the audit set.
+
 ### Step 2: Score Each Artifact
 
 Apply the universal 4 dimensions from `/evals/rubric.md`:

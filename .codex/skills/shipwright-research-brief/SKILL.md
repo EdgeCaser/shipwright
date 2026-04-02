@@ -17,22 +17,39 @@ Use this skill for web-heavy product, market, and business research in Codex.
 
 ## Retrieval Workflow
 
-1. Translate the user's request into one primary query.
+1. **Classify the request** to configure retrieval before collecting:
+   - `node scripts/classify-request.mjs "<primary query>"`
+   - The output names a `requestType` (pricing, competitive, market-size, acquisition, funding, reviews, general), a `suggestedMode` for the collector, and `priorityFacts` to watch for in the facts sidecar.
+   - Use `suggestedMode` as the `--mode` value in step 2 when it is not `general`.
+
 2. Run the local collector first:
-   - `node .codex/scripts/collect-research.mjs --query "<primary query>" --mode auto`
+   - `node .codex/scripts/collect-research.mjs --query "<primary query>" --mode <suggestedMode>`
    - otherwise `node scripts/collect-research.mjs --query "<primary query>" --mode auto`
    - otherwise `node .claude/scripts/collect-research.mjs --query "<primary query>" --mode auto`
-3. If `facts.json` exists alongside the evidence pack, read it first and use it as a structured shortcut before synthesizing from the full evidence pack.
+
+3. **Format the facts sidecar** if `facts.json` exists:
+   - `node scripts/format-facts.mjs path/to/facts.json`
+   - The compact block output (~300-500 tokens) is ready to inject directly into a synthesis prompt as structured evidence. Read it before the full evidence pack — if `priorityFacts` fields are all present at high confidence, the full pack may only be needed for context.
+
 4. Interpret `facts.json` by `confidence_hint`:
    - `high`: use directly for structured fields, tables, and summaries, while keeping source attribution.
    - `medium`: treat as provisional; verify against the cited evidence pack entry before relying on it for a material claim, comparison, or recommendation.
    - `low`: treat as a lead only; do not present it as settled unless corroborated from the evidence pack or another source.
    - if `confidence_hint` is missing, treat it as `medium`.
+
 5. Read the generated evidence pack.
 6. If the evidence pack is usable, synthesize from it without starting a broad `Web Search` pass.
 7. Only if the evidence pack still has material gaps should you use interactive browsing.
 8. Keep any follow-up browsing gap-focused rather than restarting the whole search pass.
 9. Treat raw `Web Search` as fallback, not first-pass retrieval, whenever the local collector is available.
+
+**For multi-competitor pricing requests:** run the collector once per competitor, then generate the comparison table:
+```bash
+node scripts/pricing-diff.mjs \
+  .shipwright/research/comp-a/facts.json \
+  .shipwright/research/comp-b/facts.json
+```
+Paste the table directly into the brief's pricing evidence section.
 
 ## Synthesis Rules
 

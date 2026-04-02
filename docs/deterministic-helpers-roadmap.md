@@ -64,6 +64,58 @@ Citation shortcut: if the document has a `## Sources` / `## References` /
 
 CLI: `node scripts/validate-artifact.mjs path/to/artifact.md --expect-sections "Sources,Risks"`
 
+Wired into:
+- `adversarial-review/SKILL.md` — Pre-Check step before manual review begins
+- `artifact-quality-audit/SKILL.md` — Step 1b pre-pass to floor Correctness scoring
+
+### Facts formatter (`scripts/format-facts.mjs`)
+
+Converts a `facts.json` sidecar into a compact structured block (~300-500 tokens)
+suitable for direct prompt injection, or a markdown report for human review.
+
+```
+node scripts/format-facts.mjs path/to/facts.json
+node scripts/format-facts.mjs path/to/facts.json --format markdown
+```
+
+Groups facts by source domain, reconstructs pricing tuples from shared excerpts,
+resolves product identity, and annotates adapter-sourced fields with `[schema]`.
+
+Wired into:
+- `shipwright-research-brief/SKILL.md` — Step 3 of the retrieval workflow
+
+### Pricing diff (`scripts/pricing-diff.mjs`)
+
+Builds a deterministic markdown comparison table from two or more `facts.json` packs.
+Produces: Competitor × Plan × Price × Billing × Free Tier × Confidence table,
+optional Review Signals table, and per-source Coverage Notes.
+
+```
+node scripts/pricing-diff.mjs facts-a.json facts-b.json
+node scripts/pricing-diff.mjs --dir .shipwright/research/
+```
+
+Wired into:
+- `pricing-strategy/SKILL.md` — Step 5 (Competitive Pricing Analysis)
+- `competitive-landscape/SKILL.md` — Step 3 (Positioning Analysis)
+- `shipwright-research-brief/SKILL.md` — multi-competitor pricing requests
+
+### Request classifier (`scripts/classify-request.mjs`)
+
+Pattern-matches a query string to a request type and returns collector hints.
+No network calls. Returns: `requestType`, `suggestedMode`, `priorityFacts`,
+`collectorHints`, `matchedSignals`, `confidence`.
+
+Request types: `pricing`, `competitive`, `market-size`, `acquisition`, `funding`, `reviews`, `general`
+
+```
+node scripts/classify-request.mjs "how does Stripe pricing compare to Paddle?"
+node scripts/classify-request.mjs --json "Series B funding in developer tools"
+```
+
+Wired into:
+- `shipwright-research-brief/SKILL.md` — Step 1 of the retrieval workflow
+
 ## Remaining backlog
 
 If Shipwright continues investing in deterministic acceleration, the next
@@ -88,6 +140,13 @@ highest-value additions are:
    identified; the adapter pattern is already in place.
 5. **`marketplace_last_updated` field** — useful for currency-checking cached
    listing data; add once a stable adapter target is confirmed.
+6. **Preflight classifier wiring into collect-research** — `classify-request.mjs`
+   currently produces hints for the caller to use manually. A future iteration
+   could have `collect-research.mjs` call it internally and auto-select `--mode`
+   when none is specified, reducing required arguments for common queries.
+7. **Pricing diff HTML output** — `pricing-diff.mjs` currently outputs markdown.
+   An `--html` flag could produce a self-contained table for pasting into
+   slide decks or Notion pages.
 
 ## Workflow-specific candidates
 
