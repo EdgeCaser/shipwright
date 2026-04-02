@@ -460,3 +460,293 @@ test('clear-cache removes cached entries without requiring a query', { concurren
   assert.equal(clearedAgain.cacheCleared, true);
   assert.equal(clearedAgain.cleared, false);
 });
+
+// ---------------------------------------------------------------------------
+// v2 fact extractor — adapter facts
+// ---------------------------------------------------------------------------
+
+test('extractFactsPack converts adapterData fields into source-attributed facts', { concurrency: false }, () => {
+  const factsPack = extractFactsPack(createEvidencePack({
+    results: [
+      {
+        title: 'Acme',
+        url: 'https://acme.com/pricing',
+        searchSnippet: '',
+        published: '',
+        fetched: {
+          ok: true,
+          status: 200,
+          finalUrl: 'https://acme.com/pricing',
+        },
+        extracted: {
+          title: 'Acme Pricing',
+          description: '',
+          excerpt: '',
+          wordCount: 0,
+        },
+        adapterData: {
+          adapterName: 'json-ld',
+          fields: [
+            { field: 'product_name', value: 'Acme Pro', confidence: 'high' },
+            { field: 'star_rating', value: '4.7', confidence: 'high' },
+            { field: 'review_count', value: '2350', confidence: 'high' },
+          ],
+        },
+      },
+    ],
+  }), {
+    extractedAt: '2026-04-01T00:00:00.000Z',
+    sourcePackPath: '/tmp/evidence.json',
+  });
+
+  assert.ok(factsPack.facts.find((f) => f.field === 'product_name' && f.value === 'Acme Pro'));
+  assert.ok(factsPack.facts.find((f) => f.field === 'star_rating' && f.value === '4.7'));
+  assert.ok(factsPack.facts.find((f) => f.field === 'review_count' && f.value === '2350'));
+
+  // All adapter facts should be source-attributed
+  for (const fact of factsPack.facts.filter((f) => f.field === 'star_rating')) {
+    assert.ok(fact.source_url, 'adapter facts must have source_url');
+    assert.equal(fact.confidence_hint, 'high');
+  }
+});
+
+// ---------------------------------------------------------------------------
+// v2 fact extractor — review facts from text patterns
+// ---------------------------------------------------------------------------
+
+test('extractFactsPack extracts review_count and star_rating from text patterns', { concurrency: false }, () => {
+  const factsPack = extractFactsPack(createEvidencePack({
+    results: [
+      {
+        title: 'Acme Reviews',
+        url: 'https://g2.com/products/acme',
+        searchSnippet: 'Acme has 1,234 reviews and is rated 4.5 out of 5 stars.',
+        published: '',
+        fetched: {
+          ok: true,
+          status: 200,
+          finalUrl: 'https://g2.com/products/acme',
+        },
+        extracted: {
+          title: 'Acme Reviews',
+          description: 'Based on 1,234 reviews.',
+          excerpt: 'Acme scored 4.5/5 stars across 1,234 reviews.',
+          wordCount: 40,
+        },
+      },
+    ],
+  }), {
+    extractedAt: '2026-04-01T00:00:00.000Z',
+    sourcePackPath: '/tmp/evidence.json',
+  });
+
+  assert.ok(factsPack.facts.find((f) => f.field === 'review_count'), 'should extract review_count');
+  assert.ok(factsPack.facts.find((f) => f.field === 'star_rating'), 'should extract star_rating');
+});
+
+test('extractFactsPack skips text-pattern review facts when adapter already provided them', { concurrency: false }, () => {
+  const factsPack = extractFactsPack(createEvidencePack({
+    results: [
+      {
+        title: 'Acme',
+        url: 'https://acme.com',
+        searchSnippet: 'Acme has 1,234 reviews and rated 4.5 out of 5 stars.',
+        published: '',
+        fetched: { ok: true, status: 200, finalUrl: 'https://acme.com' },
+        extracted: { title: '', description: '', excerpt: '', wordCount: 40 },
+        adapterData: {
+          adapterName: 'json-ld',
+          fields: [
+            { field: 'star_rating', value: '4.7', confidence: 'high' },
+            { field: 'review_count', value: '9999', confidence: 'high' },
+          ],
+        },
+      },
+    ],
+  }), {
+    extractedAt: '2026-04-01T00:00:00.000Z',
+    sourcePackPath: '/tmp/evidence.json',
+  });
+
+  // Should have the adapter's values, not the text-pattern values
+  const starRatings = factsPack.facts.filter((f) => f.field === 'star_rating');
+  assert.ok(starRatings.length >= 1);
+  // Adapter value should be present
+  assert.ok(starRatings.find((f) => f.value === '4.7'), 'adapter star_rating should be present');
+  // Text-pattern value should not be present when adapter provided the field
+  assert.equal(starRatings.find((f) => f.value === '4.5'), undefined, 'text-pattern star_rating should be suppressed when adapter provides it');
+});
+
+// ---------------------------------------------------------------------------
+// v2 fact extractor — acquisition facts
+// ---------------------------------------------------------------------------
+
+test('extractFactsPack extracts acquisition facts from active-voice pattern', { concurrency: false }, () => {
+  const factsPack = extractFactsPack(createEvidencePack({
+    results: [
+      {
+        title: 'Acquisition News',
+        url: 'https://techcrunch.com/2025/acquisition',
+        searchSnippet: 'Microsoft acquired GitHub in 2018 for $7.5 billion.',
+        published: '2025-01-15',
+        fetched: { ok: true, status: 200, finalUrl: 'https://techcrunch.com/2025/acquisition' },
+        extracted: {
+          title: 'Microsoft acquired GitHub',
+          description: 'Microsoft acquired GitHub in 2018.',
+          excerpt: 'Microsoft acquired GitHub in 2018 for $7.5 billion.',
+          wordCount: 50,
+        },
+      },
+    ],
+  }), {
+    extractedAt: '2026-04-01T00:00:00.000Z',
+    sourcePackPath: '/tmp/evidence.json',
+  });
+
+  assert.ok(factsPack.facts.find((f) => f.field === 'acquisition_event' && f.value === 'true'));
+  assert.ok(factsPack.facts.find((f) => f.field === 'acquirer' && f.value === 'Microsoft'));
+  assert.ok(factsPack.facts.find((f) => f.field === 'acquired_company' && f.value === 'GitHub'));
+});
+
+test('extractFactsPack extracts acquisition facts from passive-voice pattern', { concurrency: false }, () => {
+  const factsPack = extractFactsPack(createEvidencePack({
+    results: [
+      {
+        title: 'Acquisition',
+        url: 'https://example.com/news',
+        searchSnippet: 'Figma was acquired by Adobe in 2022.',
+        published: '',
+        fetched: { ok: true, status: 200, finalUrl: 'https://example.com/news' },
+        extracted: {
+          title: '',
+          description: 'Figma was acquired by Adobe.',
+          excerpt: 'Figma was acquired by Adobe in 2022.',
+          wordCount: 30,
+        },
+      },
+    ],
+  }), {
+    extractedAt: '2026-04-01T00:00:00.000Z',
+    sourcePackPath: '/tmp/evidence.json',
+  });
+
+  assert.ok(factsPack.facts.find((f) => f.field === 'acquisition_event'));
+  assert.ok(factsPack.facts.find((f) => f.field === 'acquirer' && f.value === 'Adobe'));
+  assert.ok(factsPack.facts.find((f) => f.field === 'acquired_company' && f.value === 'Figma'));
+});
+
+// ---------------------------------------------------------------------------
+// v2 fact extractor — funding facts
+// ---------------------------------------------------------------------------
+
+test('extractFactsPack extracts funding_event from "raised ... Series A" pattern', { concurrency: false }, () => {
+  const factsPack = extractFactsPack(createEvidencePack({
+    results: [
+      {
+        title: 'Funding News',
+        url: 'https://techcrunch.com/funding',
+        searchSnippet: 'The company announced it raised $15M in a Series A round led by Accel.',
+        published: '',
+        fetched: { ok: true, status: 200, finalUrl: 'https://techcrunch.com/funding' },
+        extracted: {
+          title: '',
+          description: '',
+          excerpt: 'The company raised $15M in a Series A round.',
+          wordCount: 30,
+        },
+      },
+    ],
+  }), {
+    extractedAt: '2026-04-01T00:00:00.000Z',
+    sourcePackPath: '/tmp/evidence.json',
+  });
+
+  assert.ok(
+    factsPack.facts.find((f) => f.field === 'funding_event' && f.value === 'Series A'),
+    'should extract Series A funding event',
+  );
+});
+
+test('extractFactsPack extracts funding_event from Seed round pattern', { concurrency: false }, () => {
+  const factsPack = extractFactsPack(createEvidencePack({
+    results: [
+      {
+        title: 'Startup raises seed',
+        url: 'https://news.com/seed',
+        searchSnippet: 'Startup closed a $2M Seed round from angel investors.',
+        published: '',
+        fetched: { ok: true, status: 200, finalUrl: 'https://news.com/seed' },
+        extracted: { title: '', description: '', excerpt: 'Startup closed a $2M Seed round.', wordCount: 20 },
+      },
+    ],
+  }), {
+    extractedAt: '2026-04-01T00:00:00.000Z',
+    sourcePackPath: '/tmp/evidence.json',
+  });
+
+  assert.ok(
+    factsPack.facts.find((f) => f.field === 'funding_event' && f.value === 'Seed'),
+  );
+});
+
+// ---------------------------------------------------------------------------
+// v2 fact extractor — platform facts
+// ---------------------------------------------------------------------------
+
+test('extractFactsPack extracts supported_platform when availability context is present', { concurrency: false }, () => {
+  const factsPack = extractFactsPack(createEvidencePack({
+    results: [
+      {
+        title: 'DevTool',
+        url: 'https://devtool.io',
+        searchSnippet: 'Available for Windows, macOS, and Linux.',
+        published: '',
+        fetched: { ok: true, status: 200, finalUrl: 'https://devtool.io' },
+        extracted: {
+          title: '',
+          description: 'Available for Windows, macOS, and Linux.',
+          excerpt: '',
+          wordCount: 10,
+        },
+      },
+    ],
+  }), {
+    extractedAt: '2026-04-01T00:00:00.000Z',
+    sourcePackPath: '/tmp/evidence.json',
+  });
+
+  const platforms = factsPack.facts
+    .filter((f) => f.field === 'supported_platform')
+    .map((f) => f.value);
+
+  assert.ok(platforms.includes('Windows'), 'should extract Windows');
+  assert.ok(platforms.includes('macOS'), 'should extract macOS');
+  assert.ok(platforms.includes('Linux'), 'should extract Linux');
+});
+
+test('extractFactsPack does not extract platforms without availability context', { concurrency: false }, () => {
+  // Incidental mention of Windows without "available for / supports" context
+  const factsPack = extractFactsPack(createEvidencePack({
+    results: [
+      {
+        title: 'Blog Post',
+        url: 'https://blog.example.com/post',
+        searchSnippet: 'The developer was previously at Microsoft Windows division.',
+        published: '',
+        fetched: { ok: true, status: 200, finalUrl: 'https://blog.example.com/post' },
+        extracted: {
+          title: '',
+          description: 'A developer blog post discussing Microsoft Windows.',
+          excerpt: 'The developer worked on Windows before joining the startup.',
+          wordCount: 30,
+        },
+      },
+    ],
+  }), {
+    extractedAt: '2026-04-01T00:00:00.000Z',
+    sourcePackPath: '/tmp/evidence.json',
+  });
+
+  const platformFacts = factsPack.facts.filter((f) => f.field === 'supported_platform');
+  assert.equal(platformFacts.length, 0, 'should not extract platforms from incidental mentions');
+});

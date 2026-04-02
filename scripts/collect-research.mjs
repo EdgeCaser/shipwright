@@ -44,12 +44,19 @@ Outputs:
   evidence.json               Structured machine-readable results
   evidence.md                 AI-ready source digest
   facts.json                  Atomic source-attributed facts derived from evidence.json
-                               v1 emits only high and medium confidence_hint values
+                               v1 fields: company, product, plan_name, price, currency,
+                               billing_period, published_or_observed_date, product_name,
+                               star_rating, review_count, weekly_downloads, version,
+                               acquisition_event, acquisition_date, acquirer,
+                               acquired_company, funding_event, supported_platform
+                               Only high and medium confidence_hint values are emitted.
 
 Behavior:
   Loads .env from the current working directory if present.
   If no provider is configured, still writes a fallback evidence pack with
   'needs-interactive-followup' instead of failing.
+  Source adapters run automatically when source-adapters.mjs is co-located.
+  If the adapter module is missing, the collector continues without adapters.
 `;
 
 const DEFAULTS = {
@@ -67,6 +74,26 @@ const DEFAULTS = {
 
 const CACHE_VERSION = 'v1';
 const CACHE_ROOT = path.join('.shipwright', 'cache', 'research', CACHE_VERSION);
+
+// ---------------------------------------------------------------------------
+// Lazy source-adapter loader
+// ---------------------------------------------------------------------------
+// source-adapters.mjs must be co-located with this file (same directory).
+// If it is missing — e.g. on a partial deployment — the collector continues
+// without adapters rather than failing.
+
+let _adaptersCache = null;
+
+async function getAdapters() {
+  if (_adaptersCache !== null) return _adaptersCache;
+  try {
+    const mod = await import('./source-adapters.mjs');
+    _adaptersCache = mod;
+  } catch {
+    _adaptersCache = { applySourceAdapter: () => null };
+  }
+  return _adaptersCache;
+}
 
 function createDefaultArgs() {
   return {
@@ -1089,6 +1116,16 @@ async function fetchAndExtract(result, timeoutMs, excerptChars) {
     const contentType = response.headers.get('content-type') || '';
     const extracted = extractPage(body, contentType, excerptChars);
 
+    // Run source adapter while the raw HTML body is still available.
+    // Adapter errors must never surface — fail soft and continue without data.
+    let adapterData = null;
+    try {
+      const adapters = await getAdapters();
+      adapterData = adapters.applySourceAdapter(response.url, body);
+    } catch {
+      // adapter failure is silent
+    }
+
     return {
       ...result,
       fetched: {
@@ -1098,6 +1135,7 @@ async function fetchAndExtract(result, timeoutMs, excerptChars) {
         contentType,
       },
       extracted,
+      ...(adapterData ? { adapterData } : {}),
     };
   } catch (error) {
     return {
@@ -1492,12 +1530,22 @@ function extractFacts(pack, observedAt) {
     const sourceUrl = result?.fetched?.finalUrl || result?.url || '';
     if (!sourceUrl) continue;
 
+    // v1: identity and pricing (unchanged)
     facts.push(...extractIdentityFacts(result, sourceUrl, observedAt));
 
     const publishedDateFact = extractPublishedDateFact(result, sourceUrl, observedAt);
     if (publishedDateFact) facts.push(publishedDateFact);
 
     facts.push(...extractPricingFacts(result, sourceUrl, observedAt));
+
+    // v2: structured adapter data (highest confidence, runs from raw HTML)
+    facts.push(...extractAdapterFacts(result, sourceUrl, observedAt));
+
+    // v2: text-pattern extractors (conservative, medium confidence)
+    facts.push(...extractReviewFacts(result, sourceUrl, observedAt));
+    facts.push(...extractAcquisitionFacts(result, sourceUrl, observedAt));
+    facts.push(...extractFundingFacts(result, sourceUrl, observedAt));
+    facts.push(...extractPlatformFacts(result, sourceUrl, observedAt));
   }
 
   return facts;
@@ -1562,19 +1610,293 @@ function extractPublishedDateFact(result, sourceUrl, observedAt) {
 function extractPricingFacts(result, sourceUrl, observedAt) {
   const facts = [];
 
-  for (const segment of collectPricingSegments(result)) {
+  for (const segment of collectTextSegments(result)) {
     facts.push(...extractPriceFactsFromLine(segment, sourceUrl, observedAt));
   }
 
   return facts;
 }
 
-function collectPricingSegments(result) {
+function collectTextSegments(result) {
   return unique([
     cleanInlineText(result?.searchSnippet || ''),
     cleanInlineText(result?.extracted?.description || ''),
     ...splitExcerptLines(result?.extracted?.excerpt || ''),
-  ]);
+  ]).filter(Boolean);
+}
+
+// ---------------------------------------------------------------------------
+// v2 fact extractors
+// ---------------------------------------------------------------------------
+
+/**
+ * Convert result.adapterData.fields (set by source-adapters.mjs) into facts.
+ * Adapter fields carry the highest confidence because they come from structured
+ * schema data (JSON-LD, stable HTML patterns) rather than free text.
+ */
+function extractAdapterFacts(result, sourceUrl, observedAt) {
+  const adapterData = result?.adapterData;
+  if (!adapterData?.fields?.length) return [];
+
+  const adapterLabel = adapterData.adapterName || 'adapter';
+
+  return adapterData.fields
+    .map(({ field, value, confidence }) =>
+      createFact({
+        field,
+        value: String(value),
+        sourceUrl,
+        excerpt: `Structured data extracted by ${adapterLabel} adapter.`,
+        observedAt,
+        confidenceHint: confidence || 'medium',
+      }),
+    )
+    .filter(Boolean);
+}
+
+/**
+ * Extract review_count and star_rating from text segments.
+ * Skipped when adapter data already provides these fields (adapter = higher confidence).
+ */
+function extractReviewFacts(result, sourceUrl, observedAt) {
+  const adapterFields = new Set(
+    (result?.adapterData?.fields || []).map((f) => f.field),
+  );
+  const facts = [];
+
+  for (const segment of collectTextSegments(result)) {
+    // review_count: "1,234 reviews", "Based on 500 ratings"
+    if (!adapterFields.has('review_count')) {
+      const reviewMatch =
+        segment.match(/\b(\d{1,3}(?:,\d{3})*)\s+(?:reviews?|ratings?)\b/i) ||
+        segment.match(/\bbased on\s+(\d{1,3}(?:,\d{3})*)\s+(?:reviews?|ratings?)\b/i);
+      if (reviewMatch) {
+        const count = reviewMatch[1].replace(/,/g, '');
+        if (parseInt(count, 10) > 0) {
+          facts.push(
+            createFact({
+              field: 'review_count',
+              value: count,
+              sourceUrl,
+              excerpt: truncate(segment, 180),
+              observedAt,
+              confidenceHint: 'medium',
+            }),
+          );
+        }
+      }
+    }
+
+    // star_rating: "4.5 out of 5", "4.5/5 stars", "rated 4.5"
+    if (!adapterFields.has('star_rating')) {
+      const ratingMatch =
+        segment.match(/\b(\d(?:\.\d)?)\s*(?:out of\s*5|\/5|stars?)\b/i) ||
+        segment.match(/\brated\s+(\d(?:\.\d)?)\b/i);
+      if (ratingMatch) {
+        const rating = parseFloat(ratingMatch[1]);
+        if (rating >= 0 && rating <= 5) {
+          facts.push(
+            createFact({
+              field: 'star_rating',
+              value: String(rating),
+              sourceUrl,
+              excerpt: truncate(segment, 180),
+              observedAt,
+              confidenceHint: 'medium',
+            }),
+          );
+        }
+      }
+    }
+  }
+
+  return facts;
+}
+
+/**
+ * Extract acquisition facts from text segments.
+ * Only fires on high-signal active/passive patterns with proper-noun entities.
+ * Conservative: requires capital-initial entities and known verb patterns.
+ */
+function extractAcquisitionFacts(result, sourceUrl, observedAt) {
+  const facts = [];
+
+  for (const segment of collectTextSegments(result)) {
+    // Active: "Google acquired YouTube"
+    const activeMatch = segment.match(
+      /\b([A-Z][A-Za-z0-9]{2,}(?:\s+[A-Z][A-Za-z0-9]{2,})?)\s+(?:has\s+)?acquired\s+([A-Z][A-Za-z0-9]{2,}(?:\s+[A-Z][A-Za-z0-9]{2,})?)\b/,
+    );
+    // Passive: "YouTube was acquired by Google"
+    const passiveMatch = segment.match(
+      /\b([A-Z][A-Za-z0-9]{2,}(?:\s+[A-Z][A-Za-z0-9]{2,})?)\s+was\s+acquired\s+by\s+([A-Z][A-Za-z0-9]{2,}(?:\s+[A-Z][A-Za-z0-9]{2,})?)\b/,
+    );
+    // Bare passive: "acquired by Google" without full subject context
+    const barePassiveMatch =
+      !passiveMatch &&
+      segment.match(
+        /\bacquired\s+by\s+([A-Z][A-Za-z0-9]{2,}(?:\s+[A-Z][A-Za-z0-9]{2,})?)\b/,
+      );
+
+    if (!activeMatch && !passiveMatch && !barePassiveMatch) continue;
+
+    const excerpt = truncate(segment, 180);
+
+    facts.push(
+      createFact({
+        field: 'acquisition_event',
+        value: 'true',
+        sourceUrl,
+        excerpt,
+        observedAt,
+        confidenceHint: 'medium',
+      }),
+    );
+
+    if (activeMatch) {
+      const acquirer = cleanInlineText(activeMatch[1]);
+      const acquired = cleanInlineText(activeMatch[2]);
+      if (isValidEntityName(acquirer)) {
+        facts.push(createFact({ field: 'acquirer', value: acquirer, sourceUrl, excerpt, observedAt, confidenceHint: 'medium' }));
+      }
+      if (isValidEntityName(acquired)) {
+        facts.push(createFact({ field: 'acquired_company', value: acquired, sourceUrl, excerpt, observedAt, confidenceHint: 'medium' }));
+      }
+    } else if (passiveMatch) {
+      const acquired = cleanInlineText(passiveMatch[1]);
+      const acquirer = cleanInlineText(passiveMatch[2]);
+      if (isValidEntityName(acquirer)) {
+        facts.push(createFact({ field: 'acquirer', value: acquirer, sourceUrl, excerpt, observedAt, confidenceHint: 'medium' }));
+      }
+      if (isValidEntityName(acquired)) {
+        facts.push(createFact({ field: 'acquired_company', value: acquired, sourceUrl, excerpt, observedAt, confidenceHint: 'medium' }));
+      }
+    } else if (barePassiveMatch) {
+      const acquirer = cleanInlineText(barePassiveMatch[1]);
+      if (isValidEntityName(acquirer)) {
+        facts.push(createFact({ field: 'acquirer', value: acquirer, sourceUrl, excerpt, observedAt, confidenceHint: 'medium' }));
+      }
+    }
+
+    // Year near the acquisition mention
+    const yearMatch = segment.match(/\b(20\d{2})\b/);
+    if (yearMatch) {
+      facts.push(
+        createFact({
+          field: 'acquisition_date',
+          value: yearMatch[1],
+          sourceUrl,
+          excerpt,
+          observedAt,
+          confidenceHint: 'medium',
+        }),
+      );
+    }
+  }
+
+  return facts;
+}
+
+/**
+ * Extract funding round facts from text segments.
+ * Only fires on clear "raised/closed/secured ... Series X/Seed" patterns
+ * or "Series X ... $amount" patterns. Conservative.
+ */
+function extractFundingFacts(result, sourceUrl, observedAt) {
+  const facts = [];
+
+  for (const segment of collectTextSegments(result)) {
+    const roundType = matchFundingRound(segment);
+    if (!roundType) continue;
+
+    facts.push(
+      createFact({
+        field: 'funding_event',
+        value: normalizeRoundType(roundType),
+        sourceUrl,
+        excerpt: truncate(segment, 180),
+        observedAt,
+        confidenceHint: 'medium',
+      }),
+    );
+  }
+
+  return facts;
+}
+
+function matchFundingRound(segment) {
+  // "raised/closed/secured/announced ... Series A/Seed" (action → round)
+  const actionFirst = segment.match(
+    /\b(?:raised|closed|secured|announced)\b[\s\S]{0,60}?\b(Series\s+[A-E]|[Ss]eed|[Pp]re-[Ss]eed|[Gg]rowth)\b/i,
+  );
+  if (actionFirst) return actionFirst[1];
+
+  // "Series A/Seed ... $amount" (round → dollar signal)
+  const roundFirst = segment.match(
+    /\b(Series\s+[A-E]|[Ss]eed|[Pp]re-[Ss]eed)\b[\s\S]{0,40}?[$€£]\d/i,
+  );
+  if (roundFirst) return roundFirst[1];
+
+  return null;
+}
+
+function normalizeRoundType(raw) {
+  const lower = raw.trim().toLowerCase();
+  if (lower.startsWith('series ')) {
+    return `Series ${raw.trim().slice(-1).toUpperCase()}`;
+  }
+  if (lower === 'seed') return 'Seed';
+  if (lower === 'pre-seed') return 'Pre-Seed';
+  if (lower === 'growth') return 'Growth';
+  return raw.trim();
+}
+
+/**
+ * Extract supported platform facts from text segments.
+ * Only fires when a clear "available for / supports / compatible with / runs on"
+ * context precedes the platform name. Avoids noisy incidental mentions.
+ */
+function extractPlatformFacts(result, sourceUrl, observedAt) {
+  const facts = [];
+  const knownPlatforms = ['Windows', 'macOS', 'Linux', 'iOS', 'Android', 'Web'];
+
+  for (const segment of collectTextSegments(result)) {
+    const contextMatch = segment.match(
+      /(?:available for|supports?|compatible with|runs? on|works? on|platforms?:)\s*([^.]{5,80})/i,
+    );
+    if (!contextMatch) continue;
+
+    const context = contextMatch[1];
+    for (const platform of knownPlatforms) {
+      if (new RegExp(`\\b${platform}\\b`, 'i').test(context)) {
+        facts.push(
+          createFact({
+            field: 'supported_platform',
+            value: platform,
+            sourceUrl,
+            excerpt: truncate(segment, 180),
+            observedAt,
+            confidenceHint: 'medium',
+          }),
+        );
+      }
+    }
+  }
+
+  return facts;
+}
+
+/**
+ * Returns true for proper-noun entity names suitable for acquisition facts.
+ * Filters out common articles, pronouns, and very short tokens.
+ */
+function isValidEntityName(value) {
+  if (!value || value.length < 3 || value.length > 50) return false;
+  if (!/^[A-Z]/.test(value)) return false;
+  const lower = value.toLowerCase();
+  return ![
+    'the', 'its', 'their', 'they', 'this', 'that', 'when',
+    'after', 'before', 'which', 'what', 'how', 'who', 'where',
+  ].includes(lower);
 }
 
 function splitExcerptLines(excerpt) {

@@ -12,16 +12,82 @@ Shipwright now has a collector-level research cache in `scripts/collect-research
 - stored under `.shipwright/cache/research/v1/`
 - reused within a freshness window instead of recollecting identical evidence
 - designed to fail soft when the cache is missing, stale, corrupt, or not writable
-- emits a collector-layer `facts.json` sidecar with atomic, source-attributed pricing/product/date facts when extraction is deterministic enough to support them
+- emits a collector-layer `facts.json` sidecar with atomic, source-attributed facts when extraction is deterministic enough to support them
 
-## Near-term implementation backlog
+### facts.json fields (current)
 
-If Shipwright continues investing in deterministic acceleration, the next highest-value additions are:
+| Field | Source | Confidence |
+|---|---|---|
+| `company` | page title pattern | high/medium |
+| `product` | page title pattern | high |
+| `plan_name` | pricing text pattern | high/medium |
+| `price` | pricing text pattern + JSON-LD | high/medium |
+| `currency` | pricing text pattern + JSON-LD | high/medium |
+| `billing_period` | pricing text pattern | high/medium |
+| `published_or_observed_date` | result.published field | high/medium |
+| `product_name` | JSON-LD Product/SoftwareApplication | high |
+| `star_rating` | JSON-LD AggregateRating; text patterns | high/medium |
+| `review_count` | JSON-LD AggregateRating; text patterns | high/medium |
+| `weekly_downloads` | npm page HTML (SSR'd) | medium |
+| `version` | npm page HTML / JSON-LD | high/medium |
+| `acquisition_event` | text patterns (active/passive voice) | medium |
+| `acquisition_date` | year near acquisition mention | medium |
+| `acquirer` | text patterns | medium |
+| `acquired_company` | text patterns | medium |
+| `funding_event` | text patterns (raised/Series/Seed) | medium |
+| `supported_platform` | "available for / supports" context | medium |
 
-1. Broaden the structured fact extractor beyond the v1 pricing/product/date field set into review counts, acquisitions, and richer pricing/page adapters.
-2. Citation and signature validator for final artifacts.
-3. Source adapters for high-value structured sites like Unity Asset Store, Fab, and major vendor pricing pages.
-4. Checkpoint and resume support for multi-phase runs.
+### Source adapters (`scripts/source-adapters.mjs`)
+
+A new adapter module runs against the raw HTML body during page fetch, before it
+is discarded, and writes structured fields to `result.adapterData`:
+
+- **JSON-LD adapter** — extracts Product/SoftwareApplication/AggregateRating/Offer
+  schema data from `<script type="application/ld+json">` blocks. Covers pricing
+  pages, review aggregators, and product pages that use schema.org markup.
+- **npm adapter** — extracts weekly download count and version from npmjs.com
+  package pages (server-rendered, stable structure).
+
+The adapter module loads lazily from `collect-research.mjs`. If the file is
+missing on a partial deployment, the collector continues without adapters (fail soft).
+
+### Postflight validator (`scripts/validate-artifact.mjs`)
+
+A deterministic validator for Shipwright markdown artifacts:
+
+- `unsupported-dollar` — dollar figures in prose without a nearby citation marker
+- `unsupported-numeric` — percentage or large-number claims without citation
+- `missing-section` — expected section headings absent from the document
+
+Citation shortcut: if the document has a `## Sources` / `## References` /
+`## Evidence` section, paragraph-level citation checks are skipped.
+
+CLI: `node scripts/validate-artifact.mjs path/to/artifact.md --expect-sections "Sources,Risks"`
+
+## Remaining backlog
+
+If Shipwright continues investing in deterministic acceleration, the next
+highest-value additions are:
+
+1. **Checkpoint and resume support** for multi-phase runs — save phase outputs
+   so the system can restart from `research-complete` or `synthesis-complete`
+   instead of rerunning the entire pipeline.
+2. **Additional source adapters** — extend the adapter pattern with:
+   - PyPI / crates.io package pages (same pattern as npm; useful for open-source
+     competitive analysis)
+   - Stripe / GitHub pricing pages (investigate static-HTML structure; may require
+     per-page field mapping)
+   - G2 / Capterra product pages (currently rely on JSON-LD; add fallback text
+     patterns for when schema is absent)
+3. **Contradiction detector** for the postflight validator — flag when the same
+   metric appears with significantly different values in the same document.
+   Deferred because reliable detection requires semantic context, not just regex.
+4. **Marketplace-style adapters** — many structured catalog and listing pages
+   (app stores, software directories, developer marketplaces) follow stable
+   patterns. Add adapters once a consistently server-rendered example is
+   identified; the adapter pattern is already in place.
+5. **`marketplace_last_updated` field** — useful for currency-checking cached
+   listing data; add once a stable adapter target is confirmed.
 
 ## Workflow-specific candidates
 
