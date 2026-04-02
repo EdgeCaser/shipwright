@@ -1,0 +1,58 @@
+{
+  "schema_version": "2.0.0",
+  "artifact_type": "challenge-report",
+  "mode": "rigorous",
+  "depth": "standard",
+  "metadata": {
+    "title": "Challenge: Team Inbox Workflow Handoff",
+    "status": "approved",
+    "authors": ["Shipwright"],
+    "updated_at": "2026-04-02"
+  },
+  "decision_frame": {
+    "recommendation": "Do not approve until hidden workflow scope is contained.",
+    "tradeoff": "Delay approval to avoid downstream delivery churn.",
+    "confidence": "high",
+    "owner": "PM",
+    "decision_date": "2026-04-02"
+  },
+  "unknowns": [
+    "Instrumentation ownership is still unclear."
+  ],
+  "pass_fail_readiness": {
+    "status": "FAIL",
+    "reason": "Critical hidden-scope finding is unresolved."
+  },
+  "evidence": [
+    {
+      "evidence_id": "ev-challenge-1",
+      "kind": "document",
+      "source_ref": "design-review-notes",
+      "confidence": "high",
+      "supports": ["finding-scope-creep"]
+    }
+  ],
+  "payload": {
+    "reviewed_artifact": {
+      "title": "PRD: Team Inbox Workflow Handoff",
+      "artifact_type": "prd"
+    },
+    "depth": "standard",
+    "findings": [
+      {
+        "finding_id": "finding-scope-creep",
+        "claim": "The PRD implies manager routing work without naming it in scope boundaries.",
+        "vector": "scope-discipline",
+        "severity": "critical",
+        "rationale": "Hidden workflow work will spill into engineering estimates and rollout planning.",
+        "resolution_condition": "Either remove manager routing from scope or mark it explicitly out of scope with a follow-up owner.",
+        "evidence_ids": ["ev-challenge-1"]
+      }
+    ],
+    "verdict": "Revision required before approval.",
+    "action_plan": [
+      "Clarify scope boundaries.",
+      "Record a resolution state in the revised artifact."
+    ]
+  }
+}
