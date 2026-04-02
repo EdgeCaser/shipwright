@@ -130,6 +130,7 @@ Why it matters:
 
 Many sources Shipwright cares about are highly structured:
 
+- package registries (npm, PyPI, crates.io)
 - Unity Asset Store
 - Fab / Unreal Marketplace
 - pricing pages

@@ -115,7 +115,8 @@ What it does:
 - fetches the top pages in parallel
 - extracts a compact source digest
 - writes `evidence.json` and `evidence.md` under `.shipwright/research/`
-- writes `facts.json` with sparse, source-attributed pricing/product/date facts when they can be extracted deterministically
+- writes `facts.json` with sparse, source-attributed pricing, product, review, date, and package-registry facts when they can be extracted deterministically
+- uses structured-source adapters for npm, PyPI, and crates.io package metadata when available
 - in v1, `facts.json` emits only `high` and `medium` `confidence_hint` values
 - caches canonical evidence packs under `.shipwright/cache/research/v1/`
 - escalates automatically from the primary query to broader subqueries and then to gap-only follow-up recommendations when needed
