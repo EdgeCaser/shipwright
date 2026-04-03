@@ -20,9 +20,9 @@ test('runBenchmarkSuite evaluates the default benchmark fixture suite', { concur
     scenarioDir: path.resolve('benchmarks/scenarios'),
   });
 
-  assert.equal(summary.scenario_count, 6);
+  assert.equal(summary.scenario_count, 7);
   assert.deepEqual(summary.status_counts, {
-    PASS: 4,
+    PASS: 5,
     FAIL: 1,
     DNF: 1,
   });
@@ -39,6 +39,16 @@ test('runBenchmarkSuite evaluates the default benchmark fixture suite', { concur
   assert.equal(dnfScenario.status, 'DNF');
   assert.equal(dnfScenario.final_pass.usable, false);
   assert.equal(dnfScenario.final_pass.time_to_first_usable_artifact_seconds, null);
+
+  const automationScenario = summary.results.find(
+    (result) => result.scenario_id === 'event-automation-boundary',
+  );
+  assert.equal(automationScenario.status, 'PASS');
+  assert.equal(automationScenario.first_pass.usable, false);
+  assert.ok(
+    automationScenario.diagnostics.first_pass_issue_types.includes('challenge-finding-unresolved'),
+  );
+  assert.equal(automationScenario.final_pass.validator_error_count, 0);
 });
 
 test('runBenchmarkSuite always emits provenance and threshold policy metadata', { concurrency: false }, async () => {

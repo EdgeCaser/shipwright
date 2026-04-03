@@ -102,9 +102,10 @@ test('prepareBlindReviewBundle rejects mismatched scenario ids', { concurrency: 
   );
 });
 
-test('prepareBlindReviewBundle gives a clear error when the default baseline scenario directory is missing', { concurrency: false }, async () => {
+test('prepareBlindReviewBundle gives a clear error when the baseline scenario directory is missing', { concurrency: false }, async () => {
   const rootDir = await mkdtemp(path.join(os.tmpdir(), 'shipwright-proof-content-'));
   const currentScenarioDir = path.join(rootDir, 'current', 'scenarios');
+  const missingBaselineScenarioDir = path.join(rootDir, 'missing-baseline', 'scenarios');
   await writeScenario(rootDir, currentScenarioDir, {
     id: 'scenario-1',
     title: 'Scenario One',
@@ -115,9 +116,10 @@ test('prepareBlindReviewBundle gives a clear error when the default baseline sce
   await assert.rejects(
     prepareBlindReviewBundle({
       currentScenarioDir,
+      baselineScenarioDir: missingBaselineScenarioDir,
       reviewRunId: 'proof-run-3',
     }),
-    /Baseline scenario directory not found: .*pass --baseline-scenarios explicitly/,
+    /Baseline scenario directory not found:/,
   );
 });
 

@@ -1,0 +1,70 @@
+{
+  "schema_version": "2.0.0",
+  "artifact_type": "challenge-report",
+  "mode": "rigorous",
+  "depth": "standard",
+  "metadata": {
+    "title": "Challenge: Event Automation Platform Phase 1",
+    "status": "approved",
+    "authors": ["Shipwright"],
+    "updated_at": "2026-04-02"
+  },
+  "decision_frame": {
+    "recommendation": "Do not approve until human-approval and phase-boundary constraints are explicit.",
+    "tradeoff": "A tighter first release is less flashy, but safer and more credible to operate.",
+    "confidence": "high",
+    "owner": "PM",
+    "decision_date": "2026-04-02"
+  },
+  "unknowns": [
+    "Operational override ownership still needs a named decision owner."
+  ],
+  "pass_fail_readiness": {
+    "status": "FAIL",
+    "reason": "Critical approval-boundary and scope-boundary findings are unresolved."
+  },
+  "evidence": [
+    {
+      "evidence_id": "ev-event-automation-challenge-1",
+      "kind": "document",
+      "source_ref": "event-automation-phase-1-spec",
+      "confidence": "high",
+      "supports": [
+        "finding-human-approval-boundary",
+        "finding-phase1-scope-creep"
+      ]
+    }
+  ],
+  "payload": {
+    "reviewed_artifact": {
+      "title": "PRD: Event Automation Platform Phase 1",
+      "artifact_type": "prd"
+    },
+    "depth": "standard",
+    "findings": [
+      {
+        "finding_id": "finding-human-approval-boundary",
+        "claim": "The PRD still implies assistant-led pricing commitments and send behavior without explicit recorded human approval.",
+        "vector": "structural-honesty",
+        "severity": "critical",
+        "rationale": "Human-in-the-loop approval is a hard operating constraint and cannot remain implicit.",
+        "resolution_condition": "Explicitly require human approval for pricing commitments, overrides, and final sends in both markdown and structured scope.",
+        "evidence_ids": ["ev-event-automation-challenge-1"]
+      },
+      {
+        "finding_id": "finding-phase1-scope-creep",
+        "claim": "The first release scope still bundles operational planning work that belongs to later phases.",
+        "vector": "scope-discipline",
+        "severity": "critical",
+        "rationale": "Production planning and purchasing automation materially expand delivery risk beyond the bounded first phase.",
+        "resolution_condition": "Remove downstream operational planning automation from Phase 1 scope and mark it explicitly out of scope.",
+        "evidence_ids": ["ev-event-automation-challenge-1"]
+      }
+    ],
+    "verdict": "Revision required before approval.",
+    "action_plan": [
+      "Constrain Phase 1 to intake, deterministic quote drafting, storage, calendar holds, and approval queueing.",
+      "Record explicit resolution states for the approval and scope findings."
+    ]
+  }
+}
