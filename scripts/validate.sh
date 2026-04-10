@@ -27,12 +27,15 @@ echo "Checking counts..."
 skill_count=$(find skills -name "SKILL.md" | wc -l | tr -d ' ')
 agent_count=$(find agents -name "*.md" | wc -l | tr -d ' ')
 command_count=$(find commands -name "*.md" | wc -l | tr -d ' ')
+workflow_count=$(sed -n '/"routing": {/,/^  }/p' manifest.json | grep -E '^[[:space:]]{4}"[a-z-]+": \{$' | wc -l | tr -d ' ')
+entrypoint_count=$((command_count - workflow_count))
 
 # Extract counts from tagline (e.g. "42 skills, 6 specialist agents, 15 chained workflows...")
 tagline=$(grep -E '[0-9]+ skills,' README.md | head -1 || echo "")
 readme_skills=$(echo "$tagline" | grep -oE '[0-9]+ skills' | grep -oE '[0-9]+' || echo "")
 readme_agents=$(echo "$tagline" | grep -oE '[0-9]+ [a-z]* ?agents' | grep -oE '[0-9]+' || echo "")
 readme_workflows=$(echo "$tagline" | grep -oE '[0-9]+ [a-z]* ?workflows' | grep -oE '[0-9]+' || echo "")
+readme_entrypoints=$(echo "$tagline" | grep -oE '[0-9]+ Claude helper commands?' | grep -oE '[0-9]+' || echo "")
 
 if [ "$skill_count" = "$readme_skills" ]; then
   pass "Skill count: $skill_count matches README ($readme_skills)"
@@ -46,10 +49,18 @@ else
   fail "Agent count: found $agent_count agent files, README claims $readme_agents"
 fi
 
-if [ "$command_count" = "$readme_workflows" ]; then
-  pass "Workflow count: $command_count matches README ($readme_workflows)"
+if [ "$workflow_count" = "$readme_workflows" ]; then
+  pass "Workflow count: $workflow_count matches README ($readme_workflows)"
 else
-  fail "Workflow count: found $command_count command files, README claims $readme_workflows"
+  fail "Workflow count: found $workflow_count routed workflows, README claims $readme_workflows"
+fi
+
+if [ -n "$readme_entrypoints" ]; then
+  if [ "$entrypoint_count" = "$readme_entrypoints" ]; then
+    pass "Claude entrypoint count: $entrypoint_count matches README ($readme_entrypoints)"
+  else
+    fail "Claude entrypoint count: found $entrypoint_count non-routed commands, README claims $readme_entrypoints"
+  fi
 fi
 
 # Check plugin.json counts
@@ -114,7 +125,7 @@ echo "Checking command files match README..."
 grep -o '/[a-z-]*' README.md | sed 's/^\///' | sort -u | while read -r cmd; do
   # Skip non-command references
   case "$cmd" in
-    start|discover|write-prd|plan-launch|sprint|strategy|pricing|customer-review|tech-handoff|personas|competitive|metrics|okrs|retro|narrative|challenge|status|quality-check)
+    shipwright|shipwright-help|start|discover|write-prd|plan-launch|sprint|strategy|pricing|customer-review|tech-handoff|personas|competitive|metrics|okrs|retro|narrative|challenge|status|quality-check)
       if [ -f "commands/${cmd}.md" ]; then
         pass "Command file exists: commands/${cmd}.md"
       else
@@ -196,10 +207,10 @@ echo ""
 echo "Checking skills-map workflow count..."
 
 sm_workflow_count=$(grep -c '^| `/[a-z]' skills-map.md || true)
-if [ "$sm_workflow_count" = "$command_count" ] || [ "$sm_workflow_count" = "$((command_count - 1))" ]; then
-  pass "Skills-map workflow entries ($sm_workflow_count) align with command files ($command_count)"
+if [ "$sm_workflow_count" = "$workflow_count" ]; then
+  pass "Skills-map workflow entries ($sm_workflow_count) align with routed workflows ($workflow_count)"
 else
-  warn "Skills-map has $sm_workflow_count workflow entries but there are $command_count command files"
+  warn "Skills-map has $sm_workflow_count workflow entries but there are $workflow_count routed workflows"
 fi
 
 echo ""
