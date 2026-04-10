@@ -5,6 +5,18 @@
 **Timebox:** ~2 hours  
 **Verdict:** Architecture A (long-lived subprocess) unconfirmed. Architecture B (per-message spawn with `--resume`) confirmed. Proceed on Branch B.
 
+## Tested environment
+
+| Field | Value |
+|---|---|
+| Claude Code version | 2.1.98 |
+| macOS version | 15.6.1 |
+| Auth method | `claude.ai` (first-party, Max subscription) |
+| Permission mode | default (not explicitly set during spike) |
+| Working directory | `/Users/ianbrillembourg/Documents/GitHub/shipwright` |
+
+Results may differ under API key auth, org-managed accounts, or custom permission modes.
+
 ---
 
 ## What was tested

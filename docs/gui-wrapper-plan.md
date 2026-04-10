@@ -26,40 +26,35 @@ A lightweight desktop application that wraps the user's existing `claude` CLI in
 
 ### Process model
 
-**⚠ Unverified assumption — spike required before build.**
+**Architecture B — per-message spawn with `--resume`.** Confirmed by spike. See [`docs/gui-wrapper-spike-result.md`](gui-wrapper-spike-result.md).
 
-The plan assumes the app can spawn a long-lived `claude` subprocess with `--output-format stream-json`, pipe user input to its stdin, and consume a structured JSON event stream on its stdout across multiple turns. The CLI reference documents `--output-format` as a flag for print mode (`claude --print`), not general interactive mode. Whether it works across a persistent interactive session has not been confirmed.
-
-This is the load-bearing assumption of the entire architecture. Everything downstream — the stream adapter, the panel routing, the session model — depends on it being true.
-
-**Spike complete.** See [`docs/gui-wrapper-spike-result.md`](gui-wrapper-spike-result.md) for full findings.
-
-**Summary:** Architecture A (long-lived subprocess with `--output-format stream-json`) is unconfirmed — claude requires a real interactive terminal for multi-turn operation and does not behave as a pipeable multi-turn server. Architecture B (per-message spawn with `--resume`) is confirmed: `--print --output-format stream-json --verbose --resume <id>` works cleanly, session context is preserved, and tool use events are captured.
-
-**Active architecture: B.**
-
----
-
-*The architecture operates as follows:*
-
-The app spawns a `claude` subprocess in the user's chosen project directory, using `--output-format stream-json`. Every tool call, assistant message, and tool result arrives as a structured JSON event on stdout. The GUI consumes that stream and routes events to the appropriate panel.
+For each user message, the app spawns a short-lived `claude --print` process, collects the full stream-json response, extracts the `session_id`, and stores it for the next turn. The CLI process exits after each turn; session context lives inside Claude Code's session store, not in the app.
 
 ```
-┌─────────────────────────────────────────────┐
-│              Shipwright App                  │
-│  ┌──────────┐  ┌──────────┐  ┌───────────┐  │
-│  │File Tree │  │  Chat    │  │  Viewer   │  │
-│  │          │  │  Window  │  │           │  │
-│  └──────────┘  └────┬─────┘  └───────────┘  │
-│                     │                       │
-│              stdin / stdout pipe            │
-│                     │                       │
-│          ┌──────────▼──────────┐            │
-│          │   claude CLI process │            │
-│          │  --output-format    │            │
-│          │  stream-json        │            │
-│          └─────────────────────┘            │
-└─────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────┐
+│                   Shipwright App                      │
+│  ┌──────────┐   ┌────────────────┐   ┌───────────┐   │
+│  │File Tree │   │  Chat Window   │   │  Viewer   │   │
+│  │(notify)  │   │                │   │           │   │
+│  └──────────┘   └───────┬────────┘   └───────────┘   │
+│                         │ user message                │
+│              ┌──────────▼──────────────────┐          │
+│              │  spawn per message:          │          │
+│              │  claude --print "<msg>"      │          │
+│              │    --output-format stream-json│         │
+│              │    --verbose                 │          │
+│              │    --model <alias>           │          │
+│              │    --resume <session-id>     │          │
+│              └──────────┬───────────────────┘          │
+│                         │ stream-json on stdout        │
+│              ┌──────────▼───────────────────┐          │
+│              │     stream adapter            │          │
+│              │  (parse, validate, route)     │          │
+│              └──────────┬────────────────────┘          │
+│            ┌────────────┴──────────┐                   │
+│     chat events              session_id                 │
+│    (text, tool_use)          (stored for next turn)     │
+└──────────────────────────────────────────────────────┘
 ```
 
 ### Stream adapter layer
@@ -69,7 +64,12 @@ The `stream-json` contract is the load-bearing seam of the entire app. If it is 
 The app introduces an explicit **stream adapter** between the raw subprocess output and the UI:
 
 - Parses and validates each incoming JSON event against a known schema
-- Routes valid events to the correct panel (text → chat, tool\_use → activity log, tool\_result → optionally surfaced)
+- Routes by event type:
+  - `system/init` → session metadata (capture `session_id`, `model`, `tools`)
+  - `assistant` → inspect `message.content` array; each item is typed: `text` items render as chat bubbles, `tool_use` items render as collapsed activity indicators, `thinking` items are suppressed by default
+  - `rate_limit_event` → surface in status bar if relevant
+  - `result` → extract final `result` text, `session_id` for next turn, `total_cost_usd` for status bar
+- **Important:** tool use and tool results are not separate top-level event types — they are embedded as content items inside `assistant` events. The adapter must inspect content arrays, not filter by top-level type alone.
 - On parse failure or unknown event type: logs the raw line to a debug buffer and emits a **degraded mode** indicator in the UI rather than crashing
 - On subprocess exit with non-zero code: displays a recoverable error state, not a blank screen
 
@@ -100,12 +100,14 @@ The adapter schema should be pinned to a specific Claude Code version and tested
 - Badge count on files modified in the current session
 
 ### 2. Chat Window (center)
-- User input → claude's stdin
-- Stream adapter output rendered as:
-  - Assistant text → chat bubble with markdown
-  - Tool calls → collapsed activity indicator ("Reading 3 files..."), expandable on click
-  - Tool results → hidden by default, accessible via toggle
-- Auto-scrolls; session transcript saved locally as a plain `.md` file per session (append-only, not used for resume — see Session Model)
+- User submits a message → app spawns `claude --print "<message>" --output-format stream-json --verbose --resume <session-id>`
+- Stream adapter routes events to UI:
+  - `assistant` / `text` content → chat bubble with markdown
+  - `assistant` / `tool_use` content → collapsed activity indicator ("Reading 3 files..."), expandable on click
+  - `assistant` / `thinking` content → hidden by default
+  - `result` → turn complete; store new `session_id`; enable next input
+- Input is disabled while a turn is in flight; a per-turn startup spinner appears immediately on submit
+- Auto-scrolls; session transcript appended per turn (see Session Model)
 
 ### 3. Viewer (right)
 - Auto-detects file type:
@@ -151,10 +153,9 @@ The user downloads a single `.dmg`. Drags the `.app` to Applications. Opens it, 
 **Startup sequence:**
 1. **PATH check** — run `which claude`. If absent, show a setup screen with install instructions and a link; block until resolved.
 2. **CLI health check** — run `claude --version`. If it fails or returns unexpected output, the binary exists but is not a usable Claude Code install (wrong binary, corrupted install, etc.). Show a distinct error — not the same screen as "not installed."
-3. **Auth check** — run `claude auth status`. If it returns a non-authenticated state, surface a "Claude Code is not authenticated" screen with instructions to run `claude` in a terminal first. Block until resolved. Do not attempt to handle login flow inside the app. This is less brittle than probing with an empty print request, which would consume a token and parse ambiguous output.
+3. **Auth check** — run `claude auth status`. If it returns a non-authenticated state, surface a "Claude Code is not authenticated" screen with instructions to run `claude` in a terminal first. Block until resolved. Do not attempt to handle login flow inside the app.
 4. Prompt for project directory (defaults to last opened).
-5. Spawn `claude` in that directory with `--output-format stream-json`.
-6. Load UI; stream adapter begins consuming output.
+5. Load UI. No subprocess is spawned at startup. The first user message triggers the first spawn.
 
 Steps 1–3 run on every launch; they are fast and must complete before the project directory prompt appears.
 
@@ -164,15 +165,27 @@ The app includes a **Check for Updates** button in the Help menu (and on the sta
 
 ### Model selection
 
-Claude Code supports `claude --model <id>` at startup and `/model <id>` mid-session. The wrapper exposes both, with guardrails.
+Under Architecture B, each turn is a new subprocess call. Model selection is therefore per-spawn, not mid-session in-band injection.
 
-**Session-start picker:** Before spawning the subprocess, the app presents a model selector with four aliases: `default`, `sonnet`, `opus`, `haiku`. Selecting anything other than `default` appends `--model <alias>` to the spawn command — the alias is passed as-is, not resolved to a raw model ID by the app. The CLI owns the alias-to-model mapping; freezing IDs in the wrapper would break silently whenever Anthropic updates them. The active alias is shown in the status bar throughout the session.
+**Session-start picker:** Before the first message of a session, the app shows a model selector with four aliases: `default`, `sonnet`, `opus`, `haiku`. The selected alias is appended as `--model <alias>` to every subsequent spawn in the session. The alias is passed as-is to the CLI — not resolved to a raw model ID. The CLI owns the alias-to-model mapping.
 
-**Mid-session switching:** Available from an **Advanced** menu only, and only when Claude is idle (no streaming output in progress). Injecting `/model <id>` while Claude is mid-response risks corrupting the stream. The Advanced menu is not surfaced in the main UI.
+**Mid-session change:** The user can change the model alias at any time between turns (not during a turn in flight). The change takes effect on the next spawn. No `/model` injection, no in-band switching — just update the alias stored in app state and use it on the next `--print` call. The active alias is shown in the status bar.
 
-**What is not built in v1:** A rich model picker with raw model IDs, org-policy awareness, or custom model options. These require knowing which models are actually available to a given account, which is not exposed by the CLI auth state. A safe alias set (`default`, `sonnet`, `opus`, `haiku`) avoids that problem without overpromising. Raw ID input is available as a text field in the Advanced menu for users who need it.
+**What is not built in v1:** Raw model ID input, org-policy awareness, or custom model options. Raw ID is available via a text field in an Advanced settings panel.
 
-Model changes are recorded in the session transcript as a metadata line: `[model changed to sonnet at 14:32]`.
+Model changes are recorded in the transcript: `[model changed to sonnet]`.
+
+### Permission flow
+
+Under Architecture B with `--print`, Claude Code runs in non-interactive mode. Tools that would normally pause and prompt for permission (Bash, Edit, Write) instead refer to the permission mode set at spawn time. This is a first-class design decision, not a detail.
+
+**v1 decision: use `--permission-mode acceptEdits`** — this allows file reads and edits without per-call prompts, which is appropriate for a GUI wrapper where the user has already chosen a project directory and implicitly trusts the session. Bash tool calls (shell execution) are a higher-risk category.
+
+**Bash tool handling:** Spawn with `--permission-prompt-tool bash=always-allow` only if the user has explicitly enabled it in app settings. The default is `bash=deny` — Bash calls are blocked silently and the activity log shows a "Bash tool blocked" notice. Users who need Bash tool access toggle it in settings; this is surfaced as a prominent opt-in, not buried.
+
+**What the app does not do:** Intercept tool permission prompts interactively. Under `--print`, there is no prompt to intercept. The permission model is set at spawn time and applies to the whole turn. An interactive permission UI (like Claude Code's own terminal prompt) is not possible in Architecture B without additional IPC machinery that is out of scope for v1.
+
+**Remaining spike:** The exact behavior of `--print` when a tool call would require permission and `--permission-mode` does not permit it has not been tested. This should be verified before the permission defaults above are treated as final. See Open Questions.
 
 ### Session model (revised by spike)
 
@@ -195,13 +208,15 @@ The first message of a session omits `--resume`; the `session_id` from the retur
 
 ## Open questions
 
-1. **Multi-project** — tabs for multiple open directories, or one session per app window? One window per directory is simpler and safer for v1; tabs can follow.
+1. **Multi-project** — one window per directory is simpler and safer for v1; tabs can follow.
 
-2. **Tool call visibility** — collapsed by default is the right call for non-CLI users. Power-user toggle (show all tool activity) should exist but not be prominent.
+2. **Tool call visibility** — collapsed by default. Power-user toggle exists but is not prominent.
 
-3. **Windows/Linux** — architecture supports it; defer until there is user demand. Do not stub platform-specific code speculatively.
+3. **Windows/Linux** — architecture supports it; defer until there is user demand.
 
-4. **Naming** — "Shipwright App" is a placeholder. Whether this ships as part of the Shipwright project or as a standalone product affects versioning, repo structure, and install story. Decision needed before build starts.
+4. **Naming** — "Shipwright App" is a placeholder. Decision needed before build starts.
+
+5. **Permission failure semantics (spike required)** — the behavior of `--print` when a tool call is blocked by `--permission-mode` has not been tested: does it return an error in the `result` event, emit a partial response, or silently skip the tool call? This determines whether the "Bash tool blocked" notice in the activity log is reliable or whether the app needs to detect a different signal. Timebox: half a day. Test: spawn with `--permission-mode reject` and a prompt that triggers a Bash call; observe the stream-json output.
 
 ---
 
