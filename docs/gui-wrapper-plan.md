@@ -133,11 +133,11 @@ The palette is built as two flat tabs:
 **Commands tab** — one entry per item in `manifest.commands`, in manifest order:
 - If the command exists in `manifest.routing`: show the routing agent(s) as a badge. Commands with `agents` (plural) in their routing entry get a "multi-agent" indicator signaling a longer-running workflow. Commands with a single `agent` get no additional indicator.
 - `start` is the only command without a routing entry; it is shown first as the orchestrator entry point with a distinct "Start here" label.
-- Label is the command name. Description is read from the first non-empty line of the matching file in `.claude/commands/<name>.md`. If the file is absent, the command is shown without a description rather than hidden.
+- Label is the command name. Description is parsed from the `description` field in the YAML front matter of `.claude/commands/<name>.md`. If the front matter is absent or has no `description` field, fall back to the first non-empty non-`---` line of the file body. If the file is absent, the command is shown without a description rather than hidden.
 
 **Skills tab** — one section per category key in `manifest.skills` (discovery, strategy, execution, etc.), each listing its skills alphabetically:
 - Skills are not nested under or associated with specific commands — the routing map links commands to skills for orchestration purposes, but that relationship is not surfaced in the palette UI.
-- Label is the skill name. Description is read from the first non-empty line of `.claude/skills/<category>/<name>.md`. If absent, shown without description.
+- Label is the skill name. Description is parsed from the `description` field in the YAML front matter of `.claude/skills/<category>/<name>/SKILL.md`. If the front matter is absent or has no `description` field, fall back to the first non-empty non-`---` line of the file body. If the file is absent, shown without description.
 
 Clicking any command injects `/<command>` into chat and submits. Clicking a skill injects the skill name as plain text (not a slash command) for use in freeform prompts.
 
@@ -209,17 +209,16 @@ The first message of a session omits `--resume`; the `session_id` from the retur
 
 ---
 
-## Open questions
+## V1 defaults and deferred decisions
 
-1. **Multi-project** — one window per directory is simpler and safer for v1; tabs can follow.
+**Settled defaults:**
+- Multi-project: one window per directory. Tabs deferred.
+- Tool call visibility: collapsed by default. Power-user toggle exists but is not prominent.
+- Windows/Linux: architecture supports it; defer until there is user demand.
+- Permission failure semantics: resolved by spike. See stream adapter routing table and `docs/gui-wrapper-spike-result.md`.
 
-2. **Tool call visibility** — collapsed by default. Power-user toggle exists but is not prominent.
-
-3. **Windows/Linux** — architecture supports it; defer until there is user demand.
-
-4. **Naming** — "Shipwright App" is a placeholder. Decision needed before build starts.
-
-5. **Permission failure semantics** — resolved by spike. Permission blocks surface in `user(tool_result).content`, not `result.is_error`. `--disallowedTools` is case-sensitive (`Bash` not `bash`). `--permission-mode acceptEdits` is CWD-scoped. Invalid `--resume` produces `result.is_error=True`. All signals are handled in the stream adapter routing table.
+**Requires a decision before build starts:**
+- **Naming** — "Shipwright App" is a placeholder. Whether this ships as part of the Shipwright project or as a standalone product affects versioning, repo structure, and install story.
 
 ---
 
