@@ -142,3 +142,65 @@ The session model section of `docs/gui-wrapper-plan.md` stated "each app launch 
 - Model alias passing (`--model sonnet`): unaffected, append to spawn command
 - Transcript storage in app-local: unaffected
 - Shipwright update check: unaffected
+
+---
+
+## Permission spike (follow-on, 2026-04-10)
+
+### Test 4 — `--disallowedTools` case sensitivity
+
+**Commands:**
+```bash
+# lowercase — no effect
+claude --print "Use the Bash tool to run: echo test" --output-format stream-json --verbose --disallowedTools bash
+
+# capital B — blocks
+claude --print "Use the Bash tool to run: echo test" --output-format stream-json --verbose --disallowedTools Bash
+```
+
+**Observed behavior:**
+- `--disallowedTools bash` (lowercase): Bash ran successfully. Tool name matching is case-sensitive; lowercase has no effect.
+- `--disallowedTools Bash` (capital B): Bash never appeared as a `tool_use` event — Claude received no Bash tool in its context, degraded gracefully via text, `result.subtype=success`, `is_error=False`.
+
+**Conclusion:** Use `Bash` (capital B) in `--disallowedTools`. The plan's permission section must specify the exact casing.
+
+---
+
+### Test 5 — Permission blocking signal
+
+**Commands:**
+```bash
+# default permission mode — Write to /tmp (outside project dir)
+claude --print "Use the Write tool to create /tmp/spike-perm-test.txt containing: hello" \
+  --output-format stream-json --verbose
+
+# --permission-mode acceptEdits — Write to /tmp (outside project dir)
+claude --print "..." --output-format stream-json --verbose --permission-mode acceptEdits
+
+# --permission-mode acceptEdits — Write inside project dir
+claude --print "..." --output-format stream-json --verbose --permission-mode acceptEdits
+```
+
+**Observed behavior:**
+- Default mode, `/tmp/` path: `tool_use` event emitted for Write, then a `user` event whose `tool_result.content` = `"Claude requested permissions to write to /tmp/spike-perm-test.txt, but you haven't granted it yet."` File not created. `result.subtype=success`, `is_error=False`.
+- `acceptEdits`, `/tmp/` path: same blocking behavior — `acceptEdits` is scoped to the CWD (project directory), not all paths.
+- `acceptEdits`, project-dir path: Write succeeded. File created. `result.subtype=success`.
+- `--permission-mode reject`: not a valid value (CLI error at startup).
+
+**Key finding:** Permission blocks do NOT surface as `result.is_error=True`. The signal is in the `user` event's `tool_result.content` string, which contains "requested permissions... but you haven't granted it yet." The `result` event is `success` regardless.
+
+**Conclusion:** The stream adapter must inspect `user(tool_result).content` to detect permission blocks — checking `result.is_error` alone is insufficient. `--permission-mode acceptEdits` is the correct default for project-directory file operations; paths outside the project dir remain protected.
+
+---
+
+### Test 6 — Invalid `--resume` failure semantics
+
+**Command:**
+```bash
+claude --print "say: hello" --output-format stream-json --verbose \
+  --resume "00000000-0000-0000-0000-000000000000"
+```
+
+**Observed behavior:** `result` event emitted with `subtype=error_during_execution`, `is_error=True`. No assistant event. Clean, detectable.
+
+**Conclusion:** Invalid or stale `--resume` IDs produce a `result.is_error=True` signal the app can catch. Correct handling: detect `is_error=True`, discard the stale session ID, notify user, offer to start fresh session automatically.

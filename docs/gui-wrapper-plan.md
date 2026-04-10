@@ -1,6 +1,6 @@
 # Shipwright GUI Wrapper — Plan
 
-**Status:** Spike complete — Architecture B active (per-message spawn with `--resume`)  
+**Status:** Engineering-ready — all spikes complete, no open unknowns  
 **Branch:** `feature/gui-wrapper`  
 **Scope:** Thought experiment → buildable spec
 
@@ -67,9 +67,10 @@ The app introduces an explicit **stream adapter** between the raw subprocess out
 - Routes by event type:
   - `system/init` → session metadata (capture `session_id`, `model`, `tools`)
   - `assistant` → inspect `message.content` array; each item is typed: `text` items render as chat bubbles, `tool_use` items render as collapsed activity indicators, `thinking` items are suppressed by default
+  - `user` → inspect `message.content` for `tool_result` items; if `tool_result.content` contains "requested permissions... but you haven't granted it yet", surface a "permission blocked" notice in the activity log
   - `rate_limit_event` → surface in status bar if relevant
-  - `result` → extract final `result` text, `session_id` for next turn, `total_cost_usd` for status bar
-- **Important:** tool use and tool results are not separate top-level event types — they are embedded as content items inside `assistant` events. The adapter must inspect content arrays, not filter by top-level type alone.
+  - `result` → if `is_error=True` and `subtype=error_during_execution`, treat as recoverable failure (stale `--resume`, bad state); otherwise extract `result` text, `session_id` for next turn, `total_cost_usd` for status bar
+- **Important:** tool use and tool results are not separate top-level event types — they are embedded as content items inside `assistant` and `user` events respectively. Permission blocks surface in `user(tool_result).content`, not in `result.is_error`.
 - On parse failure or unknown event type: logs the raw line to a debug buffer and emits a **degraded mode** indicator in the UI rather than crashing
 - On subprocess exit with non-zero code: displays a recoverable error state, not a blank screen
 
@@ -181,11 +182,13 @@ Under Architecture B with `--print`, Claude Code runs in non-interactive mode. T
 
 **v1 decision: use `--permission-mode acceptEdits`** — this allows file reads and edits without per-call prompts, which is appropriate for a GUI wrapper where the user has already chosen a project directory and implicitly trusts the session. Bash tool calls (shell execution) are a higher-risk category.
 
-**Bash tool handling:** The documented CLI controls for tool allow/deny are `--allowedTools` and `--disallowedTools`. By default, the app spawns with `--disallowedTools bash` — Bash is excluded from the tool list and the activity log shows a "Bash tool unavailable" notice if Claude attempts to use it. Users who need Bash tool access toggle it in app settings; the next spawn omits `--disallowedTools bash` and adds `--allowedTools bash` instead. This is surfaced as a prominent opt-in with a one-line warning, not buried in preferences. Note: `--permission-prompt-tool` is an MCP-specific flag for delegating permission prompts to an external tool handler — it does not set Bash allow/deny policy and should not be used here.
+**Bash tool handling:** The documented CLI controls for tool allow/deny are `--allowedTools` and `--disallowedTools`. By default, the app spawns with `--disallowedTools Bash` — Bash is excluded from the tool list and Claude degrades gracefully with a text response if it would have used it. Users who need Bash tool access toggle it in app settings; the next spawn omits `--disallowedTools Bash` and adds `--allowedTools Bash` instead. Surfaced as a prominent opt-in with a one-line warning, not buried in preferences. **Note:** tool names are case-sensitive — `Bash` (capital B) matches correctly; `bash` (lowercase) has no effect. Note: `--permission-prompt-tool` is an MCP-specific flag for delegating permission prompts to an external tool handler — it does not set Bash allow/deny policy and should not be used here.
 
-**What the app does not do:** Intercept tool permission prompts interactively. Under `--print`, there is no prompt to intercept. The permission model is set at spawn time and applies to the whole turn. An interactive permission UI (like Claude Code's own terminal prompt) is not possible in Architecture B without additional IPC machinery that is out of scope for v1.
+**Permission blocking signal:** When a tool call is blocked by permissions, the signal does NOT appear in `result.is_error` — the `result` event is still `subtype=success`. The block surfaces in a `user` event whose `tool_result.content` contains the string "requested permissions... but you haven't granted it yet." The stream adapter must inspect this content to detect blocks. `--permission-mode acceptEdits` is scoped to the CWD (project directory) — writes outside it are blocked even under `acceptEdits`.
 
-**Remaining spike:** The exact behavior of `--print` when a tool call would require permission and `--permission-mode` does not permit it has not been tested. This should be verified before the permission defaults above are treated as final. See Open Questions.
+**`--resume` failure handling:** An invalid or stale `--resume` ID produces `result.subtype=error_during_execution` with `is_error=True` — a clean detectable signal. The app catches this, discards the stale session ID, notifies the user, and starts a fresh session automatically.
+
+**What the app does not do:** Intercept tool permission prompts interactively. Under `--print`, there is no interactive prompt to intercept. The permission model is set at spawn time and applies to the whole turn.
 
 ### Session model (revised by spike)
 
@@ -216,7 +219,7 @@ The first message of a session omits `--resume`; the `session_id` from the retur
 
 4. **Naming** — "Shipwright App" is a placeholder. Decision needed before build starts.
 
-5. **Permission failure semantics (spike required)** — the behavior of `--print` when a tool call is blocked by `--permission-mode` has not been tested: does it return an error in the `result` event, emit a partial response, or silently skip the tool call? This determines whether the "Bash tool blocked" notice in the activity log is reliable or whether the app needs to detect a different signal. Timebox: half a day. Test: spawn with `--permission-mode reject` and a prompt that triggers a Bash call; observe the stream-json output.
+5. **Permission failure semantics** — resolved by spike. Permission blocks surface in `user(tool_result).content`, not `result.is_error`. `--disallowedTools` is case-sensitive (`Bash` not `bash`). `--permission-mode acceptEdits` is CWD-scoped. Invalid `--resume` produces `result.is_error=True`. All signals are handled in the stream adapter routing table.
 
 ---
 
