@@ -1,6 +1,6 @@
 ---
 name: cross-functional-liaison
-description: "Handles the PM's coordination work: meeting notes, stakeholder updates, decision documentation, alignment tracking, and communication drafting across audiences."
+description: "Use proactively for meeting notes, stakeholder updates, decision logs, and cross-functional communication. Handles the coordination work that keeps teams aligned."
 model: sonnet
 tools:
   - Read

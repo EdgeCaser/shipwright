@@ -1,6 +1,6 @@
 ---
 name: execution-driver
-description: "Turns strategy into shippable work. Breaks initiatives into epics and stories, supports sprint planning, generates release notes, and drafts stakeholder communications."
+description: "Use proactively for PRDs, epics, stories, sprint planning, release notes, and execution handoff work. Turns strategy into shippable plans and artifacts."
 model: sonnet
 tools:
   - Read

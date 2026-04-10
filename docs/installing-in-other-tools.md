@@ -20,12 +20,16 @@ bash shipwright-sync.sh          # interactive — review changes before applyin
 bash shipwright-sync.sh --yes    # auto-update without prompts
 ```
 
+It also installs the optional Shipwright output style to `.claude/output-styles/shipwright.md`, so you can enable it inside Claude Code with `/output-style shipwright`.
+
 **Alternative: manual copy**
 
 ```bash
 cp -r shipwright/skills/ your-project/.claude/skills/
 cp -r shipwright/agents/ your-project/.claude/agents/
 cp -r shipwright/commands/ your-project/.claude/commands/
+mkdir -p your-project/.claude/output-styles/
+cp shipwright/output-styles/shipwright.md your-project/.claude/output-styles/
 ```
 
 Or install as a plugin (see [Quick Start](../README.md#quick-start) in the README).
@@ -112,12 +116,14 @@ cp -r shipwright/skills/ your-project/.kiro/skills/
 | Skills (SKILL.md files) | Yes | Yes |
 | Commands (/discover, /sprint, etc.) | No | Yes |
 | Agents (@discovery-researcher, etc.) | No | Yes |
-| Orchestrator (/start) | No | Yes |
+| Orchestrator (`/shipwright` or `/start`) | No | Yes |
+| Start menu (`/shipwright-help`) | No | Yes |
+| Output styles (`/output-style shipwright`) | No | Yes |
 | Evaluation rubrics (evals/) | Yes | Yes |
 | Pass/fail quality gates | Yes | Yes |
 | MCP integrations | Varies by tool | Yes |
 
-Codex note: repository `AGENTS.md` plus `.codex/skills/` can still provide a conversational Shipwright experience, but that is a Codex-native instruction layer, not the Claude Code `/start` orchestrator.
+Codex note: repository `AGENTS.md` plus `.codex/skills/` can still provide a conversational Shipwright experience, but that is a Codex-native instruction layer, not the Claude Code `/shipwright` or `/start` orchestrator.
 
 ## Standalone mode (any tool)
 

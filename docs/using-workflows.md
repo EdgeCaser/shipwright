@@ -29,7 +29,7 @@ That's it. The workflow will:
 3. Pause at decision points to check in with you
 4. Deliver the final output at the end
 
-You can also type `/start` and describe what you need in plain language. The orchestrator will figure out which workflow to run and kick it off for you.
+You can also type `/shipwright` (or `/start`) and describe what you need in plain language. The orchestrator will figure out which workflow to run and kick it off for you. If you want a compact menu first, run `/shipwright-help`.
 
 If you already have a finished artifact and want a separate adversarial pass before sharing it, run `/challenge`.
 
@@ -37,7 +37,7 @@ If you already have a finished artifact and want a separate adversarial pass bef
 
 There are three ways to get work done in Shipwright, and they're suited to different situations:
 
-**Use the orchestrator (`/start`)** when you're not sure which skill or workflow fits, or when your task spans multiple areas. Describe what you need and it routes to the right place. Good for: "I need to prepare for a board meeting," "Help me think through this new feature idea," "What should I do before our quarterly planning?" If you already know the exact workflow you want, running it directly is usually faster and less likely to time out.
+**Use the orchestrator (`/shipwright`, or `/start`)** when you're not sure which skill or workflow fits, or when your task spans multiple areas. Describe what you need and it routes to the right place. Good for: "I need to prepare for a board meeting," "Help me think through this new feature idea," "What should I do before our quarterly planning?" If you already know the exact workflow you want, running it directly is usually faster and less likely to time out.
 
 **Use a workflow** when you know what process you want to run end-to-end. Workflows are best for recurring PM tasks that follow a predictable structure. Good for: sprint planning every two weeks, writing a PRD for a new feature, running a retro after a launch.
 
@@ -130,7 +130,7 @@ Most PM work follows one of three patterns. Each path chains 3 workflows, where 
 | Send a stakeholder status update | `/status` |
 | Check if output quality is drifting | `/quality-check` |
 
-If none of these fit, type `/start` and describe what you're working on. The orchestrator will either route you to the right workflow or combine individual skills into a custom plan.
+If none of these fit, type `/shipwright` and describe what you're working on. The orchestrator will either route you to the right workflow or combine individual skills into a custom plan. `/start` remains supported as an alias, and `/shipwright-help` shows the menu of common paths and direct commands.
 
 ## Keeping runs bounded
 
@@ -138,7 +138,7 @@ Shipwright works best when each run has one clear deliverable. If you ask for fr
 
 Use these patterns to keep sessions moving:
 
-- Run a known workflow directly instead of asking `/start` to rediscover it.
+- Run a known workflow directly instead of asking `/shipwright` to rediscover it.
 - Split web-heavy work into phases: research first, synthesis second, packaging third.
 - Expect `/pricing` and `/competitive` to do this explicitly when fresh external evidence is needed.
 - Ask for one primary deliverable per run: market sizing or competitive landscape, not both plus a memo.

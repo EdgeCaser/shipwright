@@ -1,6 +1,6 @@
 ---
 name: red-team
-description: "Constructive adversary for Shipwright artifacts. Reviews completed outputs for unsupported claims, hedging, scope drift, generic reasoning, and buried critical issues."
+description: "Use proactively to pressure-test completed artifacts before they are shared or acted on. Reviews outputs for unsupported claims, hedging, scope drift, and buried critical issues."
 model: sonnet
 tools:
   - Read

@@ -1,6 +1,6 @@
 ---
 name: strategy-planner
-description: "Translates research into strategic artifacts: product vision, roadmaps, positioning, PRDs, OKRs, and prioritization. Challenges assumptions and makes trade-offs explicit."
+description: "Use proactively for strategy, positioning, prioritization, OKRs, and turning evidence into decisions. Challenges assumptions and makes trade-offs explicit."
 model: sonnet
 tools:
   - Read
