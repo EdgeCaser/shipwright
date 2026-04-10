@@ -1,6 +1,6 @@
 # Shipwright GUI Wrapper — Plan
 
-**Status:** Draft for review  
+**Status:** Draft v2 — tightened for build-readiness  
 **Branch:** `feature/gui-wrapper`  
 **Scope:** Thought experiment → buildable spec
 
@@ -8,7 +8,9 @@
 
 ## Problem
 
-Shipwright is powerful but requires comfort with the Claude Code CLI — slash commands, terminal, no visual context for project files or outputs. This is a meaningful friction barrier for PMs and collaborators who aren't CLI-native.
+Shipwright already supports plain-language routing via AGENTS.md for Codex users — slash commands are optional, not required. The real gap is narrower: Claude Code has no visual surface for project files or artifacts, and there is no entry point for PM collaborators who are not running a terminal at all. The friction is not syntax; it is the absence of a GUI.
+
+**Wedge:** A visual, project-aware GUI for Claude Code users and non-terminal PM collaborators who want to run Shipwright workflows and review outputs without touching a terminal.
 
 ---
 
@@ -44,19 +46,32 @@ The app spawns a `claude` subprocess in the user's chosen project directory, usi
 └─────────────────────────────────────────────┘
 ```
 
+### Stream adapter layer
+
+The `stream-json` contract is the load-bearing seam of the entire app. If it is incomplete, noisy, or changes shape, the app gets brittle fast. This risk must be contained at the boundary.
+
+The app introduces an explicit **stream adapter** between the raw subprocess output and the UI:
+
+- Parses and validates each incoming JSON event against a known schema
+- Routes valid events to the correct panel (text → chat, tool\_use → activity log, tool\_result → optionally surfaced)
+- On parse failure or unknown event type: logs the raw line to a debug buffer and emits a **degraded mode** indicator in the UI rather than crashing
+- On subprocess exit with non-zero code: displays a recoverable error state, not a blank screen
+
+The adapter schema should be pinned to a specific Claude Code version and tested against that version's actual output. When Claude Code updates, the adapter tests catch regressions before users see them.
+
 ### Tech stack
 
 **Framework:** Tauri (Rust shell + WebKit webview)
 - Distributes as ~8MB `.dmg` vs ~150MB for Electron
 - Uses macOS's native WebKit — no bundled Chromium
-- Rust backend handles process management and fs watching cleanly
+- Rust backend handles process management, fs watching, and subprocess lifecycle cleanly
 
 **Frontend:** React + Tailwind
 - Three-panel layout (resizable)
 - Markdown rendering in viewer panel
 - Standard web skills, no framework lock-in
 
-**Target platform (v1):** macOS only. The primary Shipwright user base is on Mac. Windows/Linux can follow.
+**Target platform (v1):** macOS only. The primary Shipwright user base is on Mac. Windows/Linux can follow; Tauri supports both and the subprocess approach is cross-platform, so the architecture does not preclude it.
 
 ---
 
@@ -70,12 +85,11 @@ The app spawns a `claude` subprocess in the user's chosen project directory, usi
 
 ### 2. Chat Window (center)
 - User input → claude's stdin
-- `stream-json` output parsed and rendered:
-  - Assistant text → chat bubble
-  - Tool calls → collapsed indicator ("Reading 3 files..."), expandable
-  - Tool results → hidden by default, toggleable
-- Auto-scrolls, supports markdown in responses
-- Session history persisted locally per project directory
+- Stream adapter output rendered as:
+  - Assistant text → chat bubble with markdown
+  - Tool calls → collapsed activity indicator ("Reading 3 files..."), expandable on click
+  - Tool results → hidden by default, accessible via toggle
+- Auto-scrolls; session transcript saved locally as a plain `.md` file per session (append-only, not used for resume — see Session Model)
 
 ### 3. Viewer (right)
 - Auto-detects file type:
@@ -89,12 +103,19 @@ The app spawns a `claude` subprocess in the user's chosen project directory, usi
 
 ## Shipwright integration
 
-On startup, the app checks the opened directory for `manifest.json`. If present:
+On startup, the app checks the opened directory for `manifest.json`. If present, a **command and workflow palette** appears above the chat input.
 
-- A **skill palette** appears above the chat input — buttons for every command (`/write-prd`, `/strategy`, `/sprint`, etc.)
-- Clicking a skill injects the slash command into chat
-- Skills are grouped by category per the manifest
-- No slash commands to memorize; the routing is surfaced visually
+The palette is built from two distinct sources in the manifest:
+
+- **`commands`** — top-level workflows (`/write-prd`, `/strategy`, `/sprint`, etc.), shown as primary actions grouped by their routing entry
+- **`skills`** — discrete capabilities within each category, shown as secondary items under their parent command where applicable
+
+Each palette entry displays:
+- The command or skill name as the label
+- A short description derived from the first line of the corresponding command or skill file
+- A preflight indicator if the command's routing entry references multiple agents (signals a longer-running workflow)
+
+Clicking a command injects it into chat and submits. For commands that benefit from context (e.g., `/write-prd`), a lightweight preflight form appears first — one or two fields (product name, goal) that get prepended to the injected command as plain text. The form is optional; users can dismiss it and type context manually.
 
 This is the GUI Shipwright never had. Same engine, lower friction.
 
@@ -105,52 +126,53 @@ This is the GUI Shipwright never had. Same engine, lower friction.
 The user downloads a single `.dmg`. Drags the `.app` to Applications. Opens it, picks a project directory, starts chatting.
 
 **Startup sequence:**
-1. Check for `claude` in PATH — if missing, show setup instructions with link
-2. Prompt for project directory (or reopen last session)
-3. Check for a saved session ID for that directory — if found, offer "Resume last session?" prompt
-4. Spawn `claude --resume <session-id>` or fresh `claude` depending on user choice
-5. Load UI
+1. Check for `claude` in PATH — if missing, show a setup screen with install instructions and a link; block until resolved
+2. Prompt for project directory (defaults to last opened)
+3. Spawn `claude` in that directory with `--output-format stream-json`
+4. Load UI; stream adapter begins consuming output
 
 No API key input. No model selection. The user's existing Claude setup (credentials, model, config) is inherited by the subprocess.
 
-**Session persistence via `--resume`:**
+### Session model (v1 decision)
 
-When the Claude CLI session ends, it emits a resume command containing a session ID (e.g., `claude --resume abc123`). The app captures this from the stream, extracts the session ID, and persists it to a per-project state file (e.g., `.shipwright/session.json` in the project directory). On next open, if a session ID exists, the user sees a "Continue where you left off?" prompt — accepting spawns `claude --resume <id>`, declining starts fresh and clears the saved ID.
+Each app launch starts a **fresh Claude session**. No resume, no replay.
 
-This gives natural session continuity with zero infrastructure — the CLI handles all history, the app just stores the ID.
+The transcript of each session is saved locally as a plain `.md` file in `.shipwright/transcripts/` within the project directory — append-only, human-readable, not used to reconstruct Claude state. This gives users a record they can search or reference without creating a false promise that context carries forward.
 
----
-
-## Open questions for review
-
-1. **Session persistence** — resolved: capture `--resume <session-id>` from the CLI stream at session end, persist per project directory, offer "Continue?" on next open. The CLI owns history; the app just stores the ID.
-
-2. **Multi-project** — tabs for multiple open directories, or one session per app window? The latter is simpler but limits parallel workflows.
-
-3. **Tool call visibility** — how much of the underlying tool activity should be visible by default? Power users want it; new users may find it noisy.
-
-4. **Skill palette behavior** — inject the command and let Claude respond, or show a pre-flight form for structured inputs (e.g., "what's the PRD for?") before injecting?
-
-5. **Windows/Linux** — defer entirely, or plan the architecture to support it from the start? Tauri supports both; the subprocess and stream-json approach is cross-platform.
-
-6. **Naming** — "Shipwright App" is placeholder. Does this ship as part of the Shipwright project or as a standalone product?
+The `--resume` mechanism is real and could be wired in a future version, but v1 should not ship with it. The risk is that a stale or invalidated session ID produces a confusing failure state for non-CLI users who have no frame of reference for what "resume failed" means.
 
 ---
 
-## Rough build estimate
+## Open questions
 
-| Component | Effort |
-|---|---|
-| Tauri scaffolding + subprocess management | 2–3 days |
-| stream-json parser + event routing | 2–3 days |
-| Three-panel layout + file tree | 2–3 days |
-| Viewer with file type detection | 1–2 days |
-| Skill palette + manifest integration | 1 day |
-| Packaging + `.dmg` distribution | 1 day |
-| Polish, error states, edge cases | 2–3 days |
-| **Total** | **~2–3 weeks** |
+1. **Multi-project** — tabs for multiple open directories, or one session per app window? One window per directory is simpler and safer for v1; tabs can follow.
 
-This assumes one engineer with web skills who is new to Tauri (mild learning curve). Could compress to 1–2 weeks with prior Tauri/Electron experience.
+2. **Tool call visibility** — collapsed by default is the right call for non-CLI users. Power-user toggle (show all tool activity) should exist but not be prominent.
+
+3. **Windows/Linux** — architecture supports it; defer until there is user demand. Do not stub platform-specific code speculatively.
+
+4. **Naming** — "Shipwright App" is a placeholder. Whether this ships as part of the Shipwright project or as a standalone product affects versioning, repo structure, and install story. Decision needed before build starts.
+
+---
+
+## Build estimate
+
+The 2–3 week figure from the previous draft reflects a working demo, not a handoff-ready tool. An honest breakdown:
+
+| Component | Effort | Notes |
+|---|---|---|
+| Tauri scaffolding + subprocess management | 2–3 days | Includes PATH detection, startup error states |
+| Stream adapter + schema validation | 3–4 days | The highest-risk component; deserves extra time |
+| Three-panel layout + file tree | 2–3 days | fs.watch edge cases (permissions, symlinks) add time |
+| Viewer with file type detection | 1–2 days | |
+| Command/workflow palette + manifest parsing | 2 days | Preflight forms add a day if included in v1 |
+| Session transcript persistence | 1 day | |
+| Packaging + `.dmg` distribution | 1–2 days | Notarization, signing, and PATH in sandboxed env can surprise |
+| Hardening: crash recovery, bad events, login state | 3–4 days | Non-CLI users will hit every edge case |
+| **Demo-quality prototype** | **~2–3 weeks** | |
+| **Handoff-ready for non-CLI PMs** | **~5–6 weeks** | |
+
+The delta is real. PATH issues, macOS sandboxing, login state detection, interrupted runs, malformed events, and file-watch permissions are not polish — they are the product for users who cannot fall back to a terminal.
 
 ---
 
