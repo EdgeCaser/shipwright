@@ -105,17 +105,24 @@ The adapter schema should be pinned to a specific Claude Code version and tested
 
 On startup, the app checks the opened directory for `manifest.json`. If present, a **command and workflow palette** appears above the chat input.
 
-The palette is built from two distinct sources in the manifest:
+### Palette derivation rule
 
-- **`commands`** — top-level workflows (`/write-prd`, `/strategy`, `/sprint`, etc.), shown as primary actions grouped by their routing entry
-- **`skills`** — discrete capabilities within each category, shown as secondary items under their parent command where applicable
+The manifest provides three relevant sections: `commands` (flat array), `routing` (map of command → agent(s) + skills), and `skills` (map of category → skill names). There is no encoded hierarchy between commands and skill categories — the palette must not invent one.
 
-Each palette entry displays:
-- The command or skill name as the label
-- A short description derived from the first line of the corresponding command or skill file
-- A preflight indicator if the command's routing entry references multiple agents (signals a longer-running workflow)
+The palette is built as two flat tabs:
 
-Clicking a command injects it into chat and submits. For commands that benefit from context (e.g., `/write-prd`), a lightweight preflight form appears first — one or two fields (product name, goal) that get prepended to the injected command as plain text. The form is optional; users can dismiss it and type context manually.
+**Commands tab** — one entry per item in `manifest.commands`, in manifest order:
+- If the command exists in `manifest.routing`: show the routing agent(s) as a badge. Commands with `agents` (plural) in their routing entry get a "multi-agent" indicator signaling a longer-running workflow. Commands with a single `agent` get no additional indicator.
+- `start` is the only command without a routing entry; it is shown first as the orchestrator entry point with a distinct "Start here" label.
+- Label is the command name. Description is read from the first non-empty line of the matching file in `.claude/commands/<name>.md`. If the file is absent, the command is shown without a description rather than hidden.
+
+**Skills tab** — one section per category key in `manifest.skills` (discovery, strategy, execution, etc.), each listing its skills alphabetically:
+- Skills are not nested under or associated with specific commands — the routing map links commands to skills for orchestration purposes, but that relationship is not surfaced in the palette UI.
+- Label is the skill name. Description is read from the first non-empty line of `.claude/skills/<category>/<name>.md`. If absent, shown without description.
+
+Clicking any command injects `/<command>` into chat and submits. Clicking a skill injects the skill name as plain text (not a slash command) for use in freeform prompts.
+
+For commands where context is clearly required before they can run usefully (`write-prd`, `strategy`, `plan-launch`, `discover`), a lightweight preflight form appears first — one or two plain-text fields prepended to the injected command. Preflight is opt-in per command; a hardcoded list in the app config specifies which commands get it. The form can be dismissed; users type context manually instead.
 
 This is the GUI Shipwright never had. Same engine, lower friction.
 
@@ -126,18 +133,22 @@ This is the GUI Shipwright never had. Same engine, lower friction.
 The user downloads a single `.dmg`. Drags the `.app` to Applications. Opens it, picks a project directory, starts chatting.
 
 **Startup sequence:**
-1. Check for `claude` in PATH — if missing, show a setup screen with install instructions and a link; block until resolved
-2. Prompt for project directory (defaults to last opened)
-3. Spawn `claude` in that directory with `--output-format stream-json`
-4. Load UI; stream adapter begins consuming output
+1. **PATH check** — run `which claude`. If absent, show a setup screen with install instructions and a link; block until resolved.
+2. **CLI health check** — run `claude --version`. If it fails or returns unexpected output, the binary exists but is not a usable Claude Code install (wrong binary, corrupted install, etc.). Show a distinct error — not the same screen as "not installed."
+3. **Auth check** — run `claude --print "" --output-format stream-json` as a lightweight probe. If the response contains an auth error or login prompt, surface a "Claude Code is not authenticated" screen with instructions to run `claude` in a terminal first. Block until resolved. Do not attempt to handle login flow inside the app.
+4. Prompt for project directory (defaults to last opened).
+5. Spawn `claude` in that directory with `--output-format stream-json`.
+6. Load UI; stream adapter begins consuming output.
 
-No API key input. No model selection. The user's existing Claude setup (credentials, model, config) is inherited by the subprocess.
+No API key input. No model selection. The user's existing Claude setup (credentials, model, config) is inherited by the subprocess. Steps 1–3 run on every launch; they are fast and must complete before the project directory prompt appears.
 
 ### Session model (v1 decision)
 
 Each app launch starts a **fresh Claude session**. No resume, no replay.
 
-The transcript of each session is saved locally as a plain `.md` file in `.shipwright/transcripts/` within the project directory — append-only, human-readable, not used to reconstruct Claude state. This gives users a record they can search or reference without creating a false promise that context carries forward.
+The transcript of each session is saved as a plain `.md` file in app-local storage: `~/Library/Application Support/Shipwright/transcripts/<project-hash>/YYYY-MM-DD-HH-MM.md`. Append-only, human-readable, not used to reconstruct Claude state.
+
+**Why app-local, not in-repo:** Transcripts placed inside the project directory (e.g., `.shipwright/transcripts/`) will be accidentally committed unless every Shipwright user correctly configures `.gitignore`. Transcripts can contain sensitive product strategy content. App-local storage is the macOS convention for user data that belongs to the app, not the project, and it is never at risk of being pushed to a remote. The project hash (derived from the directory path) keeps transcripts organized per project without requiring repo modifications. Users who want transcripts alongside their project can symlink the directory.
 
 The `--resume` mechanism is real and could be wired in a future version, but v1 should not ship with it. The risk is that a stale or invalidated session ID produces a confusing failure state for non-CLI users who have no frame of reference for what "resume failed" means.
 
