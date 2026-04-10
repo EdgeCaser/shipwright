@@ -44,9 +44,11 @@ Run `claude --output-format stream-json` without `--print` and send successive m
 
 **If `--output-format stream-json` is print-mode only:** The most viable fallback is a per-message spawn model: for each user message, spawn `claude --print "<message>" --output-format stream-json --resume <session-id>`, capture the session ID from the response, and chain it into the next call. This adds latency per message and reintroduces the `--resume` dependency, but it keeps structured output and preserves session context. The session model section would need to be rewritten accordingly.
 
-**If neither path works cleanly:** Fall back to interactive `claude` with plain stdout, parse assistant text as unstructured markdown, lose tool-call visibility in the UI. This still produces a usable chat wrapper and viewer but eliminates the activity log and degrades the file tree integration.
+**If neither path works cleanly:** Fall back to interactive `claude` with plain stdout, parse assistant text as unstructured markdown. Features cut in this branch: no activity log, no tool-call indicators, best-effort file-tree highlighting (watch for writes, but no event correlation to Claude's actions), markdown-only chat rendering. The viewer and command palette still work. The build estimate compresses by roughly a week; the stream adapter and schema validation components are dropped entirely.
 
 The spike result determines which version of this plan gets built. Do not start UI work until it is resolved.
+
+**Spike deliverable:** A short written artifact (not code) covering: the exact command(s) tested, observed behavior across multiple turns, a sample of raw output, the verdict (assumption holds / print-mode only / neither), and which architecture branch is now active. This should be committable to this branch as `docs/gui-wrapper-spike-result.md` so the build decision is on record.
 
 ---
 
@@ -176,7 +178,7 @@ The app includes a **Check for Updates** button in the Help menu (and on the sta
 
 Claude Code supports `claude --model <id>` at startup and `/model <id>` mid-session. The wrapper exposes both, with guardrails.
 
-**Session-start picker:** Before spawning the subprocess, the app presents a model selector with four aliases: `default`, `sonnet`, `opus`, `haiku`. Selecting anything other than `default` appends `--model <resolved-id>` to the spawn command. The active alias is shown in the status bar throughout the session.
+**Session-start picker:** Before spawning the subprocess, the app presents a model selector with four aliases: `default`, `sonnet`, `opus`, `haiku`. Selecting anything other than `default` appends `--model <alias>` to the spawn command — the alias is passed as-is, not resolved to a raw model ID by the app. The CLI owns the alias-to-model mapping; freezing IDs in the wrapper would break silently whenever Anthropic updates them. The active alias is shown in the status bar throughout the session.
 
 **Mid-session switching:** Available from an **Advanced** menu only, and only when Claude is idle (no streaming output in progress). Injecting `/model <id>` while Claude is mid-response risks corrupting the stream. The Advanced menu is not surfaced in the main UI.
 
