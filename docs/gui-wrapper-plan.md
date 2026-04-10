@@ -79,7 +79,7 @@ The adapter schema should be pinned to a specific Claude Code version and tested
 
 ### 1. File Tree (left)
 - Displays the working directory the user opened
-- `fs.watch` updates in real time — files written by Claude light up
+- Native file watcher via the [`notify` crate](https://github.com/notify-rs/notify) — files written by Claude light up in real time
 - Click any file to open it in the Viewer
 - Badge count on files modified in the current session
 
@@ -103,7 +103,7 @@ The adapter schema should be pinned to a specific Claude Code version and tested
 
 ## Shipwright integration
 
-On startup, the app checks the opened directory for `manifest.json`. If present, a **command and workflow palette** appears above the chat input.
+On startup, the app checks the opened directory for `manifest.json`. If absent, the app works as a plain Claude Code GUI wrapper — three panels, file tree, viewer, full chat — just without the palette. If present, a **command and workflow palette** appears above the chat input.
 
 ### Palette derivation rule
 
@@ -135,12 +135,28 @@ The user downloads a single `.dmg`. Drags the `.app` to Applications. Opens it, 
 **Startup sequence:**
 1. **PATH check** — run `which claude`. If absent, show a setup screen with install instructions and a link; block until resolved.
 2. **CLI health check** — run `claude --version`. If it fails or returns unexpected output, the binary exists but is not a usable Claude Code install (wrong binary, corrupted install, etc.). Show a distinct error — not the same screen as "not installed."
-3. **Auth check** — run `claude --print "" --output-format stream-json` as a lightweight probe. If the response contains an auth error or login prompt, surface a "Claude Code is not authenticated" screen with instructions to run `claude` in a terminal first. Block until resolved. Do not attempt to handle login flow inside the app.
+3. **Auth check** — run `claude auth status`. If it returns a non-authenticated state, surface a "Claude Code is not authenticated" screen with instructions to run `claude` in a terminal first. Block until resolved. Do not attempt to handle login flow inside the app. This is less brittle than probing with an empty print request, which would consume a token and parse ambiguous output.
 4. Prompt for project directory (defaults to last opened).
 5. Spawn `claude` in that directory with `--output-format stream-json`.
 6. Load UI; stream adapter begins consuming output.
 
-No API key input. No model selection. The user's existing Claude setup (credentials, model, config) is inherited by the subprocess. Steps 1–3 run on every launch; they are fast and must complete before the project directory prompt appears.
+Steps 1–3 run on every launch; they are fast and must complete before the project directory prompt appears.
+
+### Shipwright update check
+
+The app includes a **Check for Updates** button in the Help menu (and on the startup screen). When triggered, it compares the local `manifest.json` version field against the latest release tag on the Shipwright GitHub repo. If a newer version is available, it surfaces a notification with a link to the release and the existing `shipwright-sync.sh` instructions. The app does not update itself or the Shipwright install — it informs and defers. No background polling; check is manual only in v1.
+
+### Model selection
+
+Claude Code supports `claude --model <id>` at startup and `/model <id>` mid-session. The wrapper exposes both, with guardrails.
+
+**Session-start picker:** Before spawning the subprocess, the app presents a model selector with four aliases: `default`, `sonnet`, `opus`, `haiku`. Selecting anything other than `default` appends `--model <resolved-id>` to the spawn command. The active alias is shown in the status bar throughout the session.
+
+**Mid-session switching:** Available from an **Advanced** menu only, and only when Claude is idle (no streaming output in progress). Injecting `/model <id>` while Claude is mid-response risks corrupting the stream. The Advanced menu is not surfaced in the main UI.
+
+**What is not built in v1:** A rich model picker with raw model IDs, org-policy awareness, or custom model options. These require knowing which models are actually available to a given account, which is not exposed by the CLI auth state. A safe alias set (`default`, `sonnet`, `opus`, `haiku`) avoids that problem without overpromising. Raw ID input is available as a text field in the Advanced menu for users who need it.
+
+Model changes are recorded in the session transcript as a metadata line: `[model changed to sonnet at 14:32]`.
 
 ### Session model (v1 decision)
 
@@ -174,7 +190,7 @@ The 2–3 week figure from the previous draft reflects a working demo, not a han
 |---|---|---|
 | Tauri scaffolding + subprocess management | 2–3 days | Includes PATH detection, startup error states |
 | Stream adapter + schema validation | 3–4 days | The highest-risk component; deserves extra time |
-| Three-panel layout + file tree | 2–3 days | fs.watch edge cases (permissions, symlinks) add time |
+| Three-panel layout + file tree | 2–3 days | notify crate edge cases (permissions, symlinks) add time |
 | Viewer with file type detection | 1–2 days | |
 | Command/workflow palette + manifest parsing | 2 days | Preflight forms add a day if included in v1 |
 | Session transcript persistence | 1 day | |
