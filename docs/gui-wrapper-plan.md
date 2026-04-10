@@ -1,6 +1,6 @@
 # Shipwright GUI Wrapper — Plan
 
-**Status:** Draft v2 — tightened for build-readiness  
+**Status:** Spike required before build — core integration seam unverified  
 **Branch:** `feature/gui-wrapper`  
 **Scope:** Thought experiment → buildable spec
 
@@ -25,6 +25,32 @@ A lightweight desktop application that wraps the user's existing `claude` CLI in
 ## Architecture
 
 ### Process model
+
+**⚠ Unverified assumption — spike required before build.**
+
+The plan assumes the app can spawn a long-lived `claude` subprocess with `--output-format stream-json`, pipe user input to its stdin, and consume a structured JSON event stream on its stdout across multiple turns. The CLI reference documents `--output-format` as a flag for print mode (`claude --print`), not general interactive mode. Whether it works across a persistent interactive session has not been confirmed.
+
+This is the load-bearing assumption of the entire architecture. Everything downstream — the stream adapter, the panel routing, the session model — depends on it being true.
+
+**Required spike (timebox: 1–2 days):**
+
+Run `claude --output-format stream-json` without `--print` and send successive messages to stdin. Observe whether:
+1. The process stays alive between turns
+2. Each response arrives as a parseable JSON stream
+3. Tool use events are included in the stream
+4. The session is stateful across turns
+
+**If the assumption holds:** Proceed with the architecture as described. The rest of this plan is valid.
+
+**If `--output-format stream-json` is print-mode only:** The most viable fallback is a per-message spawn model: for each user message, spawn `claude --print "<message>" --output-format stream-json --resume <session-id>`, capture the session ID from the response, and chain it into the next call. This adds latency per message and reintroduces the `--resume` dependency, but it keeps structured output and preserves session context. The session model section would need to be rewritten accordingly.
+
+**If neither path works cleanly:** Fall back to interactive `claude` with plain stdout, parse assistant text as unstructured markdown, lose tool-call visibility in the UI. This still produces a usable chat wrapper and viewer but eliminates the activity log and degrades the file tree integration.
+
+The spike result determines which version of this plan gets built. Do not start UI work until it is resolved.
+
+---
+
+*Assuming the spike confirms the long-lived process model, the architecture is:*
 
 The app spawns a `claude` subprocess in the user's chosen project directory, using `--output-format stream-json`. Every tool call, assistant message, and tool result arrives as a structured JSON event on stdout. The GUI consumes that stream and routes events to the appropriate panel.
 
@@ -164,7 +190,7 @@ Each app launch starts a **fresh Claude session**. No resume, no replay.
 
 The transcript of each session is saved as a plain `.md` file in app-local storage: `~/Library/Application Support/Shipwright/transcripts/<project-hash>/YYYY-MM-DD-HH-MM.md`. Append-only, human-readable, not used to reconstruct Claude state.
 
-**Why app-local, not in-repo:** Transcripts placed inside the project directory (e.g., `.shipwright/transcripts/`) will be accidentally committed unless every Shipwright user correctly configures `.gitignore`. Transcripts can contain sensitive product strategy content. App-local storage is the macOS convention for user data that belongs to the app, not the project, and it is never at risk of being pushed to a remote. The project hash (derived from the directory path) keeps transcripts organized per project without requiring repo modifications. Users who want transcripts alongside their project can symlink the directory.
+**Why app-local, not in-repo:** Transcripts placed inside the project directory (e.g., `.shipwright/transcripts/`) will be accidentally committed unless every Shipwright user correctly configures `.gitignore`. Transcripts can contain sensitive product strategy content. App-local storage is the macOS convention for user data that belongs to the app, not the project, and it is never at risk of being pushed to a remote. The project hash (derived from the directory path) keeps transcripts organized per project without requiring repo modifications. Users who want transcripts alongside their project can symlink the directory. Note: if a project directory is moved or renamed, the hash changes and prior transcripts become unreachable from the new path. This is acceptable in v1 — transcripts are a reference record, not a critical data store — but should be documented for users.
 
 The `--resume` mechanism is real and could be wired in a future version, but v1 should not ship with it. The risk is that a stale or invalidated session ID produces a confusing failure state for non-CLI users who have no frame of reference for what "resume failed" means.
 
