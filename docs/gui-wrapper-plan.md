@@ -107,16 +107,23 @@ The user downloads a single `.dmg`. Drags the `.app` to Applications. Opens it, 
 **Startup sequence:**
 1. Check for `claude` in PATH — if missing, show setup instructions with link
 2. Prompt for project directory (or reopen last session)
-3. Spawn `claude` in that directory
-4. Load UI
+3. Check for a saved session ID for that directory — if found, offer "Resume last session?" prompt
+4. Spawn `claude --resume <session-id>` or fresh `claude` depending on user choice
+5. Load UI
 
 No API key input. No model selection. The user's existing Claude setup (credentials, model, config) is inherited by the subprocess.
+
+**Session persistence via `--resume`:**
+
+When the Claude CLI session ends, it emits a resume command containing a session ID (e.g., `claude --resume abc123`). The app captures this from the stream, extracts the session ID, and persists it to a per-project state file (e.g., `.shipwright/session.json` in the project directory). On next open, if a session ID exists, the user sees a "Continue where you left off?" prompt — accepting spawns `claude --resume <id>`, declining starts fresh and clears the saved ID.
+
+This gives natural session continuity with zero infrastructure — the CLI handles all history, the app just stores the ID.
 
 ---
 
 ## Open questions for review
 
-1. **Session persistence** — should the app maintain conversation history across app restarts, or treat each launch as a fresh session? Claude Code doesn't natively persist across invocations.
+1. **Session persistence** — resolved: capture `--resume <session-id>` from the CLI stream at session end, persist per project directory, offer "Continue?" on next open. The CLI owns history; the app just stores the ID.
 
 2. **Multi-project** — tabs for multiple open directories, or one session per app window? The latter is simpler but limits parallel workflows.
 
