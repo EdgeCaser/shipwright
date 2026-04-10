@@ -1,6 +1,6 @@
 # Shipwright GUI Wrapper — Plan
 
-**Status:** Spike required before build — core integration seam unverified  
+**Status:** Spike complete — Architecture B active (per-message spawn with `--resume`)  
 **Branch:** `feature/gui-wrapper`  
 **Scope:** Thought experiment → buildable spec
 
@@ -32,27 +32,15 @@ The plan assumes the app can spawn a long-lived `claude` subprocess with `--outp
 
 This is the load-bearing assumption of the entire architecture. Everything downstream — the stream adapter, the panel routing, the session model — depends on it being true.
 
-**Required spike (timebox: 1–2 days):**
+**Spike complete.** See [`docs/gui-wrapper-spike-result.md`](gui-wrapper-spike-result.md) for full findings.
 
-Run `claude --output-format stream-json` without `--print` and send successive messages to stdin. Observe whether:
-1. The process stays alive between turns
-2. Each response arrives as a parseable JSON stream
-3. Tool use events are included in the stream
-4. The session is stateful across turns
+**Summary:** Architecture A (long-lived subprocess with `--output-format stream-json`) is unconfirmed — claude requires a real interactive terminal for multi-turn operation and does not behave as a pipeable multi-turn server. Architecture B (per-message spawn with `--resume`) is confirmed: `--print --output-format stream-json --verbose --resume <id>` works cleanly, session context is preserved, and tool use events are captured.
 
-**If the assumption holds:** Proceed with the architecture as described. The rest of this plan is valid.
-
-**If `--output-format stream-json` is print-mode only:** The most viable fallback is a per-message spawn model: for each user message, spawn `claude --print "<message>" --output-format stream-json --resume <session-id>`, capture the session ID from the response, and chain it into the next call. This adds latency per message and reintroduces the `--resume` dependency, but it keeps structured output and preserves session context. The session model section would need to be rewritten accordingly.
-
-**If neither path works cleanly:** Fall back to interactive `claude` with plain stdout, parse assistant text as unstructured markdown. Features cut in this branch: no activity log, no tool-call indicators, best-effort file-tree highlighting (watch for writes, but no event correlation to Claude's actions), markdown-only chat rendering. The viewer and command palette still work. The build estimate compresses by roughly a week; the stream adapter and schema validation components are dropped entirely.
-
-The spike result determines which version of this plan gets built. Do not start UI work until it is resolved.
-
-**Spike deliverable:** A short written artifact (not code) covering: the exact command(s) tested, observed behavior across multiple turns, a sample of raw output, the verdict (assumption holds / print-mode only / neither), and which architecture branch is now active. This should be committable to this branch as `docs/gui-wrapper-spike-result.md` so the build decision is on record.
+**Active architecture: B.**
 
 ---
 
-*Assuming the spike confirms the long-lived process model, the architecture is:*
+*The architecture operates as follows:*
 
 The app spawns a `claude` subprocess in the user's chosen project directory, using `--output-format stream-json`. Every tool call, assistant message, and tool result arrives as a structured JSON event on stdout. The GUI consumes that stream and routes events to the appropriate panel.
 
@@ -186,15 +174,22 @@ Claude Code supports `claude --model <id>` at startup and `/model <id>` mid-sess
 
 Model changes are recorded in the session transcript as a metadata line: `[model changed to sonnet at 14:32]`.
 
-### Session model (v1 decision)
+### Session model (revised by spike)
 
-Each app launch starts a **fresh Claude session**. No resume, no replay.
+Each user message spawns a new `claude --print` subprocess:
+```
+claude --print "<message>" --output-format stream-json --verbose --resume <session-id>
+```
 
-The transcript of each session is saved as a plain `.md` file in app-local storage: `~/Library/Application Support/Shipwright/transcripts/<project-hash>/YYYY-MM-DD-HH-MM.md`. Append-only, human-readable, not used to reconstruct Claude state.
+The first message of a session omits `--resume`; the `session_id` from the returned `result` event is stored in app-local state and used for all subsequent messages in that session. The CLI owns session history; the app stores only the ID.
 
-**Why app-local, not in-repo:** Transcripts placed inside the project directory (e.g., `.shipwright/transcripts/`) will be accidentally committed unless every Shipwright user correctly configures `.gitignore`. Transcripts can contain sensitive product strategy content. App-local storage is the macOS convention for user data that belongs to the app, not the project, and it is never at risk of being pushed to a remote. The project hash (derived from the directory path) keeps transcripts organized per project without requiring repo modifications. Users who want transcripts alongside their project can symlink the directory. Note: if a project directory is moved or renamed, the hash changes and prior transcripts become unreachable from the new path. This is acceptable in v1 — transcripts are a reference record, not a critical data store — but should be documented for users.
+**Latency:** Each turn incurs subprocess startup overhead (~1–3 seconds observed). This is acceptable given Shipwright workflow responses take 5–30 seconds, but the UX pattern should be a per-turn startup spinner, not a typing indicator.
 
-The `--resume` mechanism is real and could be wired in a future version, but v1 should not ship with it. The risk is that a stale or invalidated session ID produces a confusing failure state for non-CLI users who have no frame of reference for what "resume failed" means.
+**Required flag:** `--verbose` is mandatory with `--output-format stream-json` in print mode. The process manager must always include it.
+
+**On app close:** The current `session_id` is persisted to app-local state. On next open, if a saved session ID exists for the project directory, the user is offered "Resume last session?" — accepting chains the next message to that session ID; declining discards it and starts fresh. Unlike the earlier decision to defer `--resume` due to risk, the spike confirms the mechanism works cleanly and failure is easy to handle: if `--resume` returns an error, fall back to a fresh session automatically and notify the user.
+
+**Transcript storage:** Each session's turns are appended to a plain `.md` file in app-local storage: `~/Library/Application Support/Shipwright/transcripts/<project-hash>/YYYY-MM-DD-HH-MM.md`. Append-only, human-readable reference record. Note: if the project directory is moved or renamed, the hash changes and prior transcripts become unreachable from the new path — acceptable in v1 but worth documenting.
 
 ---
 
