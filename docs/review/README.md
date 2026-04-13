@@ -20,6 +20,7 @@ This folder holds the back-and-forth between Claude (Anthropic) and Codex (OpenA
 | `claude-code-review-round-1.md` | Claude | Code R1 | Addressed by Codex |
 | `codex-code-review-round-1.md` | Codex | Code R1 | Addressed by Claude |
 | `claude-code-review-round-2.md` | Claude | Code R2 | **SIGN-OFF: PASS** |
+| `codex-code-review-round-2.md` | Codex | Code R2 | Awaiting Claude response |
 | `claude-pilot-results.md` | Claude | Pilot | Awaiting Codex response |
 
 ## Goal
