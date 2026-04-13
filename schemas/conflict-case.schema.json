@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Shipwright Conflict Case Packet",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "scenario_id",
+    "prompt",
+    "artifact_type",
+    "rubric",
+    "constraints",
+    "evidence",
+    "max_rounds",
+    "tool_policy",
+    "sharing_policy",
+    "success_condition"
+  ],
+  "properties": {
+    "scenario_id": { "type": "string", "minLength": 1 },
+    "title": { "type": "string", "minLength": 1 },
+    "prompt": { "type": "string", "minLength": 1 },
+    "artifact_type": { "type": "string", "minLength": 1 },
+    "rubric": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["dimensions", "scoring_scale", "expected_sections", "scoring_spec_ref"],
+      "properties": {
+        "dimensions": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "scoring_scale": { "type": "string", "enum": ["1-5"] },
+        "expected_sections": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "scoring_spec_ref": { "type": ["string", "null"] }
+      }
+    },
+    "constraints": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["expected_sections", "expect_structured", "context_files", "scoring_spec_ref"],
+      "properties": {
+        "expected_sections": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "expect_structured": { "type": "boolean" },
+        "context_files": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "scoring_spec_ref": { "type": ["string", "null"] }
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["evidence_id", "kind", "source_ref"],
+        "properties": {
+          "evidence_id": { "type": "string", "minLength": 1 },
+          "kind": { "type": "string", "minLength": 1 },
+          "source_ref": { "type": "string", "minLength": 1 },
+          "content": { "type": ["string", "null"] },
+          "confidence": { "type": ["string", "null"], "enum": ["low", "medium", "high", null] }
+        }
+      }
+    },
+    "max_rounds": { "type": "integer" },
+    "tool_policy": { "type": "string", "enum": ["none", "symmetric"] },
+    "sharing_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "share_case_packet",
+        "share_committed_artifacts_after_first_pass",
+        "share_critiques_after_open",
+        "share_hidden_reasoning",
+        "share_provider_identity",
+        "share_internal_coalition_drafts"
+      ],
+      "properties": {
+        "share_case_packet": { "type": "boolean" },
+        "share_committed_artifacts_after_first_pass": { "type": "boolean" },
+        "share_critiques_after_open": { "type": "boolean" },
+        "share_hidden_reasoning": { "type": "boolean" },
+        "share_provider_identity": { "type": "boolean" },
+        "share_internal_coalition_drafts": { "type": "boolean" }
+      }
+    },
+    "success_condition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "description", "validator"],
+      "properties": {
+        "type": { "type": "string", "enum": ["validator_contract"] },
+        "description": { "type": "string", "minLength": 1 },
+        "validator": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["artifact_type", "expect_sections", "expect_structured"],
+          "properties": {
+            "artifact_type": { "type": "string", "minLength": 1 },
+            "expect_sections": {
+              "type": "array",
+              "items": { "type": "string", "minLength": 1 }
+            },
+            "expect_structured": { "type": "boolean" }
+          }
+        }
+      }
+    }
+  }
+}

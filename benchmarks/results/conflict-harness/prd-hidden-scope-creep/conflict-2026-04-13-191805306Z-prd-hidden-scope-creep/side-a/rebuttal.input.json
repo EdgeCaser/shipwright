@@ -1,0 +1,82 @@
+{
+  "case_packet": {
+    "scenario_id": "prd-hidden-scope-creep",
+    "title": "PRD with hidden scope creep",
+    "prompt": "Write a PRD for a team inbox workflow handoff improvement.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "opposing_first_pass": {
+    "run_id": "conflict-2026-04-13-191805306Z-prd-hidden-scope-creep",
+    "side_id": "side_b",
+    "round": "first_pass",
+    "artifact_markdown": "# PRD: Team Inbox Workflow Handoff Improvement\n\n## Summary\nImprove handoffs in the existing team inbox by making ownership transfer explicit, auditable, and lightweight. The initial scope is limited to handoff clarity for active conversations inside the current inbox workflow. This PRD does not introduce routing automation, new staffing models, cross-channel orchestration, SLA engines, or a broader case-management system.\n\n## Problem\nTeam inbox conversations can lose context when one teammate needs another teammate to take over. The current workflow likely depends on comments, mentions, informal notes, or manual reassignment, which can create ambiguity about who owns the next response, what context matters, and whether the handoff was accepted.\n\nThe product risk is hidden scope creep: a handoff improvement can easily expand into full workflow automation. This PRD keeps the first release focused on a narrow, testable handoff mechanism.\n\n## Goals\n- Make it clear when a conversation is being handed off.\n- Make the receiving owner explicit.\n- Preserve the reason and context for the handoff.\n- Give the receiving owner a simple accept or decline path.\n- Create a minimal handoff history for operational visibility.\n\n## Non-Goals\n- Building automatic routing or load balancing.\n- Replacing the inbox assignment model.\n- Adding advanced SLA policies or escalation trees.\n- Creating a full case-management workflow builder.\n- Supporting multi-team approval chains.\n- Building analytics beyond basic handoff counts and outcomes for the first release.\n\n## Users\nPrimary users are support, success, operations, or sales teammates who work from a shared inbox and need to transfer ownership of an active customer conversation to another teammate.\n\nSecondary users are team leads who need lightweight visibility into whether handoffs are happening cleanly, without requiring a new management dashboard in the first release.\n\n## User Stories\n- As a sender, I want to hand off a conversation to a specific teammate with a short reason so that ownership is clear.\n- As a receiver, I want to see why the conversation was handed to me so that I can respond without reconstructing context.\n- As a receiver, I want to accept or decline a handoff so that ambiguous ownership does not persist.\n- As a sender, I want to know whether my handoff was accepted or declined so that I can resolve the next step.\n- As a team lead, I want a basic record of handoff events so that I can spot obvious process gaps.\n\n## Functional Requirements\n1. A user can initiate a handoff from an active inbox conversation.\n2. A handoff requires a receiving teammate and a short reason or context note.\n3. The system records the sender, receiver, timestamp, conversation ID, note, and current handoff status.\n4. The receiver is notified inside the existing inbox notification surface.\n5. The receiver can accept the handoff, making them the active owner of the conversation.\n6. The receiver can decline the handoff and must provide a short reason.\n7. If a handoff is declined, ownership remains with the sender unless the existing assignment model requires a different fallback.\n8. The conversation timeline shows handoff events in a compact, readable form.\n9. Users can see whether a conversation has a pending handoff.\n10. The system prevents multiple simultaneous pending handoffs on the same conversation.\n\n## UX Requirements\n- The handoff action should be available from the existing conversation action area.\n- The handoff form should ask only for receiver and context note.\n- The receiver should be able to act from the conversation view without navigating to a separate workflow page.\n- Pending handoff state should be visible but should not block reading or replying unless the existing product model requires single-owner enforcement.\n- Timeline entries should use plain operational language, such as: “A handed this conversation to B: billing context needed.”\n\n## Measurement\nPrimary success metric: percentage of initiated handoffs that are accepted or declined within a defined time window.\n\nSecondary metrics:\n- Median time from handoff initiation to receiver action.\n- Percentage of declined handoffs.\n- Percentage of conversations with more than one handoff event.\n- Qualitative feedback from inbox users on whether handoff context is sufficient.\n\nGuardrail metrics:\n- No increase in unresolved conversation age for conversations with handoffs.\n- No meaningful increase in accidental ownership changes.\n- No material increase in notification dismissal or mute behavior.\n\n## Rollout\nStart with an internal or limited beta for one team inbox group. Measure whether the feature reduces ambiguous ownership and whether users understand pending, accepted, and declined states. Expand only after the team confirms the minimal workflow is sufficient.\n\n## Risks\n- Users may treat handoff notes as a substitute for proper internal documentation.\n- Receivers may ignore pending handoffs if notifications are weak.\n- Declines may create interpersonal friction if reasons are too visible or too vague.\n- The feature may be pressured to absorb routing, SLA, and workload-balancing needs before the core handoff problem is validated.\n\n## Decision Frame\nDecision needed: Should the team build a narrow first-release handoff workflow inside the existing team inbox?\n\nRecommendation: Build a scoped MVP focused on explicit sender, receiver, context note, accept/decline action, and timeline history.\n\nRationale: The prompt asks for a team inbox workflow handoff improvement, not a broader workflow automation platform. A constrained handoff mechanism directly addresses ownership ambiguity while preserving optionality for later routing or analytics work.\n\n## Unknowns & Evidence Gaps\n- No customer interviews, support tickets, usage analytics, or workflow recordings were provided.\n- The current assignment model is unknown, including whether conversations can have zero, one, or multiple owners.\n- The current notification surfaces are unknown.\n- It is unknown whether handoffs are primarily peer-to-peer, cross-functional, manager-mediated, or shift-based.\n- It is unknown whether compliance or audit requirements apply to conversation ownership changes.\n\n## Pass/Fail Readiness\nPass if:\n- A sender can initiate a handoff with receiver and context note.\n- A receiver can accept or decline the handoff.\n- Ownership changes only after acceptance, unless existing product rules explicitly say otherwise.\n- Pending, accepted, and declined states are visible in the conversation timeline.\n- The implementation prevents multiple simultaneous pending handoffs on one conversation.\n- The pilot team reports reduced ambiguity in ownership during handoffs.\n\nFail if:\n- The MVP expands into routing automation, SLA escalation, or workflow-builder scope before validating the basic handoff need.\n- Users still cannot tell who owns the next response.\n- Receivers miss or ignore handoff requests because the notification path is insufficient.\n- Declined handoffs leave the conversation with unclear ownership.\n\n## Recommended Next Artifact\nCreate a lightweight interaction spec and acceptance-criteria checklist for the handoff initiation, pending state, accept flow, decline flow, and timeline event display.",
+    "claims": [
+      {
+        "claim_id": "side_b-claim-1",
+        "summary": "The PRD should constrain the team inbox handoff improvement to explicit ownership transfer with context, accept/decline states, and timeline visibility, while excluding broader workflow automation to avoid hidden scope creep.",
+        "evidence_refs": [
+          "ctx-1"
+        ],
+        "is_major": true
+      }
+    ],
+    "citations": [
+      "ctx-1"
+    ],
+    "open_questions": [],
+    "critique_responses": []
+  }
+}

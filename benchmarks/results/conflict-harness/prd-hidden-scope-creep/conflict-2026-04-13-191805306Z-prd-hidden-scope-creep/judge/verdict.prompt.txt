@@ -1,0 +1,243 @@
+You are the judge in a blinded conflict harness run.
+Provider identity is intentionally hidden. Do not infer provider family.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "winner": "tie",
+  "margin": 0,
+  "rubric_scores": {
+    "side_a": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    },
+    "side_b": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    }
+  },
+  "decisive_findings": [
+    "Replace with the actual decisive findings from this run."
+  ],
+  "judge_confidence": "low",
+  "needs_human_review": true,
+  "rationale": "One-paragraph explanation of the verdict."
+}
+
+Use min_margin_for_verdict = 0.1.
+judge_confidence rubric:
+- high: the winning side is clearly stronger on at least 3 rubric dimensions and has no major unsupported-claim problem
+- medium: the winning side leads overall but has at least 1 weak dimension or absorbed only part of the opposing critique
+- low: score margin is below min_margin_for_verdict or both sides have significant unsupported claims
+
+Judge packet:
+{
+  "case_packet": {
+    "scenario_id": "prd-hidden-scope-creep",
+    "title": "PRD with hidden scope creep",
+    "prompt": "Write a PRD for a team inbox workflow handoff improvement.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-13-191805306Z-prd-hidden-scope-creep",
+      "side_id": "side_a",
+      "round": "first_pass",
+      "artifact_markdown": "# PRD: Team Inbox Workflow Handoff Improvement\n\n## Decision Frame\n\n**Problem statement:** Team inbox handoff between shifts/agents is lossy — conversations get dropped, context is repeated, and customers experience delays when ownership transfers. This PRD scopes an improvement to handoff mechanics within an existing team inbox product.\n\n**Decision to be made:** Should we invest in a structured handoff mechanism (handoff summary + explicit ownership transfer + SLA clock reset logic), or is the current implicit reassignment sufficient?\n\n**Scope boundary:** This PRD covers handoff between human agents within a single team inbox. It does NOT cover:\n- Bot-to-human handoff (separate initiative)\n- Cross-team routing or escalation paths\n- Inbox triage or auto-assignment algorithms\n- Customer-facing UI changes\n- Reporting/analytics dashboards for handoff metrics\n\n**Stakeholders:** Support Operations (owner), Engineering (builder), Product (sponsor), QA (validation)\n\n**Success criteria:**\n- Reduce median time-to-first-response after handoff by 30%\n- Reduce customer repeat-context rate (measured via survey) by 25%\n- Zero increase in average handle time per conversation\n\n### Requirements\n\n| ID | Requirement | Priority | Rationale |\n|----|------------|----------|----------|\n| R1 | Structured handoff summary auto-generated from conversation history | P0 | Eliminates context loss at transfer |\n| R2 | Explicit \"transfer ownership\" action with required reason field | P0 | Creates accountability and audit trail |\n| R3 | SLA clock pauses during active handoff (max 5 min window) | P1 | Prevents false SLA breaches during legitimate transfers |\n| R4 | Receiving agent sees handoff summary pinned at top of conversation | P1 | Reduces time to re-orient |\n| R5 | Handoff history visible in conversation sidebar | P2 | Supports retrospective analysis |\n\n## Unknowns & Evidence Gaps\n\n| ID | Unknown | Impact if wrong | Proposed resolution | Status |\n|----|---------|-----------------|--------------------|---------|\n| U1 | We assume handoff is the primary driver of repeat-context, but it may be poor internal notes | High — wrong root cause means wrong solution | Analyze 200 conversations with repeat-context tags; check if handoff was involved | NOT STARTED |\n| U2 | Auto-generated summaries may be inaccurate or too verbose, reducing trust | Medium — agents ignore summaries, no improvement | Prototype with 3 summary strategies; test with 10 agents over 1 week | NOT STARTED |\n| U3 | SLA clock pause could be gamed to artificially improve SLA metrics | Medium — undermines reporting integrity | Cap pause at 5 min; flag conversations with >2 handoffs for review | MITIGATED BY DESIGN |\n| U4 | Volume of handoffs per day is assumed to be >15% of conversations but not validated | High — low volume means low ROI | Pull handoff frequency from assignment logs for last 90 days | NOT STARTED |\n| U5 | We do not know if agents will use the structured transfer vs. informal Slack-based handoff | Medium — adoption failure | Interview 8 agents on current handoff workflow before build | NOT STARTED |\n\n## Pass/Fail Readiness\n\n**Overall assessment: NOT READY to build.**\n\n| Gate | Status | Blocker? |\n|------|--------|---------|\n| Root cause validated (U1) | Not started | YES |\n| Handoff volume validated (U4) | Not started | YES |\n| Agent workflow understood (U5) | Not started | YES |\n| Summary prototype tested (U2) | Not started | No — can run in parallel with build |\n| SLA gaming risk mitigated (U3) | Mitigated by design | No |\n| Engineering feasibility confirmed | Not assessed | No — standard CRUD + LLM summarization |\n| Scope locked (no creep beyond R1-R5) | Locked in this document | No |\n\n**Blocking items before build commitment:**\n1. Resolve U1 — confirm handoff is actually the root cause of repeat-context\n2. Resolve U4 — confirm handoff volume justifies investment\n3. Resolve U5 — confirm agents would actually use structured handoff\n\n**Scope creep risks identified:**\n- Pressure to add cross-team routing (out of scope — separate initiative)\n- Pressure to build analytics dashboard on handoff data (out of scope — P2 sidebar history is max)\n- Pressure to extend to bot-to-human handoff (explicitly excluded)\n- Auto-assignment optimization is adjacent but distinct — do not bundle\n\n## Recommended Next Artifact\n\n**Next step: Discovery spike (1 week)**\n\nBefore committing engineering resources, resolve the three blocking unknowns:\n\n1. **Conversation audit (U1):** Analyze 200 tagged repeat-context conversations to confirm handoff as root cause. Output: root cause distribution chart.\n2. **Volume analysis (U4):** Pull assignment-change events from last 90 days. Output: handoff frequency by team, time of day, day of week.\n3. **Agent interviews (U5):** 30-min interviews with 8 agents across 2 teams. Output: current handoff workflow map + pain points.\n\n**If discovery confirms the problem:** Proceed to technical design doc scoped to R1-R2 (P0 items only). R3-R5 deferred to fast-follow.\n\n**If discovery contradicts assumptions:** Pivot to whatever root cause the conversation audit reveals. This PRD should be shelved, not force-fitted.",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "The PRD is explicitly NOT ready to build — three blocking unknowns (root cause validation, handoff volume, agent workflow) must be resolved in a 1-week discovery spike before any engineering commitment.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "Scope is tightly bounded to 5 requirements (R1-R5) covering intra-team human-agent handoff only, with four explicit exclusions (bot handoff, cross-team routing, analytics dashboards, auto-assignment) to resist hidden scope creep.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "Success criteria are measurable and falsifiable: 30% reduction in post-handoff response time, 25% reduction in repeat-context rate, zero increase in handle time.",
+          "evidence_refs": [],
+          "is_major": false
+        }
+      ],
+      "citations": [],
+      "open_questions": [
+        "No context files or evidence were provided with the case packet, so all unknowns (U1-U5) are genuine gaps rather than overlooked inputs.",
+        "The scenario title mentions 'hidden scope creep' — this PRD deliberately names and rejects four adjacent scope items to surface that risk explicitly."
+      ],
+      "critique_responses": []
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-13-191805306Z-prd-hidden-scope-creep",
+      "side_id": "side_b",
+      "round": "first_pass",
+      "artifact_markdown": "# PRD: Team Inbox Workflow Handoff Improvement\n\n## Summary\nImprove handoffs in the existing team inbox by making ownership transfer explicit, auditable, and lightweight. The initial scope is limited to handoff clarity for active conversations inside the current inbox workflow. This PRD does not introduce routing automation, new staffing models, cross-channel orchestration, SLA engines, or a broader case-management system.\n\n## Problem\nTeam inbox conversations can lose context when one teammate needs another teammate to take over. The current workflow likely depends on comments, mentions, informal notes, or manual reassignment, which can create ambiguity about who owns the next response, what context matters, and whether the handoff was accepted.\n\nThe product risk is hidden scope creep: a handoff improvement can easily expand into full workflow automation. This PRD keeps the first release focused on a narrow, testable handoff mechanism.\n\n## Goals\n- Make it clear when a conversation is being handed off.\n- Make the receiving owner explicit.\n- Preserve the reason and context for the handoff.\n- Give the receiving owner a simple accept or decline path.\n- Create a minimal handoff history for operational visibility.\n\n## Non-Goals\n- Building automatic routing or load balancing.\n- Replacing the inbox assignment model.\n- Adding advanced SLA policies or escalation trees.\n- Creating a full case-management workflow builder.\n- Supporting multi-team approval chains.\n- Building analytics beyond basic handoff counts and outcomes for the first release.\n\n## Users\nPrimary users are support, success, operations, or sales teammates who work from a shared inbox and need to transfer ownership of an active customer conversation to another teammate.\n\nSecondary users are team leads who need lightweight visibility into whether handoffs are happening cleanly, without requiring a new management dashboard in the first release.\n\n## User Stories\n- As a sender, I want to hand off a conversation to a specific teammate with a short reason so that ownership is clear.\n- As a receiver, I want to see why the conversation was handed to me so that I can respond without reconstructing context.\n- As a receiver, I want to accept or decline a handoff so that ambiguous ownership does not persist.\n- As a sender, I want to know whether my handoff was accepted or declined so that I can resolve the next step.\n- As a team lead, I want a basic record of handoff events so that I can spot obvious process gaps.\n\n## Functional Requirements\n1. A user can initiate a handoff from an active inbox conversation.\n2. A handoff requires a receiving teammate and a short reason or context note.\n3. The system records the sender, receiver, timestamp, conversation ID, note, and current handoff status.\n4. The receiver is notified inside the existing inbox notification surface.\n5. The receiver can accept the handoff, making them the active owner of the conversation.\n6. The receiver can decline the handoff and must provide a short reason.\n7. If a handoff is declined, ownership remains with the sender unless the existing assignment model requires a different fallback.\n8. The conversation timeline shows handoff events in a compact, readable form.\n9. Users can see whether a conversation has a pending handoff.\n10. The system prevents multiple simultaneous pending handoffs on the same conversation.\n\n## UX Requirements\n- The handoff action should be available from the existing conversation action area.\n- The handoff form should ask only for receiver and context note.\n- The receiver should be able to act from the conversation view without navigating to a separate workflow page.\n- Pending handoff state should be visible but should not block reading or replying unless the existing product model requires single-owner enforcement.\n- Timeline entries should use plain operational language, such as: “A handed this conversation to B: billing context needed.”\n\n## Measurement\nPrimary success metric: percentage of initiated handoffs that are accepted or declined within a defined time window.\n\nSecondary metrics:\n- Median time from handoff initiation to receiver action.\n- Percentage of declined handoffs.\n- Percentage of conversations with more than one handoff event.\n- Qualitative feedback from inbox users on whether handoff context is sufficient.\n\nGuardrail metrics:\n- No increase in unresolved conversation age for conversations with handoffs.\n- No meaningful increase in accidental ownership changes.\n- No material increase in notification dismissal or mute behavior.\n\n## Rollout\nStart with an internal or limited beta for one team inbox group. Measure whether the feature reduces ambiguous ownership and whether users understand pending, accepted, and declined states. Expand only after the team confirms the minimal workflow is sufficient.\n\n## Risks\n- Users may treat handoff notes as a substitute for proper internal documentation.\n- Receivers may ignore pending handoffs if notifications are weak.\n- Declines may create interpersonal friction if reasons are too visible or too vague.\n- The feature may be pressured to absorb routing, SLA, and workload-balancing needs before the core handoff problem is validated.\n\n## Decision Frame\nDecision needed: Should the team build a narrow first-release handoff workflow inside the existing team inbox?\n\nRecommendation: Build a scoped MVP focused on explicit sender, receiver, context note, accept/decline action, and timeline history.\n\nRationale: The prompt asks for a team inbox workflow handoff improvement, not a broader workflow automation platform. A constrained handoff mechanism directly addresses ownership ambiguity while preserving optionality for later routing or analytics work.\n\n## Unknowns & Evidence Gaps\n- No customer interviews, support tickets, usage analytics, or workflow recordings were provided.\n- The current assignment model is unknown, including whether conversations can have zero, one, or multiple owners.\n- The current notification surfaces are unknown.\n- It is unknown whether handoffs are primarily peer-to-peer, cross-functional, manager-mediated, or shift-based.\n- It is unknown whether compliance or audit requirements apply to conversation ownership changes.\n\n## Pass/Fail Readiness\nPass if:\n- A sender can initiate a handoff with receiver and context note.\n- A receiver can accept or decline the handoff.\n- Ownership changes only after acceptance, unless existing product rules explicitly say otherwise.\n- Pending, accepted, and declined states are visible in the conversation timeline.\n- The implementation prevents multiple simultaneous pending handoffs on one conversation.\n- The pilot team reports reduced ambiguity in ownership during handoffs.\n\nFail if:\n- The MVP expands into routing automation, SLA escalation, or workflow-builder scope before validating the basic handoff need.\n- Users still cannot tell who owns the next response.\n- Receivers miss or ignore handoff requests because the notification path is insufficient.\n- Declined handoffs leave the conversation with unclear ownership.\n\n## Recommended Next Artifact\nCreate a lightweight interaction spec and acceptance-criteria checklist for the handoff initiation, pending state, accept flow, decline flow, and timeline event display.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "The PRD should constrain the team inbox handoff improvement to explicit ownership transfer with context, accept/decline states, and timeline visibility, while excluding broader workflow automation to avoid hidden scope creep.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        }
+      ],
+      "citations": [
+        "ctx-1"
+      ],
+      "open_questions": [],
+      "critique_responses": []
+    }
+  },
+  "critique_packets": {
+    "side_a": {
+      "target_side": "side_b",
+      "finding_id": "finding-1",
+      "target_claim_ids": [
+        "side_b-claim-1"
+      ],
+      "claim_under_attack": "The PRD should constrain the team inbox handoff improvement to explicit ownership transfer with context, accept/decline states, and timeline visibility, while excluding broader workflow automation to avoid hidden scope creep.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "The claim cites 'ctx-1' as evidence, but the case packet contains zero evidence items. The entire scope-constraining rationale is asserted rather than grounded: without customer interviews, usage data, or workflow analysis, there is no basis to conclude that explicit accept/decline handoffs are the right constraint boundary versus, say, async handoff queues or status-based ownership. The PRD's own Unknowns section admits it does not know whether handoffs are peer-to-peer, cross-functional, manager-mediated, or shift-based — yet the functional requirements hardcode a peer-to-peer sender/receiver model. Constraining scope is prudent, but choosing *which* narrow scope to build requires evidence the artifact acknowledges it lacks. The claim therefore conflates 'we avoided scope creep' with 'we scoped to the right thing,' when the latter is unvalidated.",
+      "severity": "high"
+    },
+    "side_b": {
+      "target_side": "side_a",
+      "finding_id": "finding-2",
+      "target_claim_ids": [
+        "side_a-claim-2"
+      ],
+      "claim_under_attack": "Scope is tightly bounded to 5 requirements (R1-R5) covering intra-team human-agent handoff only, with four explicit exclusions to resist hidden scope creep.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "The artifact asserts bounded scope, but the visible requirements still add auto-generated conversation summaries, SLA clock pause/reset logic, audit trails/history surfaces, and retrospective analysis support. Listing exclusions does not justify why these adjacent platform, metrics, and workflow changes belong in the handoff MVP, and the later recommendation to proceed only with R1-R2 while deferring R3-R5 undercuts the claim that R1-R5 are a locked, tightly bounded scope.",
+      "severity": "medium"
+    }
+  },
+  "final_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-13-191805306Z-prd-hidden-scope-creep",
+      "side_id": "side_a",
+      "round": "final",
+      "artifact_markdown": "# PRD: Team Inbox Workflow Handoff Improvement\n\n## Decision Frame\n\n**Problem statement:** Team inbox handoff between shifts/agents is lossy — conversations get dropped, context is repeated, and customers experience delays when ownership transfers. This PRD scopes an improvement to handoff mechanics within an existing team inbox product.\n\n**Decision to be made:** Should we invest in a structured handoff mechanism (handoff summary + explicit ownership transfer), or is the current implicit reassignment sufficient?\n\n**Scope boundary:** This PRD covers handoff between human agents within a single team inbox. It does NOT cover:\n- Bot-to-human handoff (separate initiative)\n- Cross-team routing or escalation paths\n- Inbox triage or auto-assignment algorithms\n- Customer-facing UI changes\n- Reporting/analytics dashboards for handoff metrics\n\n**Stakeholders:** Support Operations (owner), Engineering (builder), Product (sponsor), QA (validation)\n\n**Success criteria:**\n- Reduce median time-to-first-response after handoff by 30%\n- Reduce customer repeat-context rate (measured via survey) by 25%\n- Zero increase in average handle time per conversation\n\n### Requirements\n\nRequirements are split into two tiers. The **MVP tier (R1-R2)** is the committed scope if discovery succeeds. The **fast-follow tier (R3-R5)** is explicitly deferred — included here only to document adjacent work we chose NOT to bundle, preventing future scope creep disguised as \"obvious additions.\"\n\n**MVP Tier (committed scope post-discovery)**\n\n| ID | Requirement | Rationale | Scope justification |\n|----|------------|----------|--------------------|\n| R1 | Structured handoff summary auto-generated from conversation history | Eliminates context loss at transfer — directly addresses the core problem | Core handoff mechanic |\n| R2 | Explicit \"transfer ownership\" action with required reason field | Creates accountability and audit trail for each transfer | Core handoff mechanic |\n\n**Fast-Follow Tier (explicitly deferred — not in MVP)**\n\n| ID | Requirement | Rationale | Why deferred |\n|----|------------|----------|-------------|\n| R3 | SLA clock pauses during active handoff (max 5 min window) | Prevents false SLA breaches during legitimate transfers | Touches SLA/metrics infrastructure — separate concern from handoff UX |\n| R4 | Receiving agent sees handoff summary pinned at top of conversation | Reduces time to re-orient | UX optimization; R1 delivers the summary, R4 optimizes placement |\n| R5 | Handoff history visible in conversation sidebar | Supports retrospective analysis | Analytics-adjacent; value depends on handoff volume data (U4) |\n\n## Unknowns & Evidence Gaps\n\n| ID | Unknown | Impact if wrong | Proposed resolution | Status |\n|----|---------|-----------------|--------------------|---------|\n| U1 | We assume handoff is the primary driver of repeat-context, but it may be poor internal notes | High — wrong root cause means wrong solution | Analyze 200 conversations with repeat-context tags; check if handoff was involved | NOT STARTED |\n| U2 | Auto-generated summaries may be inaccurate or too verbose, reducing trust | Medium — agents ignore summaries, no improvement | Prototype with 3 summary strategies; test with 10 agents over 1 week | NOT STARTED |\n| U3 | SLA clock pause could be gamed to artificially improve SLA metrics | Medium — undermines reporting integrity | Cap pause at 5 min; flag conversations with >2 handoffs for review | DEFERRED WITH R3 |\n| U4 | Volume of handoffs per day is assumed to be >15% of conversations but not validated | High — low volume means low ROI | Pull handoff frequency from assignment logs for last 90 days | NOT STARTED |\n| U5 | We do not know if agents will use the structured transfer vs. informal Slack-based handoff | Medium — adoption failure | Interview 8 agents on current handoff workflow before build | NOT STARTED |\n\n## Pass/Fail Readiness\n\n**Overall assessment: NOT READY to build.**\n\n| Gate | Status | Blocker? |\n|------|--------|---------|\n| Root cause validated (U1) | Not started | YES |\n| Handoff volume validated (U4) | Not started | YES |\n| Agent workflow understood (U5) | Not started | YES |\n| Summary prototype tested (U2) | Not started | No — can run in parallel with build |\n| Engineering feasibility confirmed | Not assessed | No — standard CRUD + LLM summarization |\n| MVP scope locked to R1-R2 | Locked in this document | No |\n\n**Blocking items before build commitment:**\n1. Resolve U1 — confirm handoff is actually the root cause of repeat-context\n2. Resolve U4 — confirm handoff volume justifies investment\n3. Resolve U5 — confirm agents would actually use structured handoff\n\n**Scope creep risks identified:**\n- Pressure to add cross-team routing (out of scope — separate initiative)\n- Pressure to bundle R3-R5 into MVP (explicitly deferred to fast-follow)\n- Pressure to extend to bot-to-human handoff (explicitly excluded)\n- Auto-assignment optimization is adjacent but distinct — do not bundle\n\n## Recommended Next Artifact\n\n**Next step: Discovery spike (1 week)**\n\nBefore committing engineering resources, resolve the three blocking unknowns:\n\n1. **Conversation audit (U1):** Analyze 200 tagged repeat-context conversations to confirm handoff as root cause. Output: root cause distribution chart.\n2. **Volume analysis (U4):** Pull assignment-change events from last 90 days. Output: handoff frequency by team, time of day, day of week.\n3. **Agent interviews (U5):** 30-min interviews with 8 agents across 2 teams. Output: current handoff workflow map + pain points.\n\n**If discovery confirms the problem:** Proceed to technical design doc scoped to R1-R2 only. R3-R5 enter backlog as separate, prioritized items.\n\n**If discovery contradicts assumptions:** Pivot to whatever root cause the conversation audit reveals. This PRD should be shelved, not force-fitted.",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "The PRD is explicitly NOT ready to build — three blocking unknowns (root cause validation, handoff volume, agent workflow) must be resolved in a 1-week discovery spike before any engineering commitment.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "MVP scope is bounded to two core handoff mechanics (R1-R2). Three additional requirements (R3-R5) are documented as explicitly deferred fast-follow items with stated reasons for deferral, preventing them from being smuggled into MVP as 'obvious additions.'",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "Success criteria are measurable and falsifiable: 30% reduction in post-handoff response time, 25% reduction in repeat-context rate, zero increase in handle time.",
+          "evidence_refs": [],
+          "is_major": false
+        }
+      ],
+      "citations": [],
+      "open_questions": [
+        "No context files or evidence were provided with the case packet, so all unknowns (U1-U5) are genuine gaps rather than overlooked inputs."
+      ],
+      "critique_responses": [
+        {
+          "finding_id": "finding-2",
+          "disposition": "adopted",
+          "rationale": "The critique correctly identified an internal contradiction: claiming 'tightly bounded scope' of R1-R5 while simultaneously recommending only R1-R2 proceed undermined the scope claim. The revised artifact now explicitly splits requirements into MVP tier (R1-R2, committed scope) and fast-follow tier (R3-R5, explicitly deferred). Each deferred item has a stated reason for deferral — R3 touches SLA/metrics infrastructure beyond handoff UX, R4 is a UX optimization on top of R1, R5 is analytics-adjacent. This resolves the tension: the MVP scope is genuinely tight (two core mechanics), and the fast-follow items are documented precisely to prevent them from creeping back in as unstated assumptions."
+        }
+      ]
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-13-191805306Z-prd-hidden-scope-creep",
+      "side_id": "side_b",
+      "round": "final",
+      "artifact_markdown": "# Revised artifact\n\n# PRD: Team Inbox Workflow Handoff Improvement\n\n## Summary\nImprove team inbox handoffs by reducing ambiguity about who owns the next action, what context is being transferred, and how the handoff is resolved. Because no customer evidence, workflow analysis, or product telemetry was provided, this PRD treats the initial solution boundary as a hypothesis, not a validated conclusion.\n\nThe first product decision is not whether to build a full workflow system. It is whether to validate and then ship the smallest handoff mechanism that fits the dominant handoff pattern in the current inbox. Candidate patterns include peer-to-peer transfer, shift-based transfer, functional queue transfer, or manager-mediated reassignment.\n\n## Problem\nTeam inbox conversations can lose context when ownership changes. Ambiguity may arise around who owns the next response, why the conversation is being transferred, whether the receiving person or group has accepted responsibility, and what should happen if the handoff is not acted on.\n\nThe scope risk is hidden scope creep. A handoff improvement can easily expand into routing automation, SLA escalation, workload balancing, multi-step approvals, or a full case-management workflow builder. This PRD therefore separates the validated problem from unvalidated solution assumptions.\n\n## Goals\n- Clarify ownership during handoff moments in the existing inbox workflow.\n- Preserve enough context for the receiver to take the next action.\n- Make unresolved or failed handoffs visible.\n- Establish a minimal audit trail of handoff events.\n- Validate the dominant handoff pattern before committing to a specific interaction model.\n\n## Non-Goals\n- Building automatic routing or load balancing.\n- Replacing the existing inbox assignment model.\n- Adding SLA engines, escalation trees, or staffing rules.\n- Creating a workflow builder or case-management platform.\n- Supporting multi-team approval chains in the first release.\n- Building analytics beyond basic handoff event visibility needed for pilot evaluation.\n\n## Users\nPrimary users are teammates who work from a shared inbox and need another person, role, queue, or shift group to take responsibility for an active conversation.\n\nSecondary users are team leads who need lightweight visibility into whether handoffs create ownership ambiguity, without introducing a new management dashboard in the first release.\n\n## Assumptions To Validate Before Build\n- Whether handoffs are primarily peer-to-peer, queue-based, shift-based, cross-functional, or manager-mediated.\n- Whether ownership should change immediately on request, only after acceptance, or according to current assignment rules.\n- Whether receivers need an explicit accept or decline action, or whether acknowledgement/status change is sufficient.\n- Whether handoff context should be free-text, structured reason codes, or both.\n- Whether pending handoffs should block replies or only create visible state.\n\n## Candidate MVP Scope\nIf discovery confirms that most handoffs are direct ownership transfers between teammates, the MVP should include:\n\n1. A user can initiate a handoff from an active inbox conversation.\n2. The initiator selects a receiving teammate and adds a short context note.\n3. The system records initiator, receiver, timestamp, conversation ID, note, and handoff status.\n4. The receiver is notified in the existing inbox notification surface.\n5. The receiver can accept, acknowledge, or decline according to the validated ownership model.\n6. If declined, ownership remains with the current owner unless existing assignment rules require another fallback.\n7. The conversation timeline shows compact handoff events.\n8. Users can see when a conversation has an unresolved handoff.\n9. The system prevents conflicting simultaneous handoff states on the same conversation unless the existing product already supports multi-owner workflows.\n\nIf discovery shows that handoffs are usually queue-based or shift-based, the MVP should replace teammate selection with queue or shift-target selection and should not force a peer-to-peer accept/decline model.\n\n## UX Requirements\n- The handoff action should live in the existing conversation action area.\n- The handoff form should ask only for the validated target type and necessary context.\n- The receiver or receiving group should be able to resolve the handoff from the conversation view.\n- Pending handoff state should be visible without blocking reading or replying unless the existing product model requires single-owner enforcement.\n- Timeline entries should use plain operational language, for example: “Handoff requested: billing context needed.”\n\n## Measurement\nPrimary success metric: percentage of initiated handoffs that reach a resolved state within the pilot time window.\n\nSecondary metrics:\n- Median time from handoff initiation to resolution.\n- Percentage of unresolved handoffs.\n- Percentage of declined or redirected handoffs.\n- Percentage of conversations with more than one handoff event.\n- Qualitative feedback from inbox users on whether handoff context is sufficient.\n\nGuardrail metrics:\n- No increase in unresolved conversation age for conversations with handoffs.\n- No meaningful increase in accidental ownership changes.\n- No material increase in notification dismissal or mute behavior.\n\n## Rollout\nStart with discovery using a small set of workflow observations, support-ticket examples, or user interviews from one team inbox group. Select the MVP interaction model only after confirming the dominant handoff pattern. Then run a limited beta with that group before expanding.\n\n## Risks\n- The team may overfit the MVP to a peer-to-peer handoff pattern that is not actually dominant.\n- Users may need queue, role, or shift handoffs rather than person-to-person transfers.\n- Receivers may ignore unresolved handoffs if notifications are weak.\n- Declines may create interpersonal friction if reasons are too visible or too vague.\n- The feature may be pressured to absorb routing, SLA, and workload-balancing needs before the core handoff problem is validated.\n\n## Decision Frame\nDecision needed: Should the team proceed directly to building a narrow handoff workflow, or first validate which narrow handoff model fits the current inbox workflow?\n\nRecommendation: Do not treat peer-to-peer accept/decline as validated scope yet. First validate the dominant handoff pattern, then build the smallest matching MVP inside the existing team inbox.\n\nRationale: The prompt calls for a team inbox workflow handoff improvement, but the case packet provides no customer interviews, usage analytics, workflow recordings, or current assignment model. A constrained MVP is still the right posture for avoiding hidden scope creep, but the exact constraint boundary must be validated before implementation.\n\n## Unknowns & Evidence Gaps\n- No customer interviews, support tickets, usage analytics, or workflow recordings were provided.\n- The current assignment model is unknown, including whether conversations can have zero, one, or multiple owners.\n- The current notification surfaces are unknown.\n- It is unknown whether handoffs are primarily peer-to-peer, cross-functional, manager-mediated, queue-based, or shift-based.\n- It is unknown whether compliance or audit requirements apply to conversation ownership changes.\n- It is unknown whether accept/decline is the correct resolution model.\n\n## Pass/Fail Readiness\nPass if:\n- The team validates the dominant handoff pattern before implementation.\n- The MVP target model matches that validated pattern.\n- Users can tell who owns the next action during and after a handoff.\n- Handoff context is visible where the next responder works.\n- Unresolved handoffs are visible and recoverable.\n- The MVP does not expand into routing automation, SLA escalation, or workflow-builder scope before the core handoff need is validated.\n\nFail if:\n- The MVP hardcodes peer-to-peer accept/decline without validating that this is the right handoff model.\n- Users still cannot tell who owns the next response.\n- Handoffs resolve outside the system with no useful record.\n- Receivers miss or ignore handoff requests because the notification path is insufficient.\n- Declined or unresolved handoffs leave the conversation with unclear ownership.\n\n## Recommended Next Artifact\nCreate a lightweight discovery brief and interaction-decision matrix comparing peer-to-peer, queue-based, shift-based, and manager-mediated handoff flows. After selecting the validated model, produce the detailed interaction spec and acceptance-criteria checklist.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "With no case evidence provided, the PRD should not assert peer-to-peer accept/decline as the validated scope boundary; it should frame that model as one candidate MVP and require validation of the dominant handoff pattern before implementation.",
+          "evidence_refs": [],
+          "is_major": true
+        }
+      ],
+      "citations": [],
+      "open_questions": [],
+      "critique_responses": [
+        {
+          "finding_id": "finding-1",
+          "disposition": "adopted",
+          "rationale": "The critique correctly identified that the first-pass claim cited a nonexistent evidence reference and hardcoded a peer-to-peer accept/decline model despite the artifact's own evidence gaps. The revised PRD removes the unsupported citation, reframes the solution boundary as a hypothesis, and adds validation gates and alternative handoff models before committing to implementation scope."
+        }
+      ]
+    }
+  },
+  "min_margin_for_verdict": 0.1
+}

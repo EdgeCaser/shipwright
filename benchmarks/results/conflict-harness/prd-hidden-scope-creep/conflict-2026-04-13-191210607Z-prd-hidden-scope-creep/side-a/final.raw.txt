@@ -1,0 +1,61 @@
+```json
+{
+  "run_id": "conflict-2026-04-13-191210607Z-prd-hidden-scope-creep",
+  "side_id": "side_a",
+  "round": "final",
+  "artifact_markdown": "# PRD: Team Inbox Workflow Handoff Improvement\n\n## Decision Frame\n\n**Problem Statement:** Team inbox workflows suffer from dropped handoffs — conversations reassigned between agents lose context, stall, or require customers to repeat information. This degrades resolution time, customer satisfaction, and agent morale.\n\n**Decision to be made:** Should we invest in a structured handoff protocol within the team inbox, and if so, what is the minimum viable scope that reduces handoff failures without requiring a platform migration?\n\n**Scope boundary:** This PRD covers handoff mechanics *within* a single team inbox product. It explicitly excludes:\n- Cross-product integrations (e.g., inbox-to-CRM handoff)\n- AI auto-routing or triage automation\n- SLA engine changes\n- Agent performance scoring tied to handoffs\n\nThese are adjacent opportunities but represent scope creep risk. Each requires its own decision frame.\n\n**Who decides:** Product lead + Engineering lead for the Inbox squad. Customer Support Ops is a key stakeholder but not a decider.\n\n**Decision timeline:** Go/no-go by end of sprint planning for Q3 (target: 2 weeks from PRD approval).\n\n## Context & Evidence\n\n**What we need to establish (not yet validated):**\n1. What percentage of multi-touch tickets involve reassignment, and what is the resolution time delta vs. single-owner tickets? *Illustrative hypothesis: if reassignment rates are in the 15–20% range and resolution time increases >2x, the business case is strong. These figures must be pulled from the internal analytics dashboard and confirmed before this PRD advances.* *(Status: measurement required — no verified baseline exists in this document.)*\n2. Agent sentiment on handoff friction — qualitative signal suggests \"picking up someone else's conversation with no context\" is a top frustration, but this needs a structured survey with sufficient sample size to be cited as evidence. *(Status: anecdotal — formal survey needed.)*\n3. Current handoff mechanism is a free-text \"internal note\" field — no structured context transfer, no required fields, no visibility into whether the receiving agent read the note. *(Status: observable product fact, verifiable by inspection.)*\n\n**What we believe but haven't validated:**\n- Structured handoff fields (status summary, next action, customer sentiment) will reduce re-ask rates. *(Assumption — needs A/B validation.)*\n- Agents will fill in structured fields if they're fast (<15 seconds added per handoff). *(Assumption — needs prototype testing.)*\n- Receiving agents will read and use structured context. *(Assumption — needs observation study.)*\n\n## Proposed Solution (Minimum Viable)\n\n**Handoff Card:** When an agent reassigns a conversation, a structured card is required with:\n- **Summary** (free text, 280 char max): What happened so far\n- **Next Action** (dropdown): Awaiting customer reply / Needs internal escalation / Ready to resolve / Other\n- **Customer Sentiment** (select): Positive / Neutral / Frustrated / Escalation risk\n- **Attachments/Links** (optional): Relevant prior messages auto-linked\n\n**Receiving Agent View:** The handoff card appears pinned at the top of the conversation when a new agent opens a reassigned ticket. Dismissal requires a single click (\"Got it\"), which logs read-receipt.\n\n**Metrics:**\n- Primary: Reduction in median resolution time for reassigned tickets (baseline to be established during validation sprint; target: meaningful reduction, threshold TBD after baselining)\n- Secondary: Agent-reported context sufficiency (post-handoff micro-survey, target: >70% \"sufficient\")\n- Guardrail: Handoff card completion time must stay <20 seconds median (if exceeded, simplify fields)\n\n## Unknowns & Evidence Gaps\n\n| Unknown | Impact if wrong | Mitigation |\n|---|---|---|\n| Reassignment rate and resolution time impact not yet baselined | Cannot size the opportunity or set meaningful targets | Pull trailing 90-day data from analytics dashboard as first action in validation sprint. Kill threshold: if reassignment <5% of tickets, problem may not warrant dedicated investment. |\n| Agents won't fill in structured fields consistently | Feature becomes noise; no improvement | Prototype with 5 agents for 1 week before full rollout. Measure completion rate. Kill threshold: <60% completion. |\n| Structured fields don't capture what receiving agents actually need | Cards get ignored like current notes | Run 10 contextual inquiry sessions with receiving agents to validate field set before build. |\n| Handoff volume is driven by routing problems, not context problems | We treat a symptom, not the cause | Analyze reassignment reasons in parallel. If >50% are mis-routes, pivot to routing improvement first. |\n| Scope pressure to add AI summarization, auto-routing, SLA integration | Timeline and complexity explode | Explicit scope fence in this PRD. Revisit adjacent features only after v1 metrics are in. |\n\n## Pass/Fail Readiness\n\n**This PRD is NOT ready for engineering commitment.** It is ready for the following next steps:\n\n- **PASS criteria met:**\n  - [x] Problem is articulated with a testable hypothesis\n  - [x] Scope is explicitly bounded with named exclusions\n  - [x] Solution hypothesis is testable\n  - [x] Success metric framework defined with kill thresholds\n  - [x] Key assumptions are named\n\n- **FAIL criteria — gaps that block commitment:**\n  - [ ] Baseline metrics (reassignment rate, resolution time delta) not yet pulled and verified\n  - [ ] No prototype validation of agent willingness to use structured fields\n  - [ ] No contextual inquiry with receiving agents to validate field design\n  - [ ] Reassignment root-cause analysis not yet complete (routing vs. context)\n  - [ ] No technical feasibility sign-off from engineering on handoff card implementation\n\n**Verdict: Conditional pass.** Proceed to validation sprint, not to build sprint.\n\n## Recommended Next Artifact\n\n**Validation Plan (1-week sprint):**\n1. Baseline measurement: Pull trailing 90-day reassignment data from analytics dashboard. Establish actual reassignment rate and resolution time multiplier. (Owner: PM + Data, Day 1)\n2. Contextual inquiry: 10 sessions with agents who frequently receive handoffs. Validate proposed field set. (Owner: PM, Days 1-3)\n3. Paper prototype: Mock handoff card in Figma, run 5 agents through task completion test. Measure time-to-complete and perceived usefulness. (Owner: Design, Days 2-4)\n4. Reassignment root-cause analysis: Tag 100 recent reassigned tickets by reason (mis-route vs. shift change vs. skill gap vs. escalation). (Owner: Support Ops, Days 1-5)\n5. Technical spike: Engineering estimates for handoff card within current inbox architecture. Flag blockers. (Owner: Eng lead, Days 1-5)\n6. Go/no-go review: End of week. If baseline confirms meaningful problem size, prototype completion >60%, field set validated, and no blocking technical debt — proceed to build PRD with engineering spec. If reassignment root cause is >50% mis-routes — pivot to routing PRD instead.\n\n**After validation, the next artifact is:** Engineering Spec (if go) or Pivot PRD for routing improvement (if no-go on handoff hypothesis).",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1-revised",
+      "summary": "The handoff problem is structurally identifiable (reassignment loses context, increases resolution time, frustrates agents) and measurable in principle, but specific baseline figures have not yet been verified — baselining is the first required validation step before this PRD can advance.",
+      "evidence_refs": [
+        "ctx-1-revised"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "Scope must be explicitly fenced against adjacent features (AI summarization, auto-routing, SLA changes, cross-product integrations) because each represents a distinct decision with its own unknowns — bundling them is the hidden scope creep risk in this scenario.",
+      "evidence_refs": [
+        "ctx-2"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-3",
+      "summary": "The PRD is conditionally ready — it passes on problem definition and hypothesis but fails on both baseline evidence and validation evidence, requiring a 1-week validation sprint before engineering commitment.",
+      "evidence_refs": [
+        "ctx-3"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-4",
+      "summary": "A kill threshold (<60% agent completion rate in prototype) prevents sunk-cost continuation if the core assumption about agent willingness to fill structured fields proves wrong.",
+      "evidence_refs": [
+        "ctx-4"
+      ],
+      "is_major": false
+    }
+  ],
+  "citations": [
+    "ctx-1-revised: Problem structure is observable from product mechanics (free-text notes, no read receipts, no structured transfer) — specific quantification (reassignment rate, resolution time multiplier) is hypothesized but requires analytics dashboard pull to verify",
+    "ctx-2: Scenario framing — 'PRD with hidden scope creep' implies the primary risk is unbounded scope expansion into adjacent feature areas",
+    "ctx-3: Pass/fail readiness assessment against PRD completeness criteria — problem articulated, scope bounded, assumptions named, but no verified baseline metrics, no prototype, and no field validation yet conducted",
+    "ctx-4: Industry best practice for product experimentation — pre-registered kill thresholds prevent escalation of commitment bias"
+  ],
+  "open_questions": [
+    "Is the reassignment rate consistent across all support tiers, or concentrated in specific queues? Tier-specific data would change prioritization.",
+    "Does the current inbox platform support pinned card UI components, or would the handoff card require a more expensive custom implementation?",
+    "Are there contractual or compliance constraints on storing customer sentiment assessments that agents assign?"
+  ],
+  "critique_responses": [
+    {
+      "finding_id": "finding-2",
+      "disposition": "adopted",
+      "rationale": "The critique is correct: the case packet contains no evidence files, so citing specific figures (18%, 2.4x) as established facts was unsupported. The revised artifact now frames these as illustrative hypotheses requiring verification. Baselining from the analytics dashboard has been elevated to the first action item in the validation sprint. Claim 1 has been rewritten to assert the problem is structurally identifiable and measurable in principle, without claiming specific magnitudes as already quantified. The Pass/Fail section now explicitly lists 'baseline metrics not yet pulled and verified' as a blocking gap."
+    }
+  ]
+}
+```
+
