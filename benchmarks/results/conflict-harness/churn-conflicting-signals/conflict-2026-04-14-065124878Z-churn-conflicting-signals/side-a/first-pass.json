@@ -1,0 +1,33 @@
+{
+  "run_id": "conflict-2026-04-14-065124878Z-churn-conflicting-signals",
+  "side_id": "side_a",
+  "round": "first_pass",
+  "artifact_markdown": "# Your artifact\n\n# Churn Reduction PRD: Conflicting Signals\n\n## Overview\nBuild a churn-reduction program that resolves conflicting churn signals without drifting from strategy targets. The product should prioritize interventions that are reversible, measurable, and segment-specific rather than applying a single global retention tactic.\n\n## Problem\nCurrent churn indicators point in different directions, creating decision risk:\n- Quantitative churn may be elevated in one segment while strategic targets emphasize another.\n- Qualitative feedback may suggest urgent fixes that do not align with the company’s intended customer or product direction.\n- Teams risk overfitting to the loudest signal instead of the highest-value retention opportunity.\n\n## Goal\nReduce avoidable churn in strategically important segments while preserving focus on long-term positioning.\n\n## Non-Goals\n- Lower churn at any cost across all segments.\n- Build permanent solutions before validating root cause.\n- Reposition the product based on one unverified churn narrative.\n\n## Users\n- Existing customers at risk of churn.\n- PM, Success, and Growth teams making retention tradeoffs.\n- Leadership evaluating retention performance against strategy targets.\n\n## Product Requirements\n1. Add churn-risk segmentation by customer type, tenure, plan, and use-case fit.\n2. Require every proposed retention action to name the signal it responds to, the segment affected, and the expected retention impact.\n3. Launch a decision layer that classifies churn drivers into:\n- product gap\n- onboarding failure\n- value communication failure\n- pricing/packaging mismatch\n- wrong-customer acquisition\n4. Prioritize interventions only when they improve retention in target segments or generate evidence strong enough to challenge current strategy.\n5. Support low-cost experiments first: onboarding changes, lifecycle messaging, save offers, and targeted success outreach.\n6. Track guardrails so retention gains are not driven by discounts, support burden, or expansion of low-fit customers.\n\n## Success Metrics\n- Primary: Gross and net revenue churn reduction in target segments.\n- Secondary: save rate for at-risk accounts, early activation rate, and retained accounts after intervention.\n- Guardrails: support cost per retained account, discount dependency, and retention of low-fit segments.\n\n## Rollout\n- Phase 1: instrument segmentation and intervention tracking.\n- Phase 2: run targeted retention experiments on highest-risk strategic segment.\n- Phase 3: scale only interventions that improve retention without violating guardrails.\n\n## Decision Frame\nThe core decision is not \"how do we reduce churn overall\" but \"which churn should we fight given strategy targets.\" When signals conflict, the default should be to retain customers in strategically aligned segments first, while treating churn in non-target segments as a diagnostic input rather than an automatic roadmap driver. Evidence that consistently shows the strategy target itself is wrong should trigger a separate strategy review, not silent PRD drift. [ctx-1]\n\n## Unknowns & Evidence Gaps\n- No direct evidence packet identifies which segment is churning most.\n- No causal evidence distinguishes product failure from poor-fit acquisition.\n- No baseline shows whether strategy targets and observed retention cohorts are materially misaligned.\n- No experiment history indicates which retention levers have already failed.\n\n## Pass/Fail Readiness\nPass if:\n- churn is measurable by segment\n- interventions are attributable to explicit churn hypotheses\n- success metrics include strategic-segment retention and guardrails\n- roadmap changes require stronger evidence than anecdotal churn complaints\n\nFail if:\n- the plan treats all churn as equally important\n- interventions are rolled out globally before segment validation\n- retention wins come mainly from discounts or low-fit customer preservation\n- the team cannot explain which conflicting signal drove each action\n\n## Recommended Next Artifact\nRetention experiment plan with segment-level hypotheses, owner, metric, and stop/go criteria.",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "A usable churn PRD under conflicting signals should prioritize retention actions by strategic segment fit, not aggregate churn alone.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "Conflicting churn signals should be operationalized through segment-level hypotheses and reversible experiments before permanent roadmap commitments.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1"
+  ],
+  "open_questions": [
+    "Which customer segments are strategically prioritized versus merely high-volume?",
+    "What evidence shows whether churn is caused by product gaps, onboarding failures, pricing mismatch, or wrong-customer acquisition?",
+    "What retention experiments have already been run, and what were their measured outcomes?"
+  ],
+  "critique_responses": []
+}

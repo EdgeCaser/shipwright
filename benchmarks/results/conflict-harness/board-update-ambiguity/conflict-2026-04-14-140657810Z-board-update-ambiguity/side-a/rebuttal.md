@@ -1,0 +1,13 @@
+# Critique: finding-1
+
+- Target Side: side_b
+- Target Claim IDs: side_b-claim-1
+- Attack Type: evidence_gap
+- Severity: medium
+
+## Claim Under Attack
+Under genuine ambiguity, the board should reject both premature commitment and false neutrality of inaction, instead adopting structured optionality with pre-committed decision criteria and a bounded timeline for evidence gathering.
+
+## Evidence Or Reason
+The claim presents 'structured optionality' as the appropriate response, but the visible artifact provides no evidence that this posture is superior to the other stated options in this specific scenario. There is no support for why 60-75 days is the right bounded timeline, no definition of the pre-committed criteria themselves, and no showing that ambiguity will materially resolve within that window. As written, the recommendation is plausible but asserted, not demonstrated.
+

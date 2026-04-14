@@ -1,0 +1,61 @@
+# Pricing Strategy Recommendation Under Partial Market Data
+
+## Decision Frame
+
+**Context:** We are evaluating a pricing change with incomplete market data. The core decision is whether to proceed with a pricing adjustment now, defer until more data is available, or run a controlled experiment to fill critical gaps before committing.
+
+**Decision type:** Reversible with cost. Pricing changes can be rolled back, but each change carries switching costs: customer trust erosion, sales team retraining, contract renegotiation cycles, and brand perception shifts. This is not a free option.
+
+**Stakeholders:** Product, Sales, Finance, Customer Success. Each has different loss functions — Sales optimizes for deal velocity, Finance for margin, CS for retention, Product for positioning coherence.
+
+**Time pressure:** Moderate. No immediate competitive forcing function has been established in the available evidence. However, the absence of evidence of competitive pressure is not evidence of absence — this is itself a gap.
+
+## Unknowns & Evidence Gaps
+
+The following inputs are absent from the shared evidence record. Some may exist internally but were not surfaced for this analysis — the gap classification below distinguishes between what is missing from this packet versus what is likely unknown to the organization.
+
+| Gap ID | Unknown | Likely Exists Internally? | Impact on Decision | Fillable? | Method |
+|--------|---------|--------------------------|-------------------|-----------|--------|
+| G-1 | **Competitive pricing landscape** — No current competitor price points or packaging structures provided | Unlikely without dedicated research | Cannot assess whether proposed price is above/below market or how competitors may respond | Yes | Competitive intelligence sweep, win/loss analysis |
+| G-2 | **Price elasticity of demand** — No historical data on how volume responds to price changes in this market | Possibly, if prior pricing changes occurred | Cannot model revenue impact of price increase vs. decrease | Yes, partially | Conjoint analysis, historical cohort analysis, A/B test |
+| G-3 | **Customer willingness-to-pay distribution** — No segmented WTP data | Unlikely without dedicated research | Cannot determine if a single price point or tiered structure is appropriate | Yes | Van Westendorp survey, Gabor-Granger, customer interviews |
+| G-4 | **Current churn drivers and price sensitivity** — No data on whether price is a stated or revealed churn factor | Likely exists in CS and billing systems | Risk of accelerating churn if price increases hit price-sensitive segments | Yes | Churn exit survey analysis, CS ticket classification |
+| G-5 | **Margin structure and cost basis** — No unit economics provided | Almost certainly exists in Finance | Cannot evaluate whether pricing change improves or threatens margin sustainability | Yes | Finance data pull |
+| G-6 | **Contract and commitment structure** — Unknown how many customers are on fixed-term vs. month-to-month | Almost certainly exists in billing systems | Determines blast radius and timeline of any change | Yes | Billing system query |
+
+**Assessment:** Gaps G-1 and G-3 are likely genuine organizational unknowns requiring new research. Gaps G-4 through G-6 likely exist internally and could be surfaced quickly. The decision readiness depends on which category dominates: if internal data (G-4 through G-6) is readily available, a bounded directional decision — such as a segment-limited test or no-regret default — may be supportable even without resolving G-1 and G-3.
+
+## Pass/Fail Readiness
+
+**Verdict: CONDITIONAL FAIL — Not ready for a full pricing decision based on shared evidence, but a bounded directional action may be supportable.**
+
+Rationale:
+- Zero evidence artifacts were provided in the shared record. This prevents a grounded recommendation from this analysis alone.
+- However, the absence of shared evidence does not prove organizational unreadiness. Internal billing data, margin structures, and churn records almost certainly exist and could support a limited-scope action without full market research.
+- Two tiers of readiness apply:
+  - **Tier 1 (achievable in days):** If internal data (G-4, G-5, G-6) is surfaced, a segment-limited pricing test or explicit hold-the-line default with monitoring triggers becomes defensible.
+  - **Tier 2 (requires 2-4 weeks):** A confident full-market pricing recommendation requires external inputs (G-1, G-3) that demand new research.
+
+**What would change this to a full PASS:**
+1. Competitive pricing data for top 3-5 alternatives (G-1 resolved)
+2. At minimum, directional WTP data from 15+ customer interviews or survey responses (G-3 partially resolved)
+3. Historical retention data segmented by price sensitivity indicators (G-4 resolved)
+4. Unit economics showing current margin at existing price point (G-5 resolved)
+
+With internal data alone (items 3-4), a bounded test is defensible. With all four, a confident full recommendation is possible.
+
+## Recommended Next Artifact
+
+**Artifact:** Pricing Evidence Collection Plan (research brief) — with an immediate internal data triage as Phase 0.
+
+**Purpose:** Distinguish what the organization already knows from what requires new research, then define the minimum viable evidence package that enables a defensible pricing decision.
+
+**Contents should include:**
+1. **Phase 0 — Internal data triage (1-3 days):** Surface existing billing, margin, churn, and contract data. Determine whether a bounded directional action (segment test, no-regret default) is already supportable.
+2. **Competitive audit scope** — Which competitors, which price dimensions (list price, effective price, packaging), what sources
+3. **WTP research design** — Method selection (Van Westendorp vs. conjoint vs. interviews), sample size, segment definitions, timeline
+4. **Decision criteria** — Pre-commit to what evidence patterns would lead to: (a) price increase, (b) price decrease, (c) repackaging without price change, (d) no change
+5. **Kill criteria** — What findings would make us abandon the pricing change initiative entirely
+6. **Bounded-action gate** — Define conditions under which Phase 0 data alone justifies a limited rollout before full research completes
+
+**Why this artifact next:** The critique correctly identified that refusing all action until every gap is filled overclaims from the visible record. The revised approach front-loads an internal data triage that could unlock a bounded directional action in days, while the full evidence sprint runs in parallel. This avoids both the risk of guessing and the cost of unnecessary delay.

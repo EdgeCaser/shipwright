@@ -1,0 +1,40 @@
+{
+  "run_id": "conflict-2026-04-14-043443569Z-feature-weak-evidence",
+  "side_id": "side_a",
+  "round": "final",
+  "artifact_markdown": "# Revised artifact\n\n## PRD: Evidence-Gated Feature Proposal\n\n## Summary\nThis PRD does not recommend approving a feature build yet. The case packet provides no supporting evidence for the feature concept, target user, or problem severity. The useful decision at this stage is whether to fund a short discovery phase that can earn the right to a narrowly scoped validation build.\n\n## Problem\nA possible user problem has been implied, but the case provides no concrete evidence about:\n- what the feature is\n- which user segment experiences the problem\n- how often the problem occurs\n- whether the problem is important enough to change behavior\n\nBecause those inputs are missing, a build decision would be speculative rather than evidence-based.\n\n## Proposed Feature Framing\nTreat the feature as an unvalidated concept, not an approved roadmap item. The team should define the feature only after discovery confirms a specific problem, user segment, and measurable outcome.\n\n## Goals\n- Establish whether a real user problem exists.\n- Identify the highest-fit user segment.\n- Quantify baseline frequency, severity, and current workaround behavior.\n- Produce decision-quality evidence for either shutdown or a minimal validation build.\n\n## Non-Goals\n- Full feature delivery.\n- Broad beta or launch.\n- Engineering investment beyond lightweight discovery support.\n\n## Target Users\nUnknown. A discovery phase must identify the initial segment before any build is approved.\n\n## User Story\nNot ready. A valid user story depends on naming a specific user, problem, and desired outcome, none of which are evidenced in the case context.\n\n## Discovery Requirements\n1. Document a concrete problem statement tied to a named user segment.\n2. Collect at least 5 user interviews from the suspected segment.\n3. Confirm at least 3 of 5 interviewed users report the problem as current, recurring, and worth solving.\n4. Establish a baseline metric for the relevant workflow before proposing solution success metrics.\n5. Identify the current workaround and switching friction.\n6. Define a single validation hypothesis for a minimal build.\n\n## Validation-Build Entry Criteria\nA minimal build may be approved only if discovery produces all of the following:\n- A named target segment.\n- A concrete problem statement.\n- Evidence that the problem occurs at meaningful frequency.\n- A measurable baseline outcome.\n- A falsifiable hypothesis for how the feature changes that outcome.\n\n## If a Validation Build Is Approved\nThe first build must remain narrowly scoped and gated. It must include:\n1. One end-to-end workflow only.\n2. Exposure to a limited cohort.\n3. Instrumentation for exposure, start, completion, repeat use, and abandonment.\n4. In-product feedback capture.\n5. A rollback path.\n\n## Decision Frame\nDecision requested: approve discovery only, not feature build.\n\nWhy now:\n- The case suggests possible opportunity, but provides no evidence sufficient for implementation.\n- A short discovery phase is the lowest-cost way to resolve whether the opportunity is real.\n\nDecision rule:\n- Do not build until discovery clears the validation-build entry criteria.\n- Shut down the concept if discovery cannot verify a concrete user problem and segment fit.\n\n## Unknowns & Evidence Gaps\n- Feature concept is undefined.\n- User segment is undefined.\n- Problem severity is unverified.\n- Usage frequency is unverified.\n- Baseline workflow metric is unverified.\n- Expected value versus current workaround is unverified.\n\n## Pass/Fail Readiness\nStatus: Fail for build approval. Pass for discovery approval.\n\nPass conditions for discovery:\n- A clear problem statement is written.\n- Discovery sample and method are defined.\n- Baseline metric to be collected is identified.\n- Build entry criteria and kill criteria are agreed in advance.\n\nFail conditions for build:\n- No named user segment.\n- No evidenced problem frequency or severity.\n- No baseline metric.\n- No falsifiable hypothesis.\n\nKill criteria after discovery:\n- Fewer than 3 of 5 target users confirm the problem is real and recurring.\n- No measurable baseline can be established.\n- Users are unwilling to switch from the current workaround.\n- The team cannot define a single narrow workflow for validation.\n\n## Recommended Next Artifact\nDiscovery brief covering:\n- target segment definition\n- interview plan\n- baseline metric definition\n- current-workaround analysis\n- validation hypothesis\n- explicit build-entry and shutdown criteria",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "Given the case packet's lack of concrete evidence, the correct decision is to approve discovery only and reject build approval until explicit entry criteria are met.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "An evidence-disciplined PRD under weak evidence must replace generic readiness language with concrete build-entry and kill criteria tied to discovery outputs.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1"
+  ],
+  "open_questions": [
+    "What user segment originally motivated the feature idea?",
+    "What workflow or task is the feature supposed to improve?",
+    "What baseline metric would best capture current pain or inefficiency?",
+    "What current workaround do users rely on today?"
+  ],
+  "critique_responses": [
+    {
+      "finding_id": "finding-2",
+      "disposition": "adopted",
+      "rationale": "The critique was correct that the first-pass artifact treated a constrained framing as sufficient justification to proceed. I revised the artifact to remove build approval, mark readiness as fail for build, and add concrete discovery-stage entry and kill criteria so the recommendation is evidence-disciplined rather than circular."
+    }
+  ]
+}

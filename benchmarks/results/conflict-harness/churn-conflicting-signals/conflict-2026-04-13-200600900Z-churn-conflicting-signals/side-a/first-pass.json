@@ -1,0 +1,62 @@
+{
+  "run_id": "conflict-2026-04-13-200600900Z-churn-conflicting-signals",
+  "side_id": "side_a",
+  "round": "first_pass",
+  "artifact_markdown": "# Churn Reduction PRD: Navigating Conflicting Signals\n\n## Decision Frame\n\n**Problem statement:** Customer churn metrics are sending conflicting signals relative to strategic growth targets. Specifically:\n\n- **Signal conflict 1:** NPS scores remain stable or improving while monthly churn rate is increasing — suggesting satisfied customers are still leaving.\n- **Signal conflict 2:** Expansion revenue from retained accounts is hitting targets, masking the volume of churning small/mid-market accounts in aggregate revenue reporting.\n- **Signal conflict 3:** Product usage telemetry shows increased feature adoption among churning cohorts in the 30 days before cancellation — contradicting the assumption that churn correlates with disengagement.\n\n**Decision to be made:** Whether to (a) prioritize retention interventions targeting the conflicting-signal cohorts, (b) re-instrument our churn measurement framework before acting, or (c) accept current churn as a natural consequence of strategic upmarket repositioning.\n\n**Who decides:** VP Product + VP Customer Success, with CFO sign-off if intervention budget exceeds $200K/quarter.\n\n**Decision deadline:** End of Q3 2026 planning cycle (June 30, 2026).\n\n**Reversibility:** Option (a) is reversible — interventions can be paused. Option (b) delays action by 4-6 weeks but improves future decisions. Option (c) is a framing decision that may be difficult to reverse once organizational attention shifts.\n\n---\n\n## Unknowns & Evidence Gaps\n\n| # | Unknown | Impact if unresolved | Proposed resolution | Cost/time |\n|---|---------|---------------------|---------------------|-----------|\n| U1 | Why are NPS-positive customers churning? Exit interviews cover <15% of churning accounts. | We intervene on wrong drivers, waste budget. | Structured exit survey with incentive, targeting 50%+ response rate over 6 weeks. | $15K + 6 weeks |\n| U2 | Is the pre-churn usage spike a \"download my data\" pattern or genuine engagement? | Misread of usage telemetry leads to wrong segmentation. | Event-level audit of top 20 churned accounts' final-30-day activity. | Engineering time: 2 weeks |\n| U3 | What is the actual revenue-weighted churn rate when expansion is excluded? | Leadership may be making strategy decisions on a misleading topline number. | Finance builds a gross-churn dashboard excluding expansion, segmented by cohort. | 1 week with existing BI tooling |\n| U4 | Are churning SMB accounts unprofitable (i.e., strategic churn we should accept)? | We may invest in retaining accounts that drag down unit economics. | Unit economics analysis per segment tier. | Finance: 2 weeks |\n| U5 | Do churning customers have a viable alternative, or are they eliminating the category? | Determines whether this is competitive loss or budget loss — different interventions. | Win/loss analysis + competitive intelligence on top 30 churned accounts. | CS team: 3 weeks |\n\n**Key tension:** The strategy team has set aggressive upmarket targets. If SMB churn is a *consequence* of deliberate upmarket repositioning (pricing changes, feature prioritization, support tier restructuring), then \"reducing churn\" may conflict with \"executing the strategy.\" This must be resolved explicitly, not papered over.\n\n---\n\n## Pass/Fail Readiness\n\n**Readiness verdict: NOT READY to commit to a retention intervention.**\n\nRationale:\n\n| Criterion | Status | Detail |\n|-----------|--------|--------|\n| Root cause identified | FAIL | Three plausible root causes, no evidence to rank them. |\n| Signal alignment | FAIL | Core metrics (NPS, usage, revenue) contradict each other — measurement framework may be broken. |\n| Strategic alignment confirmed | FAIL | No explicit decision on whether SMB churn is acceptable under current strategy. |\n| Intervention ROI modeled | FAIL | Cannot model ROI without knowing which cohort to target or why they leave. |\n| Stakeholder alignment | FAIL | Product, CS, and Finance are likely operating on different churn numbers due to expansion-masking. |\n\n**What must be true before we proceed:**\n1. U3 resolved — leadership sees gross churn excluding expansion.\n2. U4 resolved — explicit strategic call on whether SMB churn is acceptable.\n3. U1 or U2 partially resolved — at least directional evidence on *why* signal-positive customers churn.\n\n---\n\n## Recommended Next Artifact\n\n**Next artifact: Churn Signal Reconciliation Brief (diagnostic, not solution)**\n\nBefore writing a prescriptive PRD with retention features or interventions, the organization needs a shared factual foundation. The recommended next step is:\n\n1. **Churn Measurement Audit** (1 week) — Finance and BI produce the gross-churn-excluding-expansion dashboard (resolves U3).\n2. **Strategic Alignment Check** (1 meeting) — VP Product and CFO explicitly decide: is SMB churn acceptable under current strategy? Document the answer (resolves U4 framing).\n3. **Evidence Sprint** (4 weeks, parallel) — Run the exit survey (U1) and usage audit (U2) simultaneously.\n4. **Reconciliation Brief** — Synthesize findings into a 2-page brief that states: here is what is actually happening, here is why, here is what it costs us, and here is whether it conflicts with strategy.\n\n**Only after the Reconciliation Brief** should a prescriptive Churn Reduction PRD be written — at that point, it will have real evidence to anchor interventions, a clear strategic mandate, and aligned metrics.\n\n**Risk of skipping this step:** Building retention features or launching save-motion plays against the wrong cohort, for the wrong reasons, potentially *in opposition to* the company's own strategic direction. The conflicting signals are telling us we don't understand the problem yet — acting before understanding is the highest-cost option.",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "The organization is not ready to commit to churn reduction interventions because core metrics (NPS, usage telemetry, revenue) are contradicting each other, indicating the measurement framework itself may be broken.",
+      "evidence_refs": [
+        "ctx-signal-conflict"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "Expansion revenue is masking gross churn volume, meaning leadership may be making strategic decisions on a misleading topline number.",
+      "evidence_refs": [
+        "ctx-expansion-masking"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-3",
+      "summary": "SMB churn may be a deliberate consequence of upmarket repositioning strategy, making a churn reduction initiative potentially misaligned with company direction — this must be explicitly resolved before any intervention.",
+      "evidence_refs": [
+        "ctx-strategic-tension"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-4",
+      "summary": "A diagnostic Churn Signal Reconciliation Brief should precede any prescriptive PRD to establish shared factual foundation across Product, CS, and Finance.",
+      "evidence_refs": [
+        "ctx-next-artifact"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-5",
+      "summary": "Pre-churn usage spikes may represent data export behavior rather than genuine engagement, requiring event-level audit before any usage-based intervention targeting.",
+      "evidence_refs": [
+        "ctx-usage-spike"
+      ],
+      "is_major": false
+    }
+  ],
+  "citations": [
+    "ctx-signal-conflict",
+    "ctx-expansion-masking",
+    "ctx-strategic-tension",
+    "ctx-next-artifact",
+    "ctx-usage-spike"
+  ],
+  "open_questions": [
+    "Is the pre-churn usage spike a 'download my data' export pattern or genuine re-engagement?",
+    "Has leadership explicitly endorsed SMB churn as an acceptable cost of upmarket repositioning?",
+    "What percentage of churning accounts are competitive losses vs. budget/category exits?",
+    "Are exit interview response rates sufficient to draw conclusions, or is there survivorship bias in NPS data?"
+  ],
+  "critique_responses": []
+}

@@ -1,0 +1,255 @@
+{
+  "run_id": "conflict-2026-04-14-071132142Z-feature-weak-evidence",
+  "scenario_id": "feature-weak-evidence",
+  "mode": "head_to_head",
+  "status": "completed",
+  "sides": {
+    "side_a": {
+      "provider": "openai",
+      "model": "chatgpt-pro",
+      "reasoning_effort": "medium",
+      "access_mode": "subscription_cli",
+      "role": "side_a",
+      "first_pass": {
+        "run_id": "conflict-2026-04-14-071132142Z-feature-weak-evidence",
+        "side_id": "side_a",
+        "round": "first_pass",
+        "artifact_markdown": "# PRD: Candidate New Feature (Evidence-Constrained Draft)\n\n## Summary\nThis PRD defines a feature candidate under materially weak supporting evidence. The purpose is not to authorize full build, but to create a decision-ready frame for validating whether the feature addresses a real user problem, for whom, and with what expected outcome.\n\n## Problem Statement\nA feature opportunity has been proposed, but the case packet contains no user research, market evidence, usage data, or business evidence. Because of that, the current problem statement is provisional:\n\nUsers may have an unmet need that this feature could address, but the need, frequency, severity, and monetization relevance are unverified.\n\n## Objective\nReduce uncertainty enough to make a defensible build/no-build decision.\n\n## Non-Goals\n- Do not commit to full production build from this document alone.\n- Do not assume broad user demand.\n- Do not lock implementation scope before validation.\n\n## Target User\nUnknown. Candidate segments must be identified and ranked during validation.\n\n## User Need Hypothesis\nIf a sufficiently large and important user problem exists, then a narrowly scoped feature may improve a measurable outcome for a defined segment.\n\n## Proposed Solution Hypothesis\nA thin version of the feature, tested before full implementation, may be sufficient to measure:\n- whether users understand the value proposition\n- whether they attempt to use it\n- whether the workflow creates repeat value\n\n## Scope\n### Phase 0: Validation Scope\n- Define the user segment most likely to experience the problem.\n- Write the core job-to-be-done statement.\n- Test demand with low-cost artifacts such as prototypes, concierge workflows, or smoke tests.\n- Establish success thresholds before any build authorization.\n\n### Phase 1: Conditional MVP Scope\nProceed only if Phase 0 passes. MVP should:\n- solve one narrow use case\n- instrument activation and repeat usage\n- include explicit guardrails for support burden and misuse\n\n## Functional Requirements\nBecause evidence is absent, only validation-oriented requirements are justified now:\n1. The team must be able to present the feature concept to target users in a consistent format.\n2. The team must be able to capture demand signals such as clickthrough, signup intent, or willingness to trial.\n3. The team must be able to capture qualitative objections and failure reasons.\n4. If an MVP is approved later, it must include instrumentation for adoption, completion, and repeat use.\n\n## Success Metrics\nCurrent metrics are gating metrics for validation, not launch KPIs:\n- Problem validation: a meaningful share of interviewed target users independently confirms the problem.\n- Demand validation: a predefined threshold of target users expresses credible intent to use or trial.\n- Value validation: early users can complete the core workflow and report clear outcome improvement.\n- Risk validation: support, compliance, and technical complexity remain within acceptable bounds.\n\nExact thresholds are not yet set and must be defined before validation begins.\n\n## Risks\n- Building for an unverified problem.\n- Selecting the wrong user segment.\n- Mistaking curiosity for true demand.\n- Over-scoping before evidence exists.\n- Producing internally consistent but externally unsupported strategy.\n\n## Dependencies\n- Access to target users or prospects.\n- A validation method such as interviews, prototype tests, or smoke tests.\n- Instrumentation plan for demand and usage signals.\n- Cross-functional review before any MVP authorization.\n\n## Launch Recommendation\nDo not approve full feature development from current evidence. Approve only a bounded validation plan.\n\n## Decision Frame\nRecommendation: treat this as a validation-stage opportunity, not a committed roadmap item.\n\nRationale: the evidence packet is empty. A conventional PRD that implies confidence would overstate certainty and create false decision quality. The useful decision at this stage is whether to spend limited effort on validation.\n\n## Unknowns & Evidence Gaps\n- Who specifically has the problem.\n- How often the problem occurs.\n- Whether current alternatives are actually insufficient.\n- Whether the proposed feature is better than simpler workflow changes.\n- Whether the opportunity is strategically important enough to justify build cost.\n- Whether there are legal, operational, or support constraints.\n\n## Pass/Fail Readiness\nCurrent status: Fail for build authorization.\n\nPass conditions for next gate:\n- named target segment\n- explicit problem statement with user evidence\n- predefined success thresholds\n- results from at least one demand-validation method\n- bounded MVP scope tied to one use case\n\n## Recommended Next Artifact\nValidation Brief\n\nThe next artifact should define the target segment, hypotheses, validation method, success thresholds, and decision rules for advancing to MVP.",
+        "claims": [
+          {
+            "claim_id": "side_a-claim-1",
+            "summary": "With no supporting evidence in the case packet, the feature should not be approved for full build; only a bounded validation plan is justified.",
+            "evidence_refs": [
+              "ctx-1"
+            ],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-2",
+            "summary": "A useful first-pass PRD under weak evidence should center on uncertainty reduction, narrow validation scope, and explicit pass/fail gates rather than feature commitment.",
+            "evidence_refs": [
+              "ctx-1"
+            ],
+            "is_major": true
+          }
+        ],
+        "citations": [
+          "ctx-1"
+        ],
+        "open_questions": [
+          "What user segment is believed to have the problem?",
+          "What evidence, if any, exists outside the packet that motivated the feature request?",
+          "What minimum demand threshold would justify an MVP?",
+          "What low-cost validation method is feasible in the next cycle?"
+        ],
+        "critique_responses": []
+      },
+      "rebuttal": {
+        "target_side": "side_b",
+        "finding_id": "finding-1",
+        "target_claim_ids": [
+          "side_b-claim-2"
+        ],
+        "claim_under_attack": "A 2-week Discovery Research Brief is the correct next artifact because it is the cheapest way to determine whether the feature idea has any evidentiary basis, requiring only PM/researcher time and no engineering resources.",
+        "attack_type": "evidence_gap",
+        "evidence_or_reason": "This claim asserts cost, duration, and resource needs without any supporting evidence from the case packet or artifact. The artifact itself admits the feature is unspecified and that no first-party data or technical assessment has been performed, so it cannot credibly conclude that a 2-week brief is the cheapest valid path or that no engineering input is needed. For some feature classes, a quick engineering spike or data pull could be cheaper and more informative than interviews plus competitive research.",
+        "severity": "medium"
+      },
+      "final": {
+        "run_id": "conflict-2026-04-14-071132142Z-feature-weak-evidence",
+        "side_id": "side_a",
+        "round": "final",
+        "artifact_markdown": "# Revised artifact\n\n# PRD: Proposed New Feature (Validation-Gated Draft)\n\n## Summary\nThis document does not authorize a full build. It authorizes a one-cycle validation sprint for the proposed feature concept under an explicitly weak evidence base.\n\nWorking name: Proposed New Feature.\n\nWorking concept: a net-new product capability requested or proposed internally, with no supporting user, usage, or market evidence included in the case packet.\n\n## Decision To Make\nThe immediate decision is not whether to ship the feature. The immediate decision is whether to spend one bounded cycle validating whether this feature solves a real, important problem for a specific user segment.\n\n## Problem Statement\nThe current proposal lacks evidence on five points:\n- who has the problem\n- whether the problem is frequent and severe\n- whether current alternatives are inadequate\n- whether the feature is understandable and desirable\n- whether the opportunity is large enough to justify build cost\n\nBecause these are unknown, the problem statement for the feature remains hypothetical:\n\nA defined user segment may experience a recurring workflow problem that the Proposed New Feature could reduce, but the existence, intensity, and strategic value of that problem are unverified. [ctx-1]\n\n## Target User\nPrimary segment for validation: existing active users who currently perform the relevant workflow at least weekly.\n\nSecondary segment for validation: prospects or recently churned users who rejected or abandoned the workflow because existing product support was insufficient.\n\nThis is a working segmentation assumption for the validation sprint, not a proven fact. [ctx-1]\n\n## User Need Hypothesis\nIf weekly users in the relevant workflow experience repeated friction that current product behavior does not solve, then a narrowly scoped version of the feature will generate credible interest and repeated use from that segment. [ctx-1]\n\n## Proposed Solution Hypothesis\nA thin-slice version of the Proposed New Feature, represented first through prototype or concierge testing rather than engineering build-out, will be enough to test:\n- whether users understand the promise\n- whether they attempt the core workflow\n- whether they judge the outcome meaningfully better than their current workaround\n\n## Scope\n### In Scope: Validation Sprint\n- define one primary workflow the feature is supposed to improve\n- recruit users from the primary and secondary segments\n- test concept comprehension, problem severity, and intent to use\n- run one low-cost demand test and one qualitative test\n- produce a build/no-build recommendation for an MVP\n\n### Out of Scope\n- production implementation\n- broad multi-segment rollout planning\n- technical architecture beyond what is needed for a smoke test or prototype\n- roadmap commitment beyond MVP consideration\n\n## Validation Plan\nDuration: 2 weeks.\n\nOwner: product manager.\n\nSupporting roles:\n- design for prototype creation\n- analyst or PM for instrumentation and synthesis\n- engineering for feasibility review only, capped at half a day\n\nMethods:\n1. Five moderated user interviews with existing active users in the target workflow.\n2. One clickable prototype or concierge walkthrough showing the feature's core job.\n3. One smoke test to measure intent, such as waitlist signup, CTA clickthrough, or request-to-trial submission.\n4. One feasibility/risk review covering implementation complexity, support burden, and compliance concerns.\n\nDeliverables at end of sprint:\n- interview summary with problem patterns\n- demand-test results\n- objections and failure reasons\n- MVP recommendation with explicit build/no-build call\n\n## Functional Requirements\nValidation-stage requirements only:\n1. The concept must be expressible in a single consistent demo flow.\n2. The team must capture whether users can explain the value in their own words after exposure.\n3. The team must capture whether users rank the problem among their top workflow frustrations.\n4. The team must capture one behavioral intent signal, not just verbal enthusiasm.\n5. Any later MVP must instrument activation, completion, and repeat usage.\n\n## Success Metrics\nThe validation sprint passes only if all required gates below are met:\n- Problem validation: at least 3 of 5 interviewed target users describe the underlying problem as frequent and important without heavy prompting.\n- Solution comprehension: at least 4 of 5 can accurately explain the feature's value after prototype exposure.\n- Demand signal: at least 20% conversion on the smoke-test CTA from the targeted audience sample, or at least 3 of 5 interviewees explicitly request access or trial.\n- Feasibility guardrail: engineering and operational review finds no blocker that would make an MVP disproportionate to expected value.\n\nThe sprint fails if any of the following occur:\n- fewer than 3 of 5 target users confirm the problem matters\n- users prefer existing workarounds after seeing the concept\n- demand signal is weak and objections center on low value rather than execution quality\n- feasibility review identifies high complexity for a narrow or uncertain payoff\n\n## Risks\n- false positives from curiosity rather than real need\n- biased sampling toward friendly users\n- internal pressure to convert a validation sprint into a build commitment\n- choosing a feature solution before confirming the problem is worth solving\n\n## Dependencies\n- access to 5 target users in the next cycle\n- design capacity for a thin prototype\n- analytics or landing-page support for the smoke test\n- engineering reviewer for bounded feasibility assessment\n\n## Launch Recommendation\nDo not approve full development. Approve only the 2-week validation sprint defined above. Advance to MVP only if the stated pass gates are met. [ctx-1]\n\n## Decision Frame\nRecommendation: approve a bounded validation sprint for the Proposed New Feature; reject full build authorization at this stage.\n\nWhy this is decision-useful now: the evidence packet is empty, so the defensible next decision is whether to fund learning. This document specifies the owner, duration, methods, required thresholds, and advancement rule for that learning step. [ctx-1]\n\n## Unknowns & Evidence Gaps\n- exact workflow and feature interaction pattern\n- whether the primary or secondary segment has stronger pain\n- whether demand reflects true workflow value or novelty response\n- whether a simpler non-feature workflow change would solve the problem more cheaply\n- whether the eventual MVP would create support, legal, or operational burden\n\n## Pass/Fail Readiness\nCurrent status: Fail for build authorization. Pass for validation authorization.\n\nReady to start validation this cycle only if:\n- a PM is assigned as owner\n- 5 interview candidates can be recruited this cycle\n- a prototype or concierge flow can be prepared within 1 week\n- the smoke-test audience and success threshold are agreed before launch\n\n## Recommended Next Artifact\nValidation Brief\n\nThe next artifact should capture the exact workflow being tested, recruitment list, interview script, smoke-test asset, threshold definitions, and the final build/no-build decision rule.",
+        "claims": [
+          {
+            "claim_id": "side_a-claim-1",
+            "summary": "Given the empty evidence packet, full build approval is not justified; the actionable next step is a bounded 2-week validation sprint with explicit pass/fail gates.",
+            "evidence_refs": [
+              "ctx-1"
+            ],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-2",
+            "summary": "A weak-evidence PRD is decision-useful only if it specifies concrete next-step validation details for this feature proposal, including owner, methods, timeline, thresholds, and advancement rules.",
+            "evidence_refs": [
+              "ctx-1"
+            ],
+            "is_major": true
+          }
+        ],
+        "citations": [
+          "ctx-1"
+        ],
+        "open_questions": [
+          "What exact workflow is the Proposed New Feature intended to improve?",
+          "Which existing user cohort can realistically supply the 5 interview participants this cycle?"
+        ],
+        "critique_responses": [
+          {
+            "finding_id": "finding-2",
+            "disposition": "adopted",
+            "rationale": "The critique was correct that the first-pass artifact was too template-like to drive action. The revision keeps the evidence-constrained posture but adds a concrete validation decision: a 2-week sprint with named working segment assumptions, specific methods, role ownership, pass/fail thresholds, and an explicit advancement rule."
+          }
+        ]
+      }
+    },
+    "side_b": {
+      "provider": "anthropic",
+      "model": "claude-max",
+      "reasoning_effort": "medium",
+      "access_mode": "subscription_cli",
+      "role": "side_b",
+      "first_pass": {
+        "run_id": "conflict-2026-04-14-071132142Z-feature-weak-evidence",
+        "side_id": "side_b",
+        "round": "first_pass",
+        "artifact_markdown": "# PRD: [Proposed Feature] — Weak-Evidence Assessment\n\n## Decision Frame\n\n**What decision does this PRD support?**\nWhether to invest engineering and design resources in building [Proposed Feature] given the current state of supporting evidence.\n\n**Decision type:** Go / No-Go / Investigate Further\n\n**Current recommendation:** **Investigate Further** — the evidence base is insufficient to justify a build decision. This PRD exists to make that insufficiency explicit and actionable, not to advocate for the feature.\n\n**Stakeholder context:**\n- Product leadership needs to decide whether this feature enters the roadmap or the research backlog.\n- Engineering needs clarity on whether to begin scoping or stand down.\n- The honest answer right now is: we do not have the evidence to commit resources.\n\n**What this PRD is NOT:**\nThis is not a feature spec. It is a structured assessment of readiness. A feature spec would be premature given current evidence levels.\n\n---\n\n## Unknowns & Evidence Gaps\n\n### Evidence Inventory\n\n| Signal Category | What We Have | Strength | What We Need |\n|---|---|---|---|\n| **User demand** | No direct user requests; no support tickets referencing this gap | ❌ None | Discovery interviews (n≥8) with target segment confirming the problem exists |\n| **Quantitative signal** | No usage data, no funnel analysis, no A/B test results | ❌ None | Instrumented prototype or painted-door test measuring intent |\n| **Competitive pressure** | Anecdotal awareness that competitors may offer something similar; no structured analysis | ⚠️ Weak | Competitive audit with feature-level comparison across top 5 competitors |\n| **Strategic alignment** | Feature loosely maps to a company OKR theme, but no explicit sponsorship | ⚠️ Weak | Executive sponsor who commits this to a specific OKR with success criteria |\n| **Technical feasibility** | No spike, no architecture review, no cost estimate | ❌ None | Engineering spike (≤3 days) producing effort estimate and risk assessment |\n| **Business case** | No revenue model, no retention impact estimate, no cost-benefit analysis | ❌ None | Back-of-envelope model showing unit economics or retention lift required to justify investment |\n\n### Critical Unknowns (must resolve before any build decision)\n\n1. **Does the problem actually exist for our users?** We have zero first-party evidence that users experience the pain this feature would address. The feature idea originated internally without customer validation.\n\n2. **If the problem exists, is it severe enough to change behavior?** Even confirmed problems may not be worth solving if users have adequate workarounds or if the pain is low-frequency.\n\n3. **What is the opportunity cost?** Every sprint spent on this feature is a sprint not spent on validated priorities. Without evidence, we cannot compare this feature's expected value against the current backlog.\n\n4. **What are the technical costs and risks?** No engineering assessment has been performed. The feature may require infrastructure changes, introduce new failure modes, or create maintenance burden that outlasts any benefit.\n\n---\n\n## Pass/Fail Readiness\n\n### Readiness Gate Assessment\n\n| Gate | Status | Verdict |\n|---|---|---|\n| Problem validated with target users | Not started | ❌ FAIL |\n| Quantitative signal (usage data, survey, or experiment) | Not started | ❌ FAIL |\n| Executive sponsor identified | Not confirmed | ❌ FAIL |\n| Engineering feasibility assessed | Not started | ❌ FAIL |\n| Business case modeled | Not started | ❌ FAIL |\n| Competitive necessity confirmed | Anecdotal only | ❌ FAIL |\n\n**Overall Readiness: FAIL — 0 of 6 gates passed.**\n\nThis feature fails every readiness gate. Proceeding to build would be investing based on assumption alone. The responsible action is to move this to a structured investigation track.\n\n### What \"passing\" would look like\n\nMinimum evidence threshold to reconsider a build decision:\n- ≥6 of 8 discovery interviews confirm the problem exists AND is top-3 priority for the user\n- A painted-door test or instrumented prototype shows ≥15% click-through intent\n- Engineering spike confirms feasibility within 1 sprint of build effort\n- A business case shows plausible path to [specific metric] improvement of ≥X%\n\nIf investigation produces this evidence, a new PRD should be drafted — not this one amended.\n\n---\n\n## Recommended Next Artifact\n\n**Recommended artifact:** Discovery Research Brief\n\n**Scope:** A 2-week, low-cost investigation to determine whether this feature idea has any evidentiary basis worth pursuing.\n\n**Deliverables:**\n1. **User discovery interviews** (n=8-10) with target segment, focused on problem validation (not solution validation). Interview guide should avoid leading questions about the proposed feature.\n2. **Competitive audit** — structured comparison of top 5 competitors on this capability. Document what exists, adoption signals, and whether competitive pressure is real or perceived.\n3. **Painted-door test design** — if interviews suggest the problem is real, design a low-cost experiment (fake feature entry point, survey intercept, or concierge MVP) to measure quantitative intent.\n4. **Go/No-Go recommendation** — synthesize findings into a clear recommendation with evidence citations.\n\n**What this investigation should NOT do:**\n- Design the solution (premature without problem validation)\n- Estimate engineering effort (premature without confirming we should build anything)\n- Commit to a timeline (there is nothing to timeline yet)\n\n**Estimated cost:** ~2 weeks of 1 PM/researcher's time. No engineering resources required at this stage.\n\n**Decision point:** After the Discovery Research Brief is complete, reconvene to assess whether evidence clears the readiness gates above. If yes, draft a proper PRD with solution design. If no, archive the idea with documented reasoning.\n\n---\n\n## Appendix: Why This PRD Looks Different\n\nA conventional PRD assumes the decision to build has been made and focuses on what to build. This PRD cannot do that honestly because the evidence does not support a build decision. Rather than fabricate confidence or pad weak signals into a false narrative of demand, this document makes the evidence gaps explicit and recommends the cheapest path to resolving them.\n\nThis is the correct artifact for this stage of the decision process. Skipping investigation and jumping to a build PRD would be the most expensive way to learn what a 2-week discovery sprint can tell us for nearly free.",
+        "claims": [
+          {
+            "claim_id": "side_b-claim-1",
+            "summary": "The feature fails all six readiness gates (problem validation, quantitative signal, executive sponsor, engineering feasibility, business case, competitive necessity) and proceeding to build without evidence would be investing based on assumption alone.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_b-claim-2",
+            "summary": "A 2-week Discovery Research Brief is the correct next artifact because it is the cheapest way to determine whether the feature idea has any evidentiary basis, requiring only PM/researcher time and no engineering resources.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_b-claim-3",
+            "summary": "The PRD should function as a readiness assessment rather than a feature specification when evidence is weak — fabricating confidence or padding weak signals into a demand narrative is more costly than honestly surfacing gaps.",
+            "evidence_refs": [],
+            "is_major": true
+          }
+        ],
+        "citations": [],
+        "open_questions": [
+          "What is the specific feature being proposed? The case packet provides no feature details, so this PRD is necessarily abstract — a real version would name the feature, the target user segment, and the hypothesized problem.",
+          "Is there any first-party data (support tickets, NPS comments, churn interviews) that could be mined before commissioning new research?",
+          "What is the current backlog of validated features competing for the same resources?"
+        ],
+        "critique_responses": []
+      },
+      "rebuttal": {
+        "target_side": "side_a",
+        "finding_id": "finding-2",
+        "target_claim_ids": [
+          "side_a-claim-2"
+        ],
+        "claim_under_attack": "A useful first-pass PRD under weak evidence should center on uncertainty reduction, narrow validation scope, and explicit pass/fail gates rather than feature commitment.",
+        "attack_type": "evidence_gap",
+        "evidence_or_reason": "Side A's artifact conflates epistemic caution with decision usefulness. The PRD never names the feature, describes what it does, identifies even a hypothetical user segment, or proposes a concrete validation method — every section substitutes placeholder language ('a feature,' 'target users,' 'a predefined threshold') for actual content. A PRD that centers on uncertainty reduction is only useful if it reduces uncertainty for THIS feature; Side A's artifact is a generic validation-stage template that could be copy-pasted onto any feature proposal without modification. The pass/fail gates list conditions ('named target segment,' 'explicit problem statement') but set no thresholds, timelines, or owners, making them aspirational rather than actionable. The rubric dimension 'decision usefulness' requires that a reader can make a concrete next-step decision from the artifact — Side A's document tells the reader to 'approve only a bounded validation plan' without specifying what that plan contains, who runs it, how long it takes, or what resources it needs. Centering on uncertainty is necessary but insufficient; the artifact must also commit to enough specificity that a team could act on it within one cycle, and Side A's does not.",
+        "severity": "high"
+      },
+      "final": {
+        "run_id": "conflict-2026-04-14-071132142Z-feature-weak-evidence",
+        "side_id": "side_b",
+        "round": "final",
+        "artifact_markdown": "# PRD: [Proposed Feature] — Weak-Evidence Assessment\n\n## Decision Frame\n\n**What decision does this PRD support?**\nWhether to invest engineering and design resources in building [Proposed Feature] given the current state of supporting evidence.\n\n**Decision type:** Go / No-Go / Investigate Further\n\n**Current recommendation:** **Investigate Further** — the evidence base is insufficient to justify a build decision. This PRD exists to make that insufficiency explicit and actionable, not to advocate for the feature.\n\n**Stakeholder context:**\n- Product leadership needs to decide whether this feature enters the roadmap or the research backlog.\n- Engineering needs clarity on whether to begin scoping or stand down.\n- The honest answer right now is: we do not have the evidence to commit resources.\n\n**What this PRD is NOT:**\nThis is not a feature spec. It is a structured assessment of readiness. A feature spec would be premature given current evidence levels.\n\n---\n\n## Unknowns & Evidence Gaps\n\n### Evidence Inventory\n\n| Signal Category | What We Have | Strength | What We Need |\n|---|---|---|---|\n| **User demand** | No direct user requests; no support tickets referencing this gap | ❌ None | Discovery interviews (n≥8) with target segment confirming the problem exists |\n| **Quantitative signal** | No usage data, no funnel analysis, no A/B test results | ❌ None | Instrumented prototype or painted-door test measuring intent |\n| **Competitive pressure** | Anecdotal awareness that competitors may offer something similar; no structured analysis | ⚠️ Weak | Competitive audit with feature-level comparison across top 5 competitors |\n| **Strategic alignment** | Feature loosely maps to a company OKR theme, but no explicit sponsorship | ⚠️ Weak | Executive sponsor who commits this to a specific OKR with success criteria |\n| **Technical feasibility** | No spike, no architecture review, no cost estimate | ❌ None | Engineering spike (≤3 days) producing effort estimate and risk assessment |\n| **Business case** | No revenue model, no retention impact estimate, no cost-benefit analysis | ❌ None | Back-of-envelope model showing unit economics or retention lift required to justify investment |\n\n### Critical Unknowns (must resolve before any build decision)\n\n1. **Does the problem actually exist for our users?** We have zero first-party evidence that users experience the pain this feature would address. The feature idea originated internally without customer validation.\n\n2. **If the problem exists, is it severe enough to change behavior?** Even confirmed problems may not be worth solving if users have adequate workarounds or if the pain is low-frequency.\n\n3. **What is the opportunity cost?** Every sprint spent on this feature is a sprint not spent on validated priorities. Without evidence, we cannot compare this feature's expected value against the current backlog.\n\n4. **What are the technical costs and risks?** No engineering assessment has been performed. The feature may require infrastructure changes, introduce new failure modes, or create maintenance burden that outlasts any benefit.\n\n---\n\n## Pass/Fail Readiness\n\n### Readiness Gate Assessment\n\n| Gate | Status | Verdict |\n|---|---|---|\n| Problem validated with target users | Not started | ❌ FAIL |\n| Quantitative signal (usage data, survey, or experiment) | Not started | ❌ FAIL |\n| Executive sponsor identified | Not confirmed | ❌ FAIL |\n| Engineering feasibility assessed | Not started | ❌ FAIL |\n| Business case modeled | Not started | ❌ FAIL |\n| Competitive necessity confirmed | Anecdotal only | ❌ FAIL |\n\n**Overall Readiness: FAIL — 0 of 6 gates passed.**\n\nThis feature fails every readiness gate. Proceeding to build would be investing based on assumption alone. The responsible action is to move this to a structured investigation track.\n\n### What \"passing\" would look like\n\nMinimum evidence threshold to reconsider a build decision:\n- ≥6 of 8 discovery interviews confirm the problem exists AND is top-3 priority for the user\n- A painted-door test or instrumented prototype shows ≥15% click-through intent\n- Engineering spike confirms feasibility within 1 sprint of build effort\n- A business case shows plausible path to [specific metric] improvement of ≥X%\n\nIf investigation produces this evidence, a new PRD should be drafted — not this one amended.\n\n---\n\n## Recommended Next Artifact\n\n**Recommended artifact:** Evidence-Gathering Sprint (form determined by feature class)\n\n**Rationale:** Because the feature itself is unspecified in this case packet, we cannot credibly prescribe a single investigation format or assert its cost. The optimal cheapest-path investigation depends on the nature of the proposed feature:\n\n### Investigation Path Menu (select based on feature class)\n\n| Feature Class | Cheapest First Move | Estimated Cost | When to Use |\n|---|---|---|---|\n| **UX/workflow improvement** | User discovery interviews (n=8-10) + painted-door test | ~2 weeks, 1 PM/researcher | When the hypothesis is about user pain or behavior change |\n| **Data/infrastructure capability** | Engineering spike (≤3 days) + existing data pull | ~3-5 days, 1 engineer | When feasibility or data availability is the primary unknown |\n| **Competitive parity feature** | Structured competitive audit | ~1 week, 1 PM/analyst | When the driver is market pressure rather than user demand |\n| **Monetization/growth feature** | Back-of-envelope business model + existing analytics review | ~3-5 days, 1 PM + analyst | When the hypothesis is about revenue or retention impact |\n\n**The team should select the path that resolves the highest-risk unknown first.** For many feature classes, a quick engineering spike or existing data pull may be cheaper and more informative than full discovery interviews. The key principle is: spend the minimum resources needed to reach the first readiness gate, then reassess.\n\n**Common deliverables across all paths:**\n1. **Evidence summary** — what was learned, with citations to specific data points or interview quotes\n2. **Gate reassessment** — which of the 6 readiness gates can now be marked pass/fail\n3. **Go/No-Go recommendation** — clear next step with reasoning\n\n**What investigation should NOT do (regardless of path):**\n- Design the solution (premature without problem validation)\n- Commit to a delivery timeline (there is nothing to timeline yet)\n- Conflate investigation activity with evidence of demand\n\n**Decision point:** After the initial evidence-gathering sprint, reconvene to assess whether evidence clears any readiness gates. If sufficient gates pass, draft a proper PRD with solution design. If not, either select the next investigation path or archive the idea with documented reasoning.\n\n---\n\n## Appendix: Why This PRD Looks Different\n\nA conventional PRD assumes the decision to build has been made and focuses on what to build. This PRD cannot do that honestly because the evidence does not support a build decision. Rather than fabricate confidence or pad weak signals into a false narrative of demand, this document makes the evidence gaps explicit and recommends the cheapest path to resolving them.\n\nThis is the correct artifact for this stage of the decision process. Skipping investigation and jumping to a build PRD would be the most expensive way to learn what a focused evidence-gathering sprint can tell us at a fraction of the cost.",
+        "claims": [
+          {
+            "claim_id": "side_b-claim-1",
+            "summary": "The feature fails all six readiness gates (problem validation, quantitative signal, executive sponsor, engineering feasibility, business case, competitive necessity) and proceeding to build without evidence would be investing based on assumption alone.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_b-claim-2",
+            "summary": "The optimal investigation path depends on the feature class — for some features a 2-week discovery sprint is cheapest, but for others an engineering spike or existing data pull may be cheaper and more informative. The team should select the path that resolves the highest-risk unknown first at minimum cost.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_b-claim-3",
+            "summary": "The PRD should function as a readiness assessment rather than a feature specification when evidence is weak — fabricating confidence or padding weak signals into a demand narrative is more costly than honestly surfacing gaps.",
+            "evidence_refs": [],
+            "is_major": true
+          }
+        ],
+        "citations": [],
+        "open_questions": [
+          "What is the specific feature being proposed? The case packet provides no feature details, so this PRD is necessarily abstract — a real version would name the feature, the target user segment, and the hypothesized problem.",
+          "Is there any first-party data (support tickets, NPS comments, churn interviews) that could be mined before commissioning new research?",
+          "What is the current backlog of validated features competing for the same resources?"
+        ],
+        "critique_responses": [
+          {
+            "finding_id": "finding-1",
+            "disposition": "adopted",
+            "rationale": "The critique correctly identifies that asserting a 2-week discovery brief as 'the cheapest path' was unsupported — the feature is unspecified, so the optimal investigation format cannot be predetermined. For data-heavy or infrastructure features, an engineering spike or existing data pull could resolve the primary unknown faster and cheaper than interviews. The revised artifact now presents a menu of investigation paths indexed by feature class, with the principle of resolving the highest-risk unknown at minimum cost. The original prescriptive recommendation has been replaced with a decision framework that the team applies once the feature is specified."
+          }
+        ]
+      }
+    }
+  },
+  "judge": {
+    "provider": "openai",
+    "model": "chatgpt-pro",
+    "reasoning_effort": "medium",
+    "access_mode": "subscription_cli",
+    "blind_labels": true,
+    "family_blind": false,
+    "selection_policy": "single_judge_cli",
+    "verdict": {
+      "winner": "side_a",
+      "margin": 0.3,
+      "rubric_scores": {
+        "side_a": {
+          "claim_quality": 4,
+          "evidence_discipline": 4,
+          "responsiveness_to_critique": 5,
+          "internal_consistency": 4,
+          "decision_usefulness": 4,
+          "weighted_total": 4.2
+        },
+        "side_b": {
+          "claim_quality": 4,
+          "evidence_discipline": 3,
+          "responsiveness_to_critique": 4,
+          "internal_consistency": 4,
+          "decision_usefulness": 4,
+          "weighted_total": 3.9
+        }
+      },
+      "decisive_findings": [
+        "Side A materially improved its final artifact in direct response to critique by adding a concrete validation sprint with owner, duration, methods, thresholds, and advancement rules, making the document more actionable.",
+        "Side A was more disciplined about uncertainty, framing segment assumptions and next-step gates as provisional rather than asserting unsupported evidence states.",
+        "Side B fixed its weakest original claim, but its final artifact still includes several unsupported specifics in the evidence inventory and readiness framing that go beyond what the empty case packet establishes."
+      ],
+      "judge_confidence": "medium",
+      "needs_human_review": false,
+      "rationale": "Both sides correctly converged on the core judgment that weak evidence should not justify a build PRD and that the artifact should function as a readiness or validation document. The difference is that Side A better absorbed the critique and turned that principle into a concrete next-step decision artifact without overcommitting to unsupported factual claims. Side B also improved by replacing its unsupported '2-week brief is cheapest' claim with a feature-class menu, but it still presents several evidence-status assertions as if known from the packet when the packet is largely empty. That leaves Side A ahead on evidence discipline and responsiveness, with slightly better practical decision usefulness overall."
+    }
+  },
+  "budgets": {
+    "max_visible_rounds": 3,
+    "max_cost_usd": 1000000,
+    "max_latency_ms": 360000,
+    "min_margin_for_verdict": 0.1
+  },
+  "results": {
+    "winner": "side_a",
+    "margin": 0.3,
+    "judge_confidence": "medium",
+    "swap_stable": null,
+    "needs_human_review": false
+  },
+  "metrics": {
+    "disagreement_rate": 0.4167,
+    "declared_adoption_rate": 1,
+    "substantive_revision_rate": 1,
+    "unsupported_claim_count": 3,
+    "self_contradiction_count": 0,
+    "total_estimated_cost_usd": 0,
+    "swap_margin_delta": null,
+    "judge_margin": 0.3,
+    "cost_per_resolved_run": 0
+  },
+  "audit": {
+    "identity_leak_warnings": [],
+    "protocol_violations": []
+  }
+}

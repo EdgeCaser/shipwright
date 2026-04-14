@@ -1,0 +1,13 @@
+# Critique: finding-1
+
+- Target Side: side_b
+- Target Claim IDs: side_b-claim-1
+- Attack Type: evidence_gap
+- Severity: high
+
+## Claim Under Attack
+The board should approve only a capped, time-boxed validation phase because the case packet provides no substantive market, financial, competitive, or execution evidence to justify scaled investment.
+
+## Evidence Or Reason
+Side B's claim conflates the absence of evidence *in the case packet* with the absence of evidence *available to the organization*. The scenario prompt asks for a strategy update under ambiguity — it does not state that no internal data, prior research, or operational history exists. By treating the sparse case packet as the totality of organizational knowledge, Side B manufactures an artificially conservative posture and then presents a generic 60-90 day validation framework that could apply to any initiative regardless of context. The resulting pass/fail criteria (e.g., 'at least one clearly defined customer segment shows repeated, high-urgency demand') are textbook templates with no grounding in the specific strategic situation the board faces. A board receiving this artifact would learn nothing about *this* decision that they couldn't get from a strategy playbook. The claim's logical chain — no packet evidence → pre-commitment ambiguity → gated continuation only — ignores that a board update under ambiguity should surface what *is* known alongside what isn't, rather than defaulting to a uniform 'we know nothing' stance that renders the entire artifact context-free.
+

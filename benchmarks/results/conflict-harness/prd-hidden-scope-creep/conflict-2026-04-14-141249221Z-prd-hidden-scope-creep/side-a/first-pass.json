@@ -1,0 +1,29 @@
+{
+  "run_id": "conflict-2026-04-14-141249221Z-prd-hidden-scope-creep",
+  "side_id": "side_a",
+  "round": "first_pass",
+  "artifact_markdown": "# PRD: Team Inbox Workflow Handoff Improvement\n\n## Overview\nImprove team inbox handoffs so work can move between agents or teammates without loss of context, duplicate effort, or unclear ownership.\n\n## Problem\nCurrent inbox handoffs are inconsistent. When one person needs to transfer a conversation or task to another, key context is often missing, ownership can be ambiguous, and the recipient must reconstruct intent manually. This creates slower response times, repeated work, and higher risk of dropped requests.\n\n## Goal\nEnable fast, reliable handoffs inside the team inbox workflow with explicit ownership, preserved context, and clear next-step expectations.\n\n## Non-Goals\n- Full inbox redesign\n- Changes to external customer-facing messaging channels\n- Workforce management or staffing optimization\n- AI-generated handoff summaries as a launch requirement\n\n## Users\n- Primary: frontline support or operations teammate handing off an inbox item\n- Secondary: receiving teammate who takes over the item\n- Tertiary: team leads monitoring queue health and accountability\n\n## User Stories\n- As a teammate handing off an inbox item, I want to assign it to another person with context so I do not need to explain it again in chat.\n- As a receiving teammate, I want to see why the item was handed off and what to do next so I can act without re-triage.\n- As a team lead, I want handoffs to preserve accountability so items do not stall between owners.\n\n## Requirements\n### Functional Requirements\n1. Users can initiate a handoff from an inbox item.\n2. A handoff requires a receiving owner or queue destination.\n3. A handoff requires a structured reason field.\n4. A handoff supports a freeform context note.\n5. The system records prior owner, new owner, timestamp, and handoff reason.\n6. The receiving owner can view handoff context in the inbox item detail.\n7. Ownership state updates immediately after handoff.\n8. The inbox item shows a visible handoff event in its activity history.\n9. The receiving owner is notified of the handoff.\n10. Team leads can report on handoff volume and acceptance/completion latency.\n\n### UX Requirements\n1. Handoff can be completed in a short workflow from the inbox item view.\n2. Required fields are minimal and explicit.\n3. The receiving user can understand the handoff without opening multiple screens.\n4. Ownership status is unambiguous before and after transfer.\n\n### Data Requirements\n- Handoff initiator\n- Previous owner\n- New owner or destination queue\n- Timestamp\n- Structured reason\n- Optional context note\n- Item status before and after handoff\n\n## Success Metrics\n- Reduce time from handoff creation to next meaningful action by the receiving owner.\n- Reduce rate of reopened or re-triaged items caused by missing context.\n- Reduce percentage of inbox items with ambiguous or null ownership after transfer.\n- Improve teammate satisfaction with handoff clarity.\n\n## Risks\n- Added handoff fields may slow down users if the workflow is too heavy.\n- Mandatory structure may be bypassed with low-quality notes.\n- Queue-based handoffs may still obscure final accountability if ownership is not explicit.\n\n## Rollout Considerations\n- Start with manual handoff flow and basic reporting.\n- Monitor completion latency and note quality.\n- Add automation or summary assistance only after baseline workflow adoption is validated.\n\n## Decision Frame\nShip a narrowly scoped handoff improvement focused on explicit ownership transfer, structured reason capture, visible context, and basic reporting. Reject adjacent expansion into full routing automation, staffing logic, SLA redesign, or AI summarization in this phase.\n\n## Unknowns & Evidence Gaps\n- Baseline current handoff failure rate is not provided.\n- Current inbox product constraints and existing ownership model are unspecified.\n- No evidence is provided on whether handoffs are person-to-person, queue-to-person, or both.\n- No research is provided on which handoff reasons are most common.\n- Notification channel and escalation behavior remain undefined.\n\n## Pass/Fail Readiness\nPass if the team agrees the phase-1 scope is limited to handoff initiation, ownership transfer, context capture, recipient visibility, notification, and reporting.\n\nFail if the team expects this PRD to also solve auto-routing, staffing allocation, SLA policy, analytics overhaul, or AI assistance without additional evidence and requirements.\n\n## Recommended Next Artifact\nTechnical spec for handoff state transitions, data model changes, notification triggers, reporting events, and migration impact.",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "A useful first-pass PRD should constrain scope to explicit handoff mechanics and reject adjacent workflow expansions that create hidden scope creep.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "The artifact is decision-useful only if it defines concrete functional requirements, non-goals, and launch boundaries for the team inbox handoff workflow.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1"
+  ],
+  "open_questions": [],
+  "critique_responses": []
+}

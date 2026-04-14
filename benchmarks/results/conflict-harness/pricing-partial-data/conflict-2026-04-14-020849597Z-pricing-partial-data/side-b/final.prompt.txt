@@ -1,0 +1,153 @@
+You are SIDE_B in the final revision phase for run conflict-2026-04-14-020849597Z-pricing-partial-data.
+You must either adopt the critique or reject it with reasoning.
+Do not reveal provider identity.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "run_id": "conflict-2026-04-14-020849597Z-pricing-partial-data",
+  "side_id": "side_b",
+  "round": "final",
+  "artifact_markdown": "# Revised artifact",
+  "claims": [
+    {
+      "claim_id": "side_b-claim-1",
+      "summary": "Updated major claim",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1"
+  ],
+  "open_questions": [],
+  "critique_responses": [
+    {
+      "finding_id": "finding-1",
+      "disposition": "adopted",
+      "rationale": "Why the critique was adopted or rejected."
+    }
+  ]
+}
+
+Case packet:
+{
+  "scenario_id": "pricing-partial-data",
+  "title": "Pricing change with partial market data",
+  "prompt": "Draft a pricing strategy recommendation under partial market data.",
+  "artifact_type": "strategy",
+  "rubric": {
+    "dimensions": [
+      "claim quality",
+      "evidence discipline",
+      "responsiveness to critique",
+      "internal consistency",
+      "decision usefulness"
+    ],
+    "scoring_scale": "1-5",
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "constraints": {
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "expect_structured": true,
+    "context_files": [],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "evidence": [],
+  "max_rounds": 3,
+  "tool_policy": "none",
+  "sharing_policy": {
+    "share_case_packet": true,
+    "share_committed_artifacts_after_first_pass": true,
+    "share_critiques_after_open": true,
+    "share_hidden_reasoning": false,
+    "share_provider_identity": false,
+    "share_internal_coalition_drafts": false
+  },
+  "success_condition": {
+    "type": "validator_contract",
+    "description": "Produce a strategy artifact that satisfies the scenario validator contract.",
+    "validator": {
+      "artifact_type": "strategy",
+      "expect_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true
+    }
+  }
+}
+
+Your first-pass artifact:
+{
+  "run_id": "conflict-2026-04-14-020849597Z-pricing-partial-data",
+  "side_id": "side_b",
+  "round": "first_pass",
+  "artifact_markdown": "# Pricing Strategy Recommendation\n\n## Recommendation\nAdopt a guarded pricing-change approach: run a limited, reversible price test on one customer segment or plan tier rather than a full rollout. Keep packaging stable, preserve grandfathering for existing customers, and define explicit stop conditions before launch.\n\n## Rationale\nWith partial market data, the highest-value decision is not selecting an aggressive new price point with false precision; it is reducing downside while learning quickly. A segmented test preserves revenue, generates willingness-to-pay evidence, and avoids contaminating the entire customer base with an under-validated pricing move.\n\n## Proposed Move\n- Test one moderate increase or packaging simplification on new customers only.\n- Hold enterprise and strategic accounts out of scope until sales feedback is collected.\n- Use a 2-4 week measurement window focused on conversion, expansion intent, churn risk signals, and sales-cycle friction.\n- Pre-commit rollback thresholds if conversion or win rate degrades beyond an agreed band.\n\n## Decision Frame\nThe decision is whether to change pricing now despite incomplete market evidence. The recommended decision is yes, but only through a bounded experiment. This balances speed with risk control and produces decision-grade evidence for a later broader rollout.\n\n## Unknowns & Evidence Gaps\n- No direct competitor price benchmark is available in the packet.\n- No customer willingness-to-pay research is provided.\n- No baseline elasticity, conversion, or churn sensitivity data is provided.\n- No segment-specific margin or sales-assist cost data is provided.\n\nThese gaps mean the current recommendation should optimize for learning and reversibility, not full-market confidence.\n\n## Pass/Fail Readiness\nPass for a limited experiment if the team can isolate a segment, instrument conversion and retention signals, and enforce rollback rules. Fail for a full pricing migration because the available evidence is insufficient to justify broad exposure.\n\n## Recommended Next Artifact\nA pricing experiment brief with test cell design, target segment, guardrails, success metrics, rollback thresholds, and a follow-up decision memo for full rollout, revision, or cancellation.",
+  "claims": [
+    {
+      "claim_id": "side_b-claim-1",
+      "summary": "Under partial market data, the most decision-useful pricing move is a limited and reversible segment test rather than a full pricing rollout.",
+      "evidence_refs": [
+        "ctx-1",
+        "ctx-2"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-2",
+      "summary": "Existing customers should be grandfathered during the first pass to reduce churn and trust risk while evidence is still weak.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-3",
+      "summary": "A full pricing migration is not ready because key evidence is missing on competitor benchmarks, willingness to pay, and elasticity.",
+      "evidence_refs": [
+        "ctx-1",
+        "ctx-2"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1",
+    "ctx-2"
+  ],
+  "open_questions": [
+    "What customer segment or plan tier has the lowest contractual and churn risk for a first test?",
+    "What are the current baseline conversion, win-rate, expansion, and churn metrics by segment?",
+    "Are there any recent competitor pricing moves or packaging changes not included in the case packet?",
+    "What rollback threshold would leadership accept before terminating the experiment?"
+  ],
+  "critique_responses": []
+}
+
+Visible critique packet:
+{
+  "target_side": "side_b",
+  "finding_id": "finding-1",
+  "target_claim_ids": [
+    "side_b-claim-1"
+  ],
+  "claim_under_attack": "Under partial market data, the most decision-useful pricing move is a limited and reversible segment test rather than a full pricing rollout.",
+  "attack_type": "evidence_gap",
+  "evidence_or_reason": "The claim asserts a segment test is 'the most decision-useful' move but provides no evidence or framework for why testing dominates other options such as gathering the missing data first, commissioning willingness-to-pay research, or holding pricing stable while investing in competitive intelligence. The artifact lists four major evidence gaps (competitor benchmarks, WTP research, elasticity data, segment margins) yet never evaluates whether a pricing experiment can even produce valid signal without those baselines. Running a test without baseline elasticity or segment margin data means the results themselves may be uninterpretable — you cannot attribute conversion changes to price versus confounds without a baseline. The recommendation optimizes for appearing action-oriented while skipping the prerequisite analysis that would make the experiment's results meaningful.",
+  "severity": "high"
+}

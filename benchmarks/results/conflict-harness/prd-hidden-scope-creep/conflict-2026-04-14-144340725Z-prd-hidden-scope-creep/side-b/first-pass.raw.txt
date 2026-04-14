@@ -1,0 +1,44 @@
+
+
+```json
+{
+  "run_id": "conflict-2026-04-14-144340725Z-prd-hidden-scope-creep",
+  "side_id": "side_b",
+  "round": "first_pass",
+  "artifact_markdown": "# PRD: Team Inbox Workflow Handoff Improvement\n\n## Decision Frame\n\n**Problem statement:** Team inbox handoff workflows suffer from dropped context, unclear ownership transitions, and silent failures when conversations move between agents or shifts. This creates customer-facing delays and internal rework.\n\n**Decision to be made:** Should we invest in a structured handoff protocol within the team inbox, and if so, what is the minimum viable scope that addresses the highest-friction failure modes?\n\n**Stakeholders:** Support team leads, frontline agents, engineering (inbox platform team), customers (indirect).\n\n**Scope boundary:** This PRD covers handoff between human agents within a single team inbox. It explicitly excludes: bot-to-human escalation flows, cross-team routing, SLA engine changes, and inbox UI redesign. These are adjacent concerns that may surface during implementation but must be treated as separate initiatives with their own decision frames.\n\n**Success criteria:**\n- Reduce handoff-related reopen rate by ≥30% within 8 weeks of launch.\n- Achieve ≥80% agent adoption of structured handoff fields within 4 weeks.\n- No increase in median first-response time as a side effect.\n\n## Requirements\n\n### Core (P0)\n1. **Handoff context block:** When an agent hands off a conversation, they must complete a structured summary (what was tried, what remains, customer sentiment) that travels with the ticket. This is not optional free-text — it uses constrained fields.\n2. **Ownership transfer protocol:** Explicit accept/decline mechanism. No conversation enters a new agent's queue without acknowledgment. Declined handoffs return to the originator with a reason code.\n3. **Handoff audit trail:** Every ownership change is logged with timestamp, originator, recipient, and context block. Visible to team leads in reporting.\n\n### Important (P1)\n4. **Handoff SLA nudge:** If a handed-off conversation sits unaccepted for >15 minutes, escalate visibility to team lead dashboard. Configurable threshold.\n5. **Bulk shift handoff:** End-of-shift agents can batch-transfer remaining open conversations with per-ticket context blocks pre-populated from conversation history (agent reviews and edits before sending).\n\n### Out of scope (explicitly deferred)\n- Auto-generated handoff summaries via AI. This is a natural extension but introduces accuracy risk and should be its own validated initiative.\n- Customer-facing handoff notifications. Requires UX research on whether transparency helps or creates anxiety.\n- Cross-inbox or cross-team handoff. Different ownership model, different stakeholders.\n- Changes to assignment algorithm or load balancing.\n\n## Unknowns & Evidence Gaps\n\n| # | Unknown | Impact if wrong | Proposed resolution | Status |\n|---|---------|----------------|---------------------|--------|\n| U1 | What percentage of reopens are actually caused by handoff failures vs. other factors (e.g., incomplete resolution)? | We may be solving a smaller problem than assumed. Success criteria may be unachievable. | Pull reopen-reason codes from last 90 days; interview 5 agents on root causes. | **Not started** |\n| U2 | Will agents actually fill in structured context blocks under time pressure? | Core mechanism fails if adoption is low. Becomes shelfware. | Prototype with 1 team for 2 weeks; measure completion rate and quality. | **Not started** |\n| U3 | Does the accept/decline mechanism create queue bottlenecks during peak hours? | Could increase response times, violating success criteria. | Simulate with historical handoff volume data before building. | **Not started** |\n| U4 | What is the current baseline handoff-related reopen rate? | Cannot measure success without baseline. | Instrument current inbox; 2-week measurement period. | **Not started** |\n\n## Pass/Fail Readiness\n\n**Verdict: NOT READY for engineering investment.**\n\n**Reason:** All four unknowns (U1–U4) are unresolved. The most critical gap is U1 — we have not validated that handoff failures are the primary driver of the problem we're trying to solve. Investing in a structured handoff protocol without this evidence risks building an elaborate solution to a secondary cause.\n\n**Gate conditions to proceed:**\n1. U1 resolved: Confirm handoff-related reopens account for ≥40% of total reopens (otherwise reframe the problem).\n2. U4 resolved: Baseline measurement established so success criteria are testable.\n3. U2 de-risked: At minimum, a paper prototype or mockup validated with 3+ agents confirming the context block is completable in <60 seconds.\n\n**Scope creep warning:** The prompt \"workflow handoff improvement\" is broad enough to absorb adjacent problems (routing, AI summarization, customer notification, cross-team flows). Each of these has been explicitly excluded above. If discovery on U1 reveals that the real problem is upstream (e.g., bad initial routing causes most reopens), this PRD should be shelved in favor of a routing-focused initiative — not expanded to include routing.\n\n## Recommended Next Artifact\n\n**Immediate next step:** Discovery brief focused on resolving U1 and U4. This is a 2-week instrumentation + interview sprint, not a design sprint.\n\n**Artifact sequence if gates pass:**\n1. Discovery brief (resolve U1, U4) → 2 weeks\n2. Prototype spec for context block UX (resolve U2) → 1 week\n3. Technical design doc for ownership transfer protocol → 1 week\n4. Pilot plan with single team → define scope after discovery\n\n**If gates fail:** Redirect investigation toward actual root cause of reopens. This PRD becomes reference material, not a backlog item.",
+  "claims": [
+    {
+      "claim_id": "side_b-claim-1",
+      "summary": "The PRD is not ready for engineering investment because no evidence validates that handoff failures are the primary driver of conversation reopens — building without this risks solving a secondary cause.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-2",
+      "summary": "Structured handoff context blocks require agent adoption under time pressure, which is an unvalidated behavioral assumption that could cause the entire mechanism to fail as shelfware.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-3",
+      "summary": "The prompt 'workflow handoff improvement' is intentionally broad and invites scope creep into routing, AI summarization, and cross-team flows — each must be treated as a separate initiative with its own decision frame.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-4",
+      "summary": "An accept/decline handoff mechanism could create queue bottlenecks during peak hours, potentially increasing response times and violating the stated success criteria.",
+      "evidence_refs": [],
+      "is_major": false
+    }
+  ],
+  "citations": [],
+  "open_questions": [
+    "What percentage of conversation reopens are attributable to handoff failures specifically, versus incomplete resolution or other causes?",
+    "Can agents realistically complete structured context blocks in under 60 seconds during high-volume shifts?",
+    "Does the organization have instrumentation in place to establish a baseline handoff-related reopen rate, or does this require new telemetry?"
+  ],
+  "critique_responses": []
+}
+```
+

@@ -1,0 +1,77 @@
+# Strategic Recommendation: Reverse the Qwikster Split Immediately
+
+## Decision Frame
+
+**Core question:** Should Netflix proceed with separating into Netflix (streaming) and Qwikster (DVD-by-mail) as two independent companies, or reverse course and reunify under a single brand?
+
+**Recommendation: Reverse course. Kill Qwikster. Reunify immediately.**
+
+The strategic logic of separation — letting streaming optimize without DVD drag — is directionally sound but catastrophically mistimed, poorly sequenced, and operationally destructive. The separation imposes real costs on customers today to solve an internal organizational problem that can be addressed through simpler structural means. The correct move is to maintain a single brand while managing the DVD business for cash harvest internally.
+
+### Why Reversal Is Correct
+
+**1. The customer cost of separation is concrete; the organizational benefit is speculative.**
+
+Qwikster requires customers who use both services to maintain two accounts, two queues, two billing relationships, and two review histories. This is a direct degradation of the product for the ~10-12M subscribers who use both DVD and streaming. The claimed benefit — that streaming product teams can move faster without DVD constraints — is an internal process problem solvable through organizational design (separate P&L centers, separate product teams under one brand) without punishing customers.
+
+**2. The DVD business is funding the streaming transition and cannot be destabilized now.**
+
+DVD-by-mail generates approximately $1B in revenue at high margins. Streaming is operating at a loss and faces surging content costs ($180M in 2010 → projected $2B in 2012). Netflix needs DVD cash flow to fund streaming content acquisition and international expansion for at least the next 2-3 years. Splitting the businesses risks accelerating DVD subscriber churn beyond the organic ~5% quarterly decline — subscribers who might have maintained a combo plan out of convenience will be forced to actively choose, and many will simply drop DVD entirely. This pulls forward revenue decline in the cash-generating business at exactly the moment Netflix needs that cash most.
+
+**3. The brand damage is compounding and threatens the streaming business itself.**
+
+The 800,000 subscriber loss in Q3 2011 and the stock decline from $298 to ~$65 are not just about the price increase — they reflect a crisis of trust. Customer satisfaction dropped from 79 to 52 ACSI in a single quarter. Proceeding with Qwikster signals that Netflix leadership is not listening. Every day the split remains announced, the narrative hardens: Netflix is a company that raises prices and degrades service. This perception will suppress streaming subscriber growth at exactly the moment Netflix needs to demonstrate a growth trajectory to justify content investment and international expansion.
+
+**4. Competitive timing makes this the worst possible moment for self-inflicted wounds.**
+
+Amazon Prime Video, Hulu Plus, and HBO GO all launched in 2010-2011. Netflix's primary competitive advantage is its brand and its installed base. A brand crisis hands competitors a window to acquire customers who are actively angry at Netflix. Streaming content libraries are still relatively undifferentiated (~20,000 titles), so customer switching costs are low. Netflix should be consolidating its position, not creating reasons for customers to explore alternatives.
+
+**5. The Qwikster execution signals organizational dysfunction.**
+
+The chosen brand name's Twitter handle is controlled by an unrelated third party posting inappropriate content. This is an elementary due diligence failure that signals the split was rushed and poorly planned. If the company cannot execute a basic trademark/social media check, the market has no reason to trust it can execute a complex corporate separation smoothly.
+
+### The Strongest Case for Proceeding (and Why It's Wrong)
+
+The best argument for the split: streaming and DVD are fundamentally different businesses with different economics, different logistics, and different futures. Keeping them together forces product compromises — the DVD tail wags the streaming dog. Some Wall Street analysts see strategic clarity in the separation.
+
+This argument fails for three reasons:
+
+- **Organizational separation ≠ brand separation.** Netflix can create distinct internal business units with separate P&Ls, separate product leadership, and separate engineering teams while maintaining a single customer-facing brand, account system, and billing relationship. Amazon runs dozens of distinct businesses under one account. Apple runs hardware, software, and services under one brand. Internal organizational clarity does not require customer-facing fragmentation.
+
+- **Timing negates strategy.** Even if full corporate separation were eventually correct, executing it during a subscriber crisis, after a price increase backlash, and amid surging competitive entry is strategically indefensible. The cost of delay (some organizational friction) is far smaller than the cost of proceeding (accelerated brand damage, subscriber loss, and competitive vulnerability).
+
+- **The market is telling you something.** A 77% stock decline is not noise. 27,000 negative comments are not a vocal minority. 800,000 lost subscribers are not rounding error. When every external signal — customers, investors, analysts, media — is screaming that the execution is wrong, the burden of proof is on leadership to demonstrate extraordinary conviction backed by extraordinary evidence. That evidence does not exist.
+
+## Unknowns & Evidence Gaps
+
+| Unknown | Why It Matters | How to Resolve |
+|---------|---------------|----------------|
+| What fraction of the 800K lost subscribers left due to price increase vs. Qwikster announcement? | If losses are primarily price-driven, reversing Qwikster alone may not stem churn | Cohort analysis of cancellation timing (July price increase vs. September Qwikster announcement) |
+| How many combo subscribers would drop DVD if forced to maintain separate accounts? | Quantifies the revenue acceleration risk from the split | Survey existing combo subscribers on stated intent; model based on historical behavior when friction is added |
+| What is the actual organizational cost of maintaining unified brand with internal separation? | Tests whether the claimed benefit of the split is real or overstated | Interview product and engineering leadership on specific product decisions delayed or compromised by DVD integration |
+| Can Netflix renegotiate or slow content cost increases? | $2B projected streaming costs may be unsustainable regardless of DVD cash flow | Assess contract terms, alternative content strategies (originals vs. licensing), and willingness to let library shrink temporarily |
+| What is the competitive response timeline? | If Amazon/Hulu/HBO are about to invest heavily, Netflix's window to recover brand trust is shorter | Competitive intelligence on planned content spend and marketing budgets for 2012 |
+| Will reversing Qwikster be perceived as strength (listening) or weakness (indecisiveness)? | Affects how to frame the reversal communications | Pre-test messaging with customer panels; study analogous corporate reversals (New Coke, Gap logo) |
+
+## Pass/Fail Readiness
+
+**Readiness to decide: PASS — Reverse Qwikster immediately.**
+
+| Criterion | Assessment |
+|-----------|------------|
+| Is the decision reversible? | Reversing the split is low-cost — Qwikster was announced but not yet operationally separated. Delaying reversal increases cost as systems diverge. |
+| Is the evidence sufficient? | Yes. Customer, market, and financial signals are unanimously negative. No plausible evidence gap would change the direction of the recommendation. |
+| Is the timing forcing? | Yes. Every week the split remains announced, brand damage compounds and competitors gain ground. The cost of waiting for more data exceeds the value of that data. |
+| Are the downside risks manageable? | Reversal risks: appearing indecisive (manageable through communications framing), not solving the underlying organizational tension (solvable through internal restructuring). Neither risk is existential. Proceeding risks: accelerated subscriber loss, brand erosion, competitive vulnerability. These risks are potentially existential. |
+
+**The asymmetry is decisive.** Reversal has moderate, manageable downsides. Proceeding has severe, potentially irreversible downsides. Under uncertainty, choose the option with the smaller blast radius.
+
+## Recommended Next Artifact
+
+1. **Internal Restructuring Plan:** Design a dual-business-unit structure under the Netflix brand — separate P&Ls, separate product leadership, shared customer account and billing. This captures the legitimate organizational benefits of separation without the customer-facing costs. Target: 2 weeks.
+
+2. **Customer Recovery Communications Strategy:** Draft the reversal announcement. Frame it as listening to customers, not as admitting failure. Pair with a concrete goodwill gesture (e.g., temporary price hold for existing combo subscribers). Target: 48 hours.
+
+3. **DVD Business Harvest Roadmap:** Model the managed decline of DVD-by-mail over 3-5 years. Define triggers for reducing DVD logistics investment, transitioning subscribers to streaming-only, and eventually sunsetting the service. Ensure cash flow projections feed into streaming content acquisition and international expansion budgets. Target: 4 weeks.
+
+4. **Competitive Response Assessment:** Map Amazon, Hulu, and HBO content and marketing plans for 2012. Identify Netflix's defensible advantages (recommendation engine, installed base, brand recognition post-recovery) and areas requiring accelerated investment (original content, exclusive licensing). Target: 3 weeks.

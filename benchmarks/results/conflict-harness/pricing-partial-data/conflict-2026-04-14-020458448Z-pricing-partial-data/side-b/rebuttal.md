@@ -1,0 +1,13 @@
+# Critique: finding-2
+
+- Target Side: side_a
+- Target Claim IDs: side_a-claim-1
+- Attack Type: evidence_gap
+- Severity: medium
+
+## Claim Under Attack
+The organization is not ready to commit to a pricing change because zero of four critical evidence gaps (competitor response, WTP distribution, price elasticity, cost structure) have been filled, and acting without this data exposes the business to asymmetric downside risk.
+
+## Evidence Or Reason
+This claim treats the four named gaps as mandatory gating evidence without showing why those are the minimum required inputs for any pricing decision under partial data. The artifact provides no evidence refs, no threshold from the scoring spec, and no argument that narrower actions such as a segmented increase, packaging change, or limited rollout are infeasible with the stated facts. It therefore overreaches from 'important unknowns exist' to 'not ready to commit' without proving that all four gaps must be closed first.
+

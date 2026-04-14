@@ -1,0 +1,297 @@
+{
+  "run_id": "conflict-2026-04-14-050407398Z-pricing-partial-data",
+  "scenario_id": "pricing-partial-data",
+  "mode": "head_to_head",
+  "status": "completed",
+  "sides": {
+    "side_a": {
+      "provider": "openai",
+      "model": "chatgpt-pro",
+      "reasoning_effort": "medium",
+      "access_mode": "subscription_cli",
+      "role": "side_a",
+      "first_pass": {
+        "run_id": "conflict-2026-04-14-050407398Z-pricing-partial-data",
+        "side_id": "side_a",
+        "round": "first_pass",
+        "artifact_markdown": "# Pricing Strategy Recommendation Under Partial Market Data\n\n## Recommendation\nAdopt a staged pricing test rather than a permanent price reset now. Use a narrow, reversible change: introduce a modest list-price increase or packaging fence for new customers only, preserve current pricing for existing customers during the test window, and pair the change with explicit guardrails on conversion, win rate, and early retention. Under partial market data, the goal is to learn willingness-to-pay without taking an irreversible revenue or demand risk.\n\n## Rationale\nThe case provides no direct market benchmarks, customer elasticity data, competitor pricing evidence, or segment-level willingness-to-pay evidence. That makes a full-market repricing weakly supported. A staged test is the highest-confidence move because it creates decision-grade evidence while limiting downside. If the business must act before richer data is available, the safer recommendation is to change exposure and packaging before changing price deeply across the base.\n\n## Recommended Approach\n1. Test on new business only for a defined period.\n2. Prefer one-variable changes first: either a modest price increase or a packaging change, not both at once unless measurement design is strong.\n3. Protect existing customers from immediate repricing to avoid avoidable churn without evidence.\n4. Track four primary metrics: conversion rate, average revenue per new account, sales cycle/win rate, and 30- to 60-day retention or refund signal.\n5. Define stop conditions in advance: if conversion drops beyond the acceptable threshold without offsetting revenue lift, roll back.\n6. If partial data suggests heterogeneous value, test by segment rather than imposing one universal price.\n\n## Decision Frame\nRecommend a controlled pricing experiment, not a full rollout. The decision this supports is whether to pursue monetization uplift now while evidence is incomplete. The appropriate bar is not certainty; it is reversibility, bounded downside, and fast learning. A staged test meets that bar better than a broad permanent change.\n\n## Unknowns & Evidence Gaps\n- No competitor pricing data is provided.\n- No customer willingness-to-pay evidence is provided.\n- No elasticity, churn sensitivity, or historical pricing-test data is provided.\n- No segment-level differentiation is provided, so uniform pricing may misprice high- and low-value cohorts.\n- No channel mix is provided, which matters because self-serve and sales-led motions react differently to price changes.\n\n## Pass/Fail Readiness\nPass for a limited experiment if the team can isolate treatment cohorts, measure conversion and retention cleanly, and roll back quickly.\nFail for a full pricing rollout today because the evidence base is insufficient for a durable market-wide recommendation.\n\n## Recommended Next Artifact\nA pricing experiment brief with test design, target segments, guardrail metrics, rollback criteria, and a 2x2 scenario model for revenue lift versus demand loss.",
+        "claims": [
+          {
+            "claim_id": "side_a-claim-1",
+            "summary": "The highest-confidence recommendation under partial market data is a staged, reversible pricing test rather than a permanent full-market pricing change.",
+            "evidence_refs": [
+              "ctx-scenario-prompt",
+              "ctx-evidence-empty"
+            ],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-2",
+            "summary": "Existing customers should be protected from immediate repricing until conversion, retention, and willingness-to-pay signals are observed from a new-customer test cohort.",
+            "evidence_refs": [
+              "ctx-evidence-empty",
+              "ctx-validator-sections"
+            ],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-3",
+            "summary": "Decision usefulness is maximized by defining explicit guardrails and rollback criteria before launch because the case lacks competitor, elasticity, and segment evidence.",
+            "evidence_refs": [
+              "ctx-evidence-empty",
+              "ctx-rubric-decision-usefulness"
+            ],
+            "is_major": false
+          }
+        ],
+        "citations": [
+          "ctx-scenario-prompt",
+          "ctx-evidence-empty",
+          "ctx-validator-sections",
+          "ctx-rubric-decision-usefulness"
+        ],
+        "open_questions": [
+          "What customer segments exist, and which segments appear most value-insensitive?",
+          "Is the motion self-serve, sales-led, or hybrid, and what conversion points can be instrumented reliably?",
+          "What historical retention or churn sensitivity has followed prior packaging or pricing changes, if any?",
+          "Are there contractual, renewal, or channel constraints that would limit new-customer-only testing?"
+        ],
+        "critique_responses": []
+      },
+      "rebuttal": {
+        "target_side": "side_b",
+        "finding_id": "finding-1",
+        "target_claim_ids": [
+          "side_b-claim-1"
+        ],
+        "claim_under_attack": "The decision is not ready for commitment: the three highest-impact unknowns (competitor pricing, price elasticity, WTP distribution) are all closable within 4-8 weeks at moderate cost, making it irrational to act now without a forcing function.",
+        "attack_type": "evidence_gap",
+        "evidence_or_reason": "This claim asserts specific closure timelines, cost levels, and a strong decision rule ('irrational to act now') without any cited evidence from the case packet or artifact. With no market data, no operational constraints, and no proof that these gaps are actually closable in 4-8 weeks for this context, the conclusion overreaches. The visible artifact shows a plausible generic process, but not support for why waiting dominates all immediate pricing actions under the stated partial-data scenario.",
+        "severity": "medium"
+      },
+      "final": {
+        "run_id": "conflict-2026-04-14-050407398Z-pricing-partial-data",
+        "side_id": "side_a",
+        "round": "final",
+        "artifact_markdown": "# Revised artifact\n\n## Pricing Strategy Recommendation Under Partial Market Data\n\n## Recommendation\nDo not treat a new-customer-only test as the default answer. Recommend a staged pricing decision with two admissible paths, chosen explicitly against opportunity cost and transfer-risk:\n\n1. Use a new-customer or segment-fenced test if the primary objective is downside control and the team cannot safely experiment on the installed base.\n2. Use a limited installed-base test at a natural renewal, expansion, or contract boundary if the primary risk is underpricing the current base and results from new-logo cohorts would not transfer.\n\nThe core recommendation is not \"protect existing customers at all costs.\" It is to avoid a full-market permanent repricing until the team runs a bounded test that matches the population where the economic question actually matters.\n\n## Why This Is The Best-Supported Recommendation\nThe scenario provides no competitor benchmarks, elasticity data, willingness-to-pay evidence, installed-base renewal behavior, or segment mix. With that evidence missing, a broad permanent pricing reset is weakly supported. But the prior version overstated confidence in one specific design. Under partial data, the stronger claim is narrower: prefer a reversible, decision-oriented test design over an irreversible full rollout, and choose the test population based on where uncertainty and economic exposure are greatest.\n\nThat framing addresses three risks simultaneously:\n- transfer risk: new-customer behavior may not predict installed-base response;\n- downside risk: repricing the full base without evidence can create avoidable churn or sales friction;\n- opportunity-cost risk: delaying any test while remaining underpriced is itself a costly pricing choice.\n\n## Test Design Rules\n- Test one pricing variable at a time when possible: list price, discounting policy, or packaging fence.\n- Match the test cohort to the decision being made. If the decision is about renewal monetization, test at renewal. If the decision is about top-of-funnel acquisition, test on new logos.\n- Predefine duration, sample target, and minimum detectable effect so the test cannot run indefinitely without a decision.\n- Measure both uplift and harm: conversion or renewal rate, realized revenue per account, win rate or expansion rate, and early retention/churn.\n- Quantify status-quo cost alongside treatment risk. If current pricing is plausibly under market, estimate monthly foregone revenue while the test runs.\n- Set rollback criteria in advance.\n\n## Decision Frame\nRecommend a reversible pricing experiment rather than a market-wide permanent change. The decision is not whether to be certain; it is whether to act in a way that produces useful evidence while bounding both downside and opportunity cost. The right test population depends on which population drives the decision value.\n\n## Unknowns & Evidence Gaps\n- No competitor pricing or packaging benchmarks are provided.\n- No willingness-to-pay or elasticity evidence is provided.\n- No installed-base renewal, contraction, or churn sensitivity data is provided.\n- No segment mix is provided, so transferability across cohorts is unknown.\n- No sample-size, traffic-volume, or sales-capacity data is provided, so test power cannot yet be confirmed.\n- No estimate of current underpricing cost is provided, so the cost of delay remains unquantified.\n\n## Pass/Fail Readiness\nPass for a bounded experiment if the team can name the target population, define the economic question, set sample and duration thresholds, and instrument both upside and harm.\nFail for a full repricing rollout today because the evidence base does not justify a durable market-wide decision.\n\n## Recommended Next Artifact\nA pricing experiment brief that specifies: target population, hypothesis, one-variable treatment, sample-size and duration assumptions, guardrail thresholds, rollback triggers, and a simple status-quo-versus-test opportunity-cost model.",
+        "claims": [
+          {
+            "claim_id": "side_a-claim-1",
+            "summary": "Under partial market data, the best-supported recommendation is a reversible pricing experiment rather than an immediate permanent full-market repricing.",
+            "evidence_refs": [
+              "ctx-scenario-prompt",
+              "ctx-evidence-empty",
+              "ctx-rubric-decision-usefulness"
+            ],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-2",
+            "summary": "The test cohort should be chosen based on where the economic decision applies, because new-customer-only results may not transfer to the installed base and installed-base testing may be necessary at renewal or expansion boundaries.",
+            "evidence_refs": [
+              "ctx-evidence-empty",
+              "ctx-rubric-internal-consistency"
+            ],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-3",
+            "summary": "A pricing test is only decision-useful if it includes predefined sample, duration, guardrails, rollback criteria, and an estimate of status-quo opportunity cost.",
+            "evidence_refs": [
+              "ctx-evidence-empty",
+              "ctx-rubric-decision-usefulness",
+              "ctx-validator-sections"
+            ],
+            "is_major": true
+          }
+        ],
+        "citations": [
+          "ctx-scenario-prompt",
+          "ctx-evidence-empty",
+          "ctx-rubric-decision-usefulness",
+          "ctx-rubric-internal-consistency",
+          "ctx-validator-sections"
+        ],
+        "open_questions": [],
+        "critique_responses": [
+          {
+            "finding_id": "finding-2",
+            "disposition": "adopted",
+            "rationale": "The critique is correct that the first-pass artifact overclaimed one specific design. I revised the major claim from 'new-customer-only is the highest-confidence move' to the narrower and better-supported position that a reversible test is preferable to a full rollout, while the test population must match the economic decision and account for transfer risk, opportunity cost, and test power."
+          }
+        ]
+      }
+    },
+    "side_b": {
+      "provider": "anthropic",
+      "model": "claude-max",
+      "reasoning_effort": "medium",
+      "access_mode": "subscription_cli",
+      "role": "side_b",
+      "first_pass": {
+        "run_id": "conflict-2026-04-14-050407398Z-pricing-partial-data",
+        "side_id": "side_b",
+        "round": "first_pass",
+        "artifact_markdown": "# Pricing Strategy Recommendation Under Partial Market Data\n\n## Decision Frame\n\n**Core question:** Should we adjust pricing now with incomplete market data, or defer until better data is available?\n\n**Stakes:** Pricing changes are high-leverage and partially reversible. A price increase risks churn if competitors are undercutting; a price decrease risks margin erosion that is psychologically difficult to reverse. The cost of waiting is opportunity cost if the market has already moved.\n\n**What we are actually deciding:** Not the final price point, but whether the current evidence meets the threshold to act, and if not, what the minimum viable research plan looks like to reach that threshold.\n\n**Framing constraint:** With partial data, the strategy must be designed to be *updateable* — we are choosing a decision architecture, not a permanent number.\n\n## Unknowns & Evidence Gaps\n\n| Gap | Impact on Decision | Closable? | Estimated Cost to Close |\n|---|---|---|---|\n| Competitor pricing (current) | High — cannot assess relative position without it | Yes — mystery shopping, public price pages, sales intel | 1-2 weeks, low cost |\n| Price elasticity of demand | High — cannot model churn/uptake response | Partially — requires A/B test or conjoint study | 4-8 weeks, moderate cost |\n| Customer willingness-to-pay distribution | High — risk of anchoring to internal assumptions | Yes — Van Westendorp or Gabor-Granger survey | 2-4 weeks, moderate cost |\n| Segment-level margin data | Medium — blended margins mask cross-subsidy | Yes — finance team analysis | 1 week, internal effort |\n| Channel partner impact | Medium — pricing changes may violate agreements or trigger renegotiation | Yes — contract review + partner conversations | 1-2 weeks |\n| Macroeconomic demand sensitivity | Low-Medium — relevant in recessionary periods | Partially — proxy via recent pipeline velocity trends | Available now |\n\n**What we DO have (assumed baseline):**\n- Internal cost structure and current margins\n- Historical sales volume at current price\n- Anecdotal competitive intel (not systematic)\n- Customer satisfaction/NPS trends\n\n## Pass/Fail Readiness\n\n**Verdict: FAIL — Not ready to commit to a specific price change.**\n\n**Rationale:** The three highest-impact unknowns (competitor pricing, elasticity, WTP distribution) are all closable within 4-8 weeks at moderate cost. Making a pricing decision without any of these three is operating on intuition, not strategy. The risk-reward ratio does not justify acting now unless there is an exogenous forcing function (e.g., contract renewal cycle, competitive emergency, board mandate).\n\n**Conditions that would flip this to PASS:**\n1. Competitive pricing data collected and analyzed (minimum 3 direct competitors)\n2. At least one demand-side signal — either a WTP survey (n≥100 target customers) or a controlled price test on a non-critical segment\n3. Segment-level margin analysis completed to identify where pricing power actually exists\n\n**Exception path:** If a forcing function exists (imminent competitor move, cost structure change making current price unsustainable), proceed with a *bounded* price test on a single segment rather than a broad change. Cap exposure at ≤15% of revenue base. Set a 90-day review gate.\n\n## Recommended Next Artifact\n\n**Artifact:** Pricing Research Brief — a scoped research plan to close the top 3 evidence gaps within 6 weeks.\n\n**Contents should include:**\n1. **Competitive audit scope** — which competitors, which products/tiers, data collection method, owner, deadline\n2. **WTP study design** — methodology (Van Westendorp recommended for speed), sample definition, screening criteria, analysis plan\n3. **Bounded price test design** (if forcing function exists) — segment selection, test vs. control, success/failure metrics, kill criteria, duration\n4. **Decision checkpoint** — calendar date (6 weeks out) where leadership reviews findings and makes go/no-go on price change with complete data\n\n**Why this artifact next:** A pricing decision made with partial data is a guess with a strategy label. The research brief converts the current uncertainty into a bounded, time-boxed project with a clear decision point. This is the lowest-risk path to a high-confidence pricing change.",
+        "claims": [
+          {
+            "claim_id": "side_b-claim-1",
+            "summary": "The decision is not ready for commitment: the three highest-impact unknowns (competitor pricing, price elasticity, WTP distribution) are all closable within 4-8 weeks at moderate cost, making it irrational to act now without a forcing function.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_b-claim-2",
+            "summary": "Under partial data, the correct output is a decision architecture (updateable framework with research gates) rather than a specific price point, because pricing changes are only partially reversible due to anchoring effects.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_b-claim-3",
+            "summary": "If a forcing function requires immediate action, exposure should be capped at a bounded price test on a single segment (≤15% of revenue) with a 90-day review gate, rather than a broad price change.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_b-claim-4",
+            "summary": "The recommended next artifact is a Pricing Research Brief scoped to close the top 3 evidence gaps within 6 weeks, converting uncertainty into a time-boxed project with a clear decision checkpoint.",
+            "evidence_refs": [],
+            "is_major": false
+          }
+        ],
+        "citations": [],
+        "open_questions": [
+          "Is there an exogenous forcing function (contract cycle, competitive emergency, cost structure change) that requires acting before evidence gaps can be closed?",
+          "What is the current competitive intelligence baseline — is it purely anecdotal or are there any systematic data sources already available?",
+          "Are there segments with meaningfully different price sensitivity that could serve as a natural test population for a bounded experiment?"
+        ],
+        "critique_responses": []
+      },
+      "rebuttal": {
+        "target_side": "side_a",
+        "finding_id": "finding-2",
+        "target_claim_ids": [
+          "side_a-claim-1",
+          "side_a-claim-2"
+        ],
+        "claim_under_attack": "The highest-confidence recommendation under partial market data is a staged, reversible pricing test on new customers only, with existing customers protected from repricing.",
+        "attack_type": "evidence_gap",
+        "evidence_or_reason": "The artifact asserts that a new-customer-only staged test is the 'highest-confidence move' but provides no evidence or framework for why this particular test design dominates alternatives. Several weaknesses: (1) Testing on new customers only introduces severe selection bias — new customer price sensitivity may differ fundamentally from the installed base, making results non-transferable to the very population being 'protected.' The artifact acknowledges segment heterogeneity as an unknown yet designs a test that structurally cannot measure the segment it excludes. (2) The claim that protecting existing customers 'avoids avoidable churn without evidence' is circular — the same partial-data condition that motivates caution about repricing existing customers also means there is no evidence that existing customers would churn. The artifact treats one direction of uncertainty (price increase causes churn) as more credible than the other (existing customers are underpriced and would accept increases) without justification. (3) No consideration is given to the opportunity cost of delayed action — if the business is currently underpriced, every month of 'learning' on new customers only represents foregone revenue from the existing base. The artifact frames reversibility as pure upside but never quantifies the cost of the status quo, which is itself a pricing decision made with the same partial data. (4) The recommended four metrics (conversion, ARPU, win rate, retention) are standard but the artifact provides no power analysis, minimum detectable effect, or sample size guidance, meaning the test could run indefinitely without producing the 'decision-grade evidence' it promises.",
+        "severity": "high"
+      },
+      "final": {
+        "run_id": "conflict-2026-04-14-050407398Z-pricing-partial-data",
+        "side_id": "side_b",
+        "round": "final",
+        "artifact_markdown": "# Pricing Strategy Recommendation Under Partial Market Data\n\n## Decision Frame\n\n**Core question:** Should we adjust pricing now with incomplete market data, or defer until better data is available?\n\n**Stakes:** Pricing changes are high-leverage and partially reversible. A price increase risks churn if competitors are undercutting; a price decrease risks margin erosion that is psychologically difficult to reverse. The cost of waiting is opportunity cost if the market has already moved.\n\n**What we are actually deciding:** Not the final price point, but whether the current evidence meets the threshold to act, and if not, what the minimum viable research plan looks like to reach that threshold.\n\n**Framing constraint:** With partial data, the strategy must be designed to be *updateable* — we are choosing a decision architecture, not a permanent number.\n\n## Unknowns & Evidence Gaps\n\n| Gap | Impact on Decision | Closable? | Estimated Cost to Close |\n|---|---|---|---|\n| Competitor pricing (current) | High — cannot assess relative position without it | Likely — mystery shopping, public price pages, sales intel | Estimated 1-2 weeks, low cost (contingent on market transparency) |\n| Price elasticity of demand | High — cannot model churn/uptake response | Partially — requires A/B test or conjoint study | Estimated 4-8 weeks, moderate cost (depends on test infrastructure readiness) |\n| Customer willingness-to-pay distribution | High — risk of anchoring to internal assumptions | Likely — Van Westendorp or Gabor-Granger survey | Estimated 2-4 weeks, moderate cost (depends on customer access) |\n| Segment-level margin data | Medium — blended margins mask cross-subsidy | Likely — finance team analysis | Estimated 1 week, internal effort |\n| Channel partner impact | Medium — pricing changes may violate agreements or trigger renegotiation | Yes — contract review + partner conversations | 1-2 weeks |\n| Macroeconomic demand sensitivity | Low-Medium — relevant in recessionary periods | Partially — proxy via recent pipeline velocity trends | Available now |\n\n**What we DO have (assumed baseline):**\n- Internal cost structure and current margins\n- Historical sales volume at current price\n- Anecdotal competitive intel (not systematic)\n- Customer satisfaction/NPS trends\n\n**Important caveat:** The timelines and cost estimates above are heuristic ranges drawn from common B2B pricing research practice, not from verified operational constraints in this specific context. Actual feasibility depends on factors such as test infrastructure maturity, customer panel availability, and competitive market transparency. These estimates should be validated against the organization's real capabilities before committing to a research timeline.\n\n## Pass/Fail Readiness\n\n**Verdict: FAIL — Not ready to commit to a specific price change.**\n\n**Rationale:** The three highest-impact unknowns (competitor pricing, elasticity, WTP distribution) remain unaddressed. The case provides no evidence that these gaps have been investigated, nor that the organization has assessed whether they are closable on a practical timeline. Acting on pricing without demand-side or competitive signals substitutes intuition for strategy. However, this verdict is *conditional*: it assumes no exogenous forcing function is present and that the cost of delay is bounded.\n\n**What could flip this to PASS:**\n1. Competitive pricing data collected and analyzed (minimum 3 direct competitors)\n2. At least one demand-side signal — either a WTP survey (n≥100 target customers) or a controlled price test on a non-critical segment\n3. Segment-level margin analysis completed to identify where pricing power actually exists\n\n**Alternatively, a forcing function** (imminent competitor move, cost structure change making current price unsustainable, contract renewal deadline) would justify proceeding under partial data — but with a *bounded* approach: price test on a single segment, exposure capped at ≤15% of revenue base, 90-day review gate with pre-defined kill criteria.\n\n**Note on the FAIL verdict:** This does not mean \"do nothing.\" It means the appropriate immediate action is structured research, not a pricing commitment. Delay has its own costs (opportunity cost, competitive exposure), and the research plan below is designed to minimize that delay.\n\n## Recommended Next Artifact\n\n**Artifact:** Pricing Research Brief — a scoped research plan to close the top 3 evidence gaps.\n\n**Contents should include:**\n1. **Competitive audit scope** — which competitors, which products/tiers, data collection method, owner, deadline\n2. **WTP study design** — methodology (Van Westendorp recommended for speed), sample definition, screening criteria, analysis plan\n3. **Feasibility check** — explicit validation of whether the estimated research timelines are achievable given current organizational capabilities (customer panel access, test infrastructure, analyst bandwidth)\n4. **Bounded price test design** (if forcing function exists) — segment selection, test vs. control, success/failure metrics, kill criteria, duration\n5. **Decision checkpoint** — calendar date where leadership reviews findings and makes go/no-go on price change with improved data\n\n**Why this artifact next:** A pricing decision made with partial data carries unquantified risk in both directions (overpricing causes churn, underpricing erodes margin). The research brief converts the current uncertainty into a bounded project with a clear decision point. This path prioritizes decision quality over decision speed, which is appropriate when the cost of reversal is high and no forcing function has been identified.",
+        "claims": [
+          {
+            "claim_id": "side_b-claim-1",
+            "summary": "The decision is not ready for commitment: the three highest-impact unknowns (competitor pricing, price elasticity, WTP distribution) remain unaddressed, and no evidence in the case packet confirms they have been investigated or that closure timelines are feasible in this specific context.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_b-claim-2",
+            "summary": "Under partial data, the correct output is a decision architecture (updateable framework with research gates) rather than a specific price point, because pricing changes are only partially reversible due to anchoring effects.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_b-claim-3",
+            "summary": "If a forcing function requires immediate action, exposure should be capped at a bounded price test on a single segment (≤15% of revenue) with a 90-day review gate, rather than a broad price change.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_b-claim-4",
+            "summary": "The recommended next artifact is a Pricing Research Brief that includes an explicit feasibility check on whether estimated research timelines are achievable, converting uncertainty into a bounded project with a clear decision checkpoint.",
+            "evidence_refs": [],
+            "is_major": false
+          }
+        ],
+        "citations": [],
+        "open_questions": [
+          "Is there an exogenous forcing function (contract cycle, competitive emergency, cost structure change) that requires acting before evidence gaps can be closed?",
+          "What is the organization's actual capability to execute pricing research — does a customer panel exist, is A/B test infrastructure available, is there analyst bandwidth?",
+          "Are there segments with meaningfully different price sensitivity that could serve as a natural test population for a bounded experiment?"
+        ],
+        "critique_responses": [
+          {
+            "finding_id": "finding-1",
+            "disposition": "adopted",
+            "rationale": "The critique correctly identifies that the first-pass artifact presented heuristic timeline and cost estimates as though they were established facts, and used the strong phrasing 'irrational to act now' without evidentiary grounding from the case packet. The revision makes three changes: (1) the evidence gaps table now explicitly marks timelines as estimates contingent on organizational factors rather than stating them as known quantities, (2) a caveat section acknowledges these are heuristic ranges from general B2B practice that require validation against real capabilities, (3) the FAIL rationale is softened from 'irrational to act' to a conditional verdict that depends on the absence of a forcing function and bounded cost of delay, and (4) the recommended next artifact now includes an explicit feasibility check step to validate whether the assumed research timelines are actually achievable. The core strategic conclusion — that acting without demand-side or competitive data substitutes intuition for strategy — is preserved, but the epistemic overreach is corrected."
+          }
+        ]
+      }
+    }
+  },
+  "judge": {
+    "provider": "openai",
+    "model": "chatgpt-pro",
+    "reasoning_effort": "medium",
+    "access_mode": "subscription_cli",
+    "blind_labels": true,
+    "family_blind": false,
+    "selection_policy": "single_judge_cli",
+    "verdict": {
+      "winner": "side_a",
+      "margin": 0.5,
+      "rubric_scores": {
+        "side_a": {
+          "claim_quality": 4.3,
+          "evidence_discipline": 3.8,
+          "responsiveness_to_critique": 4.6,
+          "internal_consistency": 4.5,
+          "decision_usefulness": 4.4,
+          "weighted_total": 4.3
+        },
+        "side_b": {
+          "claim_quality": 3.8,
+          "evidence_discipline": 3.1,
+          "responsiveness_to_critique": 4,
+          "internal_consistency": 4,
+          "decision_usefulness": 4,
+          "weighted_total": 3.8
+        }
+      },
+      "decisive_findings": [
+        "Side A substantially improved its final artifact by adopting the critique and narrowing its core claim from a specific new-customer-only design to a better-supported reversible-test recommendation.",
+        "Side A's final recommendation is more internally consistent because it explicitly addresses transfer risk, opportunity-cost risk, and test-power requirements instead of treating downside protection as one-directional.",
+        "Side B corrected some epistemic overreach, but it still relies on several unsupported specifics such as heuristic timelines, sample-size thresholds, anchoring claims, exposure caps, and review windows that are not grounded in the case packet.",
+        "Side A delivers a more decision-useful artifact for the stated scenario by specifying how to choose the test population based on the actual economic question, rather than mainly deferring to a research program."
+      ],
+      "judge_confidence": "medium",
+      "needs_human_review": false,
+      "rationale": "Side A wins because its final artifact is more disciplined about what the sparse record can support and converts critique into a materially stronger recommendation. It preserves actionability under partial data by recommending a reversible experiment while explicitly conditioning cohort choice on the economic decision being tested, which improves both internal consistency and practical usefulness. Side B is still solid and well-structured, but it continues to lean on uncited heuristic numbers and generic pricing-research conventions that exceed the evidence available in the packet. The overall gap is clear enough for a verdict and exceeds the 0.1 threshold, but not by enough to justify high confidence because both sides necessarily operate with limited direct evidence."
+    }
+  },
+  "budgets": {
+    "max_visible_rounds": 3,
+    "max_cost_usd": 1000000,
+    "max_latency_ms": 360000,
+    "min_margin_for_verdict": 0.1
+  },
+  "results": {
+    "winner": "side_a",
+    "margin": 0.5,
+    "judge_confidence": "medium",
+    "swap_stable": null,
+    "needs_human_review": false
+  },
+  "metrics": {
+    "disagreement_rate": 0.6667,
+    "declared_adoption_rate": 1,
+    "substantive_revision_rate": 1,
+    "unsupported_claim_count": 4,
+    "self_contradiction_count": 0,
+    "total_estimated_cost_usd": 0,
+    "swap_margin_delta": null,
+    "judge_margin": 0.5,
+    "cost_per_resolved_run": 0
+  },
+  "audit": {
+    "identity_leak_warnings": [],
+    "protocol_violations": []
+  }
+}

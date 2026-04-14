@@ -1,0 +1,163 @@
+You are SIDE_B in the rebuttal phase for run conflict-2026-04-14-133739864Z-yahoo-microsoft.
+Attack only visible claims from the opposing first-pass artifact.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "target_side": "side_a",
+  "finding_id": "runner-will-assign",
+  "target_claim_ids": [
+    "side_a-claim-1"
+  ],
+  "claim_under_attack": "The opposing claim to challenge.",
+  "attack_type": "evidence_gap",
+  "evidence_or_reason": "Why the visible claim is weak.",
+  "severity": "medium"
+}
+
+Case packet:
+{
+  "scenario_id": "yahoo-microsoft",
+  "title": "Yahoo rejecting Microsoft: hold independent or accept acquisition",
+  "prompt": "You are a strategy advisor to Yahoo's board in May 2008. Microsoft has offered to acquire Yahoo for $33 per share ($47.5 billion), a 62% premium over Yahoo's pre-offer price of ~$20. CEO Jerry Yang and the board have rejected the offer, arguing it undervalues Yahoo's strategic assets.\n\nMicrosoft CEO Steve Ballmer has since withdrawn the offer but signaled willingness to return with a revised bid. Yahoo has entered a search advertising partnership with Google as a defensive measure, but the DOJ is reviewing it for antitrust concerns.\n\nThe context: Yahoo's display advertising business is still #1 in the US, but search — the highest-growth, highest-margin segment — is dominated by Google (60%+ share). Yahoo Search has ~20% share and declining. Yahoo's Panama search platform (launched 2007) narrowed the monetization gap with Google but hasn't reversed share losses.\n\nKey evidence available:\n- Microsoft offer: $33/share ($47.5B), rejected by Yahoo board as too low\n- Yahoo pre-offer stock price: ~$20/share; post-rejection: ~$24/share\n- Yahoo board's stated minimum: $37/share\n- Yahoo 2007 revenue: $6.97B; operating income: $695M (10% margin)\n- Google 2007 revenue: $16.6B; operating income: $5.1B (31% margin)\n- Yahoo display ad market share: #1 in US (15.6% of total digital ad spend)\n- Yahoo search share: ~20% and declining (Google: ~63%, Microsoft: ~10%)\n- Yahoo Mail users: 260M+ (largest email service globally in 2008)\n- Yahoo Finance, Yahoo Sports, Flickr: high-traffic properties with strong engagement\n- Yahoo Japan stake: 34% ownership, valued at ~$8-10B independently\n- Alibaba stake: ~40% ownership (pre-IPO), valued at ~$3-4B in 2008\n- Panama search platform: improved revenue-per-search by 15-20% since launch\n- Google-Yahoo search partnership: would outsource Yahoo search ads to Google for 3+ years\n- DOJ antitrust review of Google-Yahoo deal: likely to block or severely limit scope\n- Microsoft's strategic need: desperately needs search scale to compete with Google\n- Carl Icahn (activist investor): acquired 5% Yahoo stake, pushing board to accept Microsoft offer\n- Yahoo headcount: ~14,300 employees (2008), up from 11,400 (2006)\n- Social media shift: Facebook growing from 100M to 200M users in 2008, fragmenting display ad attention\n\nThe board must decide: reopen negotiations with Microsoft at a higher price, or pursue an independent strategy built on display advertising dominance, the Google partnership, and the Alibaba/Yahoo Japan stakes?\n\nWrite a strategic recommendation memo. Take a clear position — sell or stay independent — and defend it with evidence. Acknowledge the strongest counterarguments and explain why your position is still correct.",
+  "artifact_type": "strategy",
+  "rubric": {
+    "dimensions": [
+      "claim quality",
+      "evidence discipline",
+      "responsiveness to critique",
+      "internal consistency",
+      "decision usefulness"
+    ],
+    "scoring_scale": "1-5",
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "constraints": {
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "expect_structured": true,
+    "context_files": [],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "evidence": [],
+  "max_rounds": 3,
+  "tool_policy": "none",
+  "sharing_policy": {
+    "share_case_packet": true,
+    "share_committed_artifacts_after_first_pass": true,
+    "share_critiques_after_open": true,
+    "share_hidden_reasoning": false,
+    "share_provider_identity": false,
+    "share_internal_coalition_drafts": false
+  },
+  "success_condition": {
+    "type": "validator_contract",
+    "description": "Produce a strategy artifact that satisfies the scenario validator contract.",
+    "validator": {
+      "artifact_type": "strategy",
+      "expect_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true
+    }
+  }
+}
+
+Opposing first-pass artifact:
+{
+  "run_id": "conflict-2026-04-14-133739864Z-yahoo-microsoft",
+  "side_id": "side_a",
+  "round": "first_pass",
+  "artifact_markdown": "# Strategic Recommendation: Reopen Negotiations with Microsoft at $37+/Share\n\n## Decision Frame\n\n**Core question:** Should Yahoo's board reopen acquisition negotiations with Microsoft, or pursue independence built on display advertising, the Google search partnership, and minority stakes in Alibaba/Yahoo Japan?\n\n**Recommendation: Reopen negotiations with Microsoft. Accept no less than $37/share ($53B), but signal willingness to deal at that threshold immediately.**\n\nThe strategic logic for independence requires Yahoo to do three things simultaneously: (1) defend display advertising dominance against Facebook's explosive growth, (2) reverse search share losses against a Google with 3x the revenue and 3x the operating margin, and (3) execute a platform transition while managing activist investor pressure and employee attrition. The probability of succeeding at all three is low. The acquisition premium offers shareholders certainty against compounding execution risk.\n\n### Why sell, not hold\n\n**1. Search economics are winner-take-all, and Yahoo is losing.** Yahoo's search share is ~20% and declining. Google holds 63% and is pulling away. Panama improved revenue-per-search by 15-20%, but this is a monetization patch on a shrinking base. Search advertising has network effects: more queries → better targeting → higher bids → more advertiser investment → better results → more queries. Yahoo cannot reverse this cycle with 20% share. The gap will widen, not narrow.\n\n**2. The Google partnership is a strategic dead end.** Outsourcing search ads to Google for 3+ years means Yahoo abandons its own search monetization capability — the one asset Microsoft actually wants. If the DOJ blocks the deal (likely), Yahoo loses its defensive shield and returns to competing alone in search with degraded institutional capability. If the DOJ approves it, Yahoo becomes dependent on its largest competitor for its highest-margin revenue stream. Neither outcome strengthens Yahoo's independent position.\n\n**3. Display advertising dominance is eroding.** Yahoo is #1 in US display (15.6% of digital ad spend), but Facebook grew from 100M to 200M users in 2008 alone. Display advertising attention is fragmenting toward social platforms. Yahoo's display moat — built on portal traffic to Mail, Finance, Sports, and Flickr — depends on users continuing to use destination websites rather than shifting to social feeds. This is a secular trend running against Yahoo.\n\n**4. The Alibaba and Yahoo Japan stakes are real value — but they're not an operating strategy.** Yahoo Japan (~$8-10B) and Alibaba (~$3-4B) represent $11-14B in minority stake value. These are financial assets, not strategic leverage. They can be monetized through a sale to Microsoft (where they'd be part of the acquisition price) or through eventual independent liquidation. But holding them doesn't fix Yahoo's core business trajectory. A board that rejects $47.5B because it \"undervalues strategic assets\" must explain how those assets compound faster inside an independent Yahoo than their present value captured in a premium acquisition.\n\n**5. The current stock price already reflects skepticism.** Yahoo traded at ~$20 pre-offer. Post-rejection, it sits at ~$24 — meaning the market gives Yahoo only $4/share of credit for rejecting a $33 offer. The market is telling the board that independent Yahoo is not worth $33. Carl Icahn's 5% stake and board pressure will intensify if the stock drifts further below the offer price.\n\n### Negotiation strategy\n\n- **Price floor: $37/share ($53B).** The board's stated minimum is $37. This is defensible: it represents a 85% premium over the pre-offer price and values the Alibaba/Yahoo Japan stakes at a reasonable premium to their standalone worth.\n- **Structure:** Push for a mix of cash and Microsoft stock to give Yahoo shareholders upside in the combined entity's search scale.\n- **Timeline:** Move within 60 days. Every quarter of independence erodes negotiating leverage as search share declines and Facebook grows.\n- **Fallback:** If Microsoft won't meet $37, accept $35/share ($50.5B) with structural protections (reverse breakup fee, employee retention packages). The difference between $35 and $37 is ~$2.9B — real money, but small relative to the risk of independence.\n\n## Unknowns & Evidence Gaps\n\n| Unknown | Why it matters | How to resolve |\n|---|---|---|\n| **Microsoft's true ceiling price** | Ballmer withdrew at $33 but signaled willingness to return. His strategic desperation (needs search scale) suggests room above $33, but how much? | Back-channel through investment bankers; Icahn's board pressure may also surface Microsoft's flexibility |\n| **DOJ disposition on Google-Yahoo deal** | If approved, Yahoo has a temporary revenue bridge; if blocked, independence becomes harder immediately | Legal counsel assessment within 30 days; DOJ signals in public filings |\n| **Alibaba's growth trajectory** | The 40% Alibaba stake could be worth dramatically more in 5-10 years — this is the strongest argument for independence | Pre-IPO valuation analysis; but this is a venture bet, not an operating strategy |\n| **Facebook's ad platform maturity** | If Facebook monetizes display effectively, Yahoo's #1 position erodes faster than linear projections suggest | Monitor Facebook's 2008 ad revenue growth rate and advertiser adoption |\n| **Employee retention under uncertainty** | 14,300 employees watching board drama; key engineering talent may leave for Google/Facebook regardless of board decision | HR attrition data from Q1 2008; retention package modeling |\n| **Yahoo's operating cost trajectory** | Headcount grew from 11,400 to 14,300 (25%) in two years while margins compressed to 10%. Is this investment or bloat? | Detailed cost analysis by business unit to assess independent restructuring potential |\n\n## Pass/Fail Readiness\n\n| Criterion | Status | Notes |\n|---|---|---|\n| Clear directional recommendation | **PASS** | Sell to Microsoft at $37+/share |\n| Evidence-grounded claims | **PASS** | All major claims tied to provided financial and market data |\n| Counterarguments addressed | **PASS** | Alibaba upside, display dominance, and Yahoo Japan value explicitly addressed |\n| Actionable next steps | **PASS** | 60-day negotiation timeline with price floor and fallback |\n| Key unknowns identified | **PASS** | Six unknowns with resolution paths |\n| Internal consistency | **PASS** | No contradictions between recommendation and evidence cited |\n| Decision-useful framing | **PASS** | Board can act on this memo without additional analysis |\n\n**Overall: PASS — ready for board deliberation.**\n\nThe strongest counterargument is the Alibaba stake. At ~$3-4B in 2008, a 40% pre-IPO stake in Alibaba could be worth vastly more if China's e-commerce market develops as bulls project. This is a legitimate option value argument. However: (1) Yahoo can negotiate to retain or carve out the Alibaba stake in a Microsoft deal structure, (2) the Alibaba upside is a financial bet uncorrelated with Yahoo's operating business health, and (3) holding the Alibaba stake inside a declining Yahoo means the board is asking shareholders to accept deteriorating core business performance as the price of a venture portfolio position they could replicate independently.\n\n## Recommended Next Artifact\n\n**Negotiation term sheet and scenario model.** The board needs:\n1. A three-scenario financial model: (a) Microsoft acquisition at $35-37/share, (b) independence with Google partnership approved, (c) independence with Google partnership blocked\n2. A term sheet framework for Microsoft negotiations including Alibaba stake carve-out options, employee retention packages, and reverse breakup fee structures\n3. A 90-day shareholder communication plan addressing Icahn and institutional investors\n\nThis should be developed with Goldman Sachs (Yahoo's financial advisor) within 14 days to enable a board vote on reopening negotiations before Microsoft's willingness to deal expires.",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "Search advertising economics are winner-take-all with network effects, and Yahoo's declining 20% share cannot be reversed — the gap with Google (63% share, 3x revenue, 3x margins) will widen, making independent search competition unviable.",
+      "evidence_refs": [
+        "ctx-search-share",
+        "ctx-google-revenue",
+        "ctx-panama"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "The Google search partnership is a strategic dead end: DOJ likely blocks it (removing Yahoo's defensive shield), and even if approved, it makes Yahoo dependent on its largest competitor for its highest-margin revenue stream while atrophying internal search capability.",
+      "evidence_refs": [
+        "ctx-google-partnership",
+        "ctx-doj-review"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-3",
+      "summary": "Yahoo's display advertising dominance (#1 at 15.6% share) is under secular threat from Facebook's explosive growth (100M to 200M users in 2008), which fragments attention away from portal-based destination websites toward social feeds.",
+      "evidence_refs": [
+        "ctx-display-share",
+        "ctx-facebook-growth"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-4",
+      "summary": "The Alibaba (40%, ~$3-4B) and Yahoo Japan (34%, ~$8-10B) stakes are financial assets, not operating strategy — they can be carved out or valued within an acquisition, and holding them inside a declining Yahoo forces shareholders to accept core business deterioration as the cost of a venture position.",
+      "evidence_refs": [
+        "ctx-alibaba-stake",
+        "ctx-yahoo-japan"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-5",
+      "summary": "The market's post-rejection price of ~$24 (only $4 above pre-offer $20, vs. the $33 offer) signals that investors do not believe independent Yahoo is worth the acquisition price, validating sell-side urgency.",
+      "evidence_refs": [
+        "ctx-stock-price",
+        "ctx-icahn"
+      ],
+      "is_major": false
+    },
+    {
+      "claim_id": "side_a-claim-6",
+      "summary": "Yahoo should reopen negotiations targeting $37/share with a $35 fallback, including Alibaba stake carve-out options, within a 60-day window before negotiating leverage further erodes.",
+      "evidence_refs": [
+        "ctx-board-minimum",
+        "ctx-microsoft-offer"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-search-share",
+    "ctx-google-revenue",
+    "ctx-panama",
+    "ctx-google-partnership",
+    "ctx-doj-review",
+    "ctx-display-share",
+    "ctx-facebook-growth",
+    "ctx-alibaba-stake",
+    "ctx-yahoo-japan",
+    "ctx-stock-price",
+    "ctx-icahn",
+    "ctx-board-minimum",
+    "ctx-microsoft-offer"
+  ],
+  "open_questions": [
+    "What is Microsoft's true price ceiling given Ballmer's strategic desperation for search scale?",
+    "Can the Alibaba stake be structurally carved out in a Microsoft acquisition to preserve shareholder upside?",
+    "What is the realistic timeline before DOJ rules on the Google-Yahoo partnership?",
+    "How much key engineering talent has Yahoo already lost or is at risk of losing during this period of strategic uncertainty?"
+  ],
+  "critique_responses": []
+}

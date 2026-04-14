@@ -1,0 +1,39 @@
+{
+  "run_id": "conflict-2026-04-14-070557290Z-feature-weak-evidence",
+  "side_id": "side_b",
+  "round": "final",
+  "artifact_markdown": "# Revised artifact\n\n# PRD: Validation PRD for Guided Onboarding Checklist\n\n## Summary\nThis PRD defines a concrete feature concept under weak-evidence conditions and limits the decision to whether the team should run a bounded validation sprint. The feature is a guided onboarding checklist for new workspace admins intended to help them complete initial setup and reach first value faster.\n\n## Problem Statement\nA plausible but unvalidated problem is that new workspace admins may abandon setup when they cannot easily identify the next required step. The cost of acting as though this problem is real without validation is building workflow guidance that users do not need, ignore, or actively find intrusive.\n\n## Target User\nPrimary user: first-time workspace admin in the first 7 days after account creation.\n\nSecondary stakeholder: Product and Growth teams seeking improved activation.\n\n## Proposed Feature\nAdd an in-product onboarding checklist shown to first-time workspace admins. The checklist would break setup into 3 to 5 steps, show progress, deep-link into each task, and disappear once setup is complete or dismissed.\n\n## User Job To Be Done\nWhen I create a new workspace, I want to know the minimum steps required to get my team operational so I can experience value quickly without guessing what to do next.\n\n## Hypothesis\nIf first-time workspace admins have real setup friction caused by unclear next steps, then a guided onboarding checklist will increase completion of key setup actions and reduce time to first value.\n\n## Decision To Make\nApprove only a validation sprint for this feature concept, not full production build.\n\n## Validation Scope\nThe validation sprint should answer four questions:\n1. Do first-time admins actually experience confusion about next steps?\n2. Are the proposed checklist steps aligned with real setup behavior?\n3. Will users engage with checklist guidance rather than ignore it?\n4. Is the expected activation uplift large enough to justify implementation?\n\n## Validation Plan\n- Conduct 5 to 8 interviews with recent or prospective workspace admins using a setup journey walkthrough.\n- Build a clickable prototype of the onboarding checklist covering account creation through first successful setup.\n- Run a lightweight smoke test exposing the checklist concept on the signup completion page and measure clickthrough to setup tasks.\n- Define one concierge or manually-assisted pilot if prototype feedback is positive but user intent remains ambiguous.\n\n## Functional Requirements\n- Present checklist only to first-time workspace admins.\n- Display 3 to 5 setup tasks with clear completion states.\n- Deep-link each task to the corresponding setup area.\n- Allow dismissal so users can opt out.\n- Capture interaction events for impression, task click, task completion, dismissal, and setup completion.\n\n## Non-Functional Requirements\n- Keep implementation reversible until validation passes.\n- Avoid broad rollout during validation.\n- Instrument every validation touchpoint to a named hypothesis.\n\n## Success Metrics For Validation\nA validation sprint passes only if thresholds are pre-committed and met. Initial thresholds:\n- At least 4 of 6 interviewed target users describe uncertainty about setup order or next steps.\n- At least 60% of prototype participants complete the proposed setup flow without moderator rescue.\n- Smoke-test CTR on the checklist entry point exceeds a pre-declared baseline placeholder of 20%.\n- At least one activation proxy improves versus control or historical baseline: completion of core setup actions, time to setup completion, or first-week retention.\n\n## Risks\n- The real problem may be missing integrations or account configuration, not guidance.\n- The checklist may optimize clicks without improving activation.\n- The target segment may be too narrow to justify product complexity.\n- Setup friction may be caused by deeper product design issues that a checklist only masks.\n\n## Out Of Scope\n- Full rollout to all user types.\n- Personalized onboarding paths.\n- Lifecycle messaging beyond the first-week setup window.\n- Commitment to engineering build after validation unless thresholds are met.\n\n## Decision Frame\nDecision required: whether to invest in a bounded validation sprint for a guided onboarding checklist aimed at first-time workspace admins.\n\nRecommendation: approve validation only. The case packet provides weak evidence, so the feature is not build-ready, but this concrete concept is specific enough to test.\n\n## Unknowns & Evidence Gaps\n- Whether first-time workspace admins are the right segment.\n- Which setup actions actually define first value.\n- Whether confusion about next steps is the primary activation blocker.\n- What baseline activation metrics should be used for comparison.\n- Whether checklist usage correlates with meaningful downstream outcomes.\n\n## Pass/Fail Readiness\nCurrent readiness: Fail for full build approval.\n\nCurrent readiness: Pass for validation if the team commits to the named user segment, prototype flow, instrumentation plan, and explicit kill criteria before starting work.\n\n## Recommended Next Artifact\nValidation brief covering interview guide, prototype tasks, smoke-test design, activation baseline, success thresholds, and kill criteria.",
+  "claims": [
+    {
+      "claim_id": "side_b-claim-1",
+      "summary": "Given the case packet's weak evidence, the defensible decision is to authorize only a bounded validation sprint for a specific feature concept, not full feature development.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-2",
+      "summary": "A validation PRD becomes decision-useful only when it names a concrete user, workflow, feature concept, and test thresholds, even if those remain provisional.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1"
+  ],
+  "open_questions": [
+    "Is first-time workspace admin the right initial segment, or is setup friction concentrated elsewhere?",
+    "Which setup actions should count as the activation proxy for this feature?",
+    "What historical or control baseline should be used for the smoke test?"
+  ],
+  "critique_responses": [
+    {
+      "finding_id": "finding-1",
+      "disposition": "adopted",
+      "rationale": "The critique was correct that the first-pass artifact described a validation posture without defining a concrete feature, user, or workflow to validate. I revised the PRD to anchor on a specific feature concept, named segment, JTBD, validation plan, and provisional thresholds so the artifact is decision-useful rather than purely templatic."
+    }
+  ]
+}

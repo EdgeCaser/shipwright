@@ -1,0 +1,260 @@
+{
+  "run_id": "conflict-2026-04-14-131707630Z-pricing-partial-data",
+  "scenario_id": "pricing-partial-data",
+  "mode": "head_to_head",
+  "status": "completed",
+  "sides": {
+    "side_a": {
+      "provider": "anthropic",
+      "model": "claude-max",
+      "reasoning_effort": "medium",
+      "access_mode": "subscription_cli",
+      "role": "side_a",
+      "first_pass": {
+        "run_id": "conflict-2026-04-14-131707630Z-pricing-partial-data",
+        "side_id": "side_a",
+        "round": "first_pass",
+        "artifact_markdown": "# Pricing Strategy Recommendation Under Partial Market Data\n\n## Decision Frame\n\n**Context:** We are evaluating a pricing change with incomplete market data. The core decision is whether to proceed with a pricing adjustment now, delay until more data is gathered, or implement a staged rollout that generates data while limiting downside.\n\n**Decision type:** Reversible with moderate friction. Pricing changes can be rolled back, but frequent changes erode customer trust and create operational overhead (billing system updates, sales enablement, contract amendments).\n\n**Stakeholders affected:** Revenue/finance (forecast accuracy), sales (deal velocity and objection handling), customer success (renewal conversations), product (packaging implications).\n\n**Key question:** Given that our market data is partial, is the expected value of acting now greater than the expected value of waiting for better data — accounting for the cost of delay?\n\n## Unknowns & Evidence Gaps\n\n### What we lack\n\n1. **Willingness-to-pay (WTP) distribution:** No conjoint analysis or Van Westendorp study has been conducted on the current customer base or target segments. Without WTP data, any price point is a guess anchored to cost-plus or competitor benchmarks rather than value capture.\n\n2. **Competitive pricing intelligence:** Partial data implies we have some competitor price points but not a complete landscape. We do not know competitors' discount structures, volume tiers, or bundling strategies — the effective price may differ significantly from list price.\n\n3. **Price elasticity of demand:** We lack historical data on how prior price changes affected conversion, churn, and expansion revenue. Without elasticity estimates, we cannot model revenue impact with confidence.\n\n4. **Segment-level sensitivity:** Even if aggregate data exists, we likely lack segment-level granularity. Enterprise buyers, mid-market, and SMB segments may respond very differently to the same price change.\n\n5. **Cost structure trajectory:** If input costs are changing (infrastructure, labor, licensing), the margin implications of any price point depend on cost forecasts we may not have validated.\n\n### What partial data we can work with\n\n- Existing revenue per customer and distribution across tiers\n- Anecdotal sales feedback on price objections and lost deals\n- Publicly available competitor list prices (without discount/effective price data)\n- Current gross margin by product line or tier\n- Churn data (even if not causally linked to pricing)\n\n### Risk of acting on partial data\n\n- **Underpricing:** Leave revenue on the table, signal low value, attract price-sensitive customers who churn at any increase.\n- **Overpricing:** Increase churn, slow acquisition, push prospects to competitors or substitutes.\n- **Misaligned packaging:** Price change without packaging change may create value-metric mismatch, where customers pay more without perceiving more value.\n\n## Pass/Fail Readiness\n\n**Verdict: CONDITIONAL PASS — proceed only with a staged, data-generating approach.**\n\nA full pricing overhaul fails readiness. The evidence gaps (no WTP study, no elasticity data, incomplete competitive landscape) mean that a confident, organization-wide price change would be speculative.\n\nHowever, a narrow, instrumented pricing test passes readiness:\n\n| Criterion | Status | Notes |\n|---|---|---|\n| Value metric identified | Partial | Need to validate that current metric aligns with perceived value |\n| WTP data | Fail | No structured research conducted |\n| Competitive landscape | Partial | List prices available; effective prices unknown |\n| Elasticity model | Fail | No historical price-change data to calibrate |\n| Segment definitions | Pass | Existing segmentation usable for test design |\n| Billing system flexibility | Must verify | Can the system support A/B pricing or cohort-based tiers? |\n| Rollback capability | Must verify | Can we revert pricing for a cohort without manual intervention? |\n\n**Go/no-go gates for staged test:**\n\n1. Billing system confirms ability to run parallel price points for new customers in a defined segment.\n2. Finance agrees on a minimum test duration (recommend 60-90 days) and sample size for statistical significance.\n3. Sales leadership aligns on how to handle objections during the test period.\n\nIf any gate fails, the recommendation shifts to \"delay and invest in WTP research first.\"\n\n## Recommended Next Artifact\n\n**Immediate next step:** Commission a lightweight WTP study (Van Westendorp or Gabor-Granger) targeting 50-100 customers across key segments. This can be executed in 2-4 weeks and directly addresses the most critical evidence gap.\n\n**Parallel workstream:** Design a pricing experiment for new customers in one segment. Define:\n- Test and control price points (informed by whatever competitive data exists)\n- Success metrics: conversion rate, average deal size, 30-day activation rate\n- Guardrails: automatic pause if conversion drops below X% of baseline\n- Duration and sample size requirements\n\n**Artifact sequence:**\n1. **WTP Research Brief** — scope, methodology, timeline, sample plan\n2. **Pricing Experiment Design** — test parameters, metrics, guardrails, rollback plan\n3. **Pricing Recommendation v2** — informed by WTP findings and experiment results, with confidence intervals on revenue impact\n\nDo not skip to step 3. The cost of the research (2-4 weeks, modest budget) is far less than the cost of a mispriced product in market.",
+        "claims": [
+          {
+            "claim_id": "side_a-claim-1",
+            "summary": "A full pricing overhaul fails readiness due to missing WTP data, unknown price elasticity, and incomplete competitive intelligence — the evidence gaps are too large for a confident organization-wide change.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-2",
+            "summary": "A staged pricing experiment on a single segment of new customers is the highest-EV path because it generates the missing data while limiting downside through guardrails and rollback capability.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-3",
+            "summary": "The cost of delay (2-4 weeks for WTP research) is almost certainly less than the cost of a mispriced product, making 'invest in data first' the dominant strategy over 'act now on partial information.'",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-4",
+            "summary": "Pricing changes are reversible with moderate friction — not zero-cost to undo — which means the decision threshold should be higher than for fully reversible changes but lower than for irreversible ones.",
+            "evidence_refs": [],
+            "is_major": false
+          },
+          {
+            "claim_id": "side_a-claim-5",
+            "summary": "Billing system flexibility and rollback capability are prerequisite gates that must be verified before any experiment can proceed; if either fails, the recommendation shifts entirely to research-first.",
+            "evidence_refs": [],
+            "is_major": false
+          }
+        ],
+        "citations": [],
+        "open_questions": [
+          "What is the current billing system's capability for running parallel price points or cohort-based pricing?",
+          "Is there any historical data from prior price changes that could serve as a proxy for elasticity estimation?",
+          "What is the organization's tolerance for test duration — can we commit to 60-90 days without pressure to declare results early?",
+          "Are there contractual or regulatory constraints that limit our ability to offer different prices to different customer segments?"
+        ],
+        "critique_responses": []
+      },
+      "rebuttal": {
+        "target_side": "side_b",
+        "finding_id": "finding-1",
+        "target_claim_ids": [
+          "side_b-claim-1"
+        ],
+        "claim_under_attack": "With no usable market evidence in the case packet, the decision-useful recommendation is to avoid a full pricing reset and instead run a bounded pricing experiment while preserving current core prices.",
+        "attack_type": "evidence_gap",
+        "evidence_or_reason": "The claim asserts a bounded experiment is the 'highest-utility decision' yet provides no framework for why experimentation dominates other partial-data strategies such as value-based pricing interviews, competitive proxy benchmarking, or cohort-level willingness-to-pay inference from existing transaction data. The artifact treats 'run a test' as self-evidently correct without establishing that the organization has the instrumentation, sample size, or cycle time to produce statistically meaningful results — all of which are themselves unknown. An experiment recommendation under partial data that does not assess whether the experiment itself is feasible is circular: it defers the data gap to a future artifact whose viability depends on the same missing information.",
+        "severity": "medium"
+      },
+      "final": {
+        "run_id": "conflict-2026-04-14-131707630Z-pricing-partial-data",
+        "side_id": "side_a",
+        "round": "final",
+        "artifact_markdown": "# Pricing Strategy Recommendation Under Partial Market Data\n\n## Decision Frame\n\n**Context:** We are evaluating a pricing change with incomplete market data. The core decision is whether to proceed with a pricing adjustment now, delay until more data is gathered, or implement a staged rollout that generates data while limiting downside.\n\n**Decision type:** Reversible with moderate friction. Pricing changes can be rolled back, but frequent changes erode customer trust and create operational overhead (billing system updates, sales enablement, contract amendments).\n\n**Stakeholders affected:** Revenue/finance (forecast accuracy), sales (deal velocity and objection handling), customer success (renewal conversations), product (packaging implications).\n\n**Key question:** Given that our market data is partial, is the expected value of acting now greater than the expected value of waiting for better data — accounting for the cost of delay?\n\n## Unknowns & Evidence Gaps\n\n### What we lack\n\n1. **Willingness-to-pay (WTP) distribution:** No conjoint analysis or Van Westendorp study has been conducted on the current customer base or target segments. Without WTP data, any price point is a guess anchored to cost-plus or competitor benchmarks rather than value capture.\n\n2. **Competitive pricing intelligence:** Partial data implies we have some competitor price points but not a complete landscape. We do not know competitors' discount structures, volume tiers, or bundling strategies — the effective price may differ significantly from list price.\n\n3. **Price elasticity of demand:** We lack historical data on how prior price changes affected conversion, churn, and expansion revenue. Without elasticity estimates, we cannot model revenue impact with confidence.\n\n4. **Segment-level sensitivity:** Even if aggregate data exists, we likely lack segment-level granularity. Enterprise buyers, mid-market, and SMB segments may respond very differently to the same price change.\n\n5. **Cost structure trajectory:** If input costs are changing (infrastructure, labor, licensing), the margin implications of any price point depend on cost forecasts we may not have validated.\n\n6. **Cost-of-delay estimate:** We have not quantified the revenue at risk during a 2-4 week research period. The expected value of waiting depends on pipeline volume, contract timing windows, current pricing error magnitude, and whether the product is already materially underpriced or overpriced. Without these figures, the delay-vs-act tradeoff remains an open judgment call rather than a settled conclusion.\n\n### What partial data we can work with\n\n- Existing revenue per customer and distribution across tiers\n- Anecdotal sales feedback on price objections and lost deals\n- Publicly available competitor list prices (without discount/effective price data)\n- Current gross margin by product line or tier\n- Churn data (even if not causally linked to pricing)\n\n### Risk of acting on partial data\n\n- **Underpricing:** Leave revenue on the table, signal low value, attract price-sensitive customers who churn at any increase.\n- **Overpricing:** Increase churn, slow acquisition, push prospects to competitors or substitutes.\n- **Misaligned packaging:** Price change without packaging change may create value-metric mismatch, where customers pay more without perceiving more value.\n\n## Pass/Fail Readiness\n\n**Verdict: CONDITIONAL PASS — proceed only with a staged, data-generating approach.**\n\nA full pricing overhaul fails readiness. The evidence gaps (no WTP study, no elasticity data, incomplete competitive landscape) mean that a confident, organization-wide price change would be speculative.\n\nHowever, a narrow, instrumented pricing test passes readiness:\n\n| Criterion | Status | Notes |\n|---|---|---|\n| Value metric identified | Partial | Need to validate that current metric aligns with perceived value |\n| WTP data | Fail | No structured research conducted |\n| Competitive landscape | Partial | List prices available; effective prices unknown |\n| Elasticity model | Fail | No historical price-change data to calibrate |\n| Segment definitions | Pass | Existing segmentation usable for test design |\n| Billing system flexibility | Must verify | Can the system support A/B pricing or cohort-based tiers? |\n| Rollback capability | Must verify | Can we revert pricing for a cohort without manual intervention? |\n\n**Go/no-go gates for staged test:**\n\n1. Billing system confirms ability to run parallel price points for new customers in a defined segment.\n2. Finance agrees on a minimum test duration (recommend 60-90 days) and sample size for statistical significance.\n3. Sales leadership aligns on how to handle objections during the test period.\n\nIf any gate fails, the recommendation shifts to \"delay and invest in WTP research first.\"\n\n## Recommended Next Artifact\n\n**Before committing to a timeline**, the team should produce a rough expected-value comparison between acting now and delaying for research. This requires estimating:\n- Pipeline revenue exposed during the delay window (deals in flight, contract renewals within 2-4 weeks)\n- Estimated magnitude of current pricing error (are we likely off by 5% or 50%?)\n- Traffic/lead volume that would experience the unchanged price during the delay\n- Whether signals (win/loss data, sales objections) suggest underpricing or overpricing\n\nIf this back-of-envelope analysis reveals that delay cost is high relative to mispricing risk (e.g., a large contract cohort renews within the research window), the team should bias toward a faster, narrower experiment rather than waiting for full WTP research.\n\n**If delay cost is low or uncertain, the default path is:**\n\n1. **WTP Research Brief** — scope, methodology, timeline, sample plan (Van Westendorp or Gabor-Granger targeting 50-100 customers across key segments, executable in 2-4 weeks)\n2. **Pricing Experiment Design** — test parameters, metrics, guardrails, rollback plan for new customers in one segment\n3. **Pricing Recommendation v2** — informed by WTP findings and experiment results, with confidence intervals on revenue impact\n\n**If delay cost is high, the adjusted path is:**\n\n1. **Pricing Experiment Design** (immediate) — launch a bounded test using best-available data, with tight guardrails and automatic pause triggers\n2. **WTP Research Brief** (parallel) — run the study concurrently so results inform the next iteration\n3. **Pricing Recommendation v2** — synthesize experiment results and WTP findings\n\nThe choice between these paths is a judgment call that depends on quantified delay cost, not an automatic default.",
+        "claims": [
+          {
+            "claim_id": "side_a-claim-1",
+            "summary": "A full pricing overhaul fails readiness due to missing WTP data, unknown price elasticity, and incomplete competitive intelligence — the evidence gaps are too large for a confident organization-wide change.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-2",
+            "summary": "A staged pricing experiment on a single segment of new customers is the highest-EV path because it generates the missing data while limiting downside through guardrails and rollback capability.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-3-revised",
+            "summary": "Whether delay or immediate action is the better path depends on a cost-of-delay estimate (pipeline at risk, pricing error magnitude, contract timing) that has not yet been produced. Without this estimate, the tradeoff is an open judgment call, not a settled conclusion. The artifact now provides two sequenced paths — research-first vs. experiment-first — and routes between them based on delay cost.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-4",
+            "summary": "Pricing changes are reversible with moderate friction — not zero-cost to undo — which means the decision threshold should be higher than for fully reversible changes but lower than for irreversible ones.",
+            "evidence_refs": [],
+            "is_major": false
+          },
+          {
+            "claim_id": "side_a-claim-5",
+            "summary": "Billing system flexibility and rollback capability are prerequisite gates that must be verified before any experiment can proceed; if either fails, the recommendation shifts entirely to research-first.",
+            "evidence_refs": [],
+            "is_major": false
+          }
+        ],
+        "citations": [],
+        "open_questions": [
+          "What is the current billing system's capability for running parallel price points or cohort-based pricing?",
+          "Is there any historical data from prior price changes that could serve as a proxy for elasticity estimation?",
+          "What is the organization's tolerance for test duration — can we commit to 60-90 days without pressure to declare results early?",
+          "Are there contractual or regulatory constraints that limit our ability to offer different prices to different customer segments?",
+          "What is the pipeline revenue at risk during a 2-4 week research delay, and are there major contract renewals in that window?"
+        ],
+        "critique_responses": [
+          {
+            "finding_id": "finding-2",
+            "disposition": "adopted",
+            "rationale": "The critique correctly identifies that 'almost certainly' and 'dominant strategy' were unsupported assertions. The artifact provided no estimate of delay cost (pipeline at risk, contract timing, pricing error magnitude) nor mispricing cost, so the comparison was rhetorical rather than evidence-based. The revised artifact: (1) adds cost-of-delay as an explicit evidence gap in the Unknowns section, (2) specifies the variables needed for a back-of-envelope delay cost estimate, (3) replaces the single 'research-first' recommendation with two conditional paths — research-first when delay cost is low, experiment-first when delay cost is high — and (4) frames the choice as a judgment call requiring quantified inputs rather than a predetermined conclusion."
+          }
+        ]
+      }
+    },
+    "side_b": {
+      "provider": "openai",
+      "model": "chatgpt-pro",
+      "reasoning_effort": "medium",
+      "access_mode": "subscription_cli",
+      "role": "side_b",
+      "first_pass": {
+        "run_id": "conflict-2026-04-14-131707630Z-pricing-partial-data",
+        "side_id": "side_b",
+        "round": "first_pass",
+        "artifact_markdown": "# Pricing Strategy Recommendation\n\n## Decision Frame\nRecommend a controlled pricing move rather than a full repricing. Hold core list prices for the current cycle, introduce a limited test on one segment or package boundary, and use packaging/discount controls to improve monetization while market evidence is incomplete. This is the highest-utility decision under partial data because it preserves upside learning while limiting broad revenue and conversion risk.\n\n## Unknowns & Evidence Gaps\nThe case packet provides no market evidence, customer willingness-to-pay data, win/loss pricing patterns, competitive price map, elasticity estimates, or segment-level retention risk. The key unresolved questions are which customer segment has the lowest price sensitivity, whether current underpricing is material, and whether the larger opportunity is price increase, packaging redesign, or discount discipline.\n\n## Pass/Fail Readiness\nPass for a bounded experiment decision. Fail for a market-wide pricing reset. The available information is sufficient to authorize a time-boxed test with explicit guardrails, but insufficient to support a broad permanent change across the full customer base.\n\n## Recommended Next Artifact\nA pricing experiment brief with target segment, hypothesis, test cell design, success thresholds, guardrails, and data collection plan.",
+        "claims": [
+          {
+            "claim_id": "side_b-claim-1",
+            "summary": "With no usable market evidence in the case packet, the decision-useful recommendation is to avoid a full pricing reset and instead run a bounded pricing experiment while preserving current core prices.",
+            "evidence_refs": [
+              "ctx-1"
+            ],
+            "is_major": true
+          }
+        ],
+        "citations": [
+          "ctx-1"
+        ],
+        "open_questions": [],
+        "critique_responses": []
+      },
+      "rebuttal": {
+        "target_side": "side_a",
+        "finding_id": "finding-2",
+        "target_claim_ids": [
+          "side_a-claim-3"
+        ],
+        "claim_under_attack": "The cost of delay (2-4 weeks for WTP research) is almost certainly less than the cost of a mispriced product, making 'invest in data first' the dominant strategy over 'act now on partial information.'",
+        "attack_type": "evidence_gap",
+        "evidence_or_reason": "The artifact provides no evidence for either side of this cost comparison. It does not estimate pipeline at risk during the 2-4 week delay, current pricing error magnitude, traffic volume, contract timing, or the downside of postponing action if the product is already materially underpriced. Without even rough expected-value bounds, 'almost certainly' and 'dominant strategy' are unsupported assertions rather than conclusions grounded in visible data.",
+        "severity": "medium"
+      },
+      "final": {
+        "run_id": "conflict-2026-04-14-131707630Z-pricing-partial-data",
+        "side_id": "side_b",
+        "round": "final",
+        "artifact_markdown": "# Revised artifact\n\n## Decision Frame\nDo not approve a market-wide pricing reset on the current record. Approve a staged pricing decision instead: keep current core list prices in place, immediately assess whether a bounded pricing experiment is operationally feasible, and only run that experiment if minimum feasibility gates are met. If those gates are not met, use the same cycle to close the data gap through faster non-experimental inputs such as transaction-cohort analysis, discount leakage review, targeted willingness-to-pay interviews, and competitive proxy benchmarking. This is the most decision-useful path under partial data because it limits downside risk from an uninformed repricing while avoiding the circular mistake of prescribing an experiment that the organization may not be able to execute well.\n\nMinimum experiment-feasibility gates: a clearly targetable segment, enough sample volume to observe directional movement in conversion or expansion, instrumentation to measure the outcome, and a rollback path if conversion or retention deteriorates. Without those conditions, the right decision is not \"test anyway\" but \"collect the fastest credible evidence short of a full rollout.\"\n\n## Unknowns & Evidence Gaps\nThe case packet provides no market evidence, customer willingness-to-pay data, win/loss pricing patterns, competitive price map, elasticity estimates, transaction-cohort behavior, or proof that pricing experiments are technically and operationally feasible. The key unresolved questions are: which segment is least price-sensitive, whether current monetization leakage comes from price level versus packaging versus discounting, whether internal data can support directional inference quickly, and whether the business has sufficient sample size and instrumentation for a bounded test.\n\n## Pass/Fail Readiness\nPass for a staged evidence plan and for an experiment only if feasibility gates are met. Fail for a broad permanent pricing reset and fail for an experiment mandate that assumes capabilities not yet established. The current information is sufficient to choose a low-regret decision path, but not sufficient to choose the final pricing move itself.\n\n## Recommended Next Artifact\nA pricing evidence brief that first answers experiment feasibility, then specifies either: 1. a bounded pricing experiment design with target segment, hypothesis, success thresholds, guardrails, and rollback plan, or 2. a rapid non-experimental evidence plan covering transaction analysis, discount audit, customer interviews, and competitive proxy benchmarking.",
+        "claims": [
+          {
+            "claim_id": "side_b-claim-1",
+            "summary": "Under partial market data, the defensible recommendation is a staged pricing decision: reject a broad repricing now, validate whether a bounded experiment is feasible, and fall back to rapid non-experimental evidence collection if experimentation is not executable.",
+            "evidence_refs": [
+              "ctx-1"
+            ],
+            "is_major": true
+          }
+        ],
+        "citations": [
+          "ctx-1"
+        ],
+        "open_questions": [],
+        "critique_responses": [
+          {
+            "finding_id": "finding-1",
+            "disposition": "adopted",
+            "rationale": "The critique correctly identified that the first-pass artifact treated experimentation as automatically superior without testing whether an experiment was itself feasible. I revised the recommendation to make experiment feasibility an explicit gate and added a non-experimental fallback path, which removes the circularity and improves decision usefulness under partial data."
+          }
+        ]
+      }
+    }
+  },
+  "judge": {
+    "provider": "anthropic",
+    "model": "claude-max",
+    "reasoning_effort": "medium",
+    "access_mode": "subscription_cli",
+    "blind_labels": true,
+    "family_blind": false,
+    "selection_policy": "single_judge_cli",
+    "verdict": {
+      "winner": "side_a",
+      "margin": 0.8,
+      "rubric_scores": {
+        "side_a": {
+          "claim_quality": 4,
+          "evidence_discipline": 4,
+          "responsiveness_to_critique": 4,
+          "internal_consistency": 4,
+          "decision_usefulness": 5,
+          "weighted_total": 4.2
+        },
+        "side_b": {
+          "claim_quality": 3,
+          "evidence_discipline": 3,
+          "responsiveness_to_critique": 4,
+          "internal_consistency": 4,
+          "decision_usefulness": 3,
+          "weighted_total": 3.4
+        }
+      },
+      "decisive_findings": [
+        "Side A provides a structured readiness table with explicit pass/partial/fail ratings per criterion, giving a decision-maker immediate traction; Side B states pass/fail conclusions in prose without comparable granularity.",
+        "Side A names specific methodologies (Van Westendorp, Gabor-Granger), sample sizes (50-100 customers), durations (60-90 days), and two fully sequenced artifact paths with routing logic based on delay cost — Side B's next-artifact recommendation is directionally correct but underspecified.",
+        "Side A enumerates six distinct evidence gaps with explanation of why each matters; Side B summarizes gaps in a single paragraph, missing cost-structure trajectory and segment-level sensitivity as separate concerns.",
+        "Both sides adopted their respective critiques effectively: Side A removed the unsupported 'dominant strategy' language and added conditional pathing; Side B added experiment-feasibility gates and a non-experimental fallback. Responsiveness is comparable.",
+        "Side B's citation of 'ctx-1' references no actual evidence in the case packet, making the evidence_refs field cosmetic rather than substantive."
+      ],
+      "judge_confidence": "high",
+      "needs_human_review": false,
+      "rationale": "Side A delivers a substantially more actionable strategy artifact. Both sides reach the same core conclusion — reject a full repricing, pursue staged evidence generation — but Side A operationalizes that conclusion with a pass/fail readiness table, named go/no-go gates, specific research methodologies and timelines, and two conditional artifact sequences routed by a quantified delay-cost estimate. Side B's final artifact is coherent and correctly adds experiment-feasibility gates after absorbing its critique, but remains at a higher level of abstraction with fewer concrete decision handles. Side A is clearly stronger on claim quality, evidence discipline, and decision usefulness, while the two sides are tied on responsiveness to critique and internal consistency."
+    }
+  },
+  "budgets": {
+    "max_visible_rounds": 3,
+    "max_cost_usd": 1000000,
+    "max_latency_ms": 360000,
+    "min_margin_for_verdict": 0.1
+  },
+  "results": {
+    "winner": "side_a",
+    "margin": 0.8,
+    "judge_confidence": "high",
+    "swap_stable": null,
+    "needs_human_review": false
+  },
+  "metrics": {
+    "disagreement_rate": 0.6667,
+    "declared_adoption_rate": 1,
+    "substantive_revision_rate": 1,
+    "unsupported_claim_count": 5,
+    "self_contradiction_count": 0,
+    "total_estimated_cost_usd": 0,
+    "swap_margin_delta": null,
+    "judge_margin": 0.8,
+    "cost_per_resolved_run": 0
+  },
+  "audit": {
+    "identity_leak_warnings": [],
+    "protocol_violations": []
+  }
+}

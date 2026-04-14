@@ -1,0 +1,35 @@
+{
+  "run_id": "conflict-2026-04-14-072002253Z-handoff-contradiction",
+  "side_id": "side_a",
+  "round": "final",
+  "artifact_markdown": "# Revised artifact\n\n## PRD: Contradiction-Resilient Technical Handoff\n\n### Objective\nDeliver a handoff-ready PRD that gives engineering actionable starting scope despite missing source artifacts, while making all provisional decisions explicit and reversible.\n\n### Working Assumptions\n- The platform strategy intends a shared platform capability rather than a one-off product feature.\n- The challenge review likely tested scope, sequencing, and risk, so those areas require explicit guardrails.\n- In the absence of supplied source documents, provisional decisions are allowed only if they are low-regret and easy to reverse.\n\n### Product Problem\nA team has been asked to execute against a platform initiative, but the handoff references upstream strategy and challenge-review inputs that are not attached. Without a concrete handoff, engineering stalls; without constraints, engineering may implement the wrong thing.\n\n### Decision\nProceed with a provisional technical handoff PRD that authorizes only contradiction-safe foundation work and blocks irreversible product commitments until upstream artifacts are reconciled.\n\n### In-Scope Work\n- Define the platform capability boundary, owning team, and primary consumers.\n- Establish a canonical requirements table with fields for requirement, assumption status, reversal trigger, owner, and source reference.\n- Build enabling foundation work that remains valid across plausible strategy variants:\n  - interface scaffolding\nn  - observability hooks\n  - feature flags\n  - audit logging\n  - migration and rollback paths\n- Prepare an engineering decision log for unresolved scope, metric, and dependency questions.\n\n### Out-of-Scope Work\n- Hard-coding success metrics as final.\n- Shipping UX or API contracts that assume a single unresolved strategy direction.\n- Committing rollout scale, SLAs, or dependency sequencing without explicit upstream confirmation.\n\n### Users and Stakeholders\n- Product manager: owns business intent and final requirement disposition.\n- Engineering lead: owns technical sequencing and contradiction-safe execution.\n- Platform consumers: provide interface and dependency requirements.\n- Review stakeholders: approve or reject provisional assumptions.\n\n### Provisional Requirements\n1. The system must support a feature-flagged rollout so provisional implementation can be disabled without rollback risk.\n2. All requirements must carry one of three statuses: `confirmed`, `assumed`, or `blocked`.\n3. Any `assumed` requirement must include an owner and a reversal condition.\n4. Engineering may implement only `confirmed` requirements and low-regret foundation work linked to an explicit assumption record.\n5. The handoff must include dependency, interface, and operational placeholders sufficient for estimation.\n6. The PRD must identify decisions that would become expensive to reverse and mark them `blocked` until upstream reconciliation.\n\n### Technical Handoff Content\n- System boundary and integration points.\n- Data contracts or placeholders where contracts are unknown.\n- Dependency matrix with confidence level.\n- Rollout plan using flags and staged exposure.\n- Monitoring, logging, and rollback requirements.\n- Open decision log with owner and target resolution date.\n\n### Success Criteria\n- Engineering can estimate and begin foundation work without inventing business intent.\n- No irreversible implementation decision is made without a linked confirmation source.\n- Missing upstream inputs are isolated to named assumption records rather than hidden in prose.\n\n### Reversal Conditions\nRevisit this PRD if the platform strategy or challenge review later contradicts any of the following provisional decisions:\n- shared-platform scope\n- phased rollout\n- requirement status model\n- contradiction-safe foundation-first sequencing\n\n## Decision Frame\nUse a provisional, execution-oriented PRD rather than a purely gated placeholder. The useful decision is to authorize low-regret foundation work now and defer only irreversible commitments. This balances decision usefulness with evidence discipline under missing upstream artifacts.\n\n## Unknowns & Evidence Gaps\n- The actual platform strategy document is not attached.\n- The actual challenge review is not attached.\n- No concrete contradiction instances are available to enumerate.\n- Final success metrics, consumer priority, and dependency ordering remain unverified.\n\n## Pass/Fail Readiness\nPass if:\n- The PRD distinguishes `confirmed`, `assumed`, and `blocked` items.\n- Engineering scope is limited to low-regret work with rollback paths.\n- Every assumption has an owner and reversal condition.\n- Upstream documents can later be mapped into the requirements table without restructuring the artifact.\n\nFail if:\n- The team treats assumed requirements as final.\n- Irreversible interface or rollout decisions proceed without confirmation.\n- The handoff omits rollback, observability, or dependency confidence.\n\n## Recommended Next Artifact\nA technical spec for the confirmed and low-regret foundation slice, followed by an updated PRD revision once the platform strategy and challenge review are attached.",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "A provisional, execution-oriented handoff PRD is more useful than a purely gated placeholder because it authorizes low-regret foundation work while deferring only irreversible commitments.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "The handoff should center on explicit requirement states, assumption ownership, and reversal conditions so missing upstream guidance does not silently become implementation truth.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1"
+  ],
+  "open_questions": [],
+  "critique_responses": [
+    {
+      "finding_id": "finding-2",
+      "disposition": "adopted",
+      "rationale": "The critique was correct that the first-pass artifact over-rotated toward procedural caution and under-served decision usefulness. The revision replaces the gated meta-framework with a provisional PRD that makes explicit assumptions, commits to low-regret actionable scope, and defines reversal conditions for later reconciliation."
+    }
+  ]
+}

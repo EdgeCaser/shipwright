@@ -1,0 +1,149 @@
+You are SIDE_A in the rebuttal phase for run conflict-2026-04-14-133739864Z-yahoo-microsoft.
+Attack only visible claims from the opposing first-pass artifact.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "target_side": "side_b",
+  "finding_id": "runner-will-assign",
+  "target_claim_ids": [
+    "side_b-claim-1"
+  ],
+  "claim_under_attack": "The opposing claim to challenge.",
+  "attack_type": "evidence_gap",
+  "evidence_or_reason": "Why the visible claim is weak.",
+  "severity": "medium"
+}
+
+Case packet:
+{
+  "scenario_id": "yahoo-microsoft",
+  "title": "Yahoo rejecting Microsoft: hold independent or accept acquisition",
+  "prompt": "You are a strategy advisor to Yahoo's board in May 2008. Microsoft has offered to acquire Yahoo for $33 per share ($47.5 billion), a 62% premium over Yahoo's pre-offer price of ~$20. CEO Jerry Yang and the board have rejected the offer, arguing it undervalues Yahoo's strategic assets.\n\nMicrosoft CEO Steve Ballmer has since withdrawn the offer but signaled willingness to return with a revised bid. Yahoo has entered a search advertising partnership with Google as a defensive measure, but the DOJ is reviewing it for antitrust concerns.\n\nThe context: Yahoo's display advertising business is still #1 in the US, but search — the highest-growth, highest-margin segment — is dominated by Google (60%+ share). Yahoo Search has ~20% share and declining. Yahoo's Panama search platform (launched 2007) narrowed the monetization gap with Google but hasn't reversed share losses.\n\nKey evidence available:\n- Microsoft offer: $33/share ($47.5B), rejected by Yahoo board as too low\n- Yahoo pre-offer stock price: ~$20/share; post-rejection: ~$24/share\n- Yahoo board's stated minimum: $37/share\n- Yahoo 2007 revenue: $6.97B; operating income: $695M (10% margin)\n- Google 2007 revenue: $16.6B; operating income: $5.1B (31% margin)\n- Yahoo display ad market share: #1 in US (15.6% of total digital ad spend)\n- Yahoo search share: ~20% and declining (Google: ~63%, Microsoft: ~10%)\n- Yahoo Mail users: 260M+ (largest email service globally in 2008)\n- Yahoo Finance, Yahoo Sports, Flickr: high-traffic properties with strong engagement\n- Yahoo Japan stake: 34% ownership, valued at ~$8-10B independently\n- Alibaba stake: ~40% ownership (pre-IPO), valued at ~$3-4B in 2008\n- Panama search platform: improved revenue-per-search by 15-20% since launch\n- Google-Yahoo search partnership: would outsource Yahoo search ads to Google for 3+ years\n- DOJ antitrust review of Google-Yahoo deal: likely to block or severely limit scope\n- Microsoft's strategic need: desperately needs search scale to compete with Google\n- Carl Icahn (activist investor): acquired 5% Yahoo stake, pushing board to accept Microsoft offer\n- Yahoo headcount: ~14,300 employees (2008), up from 11,400 (2006)\n- Social media shift: Facebook growing from 100M to 200M users in 2008, fragmenting display ad attention\n\nThe board must decide: reopen negotiations with Microsoft at a higher price, or pursue an independent strategy built on display advertising dominance, the Google partnership, and the Alibaba/Yahoo Japan stakes?\n\nWrite a strategic recommendation memo. Take a clear position — sell or stay independent — and defend it with evidence. Acknowledge the strongest counterarguments and explain why your position is still correct.",
+  "artifact_type": "strategy",
+  "rubric": {
+    "dimensions": [
+      "claim quality",
+      "evidence discipline",
+      "responsiveness to critique",
+      "internal consistency",
+      "decision usefulness"
+    ],
+    "scoring_scale": "1-5",
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "constraints": {
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "expect_structured": true,
+    "context_files": [],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "evidence": [],
+  "max_rounds": 3,
+  "tool_policy": "none",
+  "sharing_policy": {
+    "share_case_packet": true,
+    "share_committed_artifacts_after_first_pass": true,
+    "share_critiques_after_open": true,
+    "share_hidden_reasoning": false,
+    "share_provider_identity": false,
+    "share_internal_coalition_drafts": false
+  },
+  "success_condition": {
+    "type": "validator_contract",
+    "description": "Produce a strategy artifact that satisfies the scenario validator contract.",
+    "validator": {
+      "artifact_type": "strategy",
+      "expect_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true
+    }
+  }
+}
+
+Opposing first-pass artifact:
+{
+  "run_id": "conflict-2026-04-14-133739864Z-yahoo-microsoft",
+  "side_id": "side_b",
+  "round": "first_pass",
+  "artifact_markdown": "# Recommendation: Reopen negotiations with Microsoft and pursue a sale at $37/share or better\n\nYahoo should not continue as an independent company on the current plan. The board should immediately reopen negotiations with Microsoft, anchor at the board's stated $37/share minimum, and seek a tightly bounded final process focused on price, deal certainty, and employee retention. If Microsoft will not meet an acceptable range promptly, the board should still treat a sale as the preferred path and avoid doubling down on a stand-alone strategy built on the Google partnership.\n\nThe core issue is not whether Yahoo owns valuable assets. It does. The issue is whether Yahoo can convert those assets into a credible path to value creation that beats a $33 cash offer today and likely beats an improved bid in the mid-to-high $30s. On the available evidence, that case is weak. Yahoo remains strong in display and audience reach, but the industry profit pool is shifting toward search, where Yahoo has roughly 20% share and is losing ground to Google. Panama improved monetization, but it has not reversed share decline. Meanwhile, Google operates at a radically superior margin profile, showing that scale economics in search are compounding against Yahoo rather than converging.\n\nThe board's independent case relies on three pillars, and each is structurally fragile. First, display leadership is real but increasingly less defensible as social platforms fragment attention; Facebook's rapid user growth is an early warning that premium portal aggregation is weakening. Second, the Google search partnership is not a durable strategic answer because it effectively concedes Yahoo's own search economics while facing material DOJ antitrust risk. Third, the Alibaba and Yahoo Japan stakes are valuable, but they strengthen the argument that Microsoft is underpaying only modestly, not that Yahoo should remain independent. Those holdings are easier to monetize or preserve inside a sale process than to use as justification for continued operating underperformance.\n\nMicrosoft's strategic need materially improves Yahoo's negotiating leverage right now. Microsoft is the subscale player in search and has a pressing strategic requirement for audience, queries, and advertiser volume to challenge Google. That makes Yahoo more valuable to Microsoft than to most other buyers and increases the odds of a revised bid. Carl Icahn's activism adds urgency: a prolonged stand-off risks governance distraction, employee attrition, and value leakage while the operating business remains exposed. The board should use Microsoft's need, not independence rhetoric, as the lever to maximize shareholder value.\n\nThe strongest argument for staying independent is that $33 undervalues Yahoo's sum-of-the-parts: the core media properties, the #1 US display position, 260M+ Mail users, and the Asian equity stakes. That critique is directionally fair. But it supports negotiating harder, not walking away. The post-rejection trading level near $24 shows that public markets do not credit management's stand-alone thesis anywhere close to the board's implied intrinsic value. If the independent plan were genuinely compelling and executable, the gap between rejection and trading price would be narrower. Instead, the market is signaling skepticism that Yahoo can realize this value on its own within a reasonable timeframe.\n\nThe second major counterargument is that Panama may still close the monetization gap and that Yahoo can pair better search economics with display leadership to recover strategic relevance. But the evidence here is backward-looking and partial. A 15-20% lift in revenue per search is meaningful operationally, yet it has not halted share losses in the segment that matters most. In a scale-driven market, monetization improvement without query-share stabilization is not enough. Yahoo would need both better economics and regained usage momentum, and the packet provides no strong evidence that this turnaround is underway.\n\nThe board therefore should authorize a structured reengagement with Microsoft immediately. The mandate should be: secure a price increase toward at least $37/share, insist on clear diligence boundaries and timing, and prepare a clean communication package for employees, regulators, and investors. The negotiating position should explicitly frame Yahoo's audience assets, media properties, and Asian stakes as reasons for a higher price, while privately recognizing that those same assets do not solve the core strategic deterioration of the operating business.\n\n**Decision Frame**\n\nRecommendation: sell, not stay independent.\n\nWhy this clears the bar:\n- The offered premium is already substantial relative to Yahoo's unaffected price.\n- Yahoo's strongest operating franchise is in a slower-changing, increasingly fragmented display market, while search economics are consolidating around Google.\n- The Google partnership is a defensive bridge with serious antitrust risk, not a durable strategy.\n- Microsoft's strategic urgency creates unusually favorable leverage for Yahoo to improve terms now.\n\nWhat to do next:\n- Reopen talks immediately.\n- Set an explicit acceptable range around the board's $37/share position.\n- Run a short deadline-driven process to reduce uncertainty and attrition.\n\n**Unknowns & Evidence Gaps**\n\n- The packet does not provide a full sum-of-the-parts valuation for Yahoo's core business plus Asian holdings.\n- There is no detailed forecast for Panama's impact on search margin over the next 2-3 years.\n- We do not have current internal retention data, product roadmap confidence, or scenario analysis for a failed Google partnership.\n- Regulatory certainty for either a Microsoft transaction or the Google deal is not quantified.\n\nThese gaps matter for price optimization, but they do not overturn the directional conclusion that independence carries higher execution risk than a negotiated sale.\n\n**Pass/Fail Readiness**\n\nPass conditions for sale path:\n- Microsoft signals willingness to return within a defined price band above $33.\n- Board aligns around a short, non-drifting process.\n- Management can retain key leaders through transaction signing with targeted packages.\n\nFail conditions for independence path:\n- Google partnership is blocked or materially constrained.\n- Search share continues declining despite Panama gains.\n- Activist pressure escalates into a prolonged governance fight.\n- Display leadership erodes as attention shifts to social platforms.\n\nReadiness verdict: pass for reopening sale talks now; fail for relying on the current independent plan as the primary strategy.\n\n**Recommended Next Artifact**\n\nA board negotiation brief with three sections:\n1. price corridor and walk-away thresholds;\n2. regulatory and timing risk comparison between Microsoft and Google paths;\n3. employee retention and communications plan for a 60-day sale process.",
+  "claims": [
+    {
+      "claim_id": "side_b-claim-1",
+      "summary": "Yahoo should reopen negotiations and pursue a sale because the independent strategy is less likely to create shareholder value than a revised Microsoft bid.",
+      "evidence_refs": [
+        "ctx-1",
+        "ctx-2",
+        "ctx-3",
+        "ctx-4"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-2",
+      "summary": "Yahoo's operating position is weakening in the most important profit pool, since search share is declining despite Panama improvements and Google has far superior scale economics.",
+      "evidence_refs": [
+        "ctx-5",
+        "ctx-6",
+        "ctx-7"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-3",
+      "summary": "The Google partnership is a poor foundation for independence because it concedes core search economics and faces material DOJ antitrust risk.",
+      "evidence_refs": [
+        "ctx-8",
+        "ctx-9"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-4",
+      "summary": "Yahoo's valuable assets and stakes justify negotiating for a higher price, but they do not by themselves justify remaining independent.",
+      "evidence_refs": [
+        "ctx-10",
+        "ctx-11",
+        "ctx-12",
+        "ctx-13"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1: Microsoft offered $33/share ($47.5B), a 62% premium to Yahoo's pre-offer price of about $20/share.",
+    "ctx-2: Yahoo's post-rejection trading price was about $24/share, below the board's stated minimum of $37/share.",
+    "ctx-3: Carl Icahn acquired about a 5% stake and pushed Yahoo to accept Microsoft's offer.",
+    "ctx-4: Microsoft had a strategic need for search scale to compete with Google.",
+    "ctx-5: Yahoo search share was about 20% and declining, versus Google at about 63% and Microsoft at about 10%.",
+    "ctx-6: Panama improved Yahoo revenue-per-search by roughly 15-20% since launch.",
+    "ctx-7: Yahoo 2007 operating margin was about 10% ($695M on $6.97B revenue) versus Google's roughly 31% ($5.1B on $16.6B revenue).",
+    "ctx-8: Yahoo entered a 3+ year search advertising partnership with Google that would outsource Yahoo search ads to Google.",
+    "ctx-9: The DOJ was reviewing the Google-Yahoo deal and was likely to block or severely limit it.",
+    "ctx-10: Yahoo remained the #1 US display advertising player with 15.6% of total digital ad spend.",
+    "ctx-11: Yahoo Mail had 260M+ users, and Yahoo Finance, Yahoo Sports, and Flickr were high-traffic properties with strong engagement.",
+    "ctx-12: Yahoo owned about 34% of Yahoo Japan, valued around $8-10B independently.",
+    "ctx-13: Yahoo owned about 40% of Alibaba, valued around $3-4B in 2008."
+  ],
+  "open_questions": [
+    "What is the board's latest internal sum-of-the-parts valuation for Yahoo core operations plus Yahoo Japan and Alibaba stakes?",
+    "How likely is the DOJ to block the Google partnership outright versus permitting a narrowed arrangement?",
+    "What price range would Microsoft realistically accept after financing, integration, and regulatory constraints are modeled?",
+    "What retention risk exists among key Yahoo engineering and product leaders during a prolonged activist fight or sale process?"
+  ],
+  "critique_responses": []
+}

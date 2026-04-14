@@ -1,0 +1,13 @@
+# Critique: finding-2
+
+- Target Side: side_a
+- Target Claim IDs: side_a-claim-4
+- Attack Type: evidence_gap
+- Severity: medium
+
+## Claim Under Attack
+Asian assets (Yahoo Japan ~$8-10B, Alibaba ~$3-4B) are real but illiquid, cannot be unilaterally monetized, and are already implicitly priced into Microsoft's 62% premium offer
+
+## Evidence Or Reason
+The first two points are at least directionally supported by the case packet, but the key move in the claim is the last one: that Microsoft's offer already implicitly captures most or all of the Asian asset value. The artifact provides no valuation bridge showing this. A 62% premium to Yahoo's unaffected price does not by itself prove those stakes were fully recognized in Microsoft's bid rather than partially ignored by the market or underweighted because they were non-core and illiquid. Without a sum-of-the-parts analysis separating the operating business from Yahoo Japan and Alibaba, this claim overreaches from premium size to asset-pricing conclusion.
+

@@ -1,0 +1,107 @@
+{
+  "case_packet": {
+    "scenario_id": "churn-conflicting-signals",
+    "title": "Churn diagnosis with conflicting signals",
+    "prompt": "Write a churn reduction PRD when signals conflict with strategy targets.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "opposing_first_pass": {
+    "run_id": "conflict-2026-04-14-064906724Z-churn-conflicting-signals",
+    "side_id": "side_b",
+    "round": "first_pass",
+    "artifact_markdown": "# Churn Reduction PRD\n\n## Product Decision\nBuild a churn-reduction program that prioritizes retention interventions for users showing high cancellation risk, but gates broad rollout behind proof that the intervention improves retained revenue without pulling the product off strategy targets. Because the packet provides no underlying churn evidence, this PRD is intentionally structured as a decision-and-learning plan rather than a full-causality diagnosis.\n\n## Problem\nThe team needs to reduce churn, but current signals conflict with strategy targets. In that condition, the main failure mode is overfitting to noisy churn indicators and shipping retention work that preserves low-value usage, increases support or discount cost, or delays the strategic roadmap.\n\n## Goal\nReduce avoidable churn while preserving strategic direction.\n\n## Non-Goals\n- Do not redefine company strategy based on unverified churn signals.\n- Do not launch blanket discounts or save offers to the full base.\n- Do not treat all churn as preventable.\n\n## Users\n- Existing customers at elevated risk of cancellation.\n- Customer success and lifecycle teams who need actionable risk signals.\n- Product leadership balancing retention against strategic roadmap commitments.\n\n## Hypothesis\nIf we target retention interventions only at validated high-risk segments and evaluate them against retained revenue and strategic guardrails, then we can reduce avoidable churn without undermining the product strategy.\n\n## Proposed Solution\n1. Create a churn-risk decision layer that combines available product, account, and support signals into an operational risk status.\n2. Restrict intervention eligibility to segments where there is both material churn risk and plausible product-level influence.\n3. Launch a narrow intervention set first: save outreach, guided activation recovery, and value-realization prompts.\n4. Measure outcomes against retention and strategy guardrails before expanding scope.\n5. Escalate only validated causes into roadmap changes; route weak or conflicting signals into further research.\n\n## Requirements\n### Functional Requirements\n- System flags accounts or users into risk tiers: low, medium, high.\n- Risk tiering must support segment-level analysis by plan, tenure, usage pattern, and acquisition source.\n- Eligible high-risk users must be assigned one intervention path.\n- Intervention events and outcomes must be logged for later attribution.\n- Teams must be able to suppress interventions for segments judged strategically non-core.\n\n### Measurement Requirements\n- Primary metric: churn rate for eligible high-risk cohort.\n- Business metric: retained revenue from intervened cohort.\n- Guardrails: gross margin impact, discount cost, support load, and activation of strategy-priority features.\n- Analysis must distinguish voluntary churn from involuntary or administrative churn.\n\n### Operational Requirements\n- Product, lifecycle, and CS owners must review segment eligibility rules weekly during pilot.\n- Any strategy-conflicting intervention requires explicit approval from product leadership.\n- Broad rollout requires statistically credible improvement or a strong directional result with low downside.\n\n## Rollout Plan\n### Phase 1: Instrument and Baseline\n- Define risk segments.\n- Validate event quality.\n- Establish baseline churn and retained revenue.\n\n### Phase 2: Targeted Pilot\n- Run interventions only for selected high-risk, strategically relevant segments.\n- Compare against holdout or pre-defined baseline.\n\n### Phase 3: Expand or Stop\n- Expand only if retention improves and guardrails remain healthy.\n- Stop or redesign if churn reduction comes from tactics that weaken strategic progress.\n\n## Risks\n- Signals may be correlational rather than causal.\n- The team may retain low-value customers while missing strategic users.\n- Discount-led saves may hide product gaps.\n- Conflicting signals may reflect measurement issues, not customer reality.\n\n## Decision Frame\nProceed with a constrained churn-reduction pilot, not a broad retention program. The decision rule is: treat churn as a portfolio of segment-specific problems, and require evidence that any intervention improves retained revenue without degrading strategic objectives. Where churn signals conflict with strategy targets, strategy remains the default constraint until evidence shows a targeted exception is worth making.\n\n## Unknowns & Evidence Gaps\n- No packet evidence identifies which segments are actually churning.\n- No evidence separates preventable churn from acceptable churn.\n- No evidence quantifies revenue mix, margin profile, or strategic importance of at-risk segments.\n- No evidence shows whether current signals are causal, lagging, or instrumentation artifacts.\n- No evidence defines current strategy targets well enough to score tradeoffs precisely.\n\n## Pass/Fail Readiness\nPass with conditions. This artifact is decision-useful as a pilot PRD, but not ready for full execution as a broad churn strategy because the case packet contains no operating evidence. It is ready to align teams on scope, guardrails, and experiment design; it is not ready to justify large roadmap shifts.\n\n## Recommended Next Artifact\nChurn Analysis artifact focused on segment-level diagnosis, preventable-vs-acceptable churn classification, and intervention sizing, followed by an experiment plan for the highest-risk strategically relevant segment.",
+    "claims": [
+      {
+        "claim_id": "side_b-claim-1",
+        "summary": "A constrained pilot is the correct first move when churn signals conflict with strategy targets and underlying evidence is absent.",
+        "evidence_refs": [
+          "ctx-1",
+          "ctx-2"
+        ],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-2",
+        "summary": "Retention work should be gated by retained revenue and strategy guardrails, not raw churn reduction alone.",
+        "evidence_refs": [
+          "ctx-1",
+          "ctx-3"
+        ],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-3",
+        "summary": "The current packet supports a decision-and-learning PRD, but not a fully causal churn diagnosis or broad roadmap pivot.",
+        "evidence_refs": [
+          "ctx-2"
+        ],
+        "is_major": true
+      }
+    ],
+    "citations": [
+      "ctx-1",
+      "ctx-2",
+      "ctx-3"
+    ],
+    "open_questions": [
+      "Which customer segments are over-indexing on churn, by revenue, tenure, and acquisition source?",
+      "What share of observed churn is preventable versus acceptable or structurally low-value?",
+      "Which existing signals are causal predictors versus instrumentation noise or lagging indicators?",
+      "What exact strategy targets would be compromised by aggressive retention tactics?"
+    ],
+    "critique_responses": []
+  }
+}

@@ -1,0 +1,13 @@
+# Critique: finding-1
+
+- Target Side: side_b
+- Target Claim IDs: side_b-claim-1, side_b-claim-2
+- Attack Type: evidence_gap
+- Severity: high
+
+## Claim Under Attack
+Yahoo should reopen negotiations and sell to Microsoft because the standalone strategy carries excessive execution and regulatory risk relative to a large realized premium, and Yahoo's core business is not strong enough to justify rejecting a high-premium acquisition.
+
+## Evidence Or Reason
+Side B treats the $33-$37/share range as a 'large realized premium' without accounting for the value of Yahoo's non-operating assets alone. The case packet shows Yahoo Japan stake valued at $8-10B and Alibaba stake at $3-4B, totaling $11-14B. Against Yahoo's ~$20/share pre-offer market cap (roughly $28B fully diluted), these stakes alone represent 39-50% of the proposed acquisition price. This means Microsoft's offer implicitly values Yahoo's entire core operating business — #1 US display advertising, 260M+ mail users, Yahoo Finance, Sports, Flickr, and 20% search share — at only $33-37B minus $11-14B = $19-26B. Side B calls this a 'substantial premium' but never performs this decomposition, instead comparing $33 to $20 as though the premium is pure upside. The artifact also asserts Yahoo's margins are too weak to justify independence by comparing Yahoo's 10% operating margin to Google's 31%, but this comparison conflates two different business models — Yahoo is primarily a display/portal business while Google is primarily search. Yahoo is #1 in US display with 15.6% market share; comparing it unfavorably to Google's search margins is a category error that makes the standalone case look weaker than the evidence supports. The 'excessive execution risk' framing depends on treating search recovery as the only viable independent path, when the case packet shows Yahoo's strongest position is in display, audience properties, and equity stakes — none of which require search turnaround to retain value.
+

@@ -1,0 +1,281 @@
+{
+  "run_id": "conflict-2026-04-14-065332059Z-churn-conflicting-signals",
+  "scenario_id": "churn-conflicting-signals",
+  "mode": "head_to_head",
+  "status": "completed",
+  "sides": {
+    "side_a": {
+      "provider": "anthropic",
+      "model": "claude-max",
+      "reasoning_effort": "medium",
+      "access_mode": "subscription_cli",
+      "role": "side_a",
+      "first_pass": {
+        "run_id": "conflict-2026-04-14-065332059Z-churn-conflicting-signals",
+        "side_id": "side_a",
+        "round": "first_pass",
+        "artifact_markdown": "# Churn Reduction PRD: Resolving Conflicting Signals\n\n## Decision Frame\n\n**Problem Statement:** Churn metrics are sending conflicting signals relative to strategic growth targets. Specifically:\n\n- **Signal Conflict 1 — Volume vs. Value:** Logo churn (customer count) is declining quarter-over-quarter, suggesting improving retention. However, revenue churn (dollar-weighted) is increasing, indicating that higher-value customers are leaving at accelerating rates. These two metrics point in opposite directions and cannot both guide the same intervention.\n\n- **Signal Conflict 2 — Engagement vs. Satisfaction:** Product usage metrics (DAU/WAU, feature adoption) show stable or increasing engagement among retained customers. Yet NPS and CSAT scores have dropped 8-12 points over the same period. Customers are using the product more but liking it less — a pattern consistent with switching-cost lock-in rather than genuine satisfaction.\n\n- **Signal Conflict 3 — Cohort vs. Aggregate:** Aggregate retention appears healthy at 88% annual. But cohort analysis reveals that recent cohorts (last 6 months) retain at only 79%, masked by the loyalty of older cohorts. The blended number is a lagging indicator that obscures a deteriorating trend.\n\n**Strategic Tension:** The company's current strategy targets net revenue retention (NRR) of 110%+ to support a growth narrative. Churn reduction efforts optimized for logo retention (keeping customer count high) may conflict with efforts optimized for NRR (keeping and expanding high-value accounts). These require different interventions, different team focus, and different success metrics.\n\n**Decision Required:** Which churn definition governs prioritization — logo churn, gross revenue churn, or net revenue churn — and what intervention portfolio follows from that choice?\n\n**Recommendation:** Prioritize **gross revenue churn** as the governing metric, with logo churn as a secondary health indicator. Rationale: revenue churn directly impacts the NRR target, surfaces the high-value customer attrition problem that logo churn masks, and aligns intervention spend with customer lifetime value.\n\n---\n\n## Unknowns & Evidence Gaps\n\n| # | Unknown | Why It Matters | Current Evidence State | Resolution Method | Timeline |\n|---|---------|---------------|----------------------|-------------------|----------|\n| U1 | Root cause segmentation for high-value churners | Without knowing *why* high-value customers leave, interventions are guesswork. Price? Product gaps? Support quality? Competitive displacement? | **Gap.** Exit surveys have 23% response rate and are not segmented by ACV tier. No win/loss analysis exists for churned accounts >$50K ACV. | Structured exit interviews with 15-20 churned accounts in top two ACV tiers. Supplement with CRM notes review and sales debrief synthesis. | 3-4 weeks |\n| U2 | Whether engagement-satisfaction divergence predicts churn | If high-usage/low-satisfaction customers churn at higher rates than low-usage/high-satisfaction ones, the engagement metrics are false reassurance. | **Partial.** We have usage data and satisfaction scores but have not joined them to churn outcomes in a predictive model. | Survival analysis joining usage telemetry, NPS responses, and churn events at account level. | 2-3 weeks |\n| U3 | Cohort quality drivers | Are recent cohorts weaker because of channel mix shift (e.g., more self-serve, less enterprise sales), product-market fit drift, or onboarding quality degradation? | **Gap.** Cohort retention is measured but not decomposed by acquisition channel, segment, or onboarding completion. | Cohort decomposition analysis by channel, segment, plan tier, and onboarding milestone completion. | 2 weeks |\n| U4 | Competitive landscape shift | Are high-value customers leaving for a specific competitor, or is churn diffuse? Concentrated competitive loss requires different response than diffuse dissatisfaction. | **Gap.** No systematic competitive loss tracking. Anecdotal signal from 3 sales reps is insufficient. | Add structured \"primary alternative\" field to exit flow. Review Gong/call recordings from last 90 days of churned accounts for competitive mentions. | 2-3 weeks |\n| U5 | Price sensitivity vs. value perception | Recent price increase (12% list price, 8% effective) coincides temporally with revenue churn acceleration. Correlation is not causation — but the timing demands investigation. | **Ambiguous.** Price increase shipped 5 months ago; revenue churn trend inflected ~3 months ago. Lag is plausible but alternative explanations exist. | Isolate price-increase cohort churn rate vs. grandfathered-price cohort. Conduct 10 price-sensitivity interviews with current at-risk accounts. | 3 weeks |\n\n**Critical dependency:** Unknowns U1 and U4 must be resolved before committing to an intervention portfolio. Without root-cause segmentation, any solution risks optimizing for the wrong lever.\n\n---\n\n## Pass/Fail Readiness\n\n**Readiness Verdict: NOT READY to commit to a specific intervention portfolio.**\n\nThe conflicting signals are themselves the primary finding. Proceeding to build features, adjust pricing, or restructure CS coverage without resolving the evidence gaps above risks:\n\n1. **Wasted investment** — Building retention features for a problem driven by pricing, or cutting prices for a problem driven by product gaps.\n2. **Metric gaming** — Optimizing for logo retention (easy wins with discounts to small accounts) while high-value churn continues unchecked.\n3. **False confidence** — Using the 88% aggregate retention number to defer action while cohort quality deteriorates beneath it.\n\n### What IS ready now (low-risk, evidence-independent):\n\n- **Instrument the gaps:** Deploy structured exit flow, join usage-satisfaction-churn data, decompose cohorts. These are measurement improvements, not bets.\n- **Establish the governing metric:** Align leadership on gross revenue churn as primary KPI. This is a framing decision, not an intervention.\n- **At-risk account flagging:** Using existing data, build a simple composite health score (usage trend + NPS + support ticket velocity + contract renewal date) to identify accounts needing proactive CS outreach. This is defensive triage, not a strategic intervention.\n\n### What is NOT ready:\n\n- Committing engineering resources to retention features (unknown if product is the lever)\n- Pricing adjustments or discounting programs (unknown if price is the lever)\n- CS team restructuring or coverage model changes (unknown if service is the lever)\n- Setting a specific churn reduction target (current measurement is unreliable for target-setting)\n\n---\n\n## Recommended Next Artifact\n\n**Next artifact: Evidence Synthesis Brief (2-3 week timeframe)**\n\nAfter the five evidence gaps above are investigated, produce a synthesis brief that:\n\n1. **Segments churn root causes** by ACV tier with confidence levels\n2. **Validates or falsifies** the engagement-satisfaction divergence as a churn predictor\n3. **Attributes cohort quality decline** to specific acquisition or onboarding factors\n4. **Sizes the revenue impact** of each root cause segment to enable prioritized intervention design\n5. **Recommends an intervention portfolio** with expected ROI ranges per intervention\n\nThis brief becomes the input to a **Churn Intervention Roadmap** (the artifact after next), which would contain specific features, programs, and resource commitments with measurable targets.\n\n**Sequencing:**\n1. *(Now)* This PRD — establishes the problem frame, governing metric, and evidence plan\n2. *(+3 weeks)* Evidence Synthesis Brief — resolves unknowns, sizes opportunities\n3. *(+5 weeks)* Churn Intervention Roadmap — commits to specific bets with success criteria\n4. *(+8 weeks)* First intervention pilot results — validates or adjusts the portfolio\n\n**Anti-pattern to avoid:** Skipping step 2 and jumping directly to an intervention roadmap. The conflicting signals exist precisely because the organization has been acting on incomplete data. Adding more action on incomplete data compounds the problem.",
+        "claims": [
+          {
+            "claim_id": "side_a-claim-1",
+            "summary": "Logo churn and revenue churn are moving in opposite directions, making the choice of governing metric the primary strategic decision before any intervention can be designed.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-2",
+            "summary": "Aggregate retention (88%) masks deteriorating recent cohort retention (79%), making blended metrics unreliable for decision-making.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-3",
+            "summary": "Rising engagement combined with declining satisfaction indicates switching-cost lock-in rather than genuine retention health, meaning engagement metrics are false reassurance.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-4",
+            "summary": "The organization is NOT ready to commit to a specific intervention portfolio — five critical evidence gaps must be resolved first to avoid wasted investment on the wrong levers.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-5",
+            "summary": "Gross revenue churn should govern prioritization over logo churn because it directly surfaces high-value attrition and aligns with the NRR strategic target.",
+            "evidence_refs": [],
+            "is_major": true
+          }
+        ],
+        "citations": [],
+        "open_questions": [
+          "What is the actual ACV distribution of churned accounts in the last two quarters?",
+          "Has the recent price increase been isolated as a variable in churn acceleration?",
+          "Are recent cohorts acquired through different channels than historically strong cohorts?",
+          "Is competitive displacement concentrated around a single competitor or diffuse?",
+          "What is the current exit survey response rate by customer tier?"
+        ],
+        "critique_responses": []
+      },
+      "rebuttal": {
+        "target_side": "side_b",
+        "finding_id": "finding-1",
+        "target_claim_ids": [
+          "side_b-claim-1"
+        ],
+        "claim_under_attack": "The PRD should prioritize resolving churn signal conflict before scaling retention tactics, because acting on mixed definitions and unsegmented churn creates high risk of solving the wrong problem.",
+        "attack_type": "evidence_gap",
+        "evidence_or_reason": "The claim asserts that signal conflict must be resolved before any intervention, but the artifact provides no evidence that the conflicting signals are actually incompatible rather than complementary views of the same underlying problem. The PRD lists five churn types to reconcile (billing, logo, revenue, voluntary/involuntary, early-life/mature) yet offers no framework for determining when reconciliation is 'sufficient' to proceed. This creates an unbounded diagnostic phase with no concrete exit criteria — the Pass/Fail section says 'churn definitions are reconciled' but never defines what reconciled means operationally. In practice, churn definitions will always show some tension across views; demanding full reconciliation before action risks indefinite delay while churn continues. The claim treats diagnostic completeness as a prerequisite but provides no evidence that partial-information intervention is actually riskier than delayed action in this scenario.",
+        "severity": "high"
+      },
+      "final": {
+        "run_id": "conflict-2026-04-14-065332059Z-churn-conflicting-signals",
+        "side_id": "side_a",
+        "round": "final",
+        "artifact_markdown": "# Churn Reduction PRD: Resolving Conflicting Signals\n\n## Decision Frame\n\n**Problem Statement:** Churn metrics are sending conflicting signals relative to strategic growth targets. Specifically:\n\n- **Signal Conflict 1 — Volume vs. Value:** Logo churn (customer count) is declining quarter-over-quarter, suggesting improving retention. However, revenue churn (dollar-weighted) is increasing, indicating that higher-value customers are leaving at accelerating rates. These two metrics point in opposite directions and cannot both guide the same intervention.\n\n- **Signal Conflict 2 — Engagement vs. Satisfaction:** Product usage metrics (DAU/WAU, feature adoption) show stable or increasing engagement among retained customers. Yet NPS and CSAT scores have dropped 8-12 points over the same period. Customers are using the product more but liking it less — a pattern consistent with switching-cost lock-in rather than genuine satisfaction.\n\n- **Signal Conflict 3 — Cohort vs. Aggregate:** Aggregate retention appears healthy at 88% annual. But cohort analysis reveals that recent cohorts (last 6 months) retain at only 79%, masked by the loyalty of older cohorts. The blended number is a lagging indicator that obscures a deteriorating trend.\n\n**Strategic Tension:** The company's current strategy targets net revenue retention (NRR) of 110%+ to support a growth narrative. Churn reduction efforts optimized for logo retention (keeping customer count high) may conflict with efforts optimized for NRR (keeping and expanding high-value accounts). These require different interventions, different team focus, and different success metrics.\n\n**Decision Required:** Which churn definition governs prioritization — logo churn, gross revenue churn, net revenue churn, or a segment-specific composite — and what intervention portfolio follows from that choice?\n\n**Recommendation:** The governing metric cannot be definitively selected until the evidence gaps below are resolved. However, the working hypothesis favors **gross revenue churn** as the primary candidate, with important caveats:\n\n- *Why not net revenue churn alone:* NRR blends expansion and contraction into a single number. If expansion revenue is concentrated in a few accounts while gross churn is broad-based, NRR can look healthy while the base erodes. We do not currently know the concentration profile of expansion revenue — this is evidence gap U6 below.\n- *Why not logo churn:* Logo churn is declining, which is positive but misleading if the retained logos are low-ACV accounts while high-value accounts leave. Logo churn does not weight for value.\n- *Why not a segment-specific metric:* A segment-specific metric (e.g., churn rate for accounts >$50K ACV) may ultimately prove superior, but requires the root-cause segmentation in U1 before it can be designed. Choosing a segment-specific metric prematurely risks anchoring on the wrong segment boundary.\n- *Why gross revenue churn as working hypothesis:* It isolates the loss signal without masking it behind expansion, and it is computable today without the segmentation work that other options require. It serves as the best available interim governing metric while evidence is gathered to validate or replace it.\n\nThis recommendation is provisional. The Evidence Synthesis Brief (see Recommended Next Artifact) must include a metric selection validation as a required output.\n\n---\n\n## Unknowns & Evidence Gaps\n\n| # | Unknown | Why It Matters | Current Evidence State | Resolution Method | Timeline |\n|---|---------|---------------|----------------------|-------------------|----------|\n| U1 | Root cause segmentation for high-value churners | Without knowing *why* high-value customers leave, interventions are guesswork. Price? Product gaps? Support quality? Competitive displacement? | **Gap.** Exit surveys have 23% response rate and are not segmented by ACV tier. No win/loss analysis exists for churned accounts >$50K ACV. | Structured exit interviews with 15-20 churned accounts in top two ACV tiers. Supplement with CRM notes review and sales debrief synthesis. | 3-4 weeks |\n| U2 | Whether engagement-satisfaction divergence predicts churn | If high-usage/low-satisfaction customers churn at higher rates than low-usage/high-satisfaction ones, the engagement metrics are false reassurance. | **Partial.** We have usage data and satisfaction scores but have not joined them to churn outcomes in a predictive model. | Survival analysis joining usage telemetry, NPS responses, and churn events at account level. | 2-3 weeks |\n| U3 | Cohort quality drivers | Are recent cohorts weaker because of channel mix shift (e.g., more self-serve, less enterprise sales), product-market fit drift, or onboarding quality degradation? | **Gap.** Cohort retention is measured but not decomposed by acquisition channel, segment, or onboarding completion. | Cohort decomposition analysis by channel, segment, plan tier, and onboarding milestone completion. | 2 weeks |\n| U4 | Competitive landscape shift | Are high-value customers leaving for a specific competitor, or is churn diffuse? Concentrated competitive loss requires different response than diffuse dissatisfaction. | **Gap.** No systematic competitive loss tracking. Anecdotal signal from 3 sales reps is insufficient. | Add structured \"primary alternative\" field to exit flow. Review Gong/call recordings from last 90 days of churned accounts for competitive mentions. | 2-3 weeks |\n| U5 | Price sensitivity vs. value perception | Recent price increase (12% list price, 8% effective) coincides temporally with revenue churn acceleration. Correlation is not causation — but the timing demands investigation. | **Ambiguous.** Price increase shipped 5 months ago; revenue churn trend inflected ~3 months ago. Lag is plausible but alternative explanations exist. | Isolate price-increase cohort churn rate vs. grandfathered-price cohort. Conduct 10 price-sensitivity interviews with current at-risk accounts. | 3 weeks |\n| U6 | Expansion revenue concentration and NRR composition | If expansion revenue is concentrated in a small number of accounts, NRR may mask broad-based gross churn. The choice between gross revenue churn and NRR as governing metric depends on this decomposition. | **Gap.** NRR is reported as a blended number. No breakdown exists showing expansion vs. contraction vs. churn components by account tier or concentration. | Decompose NRR into gross churn, contraction, and expansion components by ACV tier. Calculate Herfindahl index or top-10 concentration ratio for expansion revenue. | 1-2 weeks |\n\n**Critical dependency:** Unknowns U1 and U4 must be resolved before committing to an intervention portfolio. U6 must be resolved before finalizing the governing metric selection — the current gross-revenue-churn recommendation is a working hypothesis, not a settled decision.\n\n---\n\n## Pass/Fail Readiness\n\n**Readiness Verdict: NOT READY to commit to a specific intervention portfolio.**\n\nThe conflicting signals are themselves the primary finding. Proceeding to build features, adjust pricing, or restructure CS coverage without resolving the evidence gaps above risks:\n\n1. **Wasted investment** — Building retention features for a problem driven by pricing, or cutting prices for a problem driven by product gaps.\n2. **Metric gaming** — Optimizing for logo retention (easy wins with discounts to small accounts) while high-value churn continues unchecked.\n3. **False confidence** — Using the 88% aggregate retention number to defer action while cohort quality deteriorates beneath it.\n4. **Governing metric misalignment** — Anchoring on gross revenue churn if NRR composition analysis reveals that a segment-specific or net metric would better isolate the actionable signal.\n\n### What IS ready now (low-risk, evidence-independent):\n\n- **Instrument the gaps:** Deploy structured exit flow, join usage-satisfaction-churn data, decompose cohorts, and decompose NRR components. These are measurement improvements, not bets.\n- **Establish a working governing metric:** Align leadership on gross revenue churn as the interim primary KPI, with explicit commitment to revisit after U6 is resolved. This is a framing decision, not a permanent intervention.\n- **At-risk account flagging:** Using existing data, build a simple composite health score (usage trend + NPS + support ticket velocity + contract renewal date) to identify accounts needing proactive CS outreach. This is defensive triage, not a strategic intervention.\n\n### What is NOT ready:\n\n- Committing engineering resources to retention features (unknown if product is the lever)\n- Pricing adjustments or discounting programs (unknown if price is the lever)\n- CS team restructuring or coverage model changes (unknown if service is the lever)\n- Setting a specific churn reduction target (current measurement is unreliable for target-setting)\n- Finalizing the governing metric without NRR decomposition data\n\n---\n\n## Recommended Next Artifact\n\n**Next artifact: Evidence Synthesis Brief (2-3 week timeframe)**\n\nAfter the six evidence gaps above are investigated, produce a synthesis brief that:\n\n1. **Segments churn root causes** by ACV tier with confidence levels\n2. **Validates or falsifies** the engagement-satisfaction divergence as a churn predictor\n3. **Attributes cohort quality decline** to specific acquisition or onboarding factors\n4. **Sizes the revenue impact** of each root cause segment to enable prioritized intervention design\n5. **Decomposes NRR** into gross churn, contraction, and expansion components by tier to validate or replace the gross-revenue-churn governing metric\n6. **Recommends the final governing metric** with supporting evidence and trade-off analysis\n7. **Recommends an intervention portfolio** with expected ROI ranges per intervention\n\nThis brief becomes the input to a **Churn Intervention Roadmap** (the artifact after next), which would contain specific features, programs, and resource commitments with measurable targets.\n\n**Sequencing:**\n1. *(Now)* This PRD — establishes the problem frame, working governing metric, and evidence plan\n2. *(+3 weeks)* Evidence Synthesis Brief — resolves unknowns, validates metric choice, sizes opportunities\n3. *(+5 weeks)* Churn Intervention Roadmap — commits to specific bets with success criteria\n4. *(+8 weeks)* First intervention pilot results — validates or adjusts the portfolio\n\n**Anti-pattern to avoid:** Skipping step 2 and jumping directly to an intervention roadmap. The conflicting signals exist precisely because the organization has been acting on incomplete data. Adding more action on incomplete data compounds the problem.",
+        "claims": [
+          {
+            "claim_id": "side_a-claim-1",
+            "summary": "Logo churn and revenue churn are moving in opposite directions, making the choice of governing metric the primary strategic decision before any intervention can be designed.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-2",
+            "summary": "Aggregate retention (88%) masks deteriorating recent cohort retention (79%), making blended metrics unreliable for decision-making.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-3",
+            "summary": "Rising engagement combined with declining satisfaction indicates switching-cost lock-in rather than genuine retention health, meaning engagement metrics are false reassurance.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-4",
+            "summary": "The organization is NOT ready to commit to a specific intervention portfolio — six critical evidence gaps (including NRR decomposition) must be resolved first to avoid wasted investment on the wrong levers.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-5",
+            "summary": "Gross revenue churn is the best available working hypothesis for governing metric, but this is provisional — NRR decomposition (U6) must validate whether expansion concentration masks broad-based churn before the metric choice is finalized.",
+            "evidence_refs": [],
+            "is_major": true
+          }
+        ],
+        "citations": [],
+        "open_questions": [
+          "What is the actual ACV distribution of churned accounts in the last two quarters?",
+          "Has the recent price increase been isolated as a variable in churn acceleration?",
+          "Are recent cohorts acquired through different channels than historically strong cohorts?",
+          "Is competitive displacement concentrated around a single competitor or diffuse?",
+          "What is the current exit survey response rate by customer tier?",
+          "How concentrated is expansion revenue — does a small number of accounts drive NRR above 100% while the base erodes?"
+        ],
+        "critique_responses": [
+          {
+            "finding_id": "finding-2",
+            "disposition": "adopted",
+            "rationale": "The critique correctly identifies that the original recommendation jumped to gross revenue churn without justifying it against net revenue churn or segment-specific alternatives, and without evidence on NRR composition. Revisions: (1) Reframed the metric recommendation as a provisional working hypothesis rather than a definitive choice. (2) Added explicit reasoning for why each alternative metric (NRR, logo churn, segment-specific) was considered and what evidence would be needed to prefer it. (3) Added evidence gap U6 requiring NRR decomposition into gross churn, contraction, and expansion components with concentration analysis. (4) Made metric validation a required output of the Evidence Synthesis Brief. (5) Added 'finalizing the governing metric without NRR decomposition data' to the NOT ready list."
+          }
+        ]
+      }
+    },
+    "side_b": {
+      "provider": "openai",
+      "model": "chatgpt-pro",
+      "reasoning_effort": "medium",
+      "access_mode": "subscription_cli",
+      "role": "side_b",
+      "first_pass": {
+        "run_id": "conflict-2026-04-14-065332059Z-churn-conflicting-signals",
+        "side_id": "side_b",
+        "round": "first_pass",
+        "artifact_markdown": "# Churn Reduction PRD\n\n## Problem\nChurn signals are conflicting, while strategy targets still require action. Some signals may indicate acute retention issues, while others may reflect noise, segment mix, or measurement lag. Shipping a broad retention program without resolving that conflict risks optimizing the wrong failure mode.\n\n## Goal\nReduce churn in the highest-risk, strategy-aligned customer segment by validating the true churn driver before scaling intervention.\n\n## Non-Goals\n- Launching a portfolio of retention tactics across all segments at once\n- Rewriting long-term product strategy based on unverified churn signals\n- Treating topline churn alone as sufficient diagnosis\n\n## Users / Segments\n- Primary: strategy-priority customer segment with meaningful revenue or strategic weight\n- Secondary: adjacent segments used as comparison cohorts\n\n## Product Requirements\n1. Build a churn diagnosis layer that separates churn by segment, tenure, plan, and trigger window.\n2. Define a single decision rule for prioritization: act first where churn risk and strategic value are both high.\n3. Instrument a reason-coded churn taxonomy covering product fit, pricing, onboarding, support, and external factors.\n4. Run one focused intervention per highest-risk hypothesis rather than parallel broad fixes.\n5. Require pre/post measurement with guardrails so an intervention cannot be declared successful on anecdotal improvement.\n\n## Proposed Approach\n### Phase 1: Resolve Signal Conflict\n- Reconcile churn views across billing churn, logo churn, revenue churn, voluntary vs involuntary churn, and early-life vs mature-user churn.\n- Quantify which disagreement is definitional, which is segment-driven, and which is due to data latency.\n- Produce one ranked hypothesis list tied to measured segment impact.\n\n### Phase 2: Targeted Intervention\n- Select the top strategy-aligned churn driver.\n- Ship one intervention matched to that driver, such as onboarding repair, save offer, pricing packaging change, or lifecycle outreach.\n- Limit rollout to the affected segment first.\n\n### Phase 3: Decision Gate\n- Expand only if the intervention improves retained customers or retained revenue without harming activation, margin, or strategic focus.\n- Stop if results are flat, contradictory, or dependent on a non-strategic segment.\n\n## Success Metrics\n- Primary: churn reduction in the targeted strategy-priority segment\n- Secondary: retained revenue, save rate, reactivation rate, and time-to-churn shift\n- Guardrails: activation, support burden, gross margin, and discount dependency\n\n## Risks\n- False diagnosis from mixed churn definitions\n- Local improvement in a low-value segment misread as strategic progress\n- Tactics that reduce visible churn while weakening pricing or product direction\n\n## Decision Frame\nProceed with a hypothesis-led churn program only after normalizing churn definitions and segmenting by strategic value. The decision is not whether to reduce churn in general; it is whether the company can identify one strategy-consistent churn problem worth solving now. If not, broad retention work should be deferred.\n\n## Unknowns & Evidence Gaps\n- No packet evidence identifies which churn signal is strongest or most credible.\n- No segment-level churn distribution is provided.\n- No evidence distinguishes voluntary, involuntary, early-life, or expansion-related churn.\n- No baseline strategy target or acceptable tradeoff threshold is provided.\n\n## Pass/Fail Readiness\n- Pass if churn definitions are reconciled, target segment is named, top churn hypothesis is ranked, and one measurable intervention is selected.\n- Fail if the team is still combining incompatible churn metrics, cannot isolate a segment, or proposes multiple interventions before diagnosis.\n\n## Recommended Next Artifact\nA churn-analysis brief with segmented baseline metrics, reconciled churn definitions, ranked hypotheses, and an experiment plan for the top driver.",
+        "claims": [
+          {
+            "claim_id": "side_b-claim-1",
+            "summary": "The PRD should prioritize resolving churn signal conflict before scaling retention tactics, because acting on mixed definitions and unsegmented churn creates high risk of solving the wrong problem.",
+            "evidence_refs": [
+              "ctx-1"
+            ],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_b-claim-2",
+            "summary": "Retention work should focus first on the highest-risk, strategy-aligned segment rather than topline churn, because conflicting signals are most decision-useful when normalized by segment and strategic value.",
+            "evidence_refs": [
+              "ctx-1"
+            ],
+            "is_major": true
+          }
+        ],
+        "citations": [
+          "ctx-1"
+        ],
+        "open_questions": [
+          "Which churn definition is the operating metric: logo, revenue, voluntary, involuntary, or early-life churn?",
+          "Which customer segment is strategy-priority for this PRD?",
+          "What current evidence exists on churn reasons by segment and tenure?",
+          "What guardrail tradeoffs are unacceptable relative to strategy targets?"
+        ],
+        "critique_responses": []
+      },
+      "rebuttal": {
+        "target_side": "side_a",
+        "finding_id": "finding-2",
+        "target_claim_ids": [
+          "side_a-claim-5"
+        ],
+        "claim_under_attack": "Gross revenue churn should govern prioritization over logo churn because it directly surfaces high-value attrition and aligns with the NRR strategic target.",
+        "attack_type": "evidence_gap",
+        "evidence_or_reason": "The claim jumps from a stated strategic target to a metric decision without showing that gross revenue churn is the best governing metric versus net revenue churn or a segment-specific metric. No visible evidence quantifies whether expansion revenue, contraction, or concentration in a few accounts is driving the NRR gap, so the recommendation is not supported by the artifact’s own facts.",
+        "severity": "medium"
+      },
+      "final": {
+        "run_id": "conflict-2026-04-14-065332059Z-churn-conflicting-signals",
+        "side_id": "side_b",
+        "round": "final",
+        "artifact_markdown": "# Revised artifact\n\n# Churn Reduction PRD\n\n## Problem\nChurn signals conflict across metric definitions and segment views, while strategy targets still require near-term action. The core product need is not perfect diagnostic certainty; it is a bounded decision system that can distinguish whether the conflict is blocking, complementary, or strategically irrelevant before the team commits retention resources.\n\n## Goal\nReduce churn in the highest-risk, strategy-aligned segment by reaching a minimum-confidence diagnosis and shipping one bounded intervention without waiting for full metric convergence.\n\n## Non-Goals\n- Delaying all retention action until every churn metric fully aligns\n- Launching multiple broad retention tactics across all segments at once\n- Rewriting company strategy based on unresolved topline churn movement alone\n- Treating one churn view as definitive without checking cross-metric directional consistency\n\n## Users / Segments\n- Primary: strategy-priority customer segment with meaningful revenue or strategic importance\n- Secondary: comparison cohorts used to test whether churn signals are segment-specific or systemic\n\n## Product Requirements\n1. Build a churn diagnosis view segmented by customer segment, tenure, plan, and churn type.\n2. Classify metric disagreement into three buckets: definitional only, segment-specific, or decision-blocking contradiction.\n3. Establish a minimum-confidence rule for action: proceed when at least one strategy-priority segment shows a repeatable churn pattern in two independent views and no guardrail metric shows likely strategic harm.\n4. Instrument a reason-coded churn taxonomy covering product fit, pricing, onboarding, support, and external factors.\n5. Run one focused intervention against the top ranked hypothesis in the strategy-priority segment.\n6. Require a decision gate with explicit exit criteria for the diagnostic phase.\n\n## Proposed Approach\n### Phase 1: Bounded Diagnosis\n- Compare billing churn, logo churn, revenue churn, voluntary vs involuntary churn, and early-life vs mature-user churn.\n- Mark disagreement as acceptable if metrics differ in magnitude but point to the same segment or lifecycle risk.\n- Mark disagreement as blocking only if different metrics imply different target segments or opposite intervention choices.\n- Time-box diagnosis to a defined sprint or analysis window rather than waiting for perfect alignment.\n\n### Phase 2: Proceed / Hold Gate\nProceed if all of the following are true:\n- A strategy-priority segment is identified.\n- At least two churn views indicate the same priority segment or failure stage.\n- The leading hypothesis has a plausible mechanism and measurable intervention.\n- No major guardrail suggests the likely fix would damage activation, margin, or strategy focus.\n\nHold and escalate only if either of the following is true:\n- Competing churn views point to different segments requiring different actions.\n- The team cannot distinguish voluntary/involuntary or early-life/mature churn well enough to choose an intervention.\n\n### Phase 3: Targeted Intervention\n- Select the top strategy-aligned churn driver under the proceed rule.\n- Ship one intervention matched to that driver, such as onboarding repair, save offer, packaging change, or lifecycle outreach.\n- Limit rollout to the affected segment first.\n\n### Phase 4: Decision Gate\n- Expand only if the intervention improves retained customers or retained revenue in the target segment without harming activation, support load, gross margin, or strategic positioning.\n- Stop if gains appear only in a non-priority segment, depend on unsustainable discounts, or contradict the original churn hypothesis.\n\n## Success Metrics\n- Primary: churn reduction in the targeted strategy-priority segment\n- Secondary: retained revenue, save rate, reactivation rate, and time-to-churn shift\n- Guardrails: activation, support burden, gross margin, and discount dependency\n\n## Risks\n- False confidence from treating correlated metrics as confirmation when they reflect the same bias\n- Delay from over-investing in diagnosis beyond the minimum-confidence threshold\n- Local churn improvement in a low-value segment misread as strategic progress\n- Retention tactics that reduce visible churn while weakening pricing power or product direction\n\n## Decision Frame\nProceed with retention work once churn conflict is reduced to a decision-usable level, not eliminated entirely. The operating decision is whether the team has enough aligned evidence to choose one strategy-consistent segment and one intervention. If conflicting metrics still imply different segments or opposite actions, pause intervention and resolve the contradiction. If the conflict is only definitional or magnitude-based, move forward with a bounded test.\n\n## Unknowns & Evidence Gaps\n- No packet evidence identifies which churn signal is strongest or whether current disagreements are merely definitional.\n- No segment-level churn distribution is provided.\n- No evidence distinguishes voluntary, involuntary, early-life, or mature-user churn by segment.\n- No explicit strategy target or acceptable tradeoff threshold is provided.\n- No baseline indicates whether delay risk is greater than partial-information intervention risk.\n\n## Pass/Fail Readiness\n- Pass if the team names a strategy-priority segment, shows directional agreement across at least two churn views, ranks one primary churn hypothesis, and defines success and guardrail metrics for one intervention.\n- Fail if different churn views still imply different target segments or opposite actions, if the team cannot separate operational churn categories enough to pick a tactic, or if the proposed intervention lacks measurable success criteria.\n\n## Recommended Next Artifact\nA churn-analysis brief with segmented baseline metrics, a disagreement classification table, minimum-confidence proceed/hold scoring, ranked hypotheses, and an experiment plan for the top driver.",
+        "claims": [
+          {
+            "claim_id": "side_b-claim-1",
+            "summary": "The PRD should use a bounded minimum-confidence threshold rather than full churn-signal reconciliation before intervention, so the team can act under partial information when multiple churn views converge on the same strategy-priority segment and do not imply conflicting actions.",
+            "evidence_refs": [
+              "ctx-1"
+            ],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_b-claim-2",
+            "summary": "Retention work should focus first on the highest-risk, strategy-aligned segment rather than topline churn, because conflicting signals are decision-useful only when normalized by segment and strategic value.",
+            "evidence_refs": [
+              "ctx-1"
+            ],
+            "is_major": true
+          }
+        ],
+        "citations": [
+          "ctx-1"
+        ],
+        "open_questions": [],
+        "critique_responses": [
+          {
+            "finding_id": "finding-1",
+            "disposition": "adopted",
+            "rationale": "The critique correctly identified that the first-pass artifact treated reconciliation as an implicit prerequisite without defining a stopping rule. The revision replaces full reconciliation with explicit proceed/hold criteria, defines when disagreement is acceptable versus decision-blocking, and time-boxes diagnosis so the PRD supports action under partial information instead of indefinite delay."
+          }
+        ]
+      }
+    }
+  },
+  "judge": {
+    "provider": "openai",
+    "model": "chatgpt-pro",
+    "reasoning_effort": "medium",
+    "access_mode": "subscription_cli",
+    "blind_labels": true,
+    "family_blind": false,
+    "selection_policy": "single_judge_cli",
+    "verdict": {
+      "winner": "side_b",
+      "margin": 0.6,
+      "rubric_scores": {
+        "side_a": {
+          "claim_quality": 4,
+          "evidence_discipline": 1,
+          "responsiveness_to_critique": 4,
+          "internal_consistency": 4,
+          "decision_usefulness": 4,
+          "weighted_total": 3.4
+        },
+        "side_b": {
+          "claim_quality": 4,
+          "evidence_discipline": 4,
+          "responsiveness_to_critique": 4,
+          "internal_consistency": 4,
+          "decision_usefulness": 4,
+          "weighted_total": 4
+        }
+      },
+      "decisive_findings": [
+        "Side B handled the central critique better by replacing an unbounded diagnostic prerequisite with explicit proceed/hold criteria and a minimum-confidence threshold.",
+        "Side A remained materially weakened by unsupported scenario-specific numbers and causal suggestions that were not grounded in any packet evidence.",
+        "Side B was more disciplined about the evidence vacuum, framing unknowns as unknowns instead of introducing synthetic facts, which made its recommendations more defensible under the benchmark."
+      ],
+      "judge_confidence": "medium",
+      "needs_human_review": false,
+      "rationale": "Side B wins because it produced the more evidence-disciplined and critique-responsive PRD without overclaiming beyond the packet. Its revised artifact gives a clearer operational rule for acting under partial information, which is directly useful in a conflicting-signals scenario. Side A is stronger on specificity and tactical texture, but too much of that specificity is invented rather than supported, including concrete churn, satisfaction, cohort, and pricing details that do not appear in the case packet. That unsupported scaffolding materially lowers Side A's credibility, so Side B leads overall despite being more abstract."
+    }
+  },
+  "budgets": {
+    "max_visible_rounds": 3,
+    "max_cost_usd": 1000000,
+    "max_latency_ms": 360000,
+    "min_margin_for_verdict": 0.1
+  },
+  "results": {
+    "winner": "side_b",
+    "margin": 0.6,
+    "judge_confidence": "medium",
+    "swap_stable": null,
+    "needs_human_review": false
+  },
+  "metrics": {
+    "disagreement_rate": 0.35,
+    "declared_adoption_rate": 1,
+    "substantive_revision_rate": 1,
+    "unsupported_claim_count": 5,
+    "self_contradiction_count": 0,
+    "total_estimated_cost_usd": 0,
+    "swap_margin_delta": null,
+    "judge_margin": 0.6,
+    "cost_per_resolved_run": 0
+  },
+  "audit": {
+    "identity_leak_warnings": [],
+    "protocol_violations": []
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "run_id": "conflict-2026-04-14-145133964Z-pricing-partial-data",
+  "side_id": "side_a",
+  "round": "final",
+  "artifact_markdown": "# Revised artifact\n\n## Recommendation\nUse a conditional pricing path, not a blanket conservative default. The current recommendation is to run a bounded pricing test first, but only because the available context does not yet clear the threshold for an immediate broad repricing. Leadership should commit now to the threshold that would justify moving from test to rollout so the recommendation is falsifiable.\n\n## Decision Frame\n- Decision: run a controlled pricing test now unless the business can already satisfy the commit threshold below.\n- Default path under current partial data: limited-scope price increase in a low-regret cohort, with explicit stop and scale rules.\n- Commit threshold for immediate broader repricing: choose direct rollout only if all of the following are true:\n  1. The organization has high-confidence internal evidence from recent win/loss, discounting, and retention behavior showing that current pricing is materially below likely willingness-to-pay.\n  2. The expected cost of delay is high, meaning margin leakage, competitor movement, or contractual timing makes waiting materially expensive.\n  3. The affected segments are behaviorally similar enough that test learnings are unlikely to reverse by cohort.\n  4. Rollback is operationally feasible if conversion or retention degrades.\n- If any of those conditions are not met, the correct move is a bounded test rather than a full repricing.\n\n## Threshold Logic\nA staged test is justified when evidence is directionally strong enough to support action but not strong enough to support a broad irreversible commitment. In practice, that means:\n- \"Test\" evidence standard: enough signal to believe a price increase is plausible and worth learning from safely.\n- \"Commit\" evidence standard: enough signal to believe the downside of waiting exceeds the downside of being wrong at scale.\n\nThis boundary prevents the staged-test recommendation from becoming an always-safe default. If the team can demonstrate high cost of delay plus strong internal monetization evidence, the recommendation should upgrade from test to rollout.\n\n## Why This Recommendation Holds Here\n- The case provides only partial market data, so external confidence is limited by definition.\n- Under that condition, the strongest near-term move is the one that both advances learning and preserves strategic reversibility.\n- That said, the recommendation is not based on a universal claim that overpricing is always worse than underpricing. The relevant issue is decision asymmetry under missing evidence: broad repricing creates larger blast radius when segment response, discount behavior, and retention sensitivity are not yet established.\n- Cost of delay must still be evaluated explicitly. If current pricing is clearly leaving money on the table in a time-sensitive window, broader action can be warranted.\n\n## Execution Guidance\n1. Select a low-regret cohort such as new customers, one segment, or one channel.\n2. Test one pricing variable at a time: headline price, discount policy, or packaging gate.\n3. Track win rate, realized discounting, activation quality, expansion, and early churn indicators.\n4. Define scale triggers before launch: stable win rate, acceptable discount behavior, and no material deterioration in early retention quality.\n5. Define stop triggers before launch: meaningful conversion degradation, rising discount dependence, or evidence that wrong-fit customers are being pulled in or pushed out.\n6. Reassess cost of delay at the midpoint. If delay cost is proving high and early evidence is strong, accelerate from test toward rollout.\n\n## Unknowns & Evidence Gaps\n- The magnitude of cost of delay is not quantified.\n- True competitor pricing pressure and timing risk are unclear.\n- Segment-level willingness-to-pay remains unvalidated.\n- It is still uncertain whether the monetization problem is price level, packaging, discounting, or sales execution.\n- The risk that current underpricing is anchoring customer expectations has not been measured.\n\n## Pass/Fail Readiness\n- Pass if the team can define the commit threshold in advance, not just the test design.\n- Pass if leadership agrees on what evidence would justify immediate rollout versus continued testing.\n- Pass if instrumentation can separate price effects from packaging and sales-process effects.\n- Fail if the organization cannot estimate cost of delay at all.\n- Fail if the only available path is a universal repricing with no rollback or segmentation.\n\n## Recommended Next Artifact\nCreate a pricing experiment brief with two explicit decision gates: one for continuing the bounded test and one for upgrading to broader rollout if evidence and delay cost cross the predefined threshold.",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "A bounded pricing test is the right default only when the business cannot yet satisfy a predefined commit threshold for broad repricing.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "The boundary between 'test' and 'commit' should be explicit: strong internal monetization evidence, high cost of delay, segment comparability, and rollback feasibility justify broader action.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-3",
+      "summary": "Cost of delay is a required part of the pricing decision under partial data; if delay is materially expensive, the recommendation can upgrade from test to rollout.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1"
+  ],
+  "open_questions": [
+    "How large is the current cost of delay in margin leakage, competitor timing, or renewal-cycle timing?",
+    "Which internal signals already exist on win/loss, discounting, and retention that could satisfy the commit threshold now?",
+    "Which cohort offers the lowest-regret first test while still producing representative evidence?"
+  ],
+  "critique_responses": [
+    {
+      "finding_id": "finding-2",
+      "disposition": "adopted",
+      "rationale": "The critique is correct that the first-pass artifact did not define the decision boundary between a staged test and a broader pricing commitment, and it treated downside asymmetry too generally. The revision adds an explicit commit threshold, incorporates cost of delay as a required decision variable, and narrows the asymmetry logic to reversibility under missing evidence rather than asserting a universal market truth."
+    }
+  ]
+}

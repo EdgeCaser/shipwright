@@ -1,0 +1,101 @@
+{
+  "case_packet": {
+    "scenario_id": "event-automation-boundary",
+    "title": "Event automation platform with human-in-the-loop boundary constraints",
+    "prompt": "Write a Phase 1 PRD for an event management automation platform with a WhatsApp assistant, an internal console, human approval for pricing commitments, and strict deterministic boundaries around LLM usage.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "opposing_first_pass": {
+    "run_id": "conflict-2026-04-14-004748463Z-event-automation-boundary",
+    "side_id": "side_a",
+    "round": "first_pass",
+    "artifact_markdown": "# Phase 1 PRD: Event Management Automation Platform\n\n## Decision Frame\n\n### Problem Statement\nEvent management companies spend 60-80% of operator time on repetitive coordination tasks — venue availability checks, vendor follow-ups, client Q&A, and pricing lookups — that could be automated. However, pricing commitments, contract terms, and financial approvals carry material business risk that cannot be delegated to probabilistic systems.\n\n### Decision Being Made\nShould we build a Phase 1 event automation platform that uses an LLM-powered WhatsApp assistant for client-facing interactions and an internal console for operator workflow, with strict deterministic boundaries that require human approval for any pricing or financial commitment?\n\n### Stakeholders\n- **Event operators** (primary users): Need faster response times and reduced manual coordination burden\n- **Clients** (end users via WhatsApp): Expect instant, accurate responses about availability, logistics, and pricing\n- **Business owners**: Need confidence that no unauthorized pricing commitments are made\n- **Finance/Legal**: Require audit trail for all commitments with financial implications\n\n### Success Criteria for Phase 1\n1. Reduce operator response time to client inquiries by ≥50%\n2. Zero unauthorized pricing commitments (hard constraint, not a target)\n3. ≥80% of routine inquiries (availability, logistics FAQ, timeline) handled without operator intervention\n4. Full audit trail for every interaction that touches pricing or commitments\n\n---\n\n## Product Architecture\n\n### Component 1: WhatsApp Assistant (Client-Facing)\n\n**What it does:**\n- Receives inbound client messages via WhatsApp Business API\n- Answers routine questions: venue availability, event timelines, logistics FAQ, vendor catalogs\n- Collects structured intake information for new event requests\n- Escalates pricing/commitment questions to human operators with full context summary\n\n**LLM Boundary Rules (Deterministic Enforcement):**\n\n| Category | LLM Allowed? | Boundary Enforcement |\n|----------|-------------|---------------------|\n| Availability lookup | Yes — reads from calendar DB | Deterministic: queries structured database, LLM formats response only |\n| Logistics FAQ | Yes — retrieves from approved answer bank | Deterministic: retrieval from curated content, LLM selects and formats |\n| Pricing quote | **No** — escalates to human | Hard gate: any message classified as pricing-related routes to operator queue |\n| Contract terms | **No** — escalates to human | Hard gate: keyword + intent classifier with allowlist-only pass-through |\n| New event intake | Yes — structured form collection | Deterministic: LLM extracts fields into validated schema, operator reviews before confirmation |\n| Vendor recommendations | Yes — from approved vendor list only | Deterministic: LLM selects from pre-approved catalog, no external suggestions |\n\n**Classification Architecture:**\n- Two-layer classification: keyword allowlist (fast path) + intent classifier (catch-all)\n- Default-deny: if classification confidence < 0.95, route to human\n- Pricing-adjacent terms trigger escalation regardless of confidence (e.g., \"cost\", \"price\", \"budget\", \"discount\", \"deal\", \"rate\", \"fee\", \"charge\", \"payment\", \"invoice\")\n- All LLM outputs pass through a deterministic output validator before delivery\n\n### Component 2: Internal Console (Operator-Facing)\n\n**What it does:**\n- Dashboard showing all active client conversations with escalation status\n- Approval queue for pricing commitments, contract terms, and new event confirmations\n- One-click approve/reject/modify for escalated items\n- Operator can inject responses directly into WhatsApp thread\n- Event pipeline view: intake → pricing → confirmed → in-progress → completed\n\n**Key Workflows:**\n1. **Pricing Approval Flow:** Client asks about pricing → WhatsApp assistant escalates with context → Operator sees request in queue with suggested response (from price book) → Operator approves, modifies, or rejects → Approved response sent to client with audit log entry\n2. **Event Intake Flow:** Assistant collects requirements → Structured data appears in console → Operator reviews and assigns → Confirmation sent only after operator approval\n3. **Escalation Flow:** Any unclassifiable or low-confidence message → Operator notification → Manual response with optional template assistance\n\n### Component 3: Human-in-the-Loop Approval System\n\n**Design Principles:**\n- **Fail-safe, not fail-open:** System halts and escalates on uncertainty; never guesses on financial matters\n- **Approval is atomic:** Each pricing commitment requires its own approval; no batch-approve for financial items\n- **Audit-complete:** Every approval records: who approved, what was approved, timestamp, original client request, and any modifications\n- **Time-bounded escalation:** If no operator responds within configurable SLA (default: 15 minutes during business hours), client receives acknowledgment message with ETA, not an automated answer\n\n**Approval Categories:**\n\n| Action | Approval Required | Approver |\n|--------|------------------|----------|\n| Send availability info | No | Automated |\n| Send logistics FAQ | No | Automated |\n| Send pricing quote | **Yes** | Event operator |\n| Confirm event booking | **Yes** | Event operator + manager (if >threshold) |\n| Offer discount/special terms | **Yes** | Manager only |\n| Modify existing commitment | **Yes** | Original approver + manager |\n\n---\n\n## Technical Boundaries: LLM vs. Deterministic\n\n### Where LLM is Used (and Constrained)\n1. **Natural language understanding:** Parsing client messages into structured intents — constrained by confidence thresholds and default-deny routing\n2. **Response generation:** Formatting approved content into natural conversational responses — constrained by template validation and output filtering\n3. **Context summarization:** Summarizing conversation history for operator handoff — internal use only, never client-facing without review\n4. **Intake extraction:** Pulling structured fields (date, guest count, venue preferences) from free-text — validated against schema before storage\n\n### Where LLM is NOT Used (Deterministic Only)\n1. **Price calculation:** Looked up from price book database; arithmetic done deterministically\n2. **Availability checking:** Direct calendar/inventory database query\n3. **Commitment language:** All commitment-bearing messages use approved templates with variable substitution, not LLM generation\n4. **Escalation routing:** Rule-based classifier with keyword allowlists; LLM confidence is a secondary signal, not the decision-maker\n5. **Approval workflow:** State machine with explicit transitions; no LLM involvement in approval logic\n\n### Output Validation Layer\nEvery LLM-generated client-facing message passes through:\n1. **Pricing term scanner:** Regex + keyword scan for any price, currency, discount, or commitment language\n2. **Commitment language detector:** Scans for binding phrases (\"we will\", \"guaranteed\", \"confirmed\", \"agreed\")\n3. **Approved content validator:** Checks factual claims against source database\n4. If any validator flags content → message blocked, routed to operator queue\n\n---\n\n## Phase 1 Scope\n\n### In Scope\n- WhatsApp Business API integration (single business number)\n- LLM-powered conversational assistant with deterministic boundaries\n- Internal web console for operators (3-5 concurrent users)\n- Human approval workflow for pricing and commitments\n- Audit logging for all interactions and approvals\n- Price book and FAQ content management\n- Basic analytics: response times, escalation rates, approval turnaround\n\n### Out of Scope (Phase 2+)\n- Multi-channel support (email, web chat, SMS)\n- Automated vendor coordination and procurement\n- Client self-service portal\n- Payment processing integration\n- Multi-language support beyond English\n- AI-suggested pricing (even as operator recommendations)\n- Integration with external CRM/ERP systems\n\n---\n\n## Unknowns & Evidence Gaps\n\n| Unknown | Impact | Mitigation | Priority |\n|---------|--------|------------|----------|\n| What percentage of client inquiries are pricing-related vs. routine? | Determines automation ROI — if 80% are pricing, the assistant handles only 20% autonomously | Instrument a 2-week sample of actual WhatsApp conversations from partner event company | **P0 — blocks scope confidence** |\n| How accurate is intent classification for pricing-adjacent queries in event domain? | False negatives (missed pricing questions answered by LLM) create financial risk; false positives (over-escalation) create operator fatigue | Build classifier prototype, test against labeled dataset of 500+ real messages, measure precision/recall with emphasis on recall for pricing class | **P0 — blocks safety confidence** |\n| What is the acceptable operator response SLA for escalated pricing questions? | Determines whether the human-in-the-loop model is viable during off-hours or high-volume periods | Interview 5+ event operators on current response patterns and client expectations | **P1 — affects UX design** |\n| WhatsApp Business API rate limits and template approval timelines | May constrain response patterns or require pre-approved template library | Review Meta documentation and test with sandbox environment; identify template approval lead times | **P1 — affects timeline** |\n| Client willingness to interact with automated assistant for event planning | Event planning is high-touch and relationship-driven; clients may resist automation | Survey or interview 10+ event clients on communication preferences | **P1 — affects adoption** |\n| Volume of edge-case queries that don't fit clean classification | Determines operator workload from \"unclassifiable\" escalations | Only measurable after prototype deployment; plan for 30% unclassifiable rate initially | **P2 — monitor post-launch** |\n\n---\n\n## Pass/Fail Readiness\n\n### Pass Criteria (all must be true to proceed to build)\n- [ ] **Safety validation:** Intent classifier achieves ≥99% recall on pricing-related queries in test dataset (i.e., misses fewer than 1 in 100 pricing questions)\n- [ ] **ROI validation:** ≥40% of sampled real inquiries are automatable without pricing/commitment involvement\n- [ ] **Technical feasibility:** WhatsApp Business API sandbox demonstrates reliable message delivery and template approval within acceptable timelines\n- [ ] **Operator buy-in:** ≥3 event operators validate that the approval workflow matches their actual decision-making process\n- [ ] **Output safety:** Output validation layer catches 100% of synthetically injected pricing/commitment language in adversarial testing\n\n### Fail Criteria (any one blocks proceeding)\n- [ ] Intent classifier recall on pricing queries < 95% after tuning (unacceptable financial risk)\n- [ ] < 25% of real inquiries are automatable (insufficient ROI to justify platform)\n- [ ] Operators reject approval workflow as adding friction without value\n- [ ] WhatsApp API limitations prevent conversational flow (e.g., mandatory 24-hour response windows break multi-day event planning conversations)\n\n### Current Readiness Assessment\n**Status: NOT READY — validation required**\n\nNo empirical evidence exists for the core assumptions. The classifier accuracy, inquiry distribution, and operator workflow fit are all hypothesized. Phase 1 build should not begin until P0 unknowns are resolved.\n\n---\n\n## Recommended Next Artifact\n\n**Artifact: Validation Sprint Plan (1-2 weeks)**\n\nBefore proceeding to technical specification or build, execute a focused validation sprint:\n\n1. **Data collection (Week 1):** Partner with one event management company to access 2 weeks of WhatsApp conversation history. Classify messages into: routine (automatable), pricing-related (requires human), and ambiguous. This resolves the inquiry distribution unknown.\n\n2. **Classifier prototype (Week 1-2):** Build and test the two-layer intent classifier (keyword allowlist + ML classifier) against the labeled dataset. Measure recall specifically for pricing-class messages. Target: ≥99% recall.\n\n3. **Operator workflow validation (Week 2):** Paper prototype the approval queue with 3+ operators. Walk through 10 real escalation scenarios. Validate that the approve/modify/reject flow matches their mental model.\n\n4. **WhatsApp API spike (Week 1):** Set up sandbox, test message flows, identify template constraints and rate limits.\n\n**Gate decision after validation sprint:** If pass criteria met → proceed to Technical Specification. If any fail criteria triggered → pivot scope or kill project.\n\nThe next artifact after validation is a **Technical Specification** covering: system architecture, API contracts, database schema, LLM prompt design with guardrails, deployment topology, and monitoring/alerting for boundary violations.",
+    "claims": [
+      {
+        "claim_id": "side_a-claim-1",
+        "summary": "LLM usage must be bounded by a default-deny classification architecture where pricing-adjacent queries are escalated regardless of classifier confidence, and all LLM-generated client-facing messages pass through a deterministic output validation layer that blocks any commitment or pricing language.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_a-claim-2",
+        "summary": "The human-in-the-loop approval system must treat approvals as atomic (one approval per pricing commitment, no batch-approve for financial items) with time-bounded escalation that sends acknowledgment messages rather than automated answers when operators are unavailable.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_a-claim-3",
+        "summary": "Phase 1 build readiness depends on resolving two P0 unknowns — real-world inquiry distribution (what percentage is automatable) and intent classifier recall on pricing queries (must achieve ≥99%) — without which ROI and safety cannot be validated.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_a-claim-4",
+        "summary": "A focused 1-2 week validation sprint with a partner event company should precede any build decision, producing labeled conversation data, classifier benchmarks, operator workflow validation, and WhatsApp API feasibility results.",
+        "evidence_refs": [],
+        "is_major": false
+      }
+    ],
+    "citations": [],
+    "open_questions": [
+      "What is the actual distribution of pricing vs. routine inquiries in real event management WhatsApp conversations?",
+      "Can a two-layer classifier (keyword allowlist + ML) achieve ≥99% recall on pricing-class messages in the event planning domain?",
+      "Will event planning clients accept interacting with an automated assistant for a traditionally high-touch, relationship-driven service?",
+      "How do WhatsApp Business API 24-hour session windows affect multi-day event planning conversation flows?"
+    ],
+    "critique_responses": []
+  }
+}

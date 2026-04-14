@@ -1,0 +1,13 @@
+# Critique: finding-1
+
+- Target Side: side_b
+- Target Claim IDs: side_b-claim-1, side_b-claim-4
+- Attack Type: evidence_gap
+- Severity: high
+
+## Claim Under Attack
+Blockbuster should scale back Total Access because the $400M annual burn is unsustainable, and should instead reallocate savings toward streaming capabilities.
+
+## Evidence Or Reason
+The memo treats the $400M burn as a fixed, irreducible cost of Total Access but never examines whether the burn rate could be reduced through operational improvements while maintaining competitive pressure. More critically, the recommendation to 'redirect investment toward streaming' lacks any evidence that Blockbuster had the technical talent, content licensing relationships, or infrastructure to build a credible streaming product. The case packet shows Blockbuster's only prior streaming attempt was a failed deal with Enron Broadband in 2000. Netflix had a multi-year head start on streaming infrastructure and content deals. Redirecting $200M from Total Access toward streaming assumes that money could buy parity in a domain where Blockbuster had zero demonstrated capability — yet the memo provides no evidence for this assumption. The memo also ignores that scaling back Total Access surrenders the one proven competitive lever (subscriber growth, Netflix growth stall) in exchange for an unproven pivot into streaming where Blockbuster had no track record, no technology stack, and no content partnerships. The 'reallocate to streaming' recommendation is presented as a moderate middle path but is actually the highest-risk move in the memo because it abandons a working program for a capability Blockbuster has never demonstrated it can build.
+

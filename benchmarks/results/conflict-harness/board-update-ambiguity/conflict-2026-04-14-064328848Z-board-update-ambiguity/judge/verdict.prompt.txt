@@ -1,0 +1,317 @@
+You are the judge in a blinded conflict harness run.
+Provider identity is intentionally hidden. Do not infer provider family.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "winner": "tie",
+  "margin": 0,
+  "rubric_scores": {
+    "side_a": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    },
+    "side_b": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    }
+  },
+  "decisive_findings": [
+    "Replace with the actual decisive findings from this run."
+  ],
+  "judge_confidence": "low",
+  "needs_human_review": true,
+  "rationale": "One-paragraph explanation of the verdict."
+}
+
+Use min_margin_for_verdict = 0.1.
+judge_confidence rubric:
+- high: the winning side is clearly stronger on at least 3 rubric dimensions and has no major unsupported-claim problem
+- medium: the winning side leads overall but has at least 1 weak dimension or absorbed only part of the opposing critique
+- low: score margin is below min_margin_for_verdict or both sides have significant unsupported claims
+
+Judge packet:
+{
+  "case_packet": {
+    "scenario_id": "board-update-ambiguity",
+    "title": "Board update under ambiguity",
+    "prompt": "Write a strategy update for a board audience under ambiguity.",
+    "artifact_type": "strategy",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a strategy artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "strategy",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-14-064328848Z-board-update-ambiguity",
+      "side_id": "side_a",
+      "round": "first_pass",
+      "artifact_markdown": "# Strategy Update for Board Audience Under Ambiguity\n\n## Current View\nThe company should operate from a preservation-and-proof posture for the next board interval: protect downside, concentrate resources on the few initiatives most likely to produce decision-grade signal, and avoid irreversible expansion commitments until ambiguity is reduced. This is the most defensible stance because the case packet asks for a board strategy update under ambiguity, provides no operating evidence, and still expects a decision-useful artifact with explicit readiness and evidence-gap handling.\n\n## What The Board Should Understand Now\n1. The immediate strategic problem is not choosing among fully evidenced growth paths; it is managing uncertainty without stalling the business.\n2. In the absence of validated evidence, speed should come from faster learning loops, not from larger capital or headcount commitments.\n3. Management should be judged this cycle on clarity of hypotheses, quality of signal generation, and discipline in resource allocation rather than on unsupported long-range precision.\n\n## Recommended Near-Term Strategy\n1. Narrow the company to a small set of strategic bets with explicit success and failure thresholds.\n2. Ringfence cash, hiring, and roadmap expansion behind evidence gates.\n3. Increase reporting cadence on leading indicators that would change the board's posture from hold, to invest, or to cut.\n4. Prepare contingent plans for upside and downside scenarios so the company can move quickly once uncertainty resolves.\n\n## Decision Frame\nApprove a staged operating plan for the next cycle rather than a fully committed scale plan. The board should authorize management to continue executing core priorities, but only expand investment when predefined proof points are met. If management cannot produce credible signal by the next review window, the default should shift from selective investment to sharper focus and cost containment.\n\n## Unknowns & Evidence Gaps\nThe case packet contains no underlying business evidence, metrics, market data, customer feedback, financial trajectory, or operational constraints beyond the requirement to write for ambiguity. That means the core unknowns remain unresolved: demand strength, sales efficiency, retention quality, product differentiation, capital runway, and execution capacity. Because these are not minor gaps but decision-shaping gaps, any recommendation beyond staged execution would be overconfident.\n\n## Pass/Fail Readiness\nPass if management can, within the next operating window, show measurable movement on a short list of board-approved proof points tied to growth viability, efficiency, and resilience. Fail if reporting remains narrative-heavy, if strategic scope expands before evidence improves, or if management asks for irreversible investment without closing the current evidence gaps.\n\n## Recommended Next Artifact\nA board decision memo with three parts: current hypothesis set, proof-point dashboard, and scenario-trigger matrix. That artifact should convert today's ambiguity into explicit thresholds for invest, hold, or retrench decisions at the next board checkpoint.",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "The board should adopt a staged preservation-and-proof posture instead of approving irreversible expansion under current ambiguity.",
+          "evidence_refs": [
+            "case-packet-prompt",
+            "case-packet-evidence-empty",
+            "case-packet-validator"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "Decision usefulness depends on evidence gates and explicit pass/fail thresholds because the packet provides no operating facts to justify a stronger directional commitment.",
+          "evidence_refs": [
+            "case-packet-evidence-empty",
+            "case-packet-constraints"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "The most appropriate next deliverable is a board decision memo with hypotheses, proof points, and scenario triggers.",
+          "evidence_refs": [
+            "case-packet-expected-sections",
+            "case-packet-validator"
+          ],
+          "is_major": false
+        }
+      ],
+      "citations": [
+        "case-packet-prompt",
+        "case-packet-constraints",
+        "case-packet-expected-sections",
+        "case-packet-validator",
+        "case-packet-evidence-empty"
+      ],
+      "open_questions": [
+        "What are the company's current leading indicators for growth, retention, and cash efficiency?",
+        "Which strategic bets are presently consuming the most capital and management attention?",
+        "What decision deadline does the board face: financing, hiring, market entry, or cost restructuring?",
+        "What proof points would justify moving from preservation-and-proof to active expansion?"
+      ],
+      "critique_responses": []
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-14-064328848Z-board-update-ambiguity",
+      "side_id": "side_b",
+      "round": "first_pass",
+      "artifact_markdown": "# Strategy Update: Navigating Ambiguity — Board Briefing\n\n## Decision Frame\n\n**Context:** The board requires a strategy update during a period where key market signals, competitive dynamics, and internal execution variables remain unresolved. This document frames the strategic situation honestly rather than projecting false certainty.\n\n**Core question:** Given incomplete information across multiple strategic vectors, what commitments can we responsibly make now, what decisions must we defer, and what would change our assessment?\n\n**Framing principle:** We distinguish between decisions that are robust across plausible scenarios (no-regret moves) and decisions that depend on resolving specific unknowns (contingent bets). The board should expect us to execute aggressively on the former while building information velocity on the latter.\n\n**Time horizon:** This update covers the next two quarters, with a decision checkpoint proposed at the midpoint.\n\n---\n\n## Unknowns & Evidence Gaps\n\n| Unknown | Why It Matters | Current Evidence Quality | What Would Resolve It |\n|---|---|---|---|\n| **Market demand signal** | Determines whether current investment pace is appropriate or requires correction | Anecdotal; pipeline data is lagging by 30-45 days | Structured win/loss analysis over next 6 weeks; customer advisory board input |\n| **Competitive response timing** | Affects pricing strategy and go-to-market sequencing | Indirect signals only (job postings, patent filings) | Competitive intelligence sprint; channel partner debriefs |\n| **Unit economics at scale** | Determines whether current margins hold or compress under growth | Modeled but not validated beyond current cohort | Next cohort's 90-day data; sensitivity analysis on top 3 cost drivers |\n| **Regulatory trajectory** | Could accelerate or constrain expansion into adjacent segments | Draft guidance published; final rules unclear | Legal monitoring; industry association positioning |\n| **Internal execution capacity** | Hiring plan assumes market conditions that may have shifted | Offer acceptance rates declining; backfill cycle lengthening | 30-day hiring pipeline health check |\n\n**Key epistemic distinction:** Unknowns 1-2 are *resolvable within the decision window* if we invest in information-gathering now. Unknowns 3-4 are *structurally ambiguous* and require scenario planning rather than point forecasting. Unknown 5 is *partially within our control* and should be treated as an execution risk to manage.\n\n---\n\n## Pass/Fail Readiness\n\n**Assessment: CONDITIONAL PASS — ready to proceed on no-regret moves; not ready to commit to contingent bets.**\n\n### What we ARE ready to decide:\n- **Continue current product investment cadence.** Defensible across all plausible demand scenarios. Pausing would create re-start costs that exceed the carrying cost of maintaining pace.\n- **Launch structured win/loss program.** Zero-regret information investment that resolves our largest evidence gap within 6 weeks.\n- **Tighten operating expense discipline on discretionary spend.** Preserves optionality without signaling retreat.\n\n### What we are NOT ready to decide:\n- **Expansion into adjacent segment.** Regulatory and unit-economics unknowns make this a bet, not a plan. Premature commitment here risks capital allocation against a thesis we cannot yet validate.\n- **Pricing restructure.** Without competitive response data, we risk triggering a response we cannot predict or absorb.\n- **Accelerated hiring plan.** Current acceptance-rate trends suggest the plan's assumptions may be stale.\n\n### Failure conditions to monitor:\n- If win/loss analysis at Week 6 shows win rate below 25%, escalate to emergency strategy review.\n- If unit economics sensitivity analysis reveals >15% margin compression at 2x volume, revisit investment pace.\n- If regulatory final rules materially differ from draft guidance, trigger scenario-plan activation.\n\n---\n\n## Recommended Next Artifact\n\n**Deliverable:** Scenario-based decision matrix with trigger points\n\n**Purpose:** Convert the unknowns catalogued above into a structured decision framework that pre-commits the organization to specific actions based on observable signals, rather than requiring a new strategic debate each time information arrives.\n\n**Scope:**\n1. Three scenarios (base, upside, downside) with explicit assumptions stated for each\n2. Decision triggers: what observable data point moves us from one scenario to another\n3. Pre-committed responses: what we will do under each scenario, approved in advance by the board\n4. Resource allocation ranges: not point estimates, but envelopes that flex with the scenario\n\n**Timeline:** Draft for board review within 4 weeks, incorporating initial win/loss data and unit-economics sensitivity outputs.\n\n**Why this artifact next:** The biggest risk in ambiguity is not making the wrong decision — it is making no decision while waiting for certainty that never arrives. A scenario matrix with pre-committed triggers converts ambiguity from a source of paralysis into a structured execution framework. The board retains oversight through the trigger definitions while enabling management to act with speed when signals arrive.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "Under ambiguity, the correct strategic posture is to separate no-regret moves (execute now) from contingent bets (defer until specific evidence thresholds are met), rather than either committing fully or waiting for complete information.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "Unknowns must be classified by type — resolvable within the decision window, structurally ambiguous, or within organizational control — because each type demands a different management response (investigation, scenario planning, or execution discipline respectively).",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "The highest-value next artifact is a scenario-based decision matrix with pre-committed triggers, which converts ambiguity from a source of paralysis into a structured execution framework.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-4",
+          "summary": "A conditional pass/fail assessment is more decision-useful for boards than a binary ready/not-ready verdict, because it distinguishes what can proceed from what requires further evidence.",
+          "evidence_refs": [],
+          "is_major": false
+        }
+      ],
+      "citations": [],
+      "open_questions": [
+        "No case-specific evidence was provided, so the artifact uses a generalized strategic framework. With domain-specific data, the unknowns table and pass/fail thresholds would be calibrated to actual metrics.",
+        "The appropriate decision checkpoint cadence (proposed as mid-point of two quarters) depends on the velocity of information arrival, which is itself uncertain."
+      ],
+      "critique_responses": []
+    }
+  },
+  "critique_packets": {
+    "side_a": {
+      "target_side": "side_b",
+      "finding_id": "finding-1",
+      "target_claim_ids": [
+        "side_b-claim-1"
+      ],
+      "claim_under_attack": "Under ambiguity, the correct strategic posture is to separate no-regret moves (execute now) from contingent bets (defer until specific evidence thresholds are met), rather than either committing fully or waiting for complete information.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "The claim asserts a specific strategic posture as 'correct' but provides no case-specific evidence, comparison against alternative board-update structures, or support that the proposed split actually improves decision usefulness in this scenario. With an empty evidence base and no cited rationale, this reads as a generic management heuristic rather than a defended conclusion.",
+      "severity": "medium"
+    },
+    "side_b": {
+      "target_side": "side_a",
+      "finding_id": "finding-2",
+      "target_claim_ids": [
+        "side_a-claim-1",
+        "side_a-claim-2"
+      ],
+      "claim_under_attack": "The board should adopt a staged preservation-and-proof posture instead of approving irreversible expansion under current ambiguity, because the packet provides no operating facts to justify a stronger directional commitment.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "Side A treats the absence of evidence in the case packet as evidence for a specific strategic posture (preservation-and-proof / defensive hold). This is a category error: 'no data was provided' is a constraint on the exercise, not a business signal. A board update written under ambiguity should acknowledge that ambiguity cuts in both directions — the same information vacuum that argues against irreversible expansion equally argues against defaulting to cost containment and defensive posture. Side A's artifact repeatedly converts 'we don't know' into 'therefore hold,' which is itself an unsupported directional commitment dressed as prudence. The Pass/Fail Readiness section reinforces this bias by defining failure as scope expansion but never defining failure as missed opportunity from excessive caution. A genuinely evidence-disciplined artifact would present the preservation posture and an opportunistic posture as co-equal options gated by the same unknowns, rather than privileging one as the 'most defensible stance' without any operating data to support that framing.",
+      "severity": "high"
+    }
+  },
+  "final_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-14-064328848Z-board-update-ambiguity",
+      "side_id": "side_a",
+      "round": "final",
+      "artifact_markdown": "# Revised artifact\n\n## Board Strategy Update Under Ambiguity\n\n### Current View\nThe board should avoid making an irreversible directional commitment from an evidence base that is effectively empty. The useful decision is not \"expand\" or \"defend\" in the abstract; it is to approve a bounded operating posture with explicit triggers that determine when management should lean offensive, remain neutral, or tighten focus. Under this scenario, ambiguity is the central fact, so the board's job is to set decision rules rather than overfit a strategy to missing data.\n\n### Strategic Options Framed Correctly\nTwo postures are plausible from the same information vacuum:\n\n1. Preservation posture: constrain new commitments, protect runway, and demand proof before expanding.\n2. Opportunistic posture: place a limited number of high-upside bets now in order to capture time-sensitive advantage before certainty arrives.\n\nNeither posture is superior on the packet's evidence alone. What is defensible is a staged approach that keeps both paths open and defines the signals that would justify each.\n\n### Recommended Board Action\nApprove a trigger-based operating plan for the next board interval.\n\nManagement should:\n\n1. Continue core execution already in motion.\n2. Limit irreversible commitments until board-approved triggers are met.\n3. Identify a short list of upside triggers that would justify acceleration.\n4. Identify a short list of downside triggers that would justify sharper containment.\n5. Report against those triggers at a tighter cadence than ordinary board reporting.\n\nThis preserves optionality without confusing caution for strategy.\n\n## Decision Frame\nAuthorize management to operate within a bounded decision architecture, not a single directional bet. The board should define three states for the next interval:\n\n1. Accelerate if leading indicators show credible evidence of demand strength, efficient growth, or strategic timing advantage.\n2. Hold if signals remain mixed or inconclusive.\n3. Tighten if indicators deteriorate on resilience, efficiency, or execution capacity.\n\nThe decision standard is not narrative confidence. It is whether new evidence crosses pre-agreed thresholds that change the risk-reward profile.\n\n## Unknowns & Evidence Gaps\nThe packet provides no operating metrics, financial context, market evidence, customer signal, or execution constraints. As a result, the board cannot yet determine:\n\n1. Whether the larger risk is overextension or underinvestment.\n2. Whether current demand conditions reward speed or punish it.\n3. Whether the company has the capital and organizational capacity to absorb expansion.\n4. Which leading indicators should dominate the next decision window.\n\nThese gaps do not support a default offensive or defensive strategy. They support disciplined conditionality.\n\n## Pass/Fail Readiness\nPass if management can convert ambiguity into a decision-ready trigger system for the next review window, including clear thresholds for acceleration, hold, and tightening.\n\nFail if any of the following remain true:\n\n1. Management requests major commitment without new evidence.\n2. Reporting does not distinguish between upside and downside triggers.\n3. The board cannot tell what specific facts would change posture.\n4. The company drifts into either caution or expansion by instinct rather than rule.\n\n## Recommended Next Artifact\nA board decision memo with four parts:\n\n1. Strategic posture options and their tradeoffs.\n2. Trigger dashboard with explicit thresholds for accelerate, hold, and tighten.\n3. Scenario matrix covering missed-opportunity risk and overextension risk.\n4. Recommended cadence, owners, and escalation rules for updating the board.",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "The board should avoid a default directional commitment and instead approve a trigger-based operating plan that keeps offensive and defensive postures open pending evidence.",
+          "evidence_refs": [
+            "case-packet-prompt",
+            "case-packet-evidence-empty",
+            "finding-2"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "Because the case packet contains no operating evidence, the most decision-useful board output is a set of explicit acceleration, hold, and tightening triggers rather than a claim that prudence alone implies retrenchment.",
+          "evidence_refs": [
+            "case-packet-constraints",
+            "case-packet-validator",
+            "finding-2"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "Readiness should be judged by whether management can turn ambiguity into a decision rule system that captures both missed-opportunity risk and overextension risk.",
+          "evidence_refs": [
+            "case-packet-expected-sections",
+            "finding-2"
+          ],
+          "is_major": false
+        }
+      ],
+      "citations": [
+        "case-packet-prompt",
+        "case-packet-constraints",
+        "case-packet-expected-sections",
+        "case-packet-validator",
+        "case-packet-evidence-empty",
+        "finding-2"
+      ],
+      "open_questions": [],
+      "critique_responses": [
+        {
+          "finding_id": "finding-2",
+          "disposition": "adopted",
+          "rationale": "The critique is correct that the first pass treated missing evidence as support for a specific defensive posture. The revision removes that inference, presents preservation and opportunistic postures as co-equal options, and shifts the recommendation to a trigger-based decision architecture that is more evidence-disciplined and more useful to a board under uncertainty."
+        }
+      ]
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-14-064328848Z-board-update-ambiguity",
+      "side_id": "side_b",
+      "round": "final",
+      "artifact_markdown": "# Strategy Update: Navigating Ambiguity — Board Briefing\n\n## Decision Frame\n\n**Context:** The board requires a strategy update during a period where key market signals, competitive dynamics, and internal execution variables remain unresolved. This document frames the strategic situation honestly rather than projecting false certainty.\n\n**Core question:** Given incomplete information across multiple strategic vectors, what commitments can we responsibly make now, what decisions must we defer, and what would change our assessment?\n\n**Framing principle:** We propose separating decisions into no-regret moves and contingent bets — not because this split is universally optimal, but because it addresses the specific failure mode most dangerous to boards under ambiguity: false precision. Alternative approaches (e.g., probabilistic forecasting, real-options valuation, or full-commitment-with-hedges) were considered but rejected for this context because they require quantified probability distributions we do not currently possess. The no-regret/contingent-bet framework is the least information-demanding structure that still enables action. This is a pragmatic choice given our evidence quality, not a claim of theoretical superiority.\n\n**Time horizon:** This update covers the next two quarters, with a decision checkpoint proposed at the midpoint.\n\n---\n\n## Unknowns & Evidence Gaps\n\n| Unknown | Why It Matters | Current Evidence Quality | What Would Resolve It |\n|---|---|---|---|\n| **Market demand signal** | Determines whether current investment pace is appropriate or requires correction | Anecdotal; pipeline data is lagging by 30-45 days | Structured win/loss analysis over next 6 weeks; customer advisory board input |\n| **Competitive response timing** | Affects pricing strategy and go-to-market sequencing | Indirect signals only (job postings, patent filings) | Competitive intelligence sprint; channel partner debriefs |\n| **Unit economics at scale** | Determines whether current margins hold or compress under growth | Modeled but not validated beyond current cohort | Next cohort's 90-day data; sensitivity analysis on top 3 cost drivers |\n| **Regulatory trajectory** | Could accelerate or constrain expansion into adjacent segments | Draft guidance published; final rules unclear | Legal monitoring; industry association positioning |\n| **Internal execution capacity** | Hiring plan assumes market conditions that may have shifted | Offer acceptance rates declining; backfill cycle lengthening | 30-day hiring pipeline health check |\n\n**Key epistemic distinction:** Unknowns 1-2 are *resolvable within the decision window* if we invest in information-gathering now. Unknowns 3-4 are *structurally ambiguous* and require scenario planning rather than point forecasting. Unknown 5 is *partially within our control* and should be treated as an execution risk to manage.\n\n**Evidence quality disclosure:** No case-specific quantitative evidence was available to inform this assessment. The unknowns table is structured from first-principles analysis of typical strategic ambiguity vectors. Each row should be validated against actual internal data before the board treats specific thresholds as action triggers.\n\n---\n\n## Pass/Fail Readiness\n\n**Assessment: CONDITIONAL PASS — ready to proceed on no-regret moves; not ready to commit to contingent bets.**\n\n**Rationale for this structure over binary pass/fail:** A binary verdict forces a false choice — full commitment or full deferral — that destroys the nuance boards need most under ambiguity. The conditional pass explicitly maps which actions survive scrutiny under all plausible scenarios (no-regret) versus which depend on evidence we lack (contingent). This is more decision-useful because it gives the board a concrete action set today rather than a debate about overall readiness.\n\n### What we ARE ready to decide:\n- **Continue current product investment cadence.** Defensible across all plausible demand scenarios. Pausing would create re-start costs that exceed the carrying cost of maintaining pace.\n- **Launch structured win/loss program.** Zero-regret information investment that resolves our largest evidence gap within 6 weeks.\n- **Tighten operating expense discipline on discretionary spend.** Preserves optionality without signaling retreat.\n\n### What we are NOT ready to decide:\n- **Expansion into adjacent segment.** Regulatory and unit-economics unknowns make this a bet, not a plan. Premature commitment here risks capital allocation against a thesis we cannot yet validate.\n- **Pricing restructure.** Without competitive response data, we risk triggering a response we cannot predict or absorb.\n- **Accelerated hiring plan.** Current acceptance-rate trends suggest the plan's assumptions may be stale.\n\n### Failure conditions to monitor:\n- If win/loss analysis at Week 6 shows win rate below 25%, escalate to emergency strategy review.\n- If unit economics sensitivity analysis reveals >15% margin compression at 2x volume, revisit investment pace.\n- If regulatory final rules materially differ from draft guidance, trigger scenario-plan activation.\n\n---\n\n## Recommended Next Artifact\n\n**Deliverable:** Scenario-based decision matrix with trigger points\n\n**Purpose:** Convert the unknowns catalogued above into a structured decision framework that pre-commits the organization to specific actions based on observable signals, rather than requiring a new strategic debate each time information arrives.\n\n**Scope:**\n1. Three scenarios (base, upside, downside) with explicit assumptions stated for each\n2. Decision triggers: what observable data point moves us from one scenario to another\n3. Pre-committed responses: what we will do under each scenario, approved in advance by the board\n4. Resource allocation ranges: not point estimates, but envelopes that flex with the scenario\n\n**Timeline:** Draft for board review within 4 weeks, incorporating initial win/loss data and unit-economics sensitivity outputs.\n\n**Why this artifact next:** The biggest risk in ambiguity is not making the wrong decision — it is making no decision while waiting for certainty that never arrives. A scenario matrix with pre-committed triggers converts ambiguity from a source of paralysis into a structured execution framework. The board retains oversight through the trigger definitions while enabling management to act with speed when signals arrive.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "Under the current evidence-poor conditions, separating no-regret moves from contingent bets is the most pragmatic available framework — not because it is theoretically optimal, but because alternative approaches (probabilistic forecasting, real-options valuation) require quantified inputs we do not possess. This is a least-information-demanding structure that still enables action.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "Unknowns must be classified by type — resolvable within the decision window, structurally ambiguous, or within organizational control — because each type demands a different management response (investigation, scenario planning, or execution discipline respectively).",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "The highest-value next artifact is a scenario-based decision matrix with pre-committed triggers, which converts ambiguity from a source of paralysis into a structured execution framework.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-4",
+          "summary": "A conditional pass/fail assessment is more decision-useful for boards than a binary ready/not-ready verdict, because it distinguishes what can proceed from what requires further evidence.",
+          "evidence_refs": [],
+          "is_major": false
+        }
+      ],
+      "citations": [],
+      "open_questions": [
+        "No case-specific evidence was provided, so the artifact uses a generalized strategic framework. With domain-specific data, the unknowns table and pass/fail thresholds would be calibrated to actual metrics.",
+        "The appropriate decision checkpoint cadence (proposed as mid-point of two quarters) depends on the velocity of information arrival, which is itself uncertain.",
+        "The no-regret/contingent-bet framework was chosen over alternatives due to evidence constraints; if quantified probability distributions become available, a real-options or expected-value approach may supersede this structure."
+      ],
+      "critique_responses": [
+        {
+          "finding_id": "finding-1",
+          "disposition": "adopted",
+          "rationale": "The critique correctly identifies that the original claim presented the no-regret/contingent-bet split as 'the correct strategic posture' without defending why this framework was chosen over alternatives or acknowledging its limitations. Revision addresses this by: (1) explicitly naming the alternatives considered and rejected (probabilistic forecasting, real-options valuation, full-commitment-with-hedges), (2) grounding the choice in the specific constraint that drives it — we lack quantified probability distributions, making this the least information-demanding framework that still enables action, (3) reframing the claim from 'this is correct' to 'this is the most pragmatic available option given current evidence quality,' and (4) adding an open question acknowledging that better data could make a different framework superior. The claim is now defended as a contextual pragmatic choice rather than asserted as a universal heuristic."
+        }
+      ]
+    }
+  },
+  "min_margin_for_verdict": 0.1
+}

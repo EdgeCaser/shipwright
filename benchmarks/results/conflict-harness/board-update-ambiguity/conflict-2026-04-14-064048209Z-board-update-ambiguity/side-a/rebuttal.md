@@ -1,0 +1,13 @@
+# Critique: finding-1
+
+- Target Side: side_b
+- Target Claim IDs: side_b-claim-1
+- Attack Type: evidence_gap
+- Severity: high
+
+## Claim Under Attack
+The board should endorse a staged strategy that preserves optionality, limits new commitments to reversible moves, and resolves key uncertainties before any larger strategic commitment.
+
+## Evidence Or Reason
+The claim recommends 'disciplined optionality' as the correct posture but provides no evidence or framework for why optionality preservation is superior to other ambiguity-management strategies (e.g., fast probing via small irreversible bets, scenario-contingent pre-commitments, or structured real-options analysis). The artifact treats 'preserve optionality' as self-evidently correct under ambiguity, yet strategic literature and board governance practice recognize that excessive optionality preservation carries its own costs: delayed learning, competitive window closure, organizational drift, and signal to the market that leadership lacks conviction. The artifact identifies no threshold at which optionality preservation itself becomes the riskier path, nor does it quantify the cost of delay. Without evidence that the cost of premature commitment exceeds the cost of inaction in this specific context, the staged approach is a default preference dressed as a reasoned recommendation.
+

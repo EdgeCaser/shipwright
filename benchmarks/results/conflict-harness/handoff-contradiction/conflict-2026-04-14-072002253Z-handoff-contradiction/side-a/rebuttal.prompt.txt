@@ -1,0 +1,131 @@
+You are SIDE_A in the rebuttal phase for run conflict-2026-04-14-072002253Z-handoff-contradiction.
+Attack only visible claims from the opposing first-pass artifact.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "target_side": "side_b",
+  "finding_id": "runner-will-assign",
+  "target_claim_ids": [
+    "side_b-claim-1"
+  ],
+  "claim_under_attack": "The opposing claim to challenge.",
+  "attack_type": "evidence_gap",
+  "evidence_or_reason": "Why the visible claim is weak.",
+  "severity": "medium"
+}
+
+Case packet:
+{
+  "scenario_id": "handoff-contradiction",
+  "title": "Handoff artifact with cross-document contradictions",
+  "prompt": "Write a technical handoff PRD aligned to a platform strategy and challenge review.",
+  "artifact_type": "prd",
+  "rubric": {
+    "dimensions": [
+      "claim quality",
+      "evidence discipline",
+      "responsiveness to critique",
+      "internal consistency",
+      "decision usefulness"
+    ],
+    "scoring_scale": "1-5",
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "constraints": {
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "expect_structured": true,
+    "context_files": [],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "evidence": [],
+  "max_rounds": 3,
+  "tool_policy": "none",
+  "sharing_policy": {
+    "share_case_packet": true,
+    "share_committed_artifacts_after_first_pass": true,
+    "share_critiques_after_open": true,
+    "share_hidden_reasoning": false,
+    "share_provider_identity": false,
+    "share_internal_coalition_drafts": false
+  },
+  "success_condition": {
+    "type": "validator_contract",
+    "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+    "validator": {
+      "artifact_type": "prd",
+      "expect_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true
+    }
+  }
+}
+
+Opposing first-pass artifact:
+{
+  "run_id": "conflict-2026-04-14-072002253Z-handoff-contradiction",
+  "side_id": "side_b",
+  "round": "first_pass",
+  "artifact_markdown": "# Technical Handoff PRD: Platform Migration — Cross-Document Reconciliation\n\n## Decision Frame\n\n**Problem Statement:** The platform team is handing off a partially completed migration from monolith to microservices architecture. Multiple source documents (platform strategy doc, challenge review findings, and prior sprint retrospectives) contain contradictory statements about scope, timeline, and technical approach that must be reconciled before downstream teams can execute.\n\n**Decision Required:** Should the receiving team (1) accept the handoff as-is and resolve contradictions during implementation, (2) block the handoff until source documents are reconciled, or (3) accept with a bounded reconciliation sprint before feature work begins?\n\n**Recommendation:** Option 3 — Accept with a time-boxed 1-week reconciliation sprint. This avoids blocking progress while preventing the compounding cost of building on contradictory foundations.\n\n**Key Contradictions Identified:**\n\n| # | Document A Claim | Document B Claim | Impact if Unresolved |\n|---|---|---|---|\n| C1 | Platform strategy states API gateway handles auth (centralized) | Challenge review recommends per-service auth tokens (distributed) | Duplicate auth implementations, security gaps at boundaries |\n| C2 | Strategy targets 99.99% uptime SLA for all services | Retrospective notes accepted 99.9% for non-critical paths | Over-engineering non-critical services, wasted infrastructure spend |\n| C3 | Strategy specifies event-driven async for all inter-service calls | Challenge review flags synchronous calls as required for payment flow | Payment flow latency or data consistency failures |\n| C4 | Strategy doc lists PostgreSQL as sole data store | Challenge review endorses Redis for session state, DynamoDB for audit logs | Schema migration plan incomplete, ops tooling gaps |\n\n**Stakeholders:**\n- Platform team (handing off): accountable for clarifying intent behind contradictions\n- Product engineering (receiving): accountable for flagging implementation blockers\n- Architecture review board: decision authority on C1 and C3\n- SRE: decision authority on C2\n\n## Unknowns & Evidence Gaps\n\n1. **Auth architecture intent (C1):** No ADR exists for the auth decision. The platform strategy references \"centralized gateway auth\" but provides no sequence diagrams. The challenge review's per-service recommendation cites a penetration test finding (report not attached). **Gap:** Need the pen test report and an ADR from the original architect.\n\n2. **SLA tiering rationale (C2):** The 99.99% target appears in the executive summary of the strategy but the body text references \"tiered SLAs.\" It is unclear whether the executive summary was updated after the tiered decision. **Gap:** Need version history of the strategy doc and confirmation from the platform lead.\n\n3. **Payment flow synchronous requirement (C3):** The challenge review states synchronous calls are \"required\" for payment but does not specify whether this is a regulatory constraint, a latency requirement, or a consistency requirement. Each has different architectural implications. **Gap:** Need payment team input on the actual constraint source.\n\n4. **Data store proliferation scope (C4):** No capacity planning or operational readiness assessment exists for multi-store operations. **Gap:** Need SRE sign-off on operational burden of 3 data stores vs. 1.\n\n5. **Handoff completeness:** No inventory exists of in-flight work, feature flags, or partially deployed infrastructure. Receiving team cannot assess what they are inheriting. **Gap:** Need a state-of-the-world snapshot from platform team.\n\n## Pass/Fail Readiness\n\n| Criterion | Status | Rationale |\n|---|---|---|\n| Source documents internally consistent | **FAIL** | 4 material contradictions identified (C1–C4) |\n| Architecture decisions recorded as ADRs | **FAIL** | No ADRs found for auth, data store, or communication pattern decisions |\n| Receiving team can begin feature work | **CONDITIONAL** | Can begin on non-contradicted areas (CI/CD pipeline, observability) during reconciliation sprint |\n| Rollback plan exists | **FAIL** | No documented rollback if migration is paused or reversed |\n| Operational runbooks handed off | **FAIL** | Challenge review flagged missing runbooks; no evidence of remediation |\n| Test coverage meets handoff bar (>80%) | **UNKNOWN** | No test coverage report attached to handoff package |\n| Security review complete | **PARTIAL** | Pen test referenced but report not included; auth architecture unresolved |\n\n**Overall Readiness: NOT READY for unconditional handoff.**\n\nThe handoff package has material gaps that would force the receiving team to make architectural decisions they lack context to make correctly. A bounded reconciliation sprint reduces this risk without blocking all progress.\n\n## Recommended Next Artifact\n\n**Artifact:** Architecture Decision Records (ADRs) for contradictions C1–C4\n\n**Scope:** One ADR per contradiction, authored by the platform team with receiving team review, ratified by architecture review board.\n\n**Template per ADR:**\n- Context: what the original documents said and why they diverge\n- Decision: which approach is adopted and why\n- Consequences: what changes in downstream implementation\n- Supersedes: explicit reference to which document statements are now obsolete\n\n**Timeline:** Complete within reconciliation sprint (1 week). C1 (auth) and C3 (payment sync) are blocking and must resolve first. C2 (SLA tiering) and C4 (data stores) can resolve in parallel.\n\n**Secondary artifact:** State-of-the-world infrastructure snapshot documenting all deployed, partially deployed, and planned components with their current status, owner, and feature flag state.\n\n**Exit criteria for reconciliation sprint:**\n- All 4 ADRs ratified\n- Infrastructure snapshot reviewed by receiving team\n- Receiving team confirms no additional blockers\n- Operational runbook gaps catalogued with owners and deadlines",
+  "claims": [
+    {
+      "claim_id": "side_b-claim-1",
+      "summary": "Cross-document contradictions in handoff packages create compounding implementation risk that must be resolved before — not during — downstream execution.",
+      "evidence_refs": [
+        "ctx-contradiction-pattern"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-2",
+      "summary": "A time-boxed reconciliation sprint (option 3) is superior to both blocking the handoff entirely and accepting contradictions as-is, because it bounds risk without halting all progress.",
+      "evidence_refs": [
+        "ctx-reconciliation-tradeoff"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-3",
+      "summary": "The absence of Architecture Decision Records is the root cause of contradictions — documents diverge because no authoritative decision was recorded, allowing each document to embed its own assumptions.",
+      "evidence_refs": [
+        "ctx-adr-gap"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-4",
+      "summary": "Auth architecture (C1) and payment flow synchronicity (C3) are blocking contradictions that must resolve before any dependent feature work, while SLA tiering (C2) and data store selection (C4) can resolve in parallel.",
+      "evidence_refs": [
+        "ctx-priority-ordering"
+      ],
+      "is_major": false
+    }
+  ],
+  "citations": [
+    "ctx-contradiction-pattern",
+    "ctx-reconciliation-tradeoff",
+    "ctx-adr-gap",
+    "ctx-priority-ordering"
+  ],
+  "open_questions": [
+    "What is the source constraint (regulatory, latency, or consistency) driving the synchronous payment flow recommendation?",
+    "Does a version-controlled history of the platform strategy document exist to determine when the SLA target changed?",
+    "What is the receiving team's current operational capacity for multi-data-store environments?",
+    "Is there an existing ADR template or governance process, or must one be established as part of reconciliation?"
+  ],
+  "critique_responses": []
+}

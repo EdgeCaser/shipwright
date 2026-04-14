@@ -25,11 +25,47 @@ const JUDGE_CONFIGS = [
   },
 ];
 
+function createCompetitorConfig(swapSides) {
+  if (swapSides) {
+    return {
+      sideA: {
+        label: 'gpt',
+        command: DEFAULT_SIDE_B_COMMAND,
+        provider: 'openai',
+        model: 'chatgpt-pro',
+      },
+      sideB: {
+        label: 'claude',
+        command: DEFAULT_SIDE_A_COMMAND,
+        provider: 'anthropic',
+        model: 'claude-max',
+      },
+    };
+  }
+
+  return {
+    sideA: {
+      label: 'claude',
+      command: DEFAULT_SIDE_A_COMMAND,
+      provider: 'anthropic',
+      model: 'claude-max',
+    },
+    sideB: {
+      label: 'gpt',
+      command: DEFAULT_SIDE_B_COMMAND,
+      provider: 'openai',
+      model: 'chatgpt-pro',
+    },
+  };
+}
+
 export async function runBatch(options = {}) {
   const scenarioDir = options.scenarioDir || DEFAULT_SCENARIO_DIR;
   const scenarios = await listScenarios(scenarioDir, options.scenarios);
-  const sideACommand = options.sideACommand || DEFAULT_SIDE_A_COMMAND;
-  const sideBCommand = options.sideBCommand || DEFAULT_SIDE_B_COMMAND;
+  const swapSides = Boolean(options.swapSides);
+  const competitorConfig = createCompetitorConfig(swapSides);
+  const sideACommand = options.sideACommand || competitorConfig.sideA.command;
+  const sideBCommand = options.sideBCommand || competitorConfig.sideB.command;
   const judgeConfigs = options.judgeConfigs || JUDGE_CONFIGS;
   const dryRun = Boolean(options.dryRun);
   const sideAReasoningEffort = options.sideAReasoningEffort || DEFAULT_REASONING_EFFORT;
@@ -50,13 +86,16 @@ export async function runBatch(options = {}) {
         results.push({
           scenario,
           judgeLabel: judge.label,
+          sideALabel: competitorConfig.sideA.label,
+          sideBLabel: competitorConfig.sideB.label,
           status: 'dry_run',
           winner: null,
           margin: null,
           judgeConfidence: null,
           needsHumanReview: null,
           disagreementRate: null,
-          adoptedCritiqueRate: null,
+          declaredAdoptionRate: null,
+          substantiveRevisionRate: null,
           unsupportedClaimCount: null,
           runId: null,
           error: null,
@@ -72,11 +111,11 @@ export async function runBatch(options = {}) {
           sideACommand,
           sideBCommand,
           judgeCommand: judge.command,
-          sideAProvider: 'anthropic',
-          sideAModel: 'claude-max',
+          sideAProvider: competitorConfig.sideA.provider,
+          sideAModel: competitorConfig.sideA.model,
           sideAReasoningEffort,
-          sideBProvider: 'openai',
-          sideBModel: 'chatgpt-pro',
+          sideBProvider: competitorConfig.sideB.provider,
+          sideBModel: competitorConfig.sideB.model,
           sideBReasoningEffort,
           judgeProvider: judge.provider,
           judgeModel: judge.model,
@@ -86,13 +125,16 @@ export async function runBatch(options = {}) {
         results.push({
           scenario,
           judgeLabel: judge.label,
+          sideALabel: competitorConfig.sideA.label,
+          sideBLabel: competitorConfig.sideB.label,
           status: run.status,
           winner: run.results.winner,
           margin: run.results.margin,
           judgeConfidence: run.results.judge_confidence,
           needsHumanReview: run.results.needs_human_review,
           disagreementRate: run.metrics.disagreement_rate,
-          adoptedCritiqueRate: run.metrics.adopted_critique_rate,
+          declaredAdoptionRate: run.metrics.declared_adoption_rate,
+          substantiveRevisionRate: run.metrics.substantive_revision_rate,
           unsupportedClaimCount: run.metrics.unsupported_claim_count,
           runId: run.run_id,
           error: null,
@@ -104,13 +146,16 @@ export async function runBatch(options = {}) {
         results.push({
           scenario,
           judgeLabel: judge.label,
+          sideALabel: competitorConfig.sideA.label,
+          sideBLabel: competitorConfig.sideB.label,
           status: 'error',
           winner: null,
           margin: null,
           judgeConfidence: null,
           needsHumanReview: null,
           disagreementRate: null,
-          adoptedCritiqueRate: null,
+          declaredAdoptionRate: null,
+          substantiveRevisionRate: null,
           unsupportedClaimCount: null,
           runId: null,
           error: message,
@@ -134,13 +179,15 @@ export function buildSummary(results) {
   // Per-run results table
   lines.push('## Run Results');
   lines.push('');
-  lines.push('| Scenario | Judge | Status | Winner | Margin | Confidence | Human Review | Disagreement | Adopted |');
-  lines.push('|---|---|---|---|---|---|---|---|---|');
+  lines.push('| Scenario | Side A | Side B | Judge | Status | Winner | Margin | Confidence | Human Review | Disagreement | Declared | Revised |');
+  lines.push('|---|---|---|---|---|---|---|---|---|---|---|---|');
 
   for (const r of results) {
     lines.push([
       '',
       r.scenario,
+      r.sideALabel || '—',
+      r.sideBLabel || '—',
       r.judgeLabel,
       r.status,
       r.winner || '—',
@@ -148,7 +195,8 @@ export function buildSummary(results) {
       r.judgeConfidence || '—',
       r.needsHumanReview != null ? String(r.needsHumanReview) : '—',
       r.disagreementRate != null ? r.disagreementRate.toFixed(2) : '—',
-      r.adoptedCritiqueRate != null ? r.adoptedCritiqueRate.toFixed(2) : '—',
+      r.declaredAdoptionRate != null ? r.declaredAdoptionRate.toFixed(2) : '—',
+      r.substantiveRevisionRate != null ? r.substantiveRevisionRate.toFixed(2) : '—',
       '',
     ].join(' | '));
   }
@@ -264,6 +312,7 @@ export function parseCliArgs(argv) {
     scenarioDir: DEFAULT_SCENARIO_DIR,
     outPath: null,
     dryRun: false,
+    swapSides: false,
     sideAReasoningEffort: DEFAULT_REASONING_EFFORT,
     sideBReasoningEffort: DEFAULT_REASONING_EFFORT,
     judgeReasoningEffort: DEFAULT_REASONING_EFFORT,
@@ -288,6 +337,9 @@ export function parseCliArgs(argv) {
         break;
       case '--dry-run':
         parsed.dryRun = true;
+        break;
+      case '--swap-sides':
+        parsed.swapSides = true;
         break;
       case '--side-a-reasoning-effort':
         parsed.sideAReasoningEffort = argv[i + 1] || DEFAULT_REASONING_EFFORT;
@@ -333,6 +385,7 @@ export async function main(argv = process.argv.slice(2)) {
       '  --scenario-dir <dir>  Scenario directory (default: benchmarks/scenarios)',
       '  --out <path>          Write summary to file',
       '  --dry-run             List what would run without executing',
+      '  --swap-sides          Run with Side A = GPT and Side B = Claude',
       '  --side-a-reasoning-effort <level>  Explicit reasoning effort for Side A (default: medium)',
       '  --side-b-reasoning-effort <level>  Explicit reasoning effort for Side B (default: medium)',
       '  --judge-reasoning-effort <level>   Explicit reasoning effort for judges (default: medium)',
@@ -353,6 +406,7 @@ export async function main(argv = process.argv.slice(2)) {
     scenarios: args.scenarios.length > 0 ? args.scenarios : undefined,
     scenarioDir: args.scenarioDir,
     dryRun: args.dryRun,
+    swapSides: args.swapSides,
     sideAReasoningEffort: args.sideAReasoningEffort,
     sideBReasoningEffort: args.sideBReasoningEffort,
     judgeReasoningEffort: args.judgeReasoningEffort,

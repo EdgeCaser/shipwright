@@ -1,0 +1,77 @@
+```json
+{
+  "run_id": "conflict-2026-04-14-001609764Z-churn-conflicting-signals",
+  "side_id": "side_a",
+  "round": "final",
+  "artifact_markdown": "# Churn Reduction PRD: Navigating Conflicting Signals\n\n## Decision Frame\n\n**Problem Statement:** Monthly churn has risen from 4.2% to 6.1% over the past two quarters, but the signals driving this increase conflict with current strategy targets. Specifically:\n\n- **Signal A (Usage data):** Power users (top 20% by session frequency) show *increased* engagement (+18% DAU) but *higher* churn (+1.4pp vs. baseline). This contradicts the assumption that engagement correlates with retention.\n- **Signal B (NPS/survey data):** Detractors cite \"too many changes\" and \"feature bloat\" as top complaints, yet strategy targets call for accelerating feature velocity to hit competitive parity by Q3.\n- **Signal C (Pricing signal):** Win-back campaigns at 20% discount show 38% acceptance, suggesting price sensitivity — but the strategic roadmap includes a 15% price increase to fund platform investment.\n\nThese signals cannot all be true inputs to a single coherent plan without resolving the contradictions. This PRD does NOT recommend a unified churn reduction program. Instead, it frames the decision the leadership team must make before any program can be scoped.\n\n**Decision Required:** Which signal do we trust, and what are we willing to sacrifice?\n\n| Option | Trusts Signal | Sacrifices | Churn Impact (est.) | Strategy Cost |\n|--------|--------------|------------|---------------------|---------------|\n| A: Slow feature velocity | B (NPS feedback) | Competitive parity timeline | -0.8pp over 2Q | Delays Q3 parity target by ~1Q |\n| B: Hold pricing, fund via efficiency | C (price sensitivity) | Near-term margin | -0.5pp over 2Q | $2.1M margin gap vs. plan |\n| C: Segment and diverge | A (usage paradox) | Unified product experience | -1.1pp over 2Q | Doubles roadmap complexity |\n| D: Investigate before committing | All (insufficient confidence) | 6-8 weeks of continued elevated churn | Unknown | Delays all strategic bets |\n\n**Recommendation:** Option D — investigate before committing. The conflicting signals suggest we do not yet understand the causal mechanism. Acting on the wrong signal risks compounding churn rather than reducing it.\n\n## Unknowns & Evidence Gaps\n\n### Critical Unknowns (must resolve before any intervention)\n\n1. **Why are power users churning?** Usage is up but so is churn — are these the *same* users, or is high engagement masking a cohort split? We lack cohort-level retention curves segmented by feature adoption pattern.\n   - *Evidence needed:* Cohort survival analysis by feature adoption cluster (not just frequency).\n   - *Effort:* 2 weeks data science work.\n\n2. **Is \"feature bloat\" a real driver or a post-hoc rationalization?** NPS detractor verbatims are notoriously poor at identifying actual behavioral causes.\n   - *Evidence needed:* Correlate churn events with feature release timeline — do churn spikes follow releases, or are they calendar-correlated (billing cycles, budget reviews)?\n   - *Effort:* 1 week analytics.\n\n3. **What is the true price elasticity of the churning segment?** Win-back acceptance at 20% discount tells us price matters *after* the decision to leave, not whether price *caused* the decision.\n   - *Evidence needed:* Cancellation flow survey with forced-rank trade-off (would you stay at current price with fewer features? same features at lower price? etc.).\n   - *Effort:* 3 weeks to instrument, collect, and analyze.\n\n4. **Are we measuring churn correctly?** If contract terms or billing changes shifted in the same period, the 4.2% → 6.1% increase may be a measurement artifact (e.g., annual-to-monthly migration inflates monthly churn rate without changing annual retention).\n   - *Evidence needed:* Reconcile churn metric definition against billing system changes in the period.\n   - *Effort:* 3 days.\n\n5. **What are the actual cost parameters for the investigation-vs-action trade-off?** The directional case for investigation before commitment rests on a cost comparison that requires validation. Specifically, the following inputs are not yet confirmed and must be gathered during the first week of investigation:\n   - Revenue base and MRR attributable to the excess churn rate (1.9pp above baseline).\n   - Fully-loaded engineering cost model for a churn reduction program (team size, duration, opportunity cost of displaced roadmap work).\n   - Estimated probability of selecting the wrong intervention lever given current signal ambiguity.\n   - Without these inputs, the relative cost advantage of investigation over premature action is a reasonable assumption but not a demonstrated fact. The Evidence Collection Plan (see Recommended Next Artifact) includes producing this cost model in Week 1.\n\n### Secondary Unknowns (inform program design but not the go/no-go)\n\n6. Competitive landscape: are churned users going to a specific competitor, or lapsing from the category entirely?\n7. Support ticket correlation: do churning users have higher unresolved ticket counts?\n8. Onboarding vintage: is churn concentrated in recent cohorts (onboarding quality issue) or distributed (product-market fit erosion)?\n\n## Pass/Fail Readiness\n\n**Verdict: FAIL — Not ready to commit to a churn reduction program.**\n\nReadiness checklist:\n\n| Criterion | Status | Detail |\n|-----------|--------|--------|\n| Causal mechanism identified | ❌ FAIL | Three conflicting hypotheses, no discriminating evidence |\n| Signal reliability validated | ❌ FAIL | Churn metric definition not reconciled against billing changes |\n| Strategy alignment resolved | ❌ FAIL | Proposed interventions contradict active strategy targets; no executive decision on trade-offs |\n| Intervention scoped with measurable outcome | ❌ FAIL | Cannot scope without resolving which signal to act on |\n| Stakeholder alignment on trade-offs | ❌ FAIL | Product, Finance, and Growth have incompatible assumptions |\n| Cost model for investigation vs. action validated | ❌ FAIL | Directional cost comparison asserted but not yet grounded in confirmed revenue/cost inputs |\n| Downside risk bounded | ⚠️ PARTIAL | Continued elevated churn is costly but not existential in the investigation window; exact MRR impact requires revenue base confirmation |\n\n**Why this matters:** Launching a churn reduction initiative against the wrong signal is worse than doing nothing. If power-user churn is driven by feature fatigue and we *accelerate* feature delivery to hit parity targets, we amplify the problem. If price sensitivity is the true driver and we raise prices, we accelerate exodus. The directional case for investigation first is strong — three mutually contradictory signals mean at least two of three possible interventions would target the wrong lever — but the precise cost comparison depends on revenue and engineering cost inputs that should be confirmed in Week 1 of the investigation phase.\n\n## Recommended Next Artifact\n\n**Next artifact: Evidence Collection Plan (research brief)**\n\nBefore producing a program PRD, the team should produce a structured research brief that:\n\n1. **Resolves Unknown #4 first** (3 days) — if churn measurement is artifactual, the entire urgency frame changes.\n2. **Produces validated cost model** (Unknown #5, Week 1 parallel with #4) — confirm the MRR impact of excess churn rate and engineering cost baseline so the investigation-vs-action trade-off rests on real numbers, not estimates.\n3. **Runs cohort survival analysis** (Unknown #1, 2 weeks) — this is the highest-leverage investigation because it can discriminate between the three competing hypotheses.\n4. **Instruments cancellation flow trade-off survey** (Unknown #3, 3 weeks parallel) — price elasticity data will be needed regardless of which option is chosen.\n5. **Schedules a Decision Gate** at week 4 where leadership reviews findings and commits to Option A, B, or C with explicit trade-off acceptance.\n\nOnly after the Decision Gate should a full churn reduction PRD be authored — at that point, it will have a clear causal model, a chosen lever, and aligned stakeholders.\n\n**Escalation trigger:** If churn accelerates beyond 7.5% monthly before the investigation completes, skip to Option C (segment and diverge) as the defensive play with the highest estimated impact, accepting the roadmap complexity cost.",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "The organization is not ready to commit to a churn reduction program because three conflicting signals (power-user engagement paradox, NPS feature-bloat complaints, and price sensitivity from win-back data) cannot be reconciled without additional investigation, and acting on the wrong signal risks compounding churn rather than reducing it.",
+      "evidence_refs": [
+        "ctx-signal-a-usage",
+        "ctx-signal-b-nps",
+        "ctx-signal-c-pricing"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "The churn metric itself may be unreliable — billing system or contract term changes in the measurement period could inflate the apparent increase from 4.2% to 6.1%, making this the first investigation priority before any program commitment.",
+      "evidence_refs": [
+        "ctx-measurement-validity"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-3",
+      "summary": "The directional case for investigation-first is strong (three contradictory signals mean at least two of three interventions would target the wrong lever), but the precise cost comparison between investigation delay and misaligned program spend is currently asserted rather than demonstrated, and requires confirmed revenue base, churn-to-MRR calculation, and engineering cost model inputs to validate.",
+      "evidence_refs": [
+        "ctx-cost-comparison",
+        "ctx-signal-contradiction-logic"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-4",
+      "summary": "Each proposed intervention directly contradicts an active strategy target (slowing velocity vs. competitive parity, holding pricing vs. margin plan, segmenting vs. unified experience), requiring explicit executive trade-off acceptance before any program can proceed.",
+      "evidence_refs": [
+        "ctx-strategy-conflict"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-5",
+      "summary": "An escalation trigger at 7.5% monthly churn provides a bounded safety mechanism — if the situation deteriorates during investigation, the team defaults to the highest-impact defensive option (segment and diverge) without waiting for full evidence collection.",
+      "evidence_refs": [
+        "ctx-escalation-bound"
+      ],
+      "is_major": false
+    }
+  ],
+  "citations": [
+    "ctx-signal-a-usage",
+    "ctx-signal-b-nps",
+    "ctx-signal-c-pricing",
+    "ctx-measurement-validity",
+    "ctx-cost-comparison",
+    "ctx-signal-contradiction-logic",
+    "ctx-strategy-conflict",
+    "ctx-escalation-bound"
+  ],
+  "open_questions": [
+    "Are the power users showing increased engagement and the power users churning the same individuals, or is this a Simpson's paradox across cohorts?",
+    "Has the churn metric definition or billing system changed in the measurement period, potentially creating an artifactual increase?",
+    "What is the actual destination of churned users — competitor migration vs. category lapse — and does this differ by segment?",
+    "What is the confirmed MRR base and fully-loaded engineering cost model needed to validate the investigation-vs-action cost comparison?"
+  ],
+  "critique_responses": [
+    {
+      "finding_id": "finding-2",
+      "disposition": "adopted",
+      "rationale": "The critique correctly identifies that the cost comparison ($240K-$320K investigation cost vs. $1M+ misaligned program cost) was asserted without showing the underlying revenue base, churn-to-MRR calculation, engineering cost model, or probability of choosing the wrong lever. The revised artifact: (1) reframes claim-3 to acknowledge the cost comparison is directional rather than demonstrated, (2) adds Unknown #5 explicitly requiring validated cost inputs in Week 1 of the investigation phase, (3) adds a 'cost model validated' row to the Pass/Fail readiness checklist as a new failure criterion, (4) updates the 'Why this matters' section to ground the investigation-first argument in the logical structure of signal contradiction (at least 2 of 3 interventions would be wrong) rather than relying solely on unvalidated dollar figures, and (5) adds the cost model question to open_questions. The core recommendation (investigate first) is preserved because the logical argument from contradictory signals is independently sufficient — but the economic case now honestly flags its evidence gap rather than presenting estimates as facts."
+    }
+  ]
+}
+```
+

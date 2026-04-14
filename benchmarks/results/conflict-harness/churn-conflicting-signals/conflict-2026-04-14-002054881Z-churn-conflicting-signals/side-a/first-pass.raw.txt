@@ -1,0 +1,44 @@
+
+
+```json
+{
+  "run_id": "conflict-2026-04-14-002054881Z-churn-conflicting-signals",
+  "side_id": "side_a",
+  "round": "first_pass",
+  "artifact_markdown": "# Churn Reduction PRD: Resolving Conflicting Signals\n\n## Decision Frame\n\n**Problem statement:** Customer churn signals are contradicting stated strategy targets, creating ambiguity about whether to optimize for retention or pursue growth-oriented repositioning. Specifically:\n\n- **Signal conflict 1:** NPS scores remain stable or improving while monthly churn rate is increasing — suggesting satisfied customers are still leaving.\n- **Signal conflict 2:** Expansion revenue per account is growing, but logo retention is declining — high-value customers deepen engagement while smaller accounts quietly churn.\n- **Signal conflict 3:** Product usage metrics show increased feature adoption, yet support ticket volume and cancellation requests are both rising — more engagement does not correlate with more satisfaction.\n\n**Decision required:** Should the team invest in broad-base retention (reduce logo churn across all segments) or narrow-focus retention (protect and expand high-value accounts while accepting small-account attrition as structurally inevitable)?\n\n**Stakeholders:** Product, Growth, Customer Success, Finance, Executive team.\n\n**Timeframe for decision:** Within current quarter. Delayed action risks compounding churn in the segment we fail to address.\n\n**Strategic context:** Company targets call for 15% net revenue retention improvement, but do not specify whether this should come from fewer cancellations or larger expansions. This ambiguity is the root cause of the conflicting signals — both paths can claim alignment with the target.\n\n---\n\n## Unknowns & Evidence Gaps\n\n| # | Unknown | Why it matters | Evidence needed | Current state |\n|---|---------|---------------|----------------|---------------|\n| 1 | Are churning small accounts unprofitable to serve? | If CAC/LTV is negative for this segment, retention spend is value-destructive | Unit economics by segment (CAC, gross margin, support cost per account) | **Not available** — Finance tracks blended metrics only |\n| 2 | Why do satisfied customers leave? | NPS-churn divergence suggests NPS is measuring the wrong thing, or churn drivers are external (budget cuts, competitor poaching, org changes) | Exit interview data, win/loss analysis, cancellation reason taxonomy | **Partially available** — cancellation reasons exist but are free-text, unstructured, and only ~40% completion rate |\n| 3 | Is expansion revenue masking a retention crisis? | If expansion comes from a shrinking base of power users, concentration risk is growing | Revenue concentration analysis (Herfindahl index or top-10% share) | **Not available** — requires Finance collaboration |\n| 4 | What is the competitive landscape doing? | Rising churn + rising adoption could indicate a market where switching costs dropped (new competitor, open-source alternative) | Competitive intel, lost-deal analysis, feature parity assessment | **Stale** — last competitive analysis is 8+ months old |\n| 5 | Does the product have a \"graduation\" problem? | Customers may adopt features, outgrow the product, and leave for enterprise alternatives | Churn correlation with usage milestones, account age at churn | **Not analyzed** |\n\n---\n\n## Pass/Fail Readiness\n\n**Readiness verdict: FAIL — not ready to commit to a single retention strategy.**\n\n**Rationale:**\n\n- The conflicting signals are not yet explained. Committing resources to broad-base retention without understanding whether small-account churn is economically rational risks wasting budget. Committing to narrow-focus retention without understanding concentration risk could accelerate a revenue cliff.\n- Two of the five evidence gaps (unit economics by segment, revenue concentration) are blocking and require cross-functional data pulls that have not been initiated.\n- The cancellation reason data exists but is too noisy to act on without cleanup and categorization.\n\n**What would flip this to PASS:**\n\n1. Segment-level unit economics showing whether small-account retention is worth pursuing (1-2 week Finance sprint)\n2. Structured cancellation reason taxonomy applied to last 6 months of exits (1 week CS + Data effort)\n3. Revenue concentration analysis confirming or denying power-user dependency (1 week Finance)\n\n**Interim action (low-regret moves while evidence is gathered):**\n\n- Instrument cancellation flow to require structured reason selection (dropdown, not free-text) — this is costless and improves future signal quality regardless of strategy choice\n- Run a 30-day cohort analysis correlating usage patterns with churn timing to test the \"graduation\" hypothesis\n- Request updated competitive landscape scan from Sales/Marketing\n\n---\n\n## Recommended Next Artifact\n\n**Artifact:** Segment Economics One-Pager\n\n**Purpose:** Resolve Unknown #1 and #3 by producing a single-page view of unit economics and revenue concentration by customer segment. This is the minimum viable evidence to unlock the retention strategy decision.\n\n**Owner:** Finance + Data, with Product as consumer.\n\n**Timeline:** 2 weeks from kickoff.\n\n**Dependencies:** Access to billing data segmented by account tier, support cost allocation model, and expansion revenue attribution.\n\n**After this artifact is delivered**, the team can reconvene to make the broad-vs-narrow retention decision with evidence rather than intuition, and a full retention PRD can be written with a clear strategic direction.\n\n---\n\n### Appendix: Signal Conflict Map\n\n```\nNPS Stable/Up ──────┐\n                     ├──► Contradiction: Satisfaction ≠ Retention\nChurn Rate Up ───────┘\n\nExpansion Rev Up ────┐\n                     ├──► Contradiction: Depth ≠ Breadth\nLogo Retention Down ─┘\n\nFeature Adoption Up ─┐\n                     ├──► Contradiction: Engagement ≠ Satisfaction\nSupport Tickets Up ──┘\n```\n\nEach contradiction pair must be resolved with segment-specific data before a coherent retention strategy can be designed. Acting on any single signal in isolation will produce a strategy that the opposing signal immediately undermines.",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "The churn problem cannot be solved with a single retention strategy because three distinct signal contradictions (NPS vs churn rate, expansion vs logo retention, adoption vs satisfaction) indicate at least two structurally different churn dynamics operating simultaneously across customer segments.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "The PRD should explicitly FAIL readiness and block strategy commitment until segment-level unit economics and revenue concentration data are available, because committing without this evidence risks either wasting retention spend on unprofitable accounts or ignoring dangerous revenue concentration.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-3",
+      "summary": "Low-regret interim actions (structured cancellation flow, cohort analysis, competitive scan) should proceed immediately in parallel with evidence gathering, as they improve signal quality regardless of which retention strategy is ultimately chosen.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-4",
+      "summary": "The recommended next artifact is a Segment Economics One-Pager rather than a full retention plan, because the decision frame is not yet resolved and producing a detailed plan would embed unvalidated assumptions about which segments to target.",
+      "evidence_refs": [],
+      "is_major": false
+    }
+  ],
+  "citations": [],
+  "open_questions": [
+    "Is the company's net revenue retention target intentionally ambiguous about logo vs expansion retention, or is this an oversight in target-setting that should be escalated?",
+    "Are there contractual or pricing structure changes (e.g., recent price increases, plan restructuring) that could explain simultaneous satisfaction and churn?",
+    "Does the product serve multiple distinct use cases where 'feature adoption' in one use case masks declining adoption in the use case that correlates with retention?"
+  ],
+  "critique_responses": []
+}
+```
+

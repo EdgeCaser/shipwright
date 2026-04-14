@@ -1,0 +1,111 @@
+{
+  "case_packet": {
+    "scenario_id": "pricing-partial-data",
+    "title": "Pricing change with partial market data",
+    "prompt": "Draft a pricing strategy recommendation under partial market data.",
+    "artifact_type": "strategy",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a strategy artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "strategy",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass": {
+    "run_id": "conflict-2026-04-14-050407398Z-pricing-partial-data",
+    "side_id": "side_b",
+    "round": "first_pass",
+    "artifact_markdown": "# Pricing Strategy Recommendation Under Partial Market Data\n\n## Decision Frame\n\n**Core question:** Should we adjust pricing now with incomplete market data, or defer until better data is available?\n\n**Stakes:** Pricing changes are high-leverage and partially reversible. A price increase risks churn if competitors are undercutting; a price decrease risks margin erosion that is psychologically difficult to reverse. The cost of waiting is opportunity cost if the market has already moved.\n\n**What we are actually deciding:** Not the final price point, but whether the current evidence meets the threshold to act, and if not, what the minimum viable research plan looks like to reach that threshold.\n\n**Framing constraint:** With partial data, the strategy must be designed to be *updateable* — we are choosing a decision architecture, not a permanent number.\n\n## Unknowns & Evidence Gaps\n\n| Gap | Impact on Decision | Closable? | Estimated Cost to Close |\n|---|---|---|---|\n| Competitor pricing (current) | High — cannot assess relative position without it | Yes — mystery shopping, public price pages, sales intel | 1-2 weeks, low cost |\n| Price elasticity of demand | High — cannot model churn/uptake response | Partially — requires A/B test or conjoint study | 4-8 weeks, moderate cost |\n| Customer willingness-to-pay distribution | High — risk of anchoring to internal assumptions | Yes — Van Westendorp or Gabor-Granger survey | 2-4 weeks, moderate cost |\n| Segment-level margin data | Medium — blended margins mask cross-subsidy | Yes — finance team analysis | 1 week, internal effort |\n| Channel partner impact | Medium — pricing changes may violate agreements or trigger renegotiation | Yes — contract review + partner conversations | 1-2 weeks |\n| Macroeconomic demand sensitivity | Low-Medium — relevant in recessionary periods | Partially — proxy via recent pipeline velocity trends | Available now |\n\n**What we DO have (assumed baseline):**\n- Internal cost structure and current margins\n- Historical sales volume at current price\n- Anecdotal competitive intel (not systematic)\n- Customer satisfaction/NPS trends\n\n## Pass/Fail Readiness\n\n**Verdict: FAIL — Not ready to commit to a specific price change.**\n\n**Rationale:** The three highest-impact unknowns (competitor pricing, elasticity, WTP distribution) are all closable within 4-8 weeks at moderate cost. Making a pricing decision without any of these three is operating on intuition, not strategy. The risk-reward ratio does not justify acting now unless there is an exogenous forcing function (e.g., contract renewal cycle, competitive emergency, board mandate).\n\n**Conditions that would flip this to PASS:**\n1. Competitive pricing data collected and analyzed (minimum 3 direct competitors)\n2. At least one demand-side signal — either a WTP survey (n≥100 target customers) or a controlled price test on a non-critical segment\n3. Segment-level margin analysis completed to identify where pricing power actually exists\n\n**Exception path:** If a forcing function exists (imminent competitor move, cost structure change making current price unsustainable), proceed with a *bounded* price test on a single segment rather than a broad change. Cap exposure at ≤15% of revenue base. Set a 90-day review gate.\n\n## Recommended Next Artifact\n\n**Artifact:** Pricing Research Brief — a scoped research plan to close the top 3 evidence gaps within 6 weeks.\n\n**Contents should include:**\n1. **Competitive audit scope** — which competitors, which products/tiers, data collection method, owner, deadline\n2. **WTP study design** — methodology (Van Westendorp recommended for speed), sample definition, screening criteria, analysis plan\n3. **Bounded price test design** (if forcing function exists) — segment selection, test vs. control, success/failure metrics, kill criteria, duration\n4. **Decision checkpoint** — calendar date (6 weeks out) where leadership reviews findings and makes go/no-go on price change with complete data\n\n**Why this artifact next:** A pricing decision made with partial data is a guess with a strategy label. The research brief converts the current uncertainty into a bounded, time-boxed project with a clear decision point. This is the lowest-risk path to a high-confidence pricing change.",
+    "claims": [
+      {
+        "claim_id": "side_b-claim-1",
+        "summary": "The decision is not ready for commitment: the three highest-impact unknowns (competitor pricing, price elasticity, WTP distribution) are all closable within 4-8 weeks at moderate cost, making it irrational to act now without a forcing function.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-2",
+        "summary": "Under partial data, the correct output is a decision architecture (updateable framework with research gates) rather than a specific price point, because pricing changes are only partially reversible due to anchoring effects.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-3",
+        "summary": "If a forcing function requires immediate action, exposure should be capped at a bounded price test on a single segment (≤15% of revenue) with a 90-day review gate, rather than a broad price change.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-4",
+        "summary": "The recommended next artifact is a Pricing Research Brief scoped to close the top 3 evidence gaps within 6 weeks, converting uncertainty into a time-boxed project with a clear decision checkpoint.",
+        "evidence_refs": [],
+        "is_major": false
+      }
+    ],
+    "citations": [],
+    "open_questions": [
+      "Is there an exogenous forcing function (contract cycle, competitive emergency, cost structure change) that requires acting before evidence gaps can be closed?",
+      "What is the current competitive intelligence baseline — is it purely anecdotal or are there any systematic data sources already available?",
+      "Are there segments with meaningfully different price sensitivity that could serve as a natural test population for a bounded experiment?"
+    ],
+    "critique_responses": []
+  },
+  "critique_packet": {
+    "target_side": "side_b",
+    "finding_id": "finding-1",
+    "target_claim_ids": [
+      "side_b-claim-1"
+    ],
+    "claim_under_attack": "The decision is not ready for commitment: the three highest-impact unknowns (competitor pricing, price elasticity, WTP distribution) are all closable within 4-8 weeks at moderate cost, making it irrational to act now without a forcing function.",
+    "attack_type": "evidence_gap",
+    "evidence_or_reason": "This claim asserts specific closure timelines, cost levels, and a strong decision rule ('irrational to act now') without any cited evidence from the case packet or artifact. With no market data, no operational constraints, and no proof that these gaps are actually closable in 4-8 weeks for this context, the conclusion overreaches. The visible artifact shows a plausible generic process, but not support for why waiting dominates all immediate pricing actions under the stated partial-data scenario.",
+    "severity": "medium"
+  }
+}

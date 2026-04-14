@@ -1,0 +1,13 @@
+# Critique: finding-1
+
+- Target Side: side_b
+- Target Claim IDs: side_b-claim-1
+- Attack Type: evidence_gap
+- Severity: high
+
+## Claim Under Attack
+The PRD should constrain scope to a narrow manual-handoff improvement and explicitly exclude adjacent workflow automation to avoid hidden scope creep.
+
+## Evidence Or Reason
+The claim that narrow scoping prevents hidden scope creep is asserted without evidence. The PRD's own functional requirements contradict this claim: it specifies an acknowledgement state machine (pending/accepted), configurable SLA windows, escalation alerting, and a new data model with 8+ stored fields — these are not 'lightweight' additions but foundational infrastructure that inherently enables the excluded features (routing, analytics, workload balancing). The Non-Goals and Scope Guardrails sections list exclusions but provide no decision criteria for why the chosen boundary sits where it does. Without baseline data on handoff failure rates (acknowledged in Unknowns), there is no evidence the 'narrow' scope actually addresses the core problem rather than building plumbing that only becomes useful once the excluded features are added. The scope constraint is performative rather than evidence-based.
+

@@ -1,0 +1,46 @@
+{
+  "run_id": "conflict-2026-04-14-050032003Z-pricing-partial-data",
+  "side_id": "side_b",
+  "round": "first_pass",
+  "artifact_markdown": "# Pricing Strategy Recommendation Under Partial Market Data\n\n## Decision Frame\n\n**Core question:** Should we proceed with a pricing change given incomplete market data, and if so, under what constraints?\n\n**Stakes:** Pricing changes are high-leverage and partially irreversible — a price increase risks churn if misaligned with willingness-to-pay (WTP), while a decrease sacrifices margin that is difficult to reclaim. The cost of a wrong move exceeds the cost of a delayed move.\n\n**Decision type:** This is a *staged commitment* decision, not a binary go/no-go. The partial data environment means we should design for learning, not for optimization.\n\n**Boundary conditions:**\n- We lack reliable competitive pricing intelligence (no systematic win/loss data by price point).\n- We lack segment-level WTP data (no conjoint, Van Westendorp, or Gabor-Granger results).\n- We have internal data only: current revenue, margins, churn rates, and usage patterns.\n- We do not know price elasticity for our product in current market conditions.\n\n## Unknowns & Evidence Gaps\n\n| Unknown | Severity | Mitigable Before Decision? | Mitigation Path |\n|---|---|---|---|\n| Segment-level willingness-to-pay | **Critical** | Partially — 2-4 week survey or interview sprint | Van Westendorp or Gabor-Granger with N≥100 per segment |\n| Competitive pricing landscape | **High** | Partially — desk research + sales intel | Structured competitive audit with mystery shopping |\n| Price elasticity of demand | **Critical** | No — requires observed behavior at multiple price points | A/B test or cohort-based rollout |\n| Customer perception of value metric alignment | **Medium** | Yes — qualitative interviews in 1-2 weeks | 15-20 customer interviews focused on value delivery |\n| Impact on channel/partner economics | **Medium** | Yes — internal analysis | Model partner margin impact under proposed scenarios |\n| Churn sensitivity to price changes by segment | **High** | Partially — historical cohort analysis | Analyze prior price change cohorts if available |\n\n**Key finding:** Two critical unknowns (WTP and elasticity) cannot be fully resolved without primary research or controlled experimentation. Any recommendation that ignores these gaps is overfit to assumptions.\n\n## Pass/Fail Readiness\n\n**Verdict: CONDITIONAL FAIL — not ready for a full-market pricing change.**\n\nRationale:\n- Without segment-level WTP data, any new price point is a guess decorated with confidence. We cannot distinguish between \"we think customers will pay X\" and \"customers will pay X.\"\n- Without elasticity data, we cannot model revenue impact with any rigor. Margin projections under a new price are fiction.\n- Internal usage data can inform *packaging* (which features anchor value) but not *price level* (what dollar amount captures that value).\n\n**However, we ARE ready for:**\n1. **A bounded pricing experiment** on a single segment or new-customer cohort, designed to generate the missing elasticity signal.\n2. **A value metric audit** using existing usage data to validate whether our current pricing axis (per-seat, per-usage, flat) aligns with how customers derive value.\n3. **Rapid WTP research** (2-4 weeks) to close the most critical evidence gap before committing to a price point.\n\n## Recommended Strategy: Staged Learning Approach\n\n### Phase 1 — Evidence Sprint (Weeks 1-3)\n- Run Van Westendorp pricing survey across top 2-3 segments (N≥100 each).\n- Conduct 15-20 qualitative interviews on value perception and price sensitivity.\n- Complete competitive pricing desk research with structured battlecard output.\n- Analyze historical churn cohorts around any prior pricing changes.\n\n### Phase 2 — Bounded Experiment (Weeks 4-8)\n- Design A/B pricing test on new customers only (protects existing revenue base).\n- Test 2-3 price points informed by Phase 1 WTP ranges.\n- Define success metrics: conversion rate, revenue per customer, 30-day retention.\n- Set kill criteria: if conversion drops >15% vs. control, halt and reassess.\n\n### Phase 3 — Decision Point (Week 9)\n- Combine survey data, interview insights, competitive context, and experimental results.\n- Model revenue scenarios with observed (not assumed) elasticity.\n- Make go/no-go decision on full-market rollout with defensible evidence.\n\n### Guardrails\n- **No full-market price change without Phase 1 data.** Internal conviction is not evidence.\n- **Grandfather existing customers** for minimum 1 billing cycle on any increase.\n- **Monitor leading indicators** (support tickets, cancellation page visits, NPS) weekly during any experiment.\n- **Define rollback trigger** before launch: specific metric thresholds that automatically pause the change.\n\n## Recommended Next Artifact\n\n**Pricing Research Brief** — a scoped research plan specifying:\n1. Survey instrument design (Van Westendorp or Gabor-Granger, segment definitions, sample targets)\n2. Interview guide for qualitative WTP conversations\n3. Competitive audit template and data sources\n4. A/B experiment design with power analysis, segment selection, and success/kill criteria\n\nThis artifact converts the strategy into executable research that closes the evidence gaps identified above. Without it, any pricing decision remains speculative.",
+  "claims": [
+    {
+      "claim_id": "side_b-claim-1",
+      "summary": "A full-market pricing change under partial data fails readiness criteria because two critical unknowns — segment-level WTP and price elasticity — cannot be resolved without primary research or controlled experimentation.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-2",
+      "summary": "The appropriate response to partial data is a staged learning approach (evidence sprint → bounded experiment → decision point) rather than either proceeding with assumptions or indefinitely delaying.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-3",
+      "summary": "Internal usage data can inform packaging and value metric alignment but cannot substitute for external WTP data in setting price levels.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-4",
+      "summary": "New-customer-only A/B testing is the lowest-risk experimental design because it protects existing revenue while generating real elasticity signals.",
+      "evidence_refs": [],
+      "is_major": false
+    },
+    {
+      "claim_id": "side_b-claim-5",
+      "summary": "Pre-defined kill criteria and rollback triggers are essential guardrails for any pricing experiment under uncertainty.",
+      "evidence_refs": [],
+      "is_major": false
+    }
+  ],
+  "citations": [],
+  "open_questions": [
+    "What is the current pricing model (per-seat, usage-based, flat-rate) and how well does it correlate with customer-perceived value?",
+    "Have there been any prior pricing changes whose cohort data could serve as a natural experiment for elasticity estimation?",
+    "What is the urgency driver — competitive pressure, margin compression, board directive — and does it allow for a 9-week staged approach?",
+    "Are there segments with sufficiently different profiles that a single price change is inappropriate (i.e., do we need segment-specific pricing)?"
+  ],
+  "critique_responses": []
+}

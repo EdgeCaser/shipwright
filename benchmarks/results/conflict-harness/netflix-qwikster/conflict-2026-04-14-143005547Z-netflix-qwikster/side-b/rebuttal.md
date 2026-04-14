@@ -1,0 +1,13 @@
+# Critique: finding-2
+
+- Target Side: side_a
+- Target Claim IDs: side_a-claim-3
+- Attack Type: evidence_gap
+- Severity: high
+
+## Claim Under Attack
+Netflix can achieve most of the strategic benefits of separation through internal operating discipline without imposing a public brand and account split.
+
+## Evidence Or Reason
+This claim is asserted without any supporting evidence or precedent. The artifact offers zero examples of companies that successfully ran two fundamentally different businesses (physical logistics vs. digital streaming) under one brand with only internal separation, nor does it address the well-documented organizational gravity problem: when two businesses share a brand and leadership accountability, the larger or more established business systematically captures executive attention, engineering resources, and product roadmap priority. The case packet shows streaming content costs surging from $180M to $2B while the streaming library is 1/5 the size of DVD — evidence that streaming desperately needs unconstrained capital allocation and hiring authority. Internal separation without external accountability structures (separate P&L visibility to the market, separate leadership with clear mandates) historically drifts back toward unified decision-making that favors the incumbent cash cow. The artifact's own Unknowns section implicitly concedes this gap by listing no criteria for when internal separation would be deemed sufficient versus insufficient. 'Most of the strategic benefit' is doing enormous load-bearing work in this claim with no quantification or framework for what percentage of benefit is captured versus lost.
+

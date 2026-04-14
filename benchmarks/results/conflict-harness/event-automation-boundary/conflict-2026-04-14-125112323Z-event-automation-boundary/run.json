@@ -1,0 +1,171 @@
+{
+  "run_id": "conflict-2026-04-14-125112323Z-event-automation-boundary",
+  "scenario_id": "event-automation-boundary",
+  "mode": "head_to_head",
+  "status": "rebuttal_complete",
+  "sides": {
+    "side_a": {
+      "provider": "anthropic",
+      "model": "claude-max",
+      "reasoning_effort": "medium",
+      "access_mode": "subscription_cli",
+      "role": "side_a",
+      "first_pass": {
+        "run_id": "conflict-2026-04-14-125112323Z-event-automation-boundary",
+        "side_id": "side_a",
+        "round": "first_pass",
+        "artifact_markdown": "# Phase 1 PRD: Event Management Automation Platform\n\n## Decision Frame\n\n### Problem Statement\nEvent management companies currently rely on manual coordination for client inquiries, venue/vendor matching, pricing negotiations, and booking confirmations. This creates bottlenecks at scale, inconsistent response times (especially off-hours), and pricing errors from ad-hoc quoting. The opportunity is to automate the high-volume, low-judgment portions of the workflow while preserving human control over financial commitments and edge cases.\n\n### What This PRD Decides\n- **In scope (Phase 1):** WhatsApp-based client assistant for intake and FAQ; internal operator console for queue management and approvals; deterministic automation for structured tasks (availability lookup, template responses, scheduling); human-in-the-loop gate for all pricing and commitment actions.\n- **Out of scope (Phase 1):** Payment processing, multi-channel expansion (email/SMS/web chat), vendor-side automation, analytics dashboards, CRM integrations beyond basic contact sync.\n- **Key constraint:** LLM usage is bounded to non-deterministic tasks (natural language understanding, intent classification, response drafting) and NEVER used for pricing calculation, contract generation, or commitment confirmation. All financial outputs are computed by deterministic rule engines.\n\n### Success Criteria (Phase 1)\n| Metric | Target | Measurement |\n|--------|--------|-------------|\n| Median first-response time (WhatsApp) | < 2 minutes | Measured from client message to first substantive reply |\n| Human approval queue latency | < 15 minutes during business hours | Time from auto-generated proposal to operator action |\n| Pricing accuracy | 100% match to rate card | Zero LLM-generated prices reach client |\n| Client satisfaction (post-event) | ≥ 4.2/5 | Survey within 48h of event completion |\n| Operator adoption | ≥ 80% of bookings flow through console | Console usage vs. side-channel bookings |\n\n---\n\n## System Architecture & Boundaries\n\n### Component Overview\n\n**1. WhatsApp Assistant (Client-Facing)**\n- Built on WhatsApp Business API (official, not grey-route)\n- LLM handles: intent classification (inquiry type, date extraction, guest count parsing), conversational flow management, FAQ responses from approved knowledge base\n- LLM does NOT handle: price quotes, availability confirmation, booking confirmation, contract terms\n- All LLM-drafted client-facing messages pass through a template validation layer before send. Messages containing monetary values, dates-as-commitments, or contractual language are flagged and routed to human queue.\n\n**2. Internal Operator Console (Staff-Facing)**\n- Web application (responsive, not mobile-native for Phase 1)\n- Displays: inbound inquiry queue, auto-classified intent + extracted parameters, suggested responses (LLM-drafted, human-editable), pricing proposals (deterministic engine output), approval/reject controls\n- Operator actions: approve/edit/reject pricing proposals, override LLM classifications, escalate to manager, send final confirmations\n- Audit log: every operator action timestamped with before/after state\n\n**3. Deterministic Pricing Engine**\n- Rule-based system consuming: venue rate cards, seasonal multipliers, package configurations, discount tiers (volume, loyalty, corporate)\n- Inputs: structured parameters extracted by LLM (event type, date, guest count, venue preference) validated against enum/range constraints before engine accepts them\n- Outputs: priced proposal with line-item breakdown, rendered into human-reviewable format\n- Zero LLM involvement in calculation. LLM may draft explanatory text around the numbers, but the numbers themselves are engine-output only.\n\n**4. Human-in-the-Loop Gates**\n\n| Action | Gate Type | Fallback if No Response |\n|--------|-----------|------------------------|\n| Price quote to client | Explicit operator approval | Escalate after 15 min; notify manager after 30 min |\n| Booking confirmation | Explicit operator approval | Never auto-confirm |\n| Custom/off-menu requests | Manual handling | Route to senior operator |\n| Discount beyond standard tiers | Manager approval | Hold with client notification of delay |\n| Cancellation/refund | Explicit operator approval | Hold and escalate |\n\n### LLM Boundary Specification\n\n**Permitted LLM Operations (non-deterministic, assistive):**\n- Parse unstructured client messages into structured intent + parameters\n- Generate conversational responses from approved FAQ corpus\n- Draft follow-up questions when required parameters are missing\n- Summarize conversation history for operator handoff\n- Classify urgency/sentiment for queue prioritization\n\n**Prohibited LLM Operations (deterministic or commitment-bearing):**\n- Calculate or suggest prices\n- Confirm availability (must query availability database directly)\n- Make or imply booking commitments\n- Generate contract or terms language\n- Approve discounts or exceptions\n- Send messages to clients without template validation pass\n\n**Enforcement Mechanism:**\n- Output filter layer between LLM and message dispatch scans for: currency symbols/patterns, commitment language (\"confirmed\", \"booked\", \"guaranteed\"), date-as-promise patterns\n- Any match triggers: block send → route to operator queue → log violation\n- LLM prompt engineering uses system instructions prohibiting financial outputs, but enforcement is architectural (filter layer), not prompt-reliant\n\n---\n\n## Unknowns & Evidence Gaps\n\n| Unknown | Impact | How to Resolve | Priority |\n|---------|--------|----------------|----------|\n| Client willingness to interact via WhatsApp bot vs. human | High — adoption risk if clients perceive bot as downgrade | Pre-launch survey of top 50 clients + A/B test with opt-in group during pilot | P0 — resolve before scaling beyond pilot |\n| LLM intent classification accuracy on domain-specific event jargon | Medium — misclassification routes to wrong queue, adds latency | Benchmark on 500 historical inquiry transcripts; target ≥ 90% top-1 accuracy | P0 — required for Phase 1 launch |\n| Operator console adoption resistance | Medium — if operators bypass console, data flywheel breaks | Ride-along sessions with 3-5 operators during pilot; iterate on UX before mandating | P1 — pilot phase |\n| WhatsApp Business API rate limits and template approval timelines | Medium — could constrain response speed | Engage Meta Business Partner for pre-approval of 20 core templates | P1 — begin immediately, long lead time |\n| Volume profile: inquiry distribution by hour/day | Low-Medium — affects staffing model for approval queue | Analyze 6 months of historical inquiry logs | P2 — informational |\n| Regulatory requirements for automated client communication in target markets | High — potential blocker | Legal review of consumer protection and data privacy requirements per market | P0 — must clear before pilot |\n\n---\n\n## Pass/Fail Readiness\n\n### Phase 1 Launch Readiness Checklist\n\n**PASS criteria (all must be met):**\n- [ ] WhatsApp Business API approved and operational in primary market\n- [ ] LLM intent classification ≥ 90% accuracy on test corpus\n- [ ] Output filter layer blocks 100% of prohibited content patterns in adversarial test suite (≥ 200 test cases including prompt injection attempts)\n- [ ] Deterministic pricing engine produces correct output for 100% of rate card scenarios\n- [ ] Human approval gate functions correctly: no commitment message reaches client without operator action\n- [ ] Operator console supports core workflow: view queue → review proposal → approve/edit/reject → send\n- [ ] Audit log captures all operator actions and all LLM-to-client message flows\n- [ ] Legal review complete for automated communication in launch market\n- [ ] Pilot cohort of ≥ 10 real clients onboarded and consenting\n\n**FAIL criteria (any one blocks launch):**\n- [ ] Any pricing or commitment message reaches client without human approval in testing\n- [ ] LLM intent accuracy < 85% on test corpus (below 85% = unacceptable misrouting rate)\n- [ ] Output filter bypass discovered in adversarial testing and not mitigated\n- [ ] WhatsApp Business API approval not obtained\n- [ ] Legal blockers unresolved\n\n### Current Assessment\n**Status: NOT READY** — This is a greenfield PRD. No components are built. Readiness assessment is prospective.\n\n**Highest-risk items:**\n1. Output filter robustness against adversarial/unexpected LLM outputs (architectural, must be proven)\n2. Client acceptance of bot-mediated interaction (market, must be validated)\n3. WhatsApp template approval timeline (external dependency, long lead time)\n\n---\n\n## Recommended Next Artifact\n\n**Immediate next step:** Technical Design Document (TDD) covering:\n1. WhatsApp Business API integration architecture (webhook handling, session management, template registry)\n2. LLM service design (model selection, prompt management, output filter specification with test harness)\n3. Deterministic pricing engine schema and rule format\n4. Operator console wireframes and API contract\n5. Audit logging schema and retention policy\n\n**Parallel workstream:** Client Research Sprint\n- Survey top 50 clients on WhatsApp bot receptivity\n- Collect 500 historical inquiry transcripts for LLM benchmark corpus\n- Map current operator workflow for console design input\n\n**Phase 1 timeline estimate:** 10-12 weeks from TDD approval to pilot launch (contingent on WhatsApp API approval, which should begin immediately as it is on the critical path).\n\n---\n\n## Appendix: Deterministic vs. Non-Deterministic Task Boundary\n\n| Task | Classification | Rationale |\n|------|---------------|----------|\n| Parse \"I need a venue for 200 people on March 15\" → {guest_count: 200, date: 2027-03-15} | Non-deterministic (LLM) | Natural language understanding with ambiguity |\n| Look up venue availability for date + capacity | Deterministic (DB query) | Exact match against inventory |\n| Calculate price for Venue X + Package B + 200 guests | Deterministic (rule engine) | Rate card arithmetic, no judgment |\n| Draft \"Here are 3 venues that fit your needs\" message | Non-deterministic (LLM) | Conversational fluency, but numbers injected from engine |\n| Confirm booking | Human gate | Financial commitment |\n| Handle \"Can you do something special for my CEO's birthday?\" | Human escalation | Off-menu, requires judgment |",
+        "claims": [
+          {
+            "claim_id": "side_a-claim-1",
+            "summary": "LLM boundaries must be enforced architecturally (output filter layer + human approval gates) rather than relying on prompt engineering alone, because prompt-based restrictions are bypassable and insufficient for financial commitment safety.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-2",
+            "summary": "The deterministic pricing engine must be a separate component with no LLM involvement in calculation — LLM may only draft explanatory prose around engine-computed numbers, never generate or modify the numbers themselves.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-3",
+            "summary": "Phase 1 pass/fail readiness requires a 100% gate on commitment messages (no pricing or booking confirmation reaches client without explicit human approval), with adversarial testing of the output filter as a launch blocker.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-4",
+            "summary": "Client acceptance of bot-mediated WhatsApp interaction is a top evidence gap that must be validated via pilot survey before scaling, as poor reception would undermine the entire automation value proposition.",
+            "evidence_refs": [],
+            "is_major": false
+          },
+          {
+            "claim_id": "side_a-claim-5",
+            "summary": "WhatsApp Business API template approval is on the critical path and has long lead time — it must be initiated immediately and in parallel with technical development.",
+            "evidence_refs": [],
+            "is_major": false
+          }
+        ],
+        "citations": [],
+        "open_questions": [
+          "What is the target market/geography, and what regulatory requirements apply to automated client communication there?",
+          "What is the current tech stack and are there existing systems (CRM, booking, inventory) that the platform must integrate with?",
+          "What is the expected inquiry volume and peak load profile?",
+          "Is there an existing rate card structure, or does pricing require custom quoting for each event?"
+        ],
+        "critique_responses": []
+      },
+      "rebuttal": {
+        "target_side": "side_b",
+        "finding_id": "finding-1",
+        "target_claim_ids": [
+          "side_b-claim-2"
+        ],
+        "claim_under_attack": "LLM usage should be restricted to bounded assistive tasks such as extraction, summarization, and draft wording, with deterministic validation and human fallback.",
+        "attack_type": "evidence_gap",
+        "evidence_or_reason": "The artifact asserts 'deterministic validation of any LLM-produced structured output before persistence or downstream use' but provides no mechanism or criteria for what deterministic validation of inherently non-deterministic outputs (summarization, draft wording) actually looks like. Extraction can be schema-validated, but summarization and response drafting produce free text—there is no deterministic validator that can confirm a summary is accurate or a draft is safe without human review. The PRD conflates two very different LLM use cases (structured extraction vs. free-text generation) under one validation policy, creating a false sense of boundedness. Without specifying which LLM outputs require human review vs. automated validation, and what automated validation concretely checks, the 'bounded LLM layer' is an aspirational label rather than an enforceable boundary. The claim's evidence is limited to restating the scenario prompt requirements (ctx-1) rather than demonstrating how these boundaries would be operationalized.",
+        "severity": "high"
+      },
+      "final": null
+    },
+    "side_b": {
+      "provider": "openai",
+      "model": "chatgpt-pro",
+      "reasoning_effort": "medium",
+      "access_mode": "subscription_cli",
+      "role": "side_b",
+      "first_pass": {
+        "run_id": "conflict-2026-04-14-125112323Z-event-automation-boundary",
+        "side_id": "side_b",
+        "round": "first_pass",
+        "artifact_markdown": "# Phase 1 PRD: Event Management Automation Platform\n\n## Overview\nBuild a Phase 1 event management automation platform that combines a WhatsApp-based assistant for customer interactions, an internal operations console for staff, mandatory human approval for any pricing commitment, and strict deterministic boundaries around LLM usage. The goal is to reduce manual coordination load without allowing nondeterministic systems to make binding commercial decisions.\n\n## Problem\nEvent operations teams lose time handling repetitive customer inquiries, collecting event requirements, coordinating follow-ups, and preparing quotes. Existing workflows are fragmented across chat, spreadsheets, and human handoffs. Full autonomy is not acceptable because pricing commitments, exception handling, and operational promises carry financial and reputational risk.\n\n## Goal\nReduce time spent on intake, qualification, and draft proposal preparation while preserving human control over commitments and keeping all LLM behavior inside explicitly bounded, non-authoritative tasks.\n\n## Non-Goals\n- Fully autonomous quote issuance\n- Autonomous vendor booking or payment execution\n- Free-form LLM decisioning over pricing, policy, or contractual terms\n- Replacing human operators for exception handling in Phase 1\n\n## Target Users\n- External event requesters communicating over WhatsApp\n- Internal operations agents reviewing requests and approving next actions\n- Sales or pricing managers approving binding commercial responses\n\n## Phase 1 Scope\n### In Scope\n- WhatsApp assistant for intake, FAQ handling, status updates, and structured requirement gathering\n- Internal console for queue management, conversation review, request editing, and approval workflows\n- Quote draft generation from deterministic pricing rules plus operator-entered adjustments\n- Human approval gate before any pricing commitment is sent externally\n- Audit logs for all assistant outputs, approvals, edits, and outbound messages\n- Deterministic workflow orchestration with explicit state transitions\n- LLM usage only for bounded tasks such as summarization, extraction, and response drafting\n\n### Out of Scope\n- Dynamic pricing optimization by LLM\n- Automatic negotiation with customers\n- Automated contract generation and signature workflows\n- Multi-channel support beyond WhatsApp in Phase 1\n\n## Product Principles\n1. No binding promise without human approval.\n2. LLMs may assist with language and structure, not policy or pricing authority.\n3. System-of-record state must be deterministic and inspectable.\n4. Every outbound customer message must be attributable to a rule path, a human, or both.\n5. Fallback to human operators must be available at any uncertain boundary.\n\n## User Stories\n1. As an event requester, I can message a WhatsApp assistant and provide my event details without filling a long form.\n2. As an event requester, I can receive timely status updates and clarifying questions through WhatsApp.\n3. As an operations agent, I can see all inbound requests in a console with structured extracted fields and conversation history.\n4. As an operations agent, I can correct extracted details before they affect downstream workflows.\n5. As a pricing approver, I can review a draft quote and explicitly approve or reject it before it is sent.\n6. As a compliance-conscious operator, I can audit what the assistant suggested, what rules fired, and who approved the final response.\n\n## Functional Requirements\n### 1. WhatsApp Assistant\n- Ingest inbound WhatsApp messages and attachments.\n- Detect whether message intent is intake, FAQ, status check, reschedule request, or escalation request.\n- Collect required event fields through guided conversation: date, location, event type, headcount, service needs, budget range if provided, and timing constraints.\n- Send deterministic templated follow-ups when required fields are missing.\n- Escalate to human when user requests pricing, asks an unsupported question, or intent confidence falls below threshold.\n\n### 2. Internal Console\n- Show request queue with statuses such as `new`, `awaiting_customer_info`, `ready_for_review`, `pricing_pending_approval`, `approved_for_send`, `sent`, and `escalated`.\n- Display conversation transcript, extracted structured fields, rule outputs, and draft responses.\n- Allow operators to edit extracted fields and draft responses before approval.\n- Allow reassignment, notes, and escalation.\n\n### 3. Pricing Approval Workflow\n- Generate quote drafts from deterministic pricing rules and operator-selected options.\n- Prevent any customer-visible pricing message from being sent until an authorized human approves.\n- Record approver identity, timestamp, and approved payload.\n- If pricing inputs change after approval, invalidate prior approval automatically.\n\n### 4. Deterministic Workflow Engine\n- Model the request lifecycle as explicit states and transitions.\n- Require machine-checkable conditions for advancing between states.\n- Log every transition with actor, trigger, and payload snapshot.\n- Support retries and safe idempotent reprocessing for message delivery and extraction jobs.\n\n### 5. Bounded LLM Layer\n- Permit LLM use only in these tasks:\n  - summarizing long customer threads for operators\n  - extracting candidate structured fields from free text\n  - drafting non-binding response language from approved facts\n  - classifying low-risk intents with deterministic fallback\n- Prohibit LLM use for these tasks:\n  - final pricing computation\n  - approval decisions\n  - policy interpretation without hard-coded rules\n  - direct autonomous commitments on availability, discounts, or terms\n- Require deterministic validation of any LLM-produced structured output before persistence or downstream use.\n- Require human review before any LLM-drafted pricing-related message is sent.\n\n## System Behavior\n### Happy Path\n1. Customer initiates WhatsApp conversation.\n2. Assistant gathers event details and stores extracted candidates.\n3. Deterministic validators check completeness.\n4. Internal console marks request `ready_for_review`.\n5. Operator verifies details and triggers quote draft.\n6. Rules engine computes draft pricing.\n7. Authorized human approves pricing payload.\n8. Assistant or operator sends approved response over WhatsApp.\n\n### Exception Path\n- If extraction confidence is low, request goes to human review.\n- If customer asks for discounts or exceptions, request is escalated.\n- If rules cannot price the request, system blocks auto-drafting and routes to manual handling.\n- If outbound content differs from approved pricing payload, send is blocked.\n\n## Data Model\nCore entities:\n- `LeadRequest`\n- `Conversation`\n- `Message`\n- `ExtractedField`\n- `QuoteDraft`\n- `ApprovalRecord`\n- `WorkflowTransition`\n- `OperatorNote`\n\nKey stored fields:\n- customer contact and consent metadata\n- event details and required-service attributes\n- extraction confidence and validation results\n- rule version used for quote generation\n- approved pricing payload\n- audit metadata for all user and system actions\n\n## Permissions and Controls\n- Only authorized approvers can approve pricing commitments.\n- Operators can edit request details and draft messages but cannot bypass approval gates.\n- Admins can manage pricing rules, role permissions, and audit access.\n- All outbound pricing-related communication must reference an approved artifact.\n\n## Success Metrics\n- Reduction in median time from inbound request to draft-ready record\n- Reduction in operator time spent on repetitive intake tasks\n- Percentage of requests fully structured before human review\n- Percentage of pricing messages sent with valid approval records\n- Escalation rate due to unsupported or ambiguous assistant interactions\n- Zero incidents of unapproved pricing commitments sent externally\n\n## Risks\n- Over-trust in extracted fields could create downstream pricing errors\n- Ambiguous WhatsApp conversations may exceed bounded automation assumptions\n- Operators may find approval steps burdensome unless console flow is efficient\n- Poorly defined pricing rules will limit automation yield regardless of assistant quality\n\n## Launch Criteria\n- No path exists for unapproved pricing payloads to reach external users\n- Audit trail is complete for all state changes and outbound communications\n- Deterministic rule engine covers the initial event package set targeted for Phase 1\n- Human fallback path is operational for all blocked or low-confidence cases\n- LLM outputs are validated and bounded according to policy\n\n## Decision Frame\nPhase 1 should optimize for safe augmentation, not autonomy. The product decision is to automate intake, structuring, and draft preparation while keeping pricing commitments and exception handling under explicit human control. This creates immediate operational leverage without crossing the trust boundary where nondeterministic behavior could create commercial liability.\n\n## Unknowns & Evidence Gaps\n- Which event categories and package structures are stable enough for deterministic pricing in Phase 1\n- Actual operator tolerance for approval-step friction\n- Expected WhatsApp attachment volume and its effect on extraction reliability\n- Baseline confidence thresholds needed before automatic progression to review-ready status\n- Regulatory and consent requirements for WhatsApp communication retention in target markets\n\n## Pass/Fail Readiness\nPass if the team can implement a deterministic workflow backbone, a narrow pricing rules engine, role-based approvals, and bounded LLM assist functions with auditability.\nFail if the intended value depends on autonomous pricing, free-form negotiation, or policy interpretation by the LLM, because that violates the core boundary conditions of this phase.\n\n## Recommended Next Artifact\nTechnical specification for workflow states, approval enforcement points, pricing rule interfaces, audit schema, and LLM boundary enforcement controls.",
+        "claims": [
+          {
+            "claim_id": "side_b-claim-1",
+            "summary": "Phase 1 should automate intake and drafting but require explicit human approval before any pricing commitment is sent.",
+            "evidence_refs": [
+              "ctx-1"
+            ],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_b-claim-2",
+            "summary": "LLM usage should be restricted to bounded assistive tasks such as extraction, summarization, and draft wording, with deterministic validation and human fallback.",
+            "evidence_refs": [
+              "ctx-1"
+            ],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_b-claim-3",
+            "summary": "A deterministic workflow engine with auditable state transitions is necessary to enforce the human-in-the-loop boundary and make the system operationally safe.",
+            "evidence_refs": [
+              "ctx-1"
+            ],
+            "is_major": true
+          }
+        ],
+        "citations": [
+          "ctx-1"
+        ],
+        "open_questions": [
+          "Which event types and pricing packages are stable enough to encode deterministically in Phase 1?",
+          "What approval latency is acceptable before the workflow loses operational value?",
+          "What confidence thresholds should trigger automatic progression versus mandatory manual review?"
+        ],
+        "critique_responses": []
+      },
+      "rebuttal": {
+        "target_side": "side_a",
+        "finding_id": "finding-2",
+        "target_claim_ids": [
+          "side_a-claim-1"
+        ],
+        "claim_under_attack": "LLM boundaries must be enforced architecturally (output filter layer + human approval gates) rather than relying on prompt engineering alone, because prompt-based restrictions are bypassable and insufficient for financial commitment safety.",
+        "attack_type": "evidence_gap",
+        "evidence_or_reason": "The claim overstates what the proposed architecture proves. A pattern-based output filter plus human approval gate may reduce risk, but the artifact provides no evidence that this specific filter design can reliably detect implied commitments, paraphrased pricing language, or multi-turn jailbreak behavior. Without concrete specs for the classifier/filter logic, false-negative analysis, or evidence that all outbound paths are actually gate-enforced, 'architectural enforcement' is asserted rather than demonstrated.",
+        "severity": "medium"
+      },
+      "final": null
+    }
+  },
+  "judge": {
+    "provider": "anthropic",
+    "model": "claude-max",
+    "reasoning_effort": "medium",
+    "access_mode": "subscription_cli",
+    "blind_labels": true,
+    "family_blind": false,
+    "selection_policy": "single_judge_cli",
+    "verdict": null
+  },
+  "budgets": {
+    "max_visible_rounds": 3,
+    "max_cost_usd": 1000000,
+    "max_latency_ms": 360000,
+    "min_margin_for_verdict": 0.1
+  },
+  "results": {
+    "winner": null,
+    "margin": null,
+    "judge_confidence": null,
+    "swap_stable": null,
+    "needs_human_review": null
+  },
+  "metrics": {
+    "disagreement_rate": null,
+    "declared_adoption_rate": null,
+    "substantive_revision_rate": null,
+    "unsupported_claim_count": null,
+    "self_contradiction_count": null,
+    "total_estimated_cost_usd": 0,
+    "swap_margin_delta": null,
+    "judge_margin": null,
+    "cost_per_resolved_run": null
+  },
+  "audit": {
+    "identity_leak_warnings": [],
+    "protocol_violations": []
+  }
+}

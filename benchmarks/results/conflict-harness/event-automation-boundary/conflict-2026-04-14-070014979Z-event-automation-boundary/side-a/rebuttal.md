@@ -1,0 +1,13 @@
+# Critique: finding-1
+
+- Target Side: side_b
+- Target Claim IDs: side_b-claim-3
+- Attack Type: evidence_gap
+- Severity: medium
+
+## Claim Under Attack
+A usable Phase 1 requires both a customer-facing WhatsApp assistant and an internal console so automation and operator control coexist in the same workflow.
+
+## Evidence Or Reason
+The claim asserts both a WhatsApp assistant AND a full internal console are required for Phase 1, but provides no evidence for why existing tools (email, spreadsheets, Slack-based approval flows) could not serve as the operator interface in a constrained launch. The PRD lists an ambitious console with SLA timers, change history, draft generation, and escalation workflows — yet the Unknowns section admits the team hasn't determined basic parameters like which event categories to include or what SLA targets to set. Building a bespoke internal console before these fundamentals are validated risks significant wasted effort. A leaner Phase 1 could pair the WhatsApp assistant with a lightweight approval mechanism (e.g., structured Slack notifications with approve/reject actions) to test the core value proposition — automated intake with human-gated pricing — without committing to a full console build. The claim treats the console as a requirement rather than a design choice, with no comparative analysis of alternatives or evidence that operators need this level of tooling from day one.
+

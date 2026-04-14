@@ -1,0 +1,106 @@
+{
+  "case_packet": {
+    "scenario_id": "board-update-ambiguity",
+    "title": "Board update under ambiguity",
+    "prompt": "Write a strategy update for a board audience under ambiguity.",
+    "artifact_type": "strategy",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a strategy artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "strategy",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass": {
+    "run_id": "conflict-2026-04-14-031604265Z-board-update-ambiguity",
+    "side_id": "side_a",
+    "round": "first_pass",
+    "artifact_markdown": "# Strategy Update: Board Audience Under Ambiguity\n\n## Current Position\nWe are operating in a decision window with material uncertainty on demand shape, execution timing, and downstream impact. The practical implication is that the board should evaluate this period less as a moment for irreversible commitment and more as a controlled phase for preserving option value while forcing faster learning.\n\n## What Has Changed\nSignals are directionally relevant but not yet strong enough to justify a full strategic lock. We have enough evidence to narrow the field of credible paths, but not enough to treat any single path as decisively validated. That means the main risk is not only choosing incorrectly; it is also pretending ambiguity is lower than it is.\n\n## Management View\nThe recommended posture is selective commitment:\n1. Continue funding the highest-conviction near-term actions.\n2. Defer irreversible scaling decisions until a small set of critical unknowns is resolved.\n3. Hold management accountable to explicit trigger conditions, not narrative optimism.\n\n## Decision Frame\nThe decision before the board is whether to authorize a posture of staged execution under ambiguity rather than force premature strategic certainty. The recommended decision is to approve a bounded plan that protects downside, preserves upside, and converts the next operating period into an evidence-generating interval. Success should be judged by whether uncertainty is reduced fast enough to support a higher-confidence follow-on decision.\n\n## Unknowns & Evidence Gaps\nThe primary evidence gaps are concentrated in three areas: market confirmation, delivery confidence, and economic sensitivity. We do not yet know whether current signals represent durable demand or temporary noise. We also lack enough proof that the organization can execute at the required speed and quality under scaled conditions. Finally, unit economics and risk exposure under multiple scenarios remain insufficiently resolved for a board-grade expansion commitment.\n\n## Pass/Fail Readiness\nPass: the company can show leading indicators that are stable across more than one measurement window, operational milestones are hit on time, and downside exposure remains bounded under a conservative case. Fail: signal quality remains mixed, execution slips against the focused plan, or economics deteriorate when tested against realistic scaling assumptions. At present, this should be considered conditional readiness, not full readiness.\n\n## Recommended Next Artifact\nA board decision memo with scenario ranges, trigger-based gates, and a 30/60/90-day learning agenda. That artifact should explicitly map each open uncertainty to an owner, a measurement method, a deadline, and the decision it will unlock.",
+    "claims": [
+      {
+        "claim_id": "side_a-claim-1",
+        "summary": "The board should authorize staged execution with explicit decision gates rather than make an irreversible commitment under current ambiguity.",
+        "evidence_refs": [
+          "ctx-1"
+        ],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_a-claim-2",
+        "summary": "The most decision-useful framing is to preserve option value while rapidly reducing uncertainty in market signal, execution readiness, and economic sensitivity.",
+        "evidence_refs": [
+          "ctx-1"
+        ],
+        "is_major": true
+      }
+    ],
+    "citations": [
+      "ctx-1"
+    ],
+    "open_questions": [
+      "What specific leading indicators should count as sufficient market confirmation for the next board decision?",
+      "What execution milestones would demonstrate readiness to scale without introducing unacceptable delivery risk?",
+      "What downside scenario should serve as the governing economic stress test for the staged plan?"
+    ],
+    "critique_responses": []
+  },
+  "critique_packet": {
+    "target_side": "side_a",
+    "finding_id": "finding-2",
+    "target_claim_ids": [
+      "side_a-claim-1",
+      "side_a-claim-2"
+    ],
+    "claim_under_attack": "The board should authorize staged execution with explicit decision gates rather than make an irreversible commitment under current ambiguity, framed as preserving option value while rapidly reducing uncertainty.",
+    "attack_type": "evidence_gap",
+    "evidence_or_reason": "Both major claims rest entirely on a single generic context reference (ctx-1) with no concrete evidence cited anywhere in the artifact. The strategy asserts material uncertainty in demand shape, execution timing, and economic sensitivity but provides zero quantitative indicators, no baseline metrics, no historical comparisons, and no specific market data to substantiate the degree of ambiguity claimed. A board audience cannot distinguish between genuine strategic uncertainty and management hedging without evidence. The pass/fail criteria are similarly ungrounded — 'leading indicators stable across more than one measurement window' names no actual indicators, no measurement windows, and no thresholds. The artifact effectively asks the board to approve deferral based on the assertion that ambiguity exists, rather than demonstrating it with evidence. This makes the decision frame unfalsifiable: if management controls both the uncertainty narrative and the trigger definitions, staged execution becomes an indefinite delay mechanism with no accountability. The recommended posture of 'selective commitment' is operationally indistinguishable from status quo continuation without the missing specifics.",
+    "severity": "high"
+  }
+}

@@ -1,0 +1,296 @@
+You are the judge in a blinded conflict harness run.
+Provider identity is intentionally hidden. Do not infer provider family.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "winner": "tie",
+  "margin": 0,
+  "rubric_scores": {
+    "side_a": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    },
+    "side_b": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    }
+  },
+  "decisive_findings": [
+    "Replace with the actual decisive findings from this run."
+  ],
+  "judge_confidence": "low",
+  "needs_human_review": true,
+  "rationale": "One-paragraph explanation of the verdict."
+}
+
+Use min_margin_for_verdict = 0.1.
+judge_confidence rubric:
+- high: the winning side is clearly stronger on at least 3 rubric dimensions and has no major unsupported-claim problem
+- medium: the winning side leads overall but has at least 1 weak dimension or absorbed only part of the opposing critique
+- low: score margin is below min_margin_for_verdict or both sides have significant unsupported claims
+
+Judge packet:
+{
+  "case_packet": {
+    "scenario_id": "prd-hidden-scope-creep",
+    "title": "PRD with hidden scope creep",
+    "prompt": "Write a PRD for a team inbox workflow handoff improvement.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-14-045642752Z-prd-hidden-scope-creep",
+      "side_id": "side_a",
+      "round": "first_pass",
+      "artifact_markdown": "# PRD: Team Inbox Workflow Handoff Improvement\n\n## Summary\nImprove how one agent hands off a conversation in the team inbox to another agent so ownership is clear, context is preserved, and the next agent can act without re-triage. This PRD is intentionally scoped to workflow handoff only and excludes broader inbox redesign, routing automation, SLA policy changes, or analytics overhauls.\n\n## Problem\nTeam inbox conversations often need to move from one owner to another because of shift changes, functional specialization, or escalation. Current handoffs can be incomplete or ambiguous, causing duplicate review, delayed responses, and dropped context.\n\n## Goal\nReduce friction in conversation handoff inside the existing team inbox workflow.\n\n## Non-Goals\n- Rebuilding inbox information architecture\n- Automatic skill-based routing\n- Workforce management or staffing optimization\n- Cross-channel unification changes\n- Full reporting suite redesign\n\n## Users\n- Primary: support or operations agents handing off conversations\n- Secondary: receiving agents who must resume work quickly\n- Tertiary: team leads monitoring workflow reliability\n\n## Jobs To Be Done\n- As a current owner, I want to hand off a conversation with enough structure that the next owner knows what happened, what remains, and what to do next.\n- As a receiving owner, I want to see why the conversation was handed off and what action is expected so I can proceed without rereading the full thread.\n- As a team lead, I want handoffs to be auditable so I can spot breakdowns in ownership and latency.\n\n## User Stories\n1. As an agent, I can assign a conversation to another teammate with a required handoff note.\n2. As an agent, I can specify a handoff reason from a short controlled list plus optional free text.\n3. As the receiving agent, I can see the previous owner, handoff time, reason, and note in the conversation view.\n4. As the receiving agent, I can acknowledge the handoff by taking ownership.\n5. As a lead, I can distinguish handoff events from ordinary reassignments in the audit trail.\n\n## Requirements\n### Functional Requirements\n1. Add a dedicated handoff action within the existing assignment workflow.\n2. Require selection of a target owner.\n3. Require a structured handoff note with at least: current status, next action, and risk/blocker if present.\n4. Require selection of a handoff reason: shift end, specialization needed, escalation, or other.\n5. Persist handoff metadata on the conversation record.\n6. Display the latest handoff summary prominently to the receiving owner.\n7. Record a timestamped handoff event in conversation history.\n8. Allow the receiving owner to claim or accept ownership.\n9. Preserve normal reassignment for cases that are not workflow handoffs.\n\n### Non-Functional Requirements\n1. Handoff action must fit inside the current inbox UI with minimal retraining.\n2. Added steps should not materially slow simple transfers.\n3. Audit data must be exportable through existing internal data pathways if those already exist.\n\n## UX Notes\n- Use the existing assignment surface rather than a separate workflow.\n- Present a concise structured form, not a long freeform template.\n- Show the handoff card near the top of the conversation for the new owner until first action or acknowledgment.\n\n## Success Metrics\n### Primary\n- Reduction in median time from reassignment to first meaningful action by new owner\n- Reduction in conversations with multiple internal clarification messages after handoff\n\n### Guardrails\n- No material increase in total reassignment time for simple cases\n- No rise in abandoned conversations after transfer\n\n## Rollout\n1. Internal pilot with one team inbox\n2. Review handoff completion quality and operational friction\n3. Expand to additional teams if guardrails hold\n\n## Risks\n- Mandatory fields may create agent friction if overdesigned.\n- Teams may misuse handoff for ordinary reassignment if distinction is unclear.\n- Without explicit scope control, this work can expand into routing, reporting, or staffing tools.\n\n## Decision Frame\nApprove a v1 focused only on structured person-to-person handoff inside the existing team inbox. The core decision is whether reducing ambiguity at transfer is valuable enough to justify a lightweight required workflow. This PRD recommends yes, with scope constrained to metadata capture, visibility, acknowledgment, and auditability.\n\n## Unknowns & Evidence Gaps\n- No baseline data is provided on current handoff failure rate, latency, or conversation drops.\n- No user research is provided on which handoff fields are truly necessary.\n- It is unknown whether acknowledgment should be mandatory or passive.\n- It is unknown whether team-level queues, not named individuals, are part of the real workflow.\n\n## Pass/Fail Readiness\nPass with revision. The problem and v1 scope are clear enough to align design and engineering, but implementation should not start until the team confirms baseline metrics, validates the handoff form fields with frontline users, and resolves whether queue handoff is in scope.\n\n## Recommended Next Artifact\nTechnical spec for handoff event model, UI states, audit trail behavior, and metrics instrumentation plan.",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "The PRD should constrain v1 to structured workflow handoff inside the existing inbox rather than expand into routing, analytics, or broader inbox redesign.",
+          "evidence_refs": [
+            "case-packet:prompt",
+            "case-packet:scenario"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "A useful handoff improvement requires explicit metadata capture: target owner, reason, status, next action, and visible context for the receiving owner.",
+          "evidence_refs": [
+            "case-packet:prompt"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "Because no external evidence is supplied, the artifact should explicitly separate decisions from unresolved evidence gaps and avoid pretending certainty on metrics or detailed workflow variants.",
+          "evidence_refs": [
+            "case-packet:evidence-empty",
+            "case-packet:constraints"
+          ],
+          "is_major": true
+        }
+      ],
+      "citations": [
+        "case-packet:prompt",
+        "case-packet:scenario",
+        "case-packet:evidence-empty",
+        "case-packet:constraints"
+      ],
+      "open_questions": [
+        "Are handoffs only between named individuals, or must the workflow also support queue-to-person and person-to-queue transfers?",
+        "Should receiving agents explicitly acknowledge a handoff, or is first action sufficient?",
+        "What baseline metric currently best represents handoff failure: time to next action, duplicate internal comments, or reopened ownership changes?"
+      ],
+      "critique_responses": []
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-14-045642752Z-prd-hidden-scope-creep",
+      "side_id": "side_b",
+      "round": "first_pass",
+      "artifact_markdown": "# PRD: Team Inbox Workflow Handoff Improvement\n\n## Decision Frame\n\n**Problem statement:** Team inbox handoff between agents is lossy—context drops, ownership is ambiguous during transitions, and customers experience repeated questions or stalled threads. This degrades CSAT and increases handle time.\n\n**Decision to be made:** Should we invest in a structured handoff protocol within the team inbox, and if so, what is the minimum viable scope that reduces handoff-related re-contacts?\n\n**Who decides:** Product lead (owns inbox roadmap) with sign-off from Support Operations.\n\n**Decision deadline:** End of current planning cycle. Delay risks another quarter of compounding handoff debt.\n\n**Scope boundaries:**\n- **In scope:** Handoff metadata capture, ownership transfer protocol, handoff summary UI, basic routing rules for reassignment.\n- **Out of scope:** Full AI auto-routing, workforce management integration, SLA engine changes, multi-channel unification (chat + email + phone merge). These are adjacent but independent initiatives.\n- **Scope creep risk:** The phrase \"workflow handoff improvement\" invites unbounded interpretation. Without a hard boundary, this PRD could absorb queue prioritization, skill-based routing, workload balancing, and real-time presence—none of which are required to solve the core handoff problem. This PRD deliberately excludes them.\n\n**Success metric:** Reduce handoff-related re-contacts (customer replies within 2 hours of reassignment that repeat prior context) by 30% within 8 weeks of launch.\n\n## Requirements\n\n### P0 — Must ship\n1. **Handoff summary block:** When an agent reassigns a conversation, they must populate a structured summary (issue category, current status, next action needed, customer sentiment tag). This block is visible to the receiving agent before they reply.\n2. **Ownership transfer protocol:** Conversation ownership transfers atomically—no period where a conversation is unowned. The previous owner remains accountable until the new owner explicitly accepts.\n3. **Handoff history trail:** Every handoff event is logged with timestamp, from-agent, to-agent, and summary content. Visible in the conversation timeline.\n\n### P1 — Should ship\n4. **Reassignment reason taxonomy:** Dropdown with 5-7 predefined reasons (shift end, escalation, skill mismatch, customer request, capacity). Enables reporting on handoff patterns.\n5. **Receiving agent notification:** In-app alert with conversation preview and handoff summary when a conversation is assigned to you.\n\n### P2 — Nice to have\n6. **Handoff quality score:** Automated check that the summary block meets minimum completeness (all fields populated, next action is specific). Warns sender if summary is thin.\n\n### Explicitly excluded\n- AI-generated handoff summaries (future iteration; depends on this structured data existing first)\n- Skill-based auto-routing (separate initiative, separate PRD)\n- Queue rebalancing or workload algorithms\n- Cross-channel handoff (e.g., email-to-chat transfer)\n\n## Unknowns & Evidence Gaps\n\n| # | Unknown | Impact if wrong | How to close | Status |\n|---|---------|-----------------|-------------|--------|\n| U1 | What % of re-contacts are actually caused by handoff context loss vs. other factors (slow response, policy confusion)? | If handoff is <20% of re-contacts, the 30% reduction target is unreachable with this scope alone. | Pull re-contact cohort from last 90 days, tag a sample of 200 for root cause. | **Not started — blocking for go/no-go** |\n| U2 | Will agents actually fill in the summary block, or will they treat it as friction and leave it blank? | Empty summaries = no improvement. Feature becomes shelfware. | Prototype with 5 agents for 1 week. Measure completion rate and quality. | Not started |\n| U3 | How long does a typical handoff summary take to write? | If >90 seconds, agent throughput drops and operations may push back. | Time the prototype cohort. | Not started |\n| U4 | Does the current inbox platform support atomic ownership transfer, or is there a race condition window? | Engineering feasibility of P0-2. May require platform-level changes that blow up the timeline. | Engineering spike, 2 days. | Not started |\n\n## Pass/Fail Readiness\n\n**Current readiness: NOT READY TO BUILD.**\n\nBlocking gaps:\n- **U1 is unresolved.** Without root-cause data on re-contacts, we cannot confirm the problem is sized correctly. If handoff context loss accounts for <20% of re-contacts, this PRD's success metric is unachievable and scope should be revisited.\n- **U4 is unresolved.** Atomic ownership transfer is a P0 requirement. If the platform doesn't support it without major refactoring, the timeline and scope need renegotiation.\n\nConditions to pass:\n1. U1 analysis complete, confirming handoff context loss drives ≥30% of re-contacts.\n2. U4 engineering spike complete, confirming atomic transfer is feasible within one sprint.\n3. If either condition fails, return to Decision Frame for scope revision before proceeding.\n\n## Recommended Next Artifact\n\n**Next artifact: Evidence brief resolving U1 and U4.**\n\n- U1: Re-contact root cause analysis (200-conversation sample, tagged by category). Output: percentage breakdown with confidence interval.\n- U4: Engineering spike on ownership transfer atomicity. Output: feasibility memo with effort estimate.\n\nOnly after both are resolved should the team proceed to technical design. Skipping this step risks building a feature that addresses a symptom we haven't confirmed is the dominant cause.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "The PRD is not ready to build because the core assumption—that handoff context loss is the primary driver of re-contacts—has not been validated with data. Without root-cause analysis (U1), the 30% reduction target may be unachievable regardless of implementation quality.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "Scope creep is the primary risk for this PRD: the phrase 'workflow handoff improvement' naturally expands to absorb routing, workload balancing, and AI summarization. The PRD must draw explicit exclusion boundaries and resist adjacent-feature absorption to remain shippable.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "Agent adoption of the handoff summary block (U2) is a second-order risk that should be validated via prototype before full build, but should not block the go/no-go decision the way U1 and U4 do.",
+          "evidence_refs": [],
+          "is_major": false
+        }
+      ],
+      "citations": [],
+      "open_questions": [
+        "No evidence files were provided in the case packet, so all unknowns (U1-U4) remain open. The PRD is structured to surface these gaps rather than assume them away."
+      ],
+      "critique_responses": []
+    }
+  },
+  "critique_packets": {
+    "side_a": {
+      "target_side": "side_b",
+      "finding_id": "finding-1",
+      "target_claim_ids": [
+        "side_b-claim-2"
+      ],
+      "claim_under_attack": "Scope creep is the primary risk for this PRD: the phrase 'workflow handoff improvement' naturally expands to absorb routing, workload balancing, and AI summarization.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "This elevates scope creep to the primary risk without any visible evidence that stakeholders are actually pushing adjacent features into scope. In the artifact itself, the stronger demonstrated risks are unvalidated problem sizing (U1) and feasibility of atomic ownership transfer (U4), both of which directly determine whether the PRD should exist or can ship. Calling scope creep the primary risk is unsupported prioritization, not evidence-based diagnosis.",
+      "severity": "medium"
+    },
+    "side_b": {
+      "target_side": "side_a",
+      "finding_id": "finding-2",
+      "target_claim_ids": [
+        "side_a-claim-2"
+      ],
+      "claim_under_attack": "A useful handoff improvement requires explicit metadata capture: target owner, reason, status, next action, and visible context for the receiving owner.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "The PRD specifies mandatory structured fields (reason from controlled list, status, next action, risk/blocker) as firm functional requirements while simultaneously admitting under Unknowns & Evidence Gaps that 'No user research is provided on which handoff fields are truly necessary.' This is an internal contradiction: the artifact treats field selection as a settled requirement in the Requirements section but as an open question in the Evidence Gaps section. Without validation, mandating structured fields risks the very agent friction the Risks section warns about. The claim that these specific fields constitute a 'useful' handoff is asserted, not evidenced, and the PRD provides no basis for choosing this particular field set over alternatives (e.g., a single freeform note, a checklist, or auto-extracted context). A PRD that locks requirements before resolving its own declared unknowns undermines the decision usefulness it claims to offer.",
+      "severity": "high"
+    }
+  },
+  "final_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-14-045642752Z-prd-hidden-scope-creep",
+      "side_id": "side_a",
+      "round": "final",
+      "artifact_markdown": "# Revised artifact\n\n## PRD: Team Inbox Workflow Handoff Improvement\n\n## Summary\nImprove how one agent hands off a conversation in the team inbox to another agent so ownership is clear, context is preserved, and the next agent can act without re-triage. This PRD is intentionally scoped to workflow handoff only and excludes broader inbox redesign, routing automation, SLA policy changes, or analytics overhauls.\n\n## Problem\nTeam inbox conversations often need to move from one owner to another because of shift changes, functional specialization, or escalation. Current handoffs can be incomplete or ambiguous, causing duplicate review, delayed responses, and dropped context.\n\n## Goal\nReduce friction in conversation handoff inside the existing team inbox.\n\n## Non-Goals\n- Rebuilding inbox information architecture\n- Automatic skill-based routing\n- Workforce management or staffing optimization\n- Cross-channel unification changes\n- Full reporting suite redesign\n\n## Users\n- Primary: support or operations agents handing off conversations\n- Secondary: receiving agents who must resume work quickly\n- Tertiary: team leads monitoring workflow reliability\n\n## Jobs To Be Done\n- As a current owner, I want to hand off a conversation with enough structure that the next owner knows what happened, what remains, and what to do next.\n- As a receiving owner, I want to see why the conversation was handed off and what action is expected so I can proceed without rereading the full thread.\n- As a team lead, I want handoffs to be auditable so I can spot breakdowns in ownership and latency.\n\n## User Stories\n1. As an agent, I can hand off a conversation to another teammate with a handoff summary.\n2. As an agent, I can indicate why the conversation is being handed off.\n3. As the receiving agent, I can see the previous owner, handoff time, and handoff summary in the conversation view.\n4. As the receiving agent, I can acknowledge the handoff by taking ownership if acknowledgment is retained after validation.\n5. As a lead, I can distinguish handoff events from ordinary reassignments in the audit trail.\n\n## Requirements\n### Functional Requirements\n1. Add a dedicated handoff action within the existing assignment workflow.\n2. Require selection of a target owner.\n3. Require a handoff summary when the dedicated handoff action is used.\n4. Persist handoff metadata on the conversation record.\n5. Display the latest handoff summary prominently to the receiving owner.\n6. Record a timestamped handoff event in conversation history.\n7. Preserve normal reassignment for cases that are not workflow handoffs.\n\n### Validation-Gated Product Decisions\n1. The v1 form should test whether structured prompts outperform a single freeform handoff note on completeness and speed.\n2. Candidate prompts to test are: reason, current status, next action, and risk or blocker.\n3. The controlled reason list should remain provisional until user validation confirms that it improves consistency without adding material friction.\n4. Receiving-owner acknowledgment should remain provisional until the team confirms it improves accountability more than it slows work.\n\n### Non-Functional Requirements\n1. Handoff action must fit inside the current inbox UI with minimal retraining.\n2. Added steps should not materially slow simple transfers.\n3. Audit data must be exportable through existing internal data pathways if those already exist.\n\n## UX Notes\n- Use the existing assignment surface rather than a separate workflow.\n- Start with the lightest viable handoff form.\n- If structured prompts are used, keep them concise and limited to fields validated as useful.\n- Show the handoff card near the top of the conversation for the new owner until first action or acknowledgment if acknowledgment is retained.\n\n## Success Metrics\n### Primary\n- Reduction in median time from reassignment to first meaningful action by new owner\n- Reduction in conversations with multiple internal clarification messages after handoff\n\n### Guardrails\n- No material increase in total reassignment time for simple cases\n- No rise in abandoned conversations after transfer\n- No significant increase in agent-reported friction for ordinary transfers\n\n## Rollout\n1. Validate current handoff behavior and baseline failure modes with frontline users.\n2. Prototype the lightest viable handoff form and test freeform versus lightly structured variants.\n3. Pilot with one team inbox.\n4. Expand to additional teams only if completeness improves and guardrails hold.\n\n## Risks\n- Mandatory fields may create agent friction if overdesigned.\n- Teams may misuse handoff for ordinary reassignment if distinction is unclear.\n- Without explicit scope control, this work can expand into routing, reporting, or staffing tools.\n- Locking field requirements too early could harden the wrong workflow.\n\n## Decision Frame\nApprove a v1 focused only on structured workflow handoff inside the existing team inbox. The core decision is whether reducing ambiguity at transfer is valuable enough to justify a lightweight required workflow. This PRD recommends yes, but limits the committed requirement to a required handoff summary plus auditability and visibility. Specific field structure beyond that is a validation-gated design decision, not yet a fixed requirement.\n\n## Unknowns & Evidence Gaps\n- No baseline data is provided on current handoff failure rate, latency, or conversation drops.\n- No user research is provided on which handoff fields are truly necessary.\n- It is unknown whether acknowledgment should be mandatory or passive.\n- It is unknown whether team-level queues, not named individuals, are part of the real workflow.\n- It is unvalidated whether a controlled reason list improves consistency more than it adds friction.\n\n## Pass/Fail Readiness\nPass with revision. The problem and v1 scope are clear enough to align design and engineering, but implementation should not lock the detailed handoff form yet. The team should confirm baseline metrics, validate the minimum useful handoff fields with frontline users, and resolve whether queue handoff and acknowledgment are in scope before build commitment.\n\n## Recommended Next Artifact\nUser research and lightweight technical spec covering current-state workflow, candidate handoff form variants, event model, UI states, and instrumentation plan.",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "The PRD should constrain v1 to workflow handoff inside the existing inbox and explicitly exclude routing, analytics, and broader inbox redesign.",
+          "evidence_refs": [
+            "case-packet:prompt",
+            "case-packet:scenario"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "The only fixed v1 requirement is a required handoff summary with visible context and auditability; the exact structured fields must remain validation-gated rather than treated as settled requirements.",
+          "evidence_refs": [
+            "case-packet:prompt",
+            "case-packet:evidence-empty",
+            "finding-2"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "Because no external evidence is supplied, the artifact should separate committed requirements from unresolved evidence gaps and make provisional decisions explicit.",
+          "evidence_refs": [
+            "case-packet:evidence-empty",
+            "case-packet:constraints",
+            "finding-2"
+          ],
+          "is_major": true
+        }
+      ],
+      "citations": [
+        "case-packet:prompt",
+        "case-packet:scenario",
+        "case-packet:evidence-empty",
+        "case-packet:constraints",
+        "finding-2"
+      ],
+      "open_questions": [],
+      "critique_responses": [
+        {
+          "finding_id": "finding-2",
+          "disposition": "adopted",
+          "rationale": "The critique is correct: the first-pass artifact treated specific handoff fields as fixed requirements while also admitting those fields were unvalidated. The revision removes that contradiction by narrowing the committed requirement to a required handoff summary plus visibility and auditability, and it moves the detailed field set, controlled reason list, and acknowledgment behavior into validation-gated decisions."
+        }
+      ]
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-14-045642752Z-prd-hidden-scope-creep",
+      "side_id": "side_b",
+      "round": "final",
+      "artifact_markdown": "# PRD: Team Inbox Workflow Handoff Improvement\n\n## Decision Frame\n\n**Problem statement:** Team inbox handoff between agents is lossy—context drops, ownership is ambiguous during transitions, and customers experience repeated questions or stalled threads. This degrades CSAT and increases handle time.\n\n**Decision to be made:** Should we invest in a structured handoff protocol within the team inbox, and if so, what is the minimum viable scope that reduces handoff-related re-contacts?\n\n**Who decides:** Product lead (owns inbox roadmap) with sign-off from Support Operations.\n\n**Decision deadline:** End of current planning cycle. Delay risks another quarter of compounding handoff debt.\n\n**Scope boundaries:**\n- **In scope:** Handoff metadata capture, ownership transfer protocol, handoff summary UI, basic routing rules for reassignment.\n- **Out of scope:** Full AI auto-routing, workforce management integration, SLA engine changes, multi-channel unification (chat + email + phone merge). These are adjacent but independent initiatives.\n- **Scope creep watch:** The phrase \"workflow handoff improvement\" invites broad interpretation. Queue prioritization, skill-based routing, workload balancing, and real-time presence are adjacent concerns that could drift into scope. This PRD excludes them as a defensive boundary, though no evidence currently suggests stakeholders are pushing for their inclusion.\n\n**Primary risks (ranked):**\n1. **Unvalidated problem sizing (U1):** We have not confirmed that handoff context loss is a significant driver of re-contacts. If it accounts for <20% of re-contacts, the success metric is unachievable regardless of execution.\n2. **Platform feasibility (U4):** Atomic ownership transfer is a P0 requirement. If the platform cannot support it without major refactoring, the timeline and scope require renegotiation.\n3. **Scope absorption:** A standing risk given the broad framing, but currently a defensive concern rather than an active threat.\n\n**Success metric:** Reduce handoff-related re-contacts (customer replies within 2 hours of reassignment that repeat prior context) by 30% within 8 weeks of launch.\n\n## Requirements\n\n### P0 — Must ship\n1. **Handoff summary block:** When an agent reassigns a conversation, they must populate a structured summary (issue category, current status, next action needed, customer sentiment tag). This block is visible to the receiving agent before they reply.\n2. **Ownership transfer protocol:** Conversation ownership transfers atomically—no period where a conversation is unowned. The previous owner remains accountable until the new owner explicitly accepts.\n3. **Handoff history trail:** Every handoff event is logged with timestamp, from-agent, to-agent, and summary content. Visible in the conversation timeline.\n\n### P1 — Should ship\n4. **Reassignment reason taxonomy:** Dropdown with 5-7 predefined reasons (shift end, escalation, skill mismatch, customer request, capacity). Enables reporting on handoff patterns.\n5. **Receiving agent notification:** In-app alert with conversation preview and handoff summary when a conversation is assigned to you.\n\n### P2 — Nice to have\n6. **Handoff quality score:** Automated check that the summary block meets minimum completeness (all fields populated, next action is specific). Warns sender if summary is thin.\n\n### Explicitly excluded\n- AI-generated handoff summaries (future iteration; depends on this structured data existing first)\n- Skill-based auto-routing (separate initiative, separate PRD)\n- Queue rebalancing or workload algorithms\n- Cross-channel handoff (e.g., email-to-chat transfer)\n\n## Unknowns & Evidence Gaps\n\n| # | Unknown | Impact if wrong | How to close | Status |\n|---|---------|-----------------|-------------|--------|\n| U1 | What % of re-contacts are actually caused by handoff context loss vs. other factors (slow response, policy confusion)? | If handoff is <20% of re-contacts, the 30% reduction target is unreachable with this scope alone. | Pull re-contact cohort from last 90 days, tag a sample of 200 for root cause. | **Not started — blocking for go/no-go** |\n| U2 | Will agents actually fill in the summary block, or will they treat it as friction and leave it blank? | Empty summaries = no improvement. Feature becomes shelfware. | Prototype with 5 agents for 1 week. Measure completion rate and quality. | Not started |\n| U3 | How long does a typical handoff summary take to write? | If >90 seconds, agent throughput drops and operations may push back. | Time the prototype cohort. | Not started |\n| U4 | Does the current inbox platform support atomic ownership transfer, or is there a race condition window? | Engineering feasibility of P0-2. May require platform-level changes that blow up the timeline. | Engineering spike, 2 days. | **Not started — blocking for go/no-go** |\n\n## Pass/Fail Readiness\n\n**Current readiness: NOT READY TO BUILD.**\n\nBlocking gaps:\n- **U1 is unresolved.** Without root-cause data on re-contacts, we cannot confirm the problem is sized correctly. If handoff context loss accounts for <20% of re-contacts, this PRD's success metric is unachievable and scope should be revisited.\n- **U4 is unresolved.** Atomic ownership transfer is a P0 requirement. If the platform doesn't support it without major refactoring, the timeline and scope need renegotiation.\n\nConditions to pass:\n1. U1 analysis complete, confirming handoff context loss drives ≥30% of re-contacts.\n2. U4 engineering spike complete, confirming atomic transfer is feasible within one sprint.\n3. If either condition fails, return to Decision Frame for scope revision before proceeding.\n\n## Recommended Next Artifact\n\n**Next artifact: Evidence brief resolving U1 and U4.**\n\n- U1: Re-contact root cause analysis (200-conversation sample, tagged by category). Output: percentage breakdown with confidence interval.\n- U4: Engineering spike on ownership transfer atomicity. Output: feasibility memo with effort estimate.\n\nOnly after both are resolved should the team proceed to technical design. Skipping this step risks building a feature that addresses a symptom we haven't confirmed is the dominant cause.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "The PRD is not ready to build because the core assumption—that handoff context loss is the primary driver of re-contacts—has not been validated with data. Without root-cause analysis (U1), the 30% reduction target may be unachievable regardless of implementation quality.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "The two dominant risks are unvalidated problem sizing (U1) and platform feasibility of atomic ownership transfer (U4). Scope creep remains a defensive boundary worth maintaining but is not elevated to primary risk absent evidence of active stakeholder pressure to expand scope.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "Agent adoption of the handoff summary block (U2) is a second-order risk that should be validated via prototype before full build, but should not block the go/no-go decision the way U1 and U4 do.",
+          "evidence_refs": [],
+          "is_major": false
+        }
+      ],
+      "citations": [],
+      "open_questions": [
+        "No evidence files were provided in the case packet, so all unknowns (U1-U4) remain open. The PRD is structured to surface these gaps rather than assume them away."
+      ],
+      "critique_responses": [
+        {
+          "finding_id": "finding-1",
+          "disposition": "adopted",
+          "rationale": "The critique correctly identifies that elevating scope creep to 'primary risk' was unsupported prioritization. No evidence in the case packet or artifact suggests stakeholders are actively pushing adjacent features into scope. The stronger demonstrated risks are unvalidated problem sizing (U1) and platform feasibility (U4), both of which directly determine whether the PRD should proceed. Revised the artifact to rank risks explicitly: U1 and U4 as primary blocking risks, scope creep as a defensive boundary rather than a diagnosed threat. Updated claim side_b-claim-2 accordingly."
+        }
+      ]
+    }
+  },
+  "min_margin_for_verdict": 0.1
+}

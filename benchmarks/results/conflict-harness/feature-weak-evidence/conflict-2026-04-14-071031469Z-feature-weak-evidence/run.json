@@ -1,0 +1,268 @@
+{
+  "run_id": "conflict-2026-04-14-071031469Z-feature-weak-evidence",
+  "scenario_id": "feature-weak-evidence",
+  "mode": "head_to_head",
+  "status": "completed",
+  "sides": {
+    "side_a": {
+      "provider": "anthropic",
+      "model": "claude-max",
+      "reasoning_effort": "medium",
+      "access_mode": "subscription_cli",
+      "role": "side_a",
+      "first_pass": {
+        "run_id": "conflict-2026-04-14-071031469Z-feature-weak-evidence",
+        "side_id": "side_a",
+        "round": "first_pass",
+        "artifact_markdown": "# PRD: [Proposed Feature — Weak Evidence Context]\n\n## Decision Frame\n\n**What decision does this PRD support?**\nWhether to invest engineering and design resources in building this feature, given that current supporting evidence is thin.\n\n**Decision type:** Go / No-Go / Investigate Further\n\n**Current recommendation:** **Investigate Further** — the evidence base is insufficient to justify a build decision. This PRD exists to make that gap explicit and to define what evidence would change the recommendation.\n\n**Stakeholders:** Product, Engineering, Design, Business/Revenue\n\n**Time horizon:** The investigation phase should be time-boxed to 2-4 weeks. A go/no-go decision should follow immediately after.\n\n### Problem Statement\n\nWe have identified a potential user need, but the supporting evidence is weak:\n\n- No validated user research directly confirming the problem exists at meaningful scale\n- No quantitative data on frequency, severity, or revenue impact\n- No competitive evidence that this capability drives adoption or retention elsewhere\n- The feature concept originates from internal intuition or a small number of anecdotal signals\n\nThis PRD is structured as an **evidence audit**, not a feature specification. Writing a full spec against weak evidence would create false confidence and waste downstream effort.\n\n### What We Think We Know (Unvalidated Assumptions)\n\n| Assumption | Source | Confidence | Validation Method |\n|---|---|---|---|\n| Users experience friction in [target workflow] | Internal team intuition | Low | User interviews (n≥8) |\n| This friction causes measurable churn or reduced engagement | None | Very Low | Cohort analysis against proxy metrics |\n| Users would adopt the proposed solution over workarounds | None | Very Low | Prototype test or painted-door experiment |\n| The feature is technically feasible within current architecture | Preliminary eng assessment | Medium | Spike (time-boxed to 3 days) |\n\n## Unknowns & Evidence Gaps\n\n### Critical Unknowns (Must resolve before any build commitment)\n\n1. **Problem existence at scale.** We have no quantitative signal that more than a handful of users experience this problem. Without this, any build is speculative.\n   - *Required evidence:* User interviews (minimum 8 participants from target segment) OR support ticket analysis showing recurring pattern OR behavioral data showing drop-off at the relevant workflow step.\n   - *Kill criterion:* If fewer than 3 of 8 interviewees independently surface this problem unprompted, the problem does not clear the bar.\n\n2. **Willingness to adopt.** Even if the problem exists, users may have acceptable workarounds. A solution they will not switch to has zero value.\n   - *Required evidence:* Concept test or painted-door experiment with measurable intent signal (click-through, sign-up, stated preference with commitment cost).\n   - *Kill criterion:* Intent signal below 15% of exposed users.\n\n3. **Revenue or retention linkage.** No evidence connects this problem to business outcomes.\n   - *Required evidence:* Correlation analysis between users who exhibit the target friction behavior and churn/downgrade rates, OR competitive loss data citing this capability.\n   - *Kill criterion:* No statistically significant difference in retention between affected and unaffected cohorts.\n\n### Secondary Unknowns (Resolve during build if greenlit)\n\n4. **Technical cost.** Preliminary estimate exists but no spike has been conducted.\n5. **Interaction with existing features.** Unknown whether this creates conflicts or redundancy with current capabilities.\n6. **Addressable segment size.** Unknown what percentage of the user base falls into the target segment.\n\n### Evidence We Do NOT Have\n\n- No survey data\n- No A/B test results\n- No competitive benchmarking\n- No customer advisory board input\n- No sales/CS escalation patterns\n- No usage analytics on the target workflow\n\nThis is a comprehensive absence. The honest assessment is that this feature idea is currently at the **hypothesis stage**, not the specification stage.\n\n## Pass/Fail Readiness\n\n**Readiness verdict: FAIL — Not ready for build commitment.**\n\n| Readiness Criterion | Status | Notes |\n|---|---|---|\n| Problem validated with users | ❌ Fail | No user research conducted |\n| Quantitative sizing available | ❌ Fail | No data on affected user count or frequency |\n| Business case articulated | ❌ Fail | No revenue/retention linkage established |\n| Technical feasibility confirmed | ⚠️ Partial | Preliminary estimate only, no spike |\n| Solution concept tested | ❌ Fail | No prototype or concept test |\n| Stakeholder alignment on priority | ⚠️ Partial | Interest expressed but not against alternatives |\n\n**What would change this to PASS:**\n- Complete the three critical unknown investigations listed above\n- At least 2 of 3 must clear their kill criteria\n- Technical spike must confirm feasibility within acceptable cost envelope\n- Re-present to stakeholders with evidence package for prioritization against alternatives\n\n**Estimated cost of investigation phase:** 2-4 weeks, 1 researcher + 0.5 engineer (for spike), minimal design involvement.\n\n**Estimated cost of premature build commitment:** 4-12 weeks of engineering, design, and QA resources applied to an unvalidated hypothesis — with high probability of building something users do not adopt.\n\n## Recommended Next Artifact\n\n**Do not proceed to a technical spec or design brief.**\n\nThe next artifact should be an **Evidence Collection Plan** containing:\n\n1. **User interview script** — focused on the target workflow, structured to surface the problem unprompted (no leading questions)\n2. **Analytics query spec** — defining the behavioral proxy metrics to pull from existing instrumentation\n3. **Painted-door experiment design** — lightweight test to measure adoption intent without building the feature\n4. **Kill criteria checklist** — the specific thresholds defined above, written as a decision contract before data collection begins (to prevent post-hoc rationalization)\n5. **Timeline and owners** — who runs each investigation track, with a hard deadline for the evidence review meeting\n\nAfter the evidence review, the appropriate next artifact is either:\n- A **full PRD with specification** (if evidence clears the bar), or\n- A **decision record** documenting why the feature was shelved (if evidence fails)\n\n---\n\n*This PRD is intentionally incomplete as a feature specification. That is the correct response to weak evidence. A detailed spec written against unvalidated assumptions creates the illusion of rigor while compounding the cost of being wrong.*",
+        "claims": [
+          {
+            "claim_id": "side_a-claim-1",
+            "summary": "A PRD against weak evidence should be structured as an evidence audit with explicit kill criteria, not a feature specification — writing detailed specs on unvalidated assumptions creates false confidence and compounds the cost of being wrong.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-2",
+            "summary": "The correct readiness verdict is FAIL, with a recommended next artifact of an Evidence Collection Plan rather than a technical spec or design brief.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-3",
+            "summary": "Kill criteria must be defined before data collection begins to prevent post-hoc rationalization — each critical unknown should have a specific, measurable threshold that determines whether to proceed or shelve.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-4",
+            "summary": "The cost asymmetry between investigation (2-4 weeks, light staffing) and premature build (4-12 weeks, full team) strongly favors the investigate-first path when evidence is weak.",
+            "evidence_refs": [],
+            "is_major": false
+          }
+        ],
+        "citations": [],
+        "open_questions": [
+          "What specific feature is being proposed? The scenario is abstract — a real PRD would need to name the capability and target user segment to define meaningful kill criteria.",
+          "What existing instrumentation or data infrastructure is available to run the recommended analytics queries?",
+          "Are there competing priorities that make even the investigation phase a meaningful opportunity cost?"
+        ],
+        "critique_responses": []
+      },
+      "rebuttal": {
+        "target_side": "side_b",
+        "finding_id": "finding-1",
+        "target_claim_ids": [
+          "side_b-claim-2"
+        ],
+        "claim_under_attack": "The appropriate PRD outcome is a discovery-gated prototype phase with explicit success thresholds rather than a production commitment.",
+        "attack_type": "evidence_gap",
+        "evidence_or_reason": "The success thresholds proposed (5 users complete evaluation, 3 report problem as frequent, 3 prefer this approach) are presented as explicit and rigorous, but they are themselves arbitrary numbers with no evidence justifying why these specific thresholds constitute a meaningful signal. A sample of 5 users is too small to distinguish real demand from selection bias or courtesy agreement. The artifact criticizes the feature for lacking evidence while simultaneously proposing pass/fail gates built on equally unsupported assumptions about what constitutes adequate validation. The thresholds create an illusion of disciplined gating without any statistical or methodological basis for the cutoffs chosen.",
+        "severity": "medium"
+      },
+      "final": {
+        "run_id": "conflict-2026-04-14-071031469Z-feature-weak-evidence",
+        "side_id": "side_a",
+        "round": "final",
+        "artifact_markdown": "# PRD: [Proposed Feature — Weak Evidence Context]\n\n## Decision Frame\n\n**What decision does this PRD support?**\nWhether to invest engineering and design resources in building this feature, given that current supporting evidence is thin.\n\n**Decision type:** Go / No-Go / Investigate Further\n\n**Current recommendation:** **Investigate Further** — the evidence base is insufficient to justify a build decision. This PRD exists to make that gap explicit and to define what evidence would change the recommendation.\n\n**Stakeholders:** Product, Engineering, Design, Business/Revenue\n\n**Time horizon:** The investigation phase should be time-boxed to 2-4 weeks. A go/no-go decision should follow immediately after.\n\n### Problem Statement\n\nWe have identified a potential user need, but the supporting evidence is weak:\n\n- No validated user research directly confirming the problem exists at meaningful scale\n- No quantitative data on frequency, severity, or revenue impact\n- No competitive evidence that this capability drives adoption or retention elsewhere\n- The feature concept originates from internal intuition or a small number of anecdotal signals\n\nThis PRD is structured as an **evidence audit**, not a feature specification. Writing a full spec against weak evidence would create false confidence and waste downstream effort.\n\n### What We Think We Know (Unvalidated Assumptions)\n\n| Assumption | Source | Confidence | Validation Method |\n|---|---|---|---|\n| Users experience friction in [target workflow] | Internal team intuition | Low | User interviews (n≥8) |\n| This friction causes measurable churn or reduced engagement | None | Very Low | Cohort analysis against proxy metrics |\n| Users would adopt the proposed solution over workarounds | None | Very Low | Prototype test or painted-door experiment |\n| The feature is technically feasible within current architecture | Preliminary eng assessment | Medium | Spike (time-boxed to 3 days) |\n\n## Unknowns & Evidence Gaps\n\n### Critical Unknowns (Must resolve before any build commitment)\n\n1. **Problem existence at scale.** We have no quantitative signal that more than a handful of users experience this problem. Without this, any build is speculative.\n   - *Required evidence:* User interviews (minimum 8 participants from target segment) OR support ticket analysis showing recurring pattern OR behavioral data showing drop-off at the relevant workflow step.\n   - *Kill criterion:* If fewer than 3 of 8 interviewees independently surface this problem unprompted, the problem does not clear the bar.\n\n2. **Willingness to adopt.** Even if the problem exists, users may have acceptable workarounds. A solution they will not switch to has zero value.\n   - *Required evidence:* Concept test or painted-door experiment with measurable intent signal (click-through, sign-up, stated preference with commitment cost).\n   - *Kill criterion:* Intent signal below 15% of exposed users.\n\n3. **Revenue or retention linkage.** No evidence connects this problem to business outcomes.\n   - *Required evidence:* Correlation analysis between users who exhibit the target friction behavior and churn/downgrade rates, OR competitive loss data citing this capability.\n   - *Kill criterion:* No statistically significant difference in retention between affected and unaffected cohorts.\n\n### Secondary Unknowns (Resolve during build if greenlit)\n\n4. **Technical cost.** Preliminary estimate exists but no spike has been conducted.\n5. **Interaction with existing features.** Unknown whether this creates conflicts or redundancy with current capabilities.\n6. **Addressable segment size.** Unknown what percentage of the user base falls into the target segment.\n\n### Evidence We Do NOT Have\n\n- No survey data\n- No A/B test results\n- No competitive benchmarking\n- No customer advisory board input\n- No sales/CS escalation patterns\n- No usage analytics on the target workflow\n\nThis is a comprehensive absence. The honest assessment is that this feature idea is currently at the **hypothesis stage**, not the specification stage.\n\n## Pass/Fail Readiness\n\n**Readiness verdict: FAIL — Not ready for build commitment.**\n\n| Readiness Criterion | Status | Notes |\n|---|---|---|\n| Problem validated with users | ❌ Fail | No user research conducted |\n| Quantitative sizing available | ❌ Fail | No data on affected user count or frequency |\n| Business case articulated | ❌ Fail | No revenue/retention linkage established |\n| Technical feasibility confirmed | ⚠️ Partial | Preliminary estimate only, no spike |\n| Solution concept tested | ❌ Fail | No prototype or concept test |\n| Stakeholder alignment on priority | ⚠️ Partial | Interest expressed but not against alternatives |\n\n**What would change this to PASS:**\n- Complete the three critical unknown investigations listed above\n- At least 2 of 3 must clear their kill criteria\n- Technical spike must confirm feasibility within acceptable cost envelope\n- Re-present to stakeholders with evidence package for prioritization against alternatives\n\n**Cost of investigation vs. premature build:** The general principle — that lightweight investigation costs less than a full build cycle — holds directionally, but we cannot quantify either side without knowing the feature's scope, team composition, and architecture complexity. The investigation phase (interviews, analytics queries, a painted-door test) is structurally lighter than a build phase (design, engineering, QA, release), but specific time and staffing estimates must be derived from actual scoping once the feature is concretely defined. The argument for investigating first rests on the structural nature of the work, not on precise duration claims.\n\n## Recommended Next Artifact\n\n**Do not proceed to a technical spec or design brief.**\n\nThe next artifact should be an **Evidence Collection Plan** containing:\n\n1. **User interview script** — focused on the target workflow, structured to surface the problem unprompted (no leading questions)\n2. **Analytics query spec** — defining the behavioral proxy metrics to pull from existing instrumentation\n3. **Painted-door experiment design** — lightweight test to measure adoption intent without building the feature\n4. **Kill criteria checklist** — the specific thresholds defined above, written as a decision contract before data collection begins (to prevent post-hoc rationalization)\n5. **Timeline and owners** — who runs each investigation track, with a hard deadline for the evidence review meeting\n\nAfter the evidence review, the appropriate next artifact is either:\n- A **full PRD with specification** (if evidence clears the bar), or\n- A **decision record** documenting why the feature was shelved (if evidence fails)\n\n---\n\n*This PRD is intentionally incomplete as a feature specification. That is the correct response to weak evidence. A detailed spec written against unvalidated assumptions creates the illusion of rigor while compounding the cost of being wrong.*",
+        "claims": [
+          {
+            "claim_id": "side_a-claim-1",
+            "summary": "A PRD against weak evidence should be structured as an evidence audit with explicit kill criteria, not a feature specification — writing detailed specs on unvalidated assumptions creates false confidence and compounds the cost of being wrong.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-2",
+            "summary": "The correct readiness verdict is FAIL, with a recommended next artifact of an Evidence Collection Plan rather than a technical spec or design brief.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-3",
+            "summary": "Kill criteria must be defined before data collection begins to prevent post-hoc rationalization — each critical unknown should have a specific, measurable threshold that determines whether to proceed or shelve.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-4",
+            "summary": "Investigation is structurally lighter than a full build cycle, but specific cost estimates cannot be grounded without concrete feature scope, team composition, and architecture context. The directional argument for investigate-first holds based on the nature of the work, not on precise duration claims.",
+            "evidence_refs": [],
+            "is_major": false
+          }
+        ],
+        "citations": [],
+        "open_questions": [
+          "What specific feature is being proposed? The scenario is abstract — a real PRD would need to name the capability and target user segment to define meaningful kill criteria.",
+          "What existing instrumentation or data infrastructure is available to run the recommended analytics queries?",
+          "Are there competing priorities that make even the investigation phase a meaningful opportunity cost?"
+        ],
+        "critique_responses": [
+          {
+            "finding_id": "finding-2",
+            "disposition": "adopted",
+            "rationale": "The critique is correct: the original 2-4 week and 4-12 week estimates were asserted without any grounding in feature scope, team size, or architecture complexity. In a scenario with no concrete feature definition, specific duration and staffing numbers are invented precision. The revised artifact removes the fabricated estimates and instead argues the cost asymmetry on structural grounds — that interviews, analytics queries, and painted-door tests are inherently lighter-weight activities than design-engineering-QA build cycles — while explicitly noting that real estimates require actual scoping. The claim has been downgraded from a quantified comparison to a directional structural argument."
+          }
+        ]
+      }
+    },
+    "side_b": {
+      "provider": "openai",
+      "model": "chatgpt-pro",
+      "reasoning_effort": "medium",
+      "access_mode": "subscription_cli",
+      "role": "side_b",
+      "first_pass": {
+        "run_id": "conflict-2026-04-14-071031469Z-feature-weak-evidence",
+        "side_id": "side_b",
+        "round": "first_pass",
+        "artifact_markdown": "# PRD: Discovery-Gated Feature Proposal\n\n## Overview\nThis PRD does not authorize full feature delivery. It defines a constrained discovery and prototype phase for a proposed feature whose supporting evidence is currently insufficient.\n\n## Problem\nA potential user need has been identified, but there is no validated evidence in the case packet establishing demand, urgency, willingness to adopt, or expected business impact.\n\n## Goal\nDecide whether the feature should advance to a build-ready PRD by reducing the current evidence gap through targeted discovery.\n\n## Non-Goals\n- Full production launch\n- Broad roadmap commitment\n- Irreversible architecture investment\n\n## Users\nPrimary user segment is unknown.\n\n## Hypothesis\nIf the proposed feature addresses a real, high-frequency user pain point, then a limited prototype and structured discovery will produce measurable signals of user pull strong enough to justify a build decision.\n\n## Scope\n### In scope\n- Problem validation interviews\n- Clickable prototype or lightweight concierge test\n- Instrumented usability sessions\n- Build-readiness recommendation\n\n### Out of scope\n- Production-grade implementation\n- Cross-platform rollout\n- Pricing or packaging changes\n\n## Requirements\n### Functional\n1. Create a prototype sufficient to demonstrate the core user workflow.\n2. Run structured user conversations against the prototype.\n3. Capture evidence on problem severity, workflow fit, and intent to use.\n4. Document findings in a follow-on decision artifact.\n\n### Non-functional\n1. Minimize engineering effort until evidence improves.\n2. Ensure all findings are traceable to explicit interview or test outputs.\n3. Separate observed evidence from assumptions.\n\n## Success Metrics\n- At least 5 target users complete prototype evaluation.\n- At least 3 report the problem as frequent and important.\n- At least 3 indicate clear preference for this approach over current workaround.\n- No critical workflow confusion appears in more than 2 sessions.\n\n## Risks\n- Solving a low-priority problem\n- Misidentifying the target user\n- Overfitting to anecdotal feedback\n- Converting weak signals into premature roadmap commitment\n\n## Rollout Plan\n1. Run discovery sprint.\n2. Review evidence against pass/fail gates.\n3. Either stop, iterate on concept, or commission build-ready PRD.\n\n## Decision Frame\nThe decision in this document is not whether to ship the feature. The decision is whether the idea merits a bounded discovery investment. Given the absence of supporting evidence, the correct action is a discovery-gated PRD rather than a delivery PRD.\n\n## Unknowns & Evidence Gaps\n- Who specifically has the problem\n- How often the problem occurs\n- Current workaround quality\n- Whether the proposed feature is materially better\n- Whether users would adopt the behavior change required\n- Whether the opportunity is large enough to justify implementation cost\n\n## Pass/Fail Readiness\nFail for production build readiness.\nPass for a limited discovery and prototype phase only.\nA full build should proceed only if the success metrics above are met and the evidence is documented in a follow-on artifact.\n\n## Recommended Next Artifact\nDiscovery summary with interview evidence, prototype findings, quantified demand signals, and a build/no-build recommendation.",
+        "claims": [
+          {
+            "claim_id": "side_b-claim-1",
+            "summary": "The feature should not be treated as build-ready because the case packet provides weak support and no evidence artifacts.",
+            "evidence_refs": [
+              "ctx-1"
+            ],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_b-claim-2",
+            "summary": "The appropriate PRD outcome is a discovery-gated prototype phase with explicit success thresholds rather than a production commitment.",
+            "evidence_refs": [
+              "ctx-1"
+            ],
+            "is_major": true
+          }
+        ],
+        "citations": [
+          "ctx-1"
+        ],
+        "open_questions": [
+          "What specific user segment is expected to use the feature first?",
+          "What existing user behavior or workaround indicates this is a meaningful problem?",
+          "What business outcome would justify implementation cost if discovery succeeds?"
+        ],
+        "critique_responses": []
+      },
+      "rebuttal": {
+        "target_side": "side_a",
+        "finding_id": "finding-2",
+        "target_claim_ids": [
+          "side_a-claim-4"
+        ],
+        "claim_under_attack": "The cost asymmetry between investigation (2-4 weeks, light staffing) and premature build (4-12 weeks, full team) strongly favors the investigate-first path when evidence is weak.",
+        "attack_type": "evidence_gap",
+        "evidence_or_reason": "This claim asserts a strong cost comparison without any visible supporting basis in the artifact. No feature scope, team composition, architecture complexity, or historical delivery data is provided, so the 2-4 week investigation estimate and 4-12 week build estimate appear invented rather than derived. Without grounded sizing inputs, the supposed asymmetry is too speculative to support a decision.",
+        "severity": "medium"
+      },
+      "final": {
+        "run_id": "conflict-2026-04-14-071031469Z-feature-weak-evidence",
+        "side_id": "side_b",
+        "round": "final",
+        "artifact_markdown": "# Revised artifact\n\n## PRD: Discovery-Gated Feature Proposal\n\n## Overview\nThis PRD does not authorize full feature delivery. It defines a constrained discovery phase for a proposed feature whose supporting evidence is currently insufficient.\n\n## Problem\nA potential user need has been identified, but the case packet provides no validated evidence establishing demand, urgency, willingness to adopt, or expected business impact.\n\n## Goal\nDetermine whether the feature should advance to a build-ready PRD by reducing the current evidence gap through structured discovery.\n\n## Non-Goals\n- Full production launch\n- Broad roadmap commitment\n- Irreversible architecture investment\n\n## Users\nPrimary user segment is not yet validated.\n\n## Hypothesis\nIf the proposed feature addresses a real, high-frequency user pain point for a specific segment, then structured discovery should surface consistent evidence of problem severity, poor current workarounds, and credible intent to adopt a better solution.\n\n## Scope\n### In scope\n- Problem validation interviews\n- Lightweight prototype or concierge test\n- Instrumented usability sessions\n- Evidence review and build-readiness recommendation\n\n### Out of scope\n- Production-grade implementation\n- Cross-platform rollout\n- Pricing or packaging changes\n\n## Requirements\n### Functional\n1. Define the initial target segment before testing begins.\n2. Create a prototype sufficient to demonstrate the core workflow.\n3. Run structured discovery sessions with representative users from the target segment.\n4. Capture evidence on problem frequency, severity, current workaround quality, and solution fit.\n5. Produce a follow-on decision artifact separating observations, interpretations, and assumptions.\n\n### Non-functional\n1. Minimize engineering effort until evidence improves.\n2. Ensure all findings are traceable to explicit research outputs.\n3. Avoid converting anecdotal positive feedback into a build commitment without corroboration.\n\n## Evaluation Criteria\nThe discovery phase should be judged on pattern quality, not arbitrary numeric cutoffs. A build-ready PRD should only be considered if discovery shows:\n- Repeated evidence that the same problem appears across multiple representative users in the target segment\n- Clear indication that current workarounds are inadequate\n- Credible signs that the proposed workflow is materially better than the status quo\n- No major usability or adoption blockers that would undermine the concept\n- A plausible connection between the validated problem and a worthwhile business outcome\n\n## Risks\n- Solving a low-priority problem\n- Misidentifying the target user\n- Overfitting to anecdotal feedback\n- Mistaking directional interest for validated demand\n- Converting weak signals into premature roadmap commitment\n\n## Rollout Plan\n1. Define target segment and research plan.\n2. Run bounded discovery and prototype testing.\n3. Synthesize findings by separating evidence from interpretation.\n4. Decide to stop, refine and retest, or commission a build-ready PRD.\n\n## Decision Frame\nThe decision in this document is not whether to ship the feature. The decision is whether the idea merits a bounded discovery investment. Given the lack of supporting evidence in the case packet, the correct action is a discovery-gated PRD rather than a delivery PRD.\n\n## Unknowns & Evidence Gaps\n- Who specifically has the problem\n- How often the problem occurs\n- How painful the current workflow is\n- Whether the proposed feature is materially better than current workarounds\n- Whether users would actually adopt the new behavior\n- Whether the opportunity is large enough to justify implementation cost\n- What level of evidence should be considered sufficient for a build decision in this product context\n\n## Pass/Fail Readiness\nFail for production build readiness.\nPass for a limited discovery phase only.\nAdvance to a build-ready PRD only if discovery produces consistent cross-user evidence strong enough to reduce the core uncertainties above and support a decision with traceable evidence rather than isolated positive reactions.\n\n## Recommended Next Artifact\nDiscovery summary with segment definition, interview evidence, prototype findings, synthesized demand signals, remaining uncertainties, and a build/no-build recommendation.",
+        "claims": [
+          {
+            "claim_id": "side_b-claim-1",
+            "summary": "The feature should not be treated as build-ready because the case packet provides weak support and no evidence artifacts.",
+            "evidence_refs": [
+              "ctx-1"
+            ],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_b-claim-2",
+            "summary": "The appropriate PRD outcome is a discovery-gated phase, but the gates should rely on consistent qualitative evidence patterns rather than unsupported numeric thresholds.",
+            "evidence_refs": [
+              "ctx-1"
+            ],
+            "is_major": true
+          }
+        ],
+        "citations": [
+          "ctx-1"
+        ],
+        "open_questions": [
+          "Which user segment should be treated as the initial test population?",
+          "What existing behavior or workaround suggests this problem is important enough to study?",
+          "What evidence standard should this team require before converting discovery results into a build commitment?"
+        ],
+        "critique_responses": [
+          {
+            "finding_id": "finding-1",
+            "disposition": "adopted",
+            "rationale": "The critique is correct that the prior numeric pass/fail thresholds implied rigor without evidentiary support. I removed those arbitrary cutoffs and replaced them with pattern-based evaluation criteria tied directly to the actual uncertainty in the case packet."
+          }
+        ]
+      }
+    }
+  },
+  "judge": {
+    "provider": "openai",
+    "model": "chatgpt-pro",
+    "reasoning_effort": "medium",
+    "access_mode": "subscription_cli",
+    "blind_labels": true,
+    "family_blind": false,
+    "selection_policy": "single_judge_cli",
+    "verdict": {
+      "winner": "side_a",
+      "margin": 0.14,
+      "rubric_scores": {
+        "side_a": {
+          "claim_quality": 4.6,
+          "evidence_discipline": 4,
+          "responsiveness_to_critique": 4.5,
+          "internal_consistency": 4.5,
+          "decision_usefulness": 4.6,
+          "weighted_total": 4.44
+        },
+        "side_b": {
+          "claim_quality": 4.3,
+          "evidence_discipline": 4.2,
+          "responsiveness_to_critique": 4.4,
+          "internal_consistency": 4.4,
+          "decision_usefulness": 4.2,
+          "weighted_total": 4.3
+        }
+      },
+      "decisive_findings": [
+        "Side A delivered the more decision-ready artifact by pairing a clear fail verdict with specific critical unknowns, concrete evidence requirements, and a stronger next-artifact recommendation.",
+        "Side A substantially absorbed critique by removing unsupported duration estimates while preserving the underlying investigate-first logic on structural rather than fabricated quantitative grounds.",
+        "Side B improved its evidence discipline by dropping arbitrary thresholds, but its replacement with pattern-based gates made the artifact less operational and less useful for an actual go/no-go decision.",
+        "Both sides were disciplined about not pretending the feature was build-ready, but Side A better translated that caution into an actionable decision contract."
+      ],
+      "judge_confidence": "medium",
+      "needs_human_review": false,
+      "rationale": "Both sides correctly recognized that the scenario calls for a discovery-gated response rather than a build-ready feature spec, and both improved after critique. Side B was slightly cleaner on evidence discipline after removing unsupported numeric thresholds, but Side A remained stronger overall because it converted uncertainty into a more usable decision artifact: clearer failure status, better-structured unknowns, more explicit evidence expectations, and a sharper recommendation for the next artifact. Side A also addressed its own unsupported cost estimate directly and appropriately narrowed the claim. The resulting margin is modest but above the 0.1 threshold, so Side A wins."
+    }
+  },
+  "budgets": {
+    "max_visible_rounds": 3,
+    "max_cost_usd": 1000000,
+    "max_latency_ms": 360000,
+    "min_margin_for_verdict": 0.1
+  },
+  "results": {
+    "winner": "side_a",
+    "margin": 0.14,
+    "judge_confidence": "medium",
+    "swap_stable": null,
+    "needs_human_review": false
+  },
+  "metrics": {
+    "disagreement_rate": 0.25,
+    "declared_adoption_rate": 1,
+    "substantive_revision_rate": 1,
+    "unsupported_claim_count": 4,
+    "self_contradiction_count": 0,
+    "total_estimated_cost_usd": 0,
+    "swap_margin_delta": null,
+    "judge_margin": 0.14,
+    "cost_per_resolved_run": 0
+  },
+  "audit": {
+    "identity_leak_warnings": [],
+    "protocol_violations": []
+  }
+}

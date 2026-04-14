@@ -1,0 +1,53 @@
+{
+  "run_id": "conflict-2026-04-14-064906724Z-churn-conflicting-signals",
+  "side_id": "side_b",
+  "round": "final",
+  "artifact_markdown": "# Revised artifact\n\n## Product Decision\nAdopt a conditional churn-response PRD: default to a constrained pilot when churn signals conflict with strategy targets and evidence is weak, but override that default with a rapid-response path if churn severity crosses explicit emergency thresholds. This makes the recommendation falsifiable and usable under both uncertainty and urgency.\n\n## Problem\nThe team needs to reduce churn while current signals conflict with strategy targets. The core risk is acting on noisy or segment-misaligned retention signals and preserving usage that is low-value, margin-destructive, or strategically non-core. The opposite risk is moving too slowly when churn deterioration is severe enough to justify immediate intervention.\n\n## Goal\nReduce avoidable churn while preserving strategic direction and defining when urgency warrants faster action.\n\n## Non-Goals\n- Do not redefine company strategy from unverified churn signals alone.\n- Do not launch blanket discounts or universal save offers.\n- Do not assume all churn is preventable.\n- Do not treat a pilot as the default when emergency churn conditions are present.\n\n## Users\n- Existing customers at elevated risk of cancellation.\n- Customer success and lifecycle teams executing interventions.\n- Product leadership balancing retention and strategic roadmap commitments.\n\n## Hypothesis\nIf the team routes normal uncertainty into a constrained pilot and reserves broad or accelerated action for explicitly defined churn-emergency conditions, then it can reduce avoidable churn without overreacting to ambiguous signals or underreacting to acute loss.\n\n## Decision Logic\n### Default Path: Constrained Pilot\nUse a pilot first when all of the following are true:\n- churn signals are directionally concerning but not clearly accelerating,\n- segment-level causality is weak or mixed,\n- strategy tradeoffs are material,\n- no evidence shows imminent revenue or customer-base damage beyond normal operating tolerance.\n\n### Override Path: Rapid Response\nBypass a slow pilot and initiate an accelerated retention response when any of the following thresholds are met:\n- churn for a strategically core segment rises above an agreed emergency threshold versus baseline for 2 consecutive measurement periods,\n- retained revenue risk from the affected segment exceeds a pre-agreed materiality threshold,\n- leading indicators show a sharp deterioration concentrated in a high-value segment and waiting for a normal pilot would likely forfeit recoverable customers,\n- executive leadership explicitly declares churn containment a temporary priority over the affected roadmap tradeoff.\n\n## Proposed Solution\n1. Build a churn-risk decision layer combining product, account, billing, and support signals.\n2. Classify segments by two axes: churn risk and strategic importance.\n3. Route segments into one of two operating modes: constrained pilot or rapid response.\n4. Limit intervention types initially to save outreach, activation recovery, value-realization prompts, and account-risk escalation.\n5. Require retained revenue and strategic guardrails for either path.\n6. Escalate only validated segment-specific causes into roadmap changes.\n\n## Requirements\n### Functional Requirements\n- The system must assign accounts or users to risk tiers and strategic-priority tiers.\n- Teams must be able to analyze churn by plan, tenure, usage pattern, acquisition source, and revenue contribution.\n- Each eligible segment must be assigned to either pilot mode or rapid-response mode based on explicit rules.\n- Intervention assignment and outcome events must be logged for attribution.\n- Teams must be able to suppress interventions for strategically non-core segments.\n\n### Measurement Requirements\n- Primary metric: churn rate for eligible segment.\n- Business metric: retained revenue from intervened segment.\n- Guardrails: gross margin impact, discount cost, support load, and adoption of strategy-priority behaviors.\n- Analysis must separate voluntary churn from involuntary or administrative churn.\n- Emergency thresholds must be defined relative to segment baseline before launch.\n\n### Operational Requirements\n- Product, lifecycle, finance, and CS owners must review thresholds before pilot start.\n- Any rapid-response activation must be documented with the threshold breached.\n- Broad rollout requires either statistically credible uplift or a strong directional result with low downside.\n- Any strategy-conflicting intervention requires explicit leadership approval.\n\n## Rollout Plan\n### Phase 1: Baseline and Threshold Setting\n- Validate instrumentation.\n- Establish churn, retained revenue, and margin baselines by segment.\n- Define emergency thresholds that trigger rapid response.\n\n### Phase 2: Segment Routing\n- Route each at-risk segment into pilot or rapid-response mode.\n- Start interventions only in strategically relevant segments.\n\n### Phase 3: Evaluate and Expand\n- Expand only if retention improves and guardrails remain healthy.\n- Stop, redesign, or de-escalate if gains come from margin-destructive or strategy-conflicting tactics.\n\n## Risks\n- Signals may remain correlational rather than causal.\n- Emergency thresholds may be set too low or too high.\n- The team may preserve low-value customers while missing high-value churn.\n- Discount-led saves may mask product gaps.\n- Conflicting signals may reflect measurement defects rather than customer behavior.\n\n## Decision Frame\nProceed with a conditional churn program, not an unconditional pilot. The default is a constrained pilot because the packet provides no operating evidence strong enough to justify broad retention action. That default becomes inadequate if churn severity breaches pre-defined thresholds in strategically core segments or creates material retained-revenue risk. In short: use pilot mode under uncertainty, rapid-response mode under demonstrated urgency.\n\n## Unknowns & Evidence Gaps\n- No packet evidence identifies which segments are actually churning.\n- No evidence quantifies churn severity, acceleration, or retained-revenue exposure.\n- No evidence separates preventable churn from acceptable churn.\n- No evidence shows which signals are causal versus lagging or noisy.\n- No evidence defines strategy targets precisely enough to score tradeoffs.\n- Emergency thresholds still need numeric definition from baseline data.\n\n## Pass/Fail Readiness\nPass with conditions. This artifact is ready to align teams on decision logic, guardrails, and escalation criteria, but it is not ready for full execution until baseline metrics and emergency thresholds are defined. It is decision-useful because it now specifies when a constrained pilot is appropriate and when it would be too slow.\n\n## Recommended Next Artifact\nChurn Analysis artifact that quantifies segment-level churn severity, retained-revenue exposure, preventable-versus-acceptable churn, and recommended emergency thresholds before intervention launch.",
+  "claims": [
+    {
+      "claim_id": "side_b-claim-1",
+      "summary": "A constrained pilot should be the default only under uncertainty; it should be overridden by a rapid-response path when explicit churn-severity or retained-revenue thresholds are breached.",
+      "evidence_refs": [
+        "ctx-1",
+        "ctx-2"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-2",
+      "summary": "Retention work should be gated by retained revenue and strategy guardrails, not raw churn reduction alone.",
+      "evidence_refs": [
+        "ctx-1",
+        "ctx-3"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-3",
+      "summary": "Given the absence of underlying operating evidence, the artifact can define decision rules and escalation criteria but cannot justify a broad churn program or roadmap pivot yet.",
+      "evidence_refs": [
+        "ctx-1",
+        "ctx-2"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1",
+    "ctx-2",
+    "ctx-3"
+  ],
+  "open_questions": [
+    "What numeric churn-change threshold should trigger rapid response for each strategically core segment?",
+    "What retained-revenue exposure should count as materially urgent enough to bypass a normal pilot?",
+    "Which segments are strategically core versus acceptable to let churn at current rates?",
+    "Which current signals are causal predictors versus instrumentation noise or lagging indicators?"
+  ],
+  "critique_responses": [
+    {
+      "finding_id": "finding-1",
+      "disposition": "adopted",
+      "rationale": "The critique identified a real weakness: the first-pass recommendation treated a constrained pilot as universally correct without specifying when that approach would be too slow. The revision makes the recommendation conditional, adds explicit override criteria for rapid response, and reframes the PRD around falsifiable decision logic rather than prudence by default."
+    }
+  ]
+}

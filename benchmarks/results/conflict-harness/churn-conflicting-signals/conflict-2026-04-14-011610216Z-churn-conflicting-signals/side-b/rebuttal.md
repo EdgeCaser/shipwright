@@ -1,0 +1,13 @@
+# Critique: finding-2
+
+- Target Side: side_a
+- Target Claim IDs: side_a-claim-4
+- Attack Type: evidence_gap
+- Severity: medium
+
+## Claim Under Attack
+A minimum viable decision point can be reached in 4 weeks by resolving three of four critical unknowns, with controlled experiments running in parallel for intervention design.
+
+## Evidence Or Reason
+The 4-week decision timeline is asserted without visible support from the artifact itself. The plan depends on raising cancellation-reason response rates from 11% to at least 30%, completing 30 exit interviews, producing a tiered revenue model, and securing CFO constraint clarity, yet no evidence is provided that the team has the instrumentation, sample volume, analytics bandwidth, or stakeholder access to do this inside 4 weeks. Given those operational dependencies, the claimed minimum viable decision point is speculative rather than evidence-backed.
+

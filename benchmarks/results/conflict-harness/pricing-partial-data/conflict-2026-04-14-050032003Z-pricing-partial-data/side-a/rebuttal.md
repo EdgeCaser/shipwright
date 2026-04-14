@@ -1,0 +1,13 @@
+# Critique: finding-1
+
+- Target Side: side_b
+- Target Claim IDs: side_b-claim-1
+- Attack Type: evidence_gap
+- Severity: medium
+
+## Claim Under Attack
+A full-market pricing change under partial data fails readiness criteria because two critical unknowns — segment-level WTP and price elasticity — cannot be resolved without primary research or controlled experimentation.
+
+## Evidence Or Reason
+The claim treats missing segment-level WTP and elasticity as automatic blockers for any full-market pricing decision, but the artifact provides no evidence that existing internal data is insufficient to support a narrower readiness threshold. It explicitly notes access to revenue, margin, churn, usage patterns, and possibly prior pricing cohorts, yet does not test whether those sources could yield directional elasticity estimates or enough confidence for a limited full-market adjustment. As written, the 'conditional fail' conclusion is asserted, not demonstrated from the visible record.
+

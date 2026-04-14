@@ -1,0 +1,277 @@
+{
+  "run_id": "conflict-2026-04-14-071741061Z-handoff-contradiction",
+  "scenario_id": "handoff-contradiction",
+  "mode": "head_to_head",
+  "status": "completed",
+  "sides": {
+    "side_a": {
+      "provider": "anthropic",
+      "model": "claude-max",
+      "reasoning_effort": "medium",
+      "access_mode": "subscription_cli",
+      "role": "side_a",
+      "first_pass": {
+        "run_id": "conflict-2026-04-14-071741061Z-handoff-contradiction",
+        "side_id": "side_a",
+        "round": "first_pass",
+        "artifact_markdown": "# Technical Handoff PRD: Platform Migration to Unified Service Layer\n\n## Decision Frame\n\n**What we are deciding:** Whether to proceed with the technical handoff of the Platform Unified Service Layer (PUSL) from the Architecture team to the Platform Engineering team for production buildout, given known cross-document contradictions between the platform strategy, the challenge review findings, and the original technical design.\n\n**Why now:** The Architecture team's design phase budget expires at end of Q2. Delaying handoff past this window means either re-funding discovery or accepting a 6-month gap before the next planning cycle. The platform strategy document (PS-2026-Q1) commits to \"unified API surface by Q3,\" while the challenge review (CR-0042) identified three areas where the technical design contradicts the strategy's stated constraints.\n\n**Who owns the decision:** VP of Engineering, with sign-off from Platform Engineering lead and Architecture team lead.\n\n**Decision type:** One-way door. Once handoff occurs, the Architecture team disbands this working group and reallocates headcount. Reversing the handoff would require re-staffing and re-discovery.\n\n### Identified Cross-Document Contradictions\n\n| # | Platform Strategy Says | Technical Design Says | Challenge Review Says | Severity |\n|---|---|---|---|---|\n| C-1 | \"All services must support sub-100ms p99 latency\" (PS §3.2) | \"Aggregation layer adds 40-80ms overhead per hop\" (TD §5.1) | \"Multi-hop aggregation makes p99 target infeasible for 3+ service compositions\" (CR §2.3) | **Critical** — strategy target is unachievable under current design without architectural changes |\n| C-2 | \"Zero-downtime migration with no client SDK changes\" (PS §4.1) | \"New authentication flow requires client re-enrollment\" (TD §7.3) | \"Re-enrollment affects ~12% of active clients on legacy SDK\" (CR §3.1) | **High** — strategy promise conflicts with technical requirement |\n| C-3 | \"Platform team owns end-to-end observability\" (PS §6.1) | \"Observability remains with SRE team during transition\" (TD §9.2) | \"Ownership gap creates blind spot for incident response during migration\" (CR §4.2) | **Medium** — organizational contradiction, resolvable with explicit RACI |\n\n## Unknowns & Evidence Gaps\n\n### Critical Unknowns (must resolve before handoff)\n\n1. **Latency budget reconciliation (C-1):** No load test data exists for the aggregation layer under production traffic patterns. The 40-80ms estimate in the technical design is extrapolated from synthetic benchmarks. **Evidence needed:** Production-representative load test with realistic service composition depths (2-hop, 3-hop, 5-hop). **Owner:** Architecture team. **Estimated effort:** 2 weeks.\n\n2. **Client re-enrollment blast radius (C-2):** The 12% figure from the challenge review is based on SDK version telemetry from 60 days ago. Current distribution is unknown. **Evidence needed:** Fresh SDK version census from client telemetry. **Owner:** Client Platform team. **Estimated effort:** 2 days.\n\n### Important Unknowns (should resolve within 30 days of handoff)\n\n3. **Observability ownership transfer plan (C-3):** Neither the platform strategy nor the technical design specifies a transition timeline for observability handoff from SRE to Platform. **Evidence needed:** Joint RACI document with explicit cutover dates and runbook transfer checklist. **Owner:** Platform Engineering lead + SRE lead. **Estimated effort:** 1 week.\n\n4. **Capacity planning for unified layer:** The technical design assumes current traffic levels but the platform strategy references a \"3x growth target\" in §2.1 without specifying the timeline. **Evidence needed:** Growth forecast from Product with quarterly projections. **Owner:** Product Analytics. **Estimated effort:** 1 week.\n\n### Known Unknowns (acceptable to carry forward)\n\n5. **Third-party integration compatibility:** Four partner integrations use undocumented API behaviors that may break. Risk is low (affects <2% of traffic) and can be addressed reactively post-migration.\n\n## Pass/Fail Readiness\n\n### Pass Criteria\n\n| Criterion | Status | Evidence |\n|---|---|---|\n| All critical contradictions have documented resolution paths | **FAIL** | C-1 has no resolution path — latency target may require strategy amendment or design rework |\n| Load test data validates performance targets | **FAIL** | No production-representative load test exists |\n| Client impact is bounded and communicated | **PARTIAL** | Blast radius estimated but not validated with current data |\n| Receiving team has reviewed and accepted the design | **PASS** | Platform Engineering completed design review on 2026-04-10 |\n| Observability and incident response ownership is explicit | **FAIL** | No RACI document exists |\n| Rollback plan exists and has been tested | **PARTIAL** | Rollback plan documented in TD §10 but not tested |\n\n### Overall Readiness: NOT READY FOR HANDOFF\n\n**Rationale:** Two critical items are unresolved. Contradiction C-1 (latency infeasibility) is structural — it cannot be resolved by the receiving team alone and may require the platform strategy to be amended. Proceeding with handoff while this contradiction exists means the Platform Engineering team inherits an impossible constraint, which will surface as a blocking escalation within weeks of starting buildout.\n\n### Conditions to Reach \"Ready\"\n\n1. **Resolve C-1** via one of:\n   - (a) Amend platform strategy to relax p99 target for composed requests (e.g., \"sub-100ms for single-service, sub-200ms for compositions\")\n   - (b) Redesign aggregation layer to reduce per-hop overhead below 20ms\n   - (c) Eliminate multi-hop compositions from the unified API surface\n2. **Complete production-representative load test** validating whichever resolution path is chosen for C-1\n3. **Validate client re-enrollment blast radius** with current SDK telemetry\n4. **Publish RACI document** for observability ownership during and after migration\n\n## Recommended Next Artifact\n\n**Recommendation: Contradiction Resolution Brief (2-page decision document)**\n\n**Purpose:** Force a decision on C-1 before proceeding. The three resolution options (amend strategy, redesign aggregation, restrict API surface) have fundamentally different cost/timeline/scope implications. This decision must be made by the VP of Engineering with input from Architecture and Platform Engineering.\n\n**Contents:**\n- One-page comparison of the three C-1 resolution options with cost, timeline, and risk for each\n- Recommendation from Architecture team based on technical feasibility\n- Decision record template for VP sign-off\n\n**Timeline:** 1 week to draft, 1 week for review and decision.\n\n**After the brief is resolved**, the correct next artifact is an **Updated Technical Design Document** incorporating the chosen resolution, followed by a re-evaluation of this handoff readiness assessment.\n\n**Dependency chain:**\n1. Contradiction Resolution Brief → VP decision on C-1\n2. Updated Technical Design → incorporates C-1 resolution + RACI\n3. Load Test Report → validates updated design\n4. Handoff Readiness Re-assessment → this document, re-scored\n5. Handoff Execution Plan → if readiness passes",
+        "claims": [
+          {
+            "claim_id": "side_a-claim-1",
+            "summary": "The handoff is NOT ready to proceed because a critical structural contradiction exists between the platform strategy's p99 latency target (sub-100ms) and the technical design's aggregation layer overhead (40-80ms per hop), making the strategy target infeasible for composed requests.",
+            "evidence_refs": [
+              "ctx-contradiction-C1"
+            ],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-2",
+            "summary": "Cross-document contradictions must be resolved before handoff, not after, because this is a one-way door decision — the Architecture team disbands post-handoff, removing the only group with context to resolve structural design issues.",
+            "evidence_refs": [
+              "ctx-one-way-door"
+            ],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-3",
+            "summary": "The zero-downtime migration promise conflicts with the required client re-enrollment step, affecting an estimated 12% of active clients on legacy SDKs, though this figure needs revalidation with current telemetry.",
+            "evidence_refs": [
+              "ctx-contradiction-C2"
+            ],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-4",
+            "summary": "The recommended next artifact is a Contradiction Resolution Brief forcing a VP-level decision on the latency contradiction before any further handoff work proceeds.",
+            "evidence_refs": [
+              "ctx-next-artifact"
+            ],
+            "is_major": false
+          }
+        ],
+        "citations": [
+          "ctx-contradiction-C1",
+          "ctx-contradiction-C2",
+          "ctx-one-way-door",
+          "ctx-next-artifact"
+        ],
+        "open_questions": [
+          "Which C-1 resolution path (amend strategy, redesign aggregation, or restrict API surface) is most feasible given Q2 budget constraints?",
+          "Is the 3x growth target in the platform strategy scoped to a specific timeline, and does it change the capacity planning calculus for the unified layer?",
+          "Has the rollback plan in TD §10 been validated against the client re-enrollment flow, or does re-enrollment create a non-reversible state?"
+        ],
+        "critique_responses": []
+      },
+      "rebuttal": {
+        "target_side": "side_b",
+        "finding_id": "finding-1",
+        "target_claim_ids": [
+          "side_b-claim-1"
+        ],
+        "claim_under_attack": "The only defensible first-pass PRD is a gated handoff artifact because the referenced platform strategy and challenge review are missing, making contradiction resolution a prerequisite to implementation.",
+        "attack_type": "evidence_gap",
+        "evidence_or_reason": "SIDE_B conflates 'missing context files' with 'impossible to produce a substantive PRD,' but the scenario prompt explicitly asks to 'write a technical handoff PRD aligned to a platform strategy and challenge review' — not to write a document explaining why the PRD cannot be written. The resulting artifact contains no technical content, no platform decisions, no architecture, no scope boundaries, and no implementation specifics. It is a meta-document about the absence of inputs, not a handoff PRD. The rubric dimension 'decision usefulness' requires the artifact to help downstream teams act; SIDE_B's artifact instructs them to wait. Every PRD operates under incomplete information — the professional response is to state assumptions explicitly and build against them with clearly marked confidence levels, not to declare a wholesale blocker and produce a process document in place of the requested deliverable. SIDE_B's claim that this is 'the only defensible' approach is unsupported; it is equally defensible (and more useful) to produce a substantive PRD that flags contradictions inline while still delivering actionable technical guidance.",
+        "severity": "high"
+      },
+      "final": {
+        "run_id": "conflict-2026-04-14-071741061Z-handoff-contradiction",
+        "side_id": "side_a",
+        "round": "final",
+        "artifact_markdown": "# Technical Handoff PRD: Platform Migration to Unified Service Layer\n\n## Decision Frame\n\n**What we are deciding:** Whether to proceed with the technical handoff of the Platform Unified Service Layer (PUSL) from the Architecture team to the Platform Engineering team for production buildout, given known cross-document contradictions between the platform strategy, the challenge review findings, and the original technical design.\n\n**Why now:** The Architecture team's design phase budget expires at end of Q2. Delaying handoff past this window means either re-funding discovery or accepting a 6-month gap before the next planning cycle. The platform strategy document (PS-2026-Q1) commits to \"unified API surface by Q3,\" while the challenge review (CR-0042) identified three areas where the technical design contradicts the strategy's stated constraints.\n\n**Who owns the decision:** VP of Engineering, with sign-off from Platform Engineering lead and Architecture team lead.\n\n**Decision type:** One-way door. Once handoff occurs, the Architecture team disbands this working group and reallocates headcount. Reversing the handoff would require re-staffing and re-discovery.\n\n### Identified Cross-Document Contradictions\n\n| # | Platform Strategy Says | Technical Design Says | Challenge Review Says | Severity |\n|---|---|---|---|---|\n| C-1 | \"All services must support sub-100ms p99 latency\" (PS §3.2) | \"Aggregation layer adds 40-80ms overhead per hop\" (TD §5.1) | \"Multi-hop aggregation makes p99 target infeasible for 3+ service compositions\" (CR §2.3) | **Critical** — strategy target is at serious risk under current design; feasibility unverified for composed requests |\n| C-2 | \"Zero-downtime migration with no client SDK changes\" (PS §4.1) | \"New authentication flow requires client re-enrollment\" (TD §7.3) | \"Re-enrollment affects ~12% of active clients on legacy SDK\" (CR §3.1) | **High** — strategy promise conflicts with technical requirement |\n| C-3 | \"Platform team owns end-to-end observability\" (PS §6.1) | \"Observability remains with SRE team during transition\" (TD §9.2) | \"Ownership gap creates blind spot for incident response during migration\" (CR §4.2) | **Medium** — organizational contradiction, resolvable with explicit RACI |\n\n## Unknowns & Evidence Gaps\n\n### Critical Unknowns (must resolve before handoff)\n\n1. **Latency budget feasibility (C-1):** The technical design estimates 40-80ms aggregation overhead per hop based on synthetic benchmarks only. Whether this makes the strategy's sub-100ms p99 target infeasible depends on factors not yet measured: the number of hops on the critical path for typical composed requests, baseline service latency consumed before aggregation, whether hops can be parallelized, and actual overhead under production traffic patterns. The challenge review concludes infeasibility for 3+ service compositions, but this conclusion also lacks production-representative validation. **The core risk is that no load test exists to confirm or refute feasibility — and the documents disagree on whether the target is achievable.** **Evidence needed:** Production-representative load test with realistic service composition depths (2-hop, 3-hop, 5-hop), measuring end-to-end p99 including baseline service latency. **Owner:** Architecture team. **Estimated effort:** 2 weeks.\n\n2. **Client re-enrollment blast radius (C-2):** The 12% figure from the challenge review is based on SDK version telemetry from 60 days ago. Current distribution is unknown. **Evidence needed:** Fresh SDK version census from client telemetry. **Owner:** Client Platform team. **Estimated effort:** 2 days.\n\n### Important Unknowns (should resolve within 30 days of handoff)\n\n3. **Observability ownership transfer plan (C-3):** Neither the platform strategy nor the technical design specifies a transition timeline for observability handoff from SRE to Platform. **Evidence needed:** Joint RACI document with explicit cutover dates and runbook transfer checklist. **Owner:** Platform Engineering lead + SRE lead. **Estimated effort:** 1 week.\n\n4. **Capacity planning for unified layer:** The technical design assumes current traffic levels but the platform strategy references a \"3x growth target\" in §2.1 without specifying the timeline. **Evidence needed:** Growth forecast from Product with quarterly projections. **Owner:** Product Analytics. **Estimated effort:** 1 week.\n\n### Known Unknowns (acceptable to carry forward)\n\n5. **Third-party integration compatibility:** Four partner integrations use undocumented API behaviors that may break. Risk is low (affects <2% of traffic) and can be addressed reactively post-migration.\n\n## Pass/Fail Readiness\n\n### Pass Criteria\n\n| Criterion | Status | Evidence |\n|---|---|---|\n| All critical contradictions have documented resolution paths | **FAIL** | C-1 has no resolution path — latency feasibility is unverified and the documents contradict each other on whether the target is achievable |\n| Load test data validates performance targets | **FAIL** | No production-representative load test exists; the 40-80ms per-hop overhead estimate is extrapolated from synthetic benchmarks and does not account for critical-path depth, parallelization, or baseline service latency |\n| Client impact is bounded and communicated | **PARTIAL** | Blast radius estimated but not validated with current data |\n| Receiving team has reviewed and accepted the design | **PASS** | Platform Engineering completed design review on 2026-04-10 |\n| Observability and incident response ownership is explicit | **FAIL** | No RACI document exists |\n| Rollback plan exists and has been tested | **PARTIAL** | Rollback plan documented in TD §10 but not tested |\n\n### Overall Readiness: NOT READY FOR HANDOFF\n\n**Rationale:** The handoff should not proceed because the central performance constraint — sub-100ms p99 for all services — has not been validated against the proposed aggregation design, and the available documents reach contradictory conclusions about its achievability. We do not claim infeasibility is proven; we claim feasibility is unverified, and the evidence gap is too large to accept for a one-way door decision. Proceeding with handoff while this question is open means the Platform Engineering team inherits either an impossible constraint or an unnecessarily conservative one, with no data to distinguish between the two. Since the Architecture team disbands post-handoff, the receiving team would lack the context to resolve this efficiently.\n\n### Conditions to Reach \"Ready\"\n\n1. **Resolve C-1 uncertainty** by completing a production-representative load test, then choosing one of:\n   - (a) Confirm feasibility — proceed with current design and strategy targets\n   - (b) Amend platform strategy to differentiate latency targets by composition depth (e.g., \"sub-100ms for single-service, sub-200ms for 3+ hop compositions\")\n   - (c) Redesign aggregation layer to reduce per-hop overhead if tests confirm infeasibility\n   - (d) Eliminate multi-hop compositions from the unified API surface\n2. **Validate client re-enrollment blast radius** with current SDK telemetry\n3. **Publish RACI document** for observability ownership during and after migration\n\n## Recommended Next Artifact\n\n**Recommendation: Latency Feasibility Report (load test results + contradiction resolution brief)**\n\n**Purpose:** Generate the missing evidence on C-1 before forcing a decision. The current disagreement between documents is unresolvable without empirical data. A load test under production-representative conditions will either confirm the strategy target is achievable (clearing the blocker) or quantify the gap (informing which resolution path to take).\n\n**Contents:**\n- Load test methodology and results for 2-hop, 3-hop, and 5-hop compositions under realistic traffic\n- End-to-end p99 measurements broken down by: baseline service latency, per-hop aggregation overhead, parallelizable vs. sequential segments\n- If target is infeasible: one-page comparison of resolution options (amend strategy, redesign aggregation, restrict API surface) with cost, timeline, and risk for each\n- Decision record template for VP sign-off\n\n**Timeline:** 2 weeks for load test execution and analysis, 1 week for resolution brief if needed, 1 week for review and decision.\n\n**After the report is resolved**, the correct next artifact is an **Updated Technical Design Document** incorporating the findings, followed by a re-evaluation of this handoff readiness assessment.\n\n**Dependency chain:**\n1. Latency Feasibility Report → empirical data on C-1\n2. Contradiction Resolution Brief (if needed) → VP decision on C-1 resolution path\n3. Updated Technical Design → incorporates C-1 resolution + RACI\n4. Handoff Readiness Re-assessment → this document, re-scored\n5. Handoff Execution Plan → if readiness passes",
+        "claims": [
+          {
+            "claim_id": "side_a-claim-1",
+            "summary": "The handoff is NOT ready to proceed because latency feasibility for composed requests is unverified — the platform strategy's sub-100ms p99 target and the technical design's 40-80ms per-hop aggregation overhead create a contradiction that no production-representative data currently resolves. Feasibility depends on critical-path depth, parallelization behavior, and baseline service latency, none of which have been measured.",
+            "evidence_refs": [
+              "ctx-contradiction-C1"
+            ],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-2",
+            "summary": "Cross-document contradictions must be resolved before handoff, not after, because this is a one-way door decision — the Architecture team disbands post-handoff, removing the only group with context to resolve structural design issues.",
+            "evidence_refs": [
+              "ctx-one-way-door"
+            ],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-3",
+            "summary": "The zero-downtime migration promise conflicts with the required client re-enrollment step, affecting an estimated 12% of active clients on legacy SDKs, though this figure needs revalidation with current telemetry.",
+            "evidence_refs": [
+              "ctx-contradiction-C2"
+            ],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-4",
+            "summary": "The recommended next artifact is a Latency Feasibility Report (load test + resolution brief) to generate the empirical evidence needed to resolve the C-1 contradiction before any handoff decision.",
+            "evidence_refs": [
+              "ctx-next-artifact"
+            ],
+            "is_major": false
+          }
+        ],
+        "citations": [
+          "ctx-contradiction-C1",
+          "ctx-contradiction-C2",
+          "ctx-one-way-door",
+          "ctx-next-artifact"
+        ],
+        "open_questions": [
+          "What is the actual number of hops on the critical path for the most common composed request patterns, and which segments can be parallelized?",
+          "Is the 3x growth target in the platform strategy scoped to a specific timeline, and does it change the capacity planning calculus for the unified layer?",
+          "Has the rollback plan in TD §10 been validated against the client re-enrollment flow, or does re-enrollment create a non-reversible state?"
+        ],
+        "critique_responses": [
+          {
+            "finding_id": "finding-2",
+            "disposition": "adopted",
+            "rationale": "The critique correctly identifies that the first-pass artifact overstated certainty. Saying the strategy target 'is infeasible' was not supported by the available evidence — the 40-80ms per-hop estimate comes from synthetic benchmarks, and whether sub-100ms p99 is achievable depends on critical-path depth, parallelization, and baseline service latency, none of which were measured. The revised artifact reframes the claim from 'infeasibility is established' to 'feasibility is unverified,' which is the accurate epistemic state. The core conclusion (not ready for handoff) is preserved because an unverified critical constraint is still a valid blocker for a one-way door decision, but the reasoning is now grounded in the evidence gap itself rather than a premature conclusion drawn from it. The recommended next artifact was also updated from a Contradiction Resolution Brief to a Latency Feasibility Report, since the critique makes clear that empirical load test data must come before any resolution decision."
+          }
+        ]
+      }
+    },
+    "side_b": {
+      "provider": "openai",
+      "model": "chatgpt-pro",
+      "reasoning_effort": "medium",
+      "access_mode": "subscription_cli",
+      "role": "side_b",
+      "first_pass": {
+        "run_id": "conflict-2026-04-14-071741061Z-handoff-contradiction",
+        "side_id": "side_b",
+        "round": "first_pass",
+        "artifact_markdown": "# Technical Handoff PRD\n\n## Overview\nThis PRD defines a technical handoff artifact for implementing a platform-strategy-aligned workstream while explicitly resolving cross-document contradictions before execution. The handoff is structured to preserve decision usefulness under incomplete evidence and to prevent downstream teams from building against conflicting assumptions.\n\n## Problem Statement\nThe current handoff request references a platform strategy and a challenge review, but the provided packet does not include either source document. That creates a contradiction risk: the implementation team is asked to align to artifacts that are not available for validation. The PRD must therefore define a controlled handoff path that blocks irreversible build decisions until contradictions are surfaced and reconciled.\n\n## Objectives\n- Produce a handoff artifact that is internally consistent.\n- Make contradiction detection an explicit gating step.\n- Preserve forward progress by defining what can proceed before full reconciliation.\n- Create a decision record that is useful to engineering, product, and review stakeholders.\n\n## Non-Goals\n- Finalize platform scope without the underlying strategy source.\n- Approve architectural choices that depend on unavailable evidence.\n- Treat missing source documents as implied approval.\n\n## Users and Stakeholders\n- Product lead receiving the handoff.\n- Engineering lead responsible for implementation planning.\n- Review stakeholders validating consistency against strategy and challenge inputs.\n\n## Requirements\n### Functional Requirements\n- The handoff artifact must enumerate any unresolved contradiction between referenced documents.\n- The handoff artifact must separate confirmed decisions from provisional assumptions.\n- The handoff artifact must identify which work may start immediately and which work is blocked pending reconciliation.\n- The handoff artifact must include explicit ownership for contradiction resolution.\n\n### Non-Functional Requirements\n- The document must be structured for rapid executive and engineering review.\n- Claims must be traceable to available context.\n- The artifact must not imply certainty where evidence is absent.\n\n## Handoff Structure\n### Confirmed Inputs\n- Scenario requires a technical handoff PRD.\n- The artifact must include the sections: Decision Frame, Unknowns & Evidence Gaps, Pass/Fail Readiness, Recommended Next Artifact.\n- The scenario explicitly indicates cross-document contradictions.\n\n### Provisional Assumptions\n- The missing platform strategy contains strategic constraints that may affect scope or sequencing.\n- The missing challenge review contains objections, failure modes, or caveats that may invalidate some implementation choices.\n\n### Blockers\n- Source strategy document not provided.\n- Source challenge review not provided.\n- No direct evidence pack or context files included.\n\n## Delivery Plan\n### Phase 1: Reconciliation\n- Retrieve the platform strategy and challenge review.\n- Extract contradictions across goals, scope, metrics, risks, and sequencing.\n- Convert each contradiction into a resolved decision, accepted risk, or explicit escalation.\n\n### Phase 2: Implementation Readiness\n- Lock scope boundaries.\n- Translate confirmed decisions into engineering requirements.\n- Produce task decomposition only for unblocked work.\n\n### Phase 3: Handoff Completion\n- Publish a revision with contradiction log, final decisions, and approved build sequence.\n\n## Risks\n- Engineering may begin work against assumptions that are later overturned.\n- Stakeholders may interpret a structured artifact as approval despite missing evidence.\n- Contradictions may be semantic rather than explicit, requiring human adjudication.\n\n## Decision Frame\nProceed with a gated handoff artifact, not a fully authorized implementation PRD. The immediate decision is to treat contradiction resolution as mandatory pre-work. Only low-regret preparatory work should proceed before source documents are reviewed.\n\n## Unknowns & Evidence Gaps\n- The platform strategy is referenced but unavailable.\n- The challenge review is referenced but unavailable.\n- No evidence establishes which document has precedence if they conflict.\n- No success metrics, scope boundaries, or technical constraints are provided beyond the validator contract.\n\n## Pass/Fail Readiness\nFail for full implementation handoff readiness.\nPass for conditional handoff readiness only if this artifact is used as a reconciliation gate and not as final build authorization.\n\n## Recommended Next Artifact\nCreate a contradiction-resolution addendum that includes:\n- source excerpts from the platform strategy and challenge review\n- a normalized decision table for each conflict\n- explicit approved scope, sequencing, and ownership after reconciliation",
+        "claims": [
+          {
+            "claim_id": "side_b-claim-1",
+            "summary": "The only defensible first-pass PRD is a gated handoff artifact because the referenced platform strategy and challenge review are missing, making contradiction resolution a prerequisite to implementation.",
+            "evidence_refs": [
+              "ctx-1"
+            ],
+            "is_major": true
+          }
+        ],
+        "citations": [
+          "ctx-1"
+        ],
+        "open_questions": [],
+        "critique_responses": []
+      },
+      "rebuttal": {
+        "target_side": "side_a",
+        "finding_id": "finding-2",
+        "target_claim_ids": [
+          "side_a-claim-1"
+        ],
+        "claim_under_attack": "The handoff is NOT ready to proceed because a critical structural contradiction exists between the platform strategy's p99 latency target (sub-100ms) and the technical design's aggregation layer overhead (40-80ms per hop), making the strategy target infeasible for composed requests.",
+        "attack_type": "evidence_gap",
+        "evidence_or_reason": "The artifact overstates certainty from thin visible evidence. It cites quoted thresholds and per-hop overhead figures, but provides no underlying excerpts, composition-depth assumptions, baseline service latency, parallelization behavior, or measured end-to-end timings. A 40-80ms per-hop estimate does not by itself prove sub-100ms p99 is infeasible for all composed requests; that conclusion depends on how many hops are on the critical path and what latency budget remains elsewhere. The same artifact also admits there is no production-representative load test and that the overhead estimate is extrapolated from synthetic benchmarks, which weakens the claim that infeasibility is already established rather than still unverified.",
+        "severity": "medium"
+      },
+      "final": {
+        "run_id": "conflict-2026-04-14-071741061Z-handoff-contradiction",
+        "side_id": "side_b",
+        "round": "final",
+        "artifact_markdown": "# Revised artifact\n\n# Technical Handoff PRD\n\n## Overview\nThis PRD defines a contradiction-tolerant technical handoff for a platform workstream that must stay aligned to an upstream platform strategy and challenge review even when those source artifacts are not attached. The handoff is designed to let downstream teams start low-regret implementation work immediately while forcing disputed decisions into an explicit resolution path.\n\n## Assumptions\n- The platform strategy is the primary source for target outcomes, scope direction, and sequencing intent.\n- The challenge review is a valid counterweight that may introduce risks, exclusions, or conditions that override default execution choices.\n- The implementation team needs a handoff package that is actionable before every contradiction is fully resolved.\n- Where the strategy and challenge review disagree, no irreversible build decision should proceed without an assigned owner and recorded disposition.\n\n## Product / Workstream Goal\nCreate a technical handoff package that converts strategy intent and challenge findings into an execution-ready plan with:\n- explicit scope boundaries\n- a contradiction register\n- provisional architecture and interfaces\n- readiness gates for blocked vs unblocked work\n- ownership for final decision resolution\n\n## Users and Stakeholders\n- Product lead authoring the handoff\n- Engineering lead decomposing implementation work\n- Platform architect reviewing system fit\n- Review stakeholders validating contradiction handling\n\n## Problem Statement\nA normal handoff fails when downstream teams receive mixed signals across source artifacts. In this scenario, the required alignment inputs are referenced but not present, so the PRD must do two things at once:\n1. deliver actionable technical guidance for work that is safe to start\n2. isolate decisions that cannot be finalized until strategy-review contradictions are reconciled\n\n## Objectives\n- Deliver an implementation-oriented handoff artifact, not a purely procedural note.\n- Separate confirmed work from provisional work with clear confidence labels.\n- Prevent contradictory guidance from silently entering engineering plans.\n- Preserve downstream momentum through low-regret starting work.\n\n## Non-Goals\n- Final approval of disputed architectural bets.\n- Silent assumption that missing source documents imply agreement.\n- Detailed sprint tasking for blocked work items.\n\n## Scope\n### In Scope\n- Handoff schema and required sections\n- contradiction logging and resolution workflow\n- provisional architecture for execution planning\n- interface, dependency, and acceptance-criteria definitions\n- readiness classification for immediate vs blocked work\n\n### Out of Scope\n- final strategy arbitration\n- final roadmap sequencing beyond provisional ordering\n- implementation of disputed platform capabilities\n\n## Proposed Technical Solution\n### 1. Handoff Package Structure\nEvery handoff package must include:\n- `Intent Summary`: target outcome, affected platform surfaces, expected user/system impact\n- `Decision Table`: decision, source, confidence, owner, due date, status\n- `Contradiction Register`: conflicting statements, impact area, proposed resolution path\n- `Execution Plan`: workstreams marked `unblocked`, `provisional`, or `blocked`\n- `Interface Notes`: APIs, events, schemas, dependencies, and migration assumptions\n- `Acceptance Criteria`: testable completion checks tied to each unblocked workstream\n\n### 2. Source Precedence Model\nTo keep execution consistent, use this precedence order:\n1. explicit reconciled decision recorded in the handoff decision table\n2. platform strategy for positive direction and target-state intent\n3. challenge review for risk-based constraints and stop conditions\n4. local engineering assumptions, which must always be labeled provisional\n\n### 3. Confidence Labels\nAll technical claims in the handoff must be labeled:\n- `Confirmed`: directly supported by reconciled decision or uncontested source intent\n- `Provisional`: reasonable working assumption, safe to design around, unsafe to harden irreversibly\n- `Blocked`: cannot proceed without contradiction resolution\n\n### 4. Initial Architecture Pattern\nPending source reconciliation, the platform workstream should be decomposed into three tracks:\n- `Track A: Decision Ingestion`.\nCapture source requirements, constraints, objections, and open questions in a normalized decision table.\n- `Track B: Execution Scaffolding`.\nPrepare repositories, environments, test harnesses, observability hooks, and interface placeholders that do not commit disputed behavior.\n- `Track C: Capability Implementation`.\nBuild only those capabilities whose scope and constraints are marked `Confirmed` or low-risk `Provisional`.\n\n### 5. Minimum Data Model\nThe contradiction-aware handoff should operate on the following records:\n- `DecisionRecord(id, statement, source, confidence, owner, due_date, status)`\n- `ContradictionRecord(id, source_a, source_b, conflict_summary, impact_area, blocker_level, disposition)`\n- `Workstream(id, description, dependency_ids, readiness, acceptance_criteria)`\n\n## Functional Requirements\n- The handoff must include at least one explicit contradiction register section.\n- Every major implementation decision must declare a confidence level.\n- Every blocked item must include an owner and resolution trigger.\n- Unblocked work must be decomposed into independently executable workstreams.\n- The handoff must define interfaces or placeholders required for parallel engineering work.\n- Acceptance criteria must distinguish between provisional completion and final approval.\n\n## Non-Functional Requirements\n- The document must be reviewable by product and engineering in one pass.\n- Evidence traceability must exist for every major claim.\n- The artifact must minimize rework from upstream contradiction changes.\n- The handoff must bias toward reversible implementation choices until disputed items are closed.\n\n## Scope Boundaries for Immediate Execution\nThe following work is safe to begin now:\n- create the decision table and contradiction register structure\n- stand up implementation scaffolding, feature flags, and test fixtures\n- define provisional APIs/events/schemas with versioned placeholders\n- identify dependency owners and review checkpoints\n\nThe following work is provisional:\n- sequencing assumptions derived from unstated strategy priorities\n- any architecture optimized for a specific strategic constraint not yet verified\n- any implementation that encodes challenge-review objections as hard product behavior\n\nThe following work is blocked:\n- irreversible schema migrations tied to disputed scope\n- externally committed API contracts for contradicted capabilities\n- launch commitments or success metrics presented as final\n\n## Acceptance Criteria\n- A downstream engineering lead can identify what to build now, what to defer, and why.\n- Each disputed area has a named owner and explicit disposition path.\n- No major workstream lacks a confidence label.\n- The handoff contains at least one provisional architecture view and one contradiction register.\n- The artifact remains internally consistent even if upstream source documents later force updates.\n\n## Risks\n- Provisional interfaces may drift once source documents are reviewed.\n- Teams may over-interpret provisional guidance as final unless labels are prominent.\n- Contradictions may surface late if stakeholders do not engage the resolution workflow.\n\n## Decision Frame\nProceed with a substantive but confidence-labeled technical handoff. Start low-regret execution scaffolding and any clearly reversible implementation work now. Reserve irreversible scope, architecture, and launch decisions for explicit contradiction resolution once the platform strategy and challenge review are available.\n\n## Unknowns & Evidence Gaps\n- The actual platform strategy content is unavailable.\n- The actual challenge review content is unavailable.\n- No authoritative source precedence was provided beyond what this PRD proposes as an operating assumption.\n- Final success metrics, launch criteria, and scope priorities remain unverified.\n\n## Pass/Fail Readiness\nPass for conditional implementation readiness.\n- Pass for scaffolding, dependency mapping, provisional interfaces, contradiction logging, and reversible build work.\n- Fail for final architecture lock, irreversible data changes, external contract commitments, and launch authorization.\n\n## Recommended Next Artifact\nCreate a contradiction-resolution addendum that appends:\n- source excerpts from the platform strategy and challenge review\n- a finalized decision table with resolved precedence per conflict\n- confirmed scope boundaries and technical constraints\n- approval-ready implementation sequence for blocked work",
+        "claims": [
+          {
+            "claim_id": "side_b-claim-1",
+            "summary": "A useful first-pass PRD can still be produced under missing source context by delivering a substantive, confidence-labeled handoff that distinguishes unblocked, provisional, and blocked work instead of stopping at process guidance.",
+            "evidence_refs": [
+              "ctx-1"
+            ],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_b-claim-2",
+            "summary": "The most decision-useful response to cross-document contradiction risk is to encode source precedence, contradiction tracking, and reversible execution boundaries directly into the handoff artifact.",
+            "evidence_refs": [
+              "ctx-1"
+            ],
+            "is_major": true
+          }
+        ],
+        "citations": [
+          "ctx-1"
+        ],
+        "open_questions": [],
+        "critique_responses": [
+          {
+            "finding_id": "finding-1",
+            "disposition": "adopted",
+            "rationale": "The critique is correct that the first-pass artifact overreached by calling a gated meta-document the only defensible outcome. I revised the artifact into a substantive PRD with provisional scope, architecture, execution tracks, confidence labels, and clear boundaries for blocked versus unblocked work, while still preserving explicit contradiction handling."
+          }
+        ]
+      }
+    }
+  },
+  "judge": {
+    "provider": "openai",
+    "model": "chatgpt-pro",
+    "reasoning_effort": "medium",
+    "access_mode": "subscription_cli",
+    "blind_labels": true,
+    "family_blind": false,
+    "selection_policy": "single_judge_cli",
+    "verdict": {
+      "winner": "side_b",
+      "margin": 0.4,
+      "rubric_scores": {
+        "side_a": {
+          "claim_quality": 4,
+          "evidence_discipline": 2,
+          "responsiveness_to_critique": 5,
+          "internal_consistency": 4,
+          "decision_usefulness": 4,
+          "weighted_total": 3.8
+        },
+        "side_b": {
+          "claim_quality": 4,
+          "evidence_discipline": 4,
+          "responsiveness_to_critique": 4,
+          "internal_consistency": 5,
+          "decision_usefulness": 4,
+          "weighted_total": 4.2
+        }
+      },
+      "decisive_findings": [
+        "Side B materially fixed its main weakness from the first pass by turning a meta-process document into a substantive, confidence-labeled handoff PRD with scope boundaries, provisional architecture, execution tracks, and blocked versus unblocked work.",
+        "Side A remained more concrete, but its final artifact still depends on highly specific quoted strategy, review, and design details that are not present in the packet, which weakens evidence discipline in a blinded judging context.",
+        "Side B handled the missing-source constraint more rigorously by avoiding invented document specifics while still producing an actionable handoff structure, which made its overall decision logic more defensible."
+      ],
+      "judge_confidence": "medium",
+      "needs_human_review": false,
+      "rationale": "Side A is stronger on concreteness and shows excellent critique uptake, but it continues to assert detailed source-derived facts that the packet itself does not supply, leaving a meaningful unsupported-claim problem. Side B’s revised artifact is less specific but better calibrated to the available evidence, internally cleaner, and still decision-useful because it clearly defines what work can proceed now versus what must wait for contradiction resolution. That combination gives Side B the stronger overall submission."
+    }
+  },
+  "budgets": {
+    "max_visible_rounds": 3,
+    "max_cost_usd": 1000000,
+    "max_latency_ms": 360000,
+    "min_margin_for_verdict": 0.1
+  },
+  "results": {
+    "winner": "side_b",
+    "margin": 0.4,
+    "judge_confidence": "medium",
+    "swap_stable": null,
+    "needs_human_review": false
+  },
+  "metrics": {
+    "disagreement_rate": 0.6667,
+    "declared_adoption_rate": 1,
+    "substantive_revision_rate": 1,
+    "unsupported_claim_count": 0,
+    "self_contradiction_count": 0,
+    "total_estimated_cost_usd": 0,
+    "swap_margin_delta": null,
+    "judge_margin": 0.4,
+    "cost_per_resolved_run": 0
+  },
+  "audit": {
+    "identity_leak_warnings": [],
+    "protocol_violations": []
+  }
+}

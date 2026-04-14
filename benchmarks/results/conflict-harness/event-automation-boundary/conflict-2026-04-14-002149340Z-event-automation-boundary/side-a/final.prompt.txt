@@ -1,0 +1,167 @@
+You are SIDE_A in the final revision phase for run conflict-2026-04-14-002149340Z-event-automation-boundary.
+You must either adopt the critique or reject it with reasoning.
+Do not reveal provider identity.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "run_id": "conflict-2026-04-14-002149340Z-event-automation-boundary",
+  "side_id": "side_a",
+  "round": "final",
+  "artifact_markdown": "# Revised artifact",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "Updated major claim",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1"
+  ],
+  "open_questions": [],
+  "critique_responses": [
+    {
+      "finding_id": "finding-2",
+      "disposition": "adopted",
+      "rationale": "Why the critique was adopted or rejected."
+    }
+  ]
+}
+
+Case packet:
+{
+  "scenario_id": "event-automation-boundary",
+  "title": "Event automation platform with human-in-the-loop boundary constraints",
+  "prompt": "Write a Phase 1 PRD for an event management automation platform with a WhatsApp assistant, an internal console, human approval for pricing commitments, and strict deterministic boundaries around LLM usage.",
+  "artifact_type": "prd",
+  "rubric": {
+    "dimensions": [
+      "claim quality",
+      "evidence discipline",
+      "responsiveness to critique",
+      "internal consistency",
+      "decision usefulness"
+    ],
+    "scoring_scale": "1-5",
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "constraints": {
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "expect_structured": true,
+    "context_files": [],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "evidence": [],
+  "max_rounds": 3,
+  "tool_policy": "none",
+  "sharing_policy": {
+    "share_case_packet": true,
+    "share_committed_artifacts_after_first_pass": true,
+    "share_critiques_after_open": true,
+    "share_hidden_reasoning": false,
+    "share_provider_identity": false,
+    "share_internal_coalition_drafts": false
+  },
+  "success_condition": {
+    "type": "validator_contract",
+    "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+    "validator": {
+      "artifact_type": "prd",
+      "expect_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true
+    }
+  }
+}
+
+Your first-pass artifact:
+{
+  "run_id": "conflict-2026-04-14-002149340Z-event-automation-boundary",
+  "side_id": "side_a",
+  "round": "first_pass",
+  "artifact_markdown": "# Phase 1 PRD: Event Management Automation Platform\n\n## Decision Frame\n\n**Problem statement:** Event management companies spend 60-80% of operator time on repetitive coordination tasks (venue availability queries, vendor follow-ups, client pricing discussions) that could be partially automated. However, pricing commitments and contract terms carry financial and legal risk that cannot be delegated to non-deterministic systems.\n\n**Decision to be made:** Should we build a Phase 1 platform combining a WhatsApp-based client assistant, an internal operations console, and strict human-in-the-loop gates for all pricing and commitment actions?\n\n**Scope boundary:** Phase 1 covers inquiry handling, availability lookup, and quote preparation workflows only. It does NOT cover payment processing, contract execution, post-event operations, or multi-tenant white-labeling.\n\n**Key stakeholders:** Event operations managers (primary users), clients (WhatsApp end-users), finance/legal (approval authority for pricing), engineering (build team).\n\n---\n\n## Product Overview\n\n### WhatsApp Assistant (Client-Facing)\n\n**Purpose:** Handle inbound client inquiries, collect event requirements, and surface availability — without making any pricing or commitment statements.\n\n**Deterministic boundary rules:**\n- The LLM is used ONLY for natural language understanding (intent classification, entity extraction) and response generation from approved templates.\n- The LLM NEVER generates pricing figures, discount offers, or availability confirmations autonomously.\n- All LLM outputs pass through a deterministic output filter that blocks any message containing currency symbols, percentage discounts, or commitment language (\"confirmed\", \"reserved\", \"guaranteed\") unless the message originates from an operator-approved template.\n- Fallback: Any message the filter cannot classify with >95% confidence routes to a human operator queue.\n\n**Conversation flows (Phase 1):**\n1. **Inquiry intake:** Collect event type, date range, estimated headcount, location preference, budget range.\n2. **Availability check:** Query internal calendar database (deterministic), return available slots.\n3. **Quote request:** Compile requirements into structured brief, push to internal console for operator pricing.\n4. **Status check:** Client asks about pending quotes — system returns status from database, no LLM inference needed.\n\n### Internal Operations Console\n\n**Purpose:** Operator dashboard for managing inquiries, preparing quotes, and approving all client-facing pricing.\n\n**Core features (Phase 1):**\n- **Inquiry queue:** All WhatsApp conversations requiring human action, sorted by priority (date proximity, estimated deal size).\n- **Quote builder:** Operator selects venue/vendor/service line items from catalog, system calculates total. No LLM involvement in price calculation.\n- **Approval workflow:** Two-step approval for quotes above configurable threshold (default: $5,000). Operator prepares → Manager approves → System sends via WhatsApp.\n- **Conversation monitor:** Real-time view of all active WhatsApp threads with ability to intervene, override, or take over from the assistant.\n- **Audit log:** Every message sent to a client, every price quoted, every approval decision — immutable, timestamped, attributed to a human approver.\n\n### LLM Usage Boundaries (Architecture Decision Record)\n\n| Layer | LLM Role | Deterministic Gate |\n|---|---|---|\n| Intent classification | Classify inbound message intent | Confidence threshold ≥0.95; below routes to human |\n| Entity extraction | Extract dates, headcount, preferences | Extracted values displayed to operator for confirmation before use |\n| Response generation | Draft natural-language replies from templates | Output filter scans for prohibited patterns; blocked messages queue for human review |\n| Price calculation | **PROHIBITED** | All pricing from catalog database + operator input only |\n| Commitment language | **PROHIBITED** | Output filter hard-blocks commitment vocabulary |\n| Contract/legal text | **PROHIBITED** | Out of Phase 1 scope entirely |\n\n**Failure mode design:**\n- LLM service unavailable → System sends canned \"We've received your message, a team member will respond shortly\" and routes to human queue.\n- Output filter flags message → Message held, operator notified, must manually approve or rewrite.\n- Ambiguous intent → Route to human with LLM's best-guess annotation for operator context.\n\n---\n\n## Unknowns & Evidence Gaps\n\n| ID | Unknown | Impact | Mitigation |\n|---|---|---|---|\n| U1 | Client adoption rate for WhatsApp business interactions in target market | High — determines channel viability | Pre-launch survey of 50 existing clients; track opt-in rate in first 30 days |\n| U2 | False positive rate of output filter blocking legitimate operator-approved messages | Medium — too aggressive = operator fatigue | Tune filter on 500+ historical message corpus before launch; track block rate weekly |\n| U3 | Operator time savings vs. current workflow | High — core value proposition | Baseline current task times; measure post-launch with same operators |\n| U4 | LLM intent classification accuracy on domain-specific event management language | Medium — affects routing quality | Fine-tune or prompt-engineer on labeled dataset of 1,000+ real inquiries |\n| U5 | Legal/compliance requirements for automated messaging in target jurisdictions | High — could block launch | Legal review of WhatsApp Business API ToS + local consumer protection laws before build |\n| U6 | Whether two-step approval flow adds unacceptable latency to quote turnaround | Medium — could reduce client satisfaction | Measure current quote turnaround baseline; set SLA target (e.g., <2 hours during business hours) |\n\n---\n\n## Pass/Fail Readiness\n\n### Pass criteria (all must be met for Phase 1 launch):\n- [ ] **Zero autonomous pricing:** No path exists in code where an LLM output directly sets or communicates a price to a client without human approval. Verified by security audit.\n- [ ] **Output filter coverage:** Filter catches 100% of prohibited patterns in test corpus of 1,000 adversarial messages.\n- [ ] **Fallback reliability:** When LLM service is down, 100% of inbound messages receive canned response within 5 seconds and route to human queue.\n- [ ] **Audit completeness:** Every client-facing message traceable to either an approved template or a named human operator in audit log.\n- [ ] **Operator adoption:** ≥3 operators complete training and process ≥10 real inquiries each in supervised pilot.\n- [ ] **Legal sign-off:** Written approval from legal on WhatsApp messaging compliance for target market.\n\n### Fail criteria (any triggers stop/pivot):\n- [ ] Output filter bypass discovered in adversarial testing → halt launch, redesign filter architecture.\n- [ ] LLM intent classification accuracy <80% on real messages after tuning → revert to rule-based routing for Phase 1.\n- [ ] Client opt-in rate <20% in pilot → re-evaluate channel choice before scaling.\n- [ ] Operator quote turnaround exceeds current baseline → approval workflow needs redesign.\n\n---\n\n## Recommended Next Artifact\n\n**Technical Design Document** covering:\n1. WhatsApp Business API integration architecture (webhook handling, session management, message queuing).\n2. Output filter specification — exact prohibited pattern list, regex/rule engine vs. classifier approach, update mechanism.\n3. LLM integration contract — model selection criteria, prompt templates, confidence scoring methodology, latency budget.\n4. Internal console wireframes and API contracts.\n5. Audit log schema and retention policy.\n\n**Followed by:** Pilot plan defining target client cohort (10-20 clients), success metrics, 4-week timeline, and rollback triggers.",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "LLM must be architecturally prohibited from generating or communicating pricing — enforced by deterministic output filters and approval workflows, not by prompt instructions alone",
+      "evidence_refs": [
+        "ctx-scenario-constraints"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "Output filter must hard-block commitment vocabulary and currency patterns with 100% coverage on adversarial test corpus before launch",
+      "evidence_refs": [
+        "ctx-scenario-constraints"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-3",
+      "summary": "Every failure mode (LLM down, low confidence, filter flag) must route to a human queue with canned acknowledgment — no silent failures",
+      "evidence_refs": [
+        "ctx-scenario-constraints"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-4",
+      "summary": "Six critical unknowns identified including client WhatsApp adoption rate, output filter false positive rate, and legal compliance — each with specific mitigation actions",
+      "evidence_refs": [
+        "ctx-scenario-prompt"
+      ],
+      "is_major": false
+    },
+    {
+      "claim_id": "side_a-claim-5",
+      "summary": "Phase 1 scope explicitly excludes payment processing, contract execution, and multi-tenant features to maintain tight delivery boundary",
+      "evidence_refs": [
+        "ctx-scenario-prompt"
+      ],
+      "is_major": false
+    }
+  ],
+  "citations": [
+    "ctx-scenario-constraints",
+    "ctx-scenario-prompt"
+  ],
+  "open_questions": [
+    "What is the target market/jurisdiction for WhatsApp messaging compliance?",
+    "Is there an existing venue/vendor catalog database or does it need to be built?",
+    "What is the current average quote turnaround time to baseline against?",
+    "Are there existing client communication channels that WhatsApp would replace or supplement?"
+  ],
+  "critique_responses": []
+}
+
+Visible critique packet:
+{
+  "target_side": "side_a",
+  "finding_id": "finding-2",
+  "target_claim_ids": [
+    "side_a-claim-2"
+  ],
+  "claim_under_attack": "Output filter must hard-block commitment vocabulary and currency patterns with 100% coverage on adversarial test corpus before launch.",
+  "attack_type": "evidence_gap",
+  "evidence_or_reason": "The claim overstates what a deterministic output filter can prove. A finite adversarial corpus with 100% pass rate does not establish 100% coverage in live WhatsApp conversations, and the proposed blocked patterns are incomplete: pricing and commitment can be expressed without currency symbols, percentage discounts, or the listed words, such as written-out prices or softer reservation language. The artifact does not specify the exact prohibited pattern set, semantic test strategy, or architectural control that prevents approved templates from becoming a bypass.",
+  "severity": "medium"
+}

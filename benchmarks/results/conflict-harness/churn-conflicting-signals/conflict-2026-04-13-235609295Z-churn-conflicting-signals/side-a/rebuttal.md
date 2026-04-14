@@ -1,0 +1,13 @@
+# Critique: finding-1
+
+- Target Side: side_b
+- Target Claim IDs: side_b-claim-1, side_b-claim-3
+- Attack Type: evidence_gap
+- Severity: high
+
+## Claim Under Attack
+The PRD should prioritize a guarded diagnostic pilot because the scenario provides conflicting churn signals but no underlying evidence, making broad changes premature; the artifact is not ready for broad implementation until churn drivers, target segment, baselines, and evidence quality are established.
+
+## Evidence Or Reason
+The artifact uses the absence of a provided evidence packet as justification for deferring every substantive decision, but the scenario explicitly states signals CONFLICT with strategy targets — meaning signals exist, they just point in opposing directions. Rather than modeling the conflict (e.g., usage up but NPS down, expansion in off-target segments but contraction in target), the PRD treats 'conflicting signals' as equivalent to 'no signals' and produces requirements that are entirely contingent on future discovery. This collapses the PRD's decision usefulness: every requirement is conditional, every readiness gate is 'Fail', and the Recommended Next Artifact asks for exactly the analysis the PRD itself should have framed. A PRD that passes only its own discovery phase and fails everything else is not a product requirements document — it is a research proposal mislabeled as a PRD. The scenario demanded a churn reduction PRD when signals conflict, not a request for more data before writing one.
+

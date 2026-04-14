@@ -1,0 +1,149 @@
+You are SIDE_B in the final revision phase for run conflict-2026-04-14-014830319Z-netflix-qwikster.
+You must either adopt the critique or reject it with reasoning.
+Do not reveal provider identity.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "run_id": "conflict-2026-04-14-014830319Z-netflix-qwikster",
+  "side_id": "side_b",
+  "round": "final",
+  "artifact_markdown": "# Revised artifact",
+  "claims": [
+    {
+      "claim_id": "side_b-claim-1",
+      "summary": "Updated major claim",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1"
+  ],
+  "open_questions": [],
+  "critique_responses": [
+    {
+      "finding_id": "finding-1",
+      "disposition": "adopted",
+      "rationale": "Why the critique was adopted or rejected."
+    }
+  ]
+}
+
+Case packet:
+{
+  "scenario_id": "netflix-qwikster",
+  "title": "Netflix Qwikster: split streaming from DVD or reverse course",
+  "prompt": "You are a strategy advisor to Netflix's leadership team in September 2011. CEO Reed Hastings has just announced Qwikster — a plan to split Netflix into two separate companies: Netflix for streaming and Qwikster for DVD-by-mail. Each would have its own website, billing, and queue.\n\nThe rationale: DVD-by-mail is a declining business (peaked at ~20M subscribers), while streaming is the future. Bundling them creates organizational drag — product decisions for streaming are constrained by DVD logistics. Separating them lets each business optimize independently.\n\nHowever, the market reaction has been catastrophic. Netflix stock dropped 77% from its July 2011 peak of $298 to ~$65. The company lost 800,000 subscribers in Q3 2011 after a 60% price increase for the combined plan ($7.99 each vs $9.99 bundled). Customer anger is at an all-time high — the Netflix blog post announcing Qwikster received 27,000+ comments, overwhelmingly negative. The Qwikster Twitter handle is owned by someone else posting inappropriate content.\n\nKey evidence available:\n- Netflix subscribers: ~23.8M total (Q3 2011), down from 24.6M in Q2 2011\n- DVD-by-mail subscribers declining ~5% per quarter organically\n- Streaming content costs surging: licensing jumped from $180M (2010) to projected $2B (2012)\n- Netflix streaming library: ~20,000 titles vs ~100,000 on DVD\n- Competitors entering streaming: Amazon Prime Video, Hulu Plus, HBO GO all launched 2010-2011\n- International expansion underway: launched in Canada (2010), Latin America and UK (2011)\n- Price increase backlash: 60% increase for combo plan, announced July 2011\n- Customer satisfaction scores dropped from 79 to 52 (ACSI) in one quarter\n- Qwikster would require separate logins, separate queues, separate reviews\n- DVD business still generating significant cash flow (~$1B revenue, high margins)\n- Streaming business operating at a loss, subsidized by DVD profits\n- Hastings publicly apologized for the price increase but defended the strategic logic of separation\n- Wall Street analysts split: some see strategic clarity, most see execution disaster\n\nThe leadership team must decide: proceed with the Qwikster split as announced, or reverse course and keep both services under the Netflix brand?\n\nWrite a strategic recommendation memo. Take a clear position — split or reverse — and defend it with evidence. Acknowledge the strongest counterarguments and explain why your position is still correct.",
+  "artifact_type": "strategy",
+  "rubric": {
+    "dimensions": [
+      "claim quality",
+      "evidence discipline",
+      "responsiveness to critique",
+      "internal consistency",
+      "decision usefulness"
+    ],
+    "scoring_scale": "1-5",
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "constraints": {
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "expect_structured": true,
+    "context_files": [],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "evidence": [],
+  "max_rounds": 3,
+  "tool_policy": "none",
+  "sharing_policy": {
+    "share_case_packet": true,
+    "share_committed_artifacts_after_first_pass": true,
+    "share_critiques_after_open": true,
+    "share_hidden_reasoning": false,
+    "share_provider_identity": false,
+    "share_internal_coalition_drafts": false
+  },
+  "success_condition": {
+    "type": "validator_contract",
+    "description": "Produce a strategy artifact that satisfies the scenario validator contract.",
+    "validator": {
+      "artifact_type": "strategy",
+      "expect_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true
+    }
+  }
+}
+
+Your first-pass artifact:
+{
+  "run_id": "conflict-2026-04-14-014830319Z-netflix-qwikster",
+  "side_id": "side_b",
+  "round": "first_pass",
+  "artifact_markdown": "# Reverse course: keep DVD and streaming under the Netflix brand\n\n## Recommendation\nNetflix should reverse the Qwikster split immediately and keep both services under one Netflix brand, one account system, one queue relationship where possible, and one billing relationship. The strategic logic behind separation is directionally correct: streaming is the future and DVD is declining. But the announced form of the split destroys customer trust, adds user friction at the worst possible moment, and risks killing the cash engine that is still funding streaming and international expansion.\n\nThe right move is not to abandon strategic separation internally. It is to abandon customer-facing separation externally.\n\n## Why reverse course now\n\n### 1. The core problem is not strategy clarity; it is customer value destruction\nThe announced Qwikster design asks customers to accept separate websites, separate bills, separate queues, separate reviews, and separate logins after already absorbing a 60% price increase for the combined plan. That is a compounded degradation in the user experience, not a clarification of it. The market is signaling that customers see this as Netflix making its own operating model simpler by making their lives harder.\n\nThis is already visible in the numbers. Subscribers fell from about 24.6M in Q2 2011 to about 23.8M in Q3 2011, a loss of 800,000 members. Customer satisfaction collapsed from 79 to 52 in one quarter. The blog response was overwhelmingly negative, with 27,000+ comments. These are not normal transition costs. They are evidence that the plan has crossed a trust threshold.\n\n### 2. DVD is still strategically valuable even if it is structurally declining\nDVD-by-mail is declining by roughly 5% per quarter organically, but it still has major value today. It generates about $1B in revenue with high margins and subsidizes a streaming business that is still loss-making. Streaming content costs are exploding, from $180M in 2010 to a projected $2B in 2012. That means Netflix is entering a capital-intensive competitive phase exactly when it most needs stable cash flow.\n\nSplitting off DVD in a way that accelerates churn or weakens retention would not merely tidy the portfolio. It would impair the funding base required to win streaming.\n\n### 3. Netflix cannot afford self-inflicted friction during a category land grab\nCompetition in streaming is intensifying: Amazon Prime Video, Hulu Plus, and HBO GO all entered or scaled in 2010-2011. Meanwhile Netflix is expanding internationally across Canada, Latin America, and the UK. That combination already stretches management, content economics, and brand trust.\n\nIn that environment, the company should be reducing friction and maximizing brand coherence. Instead, Qwikster fragments identity and attention. A separate DVD brand confuses customers, dilutes the Netflix name, and creates switching opportunities for competitors at the exact moment Netflix needs to deepen habit and loyalty.\n\n### 4. Execution failure is now overwhelming the strategic message\nEven if the long-run portfolio logic has merit, execution quality matters because it determines whether the strategy survives contact with customers. The Qwikster Twitter handle problem is a small but telling signal: Netflix launched a major brand change without controlling basic brand assets. That makes the company look unprepared and amplifies the perception that leadership is imposing a theory on customers without operational discipline.\n\nAt this point, proceeding would convert a correct long-term thesis into an avoidable credibility crisis.\n\n## Best counterargument\nThe strongest argument for proceeding is that bundling DVD and streaming traps Netflix in the past. DVD logistics and economics distort product decisions, obscure streaming margins, and delay the organizational focus needed to compete in a streaming-first market. Separation could give investors and managers cleaner signals, sharper accountability, and faster execution for each business.\n\nThat argument is real. But it still does not justify the announced split.\n\nFirst, Netflix can create internal separation without forcing customer-facing fragmentation. It can run distinct P&Ls, leadership structures, roadmaps, and capital allocation processes inside one brand. Second, the timing is wrong: after a sharp price shock and public backlash, another disruptive move multiplies churn risk. Third, strategic clarity is only useful if the company retains enough customer trust and cash flow to finance the transition. A theoretically cleaner structure that accelerates subscriber loss is strategically worse than a messier structure that preserves the right to win.\n\n## What Netflix should do instead\n1. Cancel the Qwikster rollout publicly and decisively.\n2. Reaffirm one Netflix brand and one customer relationship.\n3. Preserve internal organizational separation between DVD and streaming businesses, including distinct operating goals and reporting.\n4. Reduce visible customer friction by simplifying plans, accounts, and communication.\n5. Use DVD cash flow explicitly to fund streaming content acquisition and international ramp while managing DVD for harvest, not growth.\n6. Rebuild trust with a product roadmap centered on convenience, selection improvement in streaming, and communication discipline.\n\n## Decision Frame\nReverse course on the customer-facing Qwikster split. Keep Netflix as the single brand and relationship layer while separating the businesses internally for management focus and financial discipline. The decision criterion is not whether streaming is the future; it is whether the announced split increases Netflix's probability of winning streaming from its September 2011 position. It does not.\n\n## Unknowns & Evidence Gaps\n- We do not have a cohort-level view of churn by DVD-only, streaming-only, and combo subscribers after the July 2011 price change.\n- We do not have retention modeling for customers exposed to separate-login and separate-queue friction.\n- We do not have full economics on how much incremental content spend is required for streaming to close the gap with DVD selection.\n- We do not know whether Wall Street would reward internal reporting separation without a public brand split.\n\n## Pass/Fail Readiness\nPass if leadership is willing to publicly reverse the split, accept short-term embarrassment, and implement internal business separation with tighter customer experience discipline.\n\nFail if leadership remains committed to public structural purity over customer trust, or if it treats reversal as abandoning streaming focus rather than as preserving the balance sheet and brand needed to fund it.\n\n## Recommended Next Artifact\nA 90-day recovery plan covering customer communication, pricing stabilization, internal operating model separation, churn-risk monitoring, and milestones for rebuilding trust while funding streaming growth.",
+  "claims": [
+    {
+      "claim_id": "side_b-claim-1",
+      "summary": "Netflix should reverse the customer-facing Qwikster split because it adds major user friction immediately after a severe price shock and is already driving abnormal trust and subscriber losses.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-2",
+      "summary": "DVD should remain under the Netflix umbrella because its high-margin cash flow is still strategically necessary to subsidize a loss-making streaming business facing surging content costs and heavy competition.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-3",
+      "summary": "The strongest pro-split argument, organizational clarity for streaming, is valid in principle but can be achieved internally without fragmenting the customer relationship or weakening the brand.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1"
+  ],
+  "open_questions": [
+    "What share of recent churn is attributable to the July 2011 price increase versus anticipated Qwikster service fragmentation?",
+    "How much incremental churn would separate logins, queues, and billing create among combo subscribers specifically?",
+    "Can Netflix provide investors with enough strategic clarity through segment reporting and internal operating separation without a public split?"
+  ],
+  "critique_responses": []
+}
+
+Visible critique packet:
+{
+  "target_side": "side_b",
+  "finding_id": "finding-1",
+  "target_claim_ids": [
+    "side_b-claim-3"
+  ],
+  "claim_under_attack": "The strongest pro-split argument, organizational clarity for streaming, is valid in principle but can be achieved internally without fragmenting the customer relationship or weakening the brand.",
+  "attack_type": "evidence_gap",
+  "evidence_or_reason": "Side B asserts that internal separation delivers the same strategic benefits as a public split, but provides zero evidence that any company has successfully run two businesses with fundamentally different operational models (physical logistics vs. digital delivery), different cost structures, and diverging customer bases under one brand without the slower business dragging product decisions for the faster one. The claim is stated as self-evident when it is actually the central empirical question. Internal P&L separation does not solve the core problem: when a single product team must serve both DVD and streaming customers through one interface, feature prioritization, engineering resources, and UX design inevitably compromise toward the larger installed base. Side B acknowledges the pro-split logic is 'real' but then hand-waves the solution as 'distinct operating goals and reporting' — which is exactly the organizational status quo that Hastings identified as insufficient. Without a concrete mechanism explaining how internal separation avoids the product-decision contamination that motivated the split, this claim is an assertion dressed as a rebuttal.",
+  "severity": "high"
+}

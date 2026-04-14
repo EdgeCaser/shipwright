@@ -1,0 +1,52 @@
+
+
+```json
+{
+  "run_id": "conflict-2026-04-14-041824327Z-churn-conflicting-signals",
+  "side_id": "side_b",
+  "round": "first_pass",
+  "artifact_markdown": "# Churn Reduction PRD: Resolving Conflicting Signals\n\n## Decision Frame\n\n**Problem statement:** Monthly churn rate has increased from 4.2% to 6.1% over the past two quarters, but conflicting internal signals make root-cause attribution uncertain and the correct intervention unclear.\n\n**Conflicting signals identified:**\n\n| Signal | Direction | Source | Implication |\n|--------|-----------|--------|-------------|\n| NPS scores | Stable/improving (72→74) | Quarterly survey | Product satisfaction is not degrading |\n| Support ticket volume | Up 35% | Zendesk | Users are hitting more friction |\n| Feature adoption (new) | Up 18% | Product analytics | Engaged users are exploring |\n| Time-to-value for new cohorts | Degraded 22% | Onboarding funnel | New users struggle to reach aha moment |\n| Expansion revenue | Up 12% | Billing | Retained users are spending more |\n| Involuntary churn (payment failures) | Up 40% | Stripe | Mechanical churn masking voluntary patterns |\n\n**Core tension:** Strategy targets emphasize net revenue retention (NRR > 110%) and new feature velocity. Churn reduction competes for engineering resources with expansion-driving features. The signal conflict means we risk optimizing for the wrong lever — cutting voluntary churn when the problem is mechanical, or investing in onboarding when the real issue is pricing friction.\n\n**Decision required:** Should we (a) prioritize involuntary churn recovery (payment dunning, retry logic), (b) invest in onboarding time-to-value improvements, or (c) hold and run a diagnostic sprint before committing resources?\n\n**Recommendation:** Option (c) — run a 2-week diagnostic sprint before committing to a solution. The conflicting signals create unacceptable risk of misallocation. The diagnostic sprint has a defined exit criterion: a decomposed churn waterfall that attributes at least 80% of the delta to specific, actionable causes.\n\n## Unknowns & Evidence Gaps\n\n### Critical unknowns (must resolve before building)\n\n1. **Churn decomposition is missing.** We report a single churn number but have not separated voluntary vs. involuntary, nor segmented by cohort vintage, plan tier, or usage intensity. Without this, any intervention is a guess.\n   - *Evidence needed:* Churn waterfall analysis segmented by voluntary/involuntary, cohort, plan, and engagement quartile.\n   - *Owner:* Data team.\n   - *Timeline:* 5 business days.\n\n2. **Support ticket → churn correlation is unvalidated.** Ticket volume is up, but we don't know if ticket-filing users churn at higher rates or if the increase reflects a more vocal but loyal segment.\n   - *Evidence needed:* Survival analysis comparing ticket-filing users vs. non-filers within the same cohort and plan.\n   - *Owner:* Data team.\n   - *Timeline:* 3 business days (can run in parallel with #1).\n\n3. **Payment failure root cause is unclear.** The 40% increase in involuntary churn could be card expiration cycles, a billing provider issue, international payment method gaps, or pricing-tier sticker shock triggering cancellation-before-charge.\n   - *Evidence needed:* Stripe failure reason codes, retry success rates, geographic and plan-tier breakdown.\n   - *Owner:* Payments/billing team.\n   - *Timeline:* 2 business days.\n\n### Important but deferrable unknowns\n\n4. **NPS respondent bias.** If churned users don't receive or complete NPS surveys, the stable score is survivorship bias. Need to check survey delivery against churn timing.\n5. **Competitive displacement signal.** No win/loss data on whether churned users are leaving for a competitor or leaving the category entirely.\n6. **Onboarding degradation cause.** Time-to-value increase could be product complexity, audience shift (less technical users), or a broken activation flow — each demands a different fix.\n\n### What we will NOT investigate in this phase\n\n- Pricing restructuring (separate initiative, longer cycle)\n- Brand/positioning churn drivers (unmeasurable in this timeframe)\n\n## Pass/Fail Readiness\n\n**Readiness verdict: NOT READY to commit to a solution.**\n\nThe PRD cannot recommend a specific churn intervention because the prerequisite diagnostic evidence does not exist. Committing resources now would be premature.\n\n### Pass criteria for proceeding to solution design\n\n| # | Criterion | Status | Blocking? |\n|---|-----------|--------|-----------|\n| 1 | Churn waterfall with voluntary/involuntary split by segment | Not started | Yes |\n| 2 | Support ticket → churn correlation validated or falsified | Not started | Yes |\n| 3 | Payment failure root cause identified with actionable categories | Not started | Yes |\n| 4 | NPS survivorship bias checked | Not started | No (but affects confidence) |\n| 5 | At least 80% of churn delta attributed to specific causes | Not started | Yes — exit criterion for diagnostic sprint |\n\n### Risks of proceeding without evidence\n\n- **Misallocation risk (HIGH):** If involuntary churn is the primary driver, investing in onboarding improvements wastes a quarter of engineering time with no churn impact.\n- **Strategy conflict risk (MEDIUM):** Churn interventions that slow feature velocity may reduce expansion revenue, worsening NRR even if gross churn improves.\n- **Measurement risk (MEDIUM):** Without a decomposed baseline, we cannot measure the impact of any intervention we ship.\n\n## Recommended Next Artifact\n\n**Next artifact:** Churn Diagnostic Sprint Brief\n\n**Purpose:** Define the 2-week diagnostic sprint scope, assign owners to each evidence gap above, establish the exit criterion (80% attribution waterfall), and schedule the go/no-go review.\n\n**Contents of the sprint brief:**\n1. Sprint goal and exit criteria\n2. Evidence workstreams with owners and deadlines (mapped from Unknowns above)\n3. Data access requirements and instrumentation gaps\n4. Go/no-go review meeting — scheduled for end of sprint with VP Product and VP Engineering\n5. Decision tree: which intervention path to pursue based on diagnostic findings (involuntary-heavy → dunning/payments track; onboarding-heavy → activation track; distributed → portfolio approach with staged rollout)\n\n**After the diagnostic sprint**, the follow-on artifact will be one of:\n- **Payments Recovery PRD** — if involuntary churn accounts for >50% of the delta\n- **Onboarding Acceleration PRD** — if time-to-value degradation correlates with >50% of voluntary churn\n- **Churn Portfolio Roadmap** — if causes are distributed and require multiple parallel workstreams\n\n**Timeline:** Diagnostic sprint starts within 3 business days of PRD approval. Go/no-go review 2 weeks later. Solution PRD drafted within 1 week of go decision.",
+  "claims": [
+    {
+      "claim_id": "side_b-claim-1",
+      "summary": "The organization cannot rationally commit to a churn intervention because it lacks a decomposed churn waterfall — a single blended churn metric combined with contradictory leading indicators (stable NPS, rising tickets, degraded onboarding, rising involuntary churn) makes any specific solution a guess with high misallocation risk.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-2",
+      "summary": "Involuntary churn (payment failures up 40%) may account for the majority of the churn increase, meaning the correct intervention is a payments/dunning fix rather than a product or onboarding change — but this hypothesis is unvalidated without failure reason code analysis.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-3",
+      "summary": "A 2-week diagnostic sprint with a defined exit criterion (80% of churn delta attributed to specific causes) is the highest-ROI next step because it converts the decision from a bet into an evidence-based allocation, at the cost of only 2 weeks of delay.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-4",
+      "summary": "Stable NPS scores may reflect survivorship bias rather than genuine satisfaction if churned users are excluded from survey delivery, making NPS an unreliable counter-signal to rising churn.",
+      "evidence_refs": [],
+      "is_major": false
+    },
+    {
+      "claim_id": "side_b-claim-5",
+      "summary": "Strategy targets (NRR > 110%) and churn reduction may conflict — aggressive churn interventions that slow feature velocity could reduce expansion revenue, potentially worsening the metric the organization actually optimizes for.",
+      "evidence_refs": [],
+      "is_major": true
+    }
+  ],
+  "citations": [],
+  "open_questions": [
+    "What percentage of the churn increase is involuntary (payment failure) vs. voluntary (deliberate cancellation)?",
+    "Do support ticket filers churn at higher or lower rates than non-filers in the same cohort?",
+    "Are NPS surveys delivered to users who churn mid-cycle, or does the stable NPS reflect survivorship bias?",
+    "Is the onboarding time-to-value degradation driven by product complexity, audience shift, or a specific broken activation step?",
+    "Are churned users leaving for competitors or leaving the category entirely?"
+  ],
+  "critique_responses": []
+}
+```
+

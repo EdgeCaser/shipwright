@@ -1,0 +1,13 @@
+# Critique: finding-1
+
+- Target Side: side_b
+- Target Claim IDs: side_b-claim-1
+- Attack Type: evidence_gap
+- Severity: high
+
+## Claim Under Attack
+Under partial market data, the most decision-useful pricing move is a limited and reversible segment test rather than a full pricing rollout.
+
+## Evidence Or Reason
+The claim asserts a segment test is 'the most decision-useful' move but provides no evidence or framework for why testing dominates other options such as gathering the missing data first, commissioning willingness-to-pay research, or holding pricing stable while investing in competitive intelligence. The artifact lists four major evidence gaps (competitor benchmarks, WTP research, elasticity data, segment margins) yet never evaluates whether a pricing experiment can even produce valid signal without those baselines. Running a test without baseline elasticity or segment margin data means the results themselves may be uninterpretable — you cannot attribute conversion changes to price versus confounds without a baseline. The recommendation optimizes for appearing action-oriented while skipping the prerequisite analysis that would make the experiment's results meaningful.
+

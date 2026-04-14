@@ -1,0 +1,13 @@
+# Critique: finding-1
+
+- Target Side: side_b
+- Target Claim IDs: side_b-claim-1
+- Attack Type: evidence_gap
+- Severity: medium
+
+## Claim Under Attack
+The binary continue-or-kill framing is a false choice; restructuring Total Access to reduce burn by 50-60% while redirecting capital to streaming is the only path that addresses both the near-term financial crisis and the existential platform shift.
+
+## Evidence Or Reason
+The visible evidence supports that Total Access is effective but expensive; it does not support the central operational leap that Blockbuster can cut burn by 50-60% and simultaneously free up $150-200M/year for streaming without collapsing subscriber demand or worsening franchisee conflict. The artifact's tier pricing, exchange caps, and franchisee revenue-share are invented interventions with no evidence in the packet for likely adoption, retention, or cost impact. Because the recommendation depends on these unproven assumptions, calling restructure 'the only path' overstates what the evidence establishes.
+

@@ -1,0 +1,13 @@
+# Critique: finding-1
+
+- Target Side: side_b
+- Target Claim IDs: side_b-claim-1
+- Attack Type: evidence_gap
+- Severity: high
+
+## Claim Under Attack
+When churn signals conflict with strategy targets, the PRD should optimize for harmful churn in strategic segments rather than aggregate churn.
+
+## Evidence Or Reason
+This claim assumes the current strategy is correct and treats it as a fixed constraint, but the scenario premise is that signals *conflict* with strategy targets. One valid interpretation of conflicting signals is that the strategy itself is miscalibrated—the ICP definition may be wrong, the target segment may be shrinking, or the strategy target may have been set without adequate market evidence. The artifact explicitly states 'This PRD does not redefine company strategy or ICP' as a non-goal, which means it structurally cannot surface the case where the right response to conflicting signals is to revise the strategy rather than filter churn through it. By treating strategy-fit as an unquestionable lens, the PRD creates a blind spot exactly where the scenario's core tension lives: what if the conflict exists because the strategy is the problem? No decision gate in the proposed workflow tests for this possibility, and no pass/fail criterion requires validating that the strategy target itself is evidence-based before using it to classify churn as 'acceptable.'
+

@@ -1,0 +1,39 @@
+{
+  "run_id": "conflict-2026-04-14-032239349Z-handoff-contradiction",
+  "side_id": "side_a",
+  "round": "final",
+  "artifact_markdown": "# Revised artifact\n\n## Technical Handoff PRD\n\n### Objective\nDetermine whether a handoff-ready PRD can be issued for an initiative that is supposed to align to a platform strategy and challenge review.\n\n### Current Decision\nDo not approve engineering handoff yet. The available record establishes that cross-document contradiction risk exists, but no platform strategy, challenge review, or source-text packet is present to resolve into implementable requirements.\n\n### Why This Is the Decision\nThe scenario requires a PRD aligned to upstream documents, but those documents are absent in the packet. Producing feature requirements, scope, success metrics, or acceptance criteria would therefore be invented rather than traced to evidence.\n\n### In-Scope for This Artifact\n- State the handoff decision\n- Define the minimum evidence required before a real implementation PRD can be issued\n- Prevent false alignment claims\n\n### Out of Scope for This Artifact\n- Product requirements for engineering build\n- Technical design\n- API or schema details\n- Launch plan\n- Success metrics beyond readiness criteria\n\n### Minimum Inputs Required For Revision\n- Platform strategy document or approved summary\n- Challenge review findings with explicit objections or constraints\n- Source-of-truth owner for final requirement approval\n- Named contradictions, if any, with proposed dispositions\n\n### Provisional Handoff Rules\n- No requirement may be marked approved unless it cites an available source document.\n- No strategy-alignment statement may be included without a source reference.\n- Any contradiction affecting scope, behavior, ownership, or measurement blocks handoff until resolved.\n- If source documents are unavailable, the only valid PRD outcome is `handoff blocked`.\n\n### Acceptance Criteria For A Future Approved PRD\n- Every major requirement cites a provided source.\n- Strategy alignment is demonstrated from the platform document, not asserted.\n- Challenge-review objections are either resolved or explicitly accepted by an owner.\n- Engineering can identify what to build without consulting conflicting drafts.\n\n## Decision Frame\nDecision: block handoff and request the missing source packet. This is the most decision-useful outcome available because the present evidence supports only a readiness judgment, not implementation requirements. Issuing a fuller PRD now would create unsupported claims and hide the contradiction risk the scenario explicitly raises.\n\n## Unknowns & Evidence Gaps\n- The platform strategy content is missing.\n- The challenge review content is missing.\n- No concrete contradiction examples are available.\n- No product scope, metrics, constraints, or dependencies are evidenced.\n\n## Pass/Fail Readiness\nPass if:\n- The platform strategy and challenge review are available.\n- Claimed contradictions are enumerated with dispositions.\n- Requirements can be traced to provided sources.\n- A single approving owner is named for final requirement text.\n\nFail if:\n- Alignment is asserted without source text.\n- Requirements are inferred from missing documents.\n- Contradictions remain unnamed or unresolved.\n- Engineering would need to interpret competing drafts during build.\n\n## Recommended Next Artifact\nProduce a source packet plus contradiction register before drafting the implementation PRD. That next artifact should list each upstream statement, its source, whether it conflicts with another statement, the decision owner, and the final operative wording for PRD use.",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "Given the provided packet, the only defensible PRD decision is to block engineering handoff until the missing platform strategy and challenge review inputs are supplied.",
+      "evidence_refs": [
+        "ctx-1",
+        "ctx-2",
+        "ctx-3"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "A valid artifact for this scenario must preserve the required Shipwright closing sections while avoiding unsupported implementation requirements.",
+      "evidence_refs": [
+        "ctx-2"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1",
+    "ctx-2",
+    "ctx-3"
+  ],
+  "open_questions": [],
+  "critique_responses": [
+    {
+      "finding_id": "finding-2",
+      "disposition": "adopted",
+      "rationale": "The critique is correct that the first pass over-asserted a contradiction-resolution framework without concrete contradictions in evidence. The revision removes unsupported implementation structure and replaces it with an evidence-bounded decision: handoff is blocked until the missing source documents are provided."
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+# Critique: finding-2
+
+- Target Side: side_a
+- Target Claim IDs: side_a-claim-2
+- Attack Type: evidence_gap
+- Severity: medium
+
+## Claim Under Attack
+The $400M/year burn rate is a pricing and structure problem, not a strategic one — tiered returns, upsells, franchisee revenue share, and modest price increases can reduce burn to ~$240M/year while preserving the core value proposition.
+
+## Evidence Or Reason
+The artifact asserts a 40% burn reduction without evidence for the key operating levers: return-frequency distribution, heavy-user concentration, churn from a $2-3 price increase, attach rates for upsells, or net impact of paying franchisees $0.75-$1.00 per return. Some reforms could add cash costs rather than reduce them, and the proposed $50-$75M/year streaming investment would raise the funding need to roughly $290-$315M/year before unproven store-closure savings. The artifact itself marks financial feasibility as only PARTIAL and says the required financial model has not been built, so the claimed ~$240M survivable burn rate is not evidence-backed.
+

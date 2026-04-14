@@ -1,0 +1,58 @@
+{
+  "run_id": "conflict-2026-04-14-061754474Z-churn-conflicting-signals",
+  "side_id": "side_a",
+  "round": "final",
+  "artifact_markdown": "# Revised artifact\n\n## Churn Reduction PRD: Conflicting Signals\n\n## Overview\nReduce avoidable churn without breaking strategy targets by separating immediate evidence collection from intervention selection. Because the case packet provides no churn evidence, this PRD defines a decision process and provisional operating lanes rather than asserting a fixed retention program as already validated.\n\n## Problem\nChurn signals are conflicting. Some signals may indicate onboarding, support, pricing, or product issues, while strategy targets may require focus on a narrower segment, premium positioning, margin discipline, or long-term roadmap concentration. Acting on all churn signals risks strategy drift. Ignoring them risks preventable loss.\n\n## Goal\nCreate a decisionable churn program that lowers preventable churn in strategically aligned accounts while preserving strategy targets.\n\n## Non-Goals\n- Retain every at-risk customer at any cost.\n- Expand roadmap scope solely to satisfy non-target segments.\n- Treat aggregate churn as sufficient evidence for intervention choice.\n- Lock in a fixed intervention mix before segment and driver evidence exists.\n\n## Users / Stakeholders\n- Existing customers at risk of churn\n- Customer Success\n- Product\n- Sales / Account Management\n- Finance / Leadership\n\n## Core Product Decision\nThe immediate product decision is not which churn fix to scale first. The immediate decision is to install an evidence-gated churn triage system that classifies churn by segment fit, driver type, confidence, and strategic compatibility before major retention investments are approved.\n\n## Decision Principles\n1. Prioritize churn reduction in strategically aligned segments first.\n2. Separate evidence gathering from intervention scaling.\n3. Ship only no-regret operational fixes before full driver validation.\n4. Treat strategy-conflicting requests as inputs to document, not automatic roadmap commitments.\n5. Require guardrails so retention gains do not come from discounting, custom work, or support-heavy exceptions.\n\n## Proposed Approach\n### 1. Evidence-Gated Churn Triage\nEvery churn signal is classified on four axes:\n- Segment fit: target, adjacent, non-target\n- Driver type: product gap, onboarding friction, support issue, pricing or packaging mismatch, competitive displacement, low realized value\n- Evidence confidence: high, medium, low\n- Strategic compatibility: aligned, neutral, conflicting\n\n### 2. Provisional Intervention Lanes\nThese lanes are operating buckets, not yet evidence-ranked priorities:\n- Lane A, no-regret fixes: onboarding clarity, activation friction, reliability, support handoff, renewal communication\n- Lane B, target-segment product responses: reserved for repeated, high-confidence churn drivers in target segments\n- Lane C, contained experiments: pricing, packaging, messaging, or save-play tests with explicit guardrails\n- Lane D, deliberate non-action: documented cases where churn is driven by non-target demand or strategy-conflicting requests\n\n### 3. Decision Rule For Moving From Evidence To Action\n- High-confidence, target-segment, strategy-aligned drivers move to implementation.\n- Low-confidence or mixed-signal drivers remain in instrumentation until validated.\n- Strategy-conflicting drivers require explicit leadership review before any exception is approved.\n- Aggregate churn changes alone cannot justify roadmap shifts without driver-level evidence.\n\n### 4. Review Cadence\nEstablish a weekly churn review that outputs:\n- top churn reasons by target segment\n- current evidence confidence by driver\n- interventions in flight\n- strategy-conflict decisions made\n- guardrail metric status\n- unresolved evidence gaps\n\n## Requirements\n### Functional Requirements\n- Capture churn reasons in a structured taxonomy at cancellation, downgrade, and renewal-risk stages.\n- Require segment tagging on all churn records.\n- Require confidence scoring for each asserted churn driver.\n- Route each churn reason into an evidence status: validated, provisional, unverified.\n- Log explicit rationale when the team chooses implementation, experiment, or non-action.\n- Create an escalation path for high-value target accounts with repeated preventable churn patterns.\n\n### Measurement Requirements\n- Track gross logo churn and revenue churn by segment.\n- Track preventable churn rate for target accounts.\n- Track activation, time-to-value, support burden, discounting, and margin as guardrails.\n- Track intervention-level outcomes, not just overall churn.\n- Track the share of churn records with validated versus unverified driver attribution.\n\n### Operational Requirements\n- Customer-facing teams use a shared churn reason template.\n- Product reviews target-segment retention issues by default.\n- Leadership approves exceptions that trade off strategy for retention.\n- Any request for product investment must cite segment distribution and driver-confidence data.\n\n## Success Metrics\n- Primary: reduction in preventable churn for target segments\n- Secondary: improved activation and renewal health for target segments\n- Decision-quality metric: increase in the share of churn decisions backed by validated driver evidence\n- Guardrails: no material degradation in gross margin, roadmap focus, or support cost-to-serve\n\n## Risks\n- Misclassifying churn from non-target users as strategic demand\n- Overfitting to anecdotal save conversations\n- Treating provisional lanes as confirmed priorities\n- Creating retention programs that hide rather than solve value gaps\n- Failing to instrument causes tightly enough to learn from interventions\n\n## Rollout\n### Phase 1\nImplement taxonomy, segmentation, confidence scoring, and review cadence.\n\n### Phase 2\nShip no-regret fixes and run contained experiments only where evidence thresholds are met.\n\n### Phase 3\nPromote validated interventions into standard operating process.\n\n## Decision Frame\nProceed with an evidence-gated, segmented churn-reduction program, not a blanket retention initiative and not a pre-committed four-lane solution. The decision is to install a triage and governance mechanism that allows no-regret action now, defers larger investments until driver evidence is stronger, and explicitly declines retention work that weakens strategy.\n\n## Unknowns & Evidence Gaps\n- No direct churn evidence pack is provided in the case packet.\n- The size of churn by segment is unknown.\n- The relative contribution of onboarding, product, pricing, support, and competitive drivers is unknown.\n- The current strategy target is referenced but not specified in measurable terms.\n- Baseline guardrail thresholds are not defined.\n- No evidence establishes which intervention lane, if any, should be prioritized first.\n\n## Pass/Fail Readiness\nPass if:\n- churn reasons can be segmented and quantified\n- target-segment preventable churn is measurable\n- driver confidence can be scored from actual evidence\n- interventions have named owners and guardrails\n- explicit non-action decisions are documented for strategy-conflicting requests\n\nFail if:\n- churn is tracked only in aggregate\n- retention work is approved without segment fit or driver validation\n- provisional intervention lanes are treated as evidence-backed priorities\n- success can only be shown through discounting or exception handling\n- the team cannot distinguish evidence-backed drivers from anecdotal noise\n\n## Recommended Next Artifact\nA churn-analysis brief that quantifies churn drivers by segment, confidence level, and strategic fit, followed by a prioritization artifact that ranks validated interventions rather than generic retention categories.",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "When churn signals conflict with strategy targets, the first decision should be an evidence-gated triage system rather than a blanket retention program.",
+      "evidence_refs": [
+        "packet-prompt",
+        "packet-rubric",
+        "packet-constraints"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "Provisional intervention lanes can be used as operating buckets, but they should not be presented as evidence-backed priorities when the case packet contains no churn evidence.",
+      "evidence_refs": [
+        "packet-evidence-empty",
+        "critique-finding-2"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-3",
+      "summary": "A usable PRD for this scenario must make uncertainty explicit through guardrails, evidence thresholds, and pass/fail readiness criteria.",
+      "evidence_refs": [
+        "packet-rubric",
+        "packet-constraints",
+        "packet-validator"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "packet-prompt",
+    "packet-rubric",
+    "packet-constraints",
+    "packet-validator",
+    "packet-evidence-empty",
+    "critique-finding-2"
+  ],
+  "open_questions": [
+    "What are the explicit strategy targets that retention work must not violate?",
+    "Which customer segments contribute the largest share of preventable churn today?",
+    "What evidence exists for churn drivers across onboarding, product gaps, pricing, support, and competitive loss?",
+    "What guardrail thresholds define unacceptable tradeoffs in margin, roadmap focus, and support burden?"
+  ],
+  "critique_responses": [
+    {
+      "finding_id": "finding-2",
+      "disposition": "adopted",
+      "rationale": "The critique is correct that the prior artifact overstated certainty by calling a four-lane program the highest-confidence response despite an empty evidence set. I revised the artifact to treat the lanes as provisional operating buckets, moved the main claim to an evidence-gated triage decision, and made explicit that intervention ranking must follow driver validation rather than precede it."
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+# Critique: finding-2
+
+- Target Side: side_a
+- Target Claim IDs: side_a-claim-3
+- Attack Type: evidence_gap
+- Severity: medium
+
+## Claim Under Attack
+An 8-week time-boxed diagnostic period with $85K incremental budget is the minimum viable path to a well-founded strategic decision, converting the next board meeting from an ambiguity discussion into a decision meeting.
+
+## Evidence Or Reason
+The artifact asserts the 8-week window and $85K budget as the minimum viable path, but provides no visible basis for why that duration or cost is sufficient or minimal. Several dependencies are only asserted: competitive pricing data may arrive in 6-8 weeks, discovery sprints have not started, and adjacent opportunity validation requires willingness-to-pay and feasibility evidence. With no case evidence packet support, the claim that this package will reliably convert the next board meeting into a decision meeting is under-substantiated.
+

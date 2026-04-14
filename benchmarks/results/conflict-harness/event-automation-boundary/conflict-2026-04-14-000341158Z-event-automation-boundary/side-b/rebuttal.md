@@ -1,0 +1,13 @@
+# Critique: finding-2
+
+- Target Side: side_a
+- Target Claim IDs: side_a-claim-1
+- Attack Type: evidence_gap
+- Severity: medium
+
+## Claim Under Attack
+A deterministic post-processor that pattern-matches LLM outputs for financial language before delivery is necessary and sufficient to enforce the human-in-the-loop boundary for pricing commitments.
+
+## Evidence Or Reason
+The artifact provides no evidence that simple pattern matching is sufficient for this boundary. Currency symbols, percentage signs, and a few commitment words do not cover implied pricing commitments, paraphrases, typos, multilingual WhatsApp messages, package inclusions, or availability language that creates financial obligation without explicit price terms. The artifact’s own open question asks whether adversarial or ambiguous phrasings could bypass the filter, which undercuts the stronger 'necessary and sufficient' claim. A PRD could require this safeguard as one layer, but sufficiency would need a test set, bypass analysis, and explicit fail-closed policy.
+

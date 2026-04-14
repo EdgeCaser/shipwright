@@ -1,0 +1,117 @@
+{
+  "case_packet": {
+    "scenario_id": "event-automation-boundary",
+    "title": "Event automation platform with human-in-the-loop boundary constraints",
+    "prompt": "Write a Phase 1 PRD for an event management automation platform with a WhatsApp assistant, an internal console, human approval for pricing commitments, and strict deterministic boundaries around LLM usage.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass": {
+    "run_id": "conflict-2026-04-14-012926039Z-event-automation-boundary",
+    "side_id": "side_a",
+    "round": "first_pass",
+    "artifact_markdown": "# Phase 1 PRD: Event Management Automation Platform\n\n## Decision Frame\n\n**Problem statement:** Event management companies spend 60-70% of operator time on repetitive coordination tasks — venue availability checks, vendor follow-ups, client Q&A, and quote generation — that could be partially automated. However, pricing commitments and contract terms carry financial and legal risk that demands human judgment.\n\n**Decision to be made:** Should we build a Phase 1 platform consisting of (1) a WhatsApp-based client assistant, (2) an internal operator console, and (3) a human-in-the-loop approval system with strict deterministic boundaries around LLM usage?\n\n**Stakeholders:** Event operations managers (primary users), clients (WhatsApp end-users), finance/legal (approval chain), engineering (build feasibility).\n\n**Success criteria for Phase 1:**\n- Reduce operator time on routine inquiries by ≥40%\n- Zero unauthorized pricing commitments (hard constraint)\n- Client response time under 2 minutes for FAQ-class queries\n- Operator adoption rate ≥80% within pilot cohort\n\n**Scope boundaries:**\n- **In scope:** WhatsApp assistant for inbound client queries, internal console for operator oversight, human approval workflow for pricing/commitments, deterministic guardrails on LLM outputs\n- **Out of scope:** Payment processing, contract signing, multi-language support, outbound marketing automation, CRM integration beyond read-only\n\n---\n\n## Product Architecture\n\n### Component 1: WhatsApp Assistant\n\n**What it does:** Handles inbound client messages via WhatsApp Business API. Answers routine questions (venue availability, package descriptions, event timelines) using retrieval from a structured knowledge base. Escalates anything involving pricing, commitments, or ambiguous intent to a human operator.\n\n**LLM boundary rules (deterministic enforcement):**\n\n| Category | LLM Role | Guardrail |\n|---|---|---|\n| FAQ responses (venue info, hours, capacity) | Generate natural-language response from retrieved facts | Output must cite source record ID; if no matching record, escalate — never hallucinate |\n| Pricing inquiries | Classify intent only | LLM NEVER generates a price. System retrieves price from catalog; if custom, routes to human |\n| Commitment language (\"we can do X\", \"confirmed\", \"guaranteed\") | Blocked | Regex + classifier gate rejects any output containing commitment patterns before delivery |\n| Ambiguous or out-of-scope | Classify as escalation | Auto-routes to operator console with conversation context |\n\n**Output validation pipeline (deterministic, not probabilistic):**\n1. LLM generates candidate response\n2. Deterministic classifier checks for pricing tokens, commitment language, or low-confidence retrieval\n3. If any flag triggers → response blocked, escalated to operator\n4. If clean → response delivered with \"Automated reply\" footer\n5. All responses logged with retrieval source, LLM input/output, and gate decisions\n\n### Component 2: Internal Operator Console\n\n**What it does:** Web dashboard where operators see all active conversations, escalations queue, and approval requests. Operators can:\n- View full conversation history with LLM decision annotations\n- Approve, edit, or reject draft responses flagged for review\n- Override automation and take manual control of any conversation\n- See real-time metrics: response times, escalation rates, automation coverage\n\n**Key design principles:**\n- Operator can always see what the LLM decided and why (transparency)\n- One-click takeover of any conversation (control)\n- Escalation queue sorted by urgency with SLA timers (prioritization)\n\n### Component 3: Human Approval Workflow\n\n**What it does:** Enforces mandatory human approval for any interaction that could create a financial or contractual obligation.\n\n**Approval triggers (deterministic rules, not LLM judgment):**\n- Any message containing a price or quote\n- Any message with commitment/confirmation language\n- Any custom package request outside standard catalog\n- Any discount or negotiation\n- Client explicitly requests to speak to a human\n\n**Workflow:**\n1. System drafts response (or flags that no automated response is appropriate)\n2. Routes to assigned operator or next-available in queue\n3. Operator approves as-is, edits, or writes custom response\n4. Approved response sent to client with operator attribution\n5. SLA: approval requests must be acted on within 15 minutes during business hours\n\n---\n\n## Unknowns & Evidence Gaps\n\n| Unknown | Impact if wrong | How to resolve | Priority |\n|---|---|---|---|\n| Client willingness to interact with WhatsApp bot vs. expecting human | If clients reject bot, adoption fails | Pre-launch survey of 20+ existing clients; A/B test with/without \"automated\" disclosure | P0 — resolve before build |\n| Accuracy of commitment-language detection | False negatives = unauthorized commitments; false positives = excessive escalation | Build test suite of 500+ real client messages, measure precision/recall of gate classifier | P0 — resolve during build |\n| Operator workflow fit | Console may not match actual operator workflow, leading to workarounds | Shadow 3-5 operators for 2 days each, map current workflow before finalizing console design | P1 — resolve before console UX freeze |\n| WhatsApp Business API rate limits and template approval timelines | May constrain response speed or message format | Engage WhatsApp partner for sandbox access, test throughput with simulated load | P1 — resolve during build |\n| Volume of edge cases that bypass FAQ retrieval | If >30% of queries are edge cases, automation value drops significantly | Analyze 1,000 historical client messages for classifiability | P0 — resolve before build |\n| LLM cost at scale | Per-message LLM cost may erode ROI at high volume | Model cost projection using historical message volumes and candidate model pricing | P1 — resolve during build |\n\n---\n\n## Pass/Fail Readiness\n\n### Pass criteria (all must be met for Phase 1 launch):\n- [ ] Zero commitment messages sent without human approval in 2-week pre-launch test\n- [ ] Commitment-language classifier achieves ≥99% recall on test suite (prefer false positives over false negatives)\n- [ ] FAQ retrieval covers ≥70% of historical client queries with correct answers\n- [ ] Operator console tested with ≥3 operators, task completion rate ≥90%\n- [ ] WhatsApp message delivery latency <5 seconds for automated responses\n- [ ] Full audit trail: every message traceable to retrieval source + gate decision + approval status\n\n### Fail criteria (any one blocks launch):\n- [ ] Any path exists where LLM output reaches client without passing through deterministic validation gates\n- [ ] Commitment classifier recall below 95% on adversarial test set\n- [ ] Operators report console adds time vs. current workflow (net negative)\n- [ ] Client survey shows >40% discomfort with WhatsApp bot interaction\n\n### Current readiness assessment: NOT READY\n- Evidence gaps on client willingness and query classifiability are unresolved\n- No commitment classifier exists yet to test\n- Operator workflow mapping not started\n\n---\n\n## Recommended Next Artifact\n\n**Immediate next steps (ordered):**\n\n1. **Client message analysis** — Classify 1,000 historical messages into FAQ/pricing/commitment/edge-case buckets. This determines whether automation coverage is viable. If <50% are automatable, revisit scope.\n\n2. **Client willingness survey** — Survey 20+ existing clients on WhatsApp bot interaction comfort. If rejection rate >40%, pivot to operator-assist model (LLM drafts, human always sends).\n\n3. **Commitment classifier prototype** — Build and test the deterministic gate using regex + lightweight classifier on the classified message corpus. Target ≥99% recall before proceeding.\n\n4. **Operator workflow shadowing** — Map current operator workflow to validate console design assumptions.\n\n**Next artifact:** Technical Design Document specifying the validation pipeline architecture, LLM integration boundaries, WhatsApp API integration, and console data model — to be produced after evidence gaps 1-3 are resolved.\n\n**Phase 2 candidates (explicitly deferred):**\n- Outbound follow-up automation\n- Multi-language support\n- CRM write-back integration\n- Payment and contract workflow\n- Analytics and reporting dashboard",
+    "claims": [
+      {
+        "claim_id": "side_a-claim-1",
+        "summary": "LLM outputs must pass through a deterministic validation pipeline (regex + classifier gates) before reaching clients, with commitment-language detection requiring ≥99% recall — this is the core safety mechanism that makes automation viable without unauthorized financial exposure.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_a-claim-2",
+        "summary": "The platform is not ready to build until three P0 evidence gaps are resolved: client willingness to interact with a bot, historical message classifiability (≥50% must be automatable), and commitment classifier recall on real data.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_a-claim-3",
+        "summary": "Human approval is enforced by deterministic trigger rules (price tokens, commitment patterns, custom requests), not by LLM judgment — the LLM classifies intent but never decides whether to escalate on its own.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_a-claim-4",
+        "summary": "The operator console must provide full transparency into LLM decisions (retrieval source, gate results, approval status) and one-click manual takeover of any conversation — operators are never locked out.",
+        "evidence_refs": [],
+        "is_major": false
+      },
+      {
+        "claim_id": "side_a-claim-5",
+        "summary": "Pass/fail readiness is asymmetric by design: a single path where unvalidated LLM output reaches a client is a hard launch blocker, while false-positive escalations are acceptable friction.",
+        "evidence_refs": [],
+        "is_major": true
+      }
+    ],
+    "citations": [],
+    "open_questions": [
+      "No context files or empirical evidence were provided in the case packet, so all quantitative thresholds (40% time reduction, 99% recall, 70% FAQ coverage) are design targets requiring validation against real operational data.",
+      "The boundary between 'intent classification' (allowed LLM role) and 'decision-making' (prohibited LLM role) needs precise specification in the technical design — edge cases like 'is this a pricing inquiry or a general question about pricing structure?' will stress-test the taxonomy.",
+      "WhatsApp Business API constraints (template approval, session windows, media support) may force architectural compromises not yet reflected in this PRD."
+    ],
+    "critique_responses": []
+  },
+  "critique_packet": {
+    "target_side": "side_a",
+    "finding_id": "finding-2",
+    "target_claim_ids": [
+      "side_a-claim-1"
+    ],
+    "claim_under_attack": "LLM outputs must pass through a deterministic validation pipeline (regex + classifier gates) before reaching clients, with commitment-language detection requiring ≥99% recall — this is the core safety mechanism that makes automation viable without unauthorized financial exposure.",
+    "attack_type": "evidence_gap",
+    "evidence_or_reason": "The claim overstates certainty on two visible fronts. First, no evidence is provided that a regex plus classifier gate can actually achieve the stated ≥99% recall on real event-management conversations, adversarial phrasing, or multilingual/code-switched WhatsApp messages. Second, the artifact labels the pipeline 'deterministic' while relying on a 'classifier' and 'low-confidence retrieval' checks, which are themselves thresholded statistical components unless further specified; that leaves the core safety boundary underdefined. Without a demonstrated test corpus, threshold policy, and proof that all commitment variants are caught, this cannot yet support the conclusion that the mechanism makes automation safely viable.",
+    "severity": "medium"
+  }
+}

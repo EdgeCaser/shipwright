@@ -1,0 +1,100 @@
+{
+  "case_packet": {
+    "scenario_id": "feature-weak-evidence",
+    "title": "New feature with weak evidence",
+    "prompt": "Draft a PRD for a new feature with weak supporting evidence.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass": {
+    "run_id": "conflict-2026-04-14-070557290Z-feature-weak-evidence",
+    "side_id": "side_b",
+    "round": "first_pass",
+    "artifact_markdown": "# PRD: Proposed New Feature\n\n## Summary\nThis document frames a potential new feature under explicitly weak evidence conditions. The goal is not to authorize full delivery, but to define the smallest decision-useful path to test whether the problem is real, important, and solvable.\n\n## Problem Statement\nA feature opportunity has been proposed, but the case packet provides no user evidence, market signal, usage data, or validated business justification. Because of that, the core product risk is not delivery risk; it is false-positive demand risk.\n\n## Goal\nDecide whether this feature deserves progression from concept to validated opportunity.\n\n## Non-Goals\n- Commit to full build scope\n- Promise launch timing\n- Infer user demand without evidence\n- Treat stakeholder enthusiasm as validation\n\n## Users / Stakeholders\n- Primary user: Unknown\n- Buyer / approver: Unknown\n- Internal stakeholders: Product, Design, Engineering\n\n## Proposed Feature Concept\nA new feature intended to improve user outcomes in an unspecified workflow. Exact user job, trigger moment, success metric, and adoption path remain undefined.\n\n## Hypothesis\nIf a meaningful user problem exists and the proposed feature addresses it better than current behavior, then target users will show measurable evidence of demand through discovery signals, prototype engagement, or constrained beta adoption.\n\n## MVP Scope\nBecause evidence is weak, the only justified MVP is a validation MVP:\n- Problem validation interviews\n- Lightweight prototype or concierge workflow\n- Instrumented smoke test or limited beta\n- Clear success and failure thresholds before engineering scale-up\n\n## Requirements\n### Functional Requirements\n- Capture the user problem in concrete terms\n- Test at least one end-to-end user flow in prototype form\n- Record user reactions, objections, and alternatives\n- Measure whether users complete the intended task with the concept\n\n### Non-Functional Requirements\n- Minimize engineering investment until evidence improves\n- Ensure all tests are instrumented and attributable to a defined hypothesis\n- Preserve reversibility if the concept fails\n\n## Success Metrics\nGiven the absence of baseline evidence, success metrics must be validation-oriented first:\n- At least one clearly defined target persona demonstrates the problem is frequent and important\n- A majority of interviewed target users rank the problem as worth solving\n- Prototype or smoke-test engagement exceeds a pre-declared threshold\n- Early signals indicate the feature improves or accelerates a meaningful user outcome\n\n## Risks\n- Building for an unverified problem\n- Solving the wrong user segment\n- Confusing anecdote with demand\n- Expanding scope before proof\n- Producing a PRD that appears actionable without sufficient evidence\n\n## Launch / Rollout Recommendation\nDo not approve full feature development from this PRD alone. Approve only a discovery and validation phase with explicit exit criteria.\n\n## Decision Frame\nDecision required: whether to invest in validation, not whether to build the feature.\n\nRecommendation: proceed only with a time-boxed validation sprint. The evidence base is currently too weak for a production commitment, but strong enough to justify a low-cost test if the opportunity is strategically relevant.\n\n## Unknowns & Evidence Gaps\n- Who exactly has the problem\n- How often the problem occurs\n- What users do today instead\n- Whether the proposed feature is better than status quo alternatives\n- Expected impact on activation, retention, revenue, or efficiency\n- Engineering complexity and integration risk\n- Whether demand is broad, niche, or stakeholder-local\n\n## Pass/Fail Readiness\nCurrent readiness: Fail for build approval.\n\nCurrent readiness: Pass for limited validation work if all of the following are true:\n- A target persona is named\n- A testable hypothesis is written\n- A lightweight prototype or smoke test is defined\n- Quantitative and qualitative success thresholds are declared in advance\n- A kill condition is documented\n\n## Recommended Next Artifact\nValidation brief or discovery plan covering:\n- target persona\n- problem statement\n- interview guide\n- prototype test plan\n- success thresholds\n- kill criteria",
+    "claims": [
+      {
+        "claim_id": "side_b-claim-1",
+        "summary": "The available evidence is insufficient to support full feature development, so the only defensible recommendation is a validation-phase PRD rather than a build-approval PRD.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-2",
+        "summary": "The highest risk is false-positive demand risk, because the case packet contains no user, market, or behavioral evidence.",
+        "evidence_refs": [],
+        "is_major": true
+      }
+    ],
+    "citations": [],
+    "open_questions": [
+      "What specific user segment is this feature for?",
+      "What observable problem behavior justifies solving this now?",
+      "What baseline workflow or workaround do users rely on today?",
+      "What pre-committed success thresholds would justify moving from validation to build?"
+    ],
+    "critique_responses": []
+  },
+  "critique_packet": {
+    "target_side": "side_b",
+    "finding_id": "finding-1",
+    "target_claim_ids": [
+      "side_b-claim-1"
+    ],
+    "claim_under_attack": "The available evidence is insufficient to support full feature development, so the only defensible recommendation is a validation-phase PRD rather than a build-approval PRD.",
+    "attack_type": "evidence_gap",
+    "evidence_or_reason": "This claim presents a false binary: either full build-approval PRD or validation-phase PRD. The artifact treats 'weak evidence' as synonymous with 'no evidence' and uses that conflation to justify producing a PRD that is entirely abstract — no concrete feature, no named user segment, no specific workflow. A validation-phase PRD is defensible in principle, but this one contains zero specificity: the 'Proposed Feature Concept' section explicitly states the user job, trigger moment, success metric, and adoption path are all 'undefined.' A document that recommends validation while defining nothing concrete to validate is not decision-useful — it is a template, not a PRD. The claim that this is 'the only defensible recommendation' masks the fact that the artifact fails to do the minimum work of synthesizing even a hypothetical feature definition against which validation could be designed. Every section defers to future work without committing to any testable proposition now.",
+    "severity": "high"
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "run_id": "conflict-2026-04-14-050407398Z-pricing-partial-data",
+  "side_id": "side_a",
+  "round": "final",
+  "artifact_markdown": "# Revised artifact\n\n## Pricing Strategy Recommendation Under Partial Market Data\n\n## Recommendation\nDo not treat a new-customer-only test as the default answer. Recommend a staged pricing decision with two admissible paths, chosen explicitly against opportunity cost and transfer-risk:\n\n1. Use a new-customer or segment-fenced test if the primary objective is downside control and the team cannot safely experiment on the installed base.\n2. Use a limited installed-base test at a natural renewal, expansion, or contract boundary if the primary risk is underpricing the current base and results from new-logo cohorts would not transfer.\n\nThe core recommendation is not \"protect existing customers at all costs.\" It is to avoid a full-market permanent repricing until the team runs a bounded test that matches the population where the economic question actually matters.\n\n## Why This Is The Best-Supported Recommendation\nThe scenario provides no competitor benchmarks, elasticity data, willingness-to-pay evidence, installed-base renewal behavior, or segment mix. With that evidence missing, a broad permanent pricing reset is weakly supported. But the prior version overstated confidence in one specific design. Under partial data, the stronger claim is narrower: prefer a reversible, decision-oriented test design over an irreversible full rollout, and choose the test population based on where uncertainty and economic exposure are greatest.\n\nThat framing addresses three risks simultaneously:\n- transfer risk: new-customer behavior may not predict installed-base response;\n- downside risk: repricing the full base without evidence can create avoidable churn or sales friction;\n- opportunity-cost risk: delaying any test while remaining underpriced is itself a costly pricing choice.\n\n## Test Design Rules\n- Test one pricing variable at a time when possible: list price, discounting policy, or packaging fence.\n- Match the test cohort to the decision being made. If the decision is about renewal monetization, test at renewal. If the decision is about top-of-funnel acquisition, test on new logos.\n- Predefine duration, sample target, and minimum detectable effect so the test cannot run indefinitely without a decision.\n- Measure both uplift and harm: conversion or renewal rate, realized revenue per account, win rate or expansion rate, and early retention/churn.\n- Quantify status-quo cost alongside treatment risk. If current pricing is plausibly under market, estimate monthly foregone revenue while the test runs.\n- Set rollback criteria in advance.\n\n## Decision Frame\nRecommend a reversible pricing experiment rather than a market-wide permanent change. The decision is not whether to be certain; it is whether to act in a way that produces useful evidence while bounding both downside and opportunity cost. The right test population depends on which population drives the decision value.\n\n## Unknowns & Evidence Gaps\n- No competitor pricing or packaging benchmarks are provided.\n- No willingness-to-pay or elasticity evidence is provided.\n- No installed-base renewal, contraction, or churn sensitivity data is provided.\n- No segment mix is provided, so transferability across cohorts is unknown.\n- No sample-size, traffic-volume, or sales-capacity data is provided, so test power cannot yet be confirmed.\n- No estimate of current underpricing cost is provided, so the cost of delay remains unquantified.\n\n## Pass/Fail Readiness\nPass for a bounded experiment if the team can name the target population, define the economic question, set sample and duration thresholds, and instrument both upside and harm.\nFail for a full repricing rollout today because the evidence base does not justify a durable market-wide decision.\n\n## Recommended Next Artifact\nA pricing experiment brief that specifies: target population, hypothesis, one-variable treatment, sample-size and duration assumptions, guardrail thresholds, rollback triggers, and a simple status-quo-versus-test opportunity-cost model.",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "Under partial market data, the best-supported recommendation is a reversible pricing experiment rather than an immediate permanent full-market repricing.",
+      "evidence_refs": [
+        "ctx-scenario-prompt",
+        "ctx-evidence-empty",
+        "ctx-rubric-decision-usefulness"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "The test cohort should be chosen based on where the economic decision applies, because new-customer-only results may not transfer to the installed base and installed-base testing may be necessary at renewal or expansion boundaries.",
+      "evidence_refs": [
+        "ctx-evidence-empty",
+        "ctx-rubric-internal-consistency"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-3",
+      "summary": "A pricing test is only decision-useful if it includes predefined sample, duration, guardrails, rollback criteria, and an estimate of status-quo opportunity cost.",
+      "evidence_refs": [
+        "ctx-evidence-empty",
+        "ctx-rubric-decision-usefulness",
+        "ctx-validator-sections"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-scenario-prompt",
+    "ctx-evidence-empty",
+    "ctx-rubric-decision-usefulness",
+    "ctx-rubric-internal-consistency",
+    "ctx-validator-sections"
+  ],
+  "open_questions": [],
+  "critique_responses": [
+    {
+      "finding_id": "finding-2",
+      "disposition": "adopted",
+      "rationale": "The critique is correct that the first-pass artifact overclaimed one specific design. I revised the major claim from 'new-customer-only is the highest-confidence move' to the narrower and better-supported position that a reversible test is preferable to a full rollout, while the test population must match the economic decision and account for transfer risk, opportunity cost, and test power."
+    }
+  ]
+}

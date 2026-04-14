@@ -186,6 +186,8 @@ test('runConflictHarness completes a head-to-head run and writes state', async (
 
     assert.equal(run.status, 'completed');
     assert.equal(run.results.winner, 'side_a');
+    assert.equal(run.metrics.declared_adoption_rate, 1);
+    assert.equal(run.metrics.substantive_revision_rate, 1);
     assert.equal(run.sides.side_a.reasoning_effort, 'high');
     assert.equal(run.sides.side_b.reasoning_effort, 'low');
     assert.equal(run.judge.reasoning_effort, 'medium');

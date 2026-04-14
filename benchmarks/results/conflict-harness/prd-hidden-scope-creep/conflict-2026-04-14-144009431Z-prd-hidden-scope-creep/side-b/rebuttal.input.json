@@ -1,0 +1,90 @@
+{
+  "case_packet": {
+    "scenario_id": "prd-hidden-scope-creep",
+    "title": "PRD with hidden scope creep",
+    "prompt": "Write a PRD for a team inbox workflow handoff improvement.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "opposing_first_pass": {
+    "run_id": "conflict-2026-04-14-144009431Z-prd-hidden-scope-creep",
+    "side_id": "side_a",
+    "round": "first_pass",
+    "artifact_markdown": "# PRD: Team Inbox Workflow Handoff Improvement\n\n## Overview\nImprove team inbox handoffs so work moves between agents without dropped context, duplicate handling, or unclear ownership. The product should make handoffs explicit, lightweight, and auditable inside the existing inbox workflow.\n\n## Problem\nTeams using a shared inbox often need one person to transfer a conversation or task to another. Today, handoffs are frequently handled through ad hoc behaviors such as internal notes, reassignment without context, or external messages. This creates hidden scope creep because a simple \"handoff improvement\" can expand into triage redesign, SLA management, routing automation, staffing analytics, and collaboration tooling unless the problem is bounded.\n\n## Goal\nEnable a reliable handoff flow that:\n- transfers ownership clearly\n- preserves the context needed for the next assignee to act\n- reduces dropped or duplicate work\n- fits into the current inbox workflow with minimal training cost\n\n## Non-Goals\n- redesign the full inbox information architecture\n- build automated skill-based routing\n- change SLA policy or staffing models\n- add cross-team workload forecasting or analytics suites\n- replace existing assignment, tagging, or reporting systems beyond what is required for handoff clarity\n\n## Users\n- Primary: support agents or operators working in a shared team inbox\n- Secondary: team leads who monitor ownership and completion reliability\n\n## User Stories\n- As an agent, I want to hand off a conversation with a clear owner so I know who is responsible next.\n- As an agent, I want to attach concise context during handoff so the next person does not need to reconstruct the case.\n- As a receiving agent, I want to know why the item was handed to me and what action is expected.\n- As a lead, I want visibility into pending and completed handoffs so I can identify dropped work.\n\n## Requirements\n### Functional Requirements\n1. A user can initiate a handoff from an inbox item.\n2. A handoff requires selecting a recipient or destination owner.\n3. A handoff requires a short structured context field with reason and next action.\n4. The receiving assignee sees the handoff context inline with the item.\n5. The system records handoff status at minimum as pending, accepted, or completed.\n6. Ownership is explicit during the transition so there is no ambiguity about who is responsible.\n7. The original assignee can view whether the handoff has been accepted.\n8. Team leads can view a basic list of unresolved handoffs.\n\n### UX Requirements\n- The handoff action should be available from the existing inbox item view.\n- The handoff flow should take less than 30 seconds for a routine case.\n- Required fields should be minimal and structured to prevent low-signal notes.\n\n### Data Requirements\n- store sender, recipient, timestamp, handoff reason, expected next action, and status\n- preserve handoff history on the inbox item for auditability\n\n## Success Metrics\n- Reduction in inbox items reopened or reassigned due to incomplete handoff context\n- Reduction in average time from handoff initiation to next meaningful action\n- Decrease in unresolved handoffs older than agreed team threshold\n- Qualitative improvement in agent confidence that ownership is clear\n\n## Risks\n- If too much structure is required, agents will avoid the feature.\n- If status semantics are unclear, teams may create a false sense of accountability.\n- If the project expands into routing, analytics, or staffing workflows, delivery scope will slip.\n\n## Dependencies\n- existing assignment model in the inbox\n- notification or inbox surfacing for receiving assignees\n- basic event logging for handoff audit trail\n\n## Rollout Recommendation\nStart with manual person-to-person handoff inside the current inbox item. Defer automation, policy changes, and analytics beyond unresolved handoff visibility until the core workflow proves useful.\n\n## Decision Frame\nApprove a narrowly scoped v1 focused on explicit ownership transfer plus structured context capture inside the current inbox workflow. Reject adjacent expansion into routing automation, SLA redesign, or management analytics in this phase.\n\n## Unknowns & Evidence Gaps\n- Current baseline rate of dropped, delayed, or duplicate work caused by handoffs is not provided.\n- It is unknown whether teams hand off to individuals, queues, or both.\n- It is unknown whether acceptance is required for accountability in current operations.\n- No evidence is provided on the most common handoff failure mode: missing context, slow pickup, or owner ambiguity.\n\n## Pass/Fail Readiness\nPass for concept approval if stakeholders agree the v1 scope is limited to explicit handoff, context capture, and basic status visibility. Fail for build readiness until baseline workflow data, destination model, and ownership-state semantics are confirmed.\n\n## Recommended Next Artifact\nTechnical spec for handoff state model, event logging, permissions, and inbox UI changes for v1.",
+    "claims": [
+      {
+        "claim_id": "side_a-claim-1",
+        "summary": "The PRD should explicitly constrain scope to a narrow v1 handoff workflow to avoid hidden expansion into routing, SLA, and analytics work.",
+        "evidence_refs": [
+          "ctx-1"
+        ],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_a-claim-2",
+        "summary": "A useful v1 must make ownership transfer and handoff context explicit, since ambiguity and lost context are the core workflow risks implied by the prompt.",
+        "evidence_refs": [
+          "ctx-1"
+        ],
+        "is_major": true
+      }
+    ],
+    "citations": [
+      "ctx-1"
+    ],
+    "open_questions": [],
+    "critique_responses": []
+  }
+}

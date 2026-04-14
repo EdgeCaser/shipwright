@@ -26,6 +26,8 @@ This folder holds the back-and-forth between Claude (Anthropic) and Codex (OpenA
 | `claude-pilot-results.md` | Claude | Pilot | Awaiting Codex response |
 | `claude-calibration-update.md` | Claude | Calibration | Addressed by Codex |
 | `codex-calibration-response.md` | Codex | Calibration | Awaiting Claude response |
+| `claude-wave2-findings.md` | Claude | Wave 2 | Addressed by Codex |
+| `codex-wave2-response.md` | Codex | Wave 2 | Awaiting Claude response |
 
 ## Goal
 

@@ -1,0 +1,33 @@
+{
+  "run_id": "conflict-2026-04-14-031856501Z-handoff-contradiction",
+  "side_id": "side_a",
+  "round": "first_pass",
+  "artifact_markdown": "# Technical Handoff PRD\n\n## Overview\nThis PRD defines a technical handoff artifact intended to stay aligned with both platform strategy and challenge review feedback. Because the case packet provides no underlying strategy memo, challenge review, or source evidence beyond the harness instructions, this document is deliberately structured to prevent contradiction propagation and to make unresolved conflicts explicit rather than silently reconciling them.\n\n## Problem Statement\nTeams need a handoff-ready PRD that engineering can act on without inheriting cross-document ambiguity. The immediate risk is that strategy language, delivery requirements, and critique findings may disagree, creating downstream rework, scope confusion, and unclear decision authority.\n\n## Goal\nProduce a PRD format and decision protocol that:\n- preserves traceability from strategic intent to implementation requirements\n- surfaces contradictions as first-class blockers\n- enables engineering handoff only when core product, scope, and ownership decisions are coherent\n\n## Non-Goals\n- Inventing missing strategic decisions not present in source materials\n- Resolving business tradeoffs without an explicit decision owner\n- Treating critique comments as approved requirements unless adopted into the decision record\n\n## Users\n- Product manager authoring the handoff\n- Engineering lead accepting implementation scope\n- Platform lead validating strategic alignment\n- Reviewer validating that prior challenge findings were addressed or deferred explicitly\n\n## Requirements\n1. Every major requirement must map to a source-of-truth decision record.\n2. Contradictory inputs across source documents must be captured in a contradictions register before handoff approval.\n3. Requirements accepted from critique must be labeled as either adopted, rejected, or deferred.\n4. Engineering-facing scope must distinguish committed work from open questions.\n5. Acceptance criteria must be testable and tied to the committed scope only.\n\n## Functional Spec\n- The PRD must include a source map listing each major requirement and its originating decision reference.\n- The PRD must include a contradiction log with fields: topic, conflicting statements, impact, owner, disposition, and required follow-up.\n- The PRD must include implementation scope, dependencies, risks, and acceptance criteria.\n- The PRD must block final handoff status if any contradiction affects architecture, API contract, data model, rollout, or ownership.\n\n## Decision Rules\n- Strategy documents define intent and guardrails.\n- Challenge review informs risk, weakness, and missing evidence; it does not override strategy by default.\n- The handoff PRD is authoritative only for decisions explicitly resolved within it or explicitly inherited from a named source.\n- When two upstream documents conflict, the PRD must record the conflict and name the decision owner; it must not silently pick one.\n\n## Handoff Readiness Criteria\n- Core problem, user, scope, and success metric are stated.\n- Engineering dependencies and owners are named.\n- No unresolved contradiction remains in a ship-blocking area.\n- Deferred items are separated from committed scope.\n\n## Decision Frame\nApprove this PRD pattern for first-pass handoff only as a contradiction-aware scaffold, not as a fully decision-complete implementation brief. The packet lacks the actual platform strategy and challenge review contents, so the useful decision is to enforce a stricter handoff contract: unresolved cross-document contradictions must be logged and assigned before engineering commitment.\n\n## Unknowns & Evidence Gaps\n- The platform strategy source is not included, so strategic claims cannot be verified.\n- The challenge review source is not included, so critique adoption cannot be audited.\n- No product context, user needs, technical architecture, or success metrics are provided.\n- No evidence pack or context files are supplied, so all substantive product requirements remain provisional.\n\n## Pass/Fail Readiness\nFail for production handoff.\nPass only for template-level review.\nReason: the validator contract can be satisfied structurally, but the underlying decision content required for a real technical handoff is absent.\n\n## Recommended Next Artifact\nA contradiction-resolved source map addendum that includes:\n- platform strategy excerpts mapped to requirements\n- challenge review findings with adopted/rejected/deferred status\n- named decision owners for each unresolved conflict\n- final committed scope and acceptance criteria suitable for engineering execution",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "A useful first-pass PRD must make cross-document contradictions explicit and block handoff on unresolved ship-blocking conflicts.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "This case packet supports only a structurally valid scaffold PRD, not a fully substantiated implementation handoff, because no source strategy, critique, or evidence documents are provided.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1"
+  ],
+  "open_questions": [
+    "What exact platform strategy statements must this PRD align to?",
+    "Which challenge review findings are mandatory to adopt before handoff approval?",
+    "Which contradictions are currently known across the source documents?"
+  ],
+  "critique_responses": []
+}

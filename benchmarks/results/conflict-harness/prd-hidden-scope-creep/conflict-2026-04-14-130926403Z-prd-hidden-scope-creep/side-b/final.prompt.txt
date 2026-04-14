@@ -1,0 +1,129 @@
+You are SIDE_B in the final revision phase for run conflict-2026-04-14-130926403Z-prd-hidden-scope-creep.
+You must either adopt the critique or reject it with reasoning.
+Do not reveal provider identity.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "run_id": "conflict-2026-04-14-130926403Z-prd-hidden-scope-creep",
+  "side_id": "side_b",
+  "round": "final",
+  "artifact_markdown": "# Revised artifact",
+  "claims": [
+    {
+      "claim_id": "side_b-claim-1",
+      "summary": "Updated major claim",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1"
+  ],
+  "open_questions": [],
+  "critique_responses": [
+    {
+      "finding_id": "finding-1",
+      "disposition": "adopted",
+      "rationale": "Why the critique was adopted or rejected."
+    }
+  ]
+}
+
+Case packet:
+{
+  "scenario_id": "prd-hidden-scope-creep",
+  "title": "PRD with hidden scope creep",
+  "prompt": "Write a PRD for a team inbox workflow handoff improvement.",
+  "artifact_type": "prd",
+  "rubric": {
+    "dimensions": [
+      "claim quality",
+      "evidence discipline",
+      "responsiveness to critique",
+      "internal consistency",
+      "decision usefulness"
+    ],
+    "scoring_scale": "1-5",
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "constraints": {
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "expect_structured": true,
+    "context_files": [],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "evidence": [],
+  "max_rounds": 3,
+  "tool_policy": "none",
+  "sharing_policy": {
+    "share_case_packet": true,
+    "share_committed_artifacts_after_first_pass": true,
+    "share_critiques_after_open": true,
+    "share_hidden_reasoning": false,
+    "share_provider_identity": false,
+    "share_internal_coalition_drafts": false
+  },
+  "success_condition": {
+    "type": "validator_contract",
+    "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+    "validator": {
+      "artifact_type": "prd",
+      "expect_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true
+    }
+  }
+}
+
+Your first-pass artifact:
+{
+  "run_id": "conflict-2026-04-14-130926403Z-prd-hidden-scope-creep",
+  "side_id": "side_b",
+  "round": "first_pass",
+  "artifact_markdown": "# PRD: Team Inbox Workflow Handoff Improvement\n\n## Overview\nImprove team inbox handoffs so conversations move between owners without dropped context, duplicate work, or delayed responses. The product should make handoff state explicit, preserve accountability through the transition, and reduce the operational friction of transferring responsibility inside a shared inbox.\n\n## Problem\nTeams using a shared inbox need to reassign threads when ownership changes across shifts, functions, or escalation paths. Current handoffs are often informal, incomplete, or hard to track, which creates avoidable response delays and inconsistent customer experiences.\n\n## Goal\nEnable reliable, observable handoffs of inbox conversations between teammates while preserving context and ownership continuity.\n\n## Non-Goals\n- Redesign the entire team inbox information architecture.\n- Build a full workforce management or shift scheduling system.\n- Automate handoff decisioning with AI in this phase.\n- Rework SLA policy configuration beyond what is required for handoff state handling.\n\n## Users\n- Primary: support agents and operations teammates who transfer conversation ownership.\n- Secondary: team leads who monitor queue health and handoff quality.\n- Tertiary: customers indirectly affected by delayed or inconsistent replies.\n\n## User Stories\n- As an agent, I want to hand off a conversation to a specific teammate or queue with a required note so the next owner understands what to do.\n- As a receiving teammate, I want to see that a conversation was handed off, by whom, why, and what is expected next.\n- As a lead, I want visibility into pending and completed handoffs so I can detect dropped work.\n\n## Requirements\n### Functional Requirements\n1. Users can initiate a handoff from a conversation.\n2. A handoff requires a destination assignee or queue.\n3. A handoff requires a structured note with reason and next action.\n4. The system records handoff metadata: sender, recipient, timestamp, note, and status.\n5. Conversations in handoff show a visible status badge such as `Pending Handoff` or `Accepted`.\n6. The receiving owner is notified of the handoff.\n7. The receiving owner can accept the handoff, which updates conversation ownership and clears the pending state.\n8. If the handoff is not accepted within a defined window, the conversation remains visible for operational follow-up.\n9. Conversation history includes a durable audit trail of handoff events.\n10. Reporting exposes handoff volume, acceptance time, and unresolved pending handoffs.\n\n### UX Requirements\n1. Handoff can be completed in the existing conversation workflow with minimal extra steps.\n2. The required note fields should be short and constrained to improve consistency.\n3. Pending handoff state must be clearly distinguishable from fully reassigned ownership.\n\n### Operational Requirements\n1. Existing permissions for assignment must still apply.\n2. Handoff events must be exportable or queryable for operational review.\n3. The feature must not create silent ownership ambiguity.\n\n## Success Metrics\n- Decrease in conversations with multiple internal reassignments before resolution.\n- Decrease in median time from transfer initiation to next customer-facing response.\n- Increase in percentage of handoffs accepted within target SLA.\n- Reduction in manager-reported dropped or unclear ownership incidents.\n\n## Risks\n- Mandatory notes may add friction and reduce adoption if the flow is too heavy.\n- Teams may misuse handoff as a generic reassignment tool, blurring operational semantics.\n- Pending state may create confusion if ownership rules are not explicit.\n\n## Rollout Recommendation\nShip as a limited workflow improvement behind a team-level flag, measure handoff completion and response outcomes, and expand only if ownership clarity improves without meaningful throughput loss.\n\n## Decision Frame\nDecision required: approve a narrowly scoped handoff workflow focused on explicit transfer intent, required context capture, pending-state visibility, and acceptance tracking. This should be treated as an operational reliability improvement, not as a broader inbox redesign.\n\n## Unknowns & Evidence Gaps\n- No baseline data is provided on current handoff error rate, transfer volume, or response delay impact.\n- No evidence is provided on whether teams prefer direct-user acceptance versus queue-based passive takeover.\n- SLA timeout behavior and escalation rules remain unspecified.\n- Cross-functional edge cases such as handoff rejection, out-of-office recipients, and multi-queue routing need validation.\n\n## Pass/Fail Readiness\nPass if the team agrees to a narrow v1 scope: initiate handoff, require context note, surface pending state, notify recipient, record audit trail, and report unresolved handoffs. Fail if this PRD is used to smuggle in adjacent scope such as queue redesign, automation, staffing logic, or broad analytics rebuild without separate decisions.\n\n## Recommended Next Artifact\nA technical spec that defines state transitions, permission rules, notification triggers, reporting schema, and edge-case handling for acceptance, timeout, and rejection flows.",
+  "claims": [
+    {
+      "claim_id": "side_b-claim-1",
+      "summary": "The PRD should constrain scope to a narrow handoff workflow that improves ownership clarity without expanding into broader inbox redesign or automation.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1"
+  ],
+  "open_questions": [],
+  "critique_responses": []
+}
+
+Visible critique packet:
+{
+  "target_side": "side_b",
+  "finding_id": "finding-1",
+  "target_claim_ids": [
+    "side_b-claim-1"
+  ],
+  "claim_under_attack": "The PRD should constrain scope to a narrow handoff workflow that improves ownership clarity without expanding into broader inbox redesign or automation.",
+  "attack_type": "evidence_gap",
+  "evidence_or_reason": "The claim asserts narrow scope, yet the artifact's own requirements contradict this framing. Functional Requirement 10 introduces reporting on handoff volume, acceptance time, and unresolved pending handoffs—an analytics surface that is not part of a minimal handoff mechanic. Requirement 8 introduces SLA-adjacent timeout behavior with undefined escalation rules, which the Unknowns section itself admits is unspecified. The Success Metrics section defines four outcome measures requiring baseline instrumentation that does not exist (acknowledged in Unknowns). The Pass/Fail section warns against 'smuggling in adjacent scope such as broad analytics rebuild,' yet the PRD's own requirements do exactly that. The single evidence citation 'ctx-1' references no actual evidence in the case packet, meaning the narrow-scope claim is asserted rather than grounded in any provided data about current handoff patterns, team size, or workflow constraints that would justify this particular scope boundary.",
+  "severity": "high"
+}

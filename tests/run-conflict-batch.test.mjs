@@ -9,6 +9,7 @@ test('parseCliArgs handles scenario filters and flags', () => {
     '--scenario', 'handoff-contradiction',
     '--out', '/tmp/summary.md',
     '--dry-run',
+    '--swap-sides',
     '--side-a-reasoning-effort', 'high',
     '--side-b-reasoning-effort', 'low',
     '--judge-reasoning-effort', 'medium',
@@ -17,9 +18,25 @@ test('parseCliArgs handles scenario filters and flags', () => {
   assert.deepEqual(args.scenarios, ['prd-hidden-scope-creep', 'handoff-contradiction']);
   assert.equal(args.outPath, '/tmp/summary.md');
   assert.equal(args.dryRun, true);
+  assert.equal(args.swapSides, true);
   assert.equal(args.sideAReasoningEffort, 'high');
   assert.equal(args.sideBReasoningEffort, 'low');
   assert.equal(args.judgeReasoningEffort, 'medium');
+});
+
+test('runBatch dry-run swaps competitor assignments when requested', async () => {
+  const results = await runBatch({
+    scenarios: ['prd-hidden-scope-creep'],
+    dryRun: true,
+    swapSides: true,
+  });
+
+  assert.equal(results.length, 2);
+  for (const result of results) {
+    assert.equal(result.sideALabel, 'gpt');
+    assert.equal(result.sideBLabel, 'claude');
+    assert.equal(result.status, 'dry_run');
+  }
 });
 
 test('buildSummary produces judge agreement analysis from completed runs', () => {
@@ -33,10 +50,13 @@ test('buildSummary produces judge agreement analysis from completed runs', () =>
       judgeConfidence: 'high',
       needsHumanReview: false,
       disagreementRate: 0.67,
-      adoptedCritiqueRate: 1.0,
+      declaredAdoptionRate: 1.0,
+      substantiveRevisionRate: 0.5,
       unsupportedClaimCount: 1,
       runId: 'run-1',
       error: null,
+      sideALabel: 'claude',
+      sideBLabel: 'gpt',
     },
     {
       scenario: 'prd-hidden-scope-creep',
@@ -47,10 +67,13 @@ test('buildSummary produces judge agreement analysis from completed runs', () =>
       judgeConfidence: 'high',
       needsHumanReview: true,
       disagreementRate: 0.75,
-      adoptedCritiqueRate: 1.0,
+      declaredAdoptionRate: 1.0,
+      substantiveRevisionRate: 0.5,
       unsupportedClaimCount: 4,
       runId: 'run-2',
       error: null,
+      sideALabel: 'claude',
+      sideBLabel: 'gpt',
     },
     {
       scenario: 'handoff-contradiction',
@@ -61,10 +84,13 @@ test('buildSummary produces judge agreement analysis from completed runs', () =>
       judgeConfidence: 'medium',
       needsHumanReview: false,
       disagreementRate: 0.5,
-      adoptedCritiqueRate: 0.5,
+      declaredAdoptionRate: 0.5,
+      substantiveRevisionRate: 0.5,
       unsupportedClaimCount: 2,
       runId: 'run-3',
       error: null,
+      sideALabel: 'claude',
+      sideBLabel: 'gpt',
     },
     {
       scenario: 'handoff-contradiction',
@@ -75,10 +101,13 @@ test('buildSummary produces judge agreement analysis from completed runs', () =>
       judgeConfidence: 'medium',
       needsHumanReview: false,
       disagreementRate: 0.5,
-      adoptedCritiqueRate: 0.5,
+      declaredAdoptionRate: 0.5,
+      substantiveRevisionRate: 0.5,
       unsupportedClaimCount: 2,
       runId: 'run-4',
       error: null,
+      sideALabel: 'claude',
+      sideBLabel: 'gpt',
     },
   ];
 
@@ -102,10 +131,13 @@ test('buildSummary suppresses publishability interpretation when coverage is par
       judgeConfidence: 'high',
       needsHumanReview: false,
       disagreementRate: 0.5,
-      adoptedCritiqueRate: 1.0,
+      declaredAdoptionRate: 1.0,
+      substantiveRevisionRate: 0.5,
       unsupportedClaimCount: 0,
       runId: 'run-1',
       error: null,
+      sideALabel: 'claude',
+      sideBLabel: 'gpt',
     },
     {
       scenario: 'prd-hidden-scope-creep',
@@ -116,10 +148,13 @@ test('buildSummary suppresses publishability interpretation when coverage is par
       judgeConfidence: 'high',
       needsHumanReview: false,
       disagreementRate: 0.5,
-      adoptedCritiqueRate: 1.0,
+      declaredAdoptionRate: 1.0,
+      substantiveRevisionRate: 0.5,
       unsupportedClaimCount: 0,
       runId: 'run-2',
       error: null,
+      sideALabel: 'claude',
+      sideBLabel: 'gpt',
     },
     {
       scenario: 'handoff-contradiction',
@@ -130,10 +165,13 @@ test('buildSummary suppresses publishability interpretation when coverage is par
       judgeConfidence: null,
       needsHumanReview: null,
       disagreementRate: null,
-      adoptedCritiqueRate: null,
+      declaredAdoptionRate: null,
+      substantiveRevisionRate: null,
       unsupportedClaimCount: null,
       runId: null,
       error: 'Model timeout',
+      sideALabel: 'claude',
+      sideBLabel: 'gpt',
     },
     {
       scenario: 'handoff-contradiction',
@@ -144,10 +182,13 @@ test('buildSummary suppresses publishability interpretation when coverage is par
       judgeConfidence: 'medium',
       needsHumanReview: false,
       disagreementRate: 0.5,
-      adoptedCritiqueRate: 1.0,
+      declaredAdoptionRate: 1.0,
+      substantiveRevisionRate: 0.5,
       unsupportedClaimCount: 0,
       runId: 'run-4',
       error: null,
+      sideALabel: 'claude',
+      sideBLabel: 'gpt',
     },
   ];
 
@@ -182,10 +223,13 @@ test('buildSummary handles errors gracefully', () => {
       judgeConfidence: null,
       needsHumanReview: null,
       disagreementRate: null,
-      adoptedCritiqueRate: null,
+      declaredAdoptionRate: null,
+      substantiveRevisionRate: null,
       unsupportedClaimCount: null,
       runId: null,
       error: 'Model output is not valid JSON',
+      sideALabel: 'claude',
+      sideBLabel: 'gpt',
     },
     {
       scenario: 'broken-scenario',
@@ -196,10 +240,13 @@ test('buildSummary handles errors gracefully', () => {
       judgeConfidence: 'medium',
       needsHumanReview: false,
       disagreementRate: 0.5,
-      adoptedCritiqueRate: 1.0,
+      declaredAdoptionRate: 1.0,
+      substantiveRevisionRate: 0.5,
       unsupportedClaimCount: 0,
       runId: 'run-5',
       error: null,
+      sideALabel: 'claude',
+      sideBLabel: 'gpt',
     },
   ];
 

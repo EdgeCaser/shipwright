@@ -1,0 +1,437 @@
+You are the judge in a blinded conflict harness run.
+Provider identity is intentionally hidden. Do not infer provider family.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "winner": "tie",
+  "margin": 0,
+  "rubric_scores": {
+    "side_a": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    },
+    "side_b": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    }
+  },
+  "decisive_findings": [
+    "Replace with the actual decisive findings from this run."
+  ],
+  "judge_confidence": "low",
+  "needs_human_review": true,
+  "rationale": "One-paragraph explanation of the verdict."
+}
+
+Use min_margin_for_verdict = 0.1.
+judge_confidence rubric:
+- high: the winning side is clearly stronger on at least 3 rubric dimensions and has no major unsupported-claim problem
+- medium: the winning side leads overall but has at least 1 weak dimension or absorbed only part of the opposing critique
+- low: score margin is below min_margin_for_verdict or both sides have significant unsupported claims
+
+Judge packet:
+{
+  "case_packet": {
+    "scenario_id": "blockbuster-total-access",
+    "title": "Blockbuster Total Access: continue or kill the hybrid strategy",
+    "prompt": "You are a strategy advisor to Blockbuster's board in Q3 2007. CEO Jim Keyes has just replaced John Antioco and is reviewing the Total Access program — a hybrid online-rental + in-store-return strategy launched in late 2006.\n\nTotal Access is working competitively: Blockbuster added 2 million online subscribers in under a year, Netflix growth stalled for the first time, and Netflix CEO Reed Hastings privately told colleagues he was 'ichiban scared' of the program. Blockbuster's online subscriber count reached ~3 million.\n\nHowever, Total Access is expensive. Each in-store return costs Blockbuster ~$2 in handling and lost rental revenue from the returned disc being re-rented free. The program is burning roughly $400M/year against Blockbuster's already-leveraged balance sheet ($1.1B long-term debt). Blockbuster lost $85M in Q2 2007. Franchisees are hostile — the program cannibalizes their store traffic economics. Activist investor Carl Icahn, who controls 3 board seats, views the online losses as unsustainable.\n\nMeanwhile, Netflix is investing aggressively in streaming infrastructure (launched Watch Instantly in January 2007), betting that physical disc rental is a transitional business. Netflix has 7.5M subscribers to Blockbuster's 3M online + 47M store-visit customers.\n\nThe board must decide: should Blockbuster continue funding Total Access at current levels to press the competitive advantage, or scale it back to reduce losses and refocus on store profitability?\n\nWrite a strategic recommendation memo for the board. Your memo must take a clear position — continue or kill — and defend it with evidence. Acknowledge the strongest counterarguments and explain why your position is still correct.\n\nKey evidence available:\n- Total Access added 2M subscribers in <12 months (late 2006 to mid-2007)\n- Netflix growth stalled for the first time during Total Access's peak\n- Program cost: ~$400M/year incremental burn\n- Blockbuster long-term debt: $1.1B; Q2 2007 net loss: $85M\n- Netflix streaming launched January 2007 with 1,000 titles\n- Netflix total subscribers: 7.5M; Blockbuster online: ~3M\n- Blockbuster store footprint: ~5,700 US locations (asset or liability?)\n- Franchisee resistance: independent operators threatened by cannibalization\n- Carl Icahn controls 3 board seats; views online investment as value-destroying\n- DVD-by-mail market projected to peak 2010-2012 then decline\n- Broadband penetration in US: ~50% of households (2007), projected 70%+ by 2010\n- Blockbuster had attempted a streaming deal with Enron Broadband in 2000 (failed)\n- Redbox kiosk expansion accelerating in grocery/convenience stores ($1/night rentals)",
+    "artifact_type": "strategy",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a strategy artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "strategy",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-14-003602310Z-blockbuster-total-access",
+      "side_id": "side_a",
+      "round": "first_pass",
+      "artifact_markdown": "# Strategic Recommendation: Continue Total Access with Structured Runway and Streaming Pivot\n\n## Decision Frame\n\n**Core question:** Should Blockbuster continue funding Total Access at current levels (~$400M/year) to press its competitive advantage against Netflix, or scale it back to reduce losses and refocus on store profitability?\n\n**Recommendation: Continue Total Access at modified funding levels (~$300M/year) for 18 months while redirecting $100M+ annually into streaming infrastructure. Do not kill the program.**\n\n**Rationale:** Total Access is the only strategic asset preventing Netflix from achieving insurmountable scale in the DVD-by-mail market. Killing it saves cash in the near term but concedes the online customer relationship permanently — and with it, any bridge to streaming. The correct move is not \"continue or kill\" but \"continue and pivot.\"\n\n### The Case for Continuation (Modified)\n\n**1. Total Access is working — rare in competitive strategy.** Adding 2M subscribers in under 12 months against an entrenched incumbent is an extraordinary result. Netflix growth stalled for the first time in the company's history. Reed Hastings's own private assessment (\"ichiban scared\") confirms this is not vanity metric growth — it represents genuine competitive displacement. Walking away from a program that has your strongest competitor scared is strategically indefensible unless the company faces imminent liquidity crisis.\n\n**2. The subscriber base is the bridge to streaming.** The 3M online subscribers represent Blockbuster's only digital customer relationship. These are customers with credit cards on file, viewing histories, and engagement patterns — the raw material for a streaming service. Kill Total Access, and these subscribers return to Netflix within 6 months. Blockbuster then has 5,700 stores serving a declining physical rental market with no path to digital.\n\n**3. Store footprint is an asset — but only if paired with an online strategy.** Blockbuster's 5,700 locations provide something Netflix cannot replicate: same-day gratification and a physical touchpoint. The hybrid model (online ordering + in-store returns/exchanges) creates genuine switching costs. Without Total Access, the stores become a pure liability — competing against Redbox's $1/night kiosks with a $4+ rental model and massive real estate overhead.\n\n**4. The cost is manageable with modifications.** $400M/year is unsustainable at current burn, but the program has optimization levers:\n- Reduce the \"free in-store exchange\" to 2-3 per month (from unlimited), cutting per-subscriber costs by 30-40%\n- Tier pricing: basic online-only at lower cost, premium hybrid at current price\n- Renegotiate franchisee terms: revenue-sharing on exchanges rather than pure cannibalization\n- Target $300M/year run rate within 6 months while retaining 80%+ of subscribers\n\n### Addressing the Strongest Counterarguments\n\n**\"The balance sheet cannot support this.\"** Blockbuster carries $1.1B in long-term debt and lost $85M in Q2 2007. This is serious but not terminal. The company still generates significant store revenue from 47M annual store visitors. The question is whether to use remaining financial runway to defend a declining-but-profitable store-only model (slow death) or to invest in the only program that builds digital customer relationships (a shot at survival). History shows that companies in declining industries that cut investment to preserve near-term profitability rarely survive — they simply die with better quarterly numbers.\n\n**\"Carl Icahn and the board will block it.\"** Icahn's position is rational from a short-term value perspective but catastrophic strategically. The board should be presented with two scenarios: (a) kill Total Access, achieve modest profitability for 2-3 years, then face existential crisis as physical rental collapses; (b) fund a modified Total Access + streaming pivot, accept near-term losses, but build the only asset that matters in 2010+. Icahn's 3 board seats are not a majority — this is a moment for management to lead.\n\n**\"Netflix is already pivoting to streaming — we're fighting yesterday's war.\"** Netflix's streaming offering in January 2007 has 1,000 titles and requires broadband (50% household penetration). Streaming will dominate eventually, but the transition window is 3-5 years. DVD-by-mail peaks in 2010-2012. This gives Blockbuster time to: (a) use Total Access to grow online subscribers to 5M+, (b) launch a streaming service to that base, (c) leverage stores as content hubs with exclusive in-store streaming kiosks or pickup points during the transition. Blockbuster's failed 2000 Enron Broadband deal shows the company understood streaming's importance early — execution, not vision, was the failure.\n\n**\"Franchisees will revolt.\"** Franchisee concerns are legitimate and must be addressed through economic restructuring, not program cancellation. Options include: exchange-based revenue sharing, reduced exchange caps, or converting select franchise locations to company-owned to align incentives. Franchisee resistance is a negotiation problem, not a strategy problem.\n\n## Unknowns & Evidence Gaps\n\n| Unknown | Impact if Wrong | How to Resolve | Timeline |\n|---|---|---|---|\n| Subscriber retention after exchange cap reduction | If >30% churn, modified program economics fail | A/B test in 3 markets for 60 days | Q4 2007 |\n| Streaming technology readiness | If Blockbuster cannot launch a competitive streaming product by 2009, the bridge strategy collapses | Commission technical assessment of build vs. partner (e.g., acquire or license existing CDN/streaming platform) | 90 days |\n| Actual per-subscriber cost after optimization | Current ~$2/exchange cost may have hidden overhead; true marginal cost needed | Detailed store-level cost audit across 20 representative locations | 45 days |\n| Netflix subscriber response to sustained competition | If Netflix can grow through Total Access pressure (e.g., by accelerating streaming), competitive rationale weakens | Monitor Netflix quarterly subscriber reports and streaming catalog growth through Q1 2008 | Ongoing |\n| Capital markets appetite for Blockbuster debt refinancing | If credit markets tighten (early signs in mortgage-backed securities), $1.1B debt becomes existential | Engage investment banks on refinancing options immediately, before market conditions deteriorate further | 60 days |\n| Redbox expansion trajectory | If kiosks capture >20% of impulse rental market by 2009, store profitability erodes faster than modeled | Track Redbox installation rate and same-store revenue impact in markets with high kiosk density | Quarterly |\n\n**Critical gap:** We lack a credible streaming technology assessment. Without confidence that Blockbuster can launch a viable streaming product by 2009-2010, the entire bridge strategy rests on a market (DVD-by-mail) with a known expiration date. This assessment is the single most important input for the board's decision.\n\n## Pass/Fail Readiness\n\n**This recommendation is conditionally ready for board decision, subject to the following gates:**\n\n| Gate | Status | Condition |\n|---|---|---|\n| Financial viability of modified program | CONDITIONAL | Must validate $300M/year run rate achievable without >30% subscriber loss (A/B test required) |\n| Streaming technology pathway | NOT READY | No current assessment of build/buy/partner options — must complete before committing beyond 12-month runway |\n| Board alignment | NOT READY | Icahn bloc must be engaged with scenario analysis before formal vote |\n| Franchisee framework | CONDITIONAL | Term sheet for revenue-sharing model needed within 90 days |\n| Capital structure | CONDITIONAL | Refinancing or covenant flexibility needed to fund 18-month runway — credit market window may be closing |\n\n**Pass criteria:** If A/B tests confirm modified economics work AND a credible streaming pathway is identified within 90 days, proceed with full modified program. If either fails, the board should revisit with updated options including potential strategic sale of the online subscriber base.\n\n**Fail criteria:** If subscriber retention under exchange caps drops below 70%, OR if no viable streaming technology pathway exists by Q1 2008, OR if credit markets close the refinancing window, recommend accelerated wind-down of Total Access and exploration of strategic alternatives (sale, partnership, or managed decline with maximum cash extraction).\n\n## Recommended Next Artifact\n\n**Immediate next step:** Commission a **Streaming Technology Assessment** (build vs. buy vs. partner analysis) with 90-day deadline. This is the critical dependency for the entire strategy.\n\n**Parallel workstreams:**\n1. **Total Access Optimization Plan** — Detailed program redesign with tiered pricing, exchange caps, and franchisee revenue-sharing terms. Deliverable: implementation-ready plan within 60 days.\n2. **Financial Scenario Model** — Three-scenario model (continue as-is, modified continuation, kill) with 5-year cash flow projections and sensitivity analysis on key variables (subscriber growth, streaming adoption, store closure rate). Deliverable: board-ready model within 45 days.\n3. **Capital Structure Review** — Engage advisors on refinancing options, covenant flexibility, and worst-case liquidity analysis. Deliverable: options memo within 60 days.\n4. **Competitive Intelligence Brief** — Deep analysis of Netflix streaming roadmap, Redbox expansion plans, and emerging competitors. Deliverable: quarterly update beginning Q4 2007.\n\nThe board should reconvene in 90 days with these deliverables to make a final go/no-go decision on the modified Total Access + streaming pivot strategy. The interim decision today should be: **do not kill Total Access while these assessments are underway.** Cutting the program now is irreversible — the subscribers will not come back.",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "Total Access is the only strategic asset that bridges Blockbuster to a digital future; killing it concedes the online customer relationship permanently and eliminates any path to streaming.",
+          "evidence_refs": [
+            "ctx-subscriber-growth",
+            "ctx-netflix-stall",
+            "ctx-streaming-launch"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "The program can be optimized from ~$400M/year to ~$300M/year through exchange caps, tiered pricing, and franchisee revenue-sharing without losing the majority of subscribers.",
+          "evidence_refs": [
+            "ctx-program-cost",
+            "ctx-franchisee-resistance"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "Netflix's streaming offering in 2007 is nascent (1,000 titles, 50% broadband penetration), giving Blockbuster a 3-5 year transition window to build a competing digital platform if it retains its online subscriber base.",
+          "evidence_refs": [
+            "ctx-streaming-launch",
+            "ctx-broadband-penetration",
+            "ctx-dvd-peak"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-4",
+          "summary": "Blockbuster's 5,700 stores are an asset only in combination with an online strategy; without Total Access, they become a pure liability competing against Redbox's $1/night kiosks.",
+          "evidence_refs": [
+            "ctx-store-footprint",
+            "ctx-redbox"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-5",
+          "summary": "The balance sheet is stressed ($1.1B debt, $85M Q2 loss) but not terminal; cutting investment to preserve near-term profitability in a declining industry historically accelerates rather than prevents failure.",
+          "evidence_refs": [
+            "ctx-debt",
+            "ctx-q2-loss"
+          ],
+          "is_major": false
+        },
+        {
+          "claim_id": "side_a-claim-6",
+          "summary": "The recommendation is conditional on validating two critical unknowns within 90 days: streaming technology pathway viability and subscriber retention under modified exchange economics.",
+          "evidence_refs": [
+            "ctx-enron-deal",
+            "ctx-subscriber-growth"
+          ],
+          "is_major": false
+        }
+      ],
+      "citations": [
+        "ctx-subscriber-growth: Total Access added 2M subscribers in <12 months (late 2006 to mid-2007)",
+        "ctx-netflix-stall: Netflix growth stalled for the first time during Total Access's peak; Hastings privately 'ichiban scared'",
+        "ctx-program-cost: Total Access costs ~$400M/year incremental burn, ~$2 per in-store exchange",
+        "ctx-debt: Blockbuster long-term debt $1.1B",
+        "ctx-q2-loss: Blockbuster Q2 2007 net loss $85M",
+        "ctx-streaming-launch: Netflix streaming launched January 2007 with 1,000 titles",
+        "ctx-broadband-penetration: US broadband at ~50% of households (2007), projected 70%+ by 2010",
+        "ctx-dvd-peak: DVD-by-mail market projected to peak 2010-2012 then decline",
+        "ctx-store-footprint: Blockbuster had ~5,700 US locations",
+        "ctx-netflix-subs: Netflix 7.5M subscribers vs Blockbuster 3M online + 47M store visitors",
+        "ctx-franchisee-resistance: Independent franchisee operators threatened by cannibalization",
+        "ctx-icahn: Carl Icahn controls 3 board seats, views online investment as value-destroying",
+        "ctx-redbox: Redbox kiosk expansion accelerating with $1/night rentals",
+        "ctx-enron-deal: Blockbuster attempted streaming deal with Enron Broadband in 2000 (failed)"
+      ],
+      "open_questions": [
+        "Can Blockbuster build or acquire a viable streaming technology platform by 2009-2010?",
+        "What is the actual subscriber retention rate under exchange-capped Total Access tiers?",
+        "Will credit markets remain open for Blockbuster to refinance its $1.1B debt (early subprime signals suggest risk)?",
+        "Can franchisee economics be restructured without triggering mass franchise exits?"
+      ],
+      "critique_responses": []
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-14-003602310Z-blockbuster-total-access",
+      "side_id": "side_b",
+      "round": "first_pass",
+      "artifact_markdown": "# Strategic Recommendation Memo: Continue Total Access\n\n## Recommendation\nContinue funding Total Access through the next 12-18 months, while converting it from a pure DVD-by-mail subsidy into Blockbuster's transition platform for digital distribution. Do not scale it back to protect store profitability.\n\nThe board should treat Total Access as the company's only credible bridge from a declining store-based DVD rental model to a subscription and digital relationship with customers. The program is expensive, but the alternative is worse: retreating to stores just as Netflix, Redbox, broadband adoption, and consumer behavior are moving away from the very economics Blockbuster would be defending.\n\n## Why Continue\nTotal Access is producing rare, direct evidence of competitive leverage. It added 2 million online subscribers in under 12 months, brought Blockbuster's online subscriber base to roughly 3 million, and coincided with Netflix's first growth stall. Netflix has 7.5 million total subscribers, so Blockbuster is still behind, but the gap narrowed meaningfully during the program's peak. A strategy that forces Netflix to lose momentum is strategically valuable because Netflix is the competitor most likely to own the post-store rental relationship.\n\nBlockbuster's store footprint should be treated as a transitional weapon, not a permanent profit pool. The roughly 5,700 U.S. locations give Total Access a differentiated return and exchange mechanic that Netflix cannot immediately copy. That same footprint is also a liability if the company retreats into it: Redbox is expanding with $1/night kiosks in grocery and convenience locations, DVD-by-mail is projected to peak around 2010-2012, and broadband penetration is expected to rise from about 50% of U.S. households in 2007 to more than 70% by 2010. Store profitability is not a durable destination.\n\nThe strongest reason to continue is that Total Access creates an owned customer base that can be migrated. Netflix launched Watch Instantly in January 2007 with 1,000 titles, signaling that even DVD-by-mail leadership is transitional. Blockbuster should use Total Access to preserve the subscriber relationship now and attach a streaming roadmap before the mail market peaks. Scaling back would reduce near-term cash burn but would also shrink the audience Blockbuster needs for any credible streaming or hybrid subscription future.\n\n## Counterarguments\nThe financial objection is serious. Total Access is burning roughly $400 million per year, Blockbuster has $1.1 billion of long-term debt, and the company lost $85 million in Q2 2007. Continuing without guardrails would be reckless.\n\nBut this argues for stricter operating controls, not a retreat to stores. The board should require monthly cohort economics, limits on abuse-heavy in-store exchanges, pricing tests for high-frequency users, and a financing plan tied to subscriber and retention milestones. If Total Access cannot show improving contribution margin and digital conversion indicators within defined windows, the board should revisit the investment.\n\nFranchisee resistance is also real. The program cannibalizes independent operator economics and turns stores into fulfillment nodes for a corporate subscription product. The answer is to compensate or restructure the franchise model around subscription participation, not to let franchise incentives veto the only growth channel that is hurting Netflix.\n\nCarl Icahn's concern that online losses are value-destroying is directionally valid if the program remains an unfocused subsidy. It is not valid if Total Access is managed as a finite transition investment with explicit kill criteria and a streaming migration plan. Cutting the program now would protect the accounting optics of a business whose category economics are already eroding.\n\n## Decision Frame\nThe board is not choosing between losses and profits. It is choosing between funding a costly but strategically relevant transition path, or conserving cash in a store model facing Netflix subscription scale, Redbox price pressure, broadband growth, and an eventual decline in physical DVD rental.\n\nClear position: continue Total Access, but govern it as a board-level transformation program with hard milestones. Do not scale it back primarily to restore store profitability.\n\n## Unknowns & Evidence Gaps\nThe board needs cohort-level economics: acquisition cost, retention, exchange frequency, contribution margin by customer segment, and whether heavy exchange users are destroying the economics disproportionately.\n\nThe board also needs franchise exposure detail: which franchisees are most harmed, what compensation would cost, and whether stores can be economically repurposed as subscription service points.\n\nThe largest missing strategic input is a credible streaming plan: rights costs, infrastructure needs, timing, and whether Total Access subscribers can be converted into early digital users before DVD-by-mail peaks.\n\n## Pass/Fail Readiness\nPass if Total Access continues to add and retain subscribers, narrows the Netflix gap, reduces per-subscriber exchange losses through pricing or usage controls, and produces a funded streaming migration plan within two quarters.\n\nFail if the program continues burning at roughly $400 million per year with no improvement in cohort economics, no franchise settlement path, and no credible digital conversion roadmap by mid-2008.\n\nThe program should not be judged only on current store cannibalization. It should be judged on whether it gives Blockbuster a survivable path beyond stores.\n\n## Recommended Next Artifact\nCreate a board operating plan for Total Access with three components: cohort economics dashboard, franchise mitigation plan, and streaming transition roadmap. The next decision should be a milestone-based funding release, not an open-ended subsidy and not an immediate scale-back.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "Blockbuster should continue Total Access because it is the only credible transition platform that has already shown competitive leverage against Netflix.",
+          "evidence_refs": [
+            "ctx-1",
+            "ctx-2",
+            "ctx-3"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "Refocusing on store profitability is strategically weak because stores face structural pressure from Redbox, broadband growth, streaming, and the projected DVD-by-mail peak.",
+          "evidence_refs": [
+            "ctx-4",
+            "ctx-5",
+            "ctx-6",
+            "ctx-7"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "The financial risk of Total Access is severe, so continuation requires hard operating milestones rather than an open-ended subsidy.",
+          "evidence_refs": [
+            "ctx-8",
+            "ctx-9",
+            "ctx-10"
+          ],
+          "is_major": true
+        }
+      ],
+      "citations": [
+        "ctx-1: Total Access added 2 million subscribers in under 12 months from late 2006 to mid-2007.",
+        "ctx-2: Netflix growth stalled for the first time during Total Access's peak.",
+        "ctx-3: Blockbuster online subscribers reached roughly 3 million versus Netflix total subscribers of 7.5 million.",
+        "ctx-4: Blockbuster had roughly 5,700 U.S. locations.",
+        "ctx-5: Netflix launched Watch Instantly in January 2007 with 1,000 titles.",
+        "ctx-6: DVD-by-mail was projected to peak around 2010-2012 and then decline.",
+        "ctx-7: U.S. broadband penetration was about 50% of households in 2007 and projected above 70% by 2010; Redbox kiosk expansion was accelerating with $1/night rentals.",
+        "ctx-8: Total Access cost roughly $400 million per year in incremental burn.",
+        "ctx-9: Blockbuster had $1.1 billion of long-term debt and lost $85 million in Q2 2007.",
+        "ctx-10: Franchisees resisted the program and Carl Icahn controlled 3 board seats while viewing online investment as unsustainable."
+      ],
+      "open_questions": [],
+      "critique_responses": []
+    }
+  },
+  "critique_packets": {
+    "side_a": {
+      "target_side": "side_b",
+      "finding_id": "finding-1",
+      "target_claim_ids": [
+        "side_b-claim-1",
+        "side_b-claim-3"
+      ],
+      "claim_under_attack": "Blockbuster should continue Total Access because it is the only credible transition platform, governed by hard operating milestones to manage the $400M/year burn.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "The artifact asserts Total Access can be converted from a DVD-by-mail subsidy into a 'transition platform for digital distribution' and that a 'streaming migration plan' should materialize 'within two quarters.' But the artifact provides zero evidence that Blockbuster has the technical capability, content licensing relationships, or capital access to build a streaming service. The only streaming evidence cited is Netflix's Watch Instantly launch and Blockbuster's failed 2000 Enron Broadband deal — both of which cut against the claim. Netflix had years of streaming R&D investment by 2007; Blockbuster had none. The 'hard milestones' framework sounds disciplined but is unfalsifiable as presented: the artifact never specifies what cohort economics would constitute a pass, what franchise compensation would cost, or where the streaming capital would come from given $1.1B in existing debt and $400M/year burn. Asking a company burning $400M/year with $1.1B in debt to simultaneously fund a streaming buildout is not a governed transition — it is stacking a second unfunded bet on top of the first. The competitive leverage evidence (2M subscribers, Netflix growth stall) proves Total Access worked as a price subsidy, not that the subscribers are convertible to a digital product that does not yet exist.",
+      "severity": "high"
+    },
+    "side_b": {
+      "target_side": "side_a",
+      "finding_id": "finding-2",
+      "target_claim_ids": [
+        "side_a-claim-2"
+      ],
+      "claim_under_attack": "The program can be optimized from ~$400M/year to ~$300M/year through exchange caps, tiered pricing, and franchisee revenue-sharing without losing the majority of subscribers.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "The artifact invents the key economics needed for its recommendation: a $100M annual burn reduction, 30-40% cost cut, and 80%+ subscriber retention. The case packet only establishes the current ~$400M/year burn, ~$2 in-store exchange cost, and franchisee hostility; it provides no evidence that exchange caps or tiering would preserve most subscribers when the generous in-store exchange benefit is the program's differentiator. Without proof that modified Total Access keeps the competitive subscriber gains while materially cutting losses, the recommendation rests on an unvalidated spreadsheet assumption.",
+      "severity": "high"
+    }
+  },
+  "final_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-14-003602310Z-blockbuster-total-access",
+      "side_id": "side_a",
+      "round": "final",
+      "artifact_markdown": "# Strategic Recommendation: Continue Total Access with Structured Runway and Streaming Pivot\n\n## Decision Frame\n\n**Core question:** Should Blockbuster continue funding Total Access at current levels (~$400M/year) to press its competitive advantage against Netflix, or scale it back to reduce losses and refocus on store profitability?\n\n**Recommendation: Do not kill Total Access. Maintain the program while immediately launching a 60-day optimization trial to determine whether costs can be materially reduced without destroying the subscriber base. Use trial results to set a sustainable funding level. Simultaneously redirect resources into streaming infrastructure assessment.**\n\n**Rationale:** Total Access is the only strategic asset preventing Netflix from achieving insurmountable scale in the DVD-by-mail market. Killing it concedes the online customer relationship permanently — and with it, any bridge to streaming. However, the current $400M/year burn rate is unsustainable given the balance sheet, and we lack evidence that cost optimization will preserve subscriber economics. The correct move is not \"continue or kill\" but \"test and pivot.\"\n\n### The Case for Continuation (With Mandatory Validation)\n\n**1. Total Access is working — rare in competitive strategy.** Adding 2M subscribers in under 12 months against an entrenched incumbent is an extraordinary result. Netflix growth stalled for the first time in the company's history. Reed Hastings's own private assessment (\"ichiban scared\") confirms genuine competitive displacement. Walking away from a program that has your strongest competitor scared is strategically indefensible unless the company faces imminent liquidity crisis.\n\n**2. The subscriber base is the bridge to streaming.** The 3M online subscribers represent Blockbuster's only digital customer relationship. These are customers with credit cards on file, viewing histories, and engagement patterns — the raw material for a streaming service. Kill Total Access, and these subscribers return to Netflix within 6 months. Blockbuster then has 5,700 stores serving a declining physical rental market with no path to digital.\n\n**3. Store footprint is an asset — but only if paired with an online strategy.** Blockbuster's 5,700 locations provide something Netflix cannot replicate: same-day gratification and a physical touchpoint. The hybrid model (online ordering + in-store returns/exchanges) creates genuine switching costs. Without Total Access, the stores become a pure liability — competing against Redbox's $1/night kiosks with a $4+ rental model and massive real estate overhead.\n\n**4. Cost optimization is plausible but unproven — and must be tested before assumed.** The current ~$400M/year burn includes ~$2 per in-store exchange in handling and lost rental revenue. Optimization levers exist in theory — exchange caps, tiered pricing, franchisee revenue-sharing — but we have no evidence that modifying the program's most distinctive benefit (generous in-store exchanges) will retain subscribers. The unlimited exchange is arguably the primary differentiator driving Total Access adoption. **We must not build a financial plan on assumed retention rates. A controlled A/B test across representative markets is required before committing to any modified cost target.** The specific risk: if exchange caps trigger disproportionate churn, the modified program loses its competitive value while still burning significant cash — the worst of both worlds.\n\n### Addressing the Strongest Counterarguments\n\n**\"The balance sheet cannot support this.\"** Blockbuster carries $1.1B in long-term debt and lost $85M in Q2 2007. This is serious but not terminal. The company still generates significant store revenue from 47M annual store visitors. The question is whether to use remaining financial runway to defend a declining-but-profitable store-only model (slow death) or to invest in the only program that builds digital customer relationships (a shot at survival). History shows that companies in declining industries that cut investment to preserve near-term profitability rarely survive — they simply die with better quarterly numbers.\n\n**\"Carl Icahn and the board will block it.\"** Icahn's position is rational from a short-term value perspective but catastrophic strategically. The board should be presented with two scenarios: (a) kill Total Access, achieve modest profitability for 2-3 years, then face existential crisis as physical rental collapses; (b) fund Total Access through a validation period, then decide based on real data rather than assumptions. Icahn's 3 board seats are not a majority — this is a moment for management to lead.\n\n**\"Netflix is already pivoting to streaming — we're fighting yesterday's war.\"** Netflix's streaming offering in January 2007 has 1,000 titles and requires broadband (50% household penetration). Streaming will dominate eventually, but the transition window is 3-5 years. DVD-by-mail peaks in 2010-2012. This gives Blockbuster time to use Total Access to grow its online subscriber base and launch a streaming service to that base — but only if the subscriber relationship is maintained. Blockbuster's failed 2000 Enron Broadband deal shows the company understood streaming's importance early — execution, not vision, was the failure.\n\n**\"Franchisees will revolt.\"** Franchisee concerns are legitimate and must be addressed through economic restructuring, not program cancellation. However, we should not assume franchisee cooperation; a concrete term sheet with revenue-sharing terms must be negotiated and tested before declaring this lever available.\n\n## Unknowns & Evidence Gaps\n\n| Unknown | Impact if Wrong | How to Resolve | Timeline |\n|---|---|---|---|\n| **Subscriber retention under exchange caps** (CRITICAL) | If exchange restrictions trigger >30% churn, the program loses competitive value while still burning cash — the central risk to this strategy | A/B test in 5+ diverse markets: test 3/month, 5/month, and unlimited exchange tiers against a control group. Measure churn, engagement, and cost per subscriber | 60 days (Q4 2007) |\n| **True per-subscriber cost after optimization** | Current ~$2/exchange cost may understate or overstate true marginal cost; without accurate unit economics, any cost target is guesswork | Detailed store-level cost audit across 20 representative locations, separating handling cost from cannibalized rental revenue | 45 days |\n| Streaming technology readiness | If Blockbuster cannot launch a competitive streaming product by 2009, the bridge strategy collapses regardless of Total Access success | Commission technical assessment of build vs. partner (e.g., acquire or license existing CDN/streaming platform) | 90 days |\n| Netflix subscriber response to sustained competition | If Netflix can grow through Total Access pressure (e.g., by accelerating streaming), competitive rationale weakens | Monitor Netflix quarterly subscriber reports and streaming catalog growth through Q1 2008 | Ongoing |\n| Capital markets appetite for Blockbuster debt refinancing | If credit markets tighten (early signs in mortgage-backed securities), $1.1B debt becomes existential | Engage investment banks on refinancing options immediately, before market conditions deteriorate further | 60 days |\n| Redbox expansion trajectory | If kiosks capture >20% of impulse rental market by 2009, store profitability erodes faster than modeled | Track Redbox installation rate and same-store revenue impact in markets with high kiosk density | Quarterly |\n| Franchisee willingness to accept revenue-sharing terms | If franchisees reject restructured terms, the in-store exchange model may be operationally unworkable at any price | Present draft term sheet to franchisee advisory council; gauge willingness before assuming cooperation | 60 days |\n\n**Critical gap:** The two most important unknowns — subscriber retention under modified terms and streaming technology pathway — must be resolved before this strategy can be committed to beyond a 90-day validation window. Without answers to both, we are choosing between two forms of guessing.\n\n## Pass/Fail Readiness\n\n**This recommendation is NOT ready for a final commitment. It is ready for a 90-day validation phase.**\n\n| Gate | Status | Condition |\n|---|---|---|\n| Subscriber retention under modified economics | NOT VALIDATED | A/B test required; no existing evidence supports assumed retention rates under exchange caps — this is the strategy's central dependency |\n| True cost reduction achievable | NOT VALIDATED | Store-level audit required to determine actual (not assumed) savings from program modifications |\n| Streaming technology pathway | NOT READY | No current assessment of build/buy/partner options — must complete before committing beyond 12-month runway |\n| Board alignment | NOT READY | Icahn bloc must be engaged with scenario analysis before formal vote |\n| Franchisee framework | NOT VALIDATED | Term sheet for revenue-sharing model needed; franchisee cooperation is assumed, not confirmed |\n| Capital structure | CONDITIONAL | Refinancing or covenant flexibility needed — credit market window may be closing |\n\n**Pass criteria:** If A/B tests demonstrate a cost-reduced program tier that retains ≥70% of subscribers AND a credible streaming pathway is identified within 90 days, proceed with the modified program at the validated cost level. If retention is strong enough, consider maintaining higher exchange allowances even at greater cost.\n\n**Fail criteria:** If subscriber retention under any tested exchange cap drops below 70%, OR if no viable streaming technology pathway exists by Q1 2008, OR if credit markets close the refinancing window, recommend accelerated wind-down of Total Access and exploration of strategic alternatives (sale of subscriber base, partnership, or managed decline with maximum cash extraction).\n\n**Key revision note:** Previous analysis proposed a specific $300M/year cost target and assumed 80%+ retention under exchange caps. These figures were unsupported by available evidence. The revised recommendation treats cost optimization as an open hypothesis requiring market testing, not a planning assumption.\n\n## Recommended Next Artifact\n\n**Immediate next step:** Launch a **Total Access A/B Optimization Trial** across 5+ geographically diverse markets testing exchange cap tiers (3/month, 5/month, unlimited) with 60-day measurement window. This is the single most important input — without it, every financial projection is speculative.\n\n**Parallel workstreams:**\n1. **Streaming Technology Assessment** — Build vs. buy vs. partner analysis with 90-day deadline. Critical strategic dependency.\n2. **Store-Level Cost Audit** — True marginal cost of in-store exchanges across 20 representative locations. Deliverable: 45 days.\n3. **Financial Scenario Model** — Three-scenario model (continue as-is, validated-modified continuation, kill) with 5-year cash flow projections. Cost assumptions must be populated from audit and trial results, not invented. Deliverable: preliminary framework in 45 days, populated with real data at 90 days.\n4. **Capital Structure Review** — Engage advisors on refinancing options, covenant flexibility, and worst-case liquidity analysis. Deliverable: options memo within 60 days.\n5. **Competitive Intelligence Brief** — Deep analysis of Netflix streaming roadmap, Redbox expansion plans, and emerging competitors. Deliverable: quarterly update beginning Q4 2007.\n\nThe board should reconvene in 90 days with trial results and streaming assessment to make a final go/no-go decision. The interim decision today should be: **do not kill Total Access while these validations are underway.** Cutting the program now is irreversible — the subscribers will not come back. But equally, do not commit to a specific cost-reduction target that has not been tested in market.",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "Total Access is the only strategic asset that bridges Blockbuster to a digital future; killing it concedes the online customer relationship permanently and eliminates any path to streaming.",
+          "evidence_refs": [
+            "ctx-subscriber-growth",
+            "ctx-netflix-stall",
+            "ctx-streaming-launch"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2-revised",
+          "summary": "Cost optimization levers exist in theory (exchange caps, tiered pricing, franchisee revenue-sharing) but their impact on subscriber retention is unknown; the program's differentiator is the generous exchange benefit, and restricting it may trigger disproportionate churn. A controlled market trial is required before any cost-reduction target can be treated as a planning assumption.",
+          "evidence_refs": [
+            "ctx-program-cost",
+            "ctx-franchisee-resistance",
+            "ctx-subscriber-growth"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "Netflix's streaming offering in 2007 is nascent (1,000 titles, 50% broadband penetration), giving Blockbuster a 3-5 year transition window to build a competing digital platform if it retains its online subscriber base.",
+          "evidence_refs": [
+            "ctx-streaming-launch",
+            "ctx-broadband-penetration",
+            "ctx-dvd-peak"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-4",
+          "summary": "Blockbuster's 5,700 stores are an asset only in combination with an online strategy; without Total Access, they become a pure liability competing against Redbox's $1/night kiosks.",
+          "evidence_refs": [
+            "ctx-store-footprint",
+            "ctx-redbox"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-5",
+          "summary": "The balance sheet is stressed ($1.1B debt, $85M Q2 loss) but not terminal; cutting investment to preserve near-term profitability in a declining industry historically accelerates rather than prevents failure.",
+          "evidence_refs": [
+            "ctx-debt",
+            "ctx-q2-loss"
+          ],
+          "is_major": false
+        },
+        {
+          "claim_id": "side_a-claim-6",
+          "summary": "The recommendation is conditional on validating two critical unknowns within 90 days: streaming technology pathway viability and subscriber retention under modified exchange economics — neither of which has existing evidence to support planning assumptions.",
+          "evidence_refs": [
+            "ctx-enron-deal",
+            "ctx-subscriber-growth",
+            "ctx-program-cost"
+          ],
+          "is_major": true
+        }
+      ],
+      "citations": [
+        "ctx-subscriber-growth: Total Access added 2M subscribers in <12 months (late 2006 to mid-2007)",
+        "ctx-netflix-stall: Netflix growth stalled for the first time during Total Access's peak; Hastings privately 'ichiban scared'",
+        "ctx-program-cost: Total Access costs ~$400M/year incremental burn, ~$2 per in-store exchange",
+        "ctx-debt: Blockbuster long-term debt $1.1B",
+        "ctx-q2-loss: Blockbuster Q2 2007 net loss $85M",
+        "ctx-streaming-launch: Netflix streaming launched January 2007 with 1,000 titles",
+        "ctx-broadband-penetration: US broadband at ~50% of households (2007), projected 70%+ by 2010",
+        "ctx-dvd-peak: DVD-by-mail market projected to peak 2010-2012 then decline",
+        "ctx-store-footprint: Blockbuster had ~5,700 US locations",
+        "ctx-netflix-subs: Netflix 7.5M subscribers vs Blockbuster 3M online + 47M store visitors",
+        "ctx-franchisee-resistance: Independent franchisee operators threatened by cannibalization",
+        "ctx-icahn: Carl Icahn controls 3 board seats, views online investment as value-destroying",
+        "ctx-redbox: Redbox kiosk expansion accelerating with $1/night rentals",
+        "ctx-enron-deal: Blockbuster attempted streaming deal with Enron Broadband in 2000 (failed)"
+      ],
+      "open_questions": [
+        "What is the actual subscriber retention rate under exchange-capped Total Access tiers? (No existing evidence — requires market trial)",
+        "Can Blockbuster build or acquire a viable streaming technology platform by 2009-2010?",
+        "Will credit markets remain open for Blockbuster to refinance its $1.1B debt (early subprime signals suggest risk)?",
+        "Can franchisee economics be restructured without triggering mass franchise exits?",
+        "What is the true marginal cost of in-store exchanges (separating handling cost from cannibalized rental revenue)?"
+      ],
+      "critique_responses": [
+        {
+          "finding_id": "finding-2",
+          "disposition": "adopted",
+          "rationale": "The critique correctly identifies that the original claim invented specific cost-reduction targets ($300M/year) and retention assumptions (80%+) without evidentiary support. The case packet establishes the $400M burn and ~$2 exchange cost but provides no data on how subscribers would respond to exchange restrictions — and the unlimited exchange is arguably the program's core differentiator. The revised artifact now: (1) treats cost optimization as an untested hypothesis rather than a planning assumption, (2) removes the specific $300M target and 80% retention figure, (3) elevates the A/B market trial from one item in the unknowns table to the single most critical next step, (4) explicitly flags the worst-case scenario where exchange caps destroy competitive value while still burning cash, and (5) shifts the recommendation from 'continue at modified levels' to 'do not kill while running a mandatory 60-day validation trial.' The strategic conclusion (don't kill Total Access) is unchanged, but the financial basis is now honestly conditional rather than built on invented economics."
+        }
+      ]
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-14-003602310Z-blockbuster-total-access",
+      "side_id": "side_b",
+      "round": "final",
+      "artifact_markdown": "# Revised artifact\n\n# Strategic Recommendation Memo: Continue Total Access, But Stop Treating It as an Unfunded Streaming Bet\n\n## Recommendation\nContinue Total Access for a bounded two-quarter operating window, but do not continue it as an open-ended $400M/year subsidy and do not assume Blockbuster can internally build a Netflix-equivalent streaming platform on the same balance sheet.\n\nThe board should continue because Total Access is the only current strategy that has demonstrated direct competitive pressure against Netflix: it added 2M online subscribers in under 12 months, lifted Blockbuster online to roughly 3M subscribers, and coincided with Netflix's first growth stall [ctx-1][ctx-2][ctx-3]. Killing or materially shrinking the program now would hand Netflix back momentum and leave Blockbuster defending stores against Redbox, broadband growth, and a DVD-by-mail market expected to peak in 2010-2012 [ctx-6][ctx-7].\n\nBut the critique is correct: the first-pass memo overstated the evidence that Total Access can become a digital distribution platform. Netflix's Watch Instantly launch proves the market is moving toward streaming, not that Blockbuster has the technical capability, content rights, or capital access to build streaming while absorbing a roughly $400M/year Total Access burn, $1.1B in long-term debt, and an $85M Q2 2007 loss [ctx-5][ctx-8][ctx-9]. Blockbuster's failed Enron Broadband effort is a warning, not proof of readiness [ctx-11].\n\nThe correct decision is therefore not \"continue and build streaming.\" It is: continue Total Access as a short-duration competitive option on the subscriber relationship, while forcing the program to prove it can move toward economic viability and while pursuing streaming only through a capital-light partnership, licensing, or acquisition path with separate board approval.\n\n## Why Continue\nTotal Access has created competitive leverage that Blockbuster rarely gets. Netflix has 7.5M total subscribers versus Blockbuster's roughly 3M online subscribers, so Blockbuster is still behind [ctx-3]. However, adding 2M online subscribers in less than a year is real evidence of customer demand, and Netflix's growth stall during the same period suggests the program affected the competitive battlefield [ctx-1][ctx-2].\n\nThe 5,700-store footprint should be used as a temporary differentiator, not protected as the final destination [ctx-4]. In-store returns and exchanges give Blockbuster a feature Netflix cannot immediately copy, but the same store base is structurally exposed: Redbox is accelerating with $1/night kiosk rentals, broadband penetration is expected to rise from roughly 50% of U.S. households in 2007 to more than 70% by 2010, and DVD-by-mail is projected to peak in 2010-2012 [ctx-6][ctx-7]. Scaling back mainly to restore store economics would conserve cash inside a weakening category.\n\n## What Must Change\nThe board should stop funding Total Access as a broad subsidy. Each in-store return costs roughly $2 in handling and lost rental revenue, and the program is burning about $400M per year [ctx-8]. Continuing requires immediate controls:\n\n1. Segment heavy exchange users and cap or reprice usage patterns that drive negative contribution.\n2. Test price increases or tiering for high-frequency in-store exchange behavior.\n3. Require monthly cohort reporting by acquisition source, exchange frequency, retention, gross margin, and contribution margin.\n4. Freeze any internal streaming buildout until management presents a funded plan showing rights costs, technology costs, capital source, and a partner-or-build recommendation.\n5. Create a franchisee participation model that either compensates stores for subscription-driven workload or limits store obligations where the unit economics are destructive [ctx-10].\n\nThe board should release only two more quarters of funding at current intensity. After that, management must earn continuation.\n\n## Counterarguments\nThe strongest kill argument is that the company cannot afford the burn. That argument is serious: Blockbuster has $1.1B in long-term debt, lost $85M in Q2 2007, and faces an activist investor bloc that views online losses as unsustainable [ctx-9][ctx-10]. If Total Access remains a $400M/year subsidy with no path to improved contribution margin, it should be cut.\n\nThe reason not to kill it today is that the evidence does not show failure of demand; it shows failure of economics. Those are different board decisions. Demand is unusually strong, competitive impact is visible, and the store model being protected is itself under pressure. A two-quarter continuation with hard economic gates preserves the only live subscriber-growth engine while limiting further drift.\n\nThe strongest critique of the streaming thesis is also valid. Blockbuster should not pretend that Total Access subscribers automatically become streaming subscribers. The revised strategy treats streaming as a strategic requirement to investigate, not as a funded assumption. If management cannot produce a partner-led, capital-light streaming roadmap, the board should still evaluate Total Access on its DVD-by-mail and store-exchange economics rather than funding a second unfunded bet.\n\n## Decision Frame\nThis is not a binary choice between transformation and discipline. The board should choose disciplined continuation.\n\nContinue Total Access for two quarters because it has demonstrated subscriber growth and competitive pressure against Netflix. Do not approve open-ended funding, do not protect franchise economics at the expense of the only growing subscription channel, and do not fund an internal streaming buildout without separate proof of capability, rights access, and capital.\n\n## Unknowns & Evidence Gaps\nThe board still needs cohort-level economics: acquisition cost, retention, exchange frequency, contribution margin, and whether heavy exchange users are responsible for most of the burn.\n\nThe board needs a quantified franchise exposure model: affected operators, compensation options, store workload, and the cost of turning stores into subscription service points.\n\nThe board needs a streaming feasibility memo, not a promise: content rights options, infrastructure approach, partner candidates, capital required, time to launch, and whether Blockbuster can credibly compete with Netflix's Watch Instantly path [ctx-5].\n\n## Pass/Fail Readiness\nPass if, within two quarters, Total Access continues to grow or retain subscribers, reduces per-subscriber exchange losses through pricing or usage controls, produces transparent cohort economics, and presents a capital-light streaming or digital partnership plan for separate approval.\n\nFail if the program continues burning near $400M/year with no improving contribution trend, no franchise settlement path, no usage controls, and no credible financing or partner path for digital distribution [ctx-8][ctx-10].\n\nIf those fail conditions hold by mid-2008, the board should scale the program back aggressively rather than continue current funding.\n\n## Recommended Next Artifact\nCreate a two-quarter Total Access operating plan for board approval. It should include a cohort economics dashboard, exchange-loss reduction plan, franchisee mitigation model, and a separate streaming feasibility memo with partner-led and build-vs-buy options.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "Blockbuster should continue Total Access for a bounded two-quarter window because it has demonstrated subscriber growth and competitive pressure against Netflix, but it should not be treated as proof of streaming readiness.",
+          "evidence_refs": [
+            "ctx-1",
+            "ctx-2",
+            "ctx-3",
+            "ctx-5"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "Refocusing primarily on store profitability is strategically weak because stores face structural pressure from Redbox, broadband growth, and the projected DVD-by-mail peak.",
+          "evidence_refs": [
+            "ctx-4",
+            "ctx-6",
+            "ctx-7"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "Continuation must be governed by explicit economic gates because the program's $400M/year burn, Blockbuster's debt load, Q2 loss, franchisee resistance, and Icahn pressure make open-ended funding untenable.",
+          "evidence_refs": [
+            "ctx-8",
+            "ctx-9",
+            "ctx-10"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-4",
+          "summary": "Blockbuster should not approve an internal streaming buildout without a separately funded feasibility plan because available evidence shows market urgency but not Blockbuster capability or capital readiness.",
+          "evidence_refs": [
+            "ctx-5",
+            "ctx-9",
+            "ctx-11"
+          ],
+          "is_major": true
+        }
+      ],
+      "citations": [
+        "ctx-1: Total Access added 2 million subscribers in under 12 months from late 2006 to mid-2007.",
+        "ctx-2: Netflix growth stalled for the first time during Total Access's peak.",
+        "ctx-3: Blockbuster online subscribers reached roughly 3 million versus Netflix total subscribers of 7.5 million.",
+        "ctx-4: Blockbuster had roughly 5,700 U.S. locations.",
+        "ctx-5: Netflix launched Watch Instantly in January 2007 with 1,000 titles.",
+        "ctx-6: DVD-by-mail was projected to peak around 2010-2012 and then decline.",
+        "ctx-7: U.S. broadband penetration was about 50% of households in 2007 and projected above 70% by 2010; Redbox kiosk expansion was accelerating with $1/night rentals.",
+        "ctx-8: Total Access cost roughly $400 million per year in incremental burn, with each in-store return costing roughly $2 in handling and lost rental revenue.",
+        "ctx-9: Blockbuster had $1.1 billion of long-term debt and lost $85 million in Q2 2007.",
+        "ctx-10: Franchisees resisted the program and Carl Icahn controlled 3 board seats while viewing online investment as unsustainable.",
+        "ctx-11: Blockbuster had attempted a streaming deal with Enron Broadband in 2000, which failed."
+      ],
+      "open_questions": [],
+      "critique_responses": [
+        {
+          "finding_id": "finding-1",
+          "disposition": "adopted",
+          "rationale": "The critique correctly identified that the first-pass artifact overclaimed Blockbuster's ability to convert Total Access into a streaming platform and made the milestone framework too vague. The revised memo keeps the continue recommendation because the subscriber-growth and Netflix-pressure evidence still supports preserving the option, but it removes the unsupported internal streaming-build assumption, requires a separately funded feasibility plan, limits continuation to a two-quarter window, and specifies the economic gates the board should use to decide whether to continue or scale back."
+        }
+      ]
+    }
+  },
+  "min_margin_for_verdict": 0.1
+}

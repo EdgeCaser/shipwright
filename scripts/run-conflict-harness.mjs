@@ -633,7 +633,8 @@ function createInitialRunRecord(options) {
     },
     metrics: {
       disagreement_rate: null,
-      adopted_critique_rate: null,
+      declared_adoption_rate: null,
+      substantive_revision_rate: null,
       unsupported_claim_count: null,
       self_contradiction_count: null,
       total_estimated_cost_usd: 0,
@@ -1190,7 +1191,8 @@ function applyVerdictToRun(run, verdict) {
 
 function computeRunMetrics(run) {
   run.metrics.disagreement_rate = computeDisagreementRate(run);
-  run.metrics.adopted_critique_rate = computeAdoptedCritiqueRate(run);
+  run.metrics.declared_adoption_rate = computeDeclaredAdoptionRate(run);
+  run.metrics.substantive_revision_rate = computeSubstantiveRevisionRate(run);
   const unsupportedCounts = computeUnsupportedClaimCounts(run);
   run.metrics.unsupported_claim_count = unsupportedCounts.side_a + unsupportedCounts.side_b;
   run.metrics.self_contradiction_count = 0;
@@ -1217,11 +1219,72 @@ function computeDisagreementRate(run) {
   return roundNumber((rates[0] + rates[1]) / 2, 4);
 }
 
-function computeAdoptedCritiqueRate(run) {
+function computeDeclaredAdoptionRate(run) {
   const responses = SIDE_IDS.flatMap((sideId) => run.sides[sideId].final?.critique_responses || []);
   if (responses.length === 0) return 0;
   const adopted = responses.filter((entry) => entry.disposition === 'adopted').length;
   return roundNumber(adopted / responses.length, 4);
+}
+
+function computeSubstantiveRevisionRate(run) {
+  let totalResponses = 0;
+  let substantivelyRevised = 0;
+
+  for (const sideId of SIDE_IDS) {
+    const finalPacket = run.sides[sideId].final;
+    const responses = finalPacket?.critique_responses || [];
+    const firstPassPacket = run.sides[sideId].first_pass;
+    const critiquePacket = run.sides[sideId === 'side_a' ? 'side_b' : 'side_a'].rebuttal;
+
+    for (const response of responses) {
+      totalResponses += 1;
+      if (response.disposition !== 'adopted') continue;
+      if (didSubstantivelyReviseTargetedClaims(firstPassPacket, finalPacket, critiquePacket, response)) {
+        substantivelyRevised += 1;
+      }
+    }
+  }
+
+  if (totalResponses === 0) return 0;
+  return roundNumber(substantivelyRevised / totalResponses, 4);
+}
+
+function didSubstantivelyReviseTargetedClaims(firstPassPacket, finalPacket, critiquePacket, response) {
+  if (!firstPassPacket || !finalPacket || !critiquePacket) return false;
+  if (response.finding_id !== critiquePacket.finding_id) return false;
+
+  const targetClaimIds = critiquePacket.target_claim_ids || [];
+  if (targetClaimIds.length === 0) return false;
+
+  const firstClaims = new Map((firstPassPacket.claims || []).map((claim) => [claim.claim_id, claim]));
+  const finalClaims = new Map((finalPacket.claims || []).map((claim) => [claim.claim_id, claim]));
+
+  for (const claimId of targetClaimIds) {
+    const firstClaim = firstClaims.get(claimId);
+    const finalClaim = finalClaims.get(claimId);
+
+    if (firstClaim && !finalClaim) {
+      return true;
+    }
+
+    if (!firstClaim || !finalClaim) {
+      continue;
+    }
+
+    if (normalizeComparableText(firstClaim.summary) !== normalizeComparableText(finalClaim.summary)) {
+      return true;
+    }
+
+    if (normalizeStringArray(firstClaim.evidence_refs).join('|') !== normalizeStringArray(finalClaim.evidence_refs).join('|')) {
+      return true;
+    }
+
+    if (Boolean(firstClaim.is_major) !== Boolean(finalClaim.is_major)) {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 function computeUnsupportedClaimCounts(run) {
@@ -1421,6 +1484,17 @@ function injectReasoningEffort(command, reasoningEffort) {
 function shellEscape(value) {
   const stringValue = typeof value === 'string' ? value : String(value ?? '');
   return `'${stringValue.replace(/'/g, `'\\''`)}'`;
+}
+
+function normalizeComparableText(value) {
+  return typeof value === 'string' ? value.trim().replace(/\s+/g, ' ').toLowerCase() : '';
+}
+
+function normalizeStringArray(values) {
+  if (!Array.isArray(values)) return [];
+  return [...values]
+    .map((value) => (typeof value === 'string' ? value.trim() : String(value ?? '').trim()))
+    .sort();
 }
 
 function formatValidationErrors(label, errors) {

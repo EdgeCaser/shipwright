@@ -1,0 +1,13 @@
+# Critique: finding-2
+
+- Target Side: side_a
+- Target Claim IDs: side_a-claim-1
+- Attack Type: evidence_gap
+- Severity: medium
+
+## Claim Under Attack
+The handoff is NOT ready to proceed because a critical structural contradiction exists between the platform strategy's p99 latency target (sub-100ms) and the technical design's aggregation layer overhead (40-80ms per hop), making the strategy target infeasible for composed requests.
+
+## Evidence Or Reason
+The artifact overstates certainty from thin visible evidence. It cites quoted thresholds and per-hop overhead figures, but provides no underlying excerpts, composition-depth assumptions, baseline service latency, parallelization behavior, or measured end-to-end timings. A 40-80ms per-hop estimate does not by itself prove sub-100ms p99 is infeasible for all composed requests; that conclusion depends on how many hops are on the critical path and what latency budget remains elsewhere. The same artifact also admits there is no production-representative load test and that the overhead estimate is extrapolated from synthetic benchmarks, which weakens the claim that infeasibility is already established rather than still unverified.
+

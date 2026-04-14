@@ -1,0 +1,51 @@
+
+
+```json
+{
+  "run_id": "conflict-2026-04-14-031856501Z-handoff-contradiction",
+  "side_id": "side_b",
+  "round": "first_pass",
+  "artifact_markdown": "# Technical Handoff PRD: Platform Migration — Cross-Document Reconciliation\n\n## Decision Frame\n\n**Problem:** The platform team is handing off a migration initiative to the delivery team, but the existing documentation contains cross-document contradictions that create execution risk. The strategy document, challenge review, and prior technical specs disagree on scope, timeline, and integration requirements. This PRD reconciles those contradictions and establishes the canonical source of truth for the handoff.\n\n**Decision to be made:** Should the delivery team accept the handoff as-scoped, or must specific contradictions be resolved before work begins?\n\n**Stakeholders:**\n- Platform team (handing off)\n- Delivery/engineering team (receiving)\n- Product leadership (approving scope)\n- Dependent service owners (affected by integration changes)\n\n**Scope boundaries:**\n- IN: API migration (v2 → v3), auth layer consolidation, data model alignment\n- OUT: UI redesign, new feature development, performance optimization beyond parity\n\n### Contradiction Register\n\n| # | Document A | Document B | Contradiction | Resolution |\n|---|-----------|-----------|---------------|------------|\n| C-1 | Platform strategy states \"full backward compatibility required\" | Challenge review identifies backward compatibility as \"the primary cost driver — consider breaking changes\" | Direct conflict on compatibility posture | **Unresolved — requires product leadership decision before sprint planning** |\n| C-2 | Technical spec estimates 6-week delivery | Strategy document references Q3 completion (12+ weeks) | Timeline disagreement of 2x | Technical spec scope is subset; strategy includes rollout. **Resolved: 6 weeks build + 6 weeks rollout = Q3 target is consistent** |\n| C-3 | Strategy doc lists 4 integration partners | Technical spec lists 3 (omits payments service) | Scope disagreement on integration surface | **Unresolved — payments team must confirm whether they consume the affected APIs** |\n| C-4 | Challenge review flags rate limiting as \"must-have for launch\" | Technical spec defers rate limiting to post-migration phase | Prioritization conflict | **Resolved in favor of challenge review: rate limiting is a launch gate given v3 exposes new public endpoints** |\n\n## Unknowns & Evidence Gaps\n\n1. **Backward compatibility cost** (blocks C-1): No quantified estimate exists for maintaining full backward compatibility vs. a breaking migration with a deprecation window. Without this, the team cannot make an informed scope decision.\n   - *Evidence needed:* Engineering spike (2-3 days) to measure compatibility shim complexity and ongoing maintenance burden.\n\n2. **Payments service dependency** (blocks C-3): The payments integration was added to the strategy doc after the technical spec was written. No one has confirmed whether payments actually calls the migrating endpoints.\n   - *Evidence needed:* API call graph analysis or direct confirmation from payments team lead.\n\n3. **Load profile for v3 endpoints:** The challenge review flags rate limiting because v3 opens new public surface area, but no traffic projection exists.\n   - *Evidence needed:* Historical v2 traffic data extrapolated to v3 surface area, plus any committed external partner volumes.\n\n4. **Rollback plan:** No document addresses what happens if the migration fails mid-rollout. The strategy assumes success; the challenge review assumes problems but prescribes no fallback.\n   - *Evidence needed:* Rollback runbook drafted before migration begins, validated with on-call team.\n\n5. **Data model alignment verification:** The technical spec references schema changes but does not include migration scripts or a diff against production schema.\n   - *Evidence needed:* Schema diff review with DBA sign-off.\n\n## Pass/Fail Readiness\n\n| Gate | Status | Blocker? |\n|------|--------|----------|\n| Contradiction C-1 resolved (compatibility posture) | FAIL | Yes — cannot estimate work without this decision |\n| Contradiction C-3 resolved (payments scope) | FAIL | Yes — may add 2+ weeks if payments is in scope |\n| Contradiction C-4 resolved (rate limiting) | PASS | Resolved: rate limiting is in scope for launch |\n| Contradiction C-2 resolved (timeline) | PASS | Resolved: build + rollout = Q3 |\n| Rollback plan exists | FAIL | Yes — required before migration start |\n| Schema migration scripts reviewed | FAIL | Yes — required before sprint 1 |\n| Engineering spike on compatibility cost | NOT STARTED | Blocks C-1 resolution |\n| Traffic projections for rate limit design | NOT STARTED | Blocks rate limiting implementation |\n\n**Overall readiness: NOT READY FOR HANDOFF**\n\nTwo blocking contradictions (C-1, C-3) and two missing artifacts (rollback plan, schema scripts) must be resolved before the delivery team can accept this handoff with confidence.\n\n## Recommended Next Artifact\n\n**Immediate (this week):**\n1. **Decision brief for product leadership** on contradiction C-1 (backward compatibility posture). Format: one-page options memo with cost/risk for each path. This is the single highest-leverage blocker.\n2. **Payments team confirmation** on C-3 — a single Slack thread or 15-minute call, not a document.\n\n**Before handoff acceptance (next 1-2 weeks):**\n3. **Engineering spike results** quantifying backward compatibility cost (feeds into the decision brief above).\n4. **Rollback runbook** — owned by platform team since they have migration context.\n5. **Schema diff document** with DBA review sign-off.\n\n**After handoff acceptance:**\n6. **Sprint plan** for the delivery team, built on resolved scope.\n7. **Rate limiting design doc** informed by traffic projections.\n\nThe handoff should be re-evaluated once gates C-1 and C-3 are resolved. Target: re-review in 5 business days.",
+  "claims": [
+    {
+      "claim_id": "side_b-claim-1",
+      "summary": "Cross-document contradictions must be explicitly registered, classified as resolved or unresolved, and blocking contradictions must gate handoff acceptance — implicit reconciliation creates execution risk.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-2",
+      "summary": "The handoff is not ready: two unresolved contradictions (backward compatibility posture and payments service scope) and two missing artifacts (rollback plan, schema migration scripts) block acceptance.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-3",
+      "summary": "The backward compatibility decision (C-1) is the single highest-leverage blocker because it determines scope, cost, and timeline for the entire migration — it should be resolved first via a structured options memo to product leadership.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-4",
+      "summary": "Rate limiting must be a launch gate (resolving C-4 in favor of the challenge review) because v3 exposes new public endpoints that did not exist in v2.",
+      "evidence_refs": [],
+      "is_major": false
+    },
+    {
+      "claim_id": "side_b-claim-5",
+      "summary": "The apparent 2x timeline contradiction (C-2) is actually consistent when decomposed into build phase (6 weeks) plus rollout phase (6 weeks) equaling the Q3 target.",
+      "evidence_refs": [],
+      "is_major": false
+    }
+  ],
+  "citations": [],
+  "open_questions": [
+    "What is the quantified cost of full backward compatibility vs. breaking changes with a deprecation window?",
+    "Does the payments service actually consume the APIs being migrated?",
+    "What are the projected traffic volumes for newly public v3 endpoints?",
+    "Who owns the rollback runbook — platform team or delivery team?"
+  ],
+  "critique_responses": []
+}
+```
+

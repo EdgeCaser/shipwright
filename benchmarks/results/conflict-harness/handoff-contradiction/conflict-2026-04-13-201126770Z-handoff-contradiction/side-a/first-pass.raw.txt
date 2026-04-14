@@ -1,0 +1,59 @@
+
+
+```json
+{
+  "run_id": "conflict-2026-04-13-201126770Z-handoff-contradiction",
+  "side_id": "side_a",
+  "round": "first_pass",
+  "artifact_markdown": "# Technical Handoff PRD: Platform Migration to Unified Service Layer\n\n## Decision Frame\n\n**Decision owner:** Platform Engineering Lead\n**Decision type:** Go / No-Go on migrating legacy service endpoints to the Unified Service Layer (USL) for Q3 release.\n**Deadline:** 2026-05-15 (architecture lock for Q3 sprint planning)\n**Irreversibility:** Medium-High. Once downstream consumers migrate to USL contracts, rollback requires maintaining dual endpoints for 2+ quarters.\n\n### Context\n\nThe platform currently operates three independent API gateway configurations (customer-facing, internal tooling, partner integrations) with divergent authentication, rate-limiting, and schema validation behaviors. The USL proposal consolidates these into a single gateway with policy-based routing.\n\n**Cross-document contradiction identified:** The platform strategy document (v2.3) states USL will \"eliminate all legacy endpoints by Q3 end,\" while the challenge review (CR-2026-018) notes that partner integration contracts have SLA-protected endpoint stability guarantees through Q4. These two commitments are mutually exclusive under the current timeline.\n\n**Resolution required before Go decision:** Either (a) negotiate partner SLA amendment to permit migration, (b) extend legacy endpoint deprecation to Q4+1, or (c) scope USL Phase 1 to exclude partner endpoints entirely.\n\n### Stakeholder Positions\n\n| Stakeholder | Position | Constraint |\n|---|---|---|\n| Platform Strategy (v2.3) | Full migration by Q3 | Budget allocated assumes legacy infra decommission savings |\n| Challenge Review (CR-2026-018) | Partner endpoints stable through Q4 | Contractual SLA, breach triggers penalty clauses |\n| Engineering | Prefer phased rollout | Capacity for full migration is 1.4x current team bandwidth |\n| Partner Success | Protect partner experience | 3 top-tier partners renew in Q4; disruption risks churn |\n\n## Unknowns & Evidence Gaps\n\n### Critical Unknowns\n\n1. **Partner SLA flexibility** — No evidence that partner contracts permit early migration. Legal review has not been initiated. Without this, the Q3 full-migration target in the platform strategy is unachievable without breach risk.\n\n2. **Performance parity under consolidation** — USL benchmarks were run against synthetic traffic. No load testing against production partner traffic patterns (which include batch operations up to 10K requests/minute). The challenge review flagged this gap but no remediation is scheduled.\n\n3. **Authentication reconciliation** — Customer-facing endpoints use OAuth 2.0 + PKCE, internal uses mTLS, partner uses API key + IP allowlist. The platform strategy assumes a \"unified auth layer\" but the technical design document does not specify how IP allowlist policies translate to the new gateway. This is a design gap, not an implementation detail.\n\n### Evidence Gaps\n\n| Gap | Impact | Mitigation |\n|---|---|---|\n| No partner traffic load test | Could discover latency regression post-migration | Run shadow traffic test against USL staging with production replay |\n| No legal review of SLA amendment | Blocks Go decision entirely for partner scope | Initiate legal review by 2026-04-21 |\n| Auth policy mapping incomplete | Risk of partner access disruption at cutover | Require auth design spec with partner policy matrix before architecture lock |\n| Cost model assumes full decommission | Partial migration changes ROI calculation | Finance to model phased decommission scenario |\n\n## Pass/Fail Readiness\n\n### Pass Criteria (all must be true for Go)\n\n- [ ] **Legal confirmation** that partner SLA permits migration OR scope explicitly excludes partner endpoints from Phase 1\n- [ ] **Load test results** demonstrating p99 latency within 10% of current partner endpoint performance under production-equivalent traffic\n- [ ] **Auth policy mapping document** reviewed and approved by Security, covering all three current auth patterns\n- [ ] **Rollback plan** documented with <4hr RTO for any single endpoint group\n- [ ] **Cross-document alignment** — platform strategy and challenge review recommendations reconciled into a single agreed timeline\n\n### Current Assessment: NO-GO\n\n**Rationale:** Two of five pass criteria have blocking dependencies (legal review not started, load test not scheduled). The cross-document contradiction between strategy and challenge review remains unresolved, meaning no authoritative timeline exists. Proceeding without resolution risks either contractual breach or underfunded parallel infrastructure.\n\n### Fail Conditions (any triggers No-Go)\n\n- Partner SLA amendment rejected and no scope reduction agreed\n- Load test shows >25% p99 latency regression on partner traffic patterns\n- Auth policy mapping reveals incompatible security requirements that need gateway redesign\n\n## Recommended Next Artifact\n\n**Artifact:** Scoped Migration Plan (Phase 1: Internal + Customer; Phase 2: Partner)\n\n**Rationale:** Given the cross-document contradiction and unresolved partner SLA question, the highest-value next step is a phased migration plan that:\n\n1. Decouples the unblocked work (internal + customer endpoints) from the blocked work (partner endpoints)\n2. Preserves the Q3 value delivery for 2 of 3 endpoint groups\n3. Creates a concrete decision point for partner migration once legal review completes\n4. Resolves the strategy-vs-challenge-review contradiction by making the phasing explicit rather than forcing premature alignment\n\n**Required inputs for next artifact:**\n- Legal review initiation confirmation (by 2026-04-21)\n- Engineering capacity estimate for phased vs. full migration\n- Finance model for partial decommission ROI\n\n**Handoff to:** Engineering Lead + Program Manager for sprint planning scoping",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "The platform strategy (full Q3 migration) and challenge review (partner SLA stability through Q4) contain a direct contradiction that must be resolved before any Go decision, as proceeding with either document's timeline unilaterally creates contractual or financial risk.",
+      "evidence_refs": [
+        "ctx-strategy-v2.3",
+        "ctx-challenge-review-CR-2026-018"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "A phased migration (internal+customer first, partner second) resolves the cross-document contradiction without requiring either document to be overridden, preserving Q3 value delivery while respecting contractual constraints.",
+      "evidence_refs": [
+        "ctx-strategy-v2.3",
+        "ctx-challenge-review-CR-2026-018"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-3",
+      "summary": "Current readiness is NO-GO due to two blocking dependencies (legal review not initiated, load testing not scheduled) and unresolved cross-document contradiction — no authoritative migration timeline exists.",
+      "evidence_refs": [
+        "ctx-pass-fail-assessment"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-4",
+      "summary": "Authentication reconciliation across three distinct auth patterns (OAuth 2.0+PKCE, mTLS, API key+IP allowlist) is a design gap, not merely an implementation detail, and requires a dedicated spec before architecture lock.",
+      "evidence_refs": [
+        "ctx-auth-patterns"
+      ],
+      "is_major": false
+    }
+  ],
+  "citations": [
+    "ctx-strategy-v2.3",
+    "ctx-challenge-review-CR-2026-018",
+    "ctx-pass-fail-assessment",
+    "ctx-auth-patterns"
+  ],
+  "open_questions": [
+    "Can partner SLAs be amended to permit earlier migration, or is Phase 2 deferral the only viable path?",
+    "What is the incremental infrastructure cost of maintaining legacy partner endpoints through Q4 under a phased approach?",
+    "Has the USL gateway been validated against batch traffic patterns characteristic of partner integrations?"
+  ],
+  "critique_responses": []
+}
+```
+

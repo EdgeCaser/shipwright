@@ -1,0 +1,99 @@
+You are SIDE_A in the rebuttal phase for run conflict-2026-04-14-071741061Z-handoff-contradiction.
+Attack only visible claims from the opposing first-pass artifact.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "target_side": "side_b",
+  "finding_id": "runner-will-assign",
+  "target_claim_ids": [
+    "side_b-claim-1"
+  ],
+  "claim_under_attack": "The opposing claim to challenge.",
+  "attack_type": "evidence_gap",
+  "evidence_or_reason": "Why the visible claim is weak.",
+  "severity": "medium"
+}
+
+Case packet:
+{
+  "scenario_id": "handoff-contradiction",
+  "title": "Handoff artifact with cross-document contradictions",
+  "prompt": "Write a technical handoff PRD aligned to a platform strategy and challenge review.",
+  "artifact_type": "prd",
+  "rubric": {
+    "dimensions": [
+      "claim quality",
+      "evidence discipline",
+      "responsiveness to critique",
+      "internal consistency",
+      "decision usefulness"
+    ],
+    "scoring_scale": "1-5",
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "constraints": {
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "expect_structured": true,
+    "context_files": [],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "evidence": [],
+  "max_rounds": 3,
+  "tool_policy": "none",
+  "sharing_policy": {
+    "share_case_packet": true,
+    "share_committed_artifacts_after_first_pass": true,
+    "share_critiques_after_open": true,
+    "share_hidden_reasoning": false,
+    "share_provider_identity": false,
+    "share_internal_coalition_drafts": false
+  },
+  "success_condition": {
+    "type": "validator_contract",
+    "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+    "validator": {
+      "artifact_type": "prd",
+      "expect_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true
+    }
+  }
+}
+
+Opposing first-pass artifact:
+{
+  "run_id": "conflict-2026-04-14-071741061Z-handoff-contradiction",
+  "side_id": "side_b",
+  "round": "first_pass",
+  "artifact_markdown": "# Technical Handoff PRD\n\n## Overview\nThis PRD defines a technical handoff artifact for implementing a platform-strategy-aligned workstream while explicitly resolving cross-document contradictions before execution. The handoff is structured to preserve decision usefulness under incomplete evidence and to prevent downstream teams from building against conflicting assumptions.\n\n## Problem Statement\nThe current handoff request references a platform strategy and a challenge review, but the provided packet does not include either source document. That creates a contradiction risk: the implementation team is asked to align to artifacts that are not available for validation. The PRD must therefore define a controlled handoff path that blocks irreversible build decisions until contradictions are surfaced and reconciled.\n\n## Objectives\n- Produce a handoff artifact that is internally consistent.\n- Make contradiction detection an explicit gating step.\n- Preserve forward progress by defining what can proceed before full reconciliation.\n- Create a decision record that is useful to engineering, product, and review stakeholders.\n\n## Non-Goals\n- Finalize platform scope without the underlying strategy source.\n- Approve architectural choices that depend on unavailable evidence.\n- Treat missing source documents as implied approval.\n\n## Users and Stakeholders\n- Product lead receiving the handoff.\n- Engineering lead responsible for implementation planning.\n- Review stakeholders validating consistency against strategy and challenge inputs.\n\n## Requirements\n### Functional Requirements\n- The handoff artifact must enumerate any unresolved contradiction between referenced documents.\n- The handoff artifact must separate confirmed decisions from provisional assumptions.\n- The handoff artifact must identify which work may start immediately and which work is blocked pending reconciliation.\n- The handoff artifact must include explicit ownership for contradiction resolution.\n\n### Non-Functional Requirements\n- The document must be structured for rapid executive and engineering review.\n- Claims must be traceable to available context.\n- The artifact must not imply certainty where evidence is absent.\n\n## Handoff Structure\n### Confirmed Inputs\n- Scenario requires a technical handoff PRD.\n- The artifact must include the sections: Decision Frame, Unknowns & Evidence Gaps, Pass/Fail Readiness, Recommended Next Artifact.\n- The scenario explicitly indicates cross-document contradictions.\n\n### Provisional Assumptions\n- The missing platform strategy contains strategic constraints that may affect scope or sequencing.\n- The missing challenge review contains objections, failure modes, or caveats that may invalidate some implementation choices.\n\n### Blockers\n- Source strategy document not provided.\n- Source challenge review not provided.\n- No direct evidence pack or context files included.\n\n## Delivery Plan\n### Phase 1: Reconciliation\n- Retrieve the platform strategy and challenge review.\n- Extract contradictions across goals, scope, metrics, risks, and sequencing.\n- Convert each contradiction into a resolved decision, accepted risk, or explicit escalation.\n\n### Phase 2: Implementation Readiness\n- Lock scope boundaries.\n- Translate confirmed decisions into engineering requirements.\n- Produce task decomposition only for unblocked work.\n\n### Phase 3: Handoff Completion\n- Publish a revision with contradiction log, final decisions, and approved build sequence.\n\n## Risks\n- Engineering may begin work against assumptions that are later overturned.\n- Stakeholders may interpret a structured artifact as approval despite missing evidence.\n- Contradictions may be semantic rather than explicit, requiring human adjudication.\n\n## Decision Frame\nProceed with a gated handoff artifact, not a fully authorized implementation PRD. The immediate decision is to treat contradiction resolution as mandatory pre-work. Only low-regret preparatory work should proceed before source documents are reviewed.\n\n## Unknowns & Evidence Gaps\n- The platform strategy is referenced but unavailable.\n- The challenge review is referenced but unavailable.\n- No evidence establishes which document has precedence if they conflict.\n- No success metrics, scope boundaries, or technical constraints are provided beyond the validator contract.\n\n## Pass/Fail Readiness\nFail for full implementation handoff readiness.\nPass for conditional handoff readiness only if this artifact is used as a reconciliation gate and not as final build authorization.\n\n## Recommended Next Artifact\nCreate a contradiction-resolution addendum that includes:\n- source excerpts from the platform strategy and challenge review\n- a normalized decision table for each conflict\n- explicit approved scope, sequencing, and ownership after reconciliation",
+  "claims": [
+    {
+      "claim_id": "side_b-claim-1",
+      "summary": "The only defensible first-pass PRD is a gated handoff artifact because the referenced platform strategy and challenge review are missing, making contradiction resolution a prerequisite to implementation.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1"
+  ],
+  "open_questions": [],
+  "critique_responses": []
+}

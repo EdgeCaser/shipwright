@@ -1,0 +1,118 @@
+You are SIDE_B in the rebuttal phase for run conflict-2026-04-14-020849597Z-pricing-partial-data.
+Attack only visible claims from the opposing first-pass artifact.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "target_side": "side_a",
+  "finding_id": "runner-will-assign",
+  "target_claim_ids": [
+    "side_a-claim-1"
+  ],
+  "claim_under_attack": "The opposing claim to challenge.",
+  "attack_type": "evidence_gap",
+  "evidence_or_reason": "Why the visible claim is weak.",
+  "severity": "medium"
+}
+
+Case packet:
+{
+  "scenario_id": "pricing-partial-data",
+  "title": "Pricing change with partial market data",
+  "prompt": "Draft a pricing strategy recommendation under partial market data.",
+  "artifact_type": "strategy",
+  "rubric": {
+    "dimensions": [
+      "claim quality",
+      "evidence discipline",
+      "responsiveness to critique",
+      "internal consistency",
+      "decision usefulness"
+    ],
+    "scoring_scale": "1-5",
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "constraints": {
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "expect_structured": true,
+    "context_files": [],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "evidence": [],
+  "max_rounds": 3,
+  "tool_policy": "none",
+  "sharing_policy": {
+    "share_case_packet": true,
+    "share_committed_artifacts_after_first_pass": true,
+    "share_critiques_after_open": true,
+    "share_hidden_reasoning": false,
+    "share_provider_identity": false,
+    "share_internal_coalition_drafts": false
+  },
+  "success_condition": {
+    "type": "validator_contract",
+    "description": "Produce a strategy artifact that satisfies the scenario validator contract.",
+    "validator": {
+      "artifact_type": "strategy",
+      "expect_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true
+    }
+  }
+}
+
+Opposing first-pass artifact:
+{
+  "run_id": "conflict-2026-04-14-020849597Z-pricing-partial-data",
+  "side_id": "side_a",
+  "round": "first_pass",
+  "artifact_markdown": "# Pricing Strategy Recommendation Under Partial Market Data\n\n## Decision Frame\n\n**Core question:** Should we proceed with a pricing change given incomplete market data, and if so, under what conditions?\n\n**Decision type:** Reversible pricing adjustment with staged rollout — not a one-way door.\n\n**Stakeholders:** Product, Finance, Sales, Customer Success.\n\n**Current state:** We lack sufficient market data to make a high-confidence pricing decision. Specifically, we are missing competitive pricing benchmarks, customer willingness-to-pay (WTP) research, and segment-level price elasticity estimates. What we have is internal cost structure, current revenue per customer cohort, and anecdotal churn feedback.\n\n**Decision criteria:** We should proceed only if (1) the expected value of acting now exceeds the expected value of waiting for better data, and (2) we can structure the change to be reversible or scoped narrowly enough that downside is bounded.\n\n## Unknowns & Evidence Gaps\n\n| Gap | Severity | Mitigation Available? |\n|-----|----------|----------------------|\n| Competitive pricing landscape | High | Partial — can infer from public pages and win/loss anecdotes, but no systematic collection | \n| Customer willingness-to-pay | High | No — requires Van Westendorp or conjoint study not yet conducted |\n| Price elasticity by segment | High | No — requires historical A/B or cohort analysis we haven't run |\n| Churn attribution to price vs. product | Medium | Partial — exit surveys exist but sample is small and self-selected |\n| Cost-to-serve by tier | Low | Available — internal finance data is reliable |\n| Current contract renewal rates | Low | Available — CRM data is clean |\n\n**Key risk:** Without WTP data, any price increase is a bet on retention inertia. If we are wrong about customers' price ceiling, we discover it through churn — a lagging indicator that arrives too late to prevent damage.\n\n**What partial data tells us:** Internal cost-to-serve data confirms current pricing leaves thin margins on the lowest tier. Anecdotal churn feedback suggests price is a factor but rarely the primary driver. These signals are necessary but not sufficient for a confident across-the-board change.\n\n## Pass/Fail Readiness\n\n**Verdict: CONDITIONAL PASS — proceed only with scoped pilot, not full rollout.**\n\nRationale:\n- **FAIL for full rollout.** The evidence gaps (WTP, elasticity, competitive benchmarks) are too severe to justify changing prices for the entire customer base. The downside of a wrong move — accelerated churn, sales cycle friction, brand perception damage — is asymmetric and hard to reverse at scale even if the price change itself is technically reversible.\n- **PASS for scoped pilot.** A controlled pricing experiment on new customers or a single segment can generate the missing elasticity data while bounding downside. This converts the pricing decision from a guess into a learning investment.\n\n**Conditions for full-rollout readiness:**\n1. Complete a WTP study (Van Westendorp or Gabor-Granger) with n ≥ 100 per target segment.\n2. Run a 60-day pricing pilot on new customers measuring conversion rate delta and 30-day retention.\n3. Collect ≥ 5 competitive pricing data points from direct competitors (public pricing pages, sales intel, or win/loss analysis).\n4. Validate that cost-to-serve analysis holds under projected volume changes from the new pricing.\n\n## Recommended Next Artifact\n\n**Pricing Pilot Design Document** containing:\n- Pilot segment selection criteria (recommend: new customers in mid-market segment, lowest risk of existing-customer backlash)\n- Test and control pricing tiers with specific price points\n- Success/failure metrics: conversion rate, 30-day retention, revenue per customer, support ticket volume\n- Duration: 60 days minimum for statistical significance\n- Kill criteria: if conversion drops >15% or 30-day churn exceeds 2x baseline, halt and revert\n- Parallel workstream: commission WTP study to run concurrently with pilot\n\nThis approach converts a low-confidence pricing decision into a structured experiment that generates the missing evidence while keeping blast radius small.",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "A full pricing rollout under current evidence gaps (missing WTP, elasticity, and competitive data) carries asymmetric downside risk that exceeds the expected value of acting now versus waiting.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "A scoped pricing pilot on new customers can generate the missing elasticity and conversion data while bounding downside, converting the decision from a guess into a learning investment.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-3",
+      "summary": "Internal cost-to-serve data confirms thin margins on the lowest tier, establishing a legitimate cost-pressure basis for exploring price adjustments even without complete market data.",
+      "evidence_refs": [],
+      "is_major": false
+    },
+    {
+      "claim_id": "side_a-claim-4",
+      "summary": "Four specific conditions (WTP study, 60-day pilot results, competitive benchmarks, volume-adjusted cost validation) define a clear threshold for full-rollout readiness.",
+      "evidence_refs": [],
+      "is_major": false
+    }
+  ],
+  "citations": [],
+  "open_questions": [
+    "What is the current customer segmentation model, and which segments have the strongest retention signals that could tolerate price testing?",
+    "Are there contractual or competitive constraints that would prevent reverting a price change if the pilot shows negative results?",
+    "What is the timeline pressure driving consideration of a pricing change now rather than after completing market research?",
+    "Does the sales team have anecdotal competitive pricing intelligence that hasn't been systematically captured?"
+  ],
+  "critique_responses": []
+}

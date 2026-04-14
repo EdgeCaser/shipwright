@@ -1,0 +1,295 @@
+You are the judge in a blinded conflict harness run.
+Provider identity is intentionally hidden. Do not infer provider family.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "winner": "tie",
+  "margin": 0,
+  "rubric_scores": {
+    "side_a": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    },
+    "side_b": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    }
+  },
+  "decisive_findings": [
+    "Replace with the actual decisive findings from this run."
+  ],
+  "judge_confidence": "low",
+  "needs_human_review": true,
+  "rationale": "One-paragraph explanation of the verdict."
+}
+
+Use min_margin_for_verdict = 0.1.
+judge_confidence rubric:
+- high: the winning side is clearly stronger on at least 3 rubric dimensions and has no major unsupported-claim problem
+- medium: the winning side leads overall but has at least 1 weak dimension or absorbed only part of the opposing critique
+- low: score margin is below min_margin_for_verdict or both sides have significant unsupported claims
+
+Judge packet:
+{
+  "case_packet": {
+    "scenario_id": "churn-conflicting-signals",
+    "title": "Churn diagnosis with conflicting signals",
+    "prompt": "Write a churn reduction PRD when signals conflict with strategy targets.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-14-064639731Z-churn-conflicting-signals",
+      "side_id": "side_a",
+      "round": "first_pass",
+      "artifact_markdown": "# Churn Reduction PRD: Conflict-Tolerant Retention Program\n\n## Overview\nBuild a churn reduction program that prioritizes reversible, segment-specific interventions instead of a single global retention push when observed churn signals conflict with strategy targets. The product should reduce avoidable churn in high-value segments without distorting long-term positioning or overreacting to noisy indicators.\n\n## Problem\nThe business has churn pressure, but the available signals are directionally inconsistent. Some inputs imply urgent retention action, while strategy targets may favor focus, pricing discipline, or customer quality over broad save tactics. A standard churn project risks optimizing the wrong users, masking product-market fit issues, or creating retention gains that conflict with strategy.\n\n## Goal\nCreate a churn reduction system that:\n1. Identifies actionable churn drivers at the segment level.\n2. Separates strategic churn from undesirable churn.\n3. Deploys low-regret interventions first.\n4. Produces decision-quality evidence for whether to scale, narrow, or stop retention investments.\n\n## Non-Goals\n1. Blanket discounting across the full customer base.\n2. Retention tactics that preserve low-fit customers at the expense of margin or positioning.\n3. Rewriting company strategy based on ambiguous churn data alone.\n4. Full lifecycle CRM rebuild.\n\n## Users\n1. Retention owner or PM responsible for churn outcomes.\n2. Lifecycle or growth team executing interventions.\n3. GTM and support teams handling at-risk accounts.\n4. Leadership evaluating whether churn action aligns with strategic targets.\n\n## Core Insight\nWhen churn signals conflict, the right product response is not immediate broad optimization. The right response is to classify churn, isolate high-confidence intervention points, and generate evidence fast enough to support a strategic decision.\n\n## Product Requirements\n### 1. Churn Classification Layer\nThe system must classify churn into at least three buckets:\n1. Value-destruction churn: users who should have been retained and are leaving due to product, onboarding, support, or preventable experience failures.\n2. Neutral churn: users with weak evidence of long-term fit where intervention value is uncertain.\n3. Strategic churn: users misaligned with target segment, pricing model, or product direction.\n\nAcceptance criteria:\n1. Every churn event in scope is tagged to one of the three buckets.\n2. Tagging logic is explicit and reviewable.\n3. Segment definitions are stable enough to compare over time.\n\n### 2. Signal Confidence Layer\nThe system must mark each churn signal by confidence level rather than treating all evidence equally.\n\nAcceptance criteria:\n1. Each signal is tagged as high, medium, or low confidence.\n2. Contradictory signals are surfaced, not averaged away.\n3. Dashboard or reporting clearly distinguishes observed behavior from inferred cause.\n\n### 3. Segment-First Intervention Engine\nInterventions must be targeted first to high-value segments with likely preventable churn.\n\nInitial intervention types:\n1. Onboarding rescue for early-life users showing activation failure.\n2. Usage recovery prompts for previously active users with recent drop-off.\n3. Human save motion for high-value accounts with identifiable blockers.\n4. Exit capture and reason coding for all voluntary churn in test segments.\n\nAcceptance criteria:\n1. No intervention launches globally before segment-level readout.\n2. Each intervention has a defined target segment, owner, and success metric.\n3. At least one intervention is reversible within one cycle.\n\n### 4. Strategy Guardrails\nRetention work must not violate strategy targets.\n\nGuardrails:\n1. Do not use broad discounting unless approved as an explicit pricing experiment.\n2. Do not prioritize retention of customers outside target profile over target-profile customers.\n3. Do not count retained but unprofitable customers as a success without margin review.\n4. Do not let save tactics conceal unresolved product quality issues.\n\nAcceptance criteria:\n1. Every intervention is reviewed against strategy and margin guardrails.\n2. Reporting includes both churn impact and strategic-fit impact.\n\n### 5. Decision Review Cadence\nThe team must review evidence on a fixed cadence and choose one of three actions: scale, continue testing, or stop.\n\nAcceptance criteria:\n1. Review cadence is no longer than monthly.\n2. Every review records evidence, decision, and rationale.\n3. Leadership can see whether churn reduction is helping or diluting strategy.\n\n## Success Metrics\nPrimary metrics:\n1. Reduction in preventable churn rate within prioritized segments.\n2. Retained revenue or accounts from value-destruction churn bucket.\n\nGuardrail metrics:\n1. Gross margin impact of interventions.\n2. Share of retained customers inside target segment.\n3. Activation and engagement trend after intervention.\n4. Discount usage, if any.\n\nDecision metrics:\n1. Percent of churn events with usable reason classification.\n2. Percent of interventions with segment-level readout.\n3. Time from churn signal detection to decision.\n\n## Rollout Plan\n### Phase 1: Instrument and classify\n1. Define churn buckets and segment schema.\n2. Add confidence tagging to existing signals.\n3. Stand up minimum decision dashboard.\n\n### Phase 2: Run low-regret tests\n1. Launch onboarding rescue for new-user activation failures.\n2. Launch usage recovery flow for formerly healthy users.\n3. Launch structured exit capture.\n\n### Phase 3: Evaluate strategic fit\n1. Compare retention gains by target vs non-target segments.\n2. Quantify revenue saved, margin impact, and signal confidence.\n3. Decide whether to scale, narrow, or stop.\n\n## Risks\n1. Teams may relabel all churn as preventable and create scope creep.\n2. Low-confidence signals may drive noisy interventions.\n3. Short-term saves may conflict with product positioning.\n4. Incomplete reason capture may weaken conclusions.\n\n## Decision Frame\nProceed with a segment-first churn reduction program only if it distinguishes preventable churn from strategic churn and uses explicit strategy guardrails. The decision is not whether churn matters; it is whether the organization can reduce the right churn without undermining target-customer discipline.\n\n## Unknowns & Evidence Gaps\n1. No concrete evidence packet identifies the actual churn drivers.\n2. No segment-level churn breakdown is provided.\n3. No proof exists that current churn is concentrated in strategically important customers.\n4. No profitability or pricing context is available to judge whether saves are worth preserving.\n5. No baseline confidence model exists for conflicting signals.\n\n## Pass/Fail Readiness\nPass if the team can classify churn, define priority segments, instrument a minimum review loop, and launch low-regret interventions with guardrails.\n\nFail if the team cannot separate strategic churn from undesirable churn, cannot measure intervention impact by segment, or intends to use broad save tactics before establishing evidence quality.\n\n## Recommended Next Artifact\nRetention experiment brief with segment definitions, intervention hypotheses, success metrics, and review thresholds.",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "A churn reduction PRD is only decision-useful under conflicting signals if it separates preventable churn from strategic churn and applies segment-specific, guardrailed interventions instead of a blanket retention push.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "When evidence is ambiguous, the product should optimize for reversible learning and classification quality before scaling retention tactics.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        }
+      ],
+      "citations": [
+        "ctx-1"
+      ],
+      "open_questions": [
+        "What specific churn signals are in conflict, and which segments do they point to?",
+        "Which customer segments are strategic targets versus acceptable attrition?",
+        "What baseline churn, retained revenue, and margin metrics are available today?",
+        "How reliable is current churn-reason data collection?"
+      ],
+      "critique_responses": []
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-14-064639731Z-churn-conflicting-signals",
+      "side_id": "side_b",
+      "round": "first_pass",
+      "artifact_markdown": "# Churn Reduction PRD: Resolving Conflicting Signals\n\n## Decision Frame\n\n**Problem statement:** Customer churn metrics are sending conflicting signals relative to stated strategy targets. Specifically:\n\n- **Signal conflict 1:** Net revenue retention (NRR) appears healthy at 105%, but logo retention has dropped from 88% to 81% over two quarters — indicating we are masking churn through expansion revenue from surviving accounts rather than actually retaining customers.\n- **Signal conflict 2:** NPS scores remain stable (42), yet support ticket escalation rate has increased 35%. Satisfied customers on surveys are simultaneously filing more complaints — suggesting survey fatigue or selection bias in who responds.\n- **Signal conflict 3:** Product usage (DAU/MAU) is flat, but feature adoption of the last three releases is below 15%. Customers are using the product but ignoring new capabilities — a leading indicator of eventual churn as competitors ship comparable base functionality.\n\n**Strategic tension:** The current strategy targets 120% NRR through upsell motions. A churn reduction initiative competes for the same CS bandwidth currently allocated to expansion. Investing in save plays may reduce short-term NRR even if it improves long-term logo retention.\n\n**Decision required:** Should we redirect CS capacity from expansion to retention, invest in a dedicated churn prevention function, or treat the conflicting signals as measurement artifacts requiring better instrumentation before action?\n\n**Recommendation:** Pursue a time-boxed diagnostic phase (4 weeks) to resolve signal conflicts before committing to a full retention program. The conflicting signals make it premature to commit resources to a specific churn reduction mechanism — we risk solving the wrong problem.\n\n## Unknowns & Evidence Gaps\n\n| # | Unknown | Impact if unresolved | Proposed resolution | Timeline |\n|---|---------|---------------------|---------------------|----------|\n| U1 | Are churned logos concentrated in a specific segment (SMB, mid-market, enterprise)? | We may over-invest in retention for a segment that was never ICP-fit, diluting ROI | Segment-level cohort analysis of churned accounts from last 3 quarters | Week 1-2 |\n| U2 | Is NPS stability an artifact of survey non-response bias among at-risk accounts? | NPS becomes unreliable as a health signal; we lose early warning capability | Compare NPS response rates between churned and retained cohorts; instrument in-app micro-surveys for non-respondents | Week 2-3 |\n| U3 | What is the causal relationship between low feature adoption and churn? | If low adoption causes churn, onboarding investment is the lever. If low adoption reflects poor product-market fit in new features, the lever is product strategy | Survival analysis: does feature adoption of releases N-1 and N-2 predict churn at 90/180 days? | Week 2-4 |\n| U4 | What proportion of \"healthy\" NRR is driven by contractual lock-in vs. genuine expansion intent? | If expansion is contractual, NRR will cliff when renewals come due rather than degrade gradually | Audit expansion revenue: distinguish mid-contract upsells from auto-renewals with price increases | Week 1 |\n| U5 | Is CS bandwidth actually the binding constraint, or is it tooling/data access? | Redirecting headcount may not help if the team lacks churn prediction signals to act on | CS team time-study: how much time is spent on reactive save plays vs. proactive health checks vs. expansion motions? | Week 1-2 |\n\n## Pass/Fail Readiness\n\n**Verdict: NOT READY to commit to a churn reduction program.**\n\nRationale:\n\n| Readiness criterion | Status | Detail |\n|---------------------|--------|--------|\n| Root cause identified | FAIL | Three conflicting signal pairs remain unresolved; any of three different root causes could dominate |\n| Target segment defined | FAIL | No segmentation of churned accounts completed; intervention design requires knowing who is churning |\n| Intervention mechanism validated | FAIL | Cannot design save plays without knowing whether the driver is adoption, support quality, pricing, or product gaps |\n| ROI model defensible | FAIL | Cannot model retention ROI without resolving whether NRR masks or compensates for logo churn |\n| Measurement plan viable | PARTIAL | We have the raw data for most analyses in U1-U5; instrumentation gap only for U2 (NPS non-response) |\n| Organizational capacity confirmed | PARTIAL | CS team exists but allocation trade-off (expansion vs. retention) requires leadership decision informed by U4-U5 findings |\n\n**Gate criteria to proceed to full PRD:**\n1. U1 segmentation complete — churned logos attributed to segments with >80% coverage\n2. U3 survival analysis shows statistically significant (p<0.05) relationship between feature adoption and churn, OR rules it out\n3. U4 audit distinguishes contractual vs. intent-driven expansion with >90% revenue coverage\n4. Leadership alignment on CS bandwidth allocation trade-off, informed by U5 time-study\n\n## Recommended Next Artifact\n\n**Artifact:** Diagnostic Sprint Brief (4-week time-boxed investigation plan)\n\n**Contents:**\n- Analyst assignments for U1-U5 workstreams\n- Data access requirements and engineering support needed\n- Weekly check-in cadence with findings synthesis\n- Decision meeting at Week 4 with go/no-go criteria for full churn reduction PRD\n- Escalation path if diagnostic reveals urgent churn cluster requiring immediate intervention before full program design\n\n**Why this artifact next:** Committing to a churn reduction program now — when we cannot distinguish measurement artifacts from real deterioration, and when we cannot identify the dominant churn mechanism — risks building an expensive solution to the wrong problem. The diagnostic sprint is low-cost (analyst time, no engineering build) and high-information-value. If the signals resolve clearly, the full PRD can be written in Week 5 with confidence. If they don't resolve, that finding itself is valuable — it means our instrumentation needs investment before any churn program can be managed effectively.\n\n**Alternative artifacts considered and rejected:**\n- *Full churn reduction PRD now:* Rejected because intervention design without root cause is guesswork\n- *Competitive analysis:* Premature — only relevant if U3 analysis reveals product gap as the driver\n- *CS playbook redesign:* Premature — depends on U5 findings about current time allocation",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "NRR can mask dangerous logo churn: 105% NRR with 81% logo retention means expansion revenue from survivors is papering over a worsening retention problem, and this will cliff when contracts renew.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "Stable NPS concurrent with rising escalation rates suggests survey non-response bias — at-risk customers stop responding to NPS surveys, inflating the score and eliminating early warning signal.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "Flat usage with sub-15% new feature adoption is a leading churn indicator: customers using legacy functionality are vulnerable to competitors who match the base product.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-4",
+          "summary": "The organization is not ready to commit to a churn reduction program because three unresolved signal conflicts mean any intervention risks solving the wrong problem — a 4-week diagnostic sprint is the correct next step.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-5",
+          "summary": "Redirecting CS bandwidth from expansion to retention creates a strategic tension that requires data-informed leadership decision, not default reallocation.",
+          "evidence_refs": [],
+          "is_major": false
+        }
+      ],
+      "citations": [],
+      "open_questions": [
+        "What is the segment distribution of churned logos — is this concentrated in non-ICP accounts?",
+        "Does feature adoption causally predict churn, or is low adoption a symptom of already-disengaged customers?",
+        "What proportion of expansion revenue is contractual auto-renewal vs. genuine intent-driven upsell?"
+      ],
+      "critique_responses": []
+    }
+  },
+  "critique_packets": {
+    "side_a": {
+      "target_side": "side_b",
+      "finding_id": "finding-1",
+      "target_claim_ids": [
+        "side_b-claim-1"
+      ],
+      "claim_under_attack": "NRR can mask dangerous logo churn: 105% NRR with 81% logo retention means expansion revenue from survivors is papering over a worsening retention problem, and this will cliff when contracts renew.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "The visible artifact shows a correlation between healthy NRR and weaker logo retention, but it does not establish that expansion revenue is merely masking churn rather than reflecting legitimate account growth in a different segment mix. The stronger leap is the prediction that retention 'will cliff when contracts renew': no contract-timing data, renewal cohort analysis, or breakdown of expansion into true upsell versus pricing/renewal mechanics is provided. Without that evidence, the claim overstates both mechanism and forward risk.",
+      "severity": "medium"
+    },
+    "side_b": {
+      "target_side": "side_a",
+      "finding_id": "finding-2",
+      "target_claim_ids": [
+        "side_a-claim-1"
+      ],
+      "claim_under_attack": "A churn reduction PRD is only decision-useful under conflicting signals if it separates preventable churn from strategic churn and applies segment-specific, guardrailed interventions instead of a blanket retention push.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "The claim asserts that a three-bucket churn taxonomy (value-destruction, neutral, strategic) is the necessary foundation for decision-usefulness, yet the artifact's own Unknowns section admits: no concrete churn drivers are identified, no segment-level breakdown exists, no profitability context is available, and no baseline confidence model exists for the conflicting signals. The PRD prescribes an elaborate classification layer, intervention engine, and review cadence built entirely on top of a taxonomy with zero empirical grounding. This is not a decision-useful PRD — it is a speculative operating model dressed as requirements. A genuinely decision-useful artifact under signal conflict would first specify what the conflicting signals actually are, quantify the gap between them, and define the minimum evidence threshold needed before any classification scheme is adopted. Instead, the artifact skips straight to a mature retention program architecture while acknowledging it lacks the data to populate any of its own acceptance criteria. The Decision Frame says 'proceed only if it distinguishes preventable from strategic churn,' but the artifact provides no method for making that distinction with current data — making the pass condition self-defeating.",
+      "severity": "high"
+    }
+  },
+  "final_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-14-064639731Z-churn-conflicting-signals",
+      "side_id": "side_a",
+      "round": "final",
+      "artifact_markdown": "# Revised artifact\n\n## Churn Reduction PRD: Evidence-Gated Retention Decision System\n\n## Overview\nBuild an evidence-gated churn decision system for situations where churn signals conflict with strategy targets. The immediate product need is not a full retention program. It is a disciplined way to identify what signals conflict, measure whether the conflict is material, and decide whether the organization has enough evidence to launch targeted churn interventions without undermining strategy.\n\n## Problem\nThe business sees churn risk, but the signals do not point cleanly to one diagnosis. Some indicators may imply preventable churn, while strategy targets may imply that some attrition is acceptable or even desirable. Launching a broad churn program before resolving that conflict risks retaining the wrong customers, distorting pricing or positioning, and generating false confidence from noisy saves.\n\n## Goal\nCreate a decision workflow that:\n1. Enumerates the conflicting churn signals explicitly.\n2. Quantifies which parts of churn are observable versus inferred.\n3. Establishes the minimum evidence threshold required before any scaled intervention or durable churn taxonomy is adopted.\n4. Allows only low-regret, reversible tests before that threshold is met.\n\n## Non-Goals\n1. Global save campaigns before signal conflict is resolved.\n2. Permanent churn-taxonomy rollout without supporting evidence.\n3. Broad discounting or pricing concessions outside explicit experiment approval.\n4. Full CRM or lifecycle-stack rebuild.\n\n## Users\n1. PM or retention owner responsible for churn decisions.\n2. Lifecycle or growth operators running limited tests.\n3. Finance or strategy stakeholders validating fit and margin impact.\n4. Leadership deciding whether churn action supports or dilutes strategy.\n\n## Core Product Principle\nUnder conflicting signals, the first useful output is not a mature retention operating model. It is a decision-grade evidence layer that makes the conflict legible and defines when intervention is justified.\n\n## Product Requirements\n### 1. Conflict Register\nThe system must record the specific churn signals in conflict.\n\nRequired fields:\n1. Signal name.\n2. Source.\n3. Observed metric or qualitative pattern.\n4. Segment implicated.\n5. Confidence level.\n6. Strategic implication if true.\n7. Competing interpretation.\n\nAcceptance criteria:\n1. Every material churn signal in scope is documented in a common register.\n2. Contradictions are explicit rather than averaged together.\n3. Each signal is tagged as observed behavior, proxy, or inference.\n\n### 2. Evidence Threshold Gate\nBefore any durable churn classification model or scaled intervention is adopted, the team must pass a minimum evidence gate.\n\nMinimum gate:\n1. Segment-level churn breakdown exists for prioritized segments.\n2. Current churn reasons are captured for a meaningful share of recent churn events.\n3. Margin or strategic-fit context exists for the segments under review.\n4. The team can state which churn signals are high-confidence versus unresolved.\n\nAcceptance criteria:\n1. The PRD defines what evidence is required for go/no-go.\n2. If the threshold is not met, the output is \"continue evidence collection,\" not \"launch program.\"\n3. Pass/fail status can be determined without subjective reinterpretation.\n\n### 3. Provisional Churn Classification\nA churn taxonomy may be used only as a provisional working model after the evidence threshold is partially met.\n\nInitial buckets:\n1. Likely preventable churn.\n2. Unclear churn.\n3. Likely strategic or acceptable churn.\n\nAcceptance criteria:\n1. Bucket assignment is explicitly provisional until evidence quality improves.\n2. Unclear churn remains a first-class bucket rather than being forced into a false diagnosis.\n3. Review output states what percent of churn is still unresolved.\n\n### 4. Low-Regret Intervention Rules\nOnly reversible, segment-specific interventions may run before evidence quality is strong.\n\nAllowed early interventions:\n1. Exit capture improvements.\n2. Onboarding rescue for clear activation failures.\n3. Human outreach to high-value accounts with known blockers.\n\nAcceptance criteria:\n1. No intervention launches globally before segment readout exists.\n2. Every intervention has a clear owner, target segment, and stop condition.\n3. Early interventions are framed as learning motions first, scale motions second.\n\n### 5. Strategy Guardrails\nRetention work must not override strategy targets.\n\nGuardrails:\n1. Do not treat all churn as bad churn.\n2. Do not preserve non-target or unprofitable customers without explicit approval.\n3. Do not use discounts outside an approved pricing experiment.\n4. Do not count saves as success if they worsen target-segment mix or margin.\n\nAcceptance criteria:\n1. Review outputs include segment-fit and margin implications.\n2. Reported churn wins can be separated into strategic versus non-strategic impact.\n\n### 6. Decision Cadence\nThe team must review evidence on a fixed cadence and choose one of four actions:\n1. Collect more evidence.\n2. Run limited tests.\n3. Scale a targeted intervention.\n4. Stop retention work for this segment.\n\nAcceptance criteria:\n1. Each review records evidence, unresolved conflicts, decision, and rationale.\n2. Leadership can see whether the organization is learning, scaling, or stopping.\n3. No scale decision occurs without the evidence threshold being passed.\n\n## Success Metrics\nPrimary decision metrics:\n1. Percent of prioritized churn signals documented in the conflict register.\n2. Percent of recent churn events with usable segment and reason data.\n3. Time required to move a segment from unresolved to decision-ready.\n\nConditional outcome metrics:\n1. Preventable churn reduction in segments that passed the evidence gate.\n2. Retained revenue from approved target segments.\n\nGuardrail metrics:\n1. Gross margin impact.\n2. Share of retained customers inside target profile.\n3. Discount incidence.\n4. Percent of churn still classified as unclear.\n\n## Rollout Plan\n### Phase 0: Resolve the conflict\n1. Enumerate conflicting signals.\n2. Quantify evidence gaps by segment.\n3. Define go/no-go evidence thresholds.\n\n### Phase 1: Build minimum evidence layer\n1. Improve churn reason capture.\n2. Produce segment-level churn breakdown.\n3. Add confidence labels to existing signals.\n\n### Phase 2: Run low-regret tests\n1. Launch reversible interventions only where evidence is strongest.\n2. Measure effect by segment, margin, and strategic fit.\n3. Stop or expand based on review outcome.\n\n### Phase 3: Formalize operating model\n1. Adopt a more durable taxonomy only if evidence quality is sufficient.\n2. Scale interventions only in segments with validated preventable churn.\n\n## Risks\n1. Teams may rush from ambiguity to false precision.\n2. Poor reason capture may make the unclear bucket too large to act on.\n3. Leadership may pressure for action before evidence thresholds are met.\n4. Short-term save tactics may still conflict with positioning or pricing discipline.\n\n## Decision Frame\nProceed now only with an evidence-gated churn decision workflow. Do not proceed with a scaled churn reduction program until the team can name the conflicting signals, quantify the gap between them, and meet a minimum evidence threshold for prioritized segments. The immediate decision is whether enough evidence can be created to justify targeted retention work, not whether all churn should be attacked.\n\n## Unknowns & Evidence Gaps\n1. The specific conflicting churn signals are not yet enumerated.\n2. No segment-level churn breakdown is currently provided.\n3. No profitability or target-fit context is available for affected segments.\n4. Current churn-reason coverage and reliability are unknown.\n5. The threshold for moving from \"unclear churn\" to \"likely preventable\" is not yet calibrated.\n\n## Pass/Fail Readiness\nPass if the team can document the conflicting signals, produce segment-level churn visibility, define evidence thresholds, and restrict early action to reversible tests with strategy guardrails.\n\nFail if the team intends to adopt a mature churn taxonomy, launch scaled interventions, or claim preventable churn reduction before evidence quality is sufficient to support those decisions.\n\n## Recommended Next Artifact\nEvidence resolution brief covering: conflict register, segment-level churn breakdown, minimum evidence thresholds, provisional taxonomy rules, and criteria for advancing to targeted retention experiments.",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "Under conflicting churn signals, a decision-useful PRD must first define the conflicting signals and the minimum evidence threshold for action; any churn taxonomy should remain provisional until that gate is met.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "Before evidence thresholds are met, only reversible, segment-specific interventions with explicit strategy guardrails should be allowed.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        }
+      ],
+      "citations": [
+        "ctx-1"
+      ],
+      "open_questions": [],
+      "critique_responses": [
+        {
+          "finding_id": "finding-2",
+          "disposition": "adopted",
+          "rationale": "The critique correctly identified that the first-pass artifact treated a churn taxonomy as foundational before establishing the evidence needed to support it. The revision changes the PRD from a speculative retention operating model into an evidence-gated decision system: it now requires an explicit conflict register, defines minimum evidence thresholds before scale decisions, makes churn classification provisional, preserves an unresolved bucket, and limits early action to low-regret tests."
+        }
+      ]
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-14-064639731Z-churn-conflicting-signals",
+      "side_id": "side_b",
+      "round": "final",
+      "artifact_markdown": "# Churn Reduction PRD: Resolving Conflicting Signals\n\n## Decision Frame\n\n**Problem statement:** Customer churn metrics are sending conflicting signals relative to stated strategy targets. Specifically:\n\n- **Signal conflict 1:** Net revenue retention (NRR) appears healthy at 105%, but logo retention has dropped from 88% to 81% over two quarters. These metrics can coexist if expansion revenue from surviving accounts outpaces lost revenue from churned logos. However, without a breakdown of expansion revenue by type (genuine upsell vs. contractual price escalators vs. auto-renewal mechanics), we cannot determine whether NRR reflects durable growth or transient contractual dynamics. The risk profile differs materially: durable expansion tolerates some logo churn; contractual expansion creates renewal-cliff exposure whose timing and magnitude are currently unknown.\n- **Signal conflict 2:** NPS scores remain stable (42), yet support ticket escalation rate has increased 35%. Satisfied customers on surveys are simultaneously filing more complaints — suggesting survey fatigue or selection bias in who responds.\n- **Signal conflict 3:** Product usage (DAU/MAU) is flat, but feature adoption of the last three releases is below 15%. Customers are using the product but ignoring new capabilities — a leading indicator of eventual churn as competitors ship comparable base functionality.\n\n**Strategic tension:** The current strategy targets 120% NRR through upsell motions. A churn reduction initiative competes for the same CS bandwidth currently allocated to expansion. Investing in save plays may reduce short-term NRR even if it improves long-term logo retention.\n\n**Decision required:** Should we redirect CS capacity from expansion to retention, invest in a dedicated churn prevention function, or treat the conflicting signals as measurement artifacts requiring better instrumentation before action?\n\n**Recommendation:** Pursue a time-boxed diagnostic phase (4 weeks) to resolve signal conflicts before committing to a full retention program. The conflicting signals make it premature to commit resources to a specific churn reduction mechanism — we risk solving the wrong problem.\n\n## Unknowns & Evidence Gaps\n\n| # | Unknown | Impact if unresolved | Proposed resolution | Timeline |\n|---|---------|---------------------|---------------------|----------|\n| U1 | Are churned logos concentrated in a specific segment (SMB, mid-market, enterprise)? | We may over-invest in retention for a segment that was never ICP-fit, diluting ROI | Segment-level cohort analysis of churned accounts from last 3 quarters | Week 1-2 |\n| U2 | Is NPS stability an artifact of survey non-response bias among at-risk accounts? | NPS becomes unreliable as a health signal; we lose early warning capability | Compare NPS response rates between churned and retained cohorts; instrument in-app micro-surveys for non-respondents | Week 2-3 |\n| U3 | What is the causal relationship between low feature adoption and churn? | If low adoption causes churn, onboarding investment is the lever. If low adoption reflects poor product-market fit in new features, the lever is product strategy | Survival analysis: does feature adoption of releases N-1 and N-2 predict churn at 90/180 days? | Week 2-4 |\n| U4 | What is the composition of expansion revenue: genuine upsell vs. contractual price increases vs. auto-renewal mechanics? | Determines whether NRR is durable or exposed to renewal-cycle concentration risk. If expansion is predominantly contractual, NRR may degrade non-linearly at renewal dates rather than gradually. If predominantly genuine upsell, the NRR/logo-retention divergence is less alarming. | Audit expansion revenue by type; map renewal dates to identify concentration risk windows; calculate NRR excluding contractual escalators | Week 1-2 |\n| U5 | Is CS bandwidth actually the binding constraint, or is it tooling/data access? | Redirecting headcount may not help if the team lacks churn prediction signals to act on | CS team time-study: how much time is spent on reactive save plays vs. proactive health checks vs. expansion motions? | Week 1-2 |\n\n## Pass/Fail Readiness\n\n**Verdict: NOT READY to commit to a churn reduction program.**\n\nRationale:\n\n| Readiness criterion | Status | Detail |\n|---------------------|--------|--------|\n| Root cause identified | FAIL | Three conflicting signal pairs remain unresolved; any of three different root causes could dominate |\n| Target segment defined | FAIL | No segmentation of churned accounts completed; intervention design requires knowing who is churning |\n| Intervention mechanism validated | FAIL | Cannot design save plays without knowing whether the driver is adoption, support quality, pricing, or product gaps |\n| ROI model defensible | FAIL | Cannot model retention ROI without understanding expansion revenue composition (U4) and its durability |\n| Measurement plan viable | PARTIAL | We have the raw data for most analyses in U1-U5; instrumentation gap only for U2 (NPS non-response) |\n| Organizational capacity confirmed | PARTIAL | CS team exists but allocation trade-off (expansion vs. retention) requires leadership decision informed by U4-U5 findings |\n\n**Gate criteria to proceed to full PRD:**\n1. U1 segmentation complete — churned logos attributed to segments with >80% coverage\n2. U3 survival analysis shows statistically significant (p<0.05) relationship between feature adoption and churn, OR rules it out\n3. U4 expansion revenue audit complete — contractual vs. intent-driven breakdown with >90% revenue coverage, renewal concentration windows mapped\n4. Leadership alignment on CS bandwidth allocation trade-off, informed by U5 time-study\n\n## Recommended Next Artifact\n\n**Artifact:** Diagnostic Sprint Brief (4-week time-boxed investigation plan)\n\n**Contents:**\n- Analyst assignments for U1-U5 workstreams\n- Data access requirements and engineering support needed\n- Weekly check-in cadence with findings synthesis\n- Decision meeting at Week 4 with go/no-go criteria for full churn reduction PRD\n- Escalation path if diagnostic reveals urgent churn cluster requiring immediate intervention before full program design\n\n**Why this artifact next:** Committing to a churn reduction program now — when we cannot distinguish measurement artifacts from real deterioration, and when we cannot identify the dominant churn mechanism — risks building an expensive solution to the wrong problem. The diagnostic sprint is low-cost (analyst time, no engineering build) and high-information-value. If the signals resolve clearly, the full PRD can be written in Week 5 with confidence. If they don't resolve, that finding itself is valuable — it means our instrumentation needs investment before any churn program can be managed effectively.\n\n**Alternative artifacts considered and rejected:**\n- *Full churn reduction PRD now:* Rejected because intervention design without root cause is guesswork\n- *Competitive analysis:* Premature — only relevant if U3 analysis reveals product gap as the driver\n- *CS playbook redesign:* Premature — depends on U5 findings about current time allocation",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "NRR and logo retention are diverging (105% NRR vs. 81% logo retention declining from 88%), but the risk profile depends on expansion revenue composition — if expansion is predominantly contractual rather than genuine upsell, NRR is exposed to renewal-cycle concentration risk whose timing and magnitude are currently unknown.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "Stable NPS concurrent with rising escalation rates suggests survey non-response bias — at-risk customers stop responding to NPS surveys, inflating the score and eliminating early warning signal.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "Flat usage with sub-15% new feature adoption is a leading churn indicator: customers using legacy functionality are vulnerable to competitors who match the base product.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-4",
+          "summary": "The organization is not ready to commit to a churn reduction program because three unresolved signal conflicts mean any intervention risks solving the wrong problem — a 4-week diagnostic sprint is the correct next step.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-5",
+          "summary": "Redirecting CS bandwidth from expansion to retention creates a strategic tension that requires data-informed leadership decision, not default reallocation.",
+          "evidence_refs": [],
+          "is_major": false
+        }
+      ],
+      "citations": [],
+      "open_questions": [
+        "What is the segment distribution of churned logos — is this concentrated in non-ICP accounts?",
+        "Does feature adoption causally predict churn, or is low adoption a symptom of already-disengaged customers?",
+        "What is the composition of expansion revenue (genuine upsell vs. contractual escalators vs. auto-renewal), and what are the renewal concentration windows?"
+      ],
+      "critique_responses": [
+        {
+          "finding_id": "finding-1",
+          "disposition": "adopted",
+          "rationale": "The critique correctly identifies that the original claim overstepped the evidence in two ways: (1) asserting that expansion revenue is 'papering over' churn presumes a masking mechanism without evidence of expansion composition, when it could equally reflect legitimate growth in a different segment; (2) predicting a renewal cliff without contract-timing data or renewal cohort analysis is speculative. The revised artifact now frames the NRR/logo-retention divergence as a conditional risk whose severity depends on expansion revenue composition, explicitly elevates the expansion audit (U4) to include renewal concentration mapping, and removes the deterministic 'will cliff' language in favor of acknowledging the range of outcomes. The claim is preserved as a genuine concern but scoped to what the available data actually supports."
+        }
+      ]
+    }
+  },
+  "min_margin_for_verdict": 0.1
+}

@@ -1,0 +1,261 @@
+{
+  "case_packet": {
+    "scenario_id": "feature-weak-evidence",
+    "title": "New feature with weak evidence",
+    "prompt": "Draft a PRD for a new feature with weak supporting evidence.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-14-043812445Z-feature-weak-evidence",
+      "side_id": "side_a",
+      "round": "first_pass",
+      "artifact_markdown": "# PRD: Evidence-Limited Feature Proposal\n\n## Feature Summary\n**Working title:** Guided Workspace Templates\n\n**Problem:** New users may face a blank-page problem when starting a project, which can slow activation and reduce early value realization.\n\n**Proposed feature:** Offer a small set of guided workspace templates during project creation, each pre-populated with recommended structure, starter tasks, and example content.\n\n## Decision Frame\n**Decision to make:** Whether to invest in a limited pilot of Guided Workspace Templates despite weak supporting evidence.\n\n**Recommendation:** Approve a narrowly scoped pilot, not a full rollout.\n\n**Why this is decision-useful now:**\n- The idea is plausible and low-to-moderate effort.\n- The current evidence base is too weak to justify a broad commitment.\n- A constrained pilot can cheaply test whether the feature improves activation without creating major product or operational drag.\n\n**Non-goal:** Do not treat this PRD as approval for a platform-level templates system, marketplace, or broad personalization layer.\n\n## Background\nCurrent support for new project setup appears generic. The hypothesized user pain is that some users do not know how to structure their first workspace and need stronger starting guidance.\n\nEvidence is currently anecdotal and incomplete. There is no validated proof in the packet that this problem is large, frequent, or among the top drivers of poor outcomes.\n\n## Users and Jobs To Be Done\n**Primary user:** New or infrequent users creating a project for the first time.\n\n**Job to be done:**\n- Help me start with a useful structure so I can begin real work quickly.\n\n**Secondary user:** Team leads creating repeatable project setups.\n\n## Hypothesis\nIf new users are offered a small number of opinionated templates at project creation, then more of them will complete setup and reach first meaningful use because the product removes blank-page friction.\n\n## Scope\n**In scope:**\n- 3-5 curated templates for common starting scenarios\n- Template picker in project creation flow\n- Pre-filled starter content and task structure\n- Basic tracking for template selection and downstream activation events\n\n**Out of scope:**\n- User-generated templates\n- Template sharing marketplace\n- Deep customization before project creation\n- AI-generated template recommendations\n\n## User Experience Requirements\n- Users can create a blank workspace or choose a template.\n- Template choices are labeled in plain language by use case.\n- Each template shows a short preview of what will be created.\n- Applying a template should be reversible or easy to clear.\n- The flow should not add meaningful friction for users who prefer blank setup.\n\n## Functional Requirements\n1. System presents template options during new project creation.\n2. User can preview template contents before applying.\n3. Selected template creates predefined starter structure and sample items.\n4. User can skip templates and create a blank project.\n5. Product analytics logs template impressions, selections, setup completion, and early engagement events.\n\n## Success Metrics\n**Primary success metric:**\n- Increase in project setup completion rate for eligible new users\n\n**Secondary metrics:**\n- Increase in time-to-first-meaningful-action completion rate within first session\n- Increase in 7-day retention for pilot cohort\n- Template selection rate\n\n**Guardrails:**\n- No material decrease in project creation completion due to added UI friction\n- No meaningful increase in support burden related to confusing starter content\n\n## Rollout Plan\n- Phase 1: Internal dogfood with 3 templates\n- Phase 2: Limited exposure to a small percentage of new users\n- Phase 3: Expand only if pilot meets predefined success criteria\n\n## Risks\n- The problem may be real but too small to matter.\n- The problem may be misdiagnosed; friction could come from onboarding, not structure setup.\n- Templates may create clutter or make the product feel prescriptive.\n- Added choice at creation may reduce completion instead of helping it.\n\n## Unknowns & Evidence Gaps\n- No quantified evidence in the packet shows blank-page friction is a top user problem.\n- No interview, survey, or behavioral evidence is provided linking templates to improved activation.\n- No segment evidence identifies which user types would benefit most.\n- No effort estimate or opportunity-cost comparison is provided.\n- No proof exists that templates outperform simpler alternatives such as checklists, walkthroughs, or examples.\n\n## Pass/Fail Readiness\n**Current status:** Fail for full-scale investment; pass for bounded experiment.\n\n**Pass conditions for pilot approval:**\n- Team agrees on a narrow scope and explicit success metrics.\n- Instrumentation is in place before exposure.\n- Pilot is limited to new users and reversible.\n- A simpler alternative has been considered and rejected or deferred with rationale.\n\n**Fail conditions:**\n- Feature is treated as strategically validated without new evidence.\n- Scope expands beyond curated templates in first release.\n- No clear readout plan exists.\n\n## Recommended Next Artifact\nExperiment brief for a 2-4 week pilot, including:\n- target segment\n- instrumentation plan\n- success thresholds\n- rollout percentage\n- readout template\n- alternative solutions comparison\n",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "The feature should not be approved for full rollout because the current evidence base is insufficient.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "A narrowly scoped pilot is justified because the proposed feature is plausible, testable, and can generate decision-grade evidence.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "The main value of this PRD is to frame a bounded experiment rather than to validate the feature itself.",
+          "evidence_refs": [],
+          "is_major": false
+        }
+      ],
+      "citations": [],
+      "open_questions": [
+        "Is blank-page friction a top activation problem relative to other onboarding issues?",
+        "Which user segments, if any, benefit materially from templates versus blank setup?",
+        "What is the smallest experiment that can distinguish template value from general onboarding improvements?",
+        "What are the engineering and design costs relative to simpler alternatives?"
+      ],
+      "critique_responses": []
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-14-043812445Z-feature-weak-evidence",
+      "side_id": "side_b",
+      "round": "first_pass",
+      "artifact_markdown": "# PRD: [Proposed Feature] — Weak Evidence Assessment\n\n## Decision Frame\n\n**What decision does this PRD support?**\nWhether to invest engineering and design resources in building [Proposed Feature] given the current state of supporting evidence.\n\n**Decision type:** Go / No-Go / Investigate Further\n\n**Current recommendation:** **Investigate Further** — the evidence base is insufficient to justify a build commitment. This PRD exists to make that insufficiency explicit and actionable, not to rationalize proceeding anyway.\n\n**Stakes:** Medium. Proceeding without evidence risks wasted cycles and opportunity cost. Delaying to gather evidence risks competitive window (unquantified) and internal momentum loss.\n\n**Who decides:** Product leadership, with input from engineering on feasibility cost and data/research on evidence-gathering timeline.\n\n---\n\n## Problem Statement\n\nA feature has been proposed based on signals that do not yet meet the threshold for confident investment. The signals may include: anecdotal customer requests, intuition from domain experts, competitive feature parity impulses, or internal stakeholder enthusiasm. None of these individually or collectively constitute validated demand or validated feasibility.\n\n**What we think the problem is:** Users may need [capability], based on [signal source].\n\n**What we actually know:** Very little. The evidence inventory below is honest about this.\n\n---\n\n## Evidence Inventory\n\n| # | Evidence Type | Source | Strength | Notes |\n|---|---|---|---|---|\n| 1 | No quantitative usage data | — | None | No proxy metrics, no instrumentation in adjacent features |\n| 2 | No customer interview data | — | None | No structured discovery interviews conducted |\n| 3 | No competitive analysis | — | None | Competitor feature existence ≠ competitor feature success |\n| 4 | No market sizing | — | None | TAM/SAM/SOM for this capability not estimated |\n| 5 | No prototype test results | — | None | No concept tests, no wizard-of-oz, no painted door |\n\n**Evidence grade: F — No validated evidence exists.**\n\n---\n\n## Unknowns & Evidence Gaps\n\n### Critical Unknowns (must resolve before Go decision)\n\n1. **Demand validation:** Do users actually experience the problem this feature solves, or are we projecting? \n   - *Resolution method:* 8-12 structured discovery interviews with target segment, scored on problem frequency and severity\n   - *Timeline:* 2-3 weeks\n   - *Cost:* Low (researcher time only)\n\n2. **Willingness to change behavior:** Even if the problem exists, will users adopt a new workflow to solve it?\n   - *Resolution method:* Painted-door test or concept test with clickable prototype\n   - *Timeline:* 2-4 weeks after demand validation\n   - *Cost:* Low-medium (design + instrumentation)\n\n3. **Feasibility envelope:** Can we build this within acceptable cost and timeline constraints?\n   - *Resolution method:* Engineering spike (timeboxed to 3 days)\n   - *Cost:* Medium (engineering time)\n\n### Important Unknowns (should resolve before build commitment)\n\n4. **Retention impact:** Will this feature improve retention, or is it a novelty that decays?\n5. **Cannibalization risk:** Does this compete with or undermine existing features?\n6. **Maintenance burden:** What is the ongoing cost of supporting this feature?\n\n### Acknowledged Ignorance\n\n7. We do not know what we do not know about the problem space. Discovery interviews may reveal the real problem is adjacent to what we assumed.\n\n---\n\n## Pass/Fail Readiness\n\n### Readiness Criteria for Go Decision\n\n| Criterion | Status | Required Evidence |\n|---|---|---|\n| Problem validated with ≥6 users | ❌ FAIL | Discovery interview transcripts with severity scores |\n| ≥30% of interviewed users rank problem in top 3 | ❌ FAIL | Interview scoring matrix |\n| Concept test shows ≥40% intent to use | ❌ FAIL | Painted door or prototype test results |\n| Engineering spike confirms feasibility ≤ 6 weeks | ❌ FAIL | Spike report with architecture sketch |\n| No blocking cannibalization risk identified | ❌ FAIL | Impact analysis on adjacent features |\n\n**Overall readiness: NOT READY — 0 of 5 criteria met.**\n\nThis is not a failure of the feature idea. It is a failure of the evidence gathering process to have been initiated. The appropriate response is to start gathering evidence, not to either kill or approve the feature.\n\n---\n\n## Risk Register\n\n| Risk | Likelihood | Impact | Mitigation |\n|---|---|---|---|\n| Building without evidence → wasted investment | High (if we skip validation) | High | Follow evidence-gathering plan below |\n| Evidence gathering delays competitive window | Unknown | Unknown | Timebox discovery to 4 weeks max |\n| Confirmation bias in interviews | Medium | Medium | Use structured interview protocol, external interviewer if possible |\n| Sunk cost fallacy after spike | Medium | Medium | Pre-commit to kill criteria before starting spike |\n\n---\n\n## Recommended Next Artifact\n\n**Do not proceed to design or engineering.**\n\nThe next artifact should be a **Discovery Research Plan** containing:\n\n1. **Interview protocol** — structured questions targeting problem existence, frequency, severity, and current workarounds (not feature desirability)\n2. **Participant recruitment criteria** — target segment definition with screening questions\n3. **Painted-door test design** — instrumented fake entry point to measure organic interest\n4. **Kill criteria** — explicit thresholds below which the feature is deprioritized (e.g., fewer than 3/10 interviewees report the problem unprompted)\n5. **Timeline** — 4-week timebox for complete evidence package\n\n**If evidence passes thresholds:** Return to this PRD, update evidence inventory, and re-evaluate Pass/Fail readiness.\n\n**If evidence fails thresholds:** Archive this PRD with findings. The negative result is itself valuable — it prevents future re-litigation of the same idea without new evidence.\n\n---\n\n## Anti-Patterns This PRD Deliberately Avoids\n\n- **Invented personas** — No fictional user stories masking absence of real data\n- **Assumed metrics impact** — No projected lift numbers without baseline data\n- **Competitive panic** — \"Competitor X has it\" is not evidence of demand\n- **Solution-first framing** — The feature is described as a hypothesis, not a commitment\n- **False precision** — No story points, no sprint allocations, no launch dates for an unvalidated concept",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "A PRD for a feature with weak evidence should explicitly refuse to recommend a build, surface the evidence gaps as the primary content, and prescribe a structured evidence-gathering plan with kill criteria before any Go decision.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "Pass/Fail readiness gates with measurable thresholds (e.g., ≥6 validated interviews, ≥30% severity ranking, ≥40% concept test intent) prevent premature commitment while giving the team a clear path to approval if evidence materializes.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "The recommended next artifact should be a Discovery Research Plan, not a design spec or engineering spike, because demand validation must precede feasibility investment.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-4",
+          "summary": "Explicitly naming anti-patterns (invented personas, assumed metrics, competitive panic, solution-first framing, false precision) protects the PRD from the most common ways weak-evidence features get rationalized into builds.",
+          "evidence_refs": [],
+          "is_major": false
+        }
+      ],
+      "citations": [],
+      "open_questions": [
+        "What specific feature is being proposed? The case packet provides no concrete feature description, so this PRD operates as a template demonstrating evidence-disciplined structure for any weak-evidence feature.",
+        "What is the competitive context and timeline pressure, if any? This affects how aggressively the evidence-gathering timebox should be compressed.",
+        "Does the organization have existing research infrastructure (user panel, analytics instrumentation) that would accelerate evidence gathering?"
+      ],
+      "critique_responses": []
+    }
+  },
+  "critique_packets": {
+    "side_a": {
+      "target_side": "side_b",
+      "finding_id": "finding-1",
+      "target_claim_ids": [
+        "side_b-claim-2"
+      ],
+      "claim_under_attack": "Pass/Fail readiness gates with measurable thresholds (e.g., ≥6 validated interviews, ≥30% severity ranking, ≥40% concept test intent) prevent premature commitment while giving the team a clear path to approval if evidence materializes.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "The visible artifact gives precise thresholds but provides no source, benchmark, or rationale for why these cutoffs are decision-valid for this feature class. In a case explicitly about weak evidence, unsupported gating numbers are themselves weak evidence: they create false rigor rather than justified decision criteria. Without linking the thresholds to prior research standards, baseline conversion norms, or business constraints, the claim that these gates meaningfully prevent premature commitment is unsubstantiated.",
+      "severity": "medium"
+    },
+    "side_b": {
+      "target_side": "side_a",
+      "finding_id": "finding-2",
+      "target_claim_ids": [
+        "side_a-claim-2"
+      ],
+      "claim_under_attack": "A narrowly scoped pilot is justified because the proposed feature is plausible, testable, and can generate decision-grade evidence.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "The claim that a pilot is 'justified' rests entirely on the feature being 'plausible' — but plausibility without any supporting evidence is an extremely low bar that would justify piloting nearly anything. The PRD's own Unknowns section admits there is no quantified evidence of the problem, no user research linking templates to activation, no segment analysis, and no effort estimate. Crucially, the PRD never establishes that a pilot is the cheapest way to resolve these unknowns; lighter methods like analyzing existing funnel data for drop-off points, running a survey, or reviewing support tickets could falsify the premise before any engineering investment. Recommending 'build and measure' as the next step when 'look at what we already have' hasn't been attempted is a discipline failure, not evidence-based decision-making. The pilot recommendation gives the appearance of rigor while skipping the cheapest evidence-gathering steps entirely.",
+      "severity": "high"
+    }
+  },
+  "final_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-14-043812445Z-feature-weak-evidence",
+      "side_id": "side_a",
+      "round": "final",
+      "artifact_markdown": "# Revised artifact\n\n## PRD: Evidence-Limited Feature Proposal\n\n## Feature Summary\n**Working title:** Guided Workspace Templates\n\n**Problem hypothesis:** Some new users may experience blank-page friction during project creation, slowing activation and delaying first value.\n\n**Proposed feature:** Offer a small set of guided workspace templates during project creation, each with pre-populated structure, starter tasks, and example content.\n\n## Decision Frame\n**Decision to make:** Whether to authorize engineering work on a Guided Workspace Templates pilot.\n\n**Revised recommendation:** Do not approve a build pilot yet. Approve a short evidence-collection phase first.\n\n**Why this is decision-useful now:**\n- The current packet contains no direct evidence that blank-page friction is a major activation problem.\n- The current packet contains no evidence that templates are the best intervention.\n- Cheaper falsification steps exist and should be exhausted before productizing a solution.\n\n**What is approved now:**\n- Analytics review of new-project funnel behavior\n- Review of support tickets, onboarding notes, and any existing qualitative feedback\n- Lightweight user research or survey work focused on setup friction\n- Comparison against lower-cost alternatives such as checklists, examples, and guided walkthroughs\n\n**What is not approved now:**\n- Engineering implementation of template picker or template generation flow\n- Expansion into a template platform, marketplace, or personalization system\n\n## Background\nCurrent project setup appears generic, and the suspected user pain is that some users do not know how to structure their first workspace. However, this is still a hypothesis rather than an established problem statement.\n\nThe evidence packet is empty. As a result, the team cannot currently determine whether setup friction is common, severe, segment-specific, or among the highest-leverage activation problems.\n\n## Users and Jobs To Be Done\n**Candidate primary user:** New or infrequent users creating a project for the first time.\n\n**Candidate job to be done:**\n- Help me start with a useful structure so I can begin real work quickly.\n\n**Candidate secondary user:** Team leads creating repeatable project setups.\n\nThese user definitions remain provisional until evidence confirms who actually experiences the problem.\n\n## Product Hypothesis\nIf a meaningful share of new users stall because they do not know how to structure a workspace, then a guided starting point may improve activation.\n\nThis hypothesis is not yet strong enough to justify building. It first needs to clear a cheaper evidence gate.\n\n## Evidence Standard Before Build\nThe feature may proceed to pilot only if the team can establish all of the following:\n1. Setup friction is a measurable problem in the activation funnel.\n2. The problem is large enough to matter relative to other onboarding issues.\n3. A defined user segment experiences this pain disproportionately.\n4. Templates are more promising than lighter alternatives.\n5. The expected learning value of a pilot exceeds its implementation cost.\n\n## Scope of Current Work\n**In scope now:**\n- Diagnose whether blank-page friction exists\n- Size the problem using existing data where available\n- Identify affected segments\n- Evaluate solution options before selecting templates\n\n**Out of scope now:**\n- Building template selection UI\n- Shipping starter content into production\n- User-generated templates\n- Template marketplace\n- AI-generated recommendations\n\n## Research and Decision Requirements\n1. Review the project-creation funnel for drop-off points and time-to-first-meaningful-action patterns.\n2. Audit existing support tickets, onboarding feedback, and internal anecdotal reports for setup-friction evidence.\n3. Run lightweight user interviews or surveys with new users who stalled or abandoned setup.\n4. Compare at least three interventions: templates, checklist/walkthrough, and example workspace.\n5. Produce a rough effort estimate for each intervention.\n6. Recommend the cheapest credible next test based on evidence gathered.\n\n## Success Criteria for Advancing to Pilot\nA build pilot is justified only if the evidence-collection phase shows:\n- setup friction is a material driver of activation loss\n- a target segment can be clearly identified\n- templates outperform or materially complement simpler alternatives in hypothesis quality\n- estimated implementation cost is proportionate to expected learning value\n- pilot metrics and guardrails are specified in advance\n\n## Risks\n- The problem may be minor or nonexistent.\n- The root cause may be onboarding clarity, not workspace structure.\n- Templates may add choice friction or clutter.\n- The team may over-invest in a solution before validating the problem.\n- A pilot may consume engineering time that should have gone to cheaper evidence gathering.\n\n## Unknowns & Evidence Gaps\n- No quantified evidence shows blank-page friction is a top activation problem.\n- No user research links templates to improved activation.\n- No segment evidence shows who would benefit.\n- No effort estimate exists for templates or for lower-cost alternatives.\n- No comparison exists between templates and simpler interventions.\n- No current evidence shows that a build pilot is the cheapest credible next step.\n\n## Pass/Fail Readiness\n**Current status:** Fail for pilot approval.\n\n**Pass conditions:**\n- Existing funnel and qualitative evidence have been reviewed.\n- The team can state the problem size and affected segment with confidence.\n- At least one lower-cost alternative has been assessed against templates.\n- A pilot is shown to be the most efficient remaining way to reduce uncertainty.\n\n**Fail conditions:**\n- The team moves from plausibility to build without problem validation.\n- The team cannot distinguish template value from general onboarding improvements.\n- No effort-versus-learning comparison is produced.\n\n## Recommended Next Artifact\nEvidence brief for feature validation, including:\n- funnel analysis summary\n- support and research synthesis\n- target segment definition\n- alternatives comparison\n- rough effort estimates\n- recommendation on whether to kill, defer, or pilot Guided Workspace Templates\n",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "The feature should not be approved for rollout or pilot because the current evidence base is insufficient even for a bounded build experiment.",
+          "evidence_refs": [
+            "ctx-1",
+            "ctx-2"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "The next justified step is a short evidence-collection phase using existing data and lightweight research before any engineering investment.",
+          "evidence_refs": [
+            "ctx-1",
+            "ctx-2"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "A pilot becomes justified only if cheaper methods establish that setup friction is material, segment-specific, and not better addressed by simpler alternatives.",
+          "evidence_refs": [
+            "ctx-1",
+            "ctx-2"
+          ],
+          "is_major": true
+        }
+      ],
+      "citations": [
+        "ctx-1",
+        "ctx-2"
+      ],
+      "open_questions": [
+        "Is blank-page friction observable in existing activation funnel data?",
+        "Which user segment, if any, is disproportionately affected by setup ambiguity?",
+        "Do lighter interventions outperform templates on cost-adjusted learning value?",
+        "What rough implementation cost would a template pilot require relative to alternative tests?"
+      ],
+      "critique_responses": [
+        {
+          "finding_id": "finding-2",
+          "disposition": "adopted",
+          "rationale": "The critique correctly identified that 'plausibility' was too weak a basis for recommending a pilot and that the prior artifact skipped cheaper evidence-gathering steps. The revised artifact removes pilot approval, adds an explicit pre-build evidence gate, and requires analysis of existing data, qualitative signal review, alternative comparison, and cost-to-learning justification before any engineering work."
+        }
+      ]
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-14-043812445Z-feature-weak-evidence",
+      "side_id": "side_b",
+      "round": "final",
+      "artifact_markdown": "# PRD: [Proposed Feature] — Weak Evidence Assessment\n\n## Decision Frame\n\n**What decision does this PRD support?**\nWhether to invest engineering and design resources in building [Proposed Feature] given the current state of supporting evidence.\n\n**Decision type:** Go / No-Go / Investigate Further\n\n**Current recommendation:** **Investigate Further** — the evidence base is insufficient to justify a build commitment. This PRD exists to make that insufficiency explicit and actionable, not to rationalize proceeding anyway.\n\n**Stakes:** Medium. Proceeding without evidence risks wasted cycles and opportunity cost. Delaying to gather evidence risks competitive window (unquantified) and internal momentum loss.\n\n**Who decides:** Product leadership, with input from engineering on feasibility cost and data/research on evidence-gathering timeline.\n\n---\n\n## Problem Statement\n\nA feature has been proposed based on signals that do not yet meet the threshold for confident investment. The signals may include: anecdotal customer requests, intuition from domain experts, competitive feature parity impulses, or internal stakeholder enthusiasm. None of these individually or collectively constitute validated demand or validated feasibility.\n\n**What we think the problem is:** Users may need [capability], based on [signal source].\n\n**What we actually know:** Very little. The evidence inventory below is honest about this.\n\n---\n\n## Evidence Inventory\n\n| # | Evidence Type | Source | Strength | Notes |\n|---|---|---|---|---|\n| 1 | No quantitative usage data | — | None | No proxy metrics, no instrumentation in adjacent features |\n| 2 | No customer interview data | — | None | No structured discovery interviews conducted |\n| 3 | No competitive analysis | — | None | Competitor feature existence ≠ competitor feature success |\n| 4 | No market sizing | — | None | TAM/SAM/SOM for this capability not estimated |\n| 5 | No prototype test results | — | None | No concept tests, no wizard-of-oz, no painted door |\n\n**Evidence grade: F — No validated evidence exists.**\n\n---\n\n## Unknowns & Evidence Gaps\n\n### Critical Unknowns (must resolve before Go decision)\n\n1. **Demand validation:** Do users actually experience the problem this feature solves, or are we projecting? \n   - *Resolution method:* 8-12 structured discovery interviews with target segment, scored on problem frequency and severity\n   - *Timeline:* 2-3 weeks\n   - *Cost:* Low (researcher time only)\n\n2. **Willingness to change behavior:** Even if the problem exists, will users adopt a new workflow to solve it?\n   - *Resolution method:* Painted-door test or concept test with clickable prototype\n   - *Timeline:* 2-4 weeks after demand validation\n   - *Cost:* Low-medium (design + instrumentation)\n\n3. **Feasibility envelope:** Can we build this within acceptable cost and timeline constraints?\n   - *Resolution method:* Engineering spike (timeboxed to 3 days)\n   - *Cost:* Medium (engineering time)\n\n### Important Unknowns (should resolve before build commitment)\n\n4. **Retention impact:** Will this feature improve retention, or is it a novelty that decays?\n5. **Cannibalization risk:** Does this compete with or undermine existing features?\n6. **Maintenance burden:** What is the ongoing cost of supporting this feature?\n\n### Acknowledged Ignorance\n\n7. We do not know what we do not know about the problem space. Discovery interviews may reveal the real problem is adjacent to what we assumed.\n\n---\n\n## Pass/Fail Readiness\n\n### Readiness Criteria for Go Decision\n\nThe thresholds below are **provisional defaults that must be calibrated** before the evidence-gathering phase begins. They are not validated benchmarks — they are starting positions for the decision-makers to negotiate based on the specific business context, risk appetite, and investment size of this feature. The team must explicitly ratify or adjust each threshold during the Discovery Research Plan kickoff, grounding them in the organization's own historical conversion rates, prior feature launch data, or stated strategic constraints. Without that calibration step, these numbers are placeholders, not gates.\n\n| Criterion | Status | Required Evidence | Threshold Rationale |\n|---|---|---|---|\n| Problem validated with target users | ❌ FAIL | Discovery interview transcripts with severity scores | *Threshold TBD:* Team must set minimum sample size based on target segment population and decision confidence level needed. Starting suggestion: ≥6 users, but adjust based on segment accessibility and variance in early interviews. |\n| Sufficient users rank problem as high-severity | ❌ FAIL | Interview scoring matrix | *Threshold TBD:* Percentage cutoff should reflect the organization's historical bar for problem-severity signals. If no prior benchmark exists, the first 3-4 interviews should inform whether 30%, 50%, or another cut is appropriate. |\n| Concept test shows meaningful intent to use | ❌ FAIL | Painted door or prototype test results | *Threshold TBD:* Intent-to-use cutoff must be benchmarked against the organization's baseline conversion rates for similar features. Industry-generic numbers (e.g., 40%) are unreliable without local calibration. |\n| Engineering spike confirms feasibility within budget | ❌ FAIL | Spike report with architecture sketch | *Threshold TBD:* Maximum acceptable build duration depends on team capacity and competing priorities — set during sprint planning, not in the PRD. |\n| No blocking cannibalization risk identified | ❌ FAIL | Impact analysis on adjacent features | Binary gate: any identified cannibalization requires explicit mitigation plan before proceeding. |\n\n**Overall readiness: NOT READY — 0 of 5 criteria met.**\n\nThis is not a failure of the feature idea. It is a failure of the evidence-gathering process to have been initiated. The appropriate response is to start gathering evidence, not to either kill or approve the feature.\n\n**Critical process note:** The first deliverable of the Discovery Research Plan must be a **threshold-setting workshop** where product leadership, research, and engineering agree on specific, justified cutoffs for each gate. These cutoffs should be documented with their rationale (e.g., \"30% severity threshold based on Feature X launch where 28% severity correlated with low adoption\") before data collection begins, to prevent post-hoc rationalization.\n\n---\n\n## Risk Register\n\n| Risk | Likelihood | Impact | Mitigation |\n|---|---|---|---|\n| Building without evidence → wasted investment | High (if we skip validation) | High | Follow evidence-gathering plan below |\n| Evidence gathering delays competitive window | Unknown | Unknown | Timebox discovery to 4 weeks max |\n| Confirmation bias in interviews | Medium | Medium | Use structured interview protocol, external interviewer if possible |\n| Sunk cost fallacy after spike | Medium | Medium | Pre-commit to kill criteria before starting spike |\n| False rigor from unjustified thresholds | Medium | Medium | Threshold-setting workshop required before data collection; rationale documented per gate |\n\n---\n\n## Recommended Next Artifact\n\n**Do not proceed to design or engineering.**\n\nThe next artifact should be a **Discovery Research Plan** containing:\n\n1. **Threshold-setting workshop agenda** — structured session where decision-makers calibrate Pass/Fail gate cutoffs using organizational baselines, prior feature data, or explicit risk-appetite statements. Output: ratified thresholds with documented justification for each.\n2. **Interview protocol** — structured questions targeting problem existence, frequency, severity, and current workarounds (not feature desirability)\n3. **Participant recruitment criteria** — target segment definition with screening questions\n4. **Painted-door test design** — instrumented fake entry point to measure organic interest\n5. **Kill criteria** — explicit thresholds (calibrated in step 1) below which the feature is deprioritized\n6. **Timeline** — 4-week timebox for complete evidence package, including threshold calibration in week 1\n\n**If evidence passes calibrated thresholds:** Return to this PRD, update evidence inventory, and re-evaluate Pass/Fail readiness.\n\n**If evidence fails thresholds:** Archive this PRD with findings. The negative result is itself valuable — it prevents future re-litigation of the same idea without new evidence.\n\n---\n\n## Anti-Patterns This PRD Deliberately Avoids\n\n- **Invented personas** — No fictional user stories masking absence of real data\n- **Assumed metrics impact** — No projected lift numbers without baseline data\n- **Competitive panic** — \"Competitor X has it\" is not evidence of demand\n- **Solution-first framing** — The feature is described as a hypothesis, not a commitment\n- **False precision** — No story points, no sprint allocations, no launch dates for an unvalidated concept\n- **False rigor** — Readiness gate thresholds are flagged as provisional and require calibration against organizational data before use as decision criteria",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "A PRD for a feature with weak evidence should explicitly refuse to recommend a build, surface the evidence gaps as the primary content, and prescribe a structured evidence-gathering plan with kill criteria before any Go decision.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2-revised",
+          "summary": "Pass/Fail readiness gates require measurable thresholds, but those thresholds must be explicitly provisional and calibrated through a threshold-setting workshop grounded in organizational baselines before data collection begins — uncalibrated numbers create false rigor rather than justified decision criteria.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "The recommended next artifact should be a Discovery Research Plan beginning with a threshold-calibration workshop, not a design spec or engineering spike, because both demand validation and decision-criteria validation must precede feasibility investment.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-4",
+          "summary": "Explicitly naming anti-patterns — including false rigor alongside invented personas, assumed metrics, competitive panic, solution-first framing, and false precision — protects the PRD from the most common ways weak-evidence features get rationalized into builds.",
+          "evidence_refs": [],
+          "is_major": false
+        }
+      ],
+      "citations": [],
+      "open_questions": [
+        "What specific feature is being proposed? The case packet provides no concrete feature description, so this PRD operates as a template demonstrating evidence-disciplined structure for any weak-evidence feature.",
+        "What is the competitive context and timeline pressure, if any? This affects how aggressively the evidence-gathering timebox should be compressed.",
+        "Does the organization have existing research infrastructure (user panel, analytics instrumentation) that would accelerate evidence gathering?",
+        "Does the organization have historical feature-launch data that could serve as calibration benchmarks for the readiness gate thresholds?"
+      ],
+      "critique_responses": [
+        {
+          "finding_id": "finding-1",
+          "disposition": "adopted",
+          "rationale": "The critique correctly identifies that presenting specific numeric thresholds (≥6 users, ≥30% severity, ≥40% intent) without sourcing or calibration rationale is itself an instance of weak evidence — precisely the failure mode this PRD exists to prevent. Unsupported thresholds create an illusion of rigor that could lead to both false confidence (passing an arbitrary bar) and false rejection (failing an arbitrary bar). The revision addresses this by: (1) explicitly marking all thresholds as provisional defaults requiring calibration, (2) adding a 'Threshold Rationale' column that makes the absence of justification visible per gate, (3) prescribing a threshold-setting workshop as the first step of the Discovery Research Plan so cutoffs are grounded in organizational baselines before data collection begins, (4) adding 'false rigor' to the anti-patterns list, and (5) adding a new risk register entry for unjustified thresholds. The thresholds remain as starting suggestions rather than being removed entirely, because having a concrete starting point is more useful for the calibration discussion than a blank space — but they are now clearly framed as negotiable inputs, not validated gates."
+        }
+      ]
+    }
+  },
+  "min_margin_for_verdict": 0.1
+}

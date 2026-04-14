@@ -1,0 +1,118 @@
+{
+  "case_packet": {
+    "scenario_id": "churn-conflicting-signals",
+    "title": "Churn diagnosis with conflicting signals",
+    "prompt": "Write a churn reduction PRD when signals conflict with strategy targets.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass": {
+    "run_id": "conflict-2026-04-14-042007507Z-churn-conflicting-signals",
+    "side_id": "side_b",
+    "round": "first_pass",
+    "artifact_markdown": "# Churn Reduction PRD: Resolving Conflicting Signals\n\n## Decision Frame\n\n**Problem statement:** Churn telemetry presents contradictory signals that undermine confident intervention design. Usage frequency is stable or increasing for a segment of churning users, NPS scores remain neutral-to-positive pre-churn, yet cancellation rates are rising. Meanwhile, strategy targets emphasize net-new acquisition growth, creating resource tension with retention investment.\n\n**Core tension:** The signals that historically predicted churn (declining usage, negative sentiment) are not firing for a meaningful portion of recent churners. This means either (a) our churn model is miscalibrated to a new churn archetype, (b) churn is being driven by external/competitive factors invisible to product telemetry, or (c) the metric definitions themselves have drifted (e.g., \"active usage\" includes passive/automated sessions that mask disengagement).\n\n**Decision required:** Should we invest in a dedicated churn reduction initiative now despite ambiguous signal quality, or first invest in signal clarification before committing to intervention design?\n\n**Recommendation:** Pursue a phased approach — a short diagnostic sprint (2-3 weeks) to resolve signal conflicts before committing engineering resources to intervention features. Premature intervention risks optimizing for the wrong churn driver and wasting a quarter of build capacity.\n\n**Stakeholder impact:**\n- **Growth team:** Acquisition targets remain primary; retention work must not cannibalize growth roadmap without clear ROI evidence.\n- **Finance:** Each 1pp reduction in monthly churn at current base = ~$X00K ARR saved; but only if interventions address actual drivers.\n- **CS/Support:** Frontline teams report qualitative signals (pricing complaints, competitor mentions) not yet systematically captured in telemetry.\n\n---\n\n## Unknowns & Evidence Gaps\n\n| # | Unknown | Impact if unresolved | Current evidence quality | Proposed resolution |\n|---|---------|---------------------|------------------------|--------------------|\n| U1 | Whether \"active usage\" metric masks passive/automated engagement that correlates with churn | High — interventions targeting engagement would be misdirected | **Weak.** Current usage metric does not distinguish intentional vs. automated sessions | Instrument session-type tagging; run cohort analysis on churners vs. retained with refined activity definition |\n| U2 | Whether churn is driven by competitive displacement vs. product dissatisfaction | High — determines whether response is feature-building vs. pricing/positioning | **Anecdotal only.** CS reports competitor mentions but no systematic exit data | Deploy structured exit survey with forced-choice driver attribution; supplement with win/loss interviews (n=20) |\n| U3 | Whether NPS timing creates survivorship bias (surveyed users self-select as engaged) | Medium — could explain why NPS doesn't predict churn | **Unknown.** NPS survey response rate and timing relative to churn not analyzed | Cross-reference NPS response timestamps with churn dates; analyze non-responder churn rates |\n| U4 | Magnitude of revenue impact by churn segment (high-value vs. long-tail) | High — determines intervention priority and ROI | **Partial.** Aggregate churn rate known; per-segment revenue impact not broken out | Run revenue-weighted churn segmentation analysis |\n| U5 | Whether strategy's acquisition-first prioritization is based on assumptions that still hold (e.g., CAC:LTV ratio, market growth rate) | Medium — if unit economics have shifted, retention may now have higher marginal ROI than acquisition | **Stale.** Last CAC:LTV analysis was 2+ quarters ago | Refresh unit economics model with current cohort data |\n\n---\n\n## Pass/Fail Readiness\n\n**Readiness verdict: NOT READY for intervention design. READY for diagnostic sprint.**\n\n### Pass criteria for proceeding to intervention PRD:\n\n| Criterion | Status | Blocking? |\n|-----------|--------|-----------|\n| Churn driver attribution is evidence-based (not assumed) | **FAIL** — conflicting signals mean we cannot confidently attribute churn drivers | Yes |\n| Usage metrics reliably distinguish engaged from passive users | **FAIL** — metric definition has not been validated against churn outcomes | Yes |\n| Revenue-weighted churn segmentation available | **FAIL** — aggregate only | Yes |\n| Exit/cancellation reason data collected systematically | **FAIL** — anecdotal CS reports only | Yes |\n| Retention ROI case validated against acquisition ROI | **FAIL** — stale unit economics | No (can run in parallel) |\n\n### What IS ready:\n- Churn rate trend data is reliable and shows clear upward trajectory\n- Product telemetry infrastructure exists to add session-type instrumentation\n- CS team is available and willing to support structured exit interviews\n- Survey tooling is deployed and can support exit survey within days\n\n### Risk of proceeding without resolution:\n- **Wasted build capacity:** Engineering an engagement-boosting feature when churn is pricing-driven wastes a full sprint (est. 4-6 weeks)\n- **False confidence:** Leadership may interpret intervention launch as \"churn handled\" when root cause remains unaddressed\n- **Opportunity cost:** Diagnostic sprint costs 2-3 weeks; wrong intervention costs 4-6 weeks plus reputational risk of failed initiative\n\n---\n\n## Recommended Next Artifact\n\n**Immediate next step:** Diagnostic Sprint Brief (not a full PRD)\n\n**Scope of diagnostic sprint (2-3 weeks):**\n1. **Week 1:** Instrument session-type tagging; deploy structured exit survey; begin revenue-weighted churn segmentation\n2. **Week 1-2:** Run 10-20 structured exit interviews with recent churners across segments\n3. **Week 2-3:** Analyze refined usage data against churn; cross-reference NPS timing; synthesize exit survey + interview findings\n4. **Week 3:** Produce Churn Driver Attribution Report with confidence levels per driver\n\n**Decision gate at sprint end:** If driver attribution reaches ≥70% confidence for primary churn driver, proceed to full Intervention PRD. If signals remain ambiguous, escalate to leadership with recommendation to expand diagnostic scope or accept current churn rate as cost of acquisition-first strategy.\n\n**Artifact sequence:**\n1. ~~Churn Reduction PRD~~ → **Diagnostic Sprint Brief** (this recommendation)\n2. Churn Driver Attribution Report (output of diagnostic sprint)\n3. Churn Reduction PRD (if warranted by findings)\n4. Intervention Design Spec\n5. Metrics Framework for retention interventions\n\n**Why not skip to building interventions:** The conflicting signals are not a nuisance — they are the finding. Building without resolving them means we are gambling engineering capacity on an unvalidated hypothesis about why users leave. The diagnostic sprint is the cheapest way to derisk the full initiative.",
+    "claims": [
+      {
+        "claim_id": "side_b-claim-1",
+        "summary": "Conflicting churn signals (stable usage + positive NPS among churners) indicate the churn model is miscalibrated or metric definitions have drifted, making intervention design premature without diagnostic resolution.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-2",
+        "summary": "A 2-3 week diagnostic sprint is strictly cheaper than a misdirected 4-6 week intervention build, making signal clarification the higher-ROI first move.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-3",
+        "summary": "The acquisition-first strategy creates a resource allocation conflict with retention that cannot be resolved without refreshed unit economics (CAC:LTV) showing which lever has higher marginal ROI at current scale.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-4",
+        "summary": "Current NPS data may exhibit survivorship bias if survey respondents self-select as more engaged, explaining why NPS fails to predict churn.",
+        "evidence_refs": [],
+        "is_major": false
+      },
+      {
+        "claim_id": "side_b-claim-5",
+        "summary": "Five specific evidence gaps (usage metric validity, competitive displacement, NPS timing bias, revenue-weighted segmentation, stale unit economics) must each be resolved to a stated confidence threshold before intervention commitment.",
+        "evidence_refs": [],
+        "is_major": true
+      }
+    ],
+    "citations": [],
+    "open_questions": [
+      "What is the current ratio of automated/passive sessions to intentional engagement sessions among churning users?",
+      "Has competitive landscape shifted materially in the last two quarters (new entrants, pricing changes)?",
+      "What is the NPS survey response rate among users who churn within 30 days of survey delivery vs. those who retain?",
+      "When was the last CAC:LTV refresh, and have cohort economics shifted enough to change the acquisition vs. retention ROI calculus?"
+    ],
+    "critique_responses": []
+  },
+  "critique_packet": {
+    "target_side": "side_b",
+    "finding_id": "finding-1",
+    "target_claim_ids": [
+      "side_b-claim-5"
+    ],
+    "claim_under_attack": "Five specific evidence gaps (usage metric validity, competitive displacement, NPS timing bias, revenue-weighted segmentation, stale unit economics) must each be resolved to a stated confidence threshold before intervention commitment.",
+    "attack_type": "evidence_gap",
+    "evidence_or_reason": "The artifact does not justify why all five gaps are mandatory blockers before any intervention can begin. Several listed gaps are explicitly non-blocking or parallelizable in the pass/fail table, and no evidence is offered that lower-regret interventions (for example cancellation-flow, save offers, or CS-led retention plays) require full resolution of every gap first. This overstates certainty about the required diagnostic scope and weakens decision usefulness.",
+    "severity": "medium"
+  }
+}

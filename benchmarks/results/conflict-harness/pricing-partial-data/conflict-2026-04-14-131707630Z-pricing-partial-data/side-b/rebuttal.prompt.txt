@@ -1,0 +1,124 @@
+You are SIDE_B in the rebuttal phase for run conflict-2026-04-14-131707630Z-pricing-partial-data.
+Attack only visible claims from the opposing first-pass artifact.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "target_side": "side_a",
+  "finding_id": "runner-will-assign",
+  "target_claim_ids": [
+    "side_a-claim-1"
+  ],
+  "claim_under_attack": "The opposing claim to challenge.",
+  "attack_type": "evidence_gap",
+  "evidence_or_reason": "Why the visible claim is weak.",
+  "severity": "medium"
+}
+
+Case packet:
+{
+  "scenario_id": "pricing-partial-data",
+  "title": "Pricing change with partial market data",
+  "prompt": "Draft a pricing strategy recommendation under partial market data.",
+  "artifact_type": "strategy",
+  "rubric": {
+    "dimensions": [
+      "claim quality",
+      "evidence discipline",
+      "responsiveness to critique",
+      "internal consistency",
+      "decision usefulness"
+    ],
+    "scoring_scale": "1-5",
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "constraints": {
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "expect_structured": true,
+    "context_files": [],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "evidence": [],
+  "max_rounds": 3,
+  "tool_policy": "none",
+  "sharing_policy": {
+    "share_case_packet": true,
+    "share_committed_artifacts_after_first_pass": true,
+    "share_critiques_after_open": true,
+    "share_hidden_reasoning": false,
+    "share_provider_identity": false,
+    "share_internal_coalition_drafts": false
+  },
+  "success_condition": {
+    "type": "validator_contract",
+    "description": "Produce a strategy artifact that satisfies the scenario validator contract.",
+    "validator": {
+      "artifact_type": "strategy",
+      "expect_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true
+    }
+  }
+}
+
+Opposing first-pass artifact:
+{
+  "run_id": "conflict-2026-04-14-131707630Z-pricing-partial-data",
+  "side_id": "side_a",
+  "round": "first_pass",
+  "artifact_markdown": "# Pricing Strategy Recommendation Under Partial Market Data\n\n## Decision Frame\n\n**Context:** We are evaluating a pricing change with incomplete market data. The core decision is whether to proceed with a pricing adjustment now, delay until more data is gathered, or implement a staged rollout that generates data while limiting downside.\n\n**Decision type:** Reversible with moderate friction. Pricing changes can be rolled back, but frequent changes erode customer trust and create operational overhead (billing system updates, sales enablement, contract amendments).\n\n**Stakeholders affected:** Revenue/finance (forecast accuracy), sales (deal velocity and objection handling), customer success (renewal conversations), product (packaging implications).\n\n**Key question:** Given that our market data is partial, is the expected value of acting now greater than the expected value of waiting for better data — accounting for the cost of delay?\n\n## Unknowns & Evidence Gaps\n\n### What we lack\n\n1. **Willingness-to-pay (WTP) distribution:** No conjoint analysis or Van Westendorp study has been conducted on the current customer base or target segments. Without WTP data, any price point is a guess anchored to cost-plus or competitor benchmarks rather than value capture.\n\n2. **Competitive pricing intelligence:** Partial data implies we have some competitor price points but not a complete landscape. We do not know competitors' discount structures, volume tiers, or bundling strategies — the effective price may differ significantly from list price.\n\n3. **Price elasticity of demand:** We lack historical data on how prior price changes affected conversion, churn, and expansion revenue. Without elasticity estimates, we cannot model revenue impact with confidence.\n\n4. **Segment-level sensitivity:** Even if aggregate data exists, we likely lack segment-level granularity. Enterprise buyers, mid-market, and SMB segments may respond very differently to the same price change.\n\n5. **Cost structure trajectory:** If input costs are changing (infrastructure, labor, licensing), the margin implications of any price point depend on cost forecasts we may not have validated.\n\n### What partial data we can work with\n\n- Existing revenue per customer and distribution across tiers\n- Anecdotal sales feedback on price objections and lost deals\n- Publicly available competitor list prices (without discount/effective price data)\n- Current gross margin by product line or tier\n- Churn data (even if not causally linked to pricing)\n\n### Risk of acting on partial data\n\n- **Underpricing:** Leave revenue on the table, signal low value, attract price-sensitive customers who churn at any increase.\n- **Overpricing:** Increase churn, slow acquisition, push prospects to competitors or substitutes.\n- **Misaligned packaging:** Price change without packaging change may create value-metric mismatch, where customers pay more without perceiving more value.\n\n## Pass/Fail Readiness\n\n**Verdict: CONDITIONAL PASS — proceed only with a staged, data-generating approach.**\n\nA full pricing overhaul fails readiness. The evidence gaps (no WTP study, no elasticity data, incomplete competitive landscape) mean that a confident, organization-wide price change would be speculative.\n\nHowever, a narrow, instrumented pricing test passes readiness:\n\n| Criterion | Status | Notes |\n|---|---|---|\n| Value metric identified | Partial | Need to validate that current metric aligns with perceived value |\n| WTP data | Fail | No structured research conducted |\n| Competitive landscape | Partial | List prices available; effective prices unknown |\n| Elasticity model | Fail | No historical price-change data to calibrate |\n| Segment definitions | Pass | Existing segmentation usable for test design |\n| Billing system flexibility | Must verify | Can the system support A/B pricing or cohort-based tiers? |\n| Rollback capability | Must verify | Can we revert pricing for a cohort without manual intervention? |\n\n**Go/no-go gates for staged test:**\n\n1. Billing system confirms ability to run parallel price points for new customers in a defined segment.\n2. Finance agrees on a minimum test duration (recommend 60-90 days) and sample size for statistical significance.\n3. Sales leadership aligns on how to handle objections during the test period.\n\nIf any gate fails, the recommendation shifts to \"delay and invest in WTP research first.\"\n\n## Recommended Next Artifact\n\n**Immediate next step:** Commission a lightweight WTP study (Van Westendorp or Gabor-Granger) targeting 50-100 customers across key segments. This can be executed in 2-4 weeks and directly addresses the most critical evidence gap.\n\n**Parallel workstream:** Design a pricing experiment for new customers in one segment. Define:\n- Test and control price points (informed by whatever competitive data exists)\n- Success metrics: conversion rate, average deal size, 30-day activation rate\n- Guardrails: automatic pause if conversion drops below X% of baseline\n- Duration and sample size requirements\n\n**Artifact sequence:**\n1. **WTP Research Brief** — scope, methodology, timeline, sample plan\n2. **Pricing Experiment Design** — test parameters, metrics, guardrails, rollback plan\n3. **Pricing Recommendation v2** — informed by WTP findings and experiment results, with confidence intervals on revenue impact\n\nDo not skip to step 3. The cost of the research (2-4 weeks, modest budget) is far less than the cost of a mispriced product in market.",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "A full pricing overhaul fails readiness due to missing WTP data, unknown price elasticity, and incomplete competitive intelligence — the evidence gaps are too large for a confident organization-wide change.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "A staged pricing experiment on a single segment of new customers is the highest-EV path because it generates the missing data while limiting downside through guardrails and rollback capability.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-3",
+      "summary": "The cost of delay (2-4 weeks for WTP research) is almost certainly less than the cost of a mispriced product, making 'invest in data first' the dominant strategy over 'act now on partial information.'",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-4",
+      "summary": "Pricing changes are reversible with moderate friction — not zero-cost to undo — which means the decision threshold should be higher than for fully reversible changes but lower than for irreversible ones.",
+      "evidence_refs": [],
+      "is_major": false
+    },
+    {
+      "claim_id": "side_a-claim-5",
+      "summary": "Billing system flexibility and rollback capability are prerequisite gates that must be verified before any experiment can proceed; if either fails, the recommendation shifts entirely to research-first.",
+      "evidence_refs": [],
+      "is_major": false
+    }
+  ],
+  "citations": [],
+  "open_questions": [
+    "What is the current billing system's capability for running parallel price points or cohort-based pricing?",
+    "Is there any historical data from prior price changes that could serve as a proxy for elasticity estimation?",
+    "What is the organization's tolerance for test duration — can we commit to 60-90 days without pressure to declare results early?",
+    "Are there contractual or regulatory constraints that limit our ability to offer different prices to different customer segments?"
+  ],
+  "critique_responses": []
+}

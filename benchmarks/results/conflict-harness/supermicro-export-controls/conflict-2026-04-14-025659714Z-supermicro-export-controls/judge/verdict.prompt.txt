@@ -1,0 +1,405 @@
+You are the judge in a blinded conflict harness run.
+Provider identity is intentionally hidden. Do not infer provider family.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "winner": "tie",
+  "margin": 0,
+  "rubric_scores": {
+    "side_a": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    },
+    "side_b": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    }
+  },
+  "decisive_findings": [
+    "Replace with the actual decisive findings from this run."
+  ],
+  "judge_confidence": "low",
+  "needs_human_review": true,
+  "rationale": "One-paragraph explanation of the verdict."
+}
+
+Use min_margin_for_verdict = 0.1.
+judge_confidence rubric:
+- high: the winning side is clearly stronger on at least 3 rubric dimensions and has no major unsupported-claim problem
+- medium: the winning side leads overall but has at least 1 weak dimension or absorbed only part of the opposing critique
+- low: score margin is below min_margin_for_verdict or both sides have significant unsupported claims
+
+Judge packet:
+{
+  "case_packet": {
+    "scenario_id": "supermicro-export-controls",
+    "title": "Supermicro export-controls crisis: keep pushing AI growth or pause for compliance reset",
+    "prompt": "You are a strategy advisor to Supermicro's board in April 2026, immediately after the company's April 7, 2026 announcement that an independent board investigation is underway.\n\nSupermicro is one of the most visible infrastructure suppliers in the AI boom, building server systems that depend heavily on Nvidia GPUs and serving data-center customers racing to deploy AI capacity. Growth expectations are high, and slowing down could create openings for rivals.\n\nBut the company is now under fresh scrutiny. On March 19, 2026, Supermicro says it was informed that two employees and a contractor were indicted in connection with an alleged conspiracy to commit export-control violations. On April 7, 2026, Supermicro publicly confirmed that an independent investigation is underway, overseen by Lead Independent Director Scott Angel and Audit Committee Chair Tally Liu with external counsel Munger, Tolles & Olson LLP. The company says it is not named as a defendant and is not accused of wrongdoing, and that the three individuals no longer have any relationship with Supermicro.\n\nThe board now faces a classic strategic tradeoff. One path is to keep pressing the AI infrastructure opportunity at full speed, argue that the alleged misconduct was limited to individuals, and prevent a compliance episode from derailing a once-in-a-generation growth cycle. The other path is to slow selected expansion efforts, tighten high-risk channels, and reset governance before reputational and regulatory damage compounds.\n\nThe reputational risk is not abstract. Fortune reported that the allegations center on the routing of roughly $2.5B in servers packed with Nvidia GPUs to China in violation of export controls, and that investors are concerned the controversy could strain Supermicro's relationship with Nvidia. Supermicro has already launched an internal review of its Global Trade Compliance Program, with its acting Chief Compliance Officer reporting to the General Counsel as part of a remediation effort.\n\nThe board must decide: should Supermicro continue aggressive AI-growth execution while the investigation proceeds, or should it pause and narrow high-risk activity until a full compliance reset is complete?\n\nWrite a strategic recommendation memo. Take a clear position — keep pushing growth or pause for reset — and defend it with evidence. Acknowledge the strongest counterarguments and explain why your position is still correct.\n\nKey evidence available:\n- On March 19, 2026, Supermicro says it was informed that two employees and a contractor were indicted in connection with alleged export-control violations\n- On April 7, 2026, Supermicro confirmed an independent investigation led by Lead Independent Director Scott Angel and Audit Committee Chair Tally Liu, supported by Munger, Tolles & Olson LLP\n- Supermicro says it is not named as a defendant and is not accused of wrongdoing\n- Supermicro says the three individuals no longer have any relationship with the company\n- Supermicro is reviewing its Global Trade Compliance Program as part of the response\n- The acting Chief Compliance Officer now reports to the General Counsel during the review process\n- Fortune reported the indictment alleges roughly $2.5B in servers containing Nvidia GPUs were routed to China in violation of export controls\n- Fortune also reported investor concern that compliance and reputational risk could strain Supermicro's relationship with Nvidia\n- Supermicro remains a prominent AI-server supplier during a period of intense demand for Nvidia-based infrastructure\n- Pausing or narrowing high-risk activity could protect the company from deeper regulatory, customer, and governance fallout\n- Continuing full-speed growth could preserve revenue momentum, customer trust in delivery capacity, and competitive positioning in the AI infrastructure market\n- A narrow-company-defense narrative may be credible if the misconduct was isolated to individuals rather than systemic company behavior\n- A pause may be costly if hyperscale and enterprise customers shift orders to other suppliers and do not return quickly\n- If the company underreacts and further facts emerge, the board could face a much larger credibility and governance crisis later",
+    "artifact_type": "strategy",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a strategy artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "strategy",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-14-025659714Z-supermicro-export-controls",
+      "side_id": "side_a",
+      "round": "first_pass",
+      "artifact_markdown": "# Strategic Recommendation: Controlled Pause for Compliance Reset\n\n## Decision Frame\n\n**Question:** Should Supermicro continue aggressive AI-growth execution while the independent investigation proceeds, or pause and narrow high-risk activity until a full compliance reset is complete?\n\n**Recommendation: Pause and narrow high-risk activity.** Supermicro should implement a time-bounded compliance reset (90–120 days) that temporarily restricts expansion into high-risk export channels while preserving core domestic and allied-market growth. This is not a retreat from the AI opportunity — it is the only credible path to sustaining it.\n\n**Why this is the right frame:** The board is not choosing between growth and compliance. It is choosing between *controlled, voluntary deceleration now* and *involuntary, regulator-imposed shutdown later*. The asymmetry of consequences overwhelmingly favors the pause.\n\n---\n\n## Core Argument\n\n### 1. The $2.5B exposure figure changes the calculus fundamentally\n\nThe alleged scheme involved routing approximately $2.5 billion in Nvidia GPU-equipped servers to China in violation of export controls. This is not a minor customs paperwork issue. At that scale, the conduct — if proven — represents a material percentage of Supermicro's revenue flowing through channels that violated U.S. national security policy. Even though Supermicro is not named as a defendant, the magnitude makes a \"limited to individuals\" narrative fragile. Regulators, customers, and partners will ask: how did $2.5B in product move through unauthorized channels without institutional awareness?\n\n### 2. The Nvidia relationship is existential, not incidental\n\nSupermicro's entire competitive position in AI infrastructure depends on access to Nvidia GPUs. Fortune reports that investors are already concerned the controversy could strain this relationship. Nvidia itself faces intense regulatory scrutiny over export-control compliance for its chips. Nvidia cannot afford to be seen as tolerating lax compliance in its supply chain. If Supermicro pushes growth aggressively without a visible compliance reset, it invites Nvidia to distance itself — not as punishment, but as self-preservation. A proactive pause signals to Nvidia that Supermicro takes the issue seriously, reducing the risk of allocation cuts or partnership restrictions.\n\n### 3. Supermicro's compliance history makes \"isolated incident\" claims harder to sustain\n\nSupermicro has prior compliance history, including a 2020 SEC settlement related to accounting practices. A pattern — even if the underlying facts differ — makes the \"rogue employees\" narrative less persuasive to regulators, institutional investors, and governance-focused board observers. The board must overcorrect relative to what it believes is necessary, because it is operating with a credibility deficit.\n\n### 4. The compliance reset is already partially underway\n\nThe company has already launched an internal review of its Global Trade Compliance Program, appointed an acting Chief Compliance Officer reporting to General Counsel, and retained Munger, Tolles & Olson for the independent investigation. These are serious steps — but they are reactive. A proactive decision to narrow high-risk channels during the review period converts reactive damage control into a strategic choice, giving the board control of the narrative.\n\n### 5. The competitive cost of a 90–120 day pause is overstated\n\n- **Domestic and allied-market orders are unaffected.** The pause applies only to high-risk export channels, not to the hyperscale and enterprise business that drives the majority of revenue.\n- **AI infrastructure demand is supply-constrained, not demand-constrained.** Customers waiting for Nvidia GPU allocations are not going to permanently shift to Dell or HPE because Supermicro pauses expansion into specific geographies for one quarter.\n- **Customers who would leave over a compliance pause are exactly the customers the company should be scrutinizing.** Any customer whose loyalty depends on Supermicro not asking compliance questions is a liability, not an asset.\n\n---\n\n## Unknowns & Evidence Gaps\n\n| Unknown | Why It Matters | How to Close |\n|---|---|---|\n| **Scope of institutional knowledge** | If internal emails or approvals surface showing management awareness, the \"individual misconduct\" defense collapses and the company faces direct liability | Independent investigation by Munger Tolles; board should request interim findings within 60 days |\n| **Nvidia's internal assessment** | Nvidia may already be conducting its own supply-chain compliance review that could affect GPU allocations to Supermicro | Direct board-to-board communication with Nvidia; do not wait for Nvidia to act first |\n| **DOJ/BIS enforcement trajectory** | Whether prosecutors view Supermicro as a cooperating witness or a future target will determine the severity of regulatory risk | External counsel should be probing DOJ posture through appropriate channels now |\n| **Customer contract exposure** | Some contracts may contain compliance representations that, if breached, trigger termination rights or clawbacks | Legal review of top-20 customer contracts for compliance-related provisions |\n| **Other unreported channels** | The $2.5B figure may not be the full extent; additional violations could surface during the internal review | The compliance review must be scoped broadly enough to catch adjacent issues, not just the specific conduct alleged in the indictment |\n| **Insurance and indemnification** | Whether D&O insurance and indemnification obligations cover the investigation costs and potential settlements | CFO and General Counsel should map exposure immediately |\n\n---\n\n## Pass/Fail Readiness\n\n**This recommendation passes if:**\n- The board adopts a time-bounded (90–120 day) restriction on expansion into high-risk export channels\n- The independent investigation produces interim findings within 60 days\n- Supermicro initiates direct communication with Nvidia's board regarding compliance posture\n- The compliance review is scoped to cover all export channels, not just the specific conduct alleged\n- The board establishes a clear, public governance narrative: voluntary pause, not forced retreat\n- Core domestic and allied-market growth continues uninterrupted\n\n**This recommendation fails if:**\n- The pause extends beyond 120 days without a clear exit criteria, turning temporary caution into permanent competitive damage\n- The board uses the pause as cover for inaction rather than genuine compliance reform\n- Nvidia or major customers interpret the pause as evidence of deeper problems rather than responsible governance\n- The independent investigation reveals systemic institutional involvement, requiring a fundamentally different response (not a pause but a restructuring)\n\n---\n\n## Counterarguments Addressed\n\n**\"The company is not named as a defendant — this is overreaction.\"**\nNot being named *yet* is not the same as being cleared. The investigation is ongoing. If the board treats \"not a defendant\" as a green light and further facts emerge, the credibility damage will be catastrophic. The correct read of \"not named as a defendant\" is that the company has a narrow window to demonstrate good faith before prosecutors decide whether to expand the case.\n\n**\"Pausing will cost us customers who go to Dell or HPE.\"**\nThe pause applies to high-risk export channels, not domestic hyperscale orders. Any customer lost because Supermicro tightened export compliance is a customer the company should not have been serving. And in a supply-constrained GPU market, order backlogs provide a natural buffer — paused orders can resume after the reset without permanent market share loss.\n\n**\"Moving fast is how we won in AI infrastructure — slowing down is against our DNA.\"**\nSpeed is a competitive advantage only when it doesn't create existential risk. Supermicro's prior compliance history means the next violation won't be treated as an isolated incident — it will be treated as a pattern. The fastest path to sustained growth runs through a clean compliance posture, not around it.\n\n---\n\n## Recommended Next Artifact\n\n**90-Day Compliance Reset Execution Plan** — a detailed operational playbook specifying:\n1. Which channels and geographies are restricted during the pause period\n2. Customer communication strategy (proactive, not reactive)\n3. Nvidia engagement protocol (board-to-board, not just commercial)\n4. Interim investigation milestone schedule with board reporting cadence\n5. Exit criteria: what specific findings or milestones trigger resumption of normal operations\n6. Public narrative framework: voluntary governance action, not forced retreat\n7. Employee communication plan to prevent talent flight driven by uncertainty",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "The $2.5B scale of alleged export violations makes an 'isolated individual misconduct' defense fragile and increases the likelihood of expanded regulatory scrutiny, making a proactive compliance pause the lower-risk strategic choice.",
+          "evidence_refs": [
+            "ctx-fortune-2.5B",
+            "ctx-not-named-defendant",
+            "ctx-indictment-march19"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "Supermicro's existential dependence on Nvidia GPU access means that any action perceived as lax compliance creates asymmetric downside risk — Nvidia has its own regulatory exposure and cannot afford supply-chain partners with unresolved export-control issues.",
+          "evidence_refs": [
+            "ctx-nvidia-relationship-strain",
+            "ctx-ai-server-prominence"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "The competitive cost of a 90–120 day pause on high-risk export channels is overstated because AI infrastructure demand is supply-constrained, core domestic business is unaffected, and order backlogs provide a natural buffer against permanent market share loss.",
+          "evidence_refs": [
+            "ctx-pause-protects",
+            "ctx-customer-shift-risk",
+            "ctx-growth-preservation"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-4",
+          "summary": "The compliance reset is already partially underway (internal review, acting CCO, external counsel) — converting reactive measures into a proactive strategic pause gives the board narrative control and signals good faith to regulators.",
+          "evidence_refs": [
+            "ctx-compliance-review",
+            "ctx-cco-reporting",
+            "ctx-munger-tolles"
+          ],
+          "is_major": false
+        },
+        {
+          "claim_id": "side_a-claim-5",
+          "summary": "Supermicro's prior compliance history (including 2020 SEC settlement) erodes the credibility of a 'first offense' framing and increases the regulatory penalty for underreaction.",
+          "evidence_refs": [
+            "ctx-narrow-defense-narrative"
+          ],
+          "is_major": false
+        }
+      ],
+      "citations": [
+        "ctx-fortune-2.5B",
+        "ctx-indictment-march19",
+        "ctx-not-named-defendant",
+        "ctx-nvidia-relationship-strain",
+        "ctx-ai-server-prominence",
+        "ctx-compliance-review",
+        "ctx-cco-reporting",
+        "ctx-munger-tolles",
+        "ctx-pause-protects",
+        "ctx-customer-shift-risk",
+        "ctx-growth-preservation",
+        "ctx-narrow-defense-narrative",
+        "ctx-underreaction-risk"
+      ],
+      "open_questions": [
+        "What is the DOJ/BIS enforcement trajectory — is Supermicro viewed as a cooperating witness or a potential future target?",
+        "Has Nvidia initiated its own supply-chain compliance review that could independently affect GPU allocations?",
+        "Does the $2.5B figure represent the full extent of problematic transactions, or could the internal review surface additional violations?",
+        "Do top customer contracts contain compliance representations that could trigger termination rights?"
+      ],
+      "critique_responses": []
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-14-025659714Z-supermicro-export-controls",
+      "side_id": "side_b",
+      "round": "first_pass",
+      "artifact_markdown": "# Recommendation: Pause and Narrow High-Risk Activity Until a Compliance Reset Is Operational\n\nSupermicro should not continue full-speed AI-growth execution while the investigation is underway. The board should preserve core customer delivery in low-risk channels, but immediately pause and narrow high-risk expansion activity until a compliance reset is in place. This is the better strategic choice because the company is facing a live export-controls investigation tied to allegations that roughly $2.5B of Nvidia-GPU servers were routed to China, with explicit investor concern that the episode could damage the Nvidia relationship. In that setting, the real strategic risk is not one quarter of slowed growth; it is compounding regulatory, supplier, customer, and governance damage if the board appears to prioritize momentum over control. [ctx-1] [ctx-2] [ctx-3]\n\nThe facts do not support a business-as-usual stance. Supermicro has publicly confirmed that an independent investigation is underway, overseen by the Lead Independent Director and Audit Committee Chair with external counsel, and that it is separately reviewing its Global Trade Compliance Program. Those are not cosmetic steps. They imply the board already recognizes a material governance and control question that must be resolved. If the company keeps pushing aggressive expansion while simultaneously signaling that its compliance architecture requires independent review and remediation, it creates an internal contradiction: management would be asking customers, regulators, suppliers, and investors to trust a system the board itself is still testing. [ctx-1] [ctx-4]\n\nThe strongest argument for pressing growth is real. Supermicro is a prominent AI-server supplier in a market with exceptional demand, and a slowdown could hand share to rivals. If the alleged misconduct was isolated to two employees and a contractor, then a narrow-company-defense narrative could eventually prove credible. The company is also not named as a defendant and says it is not accused of wrongdoing. But those points are arguments against a total shutdown, not arguments for full-speed execution. The board does not need to choose between panic and denial. It should choose selective continuity: protect low-risk revenue, preserve customer commitments where controls are strong, and freeze or heavily gate the geographies, partners, deal structures, and escalation paths most exposed to export-controls risk. [ctx-1] [ctx-3] [ctx-5]\n\nThat middle path is strategically superior because it protects the scarce assets that matter most. First, it protects the Nvidia relationship by signaling that Supermicro is willing to subordinate near-term volume to compliance integrity if necessary. Second, it improves credibility with regulators and enterprise customers by showing that the board is governing the issue, not containing headlines. Third, it limits the probability of a second-wave crisis in which further facts emerge and make the April response look inadequate. In export-controls matters, the market rarely punishes an early, disciplined pause as harshly as it punishes a board that was warned and still kept accelerating. [ctx-2] [ctx-3] [ctx-6]\n\nThe practical recommendation is therefore not a blanket pause on the AI business. It is a temporary narrowing of risk appetite until the compliance reset is operational. The board should immediately halt new business through any channel, region, reseller structure, or end-customer path that cannot be affirmatively cleared under tightened controls; require board-level visibility into exceptions and sensitive deals; elevate the compliance function beyond an interim reporting arrangement into a visibly empowered authority; and define objective conditions for reopening high-risk activity. That preserves the franchise while reducing the chance that growth itself becomes evidence of poor judgment. [ctx-1] [ctx-4] [ctx-6]\n\n## Decision Frame\n\nDecision: Pause and narrow high-risk activity until a compliance reset is operational, while continuing low-risk customer fulfillment under tightened controls.\n\nWhy this is the right choice:\n- The downside of underreacting is structurally larger than the downside of a targeted slowdown.\n- The board is already signaling material concern through an independent investigation and compliance-program review.\n- Supplier, regulatory, and governance trust are more strategic than short-term shipment velocity in an AI infrastructure market where credibility compounds.\n- A selective pause preserves the option to re-accelerate; a governance failure can destroy that option.\n\n## Unknowns & Evidence Gaps\n\n- Whether the alleged misconduct was truly isolated to the indicted individuals or exposed broader control weaknesses.\n- Whether any additional facts could implicate company systems, incentives, channel practices, or management oversight.\n- How Nvidia is assessing counterparty risk and whether supply allocation could tighten if concerns deepen.\n- Which customer segments and channel structures contribute most to revenue and risk, and therefore should be preserved versus paused.\n- The timeline and criteria required for the independent investigation and trade-compliance review to support a credible reset.\n\n## Pass/Fail Readiness\n\nPass if:\n- The board can identify and ring-fence low-risk revenue channels within days.\n- High-risk deals can be halted or escalated under a tightened approval regime immediately.\n- Compliance leadership is visibly empowered with authority independent enough to challenge commercial pressure.\n- The company can communicate a disciplined continuity plan to Nvidia, key customers, and investors.\n\nFail if:\n- Management insists on full-speed expansion before the investigation establishes control confidence.\n- The company cannot distinguish low-risk from high-risk channels operationally.\n- Remediation remains mostly symbolic, with compliance subordinated to commercial urgency.\n- New facts emerge showing broader control breakdown after the board chose not to narrow risk.\n\n## Recommended Next Artifact\n\nBoard-level compliance-reset action memo with 30/60/90-day decisions, including:\n- immediate channel and geography gating rules\n- exception-approval design\n- supplier and customer communication plan\n- criteria for reopening paused activity\n- governance milestones tied to the investigation and trade-compliance review",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "Supermicro should pause and narrow high-risk activity rather than continue full-speed AI growth because the cost of underreacting during a live export-controls investigation is greater than the cost of a targeted slowdown.",
+          "evidence_refs": [
+            "ctx-1",
+            "ctx-2",
+            "ctx-3",
+            "ctx-6"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "The combination of an independent board-led investigation and a review of the Global Trade Compliance Program indicates a material governance and control issue that makes business-as-usual internally inconsistent.",
+          "evidence_refs": [
+            "ctx-1",
+            "ctx-4"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "A selective continuity strategy preserves low-risk revenue while protecting relationships with Nvidia, regulators, customers, and investors better than a full-speed growth posture would.",
+          "evidence_refs": [
+            "ctx-2",
+            "ctx-3",
+            "ctx-5",
+            "ctx-6"
+          ],
+          "is_major": true
+        }
+      ],
+      "citations": [
+        "ctx-1: On March 19, 2026, Supermicro said two employees and a contractor were indicted in connection with alleged export-control violations, and on April 7, 2026 it confirmed an independent investigation led by Lead Independent Director Scott Angel and Audit Committee Chair Tally Liu with Munger, Tolles & Olson LLP.",
+        "ctx-2: Fortune reported that the indictment centers on roughly $2.5B of servers containing Nvidia GPUs allegedly routed to China in violation of export controls.",
+        "ctx-3: Fortune also reported investor concern that the controversy could strain Supermicro's relationship with Nvidia.",
+        "ctx-4: Supermicro said it is reviewing its Global Trade Compliance Program and that the acting Chief Compliance Officer now reports to the General Counsel during the review process.",
+        "ctx-5: Supermicro says it is not named as a defendant, is not accused of wrongdoing, and that the three individuals no longer have any relationship with the company.",
+        "ctx-6: The case packet states that pausing or narrowing high-risk activity could protect the company from deeper regulatory, customer, and governance fallout, while underreacting could create a larger credibility and governance crisis later."
+      ],
+      "open_questions": [
+        "What objective criteria will the board use to determine when the compliance reset is sufficiently operational to reopen paused high-risk activity?",
+        "Which channels, geographies, reseller relationships, and end-customer profiles should be classified as high-risk immediately?",
+        "What direct assurances, if any, does Nvidia require from Supermicro to maintain confidence during the investigation?"
+      ],
+      "critique_responses": []
+    }
+  },
+  "critique_packets": {
+    "side_a": {
+      "target_side": "side_b",
+      "finding_id": "finding-1",
+      "target_claim_ids": [
+        "side_b-claim-1"
+      ],
+      "claim_under_attack": "Supermicro should pause and narrow high-risk activity rather than continue full-speed AI growth because the cost of underreacting during a live export-controls investigation is greater than the cost of a targeted slowdown.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "Side B asserts that 'the downside of underreacting is structurally larger than the downside of a targeted slowdown' but provides no evidence for the magnitude or reversibility of the slowdown cost. The case packet explicitly warns that 'hyperscale and enterprise customers shift orders to other suppliers and do not return quickly' — a permanent share-loss risk that Side B acknowledges only in passing ('the strongest argument for pressing growth is real') before dismissing it without quantification. Side B cites no precedent, no market data, and no customer-switching analysis to support the claim that a pause is less costly than continued execution. The asymmetry assertion — that underreaction risk exceeds slowdown risk — is the load-bearing claim of the entire memo, yet it rests entirely on hypothetical worst-case regulatory scenarios while treating the concrete, well-documented competitive cost of ceding AI infrastructure orders during peak demand as a secondary concern. Without evidence that paused customers actually return, or that competitors cannot absorb redirected demand permanently, the core cost comparison is unsupported.",
+      "severity": "high"
+    },
+    "side_b": {
+      "target_side": "side_a",
+      "finding_id": "finding-2",
+      "target_claim_ids": [
+        "side_a-claim-5"
+      ],
+      "claim_under_attack": "Supermicro's prior compliance history (including 2020 SEC settlement) erodes the credibility of a 'first offense' framing and increases the regulatory penalty for underreaction.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "This claim depends on a material fact that is not established in the visible case packet: the alleged 2020 SEC settlement is introduced without packet support and without showing any link to export-control governance. Even if such a settlement occurred, the artifact does not demonstrate that accounting-related misconduct is probative of export-control failures or that regulators would treat the current matter as a repeated pattern rather than a distinct issue. The conclusion about a higher 'regulatory penalty for underreaction' is therefore an unsupported inference layered on an unsubstantiated premise.",
+      "severity": "medium"
+    }
+  },
+  "final_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-14-025659714Z-supermicro-export-controls",
+      "side_id": "side_a",
+      "round": "final",
+      "artifact_markdown": "# Strategic Recommendation: Controlled Pause for Compliance Reset\n\n## Decision Frame\n\n**Question:** Should Supermicro continue aggressive AI-growth execution while the independent investigation proceeds, or pause and narrow high-risk activity until a full compliance reset is complete?\n\n**Recommendation: Pause and narrow high-risk activity.** Supermicro should implement a time-bounded compliance reset (90–120 days) that temporarily restricts expansion into high-risk export channels while preserving core domestic and allied-market growth. This is not a retreat from the AI opportunity — it is the only credible path to sustaining it.\n\n**Why this is the right frame:** The board is not choosing between growth and compliance. It is choosing between *controlled, voluntary deceleration now* and *involuntary, regulator-imposed shutdown later*. The asymmetry of consequences overwhelmingly favors the pause.\n\n---\n\n## Core Argument\n\n### 1. The $2.5B exposure figure changes the calculus fundamentally\n\nThe alleged scheme involved routing approximately $2.5 billion in Nvidia GPU-equipped servers to China in violation of export controls. This is not a minor customs paperwork issue. At that scale, the conduct — if proven — represents a material percentage of Supermicro's revenue flowing through channels that violated U.S. national security policy. Even though Supermicro is not named as a defendant, the magnitude makes a \"limited to individuals\" narrative fragile. Regulators, customers, and partners will ask: how did $2.5B in product move through unauthorized channels without institutional awareness?\n\n### 2. The Nvidia relationship is existential, not incidental\n\nSupermicro's entire competitive position in AI infrastructure depends on access to Nvidia GPUs. Fortune reports that investors are already concerned the controversy could strain this relationship. Nvidia itself faces intense regulatory scrutiny over export-control compliance for its chips. Nvidia cannot afford to be seen as tolerating lax compliance in its supply chain. If Supermicro pushes growth aggressively without a visible compliance reset, it invites Nvidia to distance itself — not as punishment, but as self-preservation. A proactive pause signals to Nvidia that Supermicro takes the issue seriously, reducing the risk of allocation cuts or partnership restrictions.\n\n### 3. The \"not named as a defendant\" status is a window, not a shield\n\nSupermicro's current posture — not named, not accused of wrongdoing — is a temporary condition during an active investigation, not a final determination. The board should treat this status as a narrow window of opportunity to demonstrate good faith and cooperation, not as a basis for business-as-usual. If the company pushes growth aggressively during this window and further facts emerge implicating broader institutional awareness, the board's failure to act when it had the chance will compound the credibility and governance damage. The correct strategic read is that \"not a defendant\" buys the company time to act voluntarily — and that time is finite.\n\n### 4. The competitive cost of a 90–120 day pause is overstated\n\n- **Domestic and allied-market orders are unaffected.** The pause applies only to high-risk export channels, not to the hyperscale and enterprise business that drives the majority of revenue.\n- **AI infrastructure demand is supply-constrained, not demand-constrained.** Customers waiting for Nvidia GPU allocations are not going to permanently shift to Dell or HPE because Supermicro pauses expansion into specific geographies for one quarter.\n- **Customers who would leave over a compliance pause are exactly the customers the company should be scrutinizing.** Any customer whose loyalty depends on Supermicro not asking compliance questions is a liability, not an asset.\n\n### 5. The compliance reset is already partially underway — converting reactive measures into proactive strategy gives the board narrative control\n\nThe company has already launched an internal review of its Global Trade Compliance Program, appointed an acting Chief Compliance Officer reporting to General Counsel, and retained Munger, Tolles & Olson for the independent investigation. These are serious steps — but they are reactive. A proactive decision to narrow high-risk channels during the review period converts reactive damage control into a strategic choice, giving the board control of the narrative and signaling good faith to regulators, customers, and Nvidia.\n\n---\n\n## Unknowns & Evidence Gaps\n\n| Unknown | Why It Matters | How to Close |\n|---|---|---|\n| **Scope of institutional knowledge** | If internal emails or approvals surface showing management awareness, the \"individual misconduct\" defense collapses and the company faces direct liability | Independent investigation by Munger Tolles; board should request interim findings within 60 days |\n| **Nvidia's internal assessment** | Nvidia may already be conducting its own supply-chain compliance review that could affect GPU allocations to Supermicro | Direct board-to-board communication with Nvidia; do not wait for Nvidia to act first |\n| **DOJ/BIS enforcement trajectory** | Whether prosecutors view Supermicro as a cooperating witness or a future target will determine the severity of regulatory risk | External counsel should be probing DOJ posture through appropriate channels now |\n| **Customer contract exposure** | Some contracts may contain compliance representations that, if breached, trigger termination rights or clawbacks | Legal review of top-20 customer contracts for compliance-related provisions |\n| **Other unreported channels** | The $2.5B figure may not be the full extent; additional violations could surface during the internal review | The compliance review must be scoped broadly enough to catch adjacent issues, not just the specific conduct alleged in the indictment |\n| **Insurance and indemnification** | Whether D&O insurance and indemnification obligations cover the investigation costs and potential settlements | CFO and General Counsel should map exposure immediately |\n| **Prior compliance history** | Whether Supermicro has any prior regulatory settlements or enforcement actions that regulators could cite as a pattern is unknown from available evidence — this is a critical gap the board must close, as a pattern would significantly increase the penalty for underreaction | General Counsel should compile a complete regulatory history for the independent investigators |\n\n---\n\n## Pass/Fail Readiness\n\n**This recommendation passes if:**\n- The board adopts a time-bounded (90–120 day) restriction on expansion into high-risk export channels\n- The independent investigation produces interim findings within 60 days\n- Supermicro initiates direct communication with Nvidia's board regarding compliance posture\n- The compliance review is scoped to cover all export channels, not just the specific conduct alleged\n- The board establishes a clear, public governance narrative: voluntary pause, not forced retreat\n- Core domestic and allied-market growth continues uninterrupted\n\n**This recommendation fails if:**\n- The pause extends beyond 120 days without clear exit criteria, turning temporary caution into permanent competitive damage\n- The board uses the pause as cover for inaction rather than genuine compliance reform\n- Nvidia or major customers interpret the pause as evidence of deeper problems rather than responsible governance\n- The independent investigation reveals systemic institutional involvement, requiring a fundamentally different response (not a pause but a restructuring)\n\n---\n\n## Counterarguments Addressed\n\n**\"The company is not named as a defendant — this is overreaction.\"**\nNot being named *yet* is not the same as being cleared. The investigation is ongoing. If the board treats \"not a defendant\" as a green light and further facts emerge, the credibility damage will be catastrophic. The correct read of \"not named as a defendant\" is that the company has a narrow window to demonstrate good faith before prosecutors decide whether to expand the case.\n\n**\"Pausing will cost us customers who go to Dell or HPE.\"**\nThe pause applies to high-risk export channels, not domestic hyperscale orders. Any customer lost because Supermicro tightened export compliance is a customer the company should not have been serving. And in a supply-constrained GPU market, order backlogs provide a natural buffer — paused orders can resume after the reset without permanent market share loss.\n\n**\"Moving fast is how we won in AI infrastructure — slowing down is against our DNA.\"**\nSpeed is a competitive advantage only when it doesn't create existential risk. The fastest path to sustained growth runs through a clean compliance posture, not around it.\n\n---\n\n## Recommended Next Artifact\n\n**90-Day Compliance Reset Execution Plan** — a detailed operational playbook specifying:\n1. Which channels and geographies are restricted during the pause period\n2. Customer communication strategy (proactive, not reactive)\n3. Nvidia engagement protocol (board-to-board, not just commercial)\n4. Interim investigation milestone schedule with board reporting cadence\n5. Exit criteria: what specific findings or milestones trigger resumption of normal operations\n6. Public narrative framework: voluntary governance action, not forced retreat\n7. Employee communication plan to prevent talent flight driven by uncertainty",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "The $2.5B scale of alleged export violations makes an 'isolated individual misconduct' defense fragile and increases the likelihood of expanded regulatory scrutiny, making a proactive compliance pause the lower-risk strategic choice.",
+          "evidence_refs": [
+            "ctx-fortune-2.5B",
+            "ctx-not-named-defendant",
+            "ctx-indictment-march19"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "Supermicro's existential dependence on Nvidia GPU access means that any action perceived as lax compliance creates asymmetric downside risk — Nvidia has its own regulatory exposure and cannot afford supply-chain partners with unresolved export-control issues.",
+          "evidence_refs": [
+            "ctx-nvidia-relationship-strain",
+            "ctx-ai-server-prominence"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "The competitive cost of a 90–120 day pause on high-risk export channels is overstated because AI infrastructure demand is supply-constrained, core domestic business is unaffected, and order backlogs provide a natural buffer against permanent market share loss.",
+          "evidence_refs": [
+            "ctx-pause-protects",
+            "ctx-customer-shift-risk",
+            "ctx-growth-preservation"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-4",
+          "summary": "The compliance reset is already partially underway (internal review, acting CCO, external counsel) — converting reactive measures into a proactive strategic pause gives the board narrative control and signals good faith to regulators.",
+          "evidence_refs": [
+            "ctx-compliance-review",
+            "ctx-cco-reporting",
+            "ctx-munger-tolles"
+          ],
+          "is_major": false
+        },
+        {
+          "claim_id": "side_a-claim-5",
+          "summary": "Supermicro's 'not named as a defendant' status is a temporary window during an active investigation, not a final determination — the board should treat it as finite time to act voluntarily before prosecutors decide whether to expand the case.",
+          "evidence_refs": [
+            "ctx-not-named-defendant",
+            "ctx-underreaction-risk",
+            "ctx-indictment-march19"
+          ],
+          "is_major": false
+        }
+      ],
+      "citations": [
+        "ctx-fortune-2.5B",
+        "ctx-indictment-march19",
+        "ctx-not-named-defendant",
+        "ctx-nvidia-relationship-strain",
+        "ctx-ai-server-prominence",
+        "ctx-compliance-review",
+        "ctx-cco-reporting",
+        "ctx-munger-tolles",
+        "ctx-pause-protects",
+        "ctx-customer-shift-risk",
+        "ctx-growth-preservation",
+        "ctx-underreaction-risk"
+      ],
+      "open_questions": [
+        "What is the DOJ/BIS enforcement trajectory — is Supermicro viewed as a cooperating witness or a potential future target?",
+        "Has Nvidia initiated its own supply-chain compliance review that could independently affect GPU allocations?",
+        "Does the $2.5B figure represent the full extent of problematic transactions, or could the internal review surface additional violations?",
+        "Do top customer contracts contain compliance representations that could trigger termination rights?",
+        "Does Supermicro have any prior regulatory settlements or enforcement actions that regulators could cite as a pattern of non-compliance?"
+      ],
+      "critique_responses": [
+        {
+          "finding_id": "finding-2",
+          "disposition": "adopted",
+          "rationale": "The critique is correct. The 2020 SEC settlement reference was introduced without support from the case packet, and the inferential chain from accounting-related misconduct to export-control governance failures was not established. The revised artifact removes this unsupported claim entirely. The prior claim-5 has been replaced with a packet-grounded argument about the temporary nature of Supermicro's 'not named as a defendant' status. The question of whether Supermicro has prior compliance history is now properly surfaced as an open unknown in the Evidence Gaps table rather than asserted as established fact."
+        }
+      ]
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-14-025659714Z-supermicro-export-controls",
+      "side_id": "side_b",
+      "round": "final",
+      "artifact_markdown": "# Revised artifact\n\n# Recommendation: Pause New High-Risk Expansion, Preserve Low-Risk Fulfillment\n\nSupermicro should not continue full-speed AI-growth execution while the investigation is underway. The board should preserve low-risk customer fulfillment, but pause new activity in higher-risk channels, geographies, reseller structures, and end-customer paths until tightened controls are operational. The core reason is narrower and more defensible than my first draft: the company is simultaneously facing an indictment-related export-controls controversy, an independent board-led investigation, and a review of its Global Trade Compliance Program, while investor concern has already extended to the Nvidia relationship. In that setting, the board should not ask the market to trust a control environment that it is still actively testing and remediating. [ctx-1] [ctx-2] [ctx-3] [ctx-4]\n\nThis recommendation does not depend on claiming that any slowdown is obviously cheaper than any underreaction. The competitive cost of slowing down is real. The case packet explicitly warns that hyperscale and enterprise customers could shift orders to rivals and may not return quickly. Supermicro is also a prominent AI-server supplier in a demand-rich market, so a broad operational freeze would be strategically self-inflicted. Those are serious counterarguments, and they rule out a blanket pause. But they do not justify business as usual while the board is still investigating whether the issue was isolated misconduct or evidence of a broader controls weakness. [ctx-5] [ctx-6]\n\nThe decision, then, is not between panic and denial. It is between selective continuity and unmanaged exposure. Supermicro says it is not named as a defendant, is not accused of wrongdoing, and that the three individuals no longer have any relationship with the company. If that narrow-company-defense narrative proves correct, the company should preserve as much low-risk revenue as possible while the facts are established. But the same facts also support immediate narrowing of risk appetite: the allegations involve export controls, the reported shipment value is material, the product set is tightly linked to Nvidia GPUs, and the board has already escalated oversight to independent directors and external counsel. Continuing full-speed expansion through channels that cannot be affirmatively cleared would create an avoidable governance contradiction. [ctx-1] [ctx-2] [ctx-3] [ctx-4] [ctx-7]\n\nThe board should therefore adopt a targeted operating posture. Keep shipping where customer identity, geography, end use, and channel integrity are clear under tightened controls. Pause new business where those conditions cannot be established quickly and credibly. Require escalation for sensitive deals, give the compliance function visible authority to block revenue at the margin, and define objective conditions for reopening paused activity. That approach accepts real commercial pain, but it contains the pain to the risk perimeter instead of extending uncertainty across the full franchise. [ctx-4] [ctx-5] [ctx-6] [ctx-7]\n\n## Decision Frame\n\nDecision: Pause new high-risk activity until a compliance reset is operational, while continuing low-risk fulfillment under tightened controls.\n\nWhy this is the right choice:\n- The board has already signaled that the issue is serious enough to require an independent investigation and a compliance-program review.\n- Full-speed execution is hard to defend while the company is still determining whether the problem was isolated or systemic.\n- A blanket pause would concede too much ground in a high-demand market, but selective continuity preserves the best business while governance facts are still unresolved.\n- The recommendation is designed around reversibility: preserve low-risk revenue now, and reopen high-risk activity only after control confidence improves.\n\n## Unknowns & Evidence Gaps\n\n- Whether the alleged misconduct was isolated to the indicted individuals or reflects broader weaknesses in channel controls, escalation, or management oversight.\n- Which specific channels, reseller structures, geographies, and end-customer patterns represent the highest export-controls risk.\n- How durable customer switching would be if some high-risk orders are delayed or rejected.\n- Whether Nvidia is treating this as a temporary counterparty-risk issue or a potential basis for tighter commercial constraints.\n- What concrete remediation milestones the independent investigation and trade-compliance review will require before high-risk activity can resume.\n\n## Pass/Fail Readiness\n\nPass if:\n- The board can separate low-risk from high-risk revenue streams quickly enough to avoid a de facto full-company freeze.\n- Sensitive deals are subject to immediate escalation and stop-ship authority under tightened controls.\n- Compliance leadership has credible authority to challenge commercial pressure during the review period.\n- Management can explain to Nvidia, customers, and investors why the company is preserving core delivery while narrowing exposure.\n\nFail if:\n- Management treats the absence of company charges as sufficient justification for business as usual.\n- The company cannot operationally distinguish clearable business from unclearable business.\n- The response becomes symbolic, with investigation and remediation running in parallel to unchanged risk-taking.\n- Additional facts emerge showing broader control weaknesses after the board chose not to narrow exposure.\n\n## Recommended Next Artifact\n\nBoard compliance-gating memo with 30/60/90-day actions covering:\n- immediate high-risk channel and geography restrictions\n- sensitive-deal escalation criteria\n- compliance authority and reporting design during the reset period\n- Nvidia, customer, and investor communication points\n- objective reopening conditions for paused activity",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "Supermicro should pause new high-risk expansion while preserving low-risk fulfillment because business as usual is not credible when the board is simultaneously running an independent investigation and reviewing the trade-compliance program.",
+          "evidence_refs": [
+            "ctx-1",
+            "ctx-3",
+            "ctx-4"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "The right alternative to full-speed growth is not a blanket pause but a selective continuity strategy that protects low-risk revenue while gating unclear or sensitive transactions.",
+          "evidence_refs": [
+            "ctx-4",
+            "ctx-5",
+            "ctx-6",
+            "ctx-7"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "The strongest pro-growth argument is the real risk of durable customer share loss, but that supports avoiding a full freeze rather than maintaining unmanaged exposure during unresolved governance review.",
+          "evidence_refs": [
+            "ctx-5",
+            "ctx-6",
+            "ctx-7"
+          ],
+          "is_major": true
+        }
+      ],
+      "citations": [
+        "ctx-1",
+        "ctx-2",
+        "ctx-3",
+        "ctx-4",
+        "ctx-5",
+        "ctx-6",
+        "ctx-7"
+      ],
+      "open_questions": [
+        "What exact gating rules should define high-risk versus low-risk business in the first 30 days?",
+        "What reopening thresholds will Nvidia and major customers view as credible?",
+        "How much revenue is concentrated in channels that cannot be affirmatively cleared under tightened controls?"
+      ],
+      "critique_responses": [
+        {
+          "finding_id": "finding-1",
+          "disposition": "adopted",
+          "rationale": "The critique was correct that the first-pass memo overclaimed the cost asymmetry without evidence on customer-switching durability or slowdown reversibility. I revised the recommendation to remove the unsupported assertion that underreaction is categorically more costly than a targeted slowdown. The revised memo now makes a narrower claim grounded in the packet: full-speed execution is not credible while an independent investigation and compliance review are underway, so the board should choose selective continuity rather than either business as usual or a blanket pause."
+        }
+      ]
+    }
+  },
+  "min_margin_for_verdict": 0.1
+}

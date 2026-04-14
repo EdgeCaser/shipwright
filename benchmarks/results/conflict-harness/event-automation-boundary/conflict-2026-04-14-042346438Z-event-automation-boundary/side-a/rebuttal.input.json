@@ -1,0 +1,106 @@
+{
+  "case_packet": {
+    "scenario_id": "event-automation-boundary",
+    "title": "Event automation platform with human-in-the-loop boundary constraints",
+    "prompt": "Write a Phase 1 PRD for an event management automation platform with a WhatsApp assistant, an internal console, human approval for pricing commitments, and strict deterministic boundaries around LLM usage.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "opposing_first_pass": {
+    "run_id": "conflict-2026-04-14-042346438Z-event-automation-boundary",
+    "side_id": "side_b",
+    "round": "first_pass",
+    "artifact_markdown": "# Phase 1 PRD: Event Management Automation Platform\n\n## Decision Frame\n\n**Problem statement:** Event management companies handle high volumes of repetitive coordination tasks (venue inquiries, vendor scheduling, guest communication, pricing quotes) that consume operator time but follow predictable patterns. However, pricing commitments and contractual decisions carry financial risk that demands human judgment.\n\n**Decision to be made:** Should we build a Phase 1 platform combining a WhatsApp-based assistant for external communication, an internal operator console, and a human-approval workflow for pricing — with strict deterministic boundaries constraining where LLM inference is permitted?\n\n**Stakeholders:** Event operators (primary users), end-clients (WhatsApp recipients), finance/pricing approvers, engineering team.\n\n**Success criteria for Phase 1:**\n- Reduce operator time on routine inquiries by ≥40%\n- Zero pricing commitments issued without human approval\n- WhatsApp response latency <60s for templated replies, <5min for LLM-assisted drafts requiring approval\n- Operator adoption: ≥3 operators using console daily within 4 weeks of launch\n\n**What this PRD is NOT deciding:** Phase 2 features (payment processing, multi-channel expansion beyond WhatsApp, autonomous pricing), vendor marketplace integrations, or white-label positioning.\n\n---\n\n## Product Architecture\n\n### Component 1: WhatsApp Assistant\n\n**Scope:** Receives inbound messages from clients via WhatsApp Business API. Handles three tiers of responses:\n\n| Tier | Behavior | LLM Involvement | Approval Required |\n|------|----------|-----------------|--------------------|\n| T1 — Deterministic | FAQ, hours, location, standard package descriptions | None. Template lookup only. | No |\n| T2 — LLM-Drafted | Custom inquiries, schedule coordination, follow-ups | LLM generates draft; operator reviews before send | Yes — operator review |\n| T3 — Pricing/Commitment | Any message containing pricing, discounts, contractual terms | LLM generates draft; flagged for pricing-authority approval | Yes — pricing authority |\n\n**Deterministic boundary rules:**\n- Classification of inbound messages into T1/T2/T3 uses a rules-based classifier (keyword + regex), NOT an LLM. Misclassification defaults upward (T1→T2, T2→T3).\n- T1 responses are selected from a curated template library. No generative text in T1.\n- LLM is used ONLY for draft generation in T2/T3. Drafts are never sent automatically.\n- All LLM prompts are logged with input/output pairs for audit.\n- LLM model version is pinned per deployment. No auto-updates.\n\n### Component 2: Internal Operator Console\n\n**Scope:** Web-based dashboard for operators and pricing approvers.\n\n**Core screens:**\n1. **Inbox** — Queued messages requiring review, sorted by tier and urgency\n2. **Conversation view** — Full WhatsApp thread with client, LLM draft highlighted, edit-before-send capability\n3. **Approval queue** — T3 items requiring pricing-authority sign-off, with audit trail\n4. **Template manager** — CRUD for T1 response templates\n5. **Activity log** — All messages sent, who approved, LLM inputs/outputs\n\n**Authorization model:**\n- Operator role: can approve and send T1 and T2 messages\n- Pricing Authority role: required for T3 approval. Cannot be bypassed.\n- Admin role: template management, user management, system configuration\n\n### Component 3: Human Approval Workflow\n\n**Invariant:** No message containing a pricing commitment, discount, or contractual term is transmitted to a client without explicit approval from a user holding the Pricing Authority role.\n\n**Implementation constraints:**\n- Approval is a deliberate action (button click with confirmation), not a passive timeout\n- No \"auto-approve after N minutes\" mechanism in Phase 1\n- Approval records are immutable (append-only audit log)\n- If no Pricing Authority is available, T3 messages queue indefinitely with escalating console alerts at 15min, 1hr, 4hr\n\n### LLM Boundary Specification\n\n**Where LLM is permitted:**\n- Draft generation for T2 and T3 responses (human reviews before send)\n- Suggested reply ranking (operator sees top-3 drafts, picks or edits one)\n\n**Where LLM is explicitly prohibited:**\n- Message tier classification (rules-based only)\n- Sending any message to a client (human action required)\n- Template selection for T1 (deterministic lookup)\n- Access control decisions\n- Pricing calculations (sourced from pricing table, not generated)\n\n**Guardrails:**\n- Output token limit: 500 tokens per draft\n- Content filter: reject drafts containing currency symbols or numbers unless input was classified T3 (forces pricing review)\n- Fallback: if LLM call fails or times out (>10s), queue message for fully manual response rather than retrying or degrading\n\n---\n\n## Unknowns & Evidence Gaps\n\n| # | Unknown | Impact if Wrong | Mitigation Plan | Evidence Needed |\n|---|---------|----------------|-----------------|----------------|\n| U1 | Rules-based classifier accuracy for T1/T2/T3 separation | Misclassification downward (T3→T2) could let pricing commitments bypass approval | Default-upward policy; measure false-negative rate on T3 in pilot | Labeled dataset of 500+ real inbound messages with tier annotations |\n| U2 | Operator willingness to review every T2 draft before sending | If review fatigue causes rubber-stamping, quality degrades | Track edit rate and time-on-review; if edit rate <5% after 2 weeks, consider auto-send for high-confidence T2 in Phase 2 | Operator behavior data from first 4 weeks |\n| U3 | WhatsApp Business API rate limits and template approval timelines | Could bottleneck response latency targets | Pre-register template library; monitor API quota usage | WhatsApp Business API documentation review + sandbox testing |\n| U4 | Client expectations for response speed on pricing inquiries | If clients expect instant pricing, queuing T3 may cause drop-off | Set auto-reply acknowledgment (\"We're preparing your custom quote\") for T3 items | Client satisfaction survey after pilot |\n| U5 | Volume of T3 vs T2 vs T1 messages in real traffic | Determines staffing needs for Pricing Authority coverage | Classify historical message logs before launch | Sample of 1000 historical WhatsApp messages |\n| U6 | LLM draft quality for event-specific domain language | Poor drafts increase operator editing burden, negating time savings | Fine-tune system prompt with domain examples; measure operator edit distance | A/B test: LLM draft vs. no draft, measure time-to-send |\n\n---\n\n## Pass/Fail Readiness\n\n### Pass Criteria (all must be met to ship Phase 1)\n\n- [ ] **Safety invariant verified:** No code path exists where a T3 message reaches a client without Pricing Authority approval — verified by automated test suite AND manual audit\n- [ ] **Classifier default-upward behavior confirmed:** Unit tests prove ambiguous inputs classify to higher tier, never lower\n- [ ] **LLM boundary enforcement:** LLM calls are isolated to draft generation module; no LLM dependency in classification, routing, or send paths — verified by architectural review and dependency analysis\n- [ ] **Audit log completeness:** Every sent message has a recorded approval chain (who classified, who reviewed, who approved, timestamp)\n- [ ] **Operator console functional:** All 5 core screens operational with role-based access enforced\n- [ ] **WhatsApp integration stable:** Successfully send/receive messages in sandbox environment with <5s API latency p95\n- [ ] **Pilot dataset classified:** ≥500 historical messages labeled to validate classifier accuracy ≥90% with T3 recall ≥99%\n\n### Fail Criteria (any one blocks ship)\n\n- T3 recall below 99% (i.e., >1% of pricing messages misclassified downward)\n- Any pathway where LLM output is sent to client without human action\n- Audit log gaps (messages sent without corresponding approval records)\n- Pricing Authority bypass possible through UI or API\n\n---\n\n## Phase 1 Scope Boundaries\n\n**In scope:**\n- Single WhatsApp Business number\n- English language only\n- Up to 10 concurrent operators\n- One pricing table (no dynamic pricing engine)\n- Cloud deployment (single region)\n\n**Explicitly out of scope:**\n- Multi-language support\n- Payment processing or invoicing\n- SMS, email, or other channels\n- Autonomous sending (even for T1)\n- Analytics dashboards beyond activity log\n- Mobile app for operators (web only)\n\n---\n\n## Recommended Next Artifact\n\n**Immediate next step:** Technical Design Document (TDD) covering:\n1. WhatsApp Business API integration architecture and webhook design\n2. Rules-based classifier specification (keyword lists, regex patterns, default-upward logic)\n3. LLM integration contract (prompt templates, model selection, isolation boundaries)\n4. Approval workflow state machine with edge cases (concurrent approvers, revocation, timeout escalation)\n5. Audit log schema and retention policy\n\n**Parallel workstream:** Message classification dataset — collect and label 500+ historical WhatsApp messages to validate classifier design before engineering starts.\n\n**Phase 1 timeline dependency:** WhatsApp Business API access approval (can take 2-4 weeks) should be initiated immediately as it is on the critical path.",
+    "claims": [
+      {
+        "claim_id": "side_b-claim-1",
+        "summary": "The three-tier classification system (T1 deterministic, T2 LLM-drafted with operator review, T3 pricing with authority approval) enforces the human-in-the-loop constraint by design, with a rules-based classifier that defaults upward on ambiguity rather than using LLM for classification.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-2",
+        "summary": "LLM usage is confined exclusively to draft generation for T2/T3 responses and is explicitly prohibited from classification, sending, template selection, access control, and pricing calculations — creating a verifiable deterministic boundary.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-3",
+        "summary": "The approval workflow for pricing commitments is designed with no auto-approve timeout, immutable audit logs, and indefinite queuing with escalation alerts — making it impossible to bypass human judgment on financial commitments.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-4",
+        "summary": "Pass/fail readiness criteria require T3 recall ≥99% and verified absence of any code path where LLM output reaches clients without human action — these are ship-blocking gates, not aspirational targets.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-5",
+        "summary": "Six unknowns are identified with specific evidence-collection plans, including the critical risk that rules-based classification may miss pricing-related messages (U1) and that operator review fatigue may degrade the human-in-the-loop guarantee (U2).",
+        "evidence_refs": [],
+        "is_major": false
+      }
+    ],
+    "citations": [],
+    "open_questions": [
+      "What historical message volume and distribution exists to validate the T1/T2/T3 split assumptions?",
+      "What is the expected Pricing Authority availability window — is 24/7 coverage feasible or will timezone gaps create unacceptable queuing delays?",
+      "Should the T1 auto-reply path be included in Phase 1 or should all tiers require operator action initially to build trust in the classifier?"
+    ],
+    "critique_responses": []
+  }
+}

@@ -1,0 +1,101 @@
+{
+  "case_packet": {
+    "scenario_id": "prd-hidden-scope-creep",
+    "title": "PRD with hidden scope creep",
+    "prompt": "Write a PRD for a team inbox workflow handoff improvement.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass": {
+    "run_id": "conflict-2026-04-14-144340725Z-prd-hidden-scope-creep",
+    "side_id": "side_a",
+    "round": "first_pass",
+    "artifact_markdown": "# PRD: Team Inbox Workflow Handoff Improvement\n\n## Summary\nImprove handoffs inside the team inbox so work can move from one owner to another without losing context, dropping SLAs, or creating duplicate effort.\n\n## Problem\nTeams using a shared inbox need to transfer conversations across shifts, functions, or escalation levels. Current handoffs are often implicit, inconsistently documented, and hard to track. This creates three failures: the next owner lacks context, customers wait while ownership is unclear, and managers cannot distinguish real backlog from stalled handoffs.\n\n## Goal\nEnable explicit, trackable handoffs for inbox conversations with enough structure to preserve context and enough guardrails to prevent hidden workflow expansion.\n\n## Success Metrics\n- Reduce conversations reopened due to missing handoff context.\n- Reduce median time between handoff initiation and first response by new owner.\n- Increase percentage of handoffs completed with required context fields.\n- Reduce conversations with ambiguous ownership after handoff.\n\n## Non-Goals\n- No full workflow builder.\n- No cross-system ticket orchestration.\n- No staffing, routing, or workforce-management redesign.\n- No AI summarization requirement in v1.\n- No changes to customer-facing message delivery semantics.\n\n## Users\n- Primary: support agents handing off conversations.\n- Secondary: receiving agents or teams.\n- Secondary: team leads monitoring queue health and SLA risk.\n\n## User Stories\n- As a sending agent, I want to hand off a conversation with a clear next owner and context so I can end my shift without losing continuity.\n- As a receiving agent, I want to see why the handoff happened, what was already done, and what I should do next.\n- As a team lead, I want to see handoffs in progress and stalled handoffs so I can intervene before SLAs are missed.\n\n## Requirements\n### Functional Requirements\n1. A user can initiate a handoff from a conversation.\n2. A handoff requires a destination owner or team.\n3. A handoff requires structured context fields: reason for handoff, current status, and next recommended action.\n4. The conversation remains assigned to the current owner until the handoff is accepted or auto-completed by configured policy.\n5. The receiving owner sees a distinct handoff state and the provided context.\n6. The system records handoff timestamps: initiated, accepted, completed, or declined.\n7. Ownership state is always explicit: current owner, pending recipient, and final owner after completion.\n8. A declined handoff must capture a reason and return the conversation to a defined owner state.\n9. Managers can view a list of pending and overdue handoffs.\n10. Conversation history must show handoff events in the activity log.\n\n### UX Requirements\n- Initiating a handoff should take under 30 seconds for a trained user.\n- Required context fields should be visible in one compact form.\n- Pending handoff status should be obvious in inbox list and conversation detail.\n- Acceptance and decline actions should be available from the receiving workflow.\n\n### Reporting Requirements\n- Track handoff volume, acceptance rate, time to acceptance, and overdue handoffs.\n- Support filtering by team, inbox, and handoff reason.\n\n## Scope Boundaries\nThis PRD covers explicit handoff creation, acceptance/decline, status visibility, and basic reporting. It does not cover generalized task management, multi-step approvals, skill-based routing engines, or external system sync. Any request that introduces configurable workflow branching, custom states beyond handoff lifecycle, or dependency management is out of scope for v1.\n\n## Assumptions\n- The inbox already supports conversation ownership.\n- Teams have a concept of assignable users or groups.\n- Activity logs and SLA measurements already exist or can be extended.\n\n## Risks\n- Teams may use handoffs as a substitute for broader queue-routing needs.\n- Required fields may create friction if the form is too heavy.\n- Ambiguity between assignment and handoff may confuse users if labels are unclear.\n\n## Rollout Recommendation\nShip to one internal-support or pilot team first. Validate whether explicit handoffs reduce ambiguity without materially slowing agents.\n\n## Decision Frame\nBuild a narrow v1 focused on explicit conversation handoff lifecycle, context capture, and manager visibility. Reject adjacent asks that turn the feature into a workflow platform. The decision is useful if it helps the team choose a small, testable release over a generalized operations redesign.\n\n## Unknowns & Evidence Gaps\n- Current baseline rate of failed or delayed handoffs is not provided.\n- No evidence yet on which handoff context fields are truly required versus nice-to-have.\n- No confirmation on whether acceptance should be mandatory for all teams or policy-driven.\n- No validated threshold yet for what counts as an overdue handoff.\n\n## Pass/Fail Readiness\nPass if the team agrees on the narrow v1 scope, ownership state model, required context fields, and launch metrics. Fail if stakeholders require workflow automation, external routing, or configurable approvals before launch, because that would indicate hidden scope creep beyond this PRD.\n\n## Recommended Next Artifact\nTechnical spec for conversation ownership state transitions, handoff event schema, SLA interactions, and inbox UI changes.",
+    "claims": [
+      {
+        "claim_id": "side_a-claim-1",
+        "summary": "The PRD should define a tightly scoped handoff lifecycle and explicitly exclude adjacent workflow-platform features to prevent hidden scope creep.",
+        "evidence_refs": [
+          "ctx-1"
+        ],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_a-claim-2",
+        "summary": "A useful v1 must require structured handoff context, explicit ownership states, and manager visibility into pending and overdue handoffs.",
+        "evidence_refs": [
+          "ctx-1"
+        ],
+        "is_major": true
+      }
+    ],
+    "citations": [
+      "ctx-1"
+    ],
+    "open_questions": [],
+    "critique_responses": []
+  },
+  "critique_packet": {
+    "target_side": "side_a",
+    "finding_id": "finding-2",
+    "target_claim_ids": [
+      "side_a-claim-2"
+    ],
+    "claim_under_attack": "A useful v1 must require structured handoff context, explicit ownership states, and manager visibility into pending and overdue handoffs.",
+    "attack_type": "evidence_gap",
+    "evidence_or_reason": "The artifact internally contradicts this claim. Functional Requirement #3 mandates structured context fields (reason, status, next action) as required, yet the Unknowns section explicitly states 'No evidence yet on which handoff context fields are truly required versus nice-to-have.' A PRD cannot credibly label fields as must-have requirements while simultaneously admitting it has no evidence for which fields matter. This is not tight scoping — it is premature commitment dressed as discipline. The same gap applies to 'overdue handoff' visibility: the artifact admits 'No validated threshold yet for what counts as an overdue handoff,' making the reporting requirement (track overdue handoffs) unimplementable as specified. The claim presents these as settled v1 requirements when they are actually untested hypotheses that should appear in the evidence gaps column, not the requirements table.",
+    "severity": "high"
+  }
+}

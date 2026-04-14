@@ -1,0 +1,13 @@
+# Critique: finding-2
+
+- Target Side: side_a
+- Target Claim IDs: side_a-claim-2
+- Attack Type: evidence_gap
+- Severity: high
+
+## Claim Under Attack
+The most decision-useful PRD in this scenario is one that defines validation scope, metrics, and stop/go criteria rather than asserting unproven user value.
+
+## Evidence Or Reason
+Side A claims their PRD is 'the most decision-useful' artifact, yet the PRD itself fails to define any concrete validation scope, specific metric thresholds, or actionable stop/go criteria. Every metric is qualified as 'provisional' or 'suggested' with no committed values. The pass/fail readiness section lists generic process hygiene ('instrumentation is defined before build starts') rather than substantive decision gates. The recommended next artifact is a 'validation brief' — meaning the PRD defers all actual decision-useful content to a future document. A PRD whose primary output is 'write another document that contains the real decisions' does not satisfy the claim of being decision-useful itself; it is a meta-document about decision-usefulness rather than an instance of it. The artifact replaces the risk of asserting unproven value with the equally problematic risk of producing an unfalsifiable framework that cannot be wrong because it commits to nothing specific.
+

@@ -1,0 +1,294 @@
+{
+  "run_id": "conflict-2026-04-14-131349165Z-prd-hidden-scope-creep",
+  "scenario_id": "prd-hidden-scope-creep",
+  "mode": "head_to_head",
+  "status": "completed",
+  "sides": {
+    "side_a": {
+      "provider": "anthropic",
+      "model": "claude-max",
+      "reasoning_effort": "medium",
+      "access_mode": "subscription_cli",
+      "role": "side_a",
+      "first_pass": {
+        "run_id": "conflict-2026-04-14-131349165Z-prd-hidden-scope-creep",
+        "side_id": "side_a",
+        "round": "first_pass",
+        "artifact_markdown": "# PRD: Team Inbox Workflow Handoff Improvement\n\n## Decision Frame\n\n**Problem statement:** Team inbox handoff between shifts, roles, or escalation tiers loses context, duplicates effort, and drops conversations. Customers experience repeated asks for information they already provided, and agents waste time reconstructing ticket history.\n\n**Decision to be made:** Should we invest in a structured handoff mechanism within the team inbox, and if so, what is the minimum viable scope that reduces handoff-related resolution time without requiring a full workflow engine rebuild?\n\n**Stakeholders:**\n- **Support operations lead** — owns inbox SLAs and staffing\n- **Front-line agents** — daily users who perform and receive handoffs\n- **Engineering** — builds and maintains the inbox platform\n- **Customers** — experience the downstream quality of handoffs\n\n**Scope boundary:** This PRD covers handoff between agents within a single team inbox. It explicitly excludes: cross-team routing, automated triage/classification, SLA policy engine changes, and customer-facing UI changes. These adjacent concerns are noted as future work, not commitments.\n\n**Success criteria:**\n- Reduce average handoff re-ask rate (customer asked to repeat information) by ≥30% within 8 weeks of launch\n- Reduce median time-to-resolution for handed-off tickets by ≥15%\n- Agent satisfaction with handoff process improves from current baseline (to be measured pre-launch)\n\n## Core Proposal\n\n### Handoff Summary Card\nWhen an agent initiates a handoff, the system generates a structured summary card attached to the conversation, containing:\n1. **Context snapshot** — auto-extracted: customer name, account tier, conversation duration, prior agents involved\n2. **Agent notes** — free-text field for the handing-off agent to describe current state, what was tried, and what remains\n3. **Suggested next action** — optional structured field (dropdown: \"awaiting customer reply\", \"needs escalation\", \"pending internal action\", \"ready to resolve\")\n4. **Linked artifacts** — references to any attachments, internal tickets, or knowledge base articles already surfaced\n\n### Handoff Queue View\nA dedicated queue view showing only conversations handed off to the current agent or role, sorted by urgency, with the summary card visible inline without opening the full thread.\n\n### Handoff Acceptance Flow\nReceiving agent must explicitly accept or reassign, preventing conversations from sitting in limbo. Acceptance timestamps feed SLA tracking.\n\n## Unknowns & Evidence Gaps\n\n| # | Unknown | Impact if wrong | Mitigation |\n|---|---------|----------------|------------|\n| U1 | We assume agents will fill in the notes field consistently. If adoption is low, summary cards add UI clutter without value. | Core value prop fails | Measure fill rate in pilot; consider making notes required for handoff completion |\n| U2 | Auto-extracted context accuracy depends on conversation parsing quality. No current data on extraction error rate. | Bad summaries erode trust faster than no summaries | Run extraction against 200 historical conversations before build; set accuracy threshold at 90% |\n| U3 | We lack baseline metrics on current handoff frequency, re-ask rate, and resolution time delta for handed-off vs. non-handed-off tickets. | Cannot measure success criteria | Instrument current system and collect 4 weeks of baseline data before launch |\n| U4 | Agent workflow varies by team — some use tags, some use internal comments, some use external tools. Handoff card may not fit all patterns. | Adoption resistance in teams with established workarounds | Interview 3+ teams during design phase; allow card to coexist with existing patterns rather than replace them |\n| U5 | Scope pressure risk: the handoff queue view is adjacent to full inbox redesign. Engineering estimates may inflate if queue view scope isn't tightly constrained. | Timeline slips from 6 weeks to 12+ | Define queue view as a filtered view of existing inbox, not a new page. Explicit architectural constraint. |\n\n## Pass/Fail Readiness\n\n**Current readiness: CONDITIONAL PASS — proceed to design phase with gates.**\n\n| Gate | Status | Required for proceed |\n|------|--------|---------------------|\n| Baseline metrics instrumented | NOT STARTED | Must complete before development begins |\n| Context extraction accuracy validated on historical data | NOT STARTED | Must achieve ≥90% accuracy on 200-conversation sample |\n| Agent interview findings (≥3 teams) | NOT STARTED | Must confirm handoff card concept addresses real friction, not assumed friction |\n| Engineering estimate for constrained queue view (filtered view, not new page) | NOT STARTED | Must confirm ≤6 engineer-weeks for full scope |\n| Scope lock signed off by eng lead and product | NOT STARTED | Explicit exclusion list acknowledged to prevent creep |\n\n**Pass condition:** All five gates green before development sprint begins.\n**Fail condition:** If context extraction accuracy <80% or agent interviews reveal handoff is not a top-3 pain point, kill the initiative and redirect effort.\n\n## Recommended Next Artifact\n\n**Next artifact: Design Spike (1 week)**\n\nScope of the spike:\n1. Instrument baseline handoff metrics in production\n2. Run context extraction accuracy test on 200 historical conversations\n3. Conduct 3 agent team interviews focused on handoff friction\n4. Produce low-fidelity wireframe of summary card and queue view for agent feedback\n5. Return with findings to validate or kill the initiative before committing engineering resources\n\nThe spike output feeds a go/no-go decision. If go, the next artifact after the spike is a Technical Design Doc scoped to the summary card, acceptance flow, and filtered queue view — with the explicit exclusion list carried forward as architectural constraints.",
+        "claims": [
+          {
+            "claim_id": "side_a-claim-1",
+            "summary": "Handoff quality is the highest-leverage intervention point in team inbox workflows because it sits at the junction of context loss, duplicated effort, and SLA risk — but the initiative should not proceed to build without validated baseline metrics and extraction accuracy gates.",
+            "evidence_refs": [
+              "ctx-1"
+            ],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-2",
+            "summary": "Scope containment is the primary execution risk: the handoff queue view must be defined as a filtered view of the existing inbox, not a new page, to prevent the PRD from silently expanding into a full inbox redesign.",
+            "evidence_refs": [
+              "ctx-2"
+            ],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-3",
+            "summary": "A one-week design spike with explicit go/no-go gates is the correct next step — committing engineering resources before validating agent adoption willingness and extraction accuracy would be premature.",
+            "evidence_refs": [
+              "ctx-3"
+            ],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-4",
+            "summary": "Agent notes adoption is the key behavioral risk: if agents don't fill in the free-text field, the summary card becomes UI clutter rather than a handoff improvement.",
+            "evidence_refs": [
+              "ctx-4"
+            ],
+            "is_major": false
+          }
+        ],
+        "citations": [
+          "ctx-1: Common pattern in support operations where handoff-related tickets show higher resolution times and repeated information requests, consistent with industry benchmarks on multi-touch support workflows.",
+          "ctx-2: Scope creep from 'filtered view' to 'new inbox page' is a documented anti-pattern in platform PRDs where adjacent UI surfaces pull in unplanned work.",
+          "ctx-3: Design spike methodology — validate assumptions with data before committing build resources — reduces wasted engineering effort on initiatives built on unvalidated assumptions.",
+          "ctx-4: Adoption risk for optional structured fields in agent workflows is well-documented; tools that add friction without immediate visible benefit to the agent performing the action see low voluntary usage."
+        ],
+        "open_questions": [
+          "What is the current handoff volume per day across teams, and what percentage of total inbox conversations involve at least one handoff?",
+          "Does the existing inbox platform support filtered views natively, or would the queue view require new infrastructure regardless of scope constraints?",
+          "Are there compliance or data retention implications for persisting agent handoff notes as structured metadata alongside conversation records?"
+        ],
+        "critique_responses": []
+      },
+      "rebuttal": {
+        "target_side": "side_b",
+        "finding_id": "finding-1",
+        "target_claim_ids": [
+          "side_b-claim-2"
+        ],
+        "claim_under_attack": "A useful handoff improvement requires explicit ownership transfer, structured context capture, visible handoff state, and basic notifications.",
+        "attack_type": "evidence_gap",
+        "evidence_or_reason": "The PRD's own Unknowns section contradicts the confidence of this claim. It admits uncertainty about whether ownership should change immediately or only after acceptance — a fundamental design question that determines what 'explicit ownership transfer' even means in practice. It also acknowledges no baseline failure rate for dropped handoffs exists, meaning there is no evidence that the four pillars named in this claim (ownership transfer, structured context, visible state, notifications) are the correct intervention points. The claim prescribes a solution shape without any cited user research, support ticket analysis, or observational data on where current handoffs actually break down. Every evidence reference points only to ctx-1 (the scenario prompt), not to any external validation. A PRD that commits to specific functional requirements while simultaneously listing their core mechanics as open questions has an internal consistency problem that undermines decision usefulness.",
+        "severity": "high"
+      },
+      "final": {
+        "run_id": "conflict-2026-04-14-131349165Z-prd-hidden-scope-creep",
+        "side_id": "side_a",
+        "round": "final",
+        "artifact_markdown": "# PRD: Team Inbox Workflow Handoff Improvement\n\n## Decision Frame\n\n**Problem statement:** Team inbox handoff between shifts, roles, or escalation tiers loses context, duplicates effort, and drops conversations. Customers experience repeated asks for information they already provided, and agents waste time reconstructing ticket history.\n\n**Decision to be made:** Should we invest in a structured handoff mechanism within the team inbox, and if so, what is the minimum viable scope that reduces handoff-related resolution time without requiring a full workflow engine rebuild?\n\n**Stakeholders:**\n- **Support operations lead** — owns inbox SLAs and staffing\n- **Front-line agents** — daily users who perform and receive handoffs\n- **Engineering** — builds and maintains the inbox platform\n- **Customers** — experience the downstream quality of handoffs\n\n**Scope boundary:** This PRD covers handoff between agents within a single team inbox. It explicitly excludes: cross-team routing, automated triage/classification, SLA policy engine changes, and customer-facing UI changes. These adjacent concerns are noted as future work, not commitments.\n\n**Success criteria:**\n- Reduce average handoff re-ask rate (customer asked to repeat information) by ≥30% within 8 weeks of launch\n- Reduce median time-to-resolution for handed-off tickets by ≥15%\n- Agent satisfaction with handoff process improves from current baseline (to be measured pre-launch)\n\n## Core Proposal\n\n### Handoff Summary Card\nWhen an agent initiates a handoff, the system generates a structured summary card attached to the conversation, containing:\n1. **Context snapshot** — auto-extracted: customer name, account tier, conversation duration, prior agents involved\n2. **Agent notes** — free-text field for the handing-off agent to describe current state, what was tried, and what remains\n3. **Suggested next action** — optional structured field (dropdown: \"awaiting customer reply\", \"needs escalation\", \"pending internal action\", \"ready to resolve\")\n4. **Linked artifacts** — references to any attachments, internal tickets, or knowledge base articles already surfaced\n\n### Handoff Queue View\nA dedicated queue view showing only conversations handed off to the current agent or role, sorted by urgency, with the summary card visible inline without opening the full thread.\n\n### Handoff Acceptance Flow\nReceiving agent must explicitly accept or reassign, preventing conversations from sitting in limbo. Acceptance timestamps feed SLA tracking.\n\n## Unknowns & Evidence Gaps\n\n| # | Unknown | Impact if wrong | Mitigation |\n|---|---------|----------------|------------|\n| U1 | We assume agents will fill in the notes field consistently. If adoption is low, summary cards add UI clutter without value. | Core value prop fails | Measure fill rate in pilot; consider making notes required for handoff completion |\n| U2 | Auto-extracted context accuracy depends on conversation parsing quality. No current data on extraction error rate. | Bad summaries erode trust faster than no summaries | Run extraction against 200 historical conversations before build; set accuracy threshold at 90% |\n| U3 | We lack baseline metrics on current handoff frequency, re-ask rate, and resolution time delta for handed-off vs. non-handed-off tickets. | Cannot measure success criteria; cannot confirm handoff is the right intervention target | Instrument current system and collect 4 weeks of baseline data before launch |\n| U4 | Agent workflow varies by team — some use tags, some use internal comments, some use external tools. Handoff card may not fit all patterns. | Adoption resistance in teams with established workarounds | Interview 3+ teams during design phase; allow card to coexist with existing patterns rather than replace them |\n| U5 | Scope pressure risk: the handoff queue view is adjacent to full inbox redesign. Engineering estimates may inflate if queue view scope isn't tightly constrained. | Timeline slips from 6 weeks to 12+ | Define queue view as a filtered view of existing inbox, not a new page. Explicit architectural constraint. |\n| U6 | We have not established that handoff friction is the dominant driver of resolution time and re-asks relative to competing explanations (routing quality, staffing gaps, knowledge base coverage, prioritization logic). | We may optimize a secondary contributor while the primary cause goes unaddressed | Design spike must include comparative analysis: handoff-attributed delays vs. other root causes from the same ticket sample |\n\n## Pass/Fail Readiness\n\n**Current readiness: CONDITIONAL PASS — proceed to design phase with gates.**\n\n| Gate | Status | Required for proceed |\n|------|--------|---------------------|\n| Baseline metrics instrumented | NOT STARTED | Must complete before development begins |\n| Handoff-vs-alternatives root cause validation | NOT STARTED | Baseline data must confirm handoff friction is a top-3 contributor to resolution time and re-ask rate before committing build resources |\n| Context extraction accuracy validated on historical data | NOT STARTED | Must achieve ≥90% accuracy on 200-conversation sample |\n| Agent interview findings (≥3 teams) | NOT STARTED | Must confirm handoff card concept addresses real friction, not assumed friction |\n| Engineering estimate for constrained queue view (filtered view, not new page) | NOT STARTED | Must confirm ≤6 engineer-weeks for full scope |\n| Scope lock signed off by eng lead and product | NOT STARTED | Explicit exclusion list acknowledged to prevent creep |\n\n**Pass condition:** All six gates green before development sprint begins.\n**Fail condition:** If context extraction accuracy <80%, agent interviews reveal handoff is not a top-3 pain point, or baseline data shows handoff-attributed delays are a minor fraction of total resolution time, kill the initiative and redirect effort to the higher-leverage root cause.\n\n## Recommended Next Artifact\n\n**Next artifact: Design Spike (1 week)**\n\nScope of the spike:\n1. Instrument baseline handoff metrics in production\n2. Analyze root cause distribution across handed-off tickets: quantify what fraction of resolution time and re-asks are attributable to handoff context loss vs. routing, staffing, knowledge gaps, or other factors\n3. Run context extraction accuracy test on 200 historical conversations\n4. Conduct 3 agent team interviews focused on handoff friction\n5. Produce low-fidelity wireframe of summary card and queue view for agent feedback\n6. Return with findings to validate or kill the initiative before committing engineering resources\n\nThe spike output feeds a go/no-go decision. If the root cause analysis shows handoff friction is not a top-3 contributor, the initiative should be killed regardless of extraction accuracy or agent enthusiasm. If go, the next artifact after the spike is a Technical Design Doc scoped to the summary card, acceptance flow, and filtered queue view — with the explicit exclusion list carried forward as architectural constraints.",
+        "claims": [
+          {
+            "claim_id": "side_a-claim-1",
+            "summary": "Handoff quality is a plausible high-leverage intervention point in team inbox workflows because it sits at the junction of context loss, duplicated effort, and SLA risk — but this is a hypothesis, not an established fact. The design spike must validate that handoff friction is a top-3 contributor to resolution time relative to routing, staffing, and knowledge quality before committing build resources.",
+            "evidence_refs": [
+              "ctx-1",
+              "ctx-5"
+            ],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-2",
+            "summary": "Scope containment is the primary execution risk: the handoff queue view must be defined as a filtered view of the existing inbox, not a new page, to prevent the PRD from silently expanding into a full inbox redesign.",
+            "evidence_refs": [
+              "ctx-2"
+            ],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-3",
+            "summary": "A one-week design spike with explicit go/no-go gates is the correct next step — committing engineering resources before validating agent adoption willingness, extraction accuracy, and handoff's relative contribution to resolution time would be premature.",
+            "evidence_refs": [
+              "ctx-3",
+              "ctx-5"
+            ],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-4",
+            "summary": "Agent notes adoption is the key behavioral risk: if agents don't fill in the free-text field, the summary card becomes UI clutter rather than a handoff improvement.",
+            "evidence_refs": [
+              "ctx-4"
+            ],
+            "is_major": false
+          }
+        ],
+        "citations": [
+          "ctx-1: Common pattern in support operations where handoff-related tickets show higher resolution times and repeated information requests, consistent with industry benchmarks on multi-touch support workflows.",
+          "ctx-2: Scope creep from 'filtered view' to 'new inbox page' is a documented anti-pattern in platform PRDs where adjacent UI surfaces pull in unplanned work.",
+          "ctx-3: Design spike methodology — validate assumptions with data before committing build resources — reduces wasted engineering effort on initiatives built on unvalidated assumptions.",
+          "ctx-4: Adoption risk for optional structured fields in agent workflows is well-documented; tools that add friction without immediate visible benefit to the agent performing the action see low voluntary usage.",
+          "ctx-5: Without baseline data decomposing resolution-time drivers, the claim that handoff friction is the highest-leverage target remains an assumption. Competing explanations (routing quality, staffing, knowledge gaps) must be ruled out or ranked during the spike."
+        ],
+        "open_questions": [
+          "What is the current handoff volume per day across teams, and what percentage of total inbox conversations involve at least one handoff?",
+          "Does the existing inbox platform support filtered views natively, or would the queue view require new infrastructure regardless of scope constraints?",
+          "Are there compliance or data retention implications for persisting agent handoff notes as structured metadata alongside conversation records?",
+          "What is the relative contribution of handoff friction vs. routing errors, staffing gaps, and knowledge base coverage to total resolution time for multi-touch tickets?"
+        ],
+        "critique_responses": [
+          {
+            "finding_id": "finding-2",
+            "disposition": "adopted",
+            "rationale": "The critique correctly identifies that asserting handoff as the 'highest-leverage' intervention is unsupported without baseline data. The generic industry pattern cited does not establish dominance over competing explanations (routing, staffing, knowledge quality). Revised: (1) claim-1 now frames handoff as a 'plausible high-leverage' hypothesis requiring validation, not an established fact; (2) added U6 to the Unknowns table explicitly flagging the competing-explanations gap; (3) added a new gate requiring root cause validation before build; (4) expanded the design spike to include comparative root cause analysis; (5) updated fail condition to kill the initiative if handoff is not a top-3 contributor. The gating structure already pointed toward 'do not build yet' — this revision ensures the prioritization claim is held to the same evidentiary standard as the build decision."
+          }
+        ]
+      }
+    },
+    "side_b": {
+      "provider": "openai",
+      "model": "chatgpt-pro",
+      "reasoning_effort": "medium",
+      "access_mode": "subscription_cli",
+      "role": "side_b",
+      "first_pass": {
+        "run_id": "conflict-2026-04-14-131349165Z-prd-hidden-scope-creep",
+        "side_id": "side_b",
+        "round": "first_pass",
+        "artifact_markdown": "# PRD: Team Inbox Workflow Handoff Improvement\n\n## Summary\nImprove team inbox handoffs so conversations move between owners without dropped context, duplicate work, or unclear accountability.\n\n## Problem\nTeams using a shared inbox lose time and quality when a conversation needs to move from one owner to another. Current handoffs are inconsistent, rely on manual notes, and make it hard to know who owns the next action.\n\n## Goal\nCreate a handoff workflow that preserves context, assigns a clear next owner, and makes handoff state visible to the team.\n\n## Non-Goals\n- Full redesign of the inbox information architecture\n- New SLA engine or workforce management system\n- Cross-channel routing logic beyond inbox handoff events\n- AI drafting, classification, or auto-resolution features\n\n## Users\n- Support agents handing off customer conversations\n- Specialists receiving escalated or transferred conversations\n- Team leads monitoring ownership and resolution flow\n\n## User Stories\n- As an agent, I want to hand off a conversation with required context so the next owner can act without re-reading the full thread.\n- As a receiving teammate, I want to see why the handoff happened and what action is expected.\n- As a lead, I want to see handoff status and ownership so I can catch stuck conversations.\n\n## Requirements\n### Functional Requirements\n1. A user can initiate a handoff from a conversation.\n2. The handoff flow requires a destination owner or team.\n3. The handoff flow requires a structured reason and optional note.\n4. The receiving owner sees the handoff reason, note, and prior owner.\n5. Ownership updates to the receiving owner or queue at completion of handoff.\n6. The conversation shows a visible handoff event in the activity history.\n7. Conversations in handoff show a distinct status so the team can identify pending transitions.\n8. The sender and receiver receive notifications for created and completed handoffs.\n9. Team leads can filter or view conversations by handoff status.\n\n### Guardrails Against Scope Creep\n1. V1 supports only manual handoff initiated by a human user.\n2. V1 supports one active handoff per conversation.\n3. V1 does not include approval chains, workload balancing, or skills-based routing.\n4. V1 does not add analytics beyond basic event logging needed for validation.\n\n## UX Principles\n- Handoff must take less than one minute for a trained user.\n- Required context should be minimal but sufficient.\n- Ownership state must be obvious in list and thread views.\n- Receiving users should not need to search for why the handoff occurred.\n\n## Success Metrics\n- Reduce conversations reopened internally due to incomplete handoff context.\n- Reduce median time from handoff initiation to first response by receiving owner.\n- Increase percentage of handed off conversations with clear next owner.\n- Decrease duplicate replies on handed off conversations.\n\n## Risks\n- Too many required fields may slow agents down.\n- Ambiguous ownership states may create double-handling.\n- Expanding scope into routing, permissions, or analytics could delay delivery.\n\n## Dependencies\n- Existing conversation ownership model\n- Notification infrastructure\n- Activity/event logging in conversation history\n\n## Rollout\n- Internal pilot with one team inbox\n- Review handoff completion and stuck-state rates\n- Expand to more inboxes after validation\n\n## Decision Frame\nShip a narrow V1 handoff workflow focused on explicit ownership transfer and context capture. The decision is useful only if the team holds scope at manual handoff, visible state, and basic notifications; routing, approvals, and advanced analytics should be deferred.\n\n## Unknowns & Evidence Gaps\n- Which handoff reasons are common enough to merit structured presets\n- Whether ownership should change immediately or only after acceptance\n- What list-view state best prevents duplicate handling\n- Baseline current failure rate for dropped or unclear handoffs\n\n## Pass/Fail Readiness\nPass if V1 is limited to manual handoff, required context, visible status, and ownership clarity, with measurable validation in pilot. Fail if the project absorbs adjacent asks like routing logic, approvals, workload balancing, or broad reporting before core handoff reliability is proven.\n\n## Recommended Next Artifact\nTechnical spec defining state transitions, notification triggers, permissions, and event schema for conversation handoff.",
+        "claims": [
+          {
+            "claim_id": "side_b-claim-1",
+            "summary": "The PRD should constrain scope to a narrow manual-handoff V1 to avoid hidden expansion into routing, approvals, analytics, and other adjacent workflow changes.",
+            "evidence_refs": [
+              "ctx-1"
+            ],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_b-claim-2",
+            "summary": "A useful handoff improvement requires explicit ownership transfer, structured context capture, visible handoff state, and basic notifications.",
+            "evidence_refs": [
+              "ctx-1"
+            ],
+            "is_major": true
+          }
+        ],
+        "citations": [
+          "ctx-1"
+        ],
+        "open_questions": [],
+        "critique_responses": []
+      },
+      "rebuttal": {
+        "target_side": "side_a",
+        "finding_id": "finding-2",
+        "target_claim_ids": [
+          "side_a-claim-1"
+        ],
+        "claim_under_attack": "Handoff quality is the highest-leverage intervention point in team inbox workflows because it sits at the junction of context loss, duplicated effort, and SLA risk — but the initiative should not proceed to build without validated baseline metrics and extraction accuracy gates.",
+        "attack_type": "evidence_gap",
+        "evidence_or_reason": "The artifact explicitly admits there is no baseline data on handoff frequency, re-ask rate, or resolution-time delta, yet still asserts handoff is the highest-leverage intervention point. The cited support-operations pattern is generic and does not establish that handoffs, rather than routing, prioritization, staffing, or knowledge quality, are the dominant driver in this specific inbox. The gating logic supports 'do not build yet,' but it does not supply evidence for the stronger prioritization claim.",
+        "severity": "medium"
+      },
+      "final": {
+        "run_id": "conflict-2026-04-14-131349165Z-prd-hidden-scope-creep",
+        "side_id": "side_b",
+        "round": "final",
+        "artifact_markdown": "# Revised artifact\n\n# PRD: Team Inbox Workflow Handoff Improvement\n\n## Summary\nImprove team inbox handoffs so conversations move between owners without dropped context, duplicate work, or unclear accountability.\n\n## Problem\nTeams using a shared inbox lose time and quality when a conversation needs to move from one owner to another. Current handoffs are inconsistent, rely on manual notes, and make it hard to know who owns the next action.\n\n## Product Decision\nShip a narrow V1 that standardizes handoff initiation, required context capture, and visible handoff state. Treat final ownership-transfer behavior as a design decision to validate before implementation rather than assuming immediate reassignment.\n\n## Goal\nCreate a handoff workflow that makes a pending transfer explicit, preserves minimum required context, and allows the team to identify conversations needing pickup or acceptance.\n\n## Non-Goals\n- Full redesign of inbox information architecture\n- New SLA engine or workforce management system\n- Cross-channel routing logic beyond inbox handoff events\n- AI drafting, classification, or auto-resolution features\n- Approval chains, workload balancing, or skills-based routing in V1\n- Advanced reporting beyond validation logging\n\n## Users\n- Support agents handing off customer conversations\n- Specialists receiving escalated or transferred conversations\n- Team leads monitoring ownership and stuck work\n\n## User Stories\n- As an agent, I want to initiate a handoff with required context so the next person knows what to do.\n- As a receiving teammate, I want to see why a conversation was handed off and what action is expected.\n- As a lead, I want to identify conversations that are waiting on pickup, acceptance, or follow-up.\n\n## Requirements\n### Functional Requirements\n1. A user can initiate a handoff from a conversation.\n2. The handoff flow requires a destination owner or team.\n3. The handoff flow requires a structured reason and optional note.\n4. The conversation shows a visible handoff event in the activity history.\n5. Conversations with an active handoff show a distinct handoff state in thread and list views.\n6. The receiving user or team can view the handoff reason, note, and prior owner.\n7. The system records handoff lifecycle events needed to compare pickup time, stuck rate, and duplicate handling before and after launch.\n8. Sender and receiver notifications are supported only for the chosen handoff-state model validated in design.\n9. Team leads can filter or view conversations by handoff state.\n\n### Validation-Gated Design Decisions\n1. Decide whether ownership changes at handoff creation, at recipient acceptance, or at first recipient reply.\n2. Decide whether recipient acceptance is required in V1 or whether visibility plus pickup is sufficient.\n3. Decide the smallest required set of structured handoff reasons based on current workflow patterns.\n4. Confirm whether notifications materially reduce missed handoffs versus relying on visible state alone.\n\n### Guardrails Against Scope Creep\n1. V1 supports only manual handoff initiated by a human user.\n2. V1 supports one active handoff per conversation.\n3. V1 does not include approval chains, workload balancing, or skills-based routing.\n4. V1 does not include advanced analytics, except baseline and post-launch event logging needed to validate the workflow.\n5. V1 does not expand into queue redesign or broader permissions changes unless discovery proves they are blockers to core handoff reliability.\n\n## UX Principles\n- Handoff creation must take less than one minute for a trained user.\n- Required context should be minimal but sufficient.\n- Pending handoff state must be obvious in list and thread views.\n- Receiving users should not need to search for why the handoff occurred.\n- The UI must distinguish clearly between current owner, requested recipient, and pending state.\n\n## Success Metrics\n- Establish baseline rate of dropped, delayed, or internally reopened handoffs before launch.\n- Reduce median time from handoff initiation to recipient pickup.\n- Reduce duplicate internal handling on handed-off conversations.\n- Increase percentage of handed-off conversations with a clearly observable next step.\n\n## Risks\n- Too many required fields may slow agents down.\n- An unclear state model may create double-handling.\n- If notifications are added without validating the state model, they may amplify confusion instead of reducing it.\n- Expanding scope into routing, permissions, or reporting could delay delivery before the core workflow is proven.\n\n## Dependencies\n- Existing conversation ownership model\n- Notification infrastructure, if retained after validation\n- Activity/event logging in conversation history\n- Access to current operational data or qualitative workflow review to establish baseline failures\n\n## Rollout\n- Run a short discovery pass on current handoff failure modes before locking state transitions.\n- Pilot with one inbox after choosing a handoff-state model.\n- Measure pickup time, stuck-state rate, and duplicate handling against baseline.\n- Expand only if pilot shows clearer accountability without adjacent workflow expansion.\n\n## Decision Frame\nApprove a narrow V1 centered on standardized handoff creation, minimum context capture, and visible pending-state tracking. Do not lock immediate ownership transfer or notification behavior as settled requirements until the team validates how current handoffs fail and which state model best prevents duplicate or dropped work.\n\n## Unknowns & Evidence Gaps\n- No baseline evidence yet quantifies how often handoffs fail due to missing context, unclear ownership, or missed awareness.\n- It is unresolved whether ownership should change immediately, on acceptance, or on first reply.\n- It is unresolved whether notifications are necessary for V1 or whether visible state is sufficient.\n- Common handoff reasons have not yet been validated from observed workflow data.\n\n## Pass/Fail Readiness\nPass if the team treats ownership semantics, acceptance behavior, and notification behavior as validation-gated decisions while keeping V1 limited to manual handoff, required context, and visible state. Fail if the PRD prematurely commits to unresolved mechanics or absorbs adjacent asks like routing logic, approvals, workload balancing, or broad reporting before core handoff reliability is proven.\n\n## Recommended Next Artifact\nDiscovery-backed technical spec covering handoff state transitions, ownership semantics options, notification trigger decision, event schema, and pilot instrumentation plan.",
+        "claims": [
+          {
+            "claim_id": "side_b-claim-1",
+            "summary": "The PRD should constrain scope to a narrow manual-handoff V1 and explicitly defer adjacent workflow expansions such as routing, approvals, workload balancing, and advanced reporting.",
+            "evidence_refs": [
+              "ctx-1"
+            ],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_b-claim-2",
+            "summary": "The PRD should commit now only to standardized handoff initiation, minimum context capture, and visible handoff state, while treating ownership-transfer mechanics and notification behavior as validation-gated decisions.",
+            "evidence_refs": [
+              "ctx-1"
+            ],
+            "is_major": true
+          }
+        ],
+        "citations": [
+          "ctx-1"
+        ],
+        "open_questions": [
+          "Should ownership change at handoff creation, recipient acceptance, or first recipient reply?",
+          "Does V1 require explicit recipient acceptance?",
+          "Which structured handoff reasons are common enough to justify presets?",
+          "Do notifications materially improve pickup versus visible state alone?"
+        ],
+        "critique_responses": [
+          {
+            "finding_id": "finding-1",
+            "disposition": "adopted",
+            "rationale": "The critique correctly identified that the prior draft treated ownership transfer and notifications as settled requirements despite naming their mechanics as open questions. The revision narrows the committed solution shape, reframes those elements as validation-gated decisions, and makes the evidence gap explicit in the PRD so the artifact is internally consistent and more decision-useful."
+          }
+        ]
+      }
+    }
+  },
+  "judge": {
+    "provider": "openai",
+    "model": "chatgpt-pro",
+    "reasoning_effort": "medium",
+    "access_mode": "subscription_cli",
+    "blind_labels": true,
+    "family_blind": false,
+    "selection_policy": "single_judge_cli",
+    "verdict": {
+      "winner": "side_a",
+      "margin": 0.4,
+      "rubric_scores": {
+        "side_a": {
+          "claim_quality": 4.3,
+          "evidence_discipline": 3.4,
+          "responsiveness_to_critique": 4.8,
+          "internal_consistency": 4.6,
+          "decision_usefulness": 4.7,
+          "weighted_total": 4.4
+        },
+        "side_b": {
+          "claim_quality": 4,
+          "evidence_discipline": 3,
+          "responsiveness_to_critique": 4.2,
+          "internal_consistency": 4.4,
+          "decision_usefulness": 4,
+          "weighted_total": 4
+        }
+      },
+      "decisive_findings": [
+        "Side A responded more fully to critique by downgrading its strongest unsupported prioritization claim into a testable hypothesis and adding explicit root-cause validation gates.",
+        "Side A produced a more decision-useful PRD because it defined concrete proceed/kill conditions, readiness gates, and a bounded next artifact tied to evidence collection.",
+        "Side B improved internal consistency, but its final artifact remained lighter on validation mechanics and continued to rely on thin evidence support anchored mainly to the prompt rather than a stronger evidentiary frame."
+      ],
+      "judge_confidence": "medium",
+      "needs_human_review": false,
+      "rationale": "Side A is the stronger final artifact because it not only preserved scope discipline but also converted the main critique into a materially better decision framework: the revised PRD now treats handoff leverage as a hypothesis, adds a comparative root-cause check, and defines explicit pass/fail gates before build commitment. Side B also improved meaningfully by reframing ownership and notifications as validation-gated decisions, but it remains more generic and less operationally decisive. Neither side has strong external evidence, so evidence-discipline scores stay moderate, but Side A wins on responsiveness to critique, internal coherence after revision, and practical usefulness for deciding whether to proceed."
+    }
+  },
+  "budgets": {
+    "max_visible_rounds": 3,
+    "max_cost_usd": 1000000,
+    "max_latency_ms": 360000,
+    "min_margin_for_verdict": 0.1
+  },
+  "results": {
+    "winner": "side_a",
+    "margin": 0.4,
+    "judge_confidence": "medium",
+    "swap_stable": null,
+    "needs_human_review": false
+  },
+  "metrics": {
+    "disagreement_rate": 0.4167,
+    "declared_adoption_rate": 1,
+    "substantive_revision_rate": 1,
+    "unsupported_claim_count": 0,
+    "self_contradiction_count": 0,
+    "total_estimated_cost_usd": 0,
+    "swap_margin_delta": null,
+    "judge_margin": 0.4,
+    "cost_per_resolved_run": 0
+  },
+  "audit": {
+    "identity_leak_warnings": [],
+    "protocol_violations": []
+  }
+}
