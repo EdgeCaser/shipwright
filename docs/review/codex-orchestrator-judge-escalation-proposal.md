@@ -123,6 +123,56 @@ Use a single judge by default.
 
 Do not run triple-panel evaluation on every artifact. Reserve it for cases where the additional disagreement signal is likely to change what the PM should do next.
 
+### Route and model recommendation policy
+
+The orchestrator should not just execute a judging path. It should explicitly recommend the right route and model family to the user.
+
+The recommendation should answer two questions:
+
+1. What route should we take?
+   - single judge
+   - second judge
+   - triple panel
+   - gather evidence first
+
+2. Which judge family should we start with?
+   - Gemini
+   - Claude
+   - GPT
+
+### Recommended defaults
+
+- Default single-judge screening model: `Gemini`
+- Default two-judge contrast panel: `Claude + GPT`
+- Default full adjudication panel: `Claude + GPT + Gemini`
+
+### Why these defaults
+
+- `Gemini` is the best default screening judge when the goal is to detect ambiguity, ties, or escalation-worthy uncertainty rather than force a verdict too early.
+- `Claude + GPT` is the most useful two-judge contrast because the families show different directional lean and therefore expose disagreement faster.
+- `Claude + GPT + Gemini` is best reserved for high-stakes adjudication, benchmark research, or contradiction-heavy cases where disagreement itself is valuable signal.
+
+### Recommended route by case type
+
+| Case type | Recommended route | Recommended starting model |
+|---|---|---|
+| Early draft, low stakes, quick triage | single judge | Gemini |
+| Ambiguous but low-cost iterative work | single judge, escalate on low confidence | Gemini |
+| Contradiction-heavy or boundary-heavy artifact | second judge or triple panel | Gemini first, then Claude/GPT contrast |
+| Leadership-facing or engineering-handoff artifact | at least two judges | Claude + GPT, add Gemini if disagreement matters |
+| Benchmark, schema, or judge-behavior research | triple panel | Claude + GPT + Gemini |
+| Tie or low confidence with obvious missing evidence | gather evidence first | do not add judges yet |
+
+### What the orchestrator should say to the user
+
+The recommendation should be explicit and plain-language, for example:
+
+- "This looks like a low-stakes ambiguity case, so I'd start with Gemini only."
+- "This is contradiction-heavy and likely sensitive to judge family bias, so I'd run a triple panel."
+- "This tie looks evidence-resolvable, so I'd gather the missing evidence before paying for more judges."
+
+The orchestrator should explain *why* it is recommending the route, not just select one silently.
+
 ### Agents-first resolution policy
 
 When a judge returns a tie, low confidence, or explicit uncertainty fields, the orchestrator should try to resolve that uncertainty with agents before escalating to a human.
