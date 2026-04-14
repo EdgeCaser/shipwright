@@ -43,6 +43,20 @@ Use the following practical policy:
   - the case is materially high-stakes or benchmark-defining
   - the disagreement itself is important evidence
 
+Use the following default model-routing policy:
+
+- Default single runtime judge: `GPT`
+- Default two-judge contrast panel: `Claude + GPT`
+- Default triple panel: `Claude + GPT + Gemini`
+- Treat `Gemini` primarily as an escalation judge, ambiguity detector, or third-panel perspective rather than the default solo runtime judge.
+
+Recommended model choice by case:
+
+- Low-stakes or routine screening: start with `GPT`
+- Contradiction-heavy or boundary-heavy artifacts: start with `GPT`, then add `Gemini` and a contrast judge if needed
+- Strategy-heavy or leadership-facing artifacts: prefer `Claude + GPT`, add `Gemini` when disagreement is informative
+- Benchmark or judge-behavior research: use `Claude + GPT + Gemini`
+
 If a judge returns tie or low confidence, prefer asking:
 
 - what evidence is missing
