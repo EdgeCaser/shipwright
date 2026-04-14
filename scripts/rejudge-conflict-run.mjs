@@ -42,6 +42,10 @@ export async function rejudgeConflictRun(options = {}) {
   const outputDir = path.join(runDir, 'rejudges', judgeLabel);
   await mkdir(outputDir, { recursive: true });
   const prompt = buildReplayJudgePrompt(savedPrompt);
+  const repairTelemetry = {
+    repair_attempted: false,
+    repair_attempts: 0,
+  };
 
   await Promise.all([
     writeFile(path.join(outputDir, 'verdict.prompt.txt'), prompt),
@@ -89,6 +93,7 @@ export async function rejudgeConflictRun(options = {}) {
     outDir: outputDir,
     promptFilePath,
     packetFilePath,
+    repairTelemetry,
   });
 
   const metadata = {
@@ -102,6 +107,7 @@ export async function rejudgeConflictRun(options = {}) {
       reasoning_effort: judgeReasoningEffort,
       command: judgeCommand,
     },
+    replay: repairTelemetry,
   };
 
   await Promise.all([
@@ -303,9 +309,11 @@ function shouldAttemptVerdictRepair(errors, judgeAgent) {
 }
 
 async function repairVerdict(options, parsedVerdict, errors) {
+  options.repairTelemetry.repair_attempted = true;
+  options.repairTelemetry.repair_attempts += 1;
   const repairPrompt = [
     'Your previous judge output was close but rejected by schema validation.',
-    'Rewrite it as ONLY a JSON object that preserves the same winner, margin, rubric_scores, judge_confidence, needs_human_review, decisive_findings, and rationale unless the schema absolutely requires clarification.',
+    'Rewrite it as ONLY a JSON object that preserves the same winner, margin, rubric_scores, decisive_dimension, judge_confidence, needs_human_review, decisive_findings, and rationale unless the schema absolutely requires clarification.',
     'You MUST include these missing required properties with substantive content:',
     '- dimension_rationales',
     '- side_summaries',
@@ -426,6 +434,7 @@ function buildVerdictShapeExample() {
         weaknesses: ['One concise weakness of Side B.'],
       },
     },
+    decisive_dimension: 'decision_usefulness',
     decisive_findings: ['Replace with the actual decisive findings from this run.'],
     judge_confidence: 'low',
     needs_human_review: true,
@@ -462,6 +471,10 @@ function formatVerdictMarkdown(verdict) {
     '',
     '### Side B Weaknesses',
     ...((verdict.side_summaries?.side_b?.weaknesses || []).map((entry) => `- ${entry}`)),
+    '',
+    `## Decisive Dimension`,
+    '',
+    verdict.decisive_dimension || 'n/a',
     '',
     '## Rationale',
     '',

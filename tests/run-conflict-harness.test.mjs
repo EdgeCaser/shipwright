@@ -184,6 +184,7 @@ test('runConflictHarness completes a head-to-head run and writes state', async (
                   weaknesses: ['More diffuse final recommendation.'],
                 },
               },
+              decisive_dimension: 'responsiveness_to_critique',
               decisive_findings: ['Side A responded more concretely to the rebuttal.'],
               judge_confidence: 'medium',
               needs_human_review: false,
@@ -236,7 +237,7 @@ test('injectReasoningEffort pins Gemini to project-local aliases', () => {
   const medium = injectReasoningEffort('cat {{prompt_file}} | gemini --approval-mode plan --output-format text -p ""', 'medium');
   const high = injectReasoningEffort('cat {{prompt_file}} | gemini --approval-mode plan --output-format text -p ""', 'high');
 
-  assert.ok(low.includes("gemini -m 'shipwright-gemini-low'"));
+  assert.ok(low.includes("gemini -m 'shipwright-gemini-medium'"));
   assert.ok(medium.includes("gemini -m 'shipwright-gemini-medium'"));
   assert.ok(high.includes("gemini -m 'shipwright-gemini-high'"));
 });
@@ -438,6 +439,7 @@ test('runConflictHarness retries first-pass identity leakage once before continu
                   weaknesses: ['Still had minor ambiguity.'],
                 },
               },
+              decisive_dimension: 'decision_usefulness',
               decisive_findings: ['Side B was stronger.'],
               judge_confidence: 'medium',
               needs_human_review: false,

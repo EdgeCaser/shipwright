@@ -79,6 +79,7 @@ test('rejudgeConflictRun reuses saved judge prompt and writes a sidecar verdict'
         weaknesses: ['Slightly denser prose.'],
       },
     },
+    decisive_dimension: 'decision_usefulness',
     decisive_findings: ['Side B is more decision-useful.'],
     judge_confidence: 'medium',
     needs_human_review: false,
@@ -115,9 +116,12 @@ test('rejudgeConflictRun reuses saved judge prompt and writes a sidecar verdict'
   const metadata = JSON.parse(await readFile(path.join(result.outputDir, 'metadata.json'), 'utf8'));
   assert.equal(metadata.judge.agent, 'gemini');
   assert.equal(metadata.judge.label, 'gemini-pilot');
+  assert.equal(metadata.replay.repair_attempted, false);
+  assert.equal(metadata.replay.repair_attempts, 0);
 
   const savedVerdict = JSON.parse(await readFile(path.join(result.outputDir, 'verdict.json'), 'utf8'));
   assert.equal(savedVerdict.margin, 0.8);
+  assert.equal(savedVerdict.decisive_dimension, 'decision_usefulness');
 });
 
 test('rejudgeConflictRun rejects unknown judge agents', async () => {
