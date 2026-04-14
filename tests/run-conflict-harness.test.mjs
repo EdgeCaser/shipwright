@@ -62,6 +62,9 @@ test('runConflictHarness completes a head-to-head run and writes state', async (
       casePacket: createCasePacket(),
       outDir: rootDir,
       runId: 'conflict-smoke-run',
+      sideAReasoningEffort: 'high',
+      sideBReasoningEffort: 'low',
+      judgeReasoningEffort: 'medium',
       turnRunner: async (options) => {
         calls.push({
           phase: options.phase,
@@ -69,6 +72,7 @@ test('runConflictHarness completes a head-to-head run and writes state', async (
           prompt: options.prompt,
           packet: options.packet,
           attempt: options.attempt,
+          reasoningEffort: options.reasoningEffort,
         });
 
         if (options.phase === 'first_pass') {
@@ -175,12 +179,26 @@ test('runConflictHarness completes a head-to-head run and writes state', async (
     });
 
     const state = JSON.parse(await readFile(path.join(outDir, 'state.json'), 'utf8'));
+    const config = JSON.parse(await readFile(path.join(outDir, 'config.json'), 'utf8'));
     const judgeCall = calls.find((entry) => entry.phase === 'judge');
+    const sideACall = calls.find((entry) => entry.phase === 'first_pass' && entry.sideId === 'side_a');
+    const sideBCall = calls.find((entry) => entry.phase === 'first_pass' && entry.sideId === 'side_b');
 
     assert.equal(run.status, 'completed');
     assert.equal(run.results.winner, 'side_a');
+    assert.equal(run.sides.side_a.reasoning_effort, 'high');
+    assert.equal(run.sides.side_b.reasoning_effort, 'low');
+    assert.equal(run.judge.reasoning_effort, 'medium');
     assert.equal(state.last_completed_phase, 'adjudication');
     assert.equal(state.status, 'completed');
+    assert.deepEqual(config.reasoning_efforts, {
+      side_a: 'high',
+      side_b: 'low',
+      judge: 'medium',
+    });
+    assert.equal(sideACall.reasoningEffort, 'high');
+    assert.equal(sideBCall.reasoningEffort, 'low');
+    assert.equal(judgeCall.reasoningEffort, 'medium');
     assert.ok(judgeCall.prompt.includes('judge_confidence rubric'));
     assert.ok(judgeCall.prompt.includes('min_margin_for_verdict = 0.1'));
     assert.ok(!('provider' in judgeCall.packet));

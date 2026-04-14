@@ -9,11 +9,17 @@ test('parseCliArgs handles scenario filters and flags', () => {
     '--scenario', 'handoff-contradiction',
     '--out', '/tmp/summary.md',
     '--dry-run',
+    '--side-a-reasoning-effort', 'high',
+    '--side-b-reasoning-effort', 'low',
+    '--judge-reasoning-effort', 'medium',
   ]);
 
   assert.deepEqual(args.scenarios, ['prd-hidden-scope-creep', 'handoff-contradiction']);
   assert.equal(args.outPath, '/tmp/summary.md');
   assert.equal(args.dryRun, true);
+  assert.equal(args.sideAReasoningEffort, 'high');
+  assert.equal(args.sideBReasoningEffort, 'low');
+  assert.equal(args.judgeReasoningEffort, 'medium');
 });
 
 test('buildSummary produces judge agreement analysis from completed runs', () => {

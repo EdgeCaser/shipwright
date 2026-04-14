@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 
 import { spawn } from 'node:child_process';
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile, unlink } from 'node:fs/promises';
+import { mkdtempSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
@@ -36,6 +38,7 @@ const DEFAULT_BUDGETS = Object.freeze({
   minMarginForVerdict: 0.1,
   judgeReservedBudgetUsd: 0,
 });
+const DEFAULT_REASONING_EFFORT = 'medium';
 
 export async function runConflictHarness(options = {}) {
   const casePacket = await resolveCasePacket(options);
@@ -72,6 +75,20 @@ export async function runConflictHarness(options = {}) {
   );
   const turnRunner = options.turnRunner || createShellTurnRunner();
   const commandConfig = normalizeCommandConfig(options);
+  const reasoningEfforts = {
+    side_a: normalizeReasoningEffort(
+      options.sideAReasoningEffort ?? DEFAULT_REASONING_EFFORT,
+      '--side-a-reasoning-effort',
+    ),
+    side_b: normalizeReasoningEffort(
+      options.sideBReasoningEffort ?? DEFAULT_REASONING_EFFORT,
+      '--side-b-reasoning-effort',
+    ),
+    judge: normalizeReasoningEffort(
+      options.judgeReasoningEffort ?? DEFAULT_REASONING_EFFORT,
+      '--judge-reasoning-effort',
+    ),
+  };
 
   await createTranscriptLayout(outDir);
   const run = createInitialRunRecord({
@@ -81,10 +98,13 @@ export async function runConflictHarness(options = {}) {
     budgets,
     sideAProvider: options.sideAProvider || 'openai',
     sideAModel: options.sideAModel || 'chatgpt-pro',
+    sideAReasoningEffort: reasoningEfforts.side_a,
     sideBProvider: options.sideBProvider || 'anthropic',
     sideBModel: options.sideBModel || 'claude-max',
+    sideBReasoningEffort: reasoningEfforts.side_b,
     judgeProvider: options.judgeProvider || 'openai',
     judgeModel: options.judgeModel || 'chatgpt-pro',
+    judgeReasoningEffort: reasoningEfforts.judge,
     judgeSelectionPolicy: options.judgeSelectionPolicy || 'single_judge_cli',
   });
 
@@ -97,6 +117,7 @@ export async function runConflictHarness(options = {}) {
     timeoutMs,
     judgeReservedBudgetUsd,
     commandConfig,
+    reasoningEfforts,
   }));
   await writeJson(path.join(outDir, 'case-packet.json'), casePacket);
   await persistRunState(outDir, run, {
@@ -117,6 +138,7 @@ export async function runConflictHarness(options = {}) {
       timeoutMs,
       turnRunner,
       command: commandConfig[sideId],
+      reasoningEffort: reasoningEfforts[sideId],
     });
     run.sides[sideId].first_pass = response.packet;
     run.metrics.total_estimated_cost_usd += response.estimatedCostUsd;
@@ -150,6 +172,7 @@ export async function runConflictHarness(options = {}) {
       timeoutMs,
       turnRunner,
       command: commandConfig[sideId],
+      reasoningEffort: reasoningEfforts[sideId],
       findingSequence,
     });
     run.sides[sideId].rebuttal = response.packet;
@@ -183,6 +206,7 @@ export async function runConflictHarness(options = {}) {
       timeoutMs,
       turnRunner,
       command: commandConfig[sideId],
+      reasoningEffort: reasoningEfforts[sideId],
       critiquePacket: run.sides[targetSide].rebuttal,
     });
     run.sides[sideId].final = response.packet;
@@ -221,6 +245,7 @@ export async function runConflictHarness(options = {}) {
     timeoutMs,
     turnRunner,
     command: commandConfig.judge,
+    reasoningEffort: reasoningEfforts.judge,
   });
   run.judge.verdict = judgeResponse.packet;
   run.metrics.total_estimated_cost_usd += judgeResponse.estimatedCostUsd;
@@ -244,10 +269,24 @@ export function createShellTurnRunner(options = {}) {
       throw new Error(`Missing command for ${turnOptions.phase} ${turnOptions.sideId || 'judge'} turn.`);
     }
 
-    const command = expandCommandTemplate(turnOptions.command, turnOptions);
+    let command = expandCommandTemplate(turnOptions.command, turnOptions);
+    command = injectReasoningEffort(command, turnOptions.reasoningEffort);
+
+    // For codex exec commands, inject --output-last-message to get file-based
+    // output as a fallback when stdout pipes break (EPIPE).
+    let outputFilePath = null;
+    if (/\bcodex\s+exec\b/.test(command)) {
+      const tmpDir = mkdtempSync(path.join(tmpdir(), 'shipwright-codex-'));
+      outputFilePath = path.join(tmpDir, 'output.txt');
+      command = command.replace(
+        /\bcodex\s+exec\b/,
+        `codex exec --output-last-message '${outputFilePath}'`,
+      );
+    }
+
     const startedAt = Date.now();
 
-    return new Promise((resolve, reject) => {
+    const result = await new Promise((resolve) => {
       const child = spawn(shell, ['-lc', command], {
         cwd: turnOptions.cwd,
         env: {
@@ -258,6 +297,7 @@ export function createShellTurnRunner(options = {}) {
           SHIPWRIGHT_CONFLICT_PROMPT_FILE: turnOptions.promptFilePath,
           SHIPWRIGHT_CONFLICT_PACKET_FILE: turnOptions.packetFilePath,
           SHIPWRIGHT_CONFLICT_OUT_DIR: turnOptions.outDir,
+          SHIPWRIGHT_CONFLICT_REASONING_EFFORT: turnOptions.reasoningEffort || '',
         },
         stdio: ['pipe', 'pipe', 'pipe'],
       });
@@ -288,7 +328,7 @@ export function createShellTurnRunner(options = {}) {
         stderr += chunk;
       });
       child.on('error', (error) => {
-        reject(error);
+        finalize({ exitCode: 1, spawnError: error.message });
       });
       child.on('close', (code) => {
         finalize({ exitCode: typeof code === 'number' ? code : 1 });
@@ -299,8 +339,27 @@ export function createShellTurnRunner(options = {}) {
         child.kill('SIGKILL');
       }, turnOptions.timeoutMs);
 
+      child.stdin.on('error', (error) => {
+        stderr += `${stderr ? '\n' : ''}stdin write error: ${error.message}`;
+      });
       child.stdin.end(turnOptions.prompt);
     });
+
+    // If codex wrote to the output file, prefer it over stdout (which may
+    // be empty or truncated due to EPIPE).
+    if (outputFilePath) {
+      try {
+        const fileContent = await readFile(outputFilePath, 'utf8');
+        if (fileContent.trim().length > 0) {
+          result.stdout = fileContent;
+        }
+        await unlink(outputFilePath);
+      } catch {
+        // File doesn't exist or can't be read — fall through to stdout.
+      }
+    }
+
+    return result;
   };
 }
 
@@ -318,10 +377,13 @@ export function parseCliArgs(argv) {
     judgeCommand: '',
     sideAProvider: 'openai',
     sideAModel: 'chatgpt-pro',
+    sideAReasoningEffort: DEFAULT_REASONING_EFFORT,
     sideBProvider: 'anthropic',
     sideBModel: 'claude-max',
+    sideBReasoningEffort: DEFAULT_REASONING_EFFORT,
     judgeProvider: 'openai',
     judgeModel: 'chatgpt-pro',
+    judgeReasoningEffort: DEFAULT_REASONING_EFFORT,
     judgeSelectionPolicy: 'single_judge_cli',
     maxCostUsd: DEFAULT_BUDGETS.maxCostUsd,
     maxLatencyMs: DEFAULT_BUDGETS.maxLatencyMs,
@@ -382,6 +444,10 @@ export function parseCliArgs(argv) {
         parsed.sideAModel = argv[index + 1] || 'chatgpt-pro';
         index += 1;
         break;
+      case '--side-a-reasoning-effort':
+        parsed.sideAReasoningEffort = argv[index + 1] || DEFAULT_REASONING_EFFORT;
+        index += 1;
+        break;
       case '--side-b-provider':
         parsed.sideBProvider = argv[index + 1] || 'anthropic';
         index += 1;
@@ -390,12 +456,20 @@ export function parseCliArgs(argv) {
         parsed.sideBModel = argv[index + 1] || 'claude-max';
         index += 1;
         break;
+      case '--side-b-reasoning-effort':
+        parsed.sideBReasoningEffort = argv[index + 1] || DEFAULT_REASONING_EFFORT;
+        index += 1;
+        break;
       case '--judge-provider':
         parsed.judgeProvider = argv[index + 1] || 'openai';
         index += 1;
         break;
       case '--judge-model':
         parsed.judgeModel = argv[index + 1] || 'chatgpt-pro';
+        index += 1;
+        break;
+      case '--judge-reasoning-effort':
+        parsed.judgeReasoningEffort = argv[index + 1] || DEFAULT_REASONING_EFFORT;
         index += 1;
         break;
       case '--judge-selection-policy':
@@ -469,10 +543,13 @@ export async function main(argv = process.argv.slice(2)) {
     judgeCommand: args.judgeCommand,
     sideAProvider: args.sideAProvider,
     sideAModel: args.sideAModel,
+    sideAReasoningEffort: args.sideAReasoningEffort,
     sideBProvider: args.sideBProvider,
     sideBModel: args.sideBModel,
+    sideBReasoningEffort: args.sideBReasoningEffort,
     judgeProvider: args.judgeProvider,
     judgeModel: args.judgeModel,
+    judgeReasoningEffort: args.judgeReasoningEffort,
     judgeSelectionPolicy: args.judgeSelectionPolicy,
     maxCostUsd: args.maxCostUsd,
     maxLatencyMs: args.maxLatencyMs,
@@ -518,6 +595,7 @@ function createInitialRunRecord(options) {
       side_a: {
         provider: options.sideAProvider,
         model: options.sideAModel,
+        reasoning_effort: options.sideAReasoningEffort,
         access_mode: 'subscription_cli',
         role: 'side_a',
         first_pass: null,
@@ -527,6 +605,7 @@ function createInitialRunRecord(options) {
       side_b: {
         provider: options.sideBProvider,
         model: options.sideBModel,
+        reasoning_effort: options.sideBReasoningEffort,
         access_mode: 'subscription_cli',
         role: 'side_b',
         first_pass: null,
@@ -537,6 +616,7 @@ function createInitialRunRecord(options) {
     judge: {
       provider: options.judgeProvider,
       model: options.judgeModel,
+      reasoning_effort: options.judgeReasoningEffort,
       access_mode: 'subscription_cli',
       blind_labels: true,
       family_blind: false,
@@ -577,6 +657,7 @@ function buildConfigRecord(options) {
     budgets: options.budgets,
     timeout_ms: options.timeoutMs,
     judge_reserved_budget_usd: options.judgeReservedBudgetUsd,
+    reasoning_efforts: options.reasoningEfforts,
     commands: {
       side_a: options.commandConfig.side_a ? '[configured]' : '[injected-runner]',
       side_b: options.commandConfig.side_b ? '[configured]' : '[injected-runner]',
@@ -624,6 +705,7 @@ async function invokeCommittedArtifactTurn(options) {
       timeoutMs: options.timeoutMs,
       turnRunner: options.turnRunner,
       command: options.command,
+      reasoningEffort: options.reasoningEffort,
       outDir: options.outDir,
       promptFilePath: path.join(sideDir, `${turnLabel}.prompt.txt`),
       packetFilePath: path.join(sideDir, `${turnLabel}.input.json`),
@@ -719,6 +801,7 @@ async function invokeCritiqueTurn(options) {
     timeoutMs: options.timeoutMs,
     turnRunner: options.turnRunner,
     command: options.command,
+    reasoningEffort: options.reasoningEffort,
     outDir: options.outDir,
     promptFilePath: path.join(sideDir, 'rebuttal.prompt.txt'),
     packetFilePath: path.join(sideDir, 'rebuttal.input.json'),
@@ -752,6 +835,7 @@ async function invokeJudgeTurn(options) {
     timeoutMs: options.timeoutMs,
     turnRunner: options.turnRunner,
     command: options.command,
+    reasoningEffort: options.reasoningEffort,
     outDir: options.outDir,
     promptFilePath: path.join(judgeDir, 'verdict.prompt.txt'),
     packetFilePath: path.join(judgeDir, 'verdict.input.json'),
@@ -786,6 +870,7 @@ async function invokeTurn(options) {
     cwd: options.cwd,
     timeoutMs: options.timeoutMs,
     command: options.command,
+    reasoningEffort: options.reasoningEffort,
     outDir: options.outDir,
     promptFilePath: options.promptFilePath,
     packetFilePath: options.packetFilePath,
@@ -1260,6 +1345,13 @@ function normalizeRequiredString(value, flagName) {
   throw new Error(`Missing required ${flagName}.`);
 }
 
+function normalizeReasoningEffort(value, flagName) {
+  if (typeof value === 'string' && value.trim().length > 0) {
+    return value.trim();
+  }
+  throw new Error(`${flagName} must be a non-empty string.`);
+}
+
 function normalizePositiveInteger(value, flagName) {
   if (!Number.isInteger(value) || value <= 0) {
     throw new Error(`${flagName} must be a positive integer.`);
@@ -1294,6 +1386,7 @@ function expandCommandTemplate(command, turnOptions) {
     '{{side_id}}': shellEscape(turnOptions.sideId || ''),
     '{{phase}}': shellEscape(turnOptions.phase),
     '{{out_dir}}': shellEscape(turnOptions.outDir),
+    '{{reasoning_effort}}': shellEscape(turnOptions.reasoningEffort || ''),
   };
 
   let expanded = command;
@@ -1301,6 +1394,28 @@ function expandCommandTemplate(command, turnOptions) {
     expanded = expanded.split(pattern).join(replacement);
   }
   return expanded;
+}
+
+function injectReasoningEffort(command, reasoningEffort) {
+  if (!reasoningEffort) return command;
+
+  let nextCommand = command;
+
+  if (/\bclaude\b/.test(nextCommand) && !/\s--effort\b/.test(nextCommand)) {
+    nextCommand = nextCommand.replace(
+      /\bclaude\b/,
+      `claude --effort ${shellEscape(reasoningEffort)}`,
+    );
+  }
+
+  if (/\bcodex\s+exec\b/.test(nextCommand) && !/\bmodel_reasoning_effort\b/.test(nextCommand)) {
+    nextCommand = nextCommand.replace(
+      /\bcodex\s+exec\b/,
+      `codex exec -c model_reasoning_effort=${shellEscape(reasoningEffort)}`,
+    );
+  }
+
+  return nextCommand;
 }
 
 function shellEscape(value) {

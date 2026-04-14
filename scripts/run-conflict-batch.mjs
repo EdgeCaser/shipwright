@@ -6,6 +6,7 @@ import { pathToFileURL } from 'node:url';
 import { runConflictHarness } from './run-conflict-harness.mjs';
 
 const DEFAULT_SCENARIO_DIR = path.resolve('benchmarks', 'scenarios');
+const DEFAULT_REASONING_EFFORT = 'medium';
 const DEFAULT_SIDE_A_COMMAND = "cat {{prompt_file}} | claude -p --no-session-persistence --output-format text";
 const DEFAULT_SIDE_B_COMMAND = "cat {{prompt_file}} | codex exec --ephemeral --sandbox read-only";
 
@@ -31,6 +32,9 @@ export async function runBatch(options = {}) {
   const sideBCommand = options.sideBCommand || DEFAULT_SIDE_B_COMMAND;
   const judgeConfigs = options.judgeConfigs || JUDGE_CONFIGS;
   const dryRun = Boolean(options.dryRun);
+  const sideAReasoningEffort = options.sideAReasoningEffort || DEFAULT_REASONING_EFFORT;
+  const sideBReasoningEffort = options.sideBReasoningEffort || DEFAULT_REASONING_EFFORT;
+  const judgeReasoningEffort = options.judgeReasoningEffort || DEFAULT_REASONING_EFFORT;
 
   const results = [];
   const totalRuns = scenarios.length * judgeConfigs.length;
@@ -70,10 +74,13 @@ export async function runBatch(options = {}) {
           judgeCommand: judge.command,
           sideAProvider: 'anthropic',
           sideAModel: 'claude-max',
+          sideAReasoningEffort,
           sideBProvider: 'openai',
           sideBModel: 'chatgpt-pro',
+          sideBReasoningEffort,
           judgeProvider: judge.provider,
           judgeModel: judge.model,
+          judgeReasoningEffort,
         });
 
         results.push({
@@ -257,6 +264,9 @@ export function parseCliArgs(argv) {
     scenarioDir: DEFAULT_SCENARIO_DIR,
     outPath: null,
     dryRun: false,
+    sideAReasoningEffort: DEFAULT_REASONING_EFFORT,
+    sideBReasoningEffort: DEFAULT_REASONING_EFFORT,
+    judgeReasoningEffort: DEFAULT_REASONING_EFFORT,
     format: 'text',
     help: false,
   };
@@ -278,6 +288,18 @@ export function parseCliArgs(argv) {
         break;
       case '--dry-run':
         parsed.dryRun = true;
+        break;
+      case '--side-a-reasoning-effort':
+        parsed.sideAReasoningEffort = argv[i + 1] || DEFAULT_REASONING_EFFORT;
+        i += 1;
+        break;
+      case '--side-b-reasoning-effort':
+        parsed.sideBReasoningEffort = argv[i + 1] || DEFAULT_REASONING_EFFORT;
+        i += 1;
+        break;
+      case '--judge-reasoning-effort':
+        parsed.judgeReasoningEffort = argv[i + 1] || DEFAULT_REASONING_EFFORT;
+        i += 1;
         break;
       case '--format':
         parsed.format = argv[i + 1] || 'text';
@@ -311,6 +333,9 @@ export async function main(argv = process.argv.slice(2)) {
       '  --scenario-dir <dir>  Scenario directory (default: benchmarks/scenarios)',
       '  --out <path>          Write summary to file',
       '  --dry-run             List what would run without executing',
+      '  --side-a-reasoning-effort <level>  Explicit reasoning effort for Side A (default: medium)',
+      '  --side-b-reasoning-effort <level>  Explicit reasoning effort for Side B (default: medium)',
+      '  --judge-reasoning-effort <level>   Explicit reasoning effort for judges (default: medium)',
       '  --format text|json    Output format (default: text)',
       '  --help                Show this help',
       '',
@@ -328,6 +353,9 @@ export async function main(argv = process.argv.slice(2)) {
     scenarios: args.scenarios.length > 0 ? args.scenarios : undefined,
     scenarioDir: args.scenarioDir,
     dryRun: args.dryRun,
+    sideAReasoningEffort: args.sideAReasoningEffort,
+    sideBReasoningEffort: args.sideBReasoningEffort,
+    judgeReasoningEffort: args.judgeReasoningEffort,
   });
 
   if (args.format === 'json') {
@@ -355,6 +383,13 @@ function isDirectRun() {
 }
 
 if (isDirectRun()) {
+  process.on('uncaughtException', (error) => {
+    process.stderr.write(`Uncaught exception (non-fatal): ${error.message}\n`);
+  });
+  process.on('unhandledRejection', (reason) => {
+    const message = reason instanceof Error ? reason.message : String(reason);
+    process.stderr.write(`Unhandled rejection (non-fatal): ${message}\n`);
+  });
   main().catch((error) => {
     console.error(error instanceof Error ? error.message : String(error));
     process.exitCode = 1;

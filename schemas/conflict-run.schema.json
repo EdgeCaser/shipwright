@@ -43,10 +43,11 @@
         "side_a": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["provider", "model", "access_mode", "role", "first_pass", "rebuttal", "final"],
+          "required": ["provider", "model", "reasoning_effort", "access_mode", "role", "first_pass", "rebuttal", "final"],
           "properties": {
             "provider": { "type": "string", "minLength": 1 },
             "model": { "type": "string", "minLength": 1 },
+            "reasoning_effort": { "type": "string", "minLength": 1 },
             "access_mode": { "type": "string", "enum": ["subscription_cli"] },
             "role": { "type": "string", "minLength": 1 },
             "first_pass": {
@@ -204,10 +205,11 @@
         "side_b": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["provider", "model", "access_mode", "role", "first_pass", "rebuttal", "final"],
+          "required": ["provider", "model", "reasoning_effort", "access_mode", "role", "first_pass", "rebuttal", "final"],
           "properties": {
             "provider": { "type": "string", "minLength": 1 },
             "model": { "type": "string", "minLength": 1 },
+            "reasoning_effort": { "type": "string", "minLength": 1 },
             "access_mode": { "type": "string", "enum": ["subscription_cli"] },
             "role": { "type": "string", "minLength": 1 },
             "first_pass": {
@@ -370,6 +372,7 @@
       "required": [
         "provider",
         "model",
+        "reasoning_effort",
         "access_mode",
         "blind_labels",
         "family_blind",
@@ -379,6 +382,7 @@
       "properties": {
         "provider": { "type": "string", "minLength": 1 },
         "model": { "type": "string", "minLength": 1 },
+        "reasoning_effort": { "type": "string", "minLength": 1 },
         "access_mode": { "type": "string", "enum": ["subscription_cli"] },
         "blind_labels": { "type": "boolean" },
         "family_blind": { "type": "boolean" },
@@ -415,11 +419,11 @@
                     "weighted_total"
                   ],
                   "properties": {
-                    "claim_quality": { "type": "integer" },
-                    "evidence_discipline": { "type": "integer" },
-                    "responsiveness_to_critique": { "type": "integer" },
-                    "internal_consistency": { "type": "integer" },
-                    "decision_usefulness": { "type": "integer" },
+                    "claim_quality": { "type": "number" },
+                    "evidence_discipline": { "type": "number" },
+                    "responsiveness_to_critique": { "type": "number" },
+                    "internal_consistency": { "type": "number" },
+                    "decision_usefulness": { "type": "number" },
                     "weighted_total": { "type": "number" }
                   }
                 },
@@ -435,11 +439,11 @@
                     "weighted_total"
                   ],
                   "properties": {
-                    "claim_quality": { "type": "integer" },
-                    "evidence_discipline": { "type": "integer" },
-                    "responsiveness_to_critique": { "type": "integer" },
-                    "internal_consistency": { "type": "integer" },
-                    "decision_usefulness": { "type": "integer" },
+                    "claim_quality": { "type": "number" },
+                    "evidence_discipline": { "type": "number" },
+                    "responsiveness_to_critique": { "type": "number" },
+                    "internal_consistency": { "type": "number" },
+                    "decision_usefulness": { "type": "number" },
                     "weighted_total": { "type": "number" }
                   }
                 }

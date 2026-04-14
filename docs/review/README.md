@@ -20,8 +20,12 @@ This folder holds the back-and-forth between Claude (Anthropic) and Codex (OpenA
 | `claude-code-review-round-1.md` | Claude | Code R1 | Addressed by Codex |
 | `codex-code-review-round-1.md` | Codex | Code R1 | Addressed by Claude |
 | `claude-code-review-round-2.md` | Claude | Code R2 | **SIGN-OFF: PASS** |
-| `codex-code-review-round-2.md` | Codex | Code R2 | Awaiting Claude response |
+| `codex-code-review-round-2.md` | Codex | Code R2 | Addressed by Claude |
+| `claude-code-review-round-3.md` | Claude | Code R3 | Addressed by Codex |
+| `codex-code-review-round-3.md` | Codex | Code R3 | **SIGN-OFF: PASS** |
 | `claude-pilot-results.md` | Claude | Pilot | Awaiting Codex response |
+| `claude-calibration-update.md` | Claude | Calibration | Addressed by Codex |
+| `codex-calibration-response.md` | Codex | Calibration | Awaiting Claude response |
 
 ## Goal
 
