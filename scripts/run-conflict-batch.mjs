@@ -7,66 +7,78 @@ import { runConflictHarness } from './run-conflict-harness.mjs';
 
 const DEFAULT_SCENARIO_DIR = path.resolve('benchmarks', 'scenarios');
 const DEFAULT_REASONING_EFFORT = 'medium';
-const DEFAULT_SIDE_A_COMMAND = "cat {{prompt_file}} | claude -p --no-session-persistence --output-format text";
-const DEFAULT_SIDE_B_COMMAND = "cat {{prompt_file}} | codex exec --ephemeral --sandbox read-only";
-
-const JUDGE_CONFIGS = [
-  {
-    label: 'claude-judge',
+export const AGENT_PROFILES = {
+  claude: {
+    id: 'claude',
+    label: 'claude',
     command: "cat {{prompt_file}} | claude -p --no-session-persistence --output-format text",
     provider: 'anthropic',
     model: 'claude-max',
   },
-  {
-    label: 'gpt-judge',
+  gpt: {
+    id: 'gpt',
+    label: 'gpt',
     command: "cat {{prompt_file}} | codex exec --ephemeral --sandbox read-only",
     provider: 'openai',
     model: 'chatgpt-pro',
   },
-];
+  gemini: {
+    id: 'gemini',
+    label: 'gemini',
+    command: 'cat {{prompt_file}} | gemini --approval-mode plan --output-format text -p ""',
+    provider: 'google',
+    model: 'gemini-cli',
+  },
+};
 
-function createCompetitorConfig(swapSides) {
-  if (swapSides) {
-    return {
-      sideA: {
-        label: 'gpt',
-        command: DEFAULT_SIDE_B_COMMAND,
-        provider: 'openai',
-        model: 'chatgpt-pro',
-      },
-      sideB: {
-        label: 'claude',
-        command: DEFAULT_SIDE_A_COMMAND,
-        provider: 'anthropic',
-        model: 'claude-max',
-      },
-    };
+const DEFAULT_SIDE_A_AGENT = 'claude';
+const DEFAULT_SIDE_B_AGENT = 'gpt';
+const DEFAULT_JUDGE_AGENTS = ['claude', 'gpt'];
+
+function resolveAgentProfile(agentId, roleName) {
+  const profile = AGENT_PROFILES[agentId];
+  if (!profile) {
+    const supported = Object.keys(AGENT_PROFILES).join(', ');
+    throw new Error(`Unknown ${roleName} "${agentId}". Supported agents: ${supported}`);
+  }
+  return { ...profile };
+}
+
+function createRoleConfig(options = {}) {
+  if (options.swapSides && (options.sideAAgent || options.sideBAgent)) {
+    throw new Error('Use either --swap-sides or explicit --side-a-agent/--side-b-agent flags, not both.');
   }
 
-  return {
-    sideA: {
-      label: 'claude',
-      command: DEFAULT_SIDE_A_COMMAND,
-      provider: 'anthropic',
-      model: 'claude-max',
-    },
-    sideB: {
-      label: 'gpt',
-      command: DEFAULT_SIDE_B_COMMAND,
-      provider: 'openai',
-      model: 'chatgpt-pro',
-    },
-  };
+  const defaultSideAAgent = options.swapSides ? DEFAULT_SIDE_B_AGENT : DEFAULT_SIDE_A_AGENT;
+  const defaultSideBAgent = options.swapSides ? DEFAULT_SIDE_A_AGENT : DEFAULT_SIDE_B_AGENT;
+  const sideA = resolveAgentProfile(options.sideAAgent || defaultSideAAgent, 'side-a agent');
+  const sideB = resolveAgentProfile(options.sideBAgent || defaultSideBAgent, 'side-b agent');
+
+  if (sideA.id === sideB.id) {
+    throw new Error(`Side A and Side B must use different agents. Both were set to "${sideA.id}".`);
+  }
+
+  const judgeIds = options.judgeAgents && options.judgeAgents.length > 0
+    ? options.judgeAgents
+    : DEFAULT_JUDGE_AGENTS;
+  const judges = judgeIds.map((judgeId) => {
+    const judge = resolveAgentProfile(judgeId, 'judge agent');
+    return {
+      ...judge,
+      label: `${judge.label}-judge`,
+    };
+  });
+
+  return { sideA, sideB, judges };
 }
 
 export async function runBatch(options = {}) {
   const scenarioDir = options.scenarioDir || DEFAULT_SCENARIO_DIR;
   const scenarios = await listScenarios(scenarioDir, options.scenarios);
-  const swapSides = Boolean(options.swapSides);
-  const competitorConfig = createCompetitorConfig(swapSides);
-  const sideACommand = options.sideACommand || competitorConfig.sideA.command;
-  const sideBCommand = options.sideBCommand || competitorConfig.sideB.command;
-  const judgeConfigs = options.judgeConfigs || JUDGE_CONFIGS;
+  const roleConfig = createRoleConfig(options);
+  const sideACommand = options.sideACommand || roleConfig.sideA.command;
+  const sideBCommand = options.sideBCommand || roleConfig.sideB.command;
+  const judgeConfigs = options.judgeConfigs || roleConfig.judges;
   const dryRun = Boolean(options.dryRun);
   const sideAReasoningEffort = options.sideAReasoningEffort || DEFAULT_REASONING_EFFORT;
   const sideBReasoningEffort = options.sideBReasoningEffort || DEFAULT_REASONING_EFFORT;
@@ -86,8 +98,8 @@ export async function runBatch(options = {}) {
         results.push({
           scenario,
           judgeLabel: judge.label,
-          sideALabel: competitorConfig.sideA.label,
-          sideBLabel: competitorConfig.sideB.label,
+          sideALabel: roleConfig.sideA.label,
+          sideBLabel: roleConfig.sideB.label,
           status: 'dry_run',
           winner: null,
           margin: null,
@@ -111,11 +123,11 @@ export async function runBatch(options = {}) {
           sideACommand,
           sideBCommand,
           judgeCommand: judge.command,
-          sideAProvider: competitorConfig.sideA.provider,
-          sideAModel: competitorConfig.sideA.model,
+          sideAProvider: roleConfig.sideA.provider,
+          sideAModel: roleConfig.sideA.model,
           sideAReasoningEffort,
-          sideBProvider: competitorConfig.sideB.provider,
-          sideBModel: competitorConfig.sideB.model,
+          sideBProvider: roleConfig.sideB.provider,
+          sideBModel: roleConfig.sideB.model,
           sideBReasoningEffort,
           judgeProvider: judge.provider,
           judgeModel: judge.model,
@@ -125,8 +137,8 @@ export async function runBatch(options = {}) {
         results.push({
           scenario,
           judgeLabel: judge.label,
-          sideALabel: competitorConfig.sideA.label,
-          sideBLabel: competitorConfig.sideB.label,
+          sideALabel: roleConfig.sideA.label,
+          sideBLabel: roleConfig.sideB.label,
           status: run.status,
           winner: run.results.winner,
           margin: run.results.margin,
@@ -146,8 +158,8 @@ export async function runBatch(options = {}) {
         results.push({
           scenario,
           judgeLabel: judge.label,
-          sideALabel: competitorConfig.sideA.label,
-          sideBLabel: competitorConfig.sideB.label,
+          sideALabel: roleConfig.sideA.label,
+          sideBLabel: roleConfig.sideB.label,
           status: 'error',
           winner: null,
           margin: null,
@@ -313,6 +325,9 @@ export function parseCliArgs(argv) {
     outPath: null,
     dryRun: false,
     swapSides: false,
+    sideAAgent: '',
+    sideBAgent: '',
+    judgeAgents: [],
     sideAReasoningEffort: DEFAULT_REASONING_EFFORT,
     sideBReasoningEffort: DEFAULT_REASONING_EFFORT,
     judgeReasoningEffort: DEFAULT_REASONING_EFFORT,
@@ -340,6 +355,18 @@ export function parseCliArgs(argv) {
         break;
       case '--swap-sides':
         parsed.swapSides = true;
+        break;
+      case '--side-a-agent':
+        parsed.sideAAgent = argv[i + 1] || '';
+        i += 1;
+        break;
+      case '--side-b-agent':
+        parsed.sideBAgent = argv[i + 1] || '';
+        i += 1;
+        break;
+      case '--judge-agent':
+        parsed.judgeAgents.push(argv[i + 1] || '');
+        i += 1;
         break;
       case '--side-a-reasoning-effort':
         parsed.sideAReasoningEffort = argv[i + 1] || DEFAULT_REASONING_EFFORT;
@@ -386,6 +413,9 @@ export async function main(argv = process.argv.slice(2)) {
       '  --out <path>          Write summary to file',
       '  --dry-run             List what would run without executing',
       '  --swap-sides          Run with Side A = GPT and Side B = Claude',
+      '  --side-a-agent <id>   Agent for Side A (claude|gpt|gemini)',
+      '  --side-b-agent <id>   Agent for Side B (claude|gpt|gemini)',
+      '  --judge-agent <id>    Judge agent to include (repeatable; default: claude + gpt)',
       '  --side-a-reasoning-effort <level>  Explicit reasoning effort for Side A (default: medium)',
       '  --side-b-reasoning-effort <level>  Explicit reasoning effort for Side B (default: medium)',
       '  --judge-reasoning-effort <level>   Explicit reasoning effort for judges (default: medium)',
@@ -407,6 +437,9 @@ export async function main(argv = process.argv.slice(2)) {
     scenarioDir: args.scenarioDir,
     dryRun: args.dryRun,
     swapSides: args.swapSides,
+    sideAAgent: args.sideAAgent || undefined,
+    sideBAgent: args.sideBAgent || undefined,
+    judgeAgents: args.judgeAgents.length > 0 ? args.judgeAgents : undefined,
     sideAReasoningEffort: args.sideAReasoningEffort,
     sideBReasoningEffort: args.sideBReasoningEffort,
     judgeReasoningEffort: args.judgeReasoningEffort,

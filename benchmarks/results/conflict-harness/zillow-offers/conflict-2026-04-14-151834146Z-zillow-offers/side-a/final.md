@@ -1,0 +1,86 @@
+# Revised artifact
+
+## Recommendation
+Zillow should exit Zillow Offers rather than authorize another reform cycle. The board does not need proof that iBuying is impossible in every market to make that call. It needs to judge whether Zillow, in October 2021, has enough evidence of a repeatable edge to justify keeping capital, management attention, and balance-sheet risk tied up in a business that is already generating large losses and obscuring a stronger core franchise. The case packet does not show that confidence.
+
+The key point is narrower than my first draft: the evidence shows a failed operating bet at current scale, not a mathematically unfixable technology. But that is still enough to support exit. Zillow has already purchased 9,680 homes in Q3 2021 while selling only 3,032, is carrying roughly 7,000 homes that were bought above current value, and faces an estimated $300M to $500M write-down exposure. In a business with typical gross margins of 2% to 5%, that combination means the burden of proof shifts heavily to the reform case. The record in the packet does not meet that burden.
+
+## Why Exit Is Correct
+
+### 1. The board is deciding under capital-risk asymmetry, not in a lab
+Evidence: Zillow Offers is already underwater on a large inventory position, losses are widening, and the company has had to pause purchases while holding a severe buy/sell imbalance. In that setting, the relevant question is not whether a narrower future model could someday work; it is whether Zillow has enough demonstrated control right now to justify continued principal risk. The answer from the packet is no.
+
+Inference: Even if some future reform path exists, it would require more time, more constrained execution, and more credibility than Zillow currently has. The downside of being wrong is immediate and balance-sheet-heavy. The upside is speculative and unproven.
+
+### 2. Zillow Offers is masking a clearly better business inside Zillow
+Evidence: Offers generated $1.2B of Q3 2021 revenue, about 70% of total company revenue, but with negative EBITDA and worsening losses. Zillow's core IMT segment generated about $490M of revenue with roughly 30% EBITDA margins and 20%+ growth.
+
+Inference: Zillow is scaling a low-quality revenue stream that distorts investor perception and management focus while the core marketplace business already demonstrates attractive economics. The board's concern that Offers is hiding the strength of the core business is well supported.
+
+### 3. The reform case is plausible in theory but weak on decision-grade evidence
+Evidence: Zillow already pivoted the pricing algorithm twice in 2021, yet the company still entered Q3 with large purchase volume and now holds a substantial mispriced inventory backlog. The case packet also says Opendoor has been narrower in geography and closer to breakeven.
+
+Inference: I am not treating the two pivots as proof the technical problem is unsolvable. I am treating them as evidence that Zillow has not yet demonstrated a reliable corrective loop at the speed required for this business. A tighter, lower-volume, narrower-geo version may be conceivable, but the packet does not provide market-level performance, post-pivot error improvement, or contribution margins showing that such a relaunch has a high enough probability of success to justify continuation.
+
+### 4. A cooling market raises the bar for keeping the business
+Evidence: Home prices were still up 19.5% YoY as of August 2021, but the packet notes signs of cooling.
+
+Inference: This is not evidence of a housing downturn, and it should not be overstated. But it does mean Zillow cannot rely on rapid market appreciation to rescue overbids as confidently as it could in a one-way-up market. For a business already carrying mispriced inventory, even a less favorable appreciation backdrop weakens the case for granting more time.
+
+### 5. Exiting iBuying does not require abandoning transaction ambition
+Evidence: The core business remains strong, and the strategic concern is moving closer to the transaction, not necessarily owning inventory.
+
+Inference: Zillow can still pursue mortgages, closing, touring, seller services, and partner-enabled cash-offer pathways without taking principal home-price risk. The choice is not between being a lead-gen site and being a house flipper. The board can reject this specific operating model while preserving the broader strategy of deeper transaction participation.
+
+## Strongest Counterarguments and Why Exit Still Wins
+
+### Counterargument 1: Reform in a few metros with tighter buy-boxes
+This is the best argument against exit. If some metros have better data quality, more homogeneous housing stock, or stronger local operations, Zillow might salvage a smaller business.
+
+Why it still loses: the packet provides no market-by-market evidence proving those cohorts exist at attractive economics, while the current losses and inventory exposure are real and immediate. The board should not fund a turnaround thesis on missing data when the company already has a superior core business to back.
+
+### Counterargument 2: Zillow needs principal participation to own the transaction end-to-end
+There is strategic logic here, but it is incomplete. End-to-end participation matters only if the economics are controllable. The evidence supports going deeper into transactions through asset-light services, not through balance-sheet-intensive inventory ownership.
+
+### Counterargument 3: Exiting now crystallizes losses and signals strategic retreat
+The losses are already economically real. Continuing after a known model failure risks converting a painful write-down into a larger capital-allocation mistake. A decisive exit paired with a coherent repositioning story is more credible than another provisional reform attempt.
+
+## Board Actions for the Next 90 Days
+1. Stop new home purchases and frame the decision as a permanent strategic exit, not a temporary pause.
+2. Liquidate the existing inventory against portfolio-level loss scenarios, prioritizing speed and certainty over isolated holdout bets.
+3. Report wind-down costs separately so the earning power of IMT and other asset-light businesses is visible.
+4. Reallocate leadership attention and capital to marketplace, mortgage, closing, and other transaction-enablement products.
+5. Reduce Offers-related headcount and operating footprint while retaining selectively reusable capabilities.
+6. Present a post-Offers strategy narrative centered on housing transactions without principal inventory risk.
+
+## Decision Frame
+Decision: Exit Zillow Offers and refocus Zillow on its high-margin marketplace and asset-light transaction businesses.
+
+Why this decision wins: The evidence is sufficient to conclude that Zillow has not demonstrated a repeatable edge in iBuying at the moment the business is already generating significant inventory losses and obscuring a stronger core franchise. The reform case may be conceivable, but it is not decision-ready.
+
+What would have to be true for reform to be better: Zillow would need credible market-level evidence that a narrow-geo, low-volume model can produce positive unit economics after holding, renovation, and disposition costs; evidence that the latest pricing changes materially reduced acquisition error; and a clear governance model preventing another scale-before-proof cycle.
+
+## Unknowns & Evidence Gaps
+- We do not have the actual Zillow Offers acquisition pricing error rate, only the broader Zestimate error figure.
+- We do not know what the two 2021 algorithm pivots changed or how much they improved outcomes.
+- We do not have metro-level cohort economics showing whether a subset of markets was near viable.
+- We do not have a full contribution-margin bridge separating pricing error from operational inefficiency.
+- We do not have liquidation-loss scenarios for fast, medium, and slow inventory disposition.
+
+These gaps matter. They weaken any claim that iBuying is categorically impossible for Zillow. They do not, however, strengthen the current reform case enough to justify continued exposure.
+
+## Pass/Fail Readiness
+Pass if the board agrees that:
+- continuing principal-risk iBuying requires affirmative evidence of a repeatable edge, and that evidence is absent here;
+- the downside of extending the experiment is larger than the option value of another reform cycle;
+- Zillow can still pursue transaction adjacency through asset-light models.
+
+Fail if the board has evidence not in this packet showing that:
+- specific metros already achieved attractive fully loaded unit economics;
+- the latest pricing changes materially improved acquisition accuracy;
+- a constrained relaunch can be governed tightly enough to prevent renewed scale-driven losses.
+
+Given the record provided, the recommendation is ready for decision and favors exit.
+
+## Recommended Next Artifact
+A board wind-down and repositioning memo with three components: inventory liquidation scenarios, external and employee communications, and a 12-month asset-light transaction roadmap that replaces the strategic role Zillow Offers was meant to play.

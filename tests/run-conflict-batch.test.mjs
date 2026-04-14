@@ -9,7 +9,10 @@ test('parseCliArgs handles scenario filters and flags', () => {
     '--scenario', 'handoff-contradiction',
     '--out', '/tmp/summary.md',
     '--dry-run',
-    '--swap-sides',
+    '--side-a-agent', 'gemini',
+    '--side-b-agent', 'claude',
+    '--judge-agent', 'gpt',
+    '--judge-agent', 'gemini',
     '--side-a-reasoning-effort', 'high',
     '--side-b-reasoning-effort', 'low',
     '--judge-reasoning-effort', 'medium',
@@ -18,7 +21,9 @@ test('parseCliArgs handles scenario filters and flags', () => {
   assert.deepEqual(args.scenarios, ['prd-hidden-scope-creep', 'handoff-contradiction']);
   assert.equal(args.outPath, '/tmp/summary.md');
   assert.equal(args.dryRun, true);
-  assert.equal(args.swapSides, true);
+  assert.equal(args.sideAAgent, 'gemini');
+  assert.equal(args.sideBAgent, 'claude');
+  assert.deepEqual(args.judgeAgents, ['gpt', 'gemini']);
   assert.equal(args.sideAReasoningEffort, 'high');
   assert.equal(args.sideBReasoningEffort, 'low');
   assert.equal(args.judgeReasoningEffort, 'medium');
@@ -37,6 +42,51 @@ test('runBatch dry-run swaps competitor assignments when requested', async () =>
     assert.equal(result.sideBLabel, 'claude');
     assert.equal(result.status, 'dry_run');
   }
+});
+
+test('runBatch dry-run supports explicit role assignment including Gemini judge', async () => {
+  const results = await runBatch({
+    scenarios: ['prd-hidden-scope-creep'],
+    dryRun: true,
+    sideAAgent: 'gpt',
+    sideBAgent: 'claude',
+    judgeAgents: ['gemini'],
+  });
+
+  assert.equal(results.length, 1);
+  assert.equal(results[0].sideALabel, 'gpt');
+  assert.equal(results[0].sideBLabel, 'claude');
+  assert.equal(results[0].judgeLabel, 'gemini-judge');
+  assert.equal(results[0].status, 'dry_run');
+});
+
+test('runBatch rejects duplicate side assignments', async () => {
+  await assert.rejects(
+    () => runBatch({
+      scenarios: ['prd-hidden-scope-creep'],
+      dryRun: true,
+      sideAAgent: 'claude',
+      sideBAgent: 'claude',
+    }),
+    (error) => {
+      assert.ok(error.message.includes('Side A and Side B must use different agents'));
+      return true;
+    },
+  );
+});
+
+test('runBatch rejects unknown judge agents', async () => {
+  await assert.rejects(
+    () => runBatch({
+      scenarios: ['prd-hidden-scope-creep'],
+      dryRun: true,
+      judgeAgents: ['mystery-bot'],
+    }),
+    (error) => {
+      assert.ok(error.message.includes('Unknown judge agent'));
+      return true;
+    },
+  );
 });
 
 test('buildSummary produces judge agreement analysis from completed runs', () => {

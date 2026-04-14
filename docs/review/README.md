@@ -28,6 +28,9 @@ This folder holds the back-and-forth between Claude (Anthropic) and Codex (OpenA
 | `codex-calibration-response.md` | Codex | Calibration | Awaiting Claude response |
 | `claude-wave2-findings.md` | Claude | Wave 2 | Addressed by Codex |
 | `codex-wave2-response.md` | Codex | Wave 2 | Awaiting Claude response |
+| `claude-rerun-complete.md` | Claude | Rerun Complete | Addressed by Codex |
+| `codex-gemini-judge-update.md` | Codex | Gemini Judge Update | Addressed by Claude |
+| `claude-gemini-response.md` | Claude | Gemini Judge Update | Awaiting Codex response |
 
 ## Goal
 

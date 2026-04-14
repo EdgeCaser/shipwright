@@ -91,6 +91,7 @@ test('runConflictHarness completes a head-to-head run and writes state', async (
                 },
               ],
               citations: ['ctx-1'],
+              conclusion_confidence: 'medium',
               open_questions: [],
               critique_responses: [],
             },
@@ -129,6 +130,7 @@ test('runConflictHarness completes a head-to-head run and writes state', async (
                 },
               ],
               citations: ['ctx-1'],
+              conclusion_confidence: 'high',
               open_questions: [],
               critique_responses: [
                 {
@@ -163,6 +165,23 @@ test('runConflictHarness completes a head-to-head run and writes state', async (
                   internal_consistency: 4,
                   decision_usefulness: 3,
                   weighted_total: 3.4,
+                },
+              },
+              dimension_rationales: {
+                claim_quality: 'Side A made the crisper top-level claim.',
+                evidence_discipline: 'Side A stayed closer to the visible evidence.',
+                responsiveness_to_critique: 'Side A addressed the rebuttal more concretely.',
+                internal_consistency: 'Side A had fewer internal gaps.',
+                decision_usefulness: 'Side A gave the board a more actionable posture.',
+              },
+              side_summaries: {
+                side_a: {
+                  strengths: ['Concrete response to critique.'],
+                  weaknesses: ['Less ambitious framing.'],
+                },
+                side_b: {
+                  strengths: ['Broader framing of the problem.'],
+                  weaknesses: ['More diffuse final recommendation.'],
                 },
               },
               decisive_findings: ['Side A responded more concretely to the rebuttal.'],
@@ -203,6 +222,7 @@ test('runConflictHarness completes a head-to-head run and writes state', async (
     assert.equal(judgeCall.reasoningEffort, 'medium');
     assert.ok(judgeCall.prompt.includes('judge_confidence rubric'));
     assert.ok(judgeCall.prompt.includes('min_margin_for_verdict = 0.1'));
+    assert.ok(judgeCall.prompt.includes('conclusion_confidence'));
     assert.ok(!('provider' in judgeCall.packet));
     assert.ok(!('provider' in judgeCall.packet.first_pass_artifacts.side_a));
     assert.ok(!('provider' in judgeCall.packet.first_pass_artifacts.side_b));
@@ -239,6 +259,7 @@ test('runConflictHarness enforces budget at phase boundaries', async () => {
                 },
               ],
               citations: ['ctx-1'],
+              conclusion_confidence: 'medium',
               open_questions: [],
               critique_responses: [],
             },
@@ -291,6 +312,7 @@ test('runConflictHarness retries first-pass identity leakage once before continu
                   },
                 ],
                 citations: ['ctx-1'],
+                conclusion_confidence: 'medium',
                 open_questions: [],
                 critique_responses: [],
               },
@@ -315,6 +337,7 @@ test('runConflictHarness retries first-pass identity leakage once before continu
                 },
               ],
               citations: ['ctx-1'],
+              conclusion_confidence: 'medium',
               open_questions: [],
               critique_responses: [],
             },
@@ -352,6 +375,7 @@ test('runConflictHarness retries first-pass identity leakage once before continu
                 },
               ],
               citations: ['ctx-1'],
+              conclusion_confidence: 'high',
               open_questions: [],
               critique_responses: [
                 {
@@ -385,6 +409,23 @@ test('runConflictHarness retries first-pass identity leakage once before continu
                   internal_consistency: 5,
                   decision_usefulness: 4,
                   weighted_total: 4.6,
+                },
+              },
+              dimension_rationales: {
+                claim_quality: 'Side B made the stronger core recommendation.',
+                evidence_discipline: 'Both sides were similar on evidence use.',
+                responsiveness_to_critique: 'Side B responded more directly to the critique.',
+                internal_consistency: 'Side B was more internally coherent.',
+                decision_usefulness: 'Side B was more actionable overall.',
+              },
+              side_summaries: {
+                side_a: {
+                  strengths: ['Clear initial structure.'],
+                  weaknesses: ['Did not fully resolve the critique.'],
+                },
+                side_b: {
+                  strengths: ['More complete final answer.'],
+                  weaknesses: ['Still had minor ambiguity.'],
                 },
               },
               decisive_findings: ['Side B was stronger.'],
@@ -436,6 +477,7 @@ test('runConflictHarness terminates with protocol_violation after repeated unsee
                   },
                 ],
                 citations: ['ctx-1'],
+                conclusion_confidence: 'medium',
                 open_questions: [],
                 critique_responses: [],
               },
@@ -459,6 +501,7 @@ test('runConflictHarness terminates with protocol_violation after repeated unsee
                   },
                 ],
                 citations: ['ctx-1'],
+                conclusion_confidence: 'medium',
                 open_questions: [],
                 critique_responses: [],
               },

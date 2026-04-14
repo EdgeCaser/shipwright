@@ -954,7 +954,7 @@ function assertCommittedArtifactPacket(packet, runId, sideId, phase) {
     throw new Error(`${phase} ${sideId} packet must be an object.`);
   }
 
-  const required = ['run_id', 'side_id', 'round', 'artifact_markdown', 'claims', 'citations', 'open_questions', 'critique_responses'];
+  const required = ['run_id', 'side_id', 'round', 'artifact_markdown', 'claims', 'citations', 'conclusion_confidence', 'open_questions', 'critique_responses'];
   for (const key of required) {
     if (!(key in packet)) {
       throw new Error(`${phase} ${sideId} packet is missing ${key}.`);
@@ -1009,6 +1009,7 @@ function buildFirstPassPrompt(casePacket, runId, sideId) {
           },
         ],
         citations: ['ctx-1'],
+        conclusion_confidence: 'medium',
         open_questions: [],
         critique_responses: [],
       },
@@ -1085,6 +1086,7 @@ function buildFinalPrompt(casePacket, runId, sideId, firstPassPacket, critiquePa
           },
         ],
         citations: ['ctx-1'],
+        conclusion_confidence: 'medium',
         open_questions: [],
         critique_responses: [
           {
@@ -1156,6 +1158,23 @@ function buildJudgePrompt(judgePacket, minMarginForVerdict) {
             weighted_total: 3.0,
           },
         },
+        dimension_rationales: {
+          claim_quality: 'Brief explanation of which side made the stronger claims and why.',
+          evidence_discipline: 'Brief explanation of how the sides used or overstated evidence.',
+          responsiveness_to_critique: 'Brief explanation of how each side handled the critique phase.',
+          internal_consistency: 'Brief explanation of contradictions, coherence, or missing logic.',
+          decision_usefulness: 'Brief explanation of which artifact better supports an actual decision.',
+        },
+        side_summaries: {
+          side_a: {
+            strengths: ['One concise strength of Side A.'],
+            weaknesses: ['One concise weakness of Side A.'],
+          },
+          side_b: {
+            strengths: ['One concise strength of Side B.'],
+            weaknesses: ['One concise weakness of Side B.'],
+          },
+        },
         decisive_findings: ['Replace with the actual decisive findings from this run.'],
         judge_confidence: 'low',
         needs_human_review: true,
@@ -1166,6 +1185,8 @@ function buildJudgePrompt(judgePacket, minMarginForVerdict) {
     ),
     '',
     `Use min_margin_for_verdict = ${minMarginForVerdict}.`,
+    'Treat each side\'s reported conclusion_confidence as a calibration signal, not a vote multiplier.',
+    'Reward confidence when it is well matched to the evidence and penalize overconfidence when the artifact overreaches.',
     'judge_confidence rubric:',
     '- high: the winning side is clearly stronger on at least 3 rubric dimensions and has no major unsupported-claim problem',
     '- medium: the winning side leads overall but has at least 1 weak dimension or absorbed only part of the opposing critique',
@@ -1538,6 +1559,26 @@ function formatVerdictMarkdown(packet) {
     `- Margin: ${packet.margin}`,
     `- Judge Confidence: ${packet.judge_confidence}`,
     `- Needs Human Review: ${packet.needs_human_review}`,
+    '',
+    '## Dimension Rationales',
+    `- Claim Quality: ${packet.dimension_rationales?.claim_quality || 'n/a'}`,
+    `- Evidence Discipline: ${packet.dimension_rationales?.evidence_discipline || 'n/a'}`,
+    `- Responsiveness To Critique: ${packet.dimension_rationales?.responsiveness_to_critique || 'n/a'}`,
+    `- Internal Consistency: ${packet.dimension_rationales?.internal_consistency || 'n/a'}`,
+    `- Decision Usefulness: ${packet.dimension_rationales?.decision_usefulness || 'n/a'}`,
+    '',
+    '## Side Summaries',
+    `### Side A Strengths`,
+    ...((packet.side_summaries?.side_a?.strengths || []).map((entry) => `- ${entry}`)),
+    '',
+    `### Side A Weaknesses`,
+    ...((packet.side_summaries?.side_a?.weaknesses || []).map((entry) => `- ${entry}`)),
+    '',
+    `### Side B Strengths`,
+    ...((packet.side_summaries?.side_b?.strengths || []).map((entry) => `- ${entry}`)),
+    '',
+    `### Side B Weaknesses`,
+    ...((packet.side_summaries?.side_b?.weaknesses || []).map((entry) => `- ${entry}`)),
     '',
     '## Decisive Findings',
     ...(packet.decisive_findings || []).map((finding) => `- ${finding}`),

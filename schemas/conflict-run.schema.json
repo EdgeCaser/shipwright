@@ -60,6 +60,7 @@
                 "artifact_markdown",
                 "claims",
                 "citations",
+                "conclusion_confidence",
                 "open_questions",
                 "critique_responses"
               ],
@@ -89,6 +90,10 @@
                 "citations": {
                   "type": "array",
                   "items": { "type": "string", "minLength": 1 }
+                },
+                "conclusion_confidence": {
+                  "type": "string",
+                  "enum": ["low", "medium", "high"]
                 },
                 "open_questions": {
                   "type": "array",
@@ -148,6 +153,7 @@
                 "artifact_markdown",
                 "claims",
                 "citations",
+                "conclusion_confidence",
                 "open_questions",
                 "critique_responses"
               ],
@@ -177,6 +183,10 @@
                 "citations": {
                   "type": "array",
                   "items": { "type": "string", "minLength": 1 }
+                },
+                "conclusion_confidence": {
+                  "type": "string",
+                  "enum": ["low", "medium", "high"]
                 },
                 "open_questions": {
                   "type": "array",
@@ -222,6 +232,7 @@
                 "artifact_markdown",
                 "claims",
                 "citations",
+                "conclusion_confidence",
                 "open_questions",
                 "critique_responses"
               ],
@@ -251,6 +262,10 @@
                 "citations": {
                   "type": "array",
                   "items": { "type": "string", "minLength": 1 }
+                },
+                "conclusion_confidence": {
+                  "type": "string",
+                  "enum": ["low", "medium", "high"]
                 },
                 "open_questions": {
                   "type": "array",
@@ -310,6 +325,7 @@
                 "artifact_markdown",
                 "claims",
                 "citations",
+                "conclusion_confidence",
                 "open_questions",
                 "critique_responses"
               ],
@@ -339,6 +355,10 @@
                 "citations": {
                   "type": "array",
                   "items": { "type": "string", "minLength": 1 }
+                },
+                "conclusion_confidence": {
+                  "type": "string",
+                  "enum": ["low", "medium", "high"]
                 },
                 "open_questions": {
                   "type": "array",
@@ -394,6 +414,8 @@
             "winner",
             "margin",
             "rubric_scores",
+            "dimension_rationales",
+            "side_summaries",
             "decisive_findings",
             "judge_confidence",
             "needs_human_review",
@@ -445,6 +467,65 @@
                     "internal_consistency": { "type": "number" },
                     "decision_usefulness": { "type": "number" },
                     "weighted_total": { "type": "number" }
+                  }
+                }
+              }
+            },
+            "dimension_rationales": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "claim_quality",
+                "evidence_discipline",
+                "responsiveness_to_critique",
+                "internal_consistency",
+                "decision_usefulness"
+              ],
+              "properties": {
+                "claim_quality": { "type": "string", "minLength": 1 },
+                "evidence_discipline": { "type": "string", "minLength": 1 },
+                "responsiveness_to_critique": { "type": "string", "minLength": 1 },
+                "internal_consistency": { "type": "string", "minLength": 1 },
+                "decision_usefulness": { "type": "string", "minLength": 1 }
+              }
+            },
+            "side_summaries": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["side_a", "side_b"],
+              "properties": {
+                "side_a": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["strengths", "weaknesses"],
+                  "properties": {
+                    "strengths": {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": { "type": "string", "minLength": 1 }
+                    },
+                    "weaknesses": {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": { "type": "string", "minLength": 1 }
+                    }
+                  }
+                },
+                "side_b": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["strengths", "weaknesses"],
+                  "properties": {
+                    "strengths": {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": { "type": "string", "minLength": 1 }
+                    },
+                    "weaknesses": {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": { "type": "string", "minLength": 1 }
+                    }
                   }
                 }
               }
