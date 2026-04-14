@@ -10,6 +10,7 @@ import { AGENT_PROFILES } from './run-conflict-batch.mjs';
 const DEFAULT_REASONING_EFFORT = 'medium';
 const DEFAULT_TIMEOUT_MS = 120000;
 const VALID_FORMATS = new Set(['text', 'json']);
+const MAX_GEMINI_TURN_ATTEMPTS = 3;
 
 export async function rejudgeConflictRun(options = {}) {
   const runDir = normalizeRequiredPath(options.runDir, '--run-dir');
@@ -54,20 +55,24 @@ export async function rejudgeConflictRun(options = {}) {
 
   const rawOutputPath = path.join(outputDir, 'verdict.raw.txt');
   const turnRunner = options.turnRunner || createShellTurnRunner({ shell: resolveReplayShell() });
-  const response = await turnRunner({
-    phase: 'judge',
-    sideId: null,
-    runId: run.run_id,
-    prompt,
-    packet,
-    cwd,
-    timeoutMs,
-    command: judgeCommand,
-    reasoningEffort: judgeReasoningEffort,
-    outDir: outputDir,
-    promptFilePath,
-    packetFilePath,
-    attempt: 0,
+  const response = await runJudgeTurnWithRetries({
+    judgeAgent,
+    turnRunner,
+    turnOptions: {
+      phase: 'judge',
+      sideId: null,
+      runId: run.run_id,
+      prompt,
+      packet,
+      cwd,
+      timeoutMs,
+      command: judgeCommand,
+      reasoningEffort: judgeReasoningEffort,
+      outDir: outputDir,
+      promptFilePath,
+      packetFilePath,
+      attempt: 0,
+    },
   });
 
   if (typeof response.exitCode === 'number' && response.exitCode !== 0) {
@@ -277,6 +282,31 @@ function resolveReplayShell() {
   return gitBashCandidates.find((candidate) => existsSync(candidate));
 }
 
+async function runJudgeTurnWithRetries(options) {
+  let lastResponse = null;
+  let lastFailure = null;
+
+  for (let attempt = 0; attempt < MAX_GEMINI_TURN_ATTEMPTS; attempt += 1) {
+    const response = await options.turnRunner({
+      ...options.turnOptions,
+      attempt,
+    });
+    lastResponse = response;
+
+    if (!shouldRetryJudgeResponse(response, options.judgeAgent) || attempt === MAX_GEMINI_TURN_ATTEMPTS - 1) {
+      return response;
+    }
+
+    lastFailure = response.stderr || response.spawnError || 'unknown judge turn failure';
+  }
+
+  if (lastResponse) {
+    return lastResponse;
+  }
+
+  throw new Error(`Judge turn failed before producing a response: ${lastFailure || 'unknown error'}`);
+}
+
 async function parseAndValidateVerdict(options) {
   const parsed = parseJsonResponse(options.output);
   const validation = validateConflictDocument(parsed, 'verdict');
@@ -303,9 +333,29 @@ function shouldAttemptVerdictRepair(errors, judgeAgent) {
   }
 
   return errors.every((error) =>
-    error.message === 'Missing required property.' &&
-    (error.path === '$.dimension_rationales' || error.path === '$.side_summaries'),
+    error.message === 'Missing required property.' && isRepairableGeminiValidationPath(error.path),
   );
+}
+
+function isRepairableGeminiValidationPath(pathValue) {
+  return pathValue === '$.dimension_rationales' ||
+    pathValue === '$.side_summaries' ||
+    pathValue === '$.decisive_dimension' ||
+    pathValue === '$.rubric_scores.side_a.weighted_total' ||
+    pathValue === '$.rubric_scores.side_b.weighted_total';
+}
+
+function shouldRetryJudgeResponse(response, judgeAgent) {
+  if (judgeAgent !== 'gemini') {
+    return false;
+  }
+
+  if (typeof response?.exitCode !== 'number' || response.exitCode === 0) {
+    return false;
+  }
+
+  const stderr = `${response.stderr || ''}\n${response.spawnError || ''}`;
+  return /ERR_STREAM_PREMATURE_CLOSE|Premature close/i.test(stderr);
 }
 
 async function repairVerdict(options, parsedVerdict, errors) {
@@ -314,9 +364,13 @@ async function repairVerdict(options, parsedVerdict, errors) {
   const repairPrompt = [
     'Your previous judge output was close but rejected by schema validation.',
     'Rewrite it as ONLY a JSON object that preserves the same winner, margin, rubric_scores, decisive_dimension, judge_confidence, needs_human_review, decisive_findings, and rationale unless the schema absolutely requires clarification.',
+    'Any rubric_scores.*.weighted_total value must be a normalized aggregate on the same 1-5 scale as the rubric dimensions, not a raw sum.',
     'You MUST include these missing required properties with substantive content:',
     '- dimension_rationales',
     '- side_summaries',
+    '- decisive_dimension',
+    '- rubric_scores.side_a.weighted_total',
+    '- rubric_scores.side_b.weighted_total',
     '',
     'Required schema shape:',
     JSON.stringify(buildVerdictShapeExample(), null, 2),
@@ -391,6 +445,7 @@ function buildReplayJudgePrompt(savedPrompt) {
     '- This replay will be rejected unless EVERY required property is present.',
     '- Do not omit `dimension_rationales`.',
     '- Do not omit `side_summaries`.',
+    '- `rubric_scores.side_a.weighted_total` and `rubric_scores.side_b.weighted_total` must each stay within the same 1-5 scale as the rubric dimensions.',
     '- Return ONLY the JSON object. No markdown fences, no prose before or after.',
   ].join('\n');
 }

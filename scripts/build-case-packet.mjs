@@ -91,6 +91,18 @@ export function validateConflictValue(value, schema, currentPath = '$', errors =
     return errors;
   }
 
+  if (
+    (schema.type === 'number' || schema.type === 'integer') &&
+    typeof schema.maximum === 'number' &&
+    value > schema.maximum
+  ) {
+    errors.push({
+      path: currentPath,
+      message: `Expected value <= ${schema.maximum}.`,
+    });
+    return errors;
+  }
+
   if (matchesSchemaType(value, 'object')) {
     const properties = schema.properties || {};
     const required = schema.required || [];

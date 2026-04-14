@@ -1244,6 +1244,7 @@ function buildJudgePrompt(judgePacket, minMarginForVerdict) {
     ),
     '',
     `Use min_margin_for_verdict = ${minMarginForVerdict}.`,
+    'Set rubric_scores.*.weighted_total as a normalized aggregate on the same 1-5 scale as the rubric dimensions, not as a raw sum.',
     'Treat each side\'s reported conclusion_confidence as a calibration signal, not a vote multiplier.',
     'Reward confidence when it is well matched to the evidence and penalize overconfidence when the artifact overreaches.',
     'judge_confidence rubric:',

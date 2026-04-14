@@ -5,6 +5,7 @@ import path from 'node:path';
 import test from 'node:test';
 
 import { parseCliArgs, rejudgeConflictRun } from '../scripts/rejudge-conflict-run.mjs';
+import { validateConflictDocument } from '../scripts/build-case-packet.mjs';
 
 test('parseCliArgs handles rejudge options', () => {
   const args = parseCliArgs([
@@ -143,4 +144,228 @@ test('rejudgeConflictRun rejects unknown judge agents', async () => {
       return true;
     },
   );
+});
+
+test('rejudgeConflictRun repairs Gemini verdicts that only miss structured fields', async () => {
+  const tmpRoot = await mkdtemp(path.join(os.tmpdir(), 'shipwright-rejudge-'));
+  const runDir = path.join(tmpRoot, 'conflict-run');
+  const judgeDir = path.join(runDir, 'judge');
+  await mkdir(judgeDir, { recursive: true });
+
+  await Promise.all([
+    writeFile(path.join(runDir, 'run.json'), '{ "run_id": "repair-run" }\n'),
+    writeFile(path.join(judgeDir, 'verdict.input.json'), '{}\n'),
+    writeFile(path.join(judgeDir, 'verdict.prompt.txt'), 'prompt'),
+  ]);
+
+  const incompleteVerdict = {
+    winner: 'side_a',
+    margin: 0.1,
+    rubric_scores: {
+      side_a: {
+        claim_quality: 4,
+        evidence_discipline: 4,
+        responsiveness_to_critique: 4,
+        internal_consistency: 4,
+        decision_usefulness: 4,
+        weighted_total: 4,
+      },
+      side_b: {
+        claim_quality: 3,
+        evidence_discipline: 3,
+        responsiveness_to_critique: 3,
+        internal_consistency: 3,
+        decision_usefulness: 3,
+        weighted_total: 3,
+      },
+    },
+    decisive_findings: ['Side A is more actionable.'],
+    judge_confidence: 'medium',
+    needs_human_review: false,
+    rationale: 'Side A wins.',
+  };
+
+  const repairedVerdict = {
+    ...incompleteVerdict,
+    dimension_rationales: {
+      claim_quality: 'Side A is stronger.',
+      evidence_discipline: 'Side A is tighter.',
+      responsiveness_to_critique: 'Side A addressed critique better.',
+      internal_consistency: 'Side A is more coherent.',
+      decision_usefulness: 'Side A is more useful.',
+    },
+    side_summaries: {
+      side_a: {
+        strengths: ['Actionable recommendation.'],
+        weaknesses: ['Could be shorter.'],
+      },
+      side_b: {
+        strengths: ['Good framing.'],
+        weaknesses: ['Less decisive.'],
+      },
+    },
+    decisive_dimension: 'decision_usefulness',
+  };
+
+  let callCount = 0;
+  const result = await rejudgeConflictRun({
+    runDir,
+    judgeAgent: 'gemini',
+    label: 'gemini-repair',
+    turnRunner: async () => {
+      callCount += 1;
+      return {
+        stdout: `${JSON.stringify(callCount === 1 ? incompleteVerdict : repairedVerdict, null, 2)}\n`,
+        stderr: '',
+        exitCode: 0,
+      };
+    },
+  });
+
+  assert.equal(callCount, 2);
+  assert.equal(result.verdict.decisive_dimension, 'decision_usefulness');
+
+  const metadata = JSON.parse(await readFile(path.join(result.outputDir, 'metadata.json'), 'utf8'));
+  assert.equal(metadata.replay.repair_attempted, true);
+  assert.equal(metadata.replay.repair_attempts, 1);
+});
+
+test('rejudgeConflictRun repairs Gemini verdicts that miss structured fields and weighted totals', async () => {
+  const tmpRoot = await mkdtemp(path.join(os.tmpdir(), 'shipwright-rejudge-'));
+  const runDir = path.join(tmpRoot, 'conflict-run');
+  const judgeDir = path.join(runDir, 'judge');
+  await mkdir(judgeDir, { recursive: true });
+
+  await Promise.all([
+    writeFile(path.join(runDir, 'run.json'), '{ "run_id": "repair-run-2" }\n'),
+    writeFile(path.join(judgeDir, 'verdict.input.json'), '{}\n'),
+    writeFile(path.join(judgeDir, 'verdict.prompt.txt'), 'prompt'),
+  ]);
+
+  const incompleteVerdict = {
+    winner: 'side_b',
+    margin: 0.4,
+    rubric_scores: {
+      side_a: {
+        claim_quality: 3,
+        evidence_discipline: 3,
+        responsiveness_to_critique: 3,
+        internal_consistency: 3,
+        decision_usefulness: 3,
+      },
+      side_b: {
+        claim_quality: 4,
+        evidence_discipline: 4,
+        responsiveness_to_critique: 4,
+        internal_consistency: 4,
+        decision_usefulness: 4,
+      },
+    },
+    decisive_findings: ['Side B is stronger overall.'],
+    judge_confidence: 'medium',
+    needs_human_review: true,
+    rationale: 'Side B wins with a clearer recommendation.',
+  };
+
+  const repairedVerdict = {
+    ...incompleteVerdict,
+    rubric_scores: {
+      side_a: {
+        ...incompleteVerdict.rubric_scores.side_a,
+        weighted_total: 3,
+      },
+      side_b: {
+        ...incompleteVerdict.rubric_scores.side_b,
+        weighted_total: 4,
+      },
+    },
+    dimension_rationales: {
+      claim_quality: 'Side B has the stronger claims.',
+      evidence_discipline: 'Side B uses evidence more carefully.',
+      responsiveness_to_critique: 'Side B absorbs critique better.',
+      internal_consistency: 'Side B is more coherent.',
+      decision_usefulness: 'Side B is more useful to the decision maker.',
+    },
+    side_summaries: {
+      side_a: {
+        strengths: ['Good framing.'],
+        weaknesses: ['Less complete recommendation.'],
+      },
+      side_b: {
+        strengths: ['More decisive recommendation.'],
+        weaknesses: ['Slightly more rigid stance.'],
+      },
+    },
+    decisive_dimension: 'decision_usefulness',
+  };
+
+  let callCount = 0;
+  const result = await rejudgeConflictRun({
+    runDir,
+    judgeAgent: 'gemini',
+    label: 'gemini-repair-2',
+    turnRunner: async () => {
+      callCount += 1;
+      return {
+        stdout: `${JSON.stringify(callCount === 1 ? incompleteVerdict : repairedVerdict, null, 2)}\n`,
+        stderr: '',
+        exitCode: 0,
+      };
+    },
+  });
+
+  assert.equal(callCount, 2);
+  assert.equal(result.verdict.rubric_scores.side_a.weighted_total, 3);
+  assert.equal(result.verdict.rubric_scores.side_b.weighted_total, 4);
+});
+
+test('verdict schema rejects weighted totals outside the 1-5 scale', () => {
+  const verdict = {
+    winner: 'side_a',
+    margin: 1,
+    rubric_scores: {
+      side_a: {
+        claim_quality: 4,
+        evidence_discipline: 4,
+        responsiveness_to_critique: 4,
+        internal_consistency: 4,
+        decision_usefulness: 4,
+        weighted_total: 20,
+      },
+      side_b: {
+        claim_quality: 3,
+        evidence_discipline: 3,
+        responsiveness_to_critique: 3,
+        internal_consistency: 3,
+        decision_usefulness: 3,
+        weighted_total: 19,
+      },
+    },
+    dimension_rationales: {
+      claim_quality: 'Side A is stronger.',
+      evidence_discipline: 'Side A is tighter.',
+      responsiveness_to_critique: 'Side A is more responsive.',
+      internal_consistency: 'Side A is more coherent.',
+      decision_usefulness: 'Side A is more useful.',
+    },
+    side_summaries: {
+      side_a: {
+        strengths: ['Good strategy.'],
+        weaknesses: ['Could be shorter.'],
+      },
+      side_b: {
+        strengths: ['Good framing.'],
+        weaknesses: ['Less useful.'],
+      },
+    },
+    decisive_dimension: 'decision_usefulness',
+    decisive_findings: ['Side A is stronger.'],
+    judge_confidence: 'medium',
+    needs_human_review: true,
+    rationale: 'Side A wins.',
+  };
+
+  const validation = validateConflictDocument(verdict, 'verdict');
+  assert.ok(validation.errors.some((error) => error.path === '$.rubric_scores.side_a.weighted_total'));
+  assert.ok(validation.errors.some((error) => error.path === '$.rubric_scores.side_b.weighted_total'));
 });
