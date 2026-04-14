@@ -1545,25 +1545,25 @@ export function injectReasoningEffort(command, reasoningEffort) {
 
   let nextCommand = command;
 
-  if (/\bclaude\b/.test(nextCommand) && !/\s--effort\b/.test(nextCommand)) {
+  if (/(^|\|\s*)claude\b/.test(nextCommand) && !/\s--effort\b/.test(nextCommand)) {
     nextCommand = nextCommand.replace(
-      /\bclaude\b/,
-      `claude --effort ${shellEscape(reasoningEffort)}`,
+      /(^|\|\s*)claude\b/,
+      (_match, prefix) => `${prefix}claude --effort ${shellEscape(reasoningEffort)}`,
     );
   }
 
-  if (/\bcodex\s+exec\b/.test(nextCommand) && !/\bmodel_reasoning_effort\b/.test(nextCommand)) {
+  if (/(^|\|\s*)codex\s+exec\b/.test(nextCommand) && !/\bmodel_reasoning_effort\b/.test(nextCommand)) {
     nextCommand = nextCommand.replace(
-      /\bcodex\s+exec\b/,
-      `codex exec -c model_reasoning_effort=${shellEscape(reasoningEffort)}`,
+      /(^|\|\s*)codex\s+exec\b/,
+      (_match, prefix) => `${prefix}codex exec -c model_reasoning_effort=${shellEscape(reasoningEffort)}`,
     );
   }
 
-  if (/\bgemini\b/.test(nextCommand) && !/\s-m\s/.test(nextCommand) && !/\s--model\s/.test(nextCommand)) {
+  if (/(^|\|\s*)gemini\b/.test(nextCommand) && !/\s-m\s/.test(nextCommand) && !/\s--model\s/.test(nextCommand)) {
     const geminiAlias = `shipwright-gemini-${normalizeGeminiReasoningEffort(reasoningEffort)}`;
     nextCommand = nextCommand.replace(
-      /\bgemini\b/,
-      `gemini -m ${shellEscape(geminiAlias)}`,
+      /(^|\|\s*)gemini\b/,
+      (_match, prefix) => `${prefix}gemini -m ${shellEscape(geminiAlias)}`,
     );
   }
 

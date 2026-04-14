@@ -328,16 +328,12 @@ async function parseAndValidateVerdict(options) {
 }
 
 function shouldAttemptVerdictRepair(errors, judgeAgent) {
-  if (judgeAgent !== 'gemini') {
-    return false;
-  }
-
   return errors.every((error) =>
-    error.message === 'Missing required property.' && isRepairableGeminiValidationPath(error.path),
+    error.message === 'Missing required property.' && isRepairableVerdictValidationPath(error.path),
   );
 }
 
-function isRepairableGeminiValidationPath(pathValue) {
+function isRepairableVerdictValidationPath(pathValue) {
   return pathValue === '$.dimension_rationales' ||
     pathValue === '$.side_summaries' ||
     pathValue === '$.decisive_dimension' ||
