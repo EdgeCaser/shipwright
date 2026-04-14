@@ -2,7 +2,7 @@
 
 import { spawn } from 'node:child_process';
 import { mkdir, readFile, writeFile, unlink } from 'node:fs/promises';
-import { mkdtempSync } from 'node:fs';
+import { existsSync, mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -262,7 +262,7 @@ export async function runConflictHarness(options = {}) {
 }
 
 export function createShellTurnRunner(options = {}) {
-  const shell = options.shell || process.env.SHELL || '/bin/zsh';
+  const shellConfig = resolveShellConfig(options.shell);
 
   return async function runShellTurn(turnOptions) {
     if (!turnOptions.command || turnOptions.command.trim().length === 0) {
@@ -287,7 +287,7 @@ export function createShellTurnRunner(options = {}) {
     const startedAt = Date.now();
 
     const result = await new Promise((resolve) => {
-      const child = spawn(shell, ['-lc', command], {
+      const child = spawn(shellConfig.command, shellConfig.args(command), {
         cwd: turnOptions.cwd,
         env: {
           ...process.env,
@@ -361,6 +361,64 @@ export function createShellTurnRunner(options = {}) {
 
     return result;
   };
+}
+
+function resolveShellConfig(explicitShell) {
+  const shell = explicitShell || detectDefaultShell();
+  const shellLower = shell.toLowerCase();
+
+  if (shellLower.endsWith('bash.exe') || shellLower.endsWith('/bash') || shellLower.endsWith('\\bash')) {
+    return {
+      command: shell,
+      args: (command) => ['-lc', command],
+    };
+  }
+
+  if (shellLower.endsWith('zsh') || shellLower.endsWith('zsh.exe') || shellLower.endsWith('/sh')) {
+    return {
+      command: shell,
+      args: (command) => ['-lc', command],
+    };
+  }
+
+  if (shellLower.endsWith('powershell.exe') || shellLower.endsWith('pwsh.exe')) {
+    return {
+      command: shell,
+      args: (command) => ['-Command', command],
+    };
+  }
+
+  if (shellLower.endsWith('cmd.exe')) {
+    return {
+      command: shell,
+      args: (command) => ['/d', '/s', '/c', command],
+    };
+  }
+
+  return {
+    command: shell,
+    args: (command) => ['-lc', command],
+  };
+}
+
+function detectDefaultShell() {
+  if (process.env.SHELL) {
+    return process.env.SHELL;
+  }
+
+  if (process.platform === 'win32') {
+    const gitBashCandidates = [
+      'C:\\Program Files\\Git\\bin\\bash.exe',
+      'C:\\Program Files (x86)\\Git\\bin\\bash.exe',
+    ];
+    const gitBash = gitBashCandidates.find((candidate) => existsSync(candidate));
+    if (gitBash) {
+      return gitBash;
+    }
+    return process.env.ComSpec || 'powershell.exe';
+  }
+
+  return '/bin/zsh';
 }
 
 export function parseCliArgs(argv) {
@@ -1512,8 +1570,11 @@ export function injectReasoningEffort(command, reasoningEffort) {
 
 function normalizeGeminiReasoningEffort(reasoningEffort) {
   const normalized = typeof reasoningEffort === 'string' ? reasoningEffort.trim().toLowerCase() : '';
-  if (normalized === 'low' || normalized === 'medium' || normalized === 'high') {
+  if (normalized === 'medium' || normalized === 'high') {
     return normalized;
+  }
+  if (normalized === 'low') {
+    return 'medium';
   }
   return 'medium';
 }

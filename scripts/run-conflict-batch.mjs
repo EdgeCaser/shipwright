@@ -25,9 +25,9 @@ export const AGENT_PROFILES = {
   gemini: {
     id: 'gemini',
     label: 'gemini',
-    command: 'cat {{prompt_file}} | gemini --approval-mode plan --output-format text -p ""',
+    command: 'cat {{prompt_file}} | gemini --approval-mode plan --output-format text -p "Use stdin as the full task. Return only the requested JSON object."',
     provider: 'google',
-    model: 'gemini-cli',
+    model: 'gemini-2.5-flash-lite',
   },
 };
 

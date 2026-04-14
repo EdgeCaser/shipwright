@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import { existsSync } from 'node:fs';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { createShellTurnRunner } from './run-conflict-harness.mjs';
@@ -30,7 +31,7 @@ export async function rejudgeConflictRun(options = {}) {
   const packetFilePath = path.join(existingJudgeDir, 'verdict.input.json');
   const runPath = path.join(runDir, 'run.json');
 
-  const [prompt, packetText, runText] = await Promise.all([
+  const [savedPrompt, packetText, runText] = await Promise.all([
     readFile(promptFilePath, 'utf8'),
     readFile(packetFilePath, 'utf8'),
     readFile(runPath, 'utf8'),
@@ -40,6 +41,7 @@ export async function rejudgeConflictRun(options = {}) {
   const run = JSON.parse(runText);
   const outputDir = path.join(runDir, 'rejudges', judgeLabel);
   await mkdir(outputDir, { recursive: true });
+  const prompt = buildReplayJudgePrompt(savedPrompt);
 
   await Promise.all([
     writeFile(path.join(outputDir, 'verdict.prompt.txt'), prompt),
@@ -47,7 +49,7 @@ export async function rejudgeConflictRun(options = {}) {
   ]);
 
   const rawOutputPath = path.join(outputDir, 'verdict.raw.txt');
-  const turnRunner = options.turnRunner || createShellTurnRunner();
+  const turnRunner = options.turnRunner || createShellTurnRunner({ shell: resolveReplayShell() });
   const response = await turnRunner({
     phase: 'judge',
     sideId: null,
@@ -75,11 +77,19 @@ export async function rejudgeConflictRun(options = {}) {
   }
 
   await writeFile(rawOutputPath, response.stdout);
-  const verdict = parseJsonResponse(response.stdout);
-  const validation = validateConflictDocument(verdict, 'verdict');
-  if (validation.errors.length > 0) {
-    throw new Error(formatValidationErrors('Verdict packet failed validation', validation.errors));
-  }
+  const verdict = await parseAndValidateVerdict({
+    output: response.stdout,
+    judgeAgent,
+    judgeCommand,
+    judgeReasoningEffort,
+    runId: run.run_id,
+    cwd,
+    timeoutMs,
+    turnRunner,
+    outDir: outputDir,
+    promptFilePath,
+    packetFilePath,
+  });
 
   const metadata = {
     source_run_dir: runDir,
@@ -248,6 +258,101 @@ function parseJsonResponse(output) {
   }
 }
 
+function resolveReplayShell() {
+  if (process.platform !== 'win32') {
+    return undefined;
+  }
+
+  const gitBashCandidates = [
+    'C:\\Program Files\\Git\\bin\\bash.exe',
+    'C:\\Program Files (x86)\\Git\\bin\\bash.exe',
+  ];
+
+  return gitBashCandidates.find((candidate) => existsSync(candidate));
+}
+
+async function parseAndValidateVerdict(options) {
+  const parsed = parseJsonResponse(options.output);
+  const validation = validateConflictDocument(parsed, 'verdict');
+  if (validation.errors.length === 0) {
+    return parsed;
+  }
+
+  if (!shouldAttemptVerdictRepair(validation.errors, options.judgeAgent)) {
+    throw new Error(formatValidationErrors('Verdict packet failed validation', validation.errors));
+  }
+
+  const repaired = await repairVerdict(options, parsed, validation.errors);
+  const repairedValidation = validateConflictDocument(repaired, 'verdict');
+  if (repairedValidation.errors.length > 0) {
+    throw new Error(formatValidationErrors('Verdict packet failed validation', repairedValidation.errors));
+  }
+
+  return repaired;
+}
+
+function shouldAttemptVerdictRepair(errors, judgeAgent) {
+  if (judgeAgent !== 'gemini') {
+    return false;
+  }
+
+  return errors.every((error) =>
+    error.message === 'Missing required property.' &&
+    (error.path === '$.dimension_rationales' || error.path === '$.side_summaries'),
+  );
+}
+
+async function repairVerdict(options, parsedVerdict, errors) {
+  const repairPrompt = [
+    'Your previous judge output was close but rejected by schema validation.',
+    'Rewrite it as ONLY a JSON object that preserves the same winner, margin, rubric_scores, judge_confidence, needs_human_review, decisive_findings, and rationale unless the schema absolutely requires clarification.',
+    'You MUST include these missing required properties with substantive content:',
+    '- dimension_rationales',
+    '- side_summaries',
+    '',
+    'Required schema shape:',
+    JSON.stringify(buildVerdictShapeExample(), null, 2),
+    '',
+    `Validation errors:\n${formatValidationErrors('Verdict packet failed validation', errors)}`,
+    '',
+    'Previous verdict JSON:',
+    JSON.stringify(parsedVerdict, null, 2),
+  ].join('\n');
+
+  const repairPromptPath = path.join(options.outDir, 'verdict.repair.prompt.txt');
+  const repairOutputPath = path.join(options.outDir, 'verdict.repair.raw.txt');
+  await writeFile(repairPromptPath, `${repairPrompt}\n`);
+
+  const response = await options.turnRunner({
+    phase: 'judge',
+    sideId: null,
+    runId: options.runId,
+    prompt: repairPrompt,
+    packet: parsedVerdict,
+    cwd: options.cwd,
+    timeoutMs: options.timeoutMs,
+    command: options.judgeCommand,
+    reasoningEffort: options.judgeReasoningEffort,
+    outDir: options.outDir,
+    promptFilePath: repairPromptPath,
+    packetFilePath: options.packetFilePath,
+    attempt: 1,
+  });
+
+  if (typeof response.exitCode === 'number' && response.exitCode !== 0) {
+    throw new Error(
+      `judge repair turn failed with exit code ${response.exitCode}: ${response.stderr || ''}`.trim(),
+    );
+  }
+
+  if (typeof response.stdout !== 'string') {
+    throw new Error('Judge repair turn did not return stdout.');
+  }
+
+  await writeFile(repairOutputPath, response.stdout);
+  return parseJsonResponse(response.stdout);
+}
+
 function extractJsonCandidate(output) {
   const trimmed = output.trim();
   if (trimmed.startsWith('{')) return trimmed;
@@ -268,6 +373,64 @@ function extractJsonCandidate(output) {
 
 function formatValidationErrors(label, errors) {
   return `${label}:\n${errors.map((error) => `${error.path}: ${error.message}`).join('\n')}`;
+}
+
+function buildReplayJudgePrompt(savedPrompt) {
+  return [
+    savedPrompt.trim(),
+    '',
+    'Replay addendum:',
+    '- This replay will be rejected unless EVERY required property is present.',
+    '- Do not omit `dimension_rationales`.',
+    '- Do not omit `side_summaries`.',
+    '- Return ONLY the JSON object. No markdown fences, no prose before or after.',
+  ].join('\n');
+}
+
+function buildVerdictShapeExample() {
+  return {
+    winner: 'tie',
+    margin: 0,
+    rubric_scores: {
+      side_a: {
+        claim_quality: 3,
+        evidence_discipline: 3,
+        responsiveness_to_critique: 3,
+        internal_consistency: 3,
+        decision_usefulness: 3,
+        weighted_total: 3,
+      },
+      side_b: {
+        claim_quality: 3,
+        evidence_discipline: 3,
+        responsiveness_to_critique: 3,
+        internal_consistency: 3,
+        decision_usefulness: 3,
+        weighted_total: 3,
+      },
+    },
+    dimension_rationales: {
+      claim_quality: 'Which side made the stronger claims and why.',
+      evidence_discipline: 'How each side used or overstated evidence.',
+      responsiveness_to_critique: 'How each side responded to the critique phase.',
+      internal_consistency: 'Contradictions, coherence, or missing logic.',
+      decision_usefulness: 'Which artifact better supports an actual decision.',
+    },
+    side_summaries: {
+      side_a: {
+        strengths: ['One concise strength of Side A.'],
+        weaknesses: ['One concise weakness of Side A.'],
+      },
+      side_b: {
+        strengths: ['One concise strength of Side B.'],
+        weaknesses: ['One concise weakness of Side B.'],
+      },
+    },
+    decisive_findings: ['Replace with the actual decisive findings from this run.'],
+    judge_confidence: 'low',
+    needs_human_review: true,
+    rationale: 'One-paragraph explanation of the verdict.',
+  };
 }
 
 function formatVerdictMarkdown(verdict) {
