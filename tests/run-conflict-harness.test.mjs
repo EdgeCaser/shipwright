@@ -4,7 +4,7 @@ import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
 
-import { runConflictHarness } from '../scripts/run-conflict-harness.mjs';
+import { injectReasoningEffort, runConflictHarness } from '../scripts/run-conflict-harness.mjs';
 
 function createCasePacket() {
   return {
@@ -229,6 +229,16 @@ test('runConflictHarness completes a head-to-head run and writes state', async (
   } finally {
     await rm(rootDir, { recursive: true, force: true });
   }
+});
+
+test('injectReasoningEffort pins Gemini to project-local aliases', () => {
+  const low = injectReasoningEffort('cat {{prompt_file}} | gemini --approval-mode plan --output-format text -p ""', 'low');
+  const medium = injectReasoningEffort('cat {{prompt_file}} | gemini --approval-mode plan --output-format text -p ""', 'medium');
+  const high = injectReasoningEffort('cat {{prompt_file}} | gemini --approval-mode plan --output-format text -p ""', 'high');
+
+  assert.ok(low.includes("gemini -m 'shipwright-gemini-low'"));
+  assert.ok(medium.includes("gemini -m 'shipwright-gemini-medium'"));
+  assert.ok(high.includes("gemini -m 'shipwright-gemini-high'"));
 });
 
 test('runConflictHarness enforces budget at phase boundaries', async () => {

@@ -1480,7 +1480,7 @@ function expandCommandTemplate(command, turnOptions) {
   return expanded;
 }
 
-function injectReasoningEffort(command, reasoningEffort) {
+export function injectReasoningEffort(command, reasoningEffort) {
   if (!reasoningEffort) return command;
 
   let nextCommand = command;
@@ -1499,7 +1499,23 @@ function injectReasoningEffort(command, reasoningEffort) {
     );
   }
 
+  if (/\bgemini\b/.test(nextCommand) && !/\s-m\s/.test(nextCommand) && !/\s--model\s/.test(nextCommand)) {
+    const geminiAlias = `shipwright-gemini-${normalizeGeminiReasoningEffort(reasoningEffort)}`;
+    nextCommand = nextCommand.replace(
+      /\bgemini\b/,
+      `gemini -m ${shellEscape(geminiAlias)}`,
+    );
+  }
+
   return nextCommand;
+}
+
+function normalizeGeminiReasoningEffort(reasoningEffort) {
+  const normalized = typeof reasoningEffort === 'string' ? reasoningEffort.trim().toLowerCase() : '';
+  if (normalized === 'low' || normalized === 'medium' || normalized === 'high') {
+    return normalized;
+  }
+  return 'medium';
 }
 
 function shellEscape(value) {
