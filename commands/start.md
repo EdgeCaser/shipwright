@@ -5,6 +5,8 @@ description: "Launch the Shipwright orchestrator. Greets the PM, asks what they'
 
 # /start — Launch Shipwright
 
+Also available as `/shipwright`, the branded Claude Code entrypoint. For a menu of common paths and direct workflows, use `/shipwright-help`.
+
 Run this command at the beginning of any session to activate the Shipwright orchestrator. It acts as a concierge: it understands what you need, maps your request to the right skills and agents, chooses Fast or Rigorous execution, and only builds an execution plan when the work actually needs one.
 
 Use `/start` when you need routing help or a phased plan. If you already know you want `/competitive`, `/pricing`, `/write-prd`, or another specific workflow, running that command directly is usually faster and less likely to time out. For fresh market, competitive, or pricing work, `/start` should usually propose research first and synthesis second instead of one giant run.

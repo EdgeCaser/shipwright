@@ -1,6 +1,6 @@
 ---
 name: customer-intelligence
-description: "Continuous synthesis of customer signals across channels. Feedback triage, sentiment trending, churn signal detection, journey mapping, and voice-of-customer reporting."
+description: "Use proactively for feedback synthesis, churn analysis, journey mapping, and voice-of-customer reporting. Continuously turns noisy customer signals into patterns."
 model: sonnet
 tools:
   - Read

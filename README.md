@@ -8,9 +8,9 @@
 
 Shipwright gives PMs a real operating system for product work: framework-backed skills, orchestrated workflows, and quality gates that produce artifacts teams can execute.
 
-Under the hood, Shipwright includes 46 skills, 7 specialist agents, and 18 chained workflows. The counts matter less than the contract: evidence-first outputs, explicit decisions, pass/fail gating, deterministic recovery, and optional adversarial review for high-stakes artifacts.
+Under the hood, Shipwright includes 46 skills, 7 agents (6 specialists plus the orchestrator), 17 chained workflows, and 3 Claude helper commands. The counts matter less than the contract: evidence-first outputs, explicit decisions, pass/fail gating, deterministic recovery, and optional adversarial review for high-stakes artifacts.
 
-The skills are plain markdown files, so they're compatible with any AI coding tool that reads skill files (Cursor, Codex, Gemini CLI, and others). Agents, commands, and the original `/start` orchestrator are Claude Code-specific. This repo also includes a Codex-native bridge via [AGENTS.md](AGENTS.md) so plain-language prompts in Codex can still route through Shipwright's bounded research and framework selection.
+The skills are plain markdown files, so they're compatible with any AI coding tool that reads skill files (Cursor, Codex, Gemini CLI, and others). Agents, commands, and the Claude Code helper commands (`/shipwright`, `/start`, and `/shipwright-help`) are Claude Code-specific. This repo also includes a Codex-native bridge via [AGENTS.md](AGENTS.md) so plain-language prompts in Codex can still route through Shipwright's bounded research and framework selection.
 
 ## Why this beats raw AI
 
@@ -115,10 +115,16 @@ cp shipwright/examples/CLAUDE.md.example your-project/CLAUDE.md
 Then open Claude Code in your project and run:
 
 ```text
-/start I'm a PM at [company] working on [brief context]
+/shipwright I'm a PM at [company] working on [brief context]
 ```
 
-That's it. The orchestrator reads your CLAUDE.md, picks up your context, and routes you to the right workflow. If you skip the CLAUDE.md, Shipwright still works — but outputs will be generic instead of tailored to your product.
+That's it. The orchestrator reads your CLAUDE.md, picks up your context, and routes you to the right workflow. `/shipwright` is the branded Claude Code entrypoint; `/start` still works as a backwards-compatible alias. If you skip the CLAUDE.md, Shipwright still works — but outputs will be generic instead of tailored to your product.
+
+If you want a quick menu of common paths and direct commands inside Claude Code, run:
+
+```text
+/shipwright-help
+```
 
 You can also run workflows directly:
 
@@ -130,7 +136,7 @@ For the full workflow list and behavior, see [using workflows](docs/using-workfl
 
 ### Keep Sessions Fast
 
-When you already know the job to be done, run the workflow directly instead of routing through `/start`. For example, use `/competitive` for competitive analysis or `/pricing` for pricing work.
+When you already know the job to be done, run the workflow directly instead of routing through `/shipwright` (or `/start`). For example, use `/competitive` for competitive analysis or `/pricing` for pricing work.
 
 When a task needs fresh public research, keep the first pass narrow:
 
@@ -139,6 +145,14 @@ When a task needs fresh public research, keep the first pass narrow:
 - ask for findings inline before asking for a polished memo or saved file
 
 This keeps web-heavy work bounded and reduces timeout risk on broad requests.
+
+If you installed Shipwright into the project with `scripts/sync.sh` or a manual copy, you can also opt into the optional Shipwright output style:
+
+```text
+/output-style shipwright
+```
+
+That style keeps Claude in a more decision-oriented PM voice for product work. Switch back to the default output style when you want normal coding behavior.
 
 If you want to reduce search latency further without changing the conversational UX, Shipwright also includes `scripts/collect-research.mjs`, which can build a compact evidence pack from programmatic web search before the model synthesizes it. The helper now escalates automatically from a small first pass to broader subqueries, caches fresh evidence packs under `.shipwright/cache/research/v1/` for 24 hours by default, and only asks the model to browse interactively for the remaining gaps. It also emits a `facts.json` sidecar with deterministic pricing, review, product, date, and package-registry facts, including adapter-backed metadata from npm, PyPI, and crates.io when available. If no Brave or Tavily key is configured, it still degrades gracefully by writing a `needs-interactive-followup` pack instead of failing hard, and those no-provider fallback packs are not cached. To clear the local cache manually, run `node scripts/collect-research.mjs --clear-cache`.
 

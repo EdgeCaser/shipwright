@@ -1,6 +1,6 @@
 ---
 name: discovery-researcher
-description: "Conducts autonomous user research, competitive analysis, and market sizing. Gathers and synthesizes evidence so PMs can make informed decisions."
+description: "Use proactively for market sizing, competitive analysis, interview synthesis, and evidence gathering. Gathers and synthesizes research so PMs can make informed decisions."
 model: sonnet
 tools:
   - Read

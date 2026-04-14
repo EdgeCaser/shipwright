@@ -132,7 +132,7 @@ The palette is built as two flat tabs:
 
 **Commands tab** — one entry per item in `manifest.commands`, in manifest order:
 - If the command exists in `manifest.routing`: show the routing agent(s) as a badge. Commands with `agents` (plural) in their routing entry get a "multi-agent" indicator signaling a longer-running workflow. Commands with a single `agent` get no additional indicator.
-- `start` is the only command without a routing entry; it is shown first as the orchestrator entry point with a distinct "Start here" label.
+- `shipwright`, `shipwright-help`, and `start` are utility commands without routing entries; `shipwright` is shown first as the branded "Start here" action, `shipwright-help` as the menu/help action, and `start` as a compatibility alias.
 - Label is the command name. Description is parsed from the `description` field in the YAML front matter of `.claude/commands/<name>.md`. If the front matter is absent or has no `description` field, fall back to the first non-empty non-`---` line of the file body. If the file is absent, the command is shown without a description rather than hidden.
 
 **Skills tab** — one section per category key in `manifest.skills` (discovery, strategy, execution, etc.), each listing its skills alphabetically:

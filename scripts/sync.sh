@@ -28,6 +28,7 @@ MAPPINGS=(
   "skills:.codex/skills"
   "agents:.claude/agents"
   "commands:.claude/commands"
+  "output-styles:.claude/output-styles"
   "docs:.claude/docs"
   "evals:.claude/evals"
   "scripts:.claude/scripts"
