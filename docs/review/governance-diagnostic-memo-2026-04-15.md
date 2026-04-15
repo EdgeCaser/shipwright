@@ -8,7 +8,7 @@
 
 ## Summary
 
-The 6/6 side_b pattern on the governance scenarios is **primarily judge-family effect**, not scenario asymmetry. Claude disagrees with GPT on 4/6 scenarios, and the disagreements trace to divergent `evidence_discipline` scoring — not to different decisive dimensions or different rubric weights. On `paramount-skydance-deal`, both judges declare `evidence_discipline` as decisive but score the same dimension in opposite directions.
+The 6/6 side_b pattern on the governance scenarios is **best explained by judge-family effects** rather than scenario asymmetry, though a mix of judge-family bias, shared schema effects, and artifact sensitivity cannot be fully ruled out. Claude disagrees with GPT on 4/6 scenarios, and the disagreements trace to divergent `evidence_discipline` scoring — not to different decisive dimensions or different rubric weights. On `paramount-skydance-deal`, both judges declare `evidence_discipline` as decisive but score the same dimension in opposite directions.
 
 The v2 decisive_dimension distribution confirms a structural difference between judge families: GPT defaults to `decision_usefulness` as the swing criterion (62% of main runs); Claude defaults to `evidence_discipline` (57% of rejudges). The swap test produced weak evidence of a GPT position-bias toward Side B, but the signal is inconclusive at low confidence.
 
@@ -50,7 +50,7 @@ The disagreements are not primarily about decisive dimension choice — they tra
 
 ### Interpretation
 
-**Judge-family effect is the primary driver.** The 6/6 GPT side_b pattern was an artifact of GPT's evidence_discipline and decision_usefulness scoring tendencies on this specific artifact set, not a signal that these scenarios have inherent Side B asymmetry.
+**This strongly updates toward judge-family effects as the primary driver.** The 4/6 disagreement rate is strong evidence against treating the GPT 6/6 side_b pattern as scenario-driven, though the data does not cleanly rule out a mix of judge-family bias, shared schema effects, and artifact sensitivity.
 
 Two scenarios (bayer, openai) may have genuine Side B advantage — they held across both families. These are candidates for promotion to the "substantive finding" category once a third judge (Gemini) or a repeat-run confirms the direction.
 
@@ -78,7 +78,7 @@ The four flip/diverge scenarios should **not** be quoted as substantive findings
 
 ### Interpretation
 
-The two judge families are making different swing-dimension calls on the same rubric. GPT's primary swing dimension is `decision_usefulness`; Claude's is `evidence_discipline`. This is not a data artifact — it persists across scenario types and is directly observable in the per-scenario score deltas above.
+The two judge families are making different swing-dimension calls on the same rubric. GPT's primary swing dimension is `decision_usefulness`; Claude's is `evidence_discipline`. This is directly observable in the per-scenario score deltas above. Note the sample is small (n=7 Claude rejudges, 6 of which are from the same governance cluster), so the pattern should be treated as observed in this sample, not as established cross-scenario-type behavior.
 
 **Implication for orchestrator design:** routing decisions that depend on `decisive_dimension` (e.g., "escalate if evidence_discipline is decisive") will behave differently depending on judge family. This should be treated as a known bias in any downstream schema that uses `decisive_dimension` as a routing signal.
 
@@ -109,18 +109,18 @@ Weak evidence for position bias. In the original, GPT's content in Side B positi
 
 ## What This Changes for the Publication Claim
 
-**Before this diagnostic:** "GPT judges these 6 governance scenarios and uniformly prefers Side B (0.2–0.4 margin)."
+**Before this diagnostic:** "GPT judges these 6 governance scenarios and uniformly prefers Side B (0.2-0.4 margin)."
 
-**After this diagnostic:** "GPT and Claude disagree on 4/6 governance scenarios. The agreement rate on this set is 33% (2/6). The disagreements trace to divergent evidence_discipline scoring on the same artifacts, with opposite sign. The 6/6 GPT side_b pattern is judge-shaped, not scenario-driven."
+**After this diagnostic:** "GPT and Claude disagree on 4/6 governance scenarios. The agreement rate on this set is 33% (2/6). The disagreements trace to divergent evidence_discipline scoring on the same artifacts, with opposite sign. The 6/6 GPT side_b pattern is best explained by judge-family effects rather than scenario-driven asymmetry."
 
-The two robust findings that survive the diagnostic:
-1. `bayer-breakup-not-now` and `openai-nonprofit-control` hold side_b across both GPT and Claude judge families. These are candidates for substantive claims.
-2. The judge family dominates outcome more than any other factor — picking the judge changes the winner direction, not just the margin.
+The two findings that survive the diagnostic:
+1. `bayer-breakup-not-now` and `openai-nonprofit-control` hold side_b across both GPT and Claude judge families. These are candidates for substantive claims pending Gemini confirmation.
+2. GPT and Claude disagree on winner direction in this governance sample at a rate (4/6) that makes single-judge screening insufficient for any claim about scenario-level asymmetry.
 
 ---
 
 ## Recommended Next Steps
 
-1. **Gemini rejudge on the 2 held scenarios** (bayer, openai) to confirm a three-family consensus before citing them publicly.
-2. **Swap test on a high-confidence scenario** (not openai) to get a cleaner read on position bias — e.g., `handoff-contradiction` (margin 0.86, medium confidence under GPT).
-3. **Proceed to Phase 2** (uncertainty payload schema). The diagnostic work has cleared the highest publication risk. Governance scenarios should not be further explored until Phase 2 ships.
+1. **Ship Phase 2** (uncertainty payload schema). The diagnostic work has cleared the highest publication risk. Phase 2 is still the highest-value product improvement and should not wait.
+2. **Gemini rejudge on the 2 held scenarios** (bayer, openai) if the goal is one or two defensible public examples from the governance set. Run after Phase 2 ships.
+3. **Swap test on a high-confidence scenario** only if position bias becomes a central claim to defend. `openai-nonprofit-control` was too ambiguous to be useful here; `handoff-contradiction` (margin 0.86, medium confidence) would be a better probe. Lower priority than the above two.
