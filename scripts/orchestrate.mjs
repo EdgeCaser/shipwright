@@ -287,16 +287,19 @@ function routePreRun({ scenarioClass, pa, input }) {
     });
   }
 
-  // Governance / publication defaults to double panel
-  if (!scenarioClass.single_judge_allowed && pa.can_run_double_panel) {
+  // Governance / publication start with a fast pass in V1, then escalate to
+  // Rigor Mode when a third-family judge is available.
+  if (!scenarioClass.single_judge_allowed) {
     return makeResult({
       ux_state: UX_STATES.MORE_RIGOR_RECOMMENDED,
       ux_substate: UX_SUBSTATES.CROSS_FAMILY_REQUIRED,
-      recommended_next_mode: 'double_panel',
-      requires_user_confirmation: true,
-      recommended_provider_roles: suggestProviderRoles(pa, 'double'),
-      explanation: `${scenarioClass.label} is not single-judge safe. Starting with a double panel is the recommended path.`,
-      follow_up_action: 'Run double panel',
+      recommended_next_mode: 'single_analysis',
+      requires_user_confirmation: false,
+      recommended_provider_roles: suggestProviderRoles(pa, 'single'),
+      explanation: pa.can_run_third_family_judge
+        ? `${scenarioClass.label} is not single-judge safe. Shipwright will start with a fast pass, then recommend Rigor Mode if escalation is warranted.`
+        : `${scenarioClass.label} is not single-judge safe. Shipwright can only run a provisional fast pass with the current provider set.`,
+      follow_up_action: 'Run single analysis',
     });
   }
 
@@ -324,22 +327,24 @@ function routePostSingle({ scenarioClass, confidence, pa, needsReview, hasUncert
       return makeResult({
         ux_state: UX_STATES.MORE_RIGOR_RECOMMENDED,
         ux_substate: UX_SUBSTATES.CROSS_FAMILY_REQUIRED,
-        recommended_next_mode: pa.can_run_double_panel ? 'double_panel' : null,
-        requires_user_confirmation: true,
+        recommended_next_mode: pa.can_run_third_family_judge ? 'double_panel' : null,
+        requires_user_confirmation: pa.can_run_third_family_judge,
         recommended_provider_roles: suggestProviderRoles(pa, 'double'),
-        explanation: `Result looks strong, but ${scenarioClass.label} requires cross-family confirmation before this can be treated as reliable. A single-family result is not sufficient for this class.`,
-        follow_up_action: pa.can_run_double_panel ? 'Run double panel' : null,
+        explanation: pa.can_run_third_family_judge
+          ? `Result looks strong, but ${scenarioClass.label} requires cross-family confirmation before this can be treated as reliable. A single-family result is not sufficient for this class.`
+          : `Result looks strong, but ${scenarioClass.label} still requires cross-family confirmation and no third-family judge is currently available.`,
+        follow_up_action: pa.can_run_third_family_judge ? 'Run Rigor Mode' : 'Add a third provider or treat this as provisional',
       });
     }
 
     return makeResult({
       ux_state: UX_STATES.PROVISIONAL,
       ux_substate: UX_SUBSTATES.SINGLE_RUN_ACCEPTABLE,
-      recommended_next_mode: pa.can_run_double_panel ? 'double_panel' : null,
+      recommended_next_mode: pa.can_run_third_family_judge ? 'double_panel' : null,
       requires_user_confirmation: false,
       recommended_provider_roles: suggestProviderRoles(pa, 'double'),
       explanation: 'Single analysis returned high confidence with no review flags. This is the best current adjudication.',
-      follow_up_action: pa.can_run_double_panel ? 'Run double panel for extra rigor (optional)' : null,
+      follow_up_action: pa.can_run_third_family_judge ? 'Run Rigor Mode for extra rigor (optional)' : null,
     });
   }
 
@@ -349,17 +354,17 @@ function routePostSingle({ scenarioClass, confidence, pa, needsReview, hasUncert
     return makeResult({
       ux_state: baseState,
       ux_substate: UX_SUBSTATES.USER_DECLINED_ESCALATION,
-      recommended_next_mode: pa.can_run_double_panel ? 'double_panel' : null,
-      requires_user_confirmation: true,
+      recommended_next_mode: pa.can_run_third_family_judge ? 'double_panel' : null,
+      requires_user_confirmation: pa.can_run_third_family_judge,
       explanation: isWeak
         ? 'Escalation was declined. This result is below the confidence threshold. The stronger-path recommendation remains available.'
         : 'Escalation was declined. The result is provisionally usable.',
-      follow_up_action: pa.can_run_double_panel ? 'Run double panel (previously declined)' : null,
+      follow_up_action: pa.can_run_third_family_judge ? 'Run Rigor Mode (previously declined)' : null,
     });
   }
 
-  // Weak single result, second provider available → recommend double panel
-  if (pa.can_run_double_panel) {
+  // Weak single result, third-family judge available → recommend Rigor Mode
+  if (pa.can_run_third_family_judge) {
     const reason = buildWeaknessReason(confidence, needsReview, hasUncertaintyPayload);
     return makeResult({
       ux_state: UX_STATES.MORE_RIGOR_RECOMMENDED,
@@ -367,19 +372,19 @@ function routePostSingle({ scenarioClass, confidence, pa, needsReview, hasUncert
       recommended_next_mode: 'double_panel',
       requires_user_confirmation: true,
       recommended_provider_roles: suggestProviderRoles(pa, 'double'),
-      explanation: `This result is directionally useful but not reliable enough to stand alone. ${reason} A second model can test whether the recommendation converges across families.`,
-      follow_up_action: 'Run double panel',
+      explanation: `This result is directionally useful but not reliable enough to stand alone. ${reason} A stronger cross-family check is recommended before acting.`,
+      follow_up_action: 'Run Rigor Mode',
     });
   }
 
-  // Weak single result, no second provider → not ready
+  // Weak single result, no third-family judge available → not ready
   return makeResult({
     ux_state: UX_STATES.NOT_READY,
     ux_substate: UX_SUBSTATES.LIMITED_PROVIDER_AVAILABILITY,
     recommended_next_mode: null,
     requires_user_confirmation: false,
-    explanation: 'This result is below the confidence threshold and cross-family confirmation is recommended, but only one provider is currently available. Treat as provisional and do not use as a publication-grade conclusion.',
-    follow_up_action: 'Gather more evidence or add a second provider',
+    explanation: 'This result is below the confidence threshold and stronger adjudication is recommended, but no third-family judge is currently available. Treat as provisional and do not use as a publication-grade conclusion.',
+    follow_up_action: 'Gather more evidence or add a third provider',
   });
 }
 

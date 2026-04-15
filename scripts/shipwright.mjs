@@ -15,6 +15,7 @@
  *     --class governance \
  *     --provider claude \
  *     --provider gpt \
+ *     --provider gemini \
  *     [--yes]       # auto-confirm escalation gates
  *     [--dry-run]   # print routing plan without running
  *     [--id <slug>] # override auto-generated scenario ID
@@ -232,7 +233,7 @@ Examples:
   node scripts/shipwright.mjs \\
     --question "Should we break up Bayer now?" \\
     --class governance \\
-    --provider claude --provider gpt
+    --provider claude --provider gpt --provider gemini
 
   node scripts/shipwright.mjs \\
     --question "Should we raise prices by 15% in Q3?" \\

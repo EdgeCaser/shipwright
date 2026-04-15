@@ -124,17 +124,17 @@ node scripts/shipwright.mjs \
   --class pricing \
   --provider claude
 
-# Governance question — escalates to Rigor Mode after Fast pass (with confirmation gate)
+# Governance question — starts with a Fast pass, then recommends Rigor Mode when a third-family judge is available
 node scripts/shipwright.mjs \
   --question "Should we restructure the board now or wait for Q4 results?" \
   --class governance \
-  --provider claude --provider gpt
+  --provider claude --provider gpt --provider gemini
 
 # Auto-confirm escalation gate
 node scripts/shipwright.mjs \
   --question "Should we break up the company now?" \
   --class governance \
-  --provider claude --provider gpt \
+  --provider claude --provider gpt --provider gemini \
   --yes
 
 # Preview routing plan without running
@@ -147,15 +147,15 @@ node scripts/shipwright.mjs \
 
 | Class | Default path | Cross-family required |
 |---|---|---|
-| `governance` | double panel | yes |
-| `publication` | double panel | yes |
+| `governance` | fast pass -> Rigor Mode when available | yes |
+| `publication` | fast pass -> Rigor Mode when available | yes |
 | `pricing` | single analysis | no |
 | `product_strategy` | single analysis | no |
 | `unclassified` | single analysis | no |
 
 ### Providers
 
-Pass `--provider` once per available model family: `claude`, `gpt`, `gemini`. With one provider, analysis is single-pass and marked provisional. With two, escalation to the full harness is available. With three, a third-family judge is available for publication-grade rigor.
+Pass `--provider` once per available model family: `claude`, `gpt`, `gemini`. With one provider, analysis is single-pass and marked provisional. With two, Shipwright can still give a useful Fast Mode result and honest escalation guidance, but it cannot execute the full three-family harness. With three, a third-family judge is available for publication-grade rigor.
 
 ### Output
 

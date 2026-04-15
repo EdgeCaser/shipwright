@@ -82,29 +82,27 @@ GPT returned medium confidence on all four scenarios in both Fast Mode runs. It 
 
 ### What is not yet built
 
-- **Orchestrator is not wired to anything.** It is a pure logic module. Neither Fast Mode nor Rigor Mode calls it. There is no end-to-end orchestrated flow.
-- **No unified entry point.** Users must know to call `run-fast-analysis.mjs` vs `run-conflict-harness.mjs`. There is no mode-selection UI.
-- **No `run-orchestrated.mjs`.** The staged single → double → judge flow with confirmation gates has not been implemented.
-- **No persistence of orchestrator metadata.** `ux_state`, `ux_substate`, and routing decisions are not stamped on run records from either mode.
-- **No telemetry.** Nothing is being logged for threshold tuning or escalation funnel analysis.
-- **Two-mode UX is not implemented.** Mode selection at task start does not exist.
-- **Rigor Mode UX states are not implemented.** The 3-state model (provisional / more_rigor_recommended / not_ready) exists as logic but has no product surface.
+- **No standalone two-provider double-panel path.** The shipped executable path today is Fast Mode first, then the full three-provider harness when a third-family judge is available. With only two providers, Shipwright degrades to provisional or not-ready states instead of simulating a pseudo-judge.
+- **No GUI mode-selection layer.** There is now a unified CLI entry point, but not yet a higher-level UI for non-terminal users.
+- **No polished presentation layer beyond CLI output.** The terminal states are surfaced, but the experience is still command-line first.
+- **No calibrated non-governance class policy.** Governance is policy-backed; other classes are still provisional.
+- **Telemetry exists but is early.** It logs threshold and escalation events, but the data volume is still too small for tuning.
 
 ### V1 acceptance criteria — current status
 
 | Criterion | Status |
 |---|---|
-| Governance defaults to a safer path than single analysis | Logic exists in orchestrator; not enforced in execution |
-| Single analysis below threshold recommends double panel | Logic exists; not wired |
-| Double-panel disagreement recommends judge escalation | Logic exists; not wired |
-| Extra panel stages never auto-run without confirmation | Not implemented |
-| Graceful degradation for limited provider availability | Logic exists; not wired |
-| Review-flagged / low-confidence outcomes route to uncertainty-first | Uncertainty payload emitted; not surfaced distinctly in UX |
-| Directionally incoherent outcomes route to not_ready | Logic exists; not wired |
-| User-declined escalation preserved as visible substate | Logic exists; not wired |
-| Telemetry emitted for threshold and escalation analysis | Not implemented |
+| Governance defaults to a safer path than single analysis | Met in routing and entrypoint behavior |
+| Single analysis below threshold recommends stronger adjudication | Met |
+| Double-panel disagreement recommends judge escalation | Partially met in routing logic; no standalone two-provider panel execution path |
+| Extra panel stages never auto-run without confirmation | Met in interactive mode; non-TTY now requires `--yes` |
+| Graceful degradation for limited provider availability | Met |
+| Review-flagged / low-confidence outcomes route to uncertainty-first | Met |
+| Directionally incoherent outcomes route to not_ready | Met in routing logic |
+| User-declined escalation preserved as visible substate | Met |
+| Telemetry emitted for threshold and escalation analysis | Met |
 
-**Summary:** 0 of 9 acceptance criteria are fully met end-to-end. All have logic implemented; none are wired into execution flows.
+**Summary:** Most core acceptance criteria are now met end-to-end in the CLI product. The main remaining gap is a cleaner two-provider story and more polish around presentation.
 
 ---
 
@@ -123,7 +121,7 @@ The most honest definition: a PM at another company runs this on a real decision
 3. `fast_uncertain` results surface something more useful than "we don't know"
 4. The system does not present fragile outputs as final answers
 
-**On criteria 1:** Not met. There is no entry point a non-technical user can navigate. Running `node scripts/run-fast-analysis.mjs --scenario openai-nonprofit-control --agent claude` requires knowing the scenario ID, the script path, and the CLI flags.
+**On criteria 1:** Largely met for CLI users. There is now a unified entry point via `node scripts/shipwright.mjs --question ...`, and the system routes based on class and provider availability. It is still not a non-terminal UX.
 
 **On criteria 2 and 3:** Largely met. The `fast_uncertain` outputs from this batch had sharp, specific next-action guidance. The uncertainty payload worked as designed on prd-hidden-scope-creep and pricing-partial-data. The system is not overclaiming.
 
@@ -136,25 +134,25 @@ The most honest definition: a PM at another company runs this on a real decision
 3. The output clearly distinguishes "panel converged" from "one judge said so"
 4. Uncertainty-first output is the default when the result is unresolved
 
-None of these are met. Rigor Mode currently produces results with no orchestration layer surfaced to the user. A user cannot see that the system is running a debate, cannot confirm before escalating to a second model, and cannot distinguish a converged panel from a single-judge run.
+These are now partially met. The orchestration layer is surfaced in CLI output, escalation gates require confirmation, and terminal states are visible. The remaining limitation is that the full three-family harness requires three providers; with only two providers, Shipwright routes to provisional or not-ready outcomes instead of executing a fake judge path.
 
 ### The honest summary
 
 **The research is solid enough to publish findings, with appropriate caveats.** The judge-family effect is well-documented. The uncertainty payload adds real value. The Fast Mode data from this session is promising. The finding that `bayer-breakup-not-now` is the most stable governance scenario is defensible.
 
-**The product is not ready for public use in its current form.** The core logic — routing, schema, prompt, uncertainty payload — is built and tested. But there is no execution path a non-technical user can follow, no UX layer that makes the orchestration visible, and no protection against fragile single-run results being acted on as if they were stable findings.
+**The product is close to public CLI use, but not polished consumer use.** The core logic, entrypoint, routing, confirmation gates, telemetry, and uncertainty payload are built and connected. The main remaining product risks are presentation polish and the fact that the strongest adjudication path currently requires three providers.
 
-**The gap between "logic exists" and "product works" is exactly the orchestrated flow and the mode-selection UX.** Those are the two remaining build tasks before this is something a PM at another company could actually use.
+**The gap between "works" and "feels finished" is now presentation and calibration, not core execution.** A PM who is comfortable in a terminal can follow the flow today. A broader audience would still benefit from a thinner, friendlier presentation layer and more calibrated non-governance defaults.
 
 ---
 
 ## What Would Change This Assessment
 
-The product becomes publicly usable when:
+The product becomes more broadly usable when:
 
-1. There is a single command or interface where a user presents a question and gets routed to Fast or Rigor Mode with an explanation of why
-2. `fast_provisional` results are qualified with a note that a second agent confirms or escalates
-3. Rigor Mode runs are orchestrated — confirmation gates before spend, visible stage transitions, clear terminal states
-4. The output format does not require reading a schema spec to interpret
+1. The CLI output is polished into a thinner presentation layer for non-technical users
+2. The two-provider path is clarified further, either by implementing a true standalone double-panel mode or by tightening the current messaging
+3. Non-governance class defaults are calibrated enough to feel less provisional
+4. The output format is friendlier than raw run directories and JSON files
 
-That is approximately `run-orchestrated.mjs` plus a thin presentation layer. It is not a large build, but it is the build that makes everything else matter.
+That is now less about core wiring and more about product polish.

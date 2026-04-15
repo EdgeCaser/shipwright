@@ -8,13 +8,13 @@
  * escalation from running without explicit user approval.
  *
  * Flow:
- *   1. pre_run routing  — decide starting mode based on scenario class + providers
- *   2. Fast Mode        — single-pass analysis (always runs first for non-double-panel classes)
- *   3. post_single      — orchestrator evaluates Fast Mode result
- *   4. [gate]           — if escalation recommended, ask for confirmation
- *   5. Rigor Mode       — conflict harness (debate + judge)
- *   6. post_judge       — orchestrator evaluates Rigor Mode result
- *   7. terminal state   — provisional / more_rigor_recommended / not_ready
+ *   1. pre_run routing  â€” decide starting mode based on scenario class + providers
+ *   2. Fast Mode        â€” single-pass analysis
+ *   3. post_single      â€” orchestrator evaluates Fast Mode result
+ *   4. [gate]           â€” if escalation recommended, ask for confirmation
+ *   5. Rigor Mode       â€” full conflict harness (debate + third-family judge)
+ *   6. post_judge       â€” orchestrator evaluates Rigor Mode result
+ *   7. terminal state   â€” provisional / more_rigor_recommended / not_ready
  *
  * Usage:
  *   node scripts/run-orchestrated.mjs \
@@ -168,7 +168,7 @@ export async function runOrchestrated(options = {}) {
     throw new Error(`Provider "${fastProvider}" is not available for Fast Mode. Supported: ${Object.keys(AGENT_PROFILES).join(', ')}`);
   }
 
-  printStage('STAGE 1 — FAST MODE', `Running ${fastProvider} fast analysis on: ${scenarioId}`);
+  printStage('STAGE 1 â€” FAST MODE', `Running ${fastProvider} fast analysis on: ${scenarioId}`);
 
   let fastRun;
   let fastAnalysis;
@@ -262,11 +262,13 @@ export async function runOrchestrated(options = {}) {
   // Escalation gate: Rigor Mode
   // -------------------------------------------------------------------------
 
-  const shouldRunRigor = postSingleResult.recommended_next_mode === 'double_panel' ||
-    postSingleResult.recommended_next_mode === 'judge';
+  const shouldRunRigor = providerAvailability.can_run_third_family_judge && (
+    postSingleResult.recommended_next_mode === 'double_panel' ||
+    postSingleResult.recommended_next_mode === 'judge'
+  );
 
-  if (!shouldRunRigor || !providerAvailability.can_run_double_panel) {
-    // No escalation path available — terminal at post_single.
+  if (!shouldRunRigor) {
+    // No escalation path available â€” terminal at post_single.
     await writeOrchestrationArtifacts(outDir, {
       runId,
       scenarioId,
@@ -307,7 +309,7 @@ export async function runOrchestrated(options = {}) {
 
   printStage('ESCALATION GATE', postSingleResult.explanation);
   process.stdout.write(`\nRecommendation: ${postSingleResult.follow_up_action}\n`);
-  process.stdout.write('This will run a full conflict harness (debate + judge) across two model families.\n');
+  process.stdout.write('This will run a full conflict harness (debate + judge) across three model families.\n');
 
   emit('escalation_offered', {
     run_id: runId,
@@ -385,7 +387,7 @@ export async function runOrchestrated(options = {}) {
   const { sideA, sideB, judge } = assignRoles(availableProviders);
 
   printStage(
-    'STAGE 2 — RIGOR MODE',
+    'STAGE 2 â€” RIGOR MODE',
     `Running conflict harness: ${sideA} vs ${sideB}, judged by ${judge}`,
   );
 
@@ -393,7 +395,7 @@ export async function runOrchestrated(options = {}) {
 
   try {
     // Build the case packet directly to avoid the benchmark fixture validation
-    // in loadBenchmarkScenario — orchestrated runs don't need pre-authored artifacts.
+    // in loadBenchmarkScenario â€” orchestrated runs don't need pre-authored artifacts.
     const scenarioFilePath = scenarioArg.endsWith('.json')
       ? path.resolve(scenarioArg)
       : path.join(scenarioDir, `${scenarioArg}.json`);
@@ -573,8 +575,8 @@ function printTerminalState(result) {
 function makeStdinConfirm() {
   return async function confirm(prompt) {
     if (!process.stdin.isTTY) {
-      process.stdout.write(`${prompt}(auto-confirming: stdin is not a TTY)\n`);
-      return true;
+      process.stdout.write(`${prompt}(confirmation unavailable: stdin is not a TTY; rerun with --yes to confirm)\n`);
+      return false;
     }
 
     const rl = createInterface({ input: process.stdin, output: process.stdout });
@@ -594,11 +596,15 @@ function makeStdinConfirm() {
 /**
  * Assign side_a, side_b, and judge from available providers.
  *
- * Default preference: gpt → side_a, claude → side_b, gemini → judge.
+ * Default preference: gpt â†’ side_a, claude â†’ side_b, gemini â†’ judge.
  * Falls back gracefully when fewer providers are available.
  */
 function assignRoles(availableProviders) {
   const available = [...availableProviders];
+
+  if (available.length < 3) {
+    throw new Error('Rigor Mode requires three distinct providers: two debaters and a third-family judge.');
+  }
 
   // Preferred assignments
   const preferred = { sideA: 'gpt', sideB: 'claude', judge: 'gemini' };
@@ -614,7 +620,7 @@ function assignRoles(availableProviders) {
   const remainingForJudge = remaining.filter((p) => p !== sideB);
 
   const judge = remainingForJudge.includes(preferred.judge) ? preferred.judge
-    : remainingForJudge[0] || sideA; // fallback to side_a provider (not ideal but functional)
+    : remainingForJudge[0];
 
   return { sideA, sideB, judge };
 }
@@ -749,3 +755,4 @@ if (isMain) {
     process.exit(1);
   }
 }
+
