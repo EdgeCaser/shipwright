@@ -1,0 +1,110 @@
+{
+  "case_packet": {
+    "scenario_id": "prd-hidden-scope-creep",
+    "title": "PRD with hidden scope creep",
+    "prompt": "Write a PRD for a team inbox workflow handoff improvement.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass": {
+    "run_id": "conflict-2026-04-14-144009431Z-prd-hidden-scope-creep",
+    "side_id": "side_b",
+    "round": "first_pass",
+    "artifact_markdown": "# PRD: Team Inbox Workflow Handoff Improvement\n\n## Decision Frame\n\n**Problem statement:** Team inbox handoff between agents (human or automated) suffers from context loss, duplicate work, and ambiguous ownership transitions. When a conversation moves from one handler to another, the receiving party lacks sufficient context to continue without re-asking the customer or reading the full thread, increasing resolution time and degrading customer experience.\n\n**Decision to be made:** Should we invest in a structured handoff protocol for team inboxes that preserves context, assigns explicit ownership, and enforces handoff completeness before transfer?\n\n**Scope boundary:** This PRD covers the handoff mechanism only — not routing/assignment logic, not inbox UI redesign, not SLA engine changes. Adjacent systems are explicitly out of scope:\n- Auto-routing and triage rules (separate initiative)\n- Customer-facing status notifications (dependency, not owned here)\n- Reporting/analytics dashboards (downstream consumer, not gated)\n\n**Who decides:** Product lead for Support Tools, with sign-off from Engineering lead and CS Operations.\n\n**Decision timeline:** Go/no-go by end of sprint planning for Q3. Implementation target: 6-week build if approved.\n\n## Core Requirements\n\n### Handoff Context Packet\nWhen an agent initiates a handoff, the system generates a structured context packet containing:\n- Summary of issue (auto-generated from thread, editable by agent)\n- Actions already taken (linked to system events where possible)\n- Customer sentiment signal (derived from tone/keywords)\n- Recommended next step (free text from handing-off agent)\n- Attachments and linked tickets\n\n### Ownership Transfer Protocol\n- Handoff is a two-phase commit: initiator proposes, receiver accepts\n- No conversation enters unowned state; current owner persists until acceptance\n- Timeout escalation: if receiver doesn't accept within configurable window (default 15 min), escalates to team lead\n- Audit trail: every ownership transition logged with timestamp, parties, and context packet snapshot\n\n### Handoff Completeness Gate\n- System enforces minimum fields before allowing handoff initiation (summary + next step required)\n- Optional: team-configurable required fields per queue\n- Incomplete handoffs blocked at UI level with clear guidance on what's missing\n\n### Receiving Agent Experience\n- Dedicated handoff intake view showing context packet prominently\n- One-click accept with option to request clarification (bounces back to sender with specific question)\n- Thread history available but context packet is the primary onboarding surface\n\n## Unknowns & Evidence Gaps\n\n| Unknown | Impact if wrong | How to resolve | Status |\n|---|---|---|---|\n| What percentage of handoffs currently lose context? | If low (<10%), ROI case weakens significantly | Instrument current handoff events and sample 200 conversations for context completeness | **Not started** |\n| Will agents actually fill in context packets or treat them as friction? | Core mechanism fails if adoption is low | Prototype with 2 teams for 2 weeks, measure completion rates and qualitative feedback | **Not started** |\n| Can auto-summary quality meet the bar for usefulness? | If auto-summaries are poor, manual burden increases and agents skip them | Benchmark auto-summary against human summaries on 50 real threads | **Not started** |\n| Does two-phase commit handoff create bottlenecks in high-volume queues? | Could increase queue times and worsen SLAs | Model queue dynamics with current handoff volume data; run simulation | **Not started** |\n| How do customers perceive re-asking vs. slightly-wrong context? | Determines whether imperfect context is better or worse than asking again | Survey or interview 20 customers who experienced handoffs | **Not started** |\n\n## Pass/Fail Readiness\n\n**Current readiness: NOT READY for build commitment.**\n\nBlocking gaps:\n1. **No baseline measurement.** We do not have data on current handoff failure rates, context loss frequency, or impact on resolution time. Without this, we cannot size the opportunity or set success metrics.\n2. **Adoption risk untested.** The core mechanism depends on agents filling in structured data during handoff. Zero evidence this will happen at acceptable rates.\n3. **Auto-summary feasibility unknown.** If auto-generated summaries don't meet quality bar, the feature's value proposition shifts from \"effortless context\" to \"more forms to fill out.\"\n\nWhat would make this ready:\n- Complete the baseline measurement (2 weeks)\n- Run a paper prototype or wizard-of-oz test with 2 teams (2 weeks, can overlap)\n- Benchmark auto-summary quality (1 week)\n- Revisit this PRD with data to update the decision frame\n\n## Recommended Next Artifact\n\n**Next artifact: Discovery Brief**\n\nBefore this PRD can support a build decision, we need a structured discovery sprint covering:\n1. Quantitative baseline: instrument and measure current handoff context loss rates\n2. Agent workflow observation: shadow 5-10 agents during handoffs to understand current workarounds\n3. Auto-summary feasibility spike: engineering spike to benchmark LLM-generated summaries against human ones on real threads\n4. Prototype test plan: design a 2-week pilot protocol for testing the handoff context packet with volunteer teams\n\nThe discovery brief should return to this PRD with updated evidence, at which point the Pass/Fail assessment can be revisited for build commitment.",
+    "claims": [
+      {
+        "claim_id": "side_b-claim-1",
+        "summary": "The PRD is not ready for build commitment because three critical unknowns — baseline handoff failure rates, agent adoption willingness, and auto-summary quality — have zero evidence behind them, and any one of them failing would undermine the core value proposition.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-2",
+        "summary": "Scope is explicitly bounded to the handoff mechanism only, with adjacent systems (routing, customer notifications, analytics) called out as out-of-scope to prevent hidden scope creep from bundling related but distinct initiatives.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-3",
+        "summary": "A two-phase commit ownership model prevents conversations from entering an unowned state during handoff, addressing the most common failure mode where transferred items sit in limbo.",
+        "evidence_refs": [],
+        "is_major": false
+      },
+      {
+        "claim_id": "side_b-claim-4",
+        "summary": "The recommended next step is a discovery brief, not engineering work, because the current evidence gaps make any build estimate speculative and risk wasted effort.",
+        "evidence_refs": [],
+        "is_major": true
+      }
+    ],
+    "citations": [],
+    "open_questions": [
+      "No context files or evidence were provided with the case packet, so all requirements and unknowns are derived from domain reasoning rather than empirical data. The unknowns table reflects this honestly.",
+      "The prompt asks for 'handoff improvement' without specifying whether this is for customer support, internal task management, or another domain. This PRD assumes customer support team inboxes as the most common case."
+    ],
+    "critique_responses": []
+  },
+  "critique_packet": {
+    "target_side": "side_b",
+    "finding_id": "finding-1",
+    "target_claim_ids": [
+      "side_b-claim-2"
+    ],
+    "claim_under_attack": "Scope is explicitly bounded to the handoff mechanism only, with adjacent systems (routing, customer notifications, analytics) called out as out-of-scope to prevent hidden scope creep from bundling related but distinct initiatives.",
+    "attack_type": "evidence_gap",
+    "evidence_or_reason": "The scope boundary is asserted, not enforced. The proposed requirements already smuggle in adjacent-system work: a dedicated intake view is UI redesign, timeout escalation requires assignment/escalation logic, team-configurable required fields implies queue-level administration, and customer sentiment plus auto-generated summaries introduce ML/data-platform dependencies. Simply labeling routing, UI redesign, and downstream systems as out of scope does not resolve the internal contradiction that the visible requirements depend on them.",
+    "severity": "medium"
+  }
+}

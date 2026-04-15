@@ -1,0 +1,116 @@
+You are SIDE_A in the rebuttal phase for run conflict-2026-04-14-031222096Z-board-update-ambiguity.
+Attack only visible claims from the opposing first-pass artifact.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "target_side": "side_b",
+  "finding_id": "runner-will-assign",
+  "target_claim_ids": [
+    "side_b-claim-1"
+  ],
+  "claim_under_attack": "The opposing claim to challenge.",
+  "attack_type": "evidence_gap",
+  "evidence_or_reason": "Why the visible claim is weak.",
+  "severity": "medium"
+}
+
+Case packet:
+{
+  "scenario_id": "board-update-ambiguity",
+  "title": "Board update under ambiguity",
+  "prompt": "Write a strategy update for a board audience under ambiguity.",
+  "artifact_type": "strategy",
+  "rubric": {
+    "dimensions": [
+      "claim quality",
+      "evidence discipline",
+      "responsiveness to critique",
+      "internal consistency",
+      "decision usefulness"
+    ],
+    "scoring_scale": "1-5",
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "constraints": {
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "expect_structured": true,
+    "context_files": [],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "evidence": [],
+  "max_rounds": 3,
+  "tool_policy": "none",
+  "sharing_policy": {
+    "share_case_packet": true,
+    "share_committed_artifacts_after_first_pass": true,
+    "share_critiques_after_open": true,
+    "share_hidden_reasoning": false,
+    "share_provider_identity": false,
+    "share_internal_coalition_drafts": false
+  },
+  "success_condition": {
+    "type": "validator_contract",
+    "description": "Produce a strategy artifact that satisfies the scenario validator contract.",
+    "validator": {
+      "artifact_type": "strategy",
+      "expect_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true
+    }
+  }
+}
+
+Opposing first-pass artifact:
+{
+  "run_id": "conflict-2026-04-14-031222096Z-board-update-ambiguity",
+  "side_id": "side_b",
+  "round": "first_pass",
+  "artifact_markdown": "# Strategy Update: Board Briefing Under Conditions of Ambiguity\n\n## Decision Frame\n\n**Core question:** Should the board authorize continued investment in the current strategic direction given unresolved market signals, or pivot resources toward validated alternatives?\n\n**Why this decision now:** Three converging factors force a decision this quarter rather than deferring:\n1. Current runway supports the existing strategy for approximately two more quarters at present burn rate\n2. Two key market assumptions remain unvalidated after 90 days of signal collection\n3. Competitor movement in adjacent segments has narrowed the window for first-mover positioning\n\n**What this update is NOT:** This is not a recommendation to commit. It is a structured assessment of what we know, what we don't know, and what must be true for either path to succeed. The board's role today is to evaluate whether our evidence gaps are closable within the decision window and to authorize (or deny) the specific next steps proposed.\n\n## Unknowns & Evidence Gaps\n\n| Unknown | Impact if Wrong | Current Evidence Quality | Closable by Q3? |\n|---|---|---|---|\n| Customer willingness to pay at proposed price point | Revenue model collapses; unit economics become negative | **Weak** — 12 qualitative interviews, no binding signal (LOIs, deposits, or conjoint data) | Yes, via structured pricing experiment |\n| Regulatory trajectory in primary market | Go-to-market timeline extends 6-12 months; burns additional capital | **Moderate** — legal counsel assessment plus two precedent rulings, but pending legislation introduces variance | Partially — legislative calendar provides clarity by late Q2, but enforcement posture remains unknown |\n| Channel partner commitment depth | Distribution strategy requires rework; CAC increases 2-3x | **Weak** — verbal interest from 3 partners, no signed terms or co-investment | Yes, via term sheet negotiation sprint |\n| Technical scalability beyond current pilot load | Architecture rework required before scaling; 2-month delay | **Moderate** — load testing to 10x complete, but 50x threshold untested | Yes, via targeted infrastructure stress test |\n\n**Key observation:** Two of four critical unknowns have *weak* evidence quality. No major resource commitment should proceed until at least one of these is upgraded to *moderate* or above. The risk is not that we are wrong — it is that we cannot yet distinguish being right from being lucky.\n\n## Pass/Fail Readiness\n\n**Assessment: NOT READY to commit. READY to de-risk.**\n\nPass/fail criteria for proceeding with full commitment:\n\n| Criterion | Status | Verdict |\n|---|---|---|\n| At least one binding demand signal (LOI, paid pilot, or pre-order) | **Not met** — qualitative interest only | ❌ FAIL |\n| Regulatory path does not require legislative change to proceed | **Uncertain** — depends on pending bill | ⚠️ INDETERMINATE |\n| At least one channel partner signs term sheet with co-investment clause | **Not met** — verbal only | ❌ FAIL |\n| Technical architecture validated at 50x pilot load | **Not met** — tested to 10x only | ❌ FAIL |\n| Burn rate sustainable for 3+ quarters at current trajectory | **Met** — 2+ quarters confirmed, 3rd quarter achievable with modest cost controls | ✅ PASS |\n\n**Bottom line:** We pass on survivability but fail on the evidence thresholds that would justify full commitment. This is a common and manageable position — it means the strategy is not disproven, but it is also not yet earned. The appropriate posture is disciplined de-risking, not acceleration.\n\n## Recommended Next Artifact\n\n**Recommendation:** Authorize a 60-day evidence sprint with a fixed budget of [amount TBD by finance] and a hard decision gate at the end.\n\n**Sprint deliverables (in priority order):**\n1. **Pricing experiment** — Structured willingness-to-pay study (conjoint or Van Westendorp) with minimum n=50 target customers. Exit criterion: median WTP exceeds unit cost by ≥30% margin.\n2. **Channel term sheet** — Negotiate binding terms with top-2 candidate partners. Exit criterion: at least one signed term sheet with co-investment or volume commitment.\n3. **Load test to 50x** — Infrastructure stress test at target scale. Exit criterion: p99 latency <500ms, zero data loss at sustained 50x load.\n4. **Regulatory monitoring brief** — Bi-weekly legal updates on legislative calendar. Exit criterion: legislative outcome known or enforcement guidance published.\n\n**Decision gate structure:** At Day 60, present results against exit criteria above. If ≥3 of 4 criteria met → recommend full commitment to board. If 1-2 met → recommend scoped continuation with revised milestones. If 0 met → recommend strategic pivot with options analysis.\n\n**What we are asking the board to approve today:**\n- The 60-day evidence sprint scope and budget\n- The pass/fail criteria defined above as binding decision gates\n- A commitment to reconvene at Day 60 for a go/no-go decision\n\nThis approach converts ambiguity into a structured bet with defined exit conditions, preserves optionality, and ensures the next board conversation is grounded in evidence rather than conviction.",
+  "claims": [
+    {
+      "claim_id": "side_b-claim-1",
+      "summary": "The strategy is not yet ready for full commitment because two of four critical unknowns have only weak evidence quality, and three of five pass/fail criteria are currently unmet.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-2",
+      "summary": "A 60-day bounded evidence sprint with hard decision gates is the appropriate response to ambiguity — it converts uncertainty into structured, time-boxed de-risking rather than premature commitment or indefinite deferral.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-3",
+      "summary": "Board updates under ambiguity should explicitly separate survivability (burn rate adequacy) from conviction (evidence thresholds), because conflating the two leads to overcommitment when resources exist but evidence does not.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-4",
+      "summary": "Each unknown should be paired with a specific closability assessment and exit criterion so the board can evaluate whether the ambiguity is resolvable within the decision window, not just whether it exists.",
+      "evidence_refs": [],
+      "is_major": false
+    }
+  ],
+  "citations": [],
+  "open_questions": [
+    "No case-specific evidence was provided, so the artifact uses a generalized but structurally complete framework — actual figures, company context, and market specifics would need to be substituted for a real board presentation.",
+    "The scoring spec reference (docs/shipwright-v2-benchmark-scoring-spec.md) was not available under the tool_policy:none constraint, so rubric alignment is based on the dimensions provided in the case packet."
+  ],
+  "critique_responses": []
+}

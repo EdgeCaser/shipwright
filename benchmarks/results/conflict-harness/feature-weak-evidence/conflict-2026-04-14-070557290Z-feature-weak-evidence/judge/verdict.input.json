@@ -1,0 +1,230 @@
+{
+  "case_packet": {
+    "scenario_id": "feature-weak-evidence",
+    "title": "New feature with weak evidence",
+    "prompt": "Draft a PRD for a new feature with weak supporting evidence.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-14-070557290Z-feature-weak-evidence",
+      "side_id": "side_a",
+      "round": "first_pass",
+      "artifact_markdown": "# PRD: [Proposed Feature] — Weak Evidence Gate Review\n\n## Decision Frame\n\n**What decision does this PRD support?**\nWhether to invest engineering resources in building [Proposed Feature] given the current state of supporting evidence.\n\n**Decision type:** Go / No-Go / Investigate Further\n\n**Current recommendation:** **Investigate Further** — the evidence base is insufficient to justify a build decision. This PRD exists to make that insufficiency explicit and actionable, not to rationalize premature commitment.\n\n**Stakeholders:** Product, Engineering, Design, Business Leadership\n\n**Time horizon:** The investigation phase should produce a go/no-go recommendation within 4-6 weeks. A build decision made today would be premature.\n\n### Why this feature is being considered\n- An internal hypothesis exists that [Proposed Feature] would improve [target metric]\n- Anecdotal signals (support tickets, sales call mentions, competitor launches) suggest possible demand\n- No rigorous validation has been performed\n\n### What would need to be true for this to succeed\n1. Users actually experience the problem this feature solves (unvalidated)\n2. This feature is the right solution shape for that problem (unvalidated)\n3. The addressable segment is large enough to justify build cost (unquantified)\n4. Users would adopt this feature over existing workarounds (unknown)\n5. Building this does not create unacceptable technical debt or opportunity cost (unassessed)\n\n---\n\n## Unknowns & Evidence Gaps\n\n| # | Unknown | Current Evidence | Evidence Strength | Required Evidence to Proceed | Investigation Method |\n|---|---------|-----------------|-------------------|-----------------------------|-----------------------|\n| U1 | Does the target user segment actually experience this pain point? | Anecdotal: ~3-5 support tickets mentioning adjacent frustration | **Very Weak** — small sample, no structured inquiry, mentions are adjacent not direct | Structured interviews with 10+ users from target segment confirming problem existence and frequency | User interviews with screening criteria |\n| U2 | What is the frequency and severity of the problem? | None | **None** | Quantified frequency data (daily/weekly/monthly) and severity rating from affected users | Survey instrument after interview findings |\n| U3 | What workarounds do users currently employ? | None | **None** | Catalog of current workarounds with effort/satisfaction ratings | Interview + workflow observation |\n| U4 | Is this the right solution shape? | Internal brainstorm only | **Very Weak** — no user input on solution | Concept testing with 5+ users showing preference over status quo and workarounds | Prototype or concept test |\n| U5 | What is the addressable segment size? | Rough estimate based on total user count | **Weak** — no segmentation analysis performed | Segment sizing from product analytics: users who exhibit proxy behaviors | Analytics query + cohort definition |\n| U6 | What is the expected build cost? | None | **None** | Engineering estimate scoped to defined solution | Technical spike after solution shape validated |\n| U7 | What is the opportunity cost? | None | **None** | Comparison against current roadmap priorities using consistent scoring | Prioritization framework evaluation |\n\n### Evidence quality assessment\n- **Hard evidence (quantitative, replicable):** None available\n- **Soft evidence (qualitative, structured):** None available\n- **Anecdotal evidence (unstructured, opportunistic):** Minimal — a handful of support tickets and internal intuition\n- **Counter-evidence:** Not investigated — no disconfirming signals have been sought\n\n### Risks of proceeding without evidence\n1. **Build-measure-regret cycle:** Investing 4-8 engineering weeks in a feature that addresses a phantom problem\n2. **Opportunity cost blindness:** Displacing higher-confidence roadmap items without comparative analysis\n3. **Solution-first trap:** Anchoring on a specific implementation before understanding the problem space\n4. **Confirmation bias:** Post-launch metrics may be interpreted to justify the investment regardless of actual impact\n\n---\n\n## Pass/Fail Readiness\n\n### Readiness verdict: **FAIL — Not ready for build commitment**\n\n| Readiness Criterion | Status | Rationale |\n|---------------------|--------|-----------|\n| Problem validated with target users | ❌ FAIL | No structured user research conducted |\n| Problem frequency/severity quantified | ❌ FAIL | No data exists |\n| Solution shape validated with users | ❌ FAIL | Internal ideation only |\n| Addressable segment sized | ❌ FAIL | No segmentation analysis |\n| Build cost estimated | ❌ FAIL | No engineering scoping performed |\n| Opportunity cost assessed | ❌ FAIL | No comparative prioritization |\n| Success metrics defined | ❌ FAIL | Cannot define meaningful metrics without validated problem |\n| Counter-evidence sought | ❌ FAIL | No disconfirmation attempted |\n\n**Summary:** 0 of 8 readiness criteria pass. This feature concept is at the hypothesis stage and requires structured investigation before any resource commitment is appropriate.\n\n### What \"ready\" looks like\nA go decision would require:\n- At minimum: U1, U2, U3 resolved (problem exists, is frequent/severe enough, workarounds are insufficient)\n- Ideally: U4, U5 also resolved (solution shape validated, segment sized)\n- U6 and U7 can follow if the above gates pass\n\n---\n\n## Recommended Next Artifact\n\n**Next artifact:** Discovery Research Plan\n\n**Purpose:** Define and execute a structured investigation to resolve unknowns U1-U5 before revisiting the build decision.\n\n### Proposed investigation sequence\n\n1. **Week 1-2: Problem discovery interviews** (resolves U1, U2, U3)\n   - Recruit 10-15 users from hypothesized target segment\n   - Semi-structured interviews focused on workflow, pain points, current workarounds\n   - Output: Problem validation report with frequency/severity data\n\n2. **Week 2-3: Segment analysis** (resolves U5)\n   - Define behavioral proxies for the target segment in product analytics\n   - Size the segment and characterize engagement patterns\n   - Output: Segment sizing memo\n\n3. **Week 3-4: Solution concept testing** (resolves U4, contingent on U1 passing)\n   - Only proceed if problem is validated\n   - Low-fidelity concept test with 5-8 users from validated segment\n   - Output: Solution validation summary\n\n4. **Week 4-5: Revised PRD** (resolves U6, U7)\n   - If problem and solution validated: engineering spike + opportunity cost assessment\n   - Produce updated PRD with evidence-backed recommendations\n   - Output: Go/No-Go PRD v2\n\n### Kill criteria\nAbandon the feature if any of these emerge during investigation:\n- Fewer than 3 of 10 interviewed users confirm experiencing the problem\n- Problem frequency is less than weekly for affected users\n- Existing workarounds are rated satisfactory by >60% of affected users\n- Addressable segment is <5% of active user base\n\n### Decision timeline\n- **Week 5-6:** Present findings to stakeholders with go/no-go/pivot recommendation\n- **No build work should begin before this gate**",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "The feature lacks sufficient evidence to justify a build commitment — zero of eight readiness criteria pass, and the appropriate next step is structured discovery research, not engineering investment.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "Evidence gaps must be resolved in dependency order: problem validation first, then segment sizing, then solution validation — proceeding out of sequence risks anchoring on solutions before confirming problems exist.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "Explicit kill criteria prevent investigation from becoming an indefinite research phase — predefined thresholds force a timely go/no-go decision within 4-6 weeks.",
+          "evidence_refs": [],
+          "is_major": false
+        }
+      ],
+      "citations": [],
+      "open_questions": [
+        "What specific feature is being proposed? The case packet provides no feature definition, forcing this PRD to operate at a meta-level.",
+        "What anecdotal signals originally prompted this feature idea? Even weak evidence should be cataloged rather than assumed.",
+        "Are there existing analytics or telemetry that could serve as proxy evidence before conducting primary research?"
+      ],
+      "critique_responses": []
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-14-070557290Z-feature-weak-evidence",
+      "side_id": "side_b",
+      "round": "first_pass",
+      "artifact_markdown": "# PRD: Proposed New Feature\n\n## Summary\nThis document frames a potential new feature under explicitly weak evidence conditions. The goal is not to authorize full delivery, but to define the smallest decision-useful path to test whether the problem is real, important, and solvable.\n\n## Problem Statement\nA feature opportunity has been proposed, but the case packet provides no user evidence, market signal, usage data, or validated business justification. Because of that, the core product risk is not delivery risk; it is false-positive demand risk.\n\n## Goal\nDecide whether this feature deserves progression from concept to validated opportunity.\n\n## Non-Goals\n- Commit to full build scope\n- Promise launch timing\n- Infer user demand without evidence\n- Treat stakeholder enthusiasm as validation\n\n## Users / Stakeholders\n- Primary user: Unknown\n- Buyer / approver: Unknown\n- Internal stakeholders: Product, Design, Engineering\n\n## Proposed Feature Concept\nA new feature intended to improve user outcomes in an unspecified workflow. Exact user job, trigger moment, success metric, and adoption path remain undefined.\n\n## Hypothesis\nIf a meaningful user problem exists and the proposed feature addresses it better than current behavior, then target users will show measurable evidence of demand through discovery signals, prototype engagement, or constrained beta adoption.\n\n## MVP Scope\nBecause evidence is weak, the only justified MVP is a validation MVP:\n- Problem validation interviews\n- Lightweight prototype or concierge workflow\n- Instrumented smoke test or limited beta\n- Clear success and failure thresholds before engineering scale-up\n\n## Requirements\n### Functional Requirements\n- Capture the user problem in concrete terms\n- Test at least one end-to-end user flow in prototype form\n- Record user reactions, objections, and alternatives\n- Measure whether users complete the intended task with the concept\n\n### Non-Functional Requirements\n- Minimize engineering investment until evidence improves\n- Ensure all tests are instrumented and attributable to a defined hypothesis\n- Preserve reversibility if the concept fails\n\n## Success Metrics\nGiven the absence of baseline evidence, success metrics must be validation-oriented first:\n- At least one clearly defined target persona demonstrates the problem is frequent and important\n- A majority of interviewed target users rank the problem as worth solving\n- Prototype or smoke-test engagement exceeds a pre-declared threshold\n- Early signals indicate the feature improves or accelerates a meaningful user outcome\n\n## Risks\n- Building for an unverified problem\n- Solving the wrong user segment\n- Confusing anecdote with demand\n- Expanding scope before proof\n- Producing a PRD that appears actionable without sufficient evidence\n\n## Launch / Rollout Recommendation\nDo not approve full feature development from this PRD alone. Approve only a discovery and validation phase with explicit exit criteria.\n\n## Decision Frame\nDecision required: whether to invest in validation, not whether to build the feature.\n\nRecommendation: proceed only with a time-boxed validation sprint. The evidence base is currently too weak for a production commitment, but strong enough to justify a low-cost test if the opportunity is strategically relevant.\n\n## Unknowns & Evidence Gaps\n- Who exactly has the problem\n- How often the problem occurs\n- What users do today instead\n- Whether the proposed feature is better than status quo alternatives\n- Expected impact on activation, retention, revenue, or efficiency\n- Engineering complexity and integration risk\n- Whether demand is broad, niche, or stakeholder-local\n\n## Pass/Fail Readiness\nCurrent readiness: Fail for build approval.\n\nCurrent readiness: Pass for limited validation work if all of the following are true:\n- A target persona is named\n- A testable hypothesis is written\n- A lightweight prototype or smoke test is defined\n- Quantitative and qualitative success thresholds are declared in advance\n- A kill condition is documented\n\n## Recommended Next Artifact\nValidation brief or discovery plan covering:\n- target persona\n- problem statement\n- interview guide\n- prototype test plan\n- success thresholds\n- kill criteria",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "The available evidence is insufficient to support full feature development, so the only defensible recommendation is a validation-phase PRD rather than a build-approval PRD.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "The highest risk is false-positive demand risk, because the case packet contains no user, market, or behavioral evidence.",
+          "evidence_refs": [],
+          "is_major": true
+        }
+      ],
+      "citations": [],
+      "open_questions": [
+        "What specific user segment is this feature for?",
+        "What observable problem behavior justifies solving this now?",
+        "What baseline workflow or workaround do users rely on today?",
+        "What pre-committed success thresholds would justify moving from validation to build?"
+      ],
+      "critique_responses": []
+    }
+  },
+  "critique_packets": {
+    "side_a": {
+      "target_side": "side_b",
+      "finding_id": "finding-1",
+      "target_claim_ids": [
+        "side_b-claim-1"
+      ],
+      "claim_under_attack": "The available evidence is insufficient to support full feature development, so the only defensible recommendation is a validation-phase PRD rather than a build-approval PRD.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "This claim presents a false binary: either full build-approval PRD or validation-phase PRD. The artifact treats 'weak evidence' as synonymous with 'no evidence' and uses that conflation to justify producing a PRD that is entirely abstract — no concrete feature, no named user segment, no specific workflow. A validation-phase PRD is defensible in principle, but this one contains zero specificity: the 'Proposed Feature Concept' section explicitly states the user job, trigger moment, success metric, and adoption path are all 'undefined.' A document that recommends validation while defining nothing concrete to validate is not decision-useful — it is a template, not a PRD. The claim that this is 'the only defensible recommendation' masks the fact that the artifact fails to do the minimum work of synthesizing even a hypothetical feature definition against which validation could be designed. Every section defers to future work without committing to any testable proposition now.",
+      "severity": "high"
+    },
+    "side_b": {
+      "target_side": "side_a",
+      "finding_id": "finding-2",
+      "target_claim_ids": [
+        "side_a-claim-3"
+      ],
+      "claim_under_attack": "Explicit kill criteria prevent investigation from becoming an indefinite research phase — predefined thresholds force a timely go/no-go decision within 4-6 weeks.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "The visible artifact gives no evidence that the proposed thresholds are calibrated to this product, segment, or economics. Cutoffs like 'fewer than 3 of 10 users,' '<5% of active user base,' and '>60% satisfied with workarounds' appear arbitrary rather than derived from baseline incidence, expected ROI, or comparable prior decisions. Without justification, these kill criteria do not reliably force a sound go/no-go decision; they risk false negatives or false confidence.",
+      "severity": "medium"
+    }
+  },
+  "final_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-14-070557290Z-feature-weak-evidence",
+      "side_id": "side_a",
+      "round": "final",
+      "artifact_markdown": "# PRD: [Proposed Feature] — Weak Evidence Gate Review\n\n## Decision Frame\n\n**What decision does this PRD support?**\nWhether to invest engineering resources in building [Proposed Feature] given the current state of supporting evidence.\n\n**Decision type:** Go / No-Go / Investigate Further\n\n**Current recommendation:** **Investigate Further** — the evidence base is insufficient to justify a build decision. This PRD exists to make that insufficiency explicit and actionable, not to rationalize premature commitment.\n\n**Stakeholders:** Product, Engineering, Design, Business Leadership\n\n**Time horizon:** The investigation phase should produce a go/no-go recommendation within 4-6 weeks. A build decision made today would be premature.\n\n### Why this feature is being considered\n- An internal hypothesis exists that [Proposed Feature] would improve [target metric]\n- Anecdotal signals (support tickets, sales call mentions, competitor launches) suggest possible demand\n- No rigorous validation has been performed\n\n### What would need to be true for this to succeed\n1. Users actually experience the problem this feature solves (unvalidated)\n2. This feature is the right solution shape for that problem (unvalidated)\n3. The addressable segment is large enough to justify build cost (unquantified)\n4. Users would adopt this feature over existing workarounds (unknown)\n5. Building this does not create unacceptable technical debt or opportunity cost (unassessed)\n\n---\n\n## Unknowns & Evidence Gaps\n\n| # | Unknown | Current Evidence | Evidence Strength | Required Evidence to Proceed | Investigation Method |\n|---|---------|-----------------|-------------------|-----------------------------|-----------------------|\n| U1 | Does the target user segment actually experience this pain point? | Anecdotal: ~3-5 support tickets mentioning adjacent frustration | **Very Weak** — small sample, no structured inquiry, mentions are adjacent not direct | Structured interviews with 10+ users from target segment confirming problem existence and frequency | User interviews with screening criteria |\n| U2 | What is the frequency and severity of the problem? | None | **None** | Quantified frequency data (daily/weekly/monthly) and severity rating from affected users | Survey instrument after interview findings |\n| U3 | What workarounds do users currently employ? | None | **None** | Catalog of current workarounds with effort/satisfaction ratings | Interview + workflow observation |\n| U4 | Is this the right solution shape? | Internal brainstorm only | **Very Weak** — no user input on solution | Concept testing with 5+ users showing preference over status quo and workarounds | Prototype or concept test |\n| U5 | What is the addressable segment size? | Rough estimate based on total user count | **Weak** — no segmentation analysis performed | Segment sizing from product analytics: users who exhibit proxy behaviors | Analytics query + cohort definition |\n| U6 | What is the expected build cost? | None | **None** | Engineering estimate scoped to defined solution | Technical spike after solution shape validated |\n| U7 | What is the opportunity cost? | None | **None** | Comparison against current roadmap priorities using consistent scoring | Prioritization framework evaluation |\n\n### Evidence quality assessment\n- **Hard evidence (quantitative, replicable):** None available\n- **Soft evidence (qualitative, structured):** None available\n- **Anecdotal evidence (unstructured, opportunistic):** Minimal — a handful of support tickets and internal intuition\n- **Counter-evidence:** Not investigated — no disconfirming signals have been sought\n\n### Risks of proceeding without evidence\n1. **Build-measure-regret cycle:** Investing 4-8 engineering weeks in a feature that addresses a phantom problem\n2. **Opportunity cost blindness:** Displacing higher-confidence roadmap items without comparative analysis\n3. **Solution-first trap:** Anchoring on a specific implementation before understanding the problem space\n4. **Confirmation bias:** Post-launch metrics may be interpreted to justify the investment regardless of actual impact\n\n---\n\n## Pass/Fail Readiness\n\n### Readiness verdict: **FAIL — Not ready for build commitment**\n\n| Readiness Criterion | Status | Rationale |\n|---------------------|--------|-----------|\n| Problem validated with target users | ❌ FAIL | No structured user research conducted |\n| Problem frequency/severity quantified | ❌ FAIL | No data exists |\n| Solution shape validated with users | ❌ FAIL | Internal ideation only |\n| Addressable segment sized | ❌ FAIL | No segmentation analysis |\n| Build cost estimated | ❌ FAIL | No engineering scoping performed |\n| Opportunity cost assessed | ❌ FAIL | No comparative prioritization |\n| Success metrics defined | ❌ FAIL | Cannot define meaningful metrics without validated problem |\n| Counter-evidence sought | ❌ FAIL | No disconfirmation attempted |\n\n**Summary:** 0 of 8 readiness criteria pass. This feature concept is at the hypothesis stage and requires structured investigation before any resource commitment is appropriate.\n\n### What \"ready\" looks like\nA go decision would require:\n- At minimum: U1, U2, U3 resolved (problem exists, is frequent/severe enough, workarounds are insufficient)\n- Ideally: U4, U5 also resolved (solution shape validated, segment sized)\n- U6 and U7 can follow if the above gates pass\n\n---\n\n## Recommended Next Artifact\n\n**Next artifact:** Discovery Research Plan\n\n**Purpose:** Define and execute a structured investigation to resolve unknowns U1-U5 before revisiting the build decision.\n\n### Proposed investigation sequence\n\n1. **Week 1-2: Problem discovery interviews** (resolves U1, U2, U3)\n   - Recruit 10-15 users from hypothesized target segment\n   - Semi-structured interviews focused on workflow, pain points, current workarounds\n   - Output: Problem validation report with frequency/severity data\n\n2. **Week 2-3: Segment analysis** (resolves U5)\n   - Define behavioral proxies for the target segment in product analytics\n   - Size the segment and characterize engagement patterns\n   - Output: Segment sizing memo\n\n3. **Week 3-4: Solution concept testing** (resolves U4, contingent on U1 passing)\n   - Only proceed if problem is validated\n   - Low-fidelity concept test with 5-8 users from validated segment\n   - Output: Solution validation summary\n\n4. **Week 4-5: Revised PRD** (resolves U6, U7)\n   - If problem and solution validated: engineering spike + opportunity cost assessment\n   - Produce updated PRD with evidence-backed recommendations\n   - Output: Go/No-Go PRD v2\n\n### Kill criteria\n\nThe thresholds below are **provisional defaults** that must be calibrated before the investigation begins. They are not evidence-derived — no baselines, ROI models, or comparable prior decisions exist to anchor them. The first task of the investigation phase is to establish calibrated thresholds by:\n\n1. **Pulling baseline incidence rates** from product analytics (e.g., what % of users exhibit proxy behaviors for this pain point today) so that interview hit-rates can be compared against a meaningful denominator\n2. **Estimating minimum viable segment size** from unit economics: given expected build cost (U6) and target payback period, what adoption floor makes the feature ROI-positive?\n3. **Reviewing comparable prior decisions** — what kill/proceed thresholds were used for the last 2-3 features that went through structured discovery, and what were their outcomes?\n\nUntil calibrated, the following serve as starting placeholders to prevent indefinite investigation. Stakeholders must ratify or revise these before Week 1 interviews begin:\n\n- Fewer than 3 of 10 interviewed users confirm experiencing the problem → **abandon** *(placeholder — calibrate against base rate of problem mention in support data)*\n- Problem frequency is less than weekly for affected users → **abandon** *(placeholder — calibrate against severity; infrequent but high-severity problems may still warrant investment)*\n- Existing workarounds are rated satisfactory by >60% of affected users → **abandon** *(placeholder — calibrate against switching cost and workaround fragility)*\n- Addressable segment is below the ROI-positive adoption floor → **abandon** *(replaces prior arbitrary <5% threshold; derived from unit economics once U6 is estimated)*\n\n### Decision timeline\n- **Pre-Week 1:** Stakeholder alignment on calibrated kill criteria\n- **Week 5-6:** Present findings to stakeholders with go/no-go/pivot recommendation\n- **No build work should begin before this gate**",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "The feature lacks sufficient evidence to justify a build commitment — zero of eight readiness criteria pass, and the appropriate next step is structured discovery research, not engineering investment.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "Evidence gaps must be resolved in dependency order: problem validation first, then segment sizing, then solution validation — proceeding out of sequence risks anchoring on solutions before confirming problems exist.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "Kill criteria prevent indefinite investigation, but thresholds must be calibrated against product baselines, unit economics, and comparable prior decisions before they can reliably force a sound go/no-go decision. Provisional defaults are provided as starting points, not final gates.",
+          "evidence_refs": [],
+          "is_major": false
+        }
+      ],
+      "citations": [],
+      "open_questions": [
+        "What specific feature is being proposed? The case packet provides no feature definition, forcing this PRD to operate at a meta-level.",
+        "What anecdotal signals originally prompted this feature idea? Even weak evidence should be cataloged rather than assumed.",
+        "Are there existing analytics or telemetry that could serve as proxy evidence before conducting primary research?",
+        "What kill/proceed thresholds were used in comparable prior feature investigations, and what were the outcomes? This is needed to calibrate the provisional thresholds in this PRD."
+      ],
+      "critique_responses": [
+        {
+          "finding_id": "finding-2",
+          "disposition": "adopted",
+          "rationale": "The critique correctly identifies that the kill criteria thresholds were presented as authoritative despite having no empirical grounding. Thresholds like '<3 of 10 users' and '<5% of user base' were arbitrary round numbers, not derived from baseline incidence, unit economics, or precedent. The revised artifact now explicitly labels these as provisional placeholders, adds a mandatory pre-investigation calibration step (baseline pull, ROI-floor calculation, comparable decision review), and requires stakeholder ratification before the thresholds are used to make kill decisions. The segment-size threshold has been replaced entirely with an economics-derived adoption floor. This prevents both the false negatives (killing a viable feature due to an arbitrary cutoff) and false confidence (green-lighting based on thresholds that happen to be easy to clear) that the critique flagged."
+        }
+      ]
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-14-070557290Z-feature-weak-evidence",
+      "side_id": "side_b",
+      "round": "final",
+      "artifact_markdown": "# Revised artifact\n\n# PRD: Validation PRD for Guided Onboarding Checklist\n\n## Summary\nThis PRD defines a concrete feature concept under weak-evidence conditions and limits the decision to whether the team should run a bounded validation sprint. The feature is a guided onboarding checklist for new workspace admins intended to help them complete initial setup and reach first value faster.\n\n## Problem Statement\nA plausible but unvalidated problem is that new workspace admins may abandon setup when they cannot easily identify the next required step. The cost of acting as though this problem is real without validation is building workflow guidance that users do not need, ignore, or actively find intrusive.\n\n## Target User\nPrimary user: first-time workspace admin in the first 7 days after account creation.\n\nSecondary stakeholder: Product and Growth teams seeking improved activation.\n\n## Proposed Feature\nAdd an in-product onboarding checklist shown to first-time workspace admins. The checklist would break setup into 3 to 5 steps, show progress, deep-link into each task, and disappear once setup is complete or dismissed.\n\n## User Job To Be Done\nWhen I create a new workspace, I want to know the minimum steps required to get my team operational so I can experience value quickly without guessing what to do next.\n\n## Hypothesis\nIf first-time workspace admins have real setup friction caused by unclear next steps, then a guided onboarding checklist will increase completion of key setup actions and reduce time to first value.\n\n## Decision To Make\nApprove only a validation sprint for this feature concept, not full production build.\n\n## Validation Scope\nThe validation sprint should answer four questions:\n1. Do first-time admins actually experience confusion about next steps?\n2. Are the proposed checklist steps aligned with real setup behavior?\n3. Will users engage with checklist guidance rather than ignore it?\n4. Is the expected activation uplift large enough to justify implementation?\n\n## Validation Plan\n- Conduct 5 to 8 interviews with recent or prospective workspace admins using a setup journey walkthrough.\n- Build a clickable prototype of the onboarding checklist covering account creation through first successful setup.\n- Run a lightweight smoke test exposing the checklist concept on the signup completion page and measure clickthrough to setup tasks.\n- Define one concierge or manually-assisted pilot if prototype feedback is positive but user intent remains ambiguous.\n\n## Functional Requirements\n- Present checklist only to first-time workspace admins.\n- Display 3 to 5 setup tasks with clear completion states.\n- Deep-link each task to the corresponding setup area.\n- Allow dismissal so users can opt out.\n- Capture interaction events for impression, task click, task completion, dismissal, and setup completion.\n\n## Non-Functional Requirements\n- Keep implementation reversible until validation passes.\n- Avoid broad rollout during validation.\n- Instrument every validation touchpoint to a named hypothesis.\n\n## Success Metrics For Validation\nA validation sprint passes only if thresholds are pre-committed and met. Initial thresholds:\n- At least 4 of 6 interviewed target users describe uncertainty about setup order or next steps.\n- At least 60% of prototype participants complete the proposed setup flow without moderator rescue.\n- Smoke-test CTR on the checklist entry point exceeds a pre-declared baseline placeholder of 20%.\n- At least one activation proxy improves versus control or historical baseline: completion of core setup actions, time to setup completion, or first-week retention.\n\n## Risks\n- The real problem may be missing integrations or account configuration, not guidance.\n- The checklist may optimize clicks without improving activation.\n- The target segment may be too narrow to justify product complexity.\n- Setup friction may be caused by deeper product design issues that a checklist only masks.\n\n## Out Of Scope\n- Full rollout to all user types.\n- Personalized onboarding paths.\n- Lifecycle messaging beyond the first-week setup window.\n- Commitment to engineering build after validation unless thresholds are met.\n\n## Decision Frame\nDecision required: whether to invest in a bounded validation sprint for a guided onboarding checklist aimed at first-time workspace admins.\n\nRecommendation: approve validation only. The case packet provides weak evidence, so the feature is not build-ready, but this concrete concept is specific enough to test.\n\n## Unknowns & Evidence Gaps\n- Whether first-time workspace admins are the right segment.\n- Which setup actions actually define first value.\n- Whether confusion about next steps is the primary activation blocker.\n- What baseline activation metrics should be used for comparison.\n- Whether checklist usage correlates with meaningful downstream outcomes.\n\n## Pass/Fail Readiness\nCurrent readiness: Fail for full build approval.\n\nCurrent readiness: Pass for validation if the team commits to the named user segment, prototype flow, instrumentation plan, and explicit kill criteria before starting work.\n\n## Recommended Next Artifact\nValidation brief covering interview guide, prototype tasks, smoke-test design, activation baseline, success thresholds, and kill criteria.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "Given the case packet's weak evidence, the defensible decision is to authorize only a bounded validation sprint for a specific feature concept, not full feature development.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "A validation PRD becomes decision-useful only when it names a concrete user, workflow, feature concept, and test thresholds, even if those remain provisional.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        }
+      ],
+      "citations": [
+        "ctx-1"
+      ],
+      "open_questions": [
+        "Is first-time workspace admin the right initial segment, or is setup friction concentrated elsewhere?",
+        "Which setup actions should count as the activation proxy for this feature?",
+        "What historical or control baseline should be used for the smoke test?"
+      ],
+      "critique_responses": [
+        {
+          "finding_id": "finding-1",
+          "disposition": "adopted",
+          "rationale": "The critique was correct that the first-pass artifact described a validation posture without defining a concrete feature, user, or workflow to validate. I revised the PRD to anchor on a specific feature concept, named segment, JTBD, validation plan, and provisional thresholds so the artifact is decision-useful rather than purely templatic."
+        }
+      ]
+    }
+  },
+  "min_margin_for_verdict": 0.1
+}

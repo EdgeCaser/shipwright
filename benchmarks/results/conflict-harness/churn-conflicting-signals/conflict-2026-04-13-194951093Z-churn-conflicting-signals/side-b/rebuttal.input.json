@@ -1,0 +1,131 @@
+{
+  "case_packet": {
+    "scenario_id": "churn-conflicting-signals",
+    "title": "Churn diagnosis with conflicting signals",
+    "prompt": "Write a churn reduction PRD when signals conflict with strategy targets.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "opposing_first_pass": {
+    "run_id": "conflict-2026-04-13-194951093Z-churn-conflicting-signals",
+    "side_id": "side_a",
+    "round": "first_pass",
+    "artifact_markdown": "# Churn Reduction PRD: Navigating Conflicting Signals\n\n## Decision Frame\n\n**Problem statement:** Churn rate has increased over the trailing 90 days, but the signals driving churn contradict current strategic targets. Specifically:\n\n- **Signal A (Usage decay):** Power-user cohorts show declining weekly active usage (WAU down 12% QoQ), suggesting product-market fit erosion in the core segment.\n- **Signal B (Expansion revenue up):** Net revenue retention among surviving accounts is *increasing* (NRR 118% → 124%), suggesting the product is delivering more value to those who stay.\n- **Signal C (Support ticket sentiment):** CSAT on resolved tickets is stable (4.2/5), but volume of \"cancellation intent\" tickets rose 34% — the dissatisfied are leaving without complaining first.\n\nThese signals conflict with the current strategy target of **prioritizing new logo acquisition over retention**, set during the last planning cycle when churn was below threshold.\n\n**Decision to be made:** Should we redirect resources from acquisition to retention, and if so, under what conditions and constraints?\n\n**Stakeholders:** VP Product, VP Customer Success, CFO (unit economics owner), Growth team lead.\n\n**Decision deadline:** End of current quarter planning cycle. Delayed action compounds churn — each month of inaction at current trajectory loses ~2.3% of ARR that would otherwise retain.\n\n---\n\n## Unknowns & Evidence Gaps\n\n| # | Unknown | Why it matters | Current evidence quality | Proposed resolution |\n|---|---------|---------------|------------------------|--------------------|\n| U1 | **Is churn concentrated in a specific segment or broadly distributed?** | Concentration means targeted intervention; broad distribution means systemic issue. | LOW — aggregate churn rate available but no cohort breakdown shared. | Run segmented churn analysis by plan tier, tenure, industry, and acquisition channel within 1 week. |\n| U2 | **What is the causal relationship between usage decay and churn?** | Usage decay could be a *leading* indicator (fixable) or *lagging* symptom of a decision already made (too late). | MEDIUM — correlation observed but no causal model. Time-to-churn after usage drop unknown. | Survival analysis on usage-decline cohorts: median days from WAU drop >20% to cancellation. |\n| U3 | **Why is NRR rising while logos churn?** | If small accounts churn while large accounts expand, the revenue story masks a unit-count crisis that hits later when large accounts also reconsider. | LOW — NRR is a blended metric; no size-stratified view. | Decompose NRR into expansion, contraction, and churn by account size quartile. |\n| U4 | **Are churned customers reachable for exit interviews?** | Without voice-of-churned-customer data, any intervention is guesswork. | NONE — no structured exit interview program exists. | Deploy automated exit survey (5 questions, <2 min) triggered on cancellation confirmation. Begin manual outreach to 20 recent churns within 2 weeks. |\n| U5 | **What is the true cost of reacquisition vs. retention?** | Strategy targets assume acquisition CAC; if reacquisition of churned logos costs 3-5x, the acquisition-first strategy has a hidden tax. | LOW — CAC tracked for new logos only, no win-back cost data. | Finance team to estimate win-back CAC from any prior re-engagement campaigns. |\n\n---\n\n## Pass/Fail Readiness\n\n**Readiness verdict: NOT READY to commit to a full retention pivot.**\n\nRationale:\n\n- **FAIL — Evidence foundation:** Three of five critical unknowns (U1, U3, U5) are rated LOW or NONE. We cannot confidently design an intervention without segment-level data.\n- **FAIL — Causal model:** We have correlation (usage drops → churn) but no validated causal chain. Interventions built on correlation risk treating symptoms.\n- **PASS — Urgency signal:** The 34% rise in cancellation-intent tickets with stable CSAT is a strong leading indicator of \"silent churn\" — customers leaving without engaging support. This justifies accelerated investigation.\n- **PASS — Reversibility:** Proposed next steps (analysis + exit interviews) are low-cost and non-destructive. They do not require abandoning acquisition targets.\n\n**Conditional readiness:** If segmented analysis (U1) reveals churn concentrated in 1-2 segments AND exit interviews (U4) surface actionable friction, we can draft a targeted retention intervention PRD within 3 weeks without pausing acquisition investment.\n\n**Risk of inaction:** At current trajectory, compounding churn erodes ~7% of addressable ARR over the next quarter. Even if NRR masks this in revenue terms today, logo loss reduces expansion surface area for future quarters.\n\n---\n\n## Recommended Next Artifact\n\n**Immediate (this week):**\n1. **Churn segmentation analysis** — quantitative artifact decomposing churn by tier, tenure, channel, and size. Resolves U1 and U3.\n2. **Exit interview protocol** — 5-question survey + manual outreach script for 20 recent churns. Resolves U4.\n\n**Conditional (week 2-3, if segments identified):**\n3. **Targeted retention experiment brief** — hypothesis-driven intervention for the highest-churn segment, designed as a 30-day experiment with clear success/failure criteria before any permanent resource reallocation.\n\n**Decision gate:** Reconvene stakeholders after artifacts 1 and 2 are complete. If evidence confirms concentrated, addressable churn, proceed to artifact 3. If churn is broadly distributed with no clear lever, escalate to strategy review — the conflict between signals may indicate a market positioning problem, not a product problem.\n\n**What this PRD intentionally does NOT do:** It does not recommend a specific retention feature, pricing change, or CS program. Those are premature without the evidence this PRD identifies as missing. Shipping a solution before understanding the problem is how conflicting signals become conflicting initiatives.",
+    "claims": [
+      {
+        "claim_id": "side_a-claim-1",
+        "summary": "The organization is not ready to commit to a retention pivot because three of five critical unknowns lack sufficient evidence, and interventions built on conflicting aggregate metrics risk treating symptoms rather than causes.",
+        "evidence_refs": [
+          "U1",
+          "U3",
+          "U5"
+        ],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_a-claim-2",
+        "summary": "Rising NRR concurrent with rising churn likely masks a logo-count crisis where small accounts churn silently while large accounts expand — a pattern that compounds into future revenue loss as expansion surface area shrinks.",
+        "evidence_refs": [
+          "U3",
+          "signal-b",
+          "signal-c"
+        ],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_a-claim-3",
+        "summary": "The 34% rise in cancellation-intent tickets with stable CSAT indicates silent churn — customers deciding to leave before engaging support — which justifies accelerated investigation even without a full retention pivot.",
+        "evidence_refs": [
+          "signal-c"
+        ],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_a-claim-4",
+        "summary": "Segmented churn analysis and structured exit interviews are the minimum viable evidence artifacts needed before any resource reallocation decision can be responsibly made.",
+        "evidence_refs": [
+          "U1",
+          "U4"
+        ],
+        "is_major": false
+      },
+      {
+        "claim_id": "side_a-claim-5",
+        "summary": "If churn proves broadly distributed rather than segment-concentrated, the conflicting signals may indicate a market positioning problem rather than a product problem, requiring strategy review rather than tactical retention fixes.",
+        "evidence_refs": [
+          "U1",
+          "U2"
+        ],
+        "is_major": false
+      }
+    ],
+    "citations": [
+      "U1",
+      "U2",
+      "U3",
+      "U4",
+      "U5",
+      "signal-a",
+      "signal-b",
+      "signal-c"
+    ],
+    "open_questions": [
+      "Is there existing cohort-level churn data that has not been surfaced to the product team?",
+      "Has the acquisition-first strategy target been revisited since churn crossed threshold?",
+      "Are there contractual or pricing structures that create natural churn cliffs (e.g., annual renewal dates concentrating in this quarter)?"
+    ],
+    "critique_responses": []
+  }
+}

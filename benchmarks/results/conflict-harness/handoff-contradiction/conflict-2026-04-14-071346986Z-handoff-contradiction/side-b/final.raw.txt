@@ -1,0 +1,43 @@
+{
+  "run_id": "conflict-2026-04-14-071346986Z-handoff-contradiction",
+  "side_id": "side_b",
+  "round": "final",
+  "artifact_markdown": "# Revised artifact\n\n# Technical Handoff PRD\n\n## Overview\nThis PRD defines a technical handoff package for a platform initiative where the requested alignment inputs are incomplete. The packet supplies a scenario prompt, rubric, and structural requirements, but it does not include the underlying platform strategy, challenge review, or any evidence files. The artifact therefore provides a usable handoff scaffold grounded in the prompt and benchmark contract while explicitly preventing unresolved contradictions from being treated as settled requirements.\n\n## Problem\nThe handoff must align to a platform strategy and challenge review that are not present in the packet. That creates a risk of overstating certainty. The task is not blocked from producing a useful PRD, but the PRD must distinguish between what is supported by the packet and what still requires source reconciliation.\n\n## Goals\n- Produce a useful technical handoff artifact from the available prompt and rubric constraints.\n- Make traceability and contradiction handling explicit.\n- Separate stable execution guidance from unresolved source-dependent decisions.\n- Preserve the required benchmark closing sections.\n\n## Non-Goals\n- Invent missing strategy content.\n- Resolve source contradictions that are not actually provided.\n- Approve implementation choices that depend on absent evidence.\n\n## Users\n- Engineering lead receiving the handoff.\n- Product manager reconciling strategy and critique inputs.\n- Reviewer checking execution safety and benchmark compliance.\n\n## Functional Requirements\n1. The PRD must label each major item as either packet-supported guidance, assumption, or unresolved source-dependent requirement.\n2. The PRD must include a contradiction register template for recording conflicting source statements once the missing materials are supplied.\n3. The PRD must identify which decisions are safe for immediate low-regret execution and which are blocking.\n4. The PRD must define ownership for reconciling absent strategy and challenge-review inputs before implementation of disputed areas.\n5. The PRD must retain the required closing sections: Decision Frame, Unknowns & Evidence Gaps, Pass/Fail Readiness, and Recommended Next Artifact.\n\n## Proposed Handoff Structure\n- Initiative summary and execution boundary.\n- Packet-supported requirements and constraints.\n- Assumptions and source-dependent items.\n- Contradiction register template.\n- Engineering guidance on safe-to-start work.\n- Validation and decision trail needed before full implementation.\n\n## Contradiction Handling Policy\n- Missing source material does not prevent a scaffold PRD, but it does prevent claiming final alignment.\n- Conflicts affecting scope, API behavior, migration, ownership, sequencing, or success metrics are blocking until adjudicated.\n- Teams may proceed on low-regret scaffolding and traceability setup, but not on disputed business rules or contracts.\n\n## Delivery Guidance\nEngineering may begin work only on items supported by the packet itself: handoff structure, traceability rules, contradiction logging, and low-regret scaffolding. Any requirement that depends on the absent platform strategy or challenge review remains provisional until explicitly reconciled.\n\n## Acceptance Criteria\n- Required closing sections are present.\n- Major claims are traceable to packet context.\n- The artifact clearly separates supported guidance from assumptions and unresolved items.\n- Readiness is expressed with explicit pass/fail conditions.\n\n## Decision Frame\nProceed with a scaffolded technical handoff PRD that is useful now but explicitly non-final. The packet is sufficient to define process, structure, traceability rules, and execution boundaries. It is not sufficient to claim full alignment on source-dependent product or platform decisions. The right decision is to ship a constrained PRD that enables safe handoff work while forcing later adjudication of missing strategy and critique inputs.\n\n## Unknowns & Evidence Gaps\n- The actual platform strategy is not included.\n- The challenge review contents are not included.\n- No evidence pack or context files are provided.\n- No concrete contradictions are quoted, so the PRD can define reconciliation mechanics but cannot resolve specific disputes.\n\n## Pass/Fail Readiness\nFail for full implementation readiness.\n\nPass for limited handoff readiness if the team uses this PRD as a controlled scaffold, restricts execution to packet-supported and low-regret work, and adds the missing strategy and critique materials before locking disputed requirements.\n\n## Recommended Next Artifact\nA decision log capturing each contradiction, the competing source statements, owner, resolution date, and resulting canonical requirement.",
+  "claims": [
+    {
+      "claim_id": "side_b-claim-1",
+      "summary": "A useful scaffolded PRD can be constructed from the scenario prompt and rubric constraints alone, but it cannot honestly claim final alignment on source-dependent decisions without the missing strategy and challenge review.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-2",
+      "summary": "The artifact should explicitly separate packet-supported guidance, assumptions, and unresolved source-dependent requirements to avoid false precision.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-3",
+      "summary": "Full implementation readiness should fail until missing strategy, challenge review, and contradiction details are supplied, though limited handoff readiness can still pass.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1"
+  ],
+  "open_questions": [],
+  "critique_responses": [
+    {
+      "finding_id": "finding-1",
+      "disposition": "adopted",
+      "rationale": "The critique correctly identified an internal contradiction. The revised artifact drops the claim that a contradiction-management shell was the only defensible output and instead states that a constrained scaffold PRD is defensible from the prompt and rubric alone, while final alignment claims remain unsupported without the missing source materials."
+    }
+  ]
+}

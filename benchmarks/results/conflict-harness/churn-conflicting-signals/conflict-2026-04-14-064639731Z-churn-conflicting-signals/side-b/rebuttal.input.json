@@ -1,0 +1,95 @@
+{
+  "case_packet": {
+    "scenario_id": "churn-conflicting-signals",
+    "title": "Churn diagnosis with conflicting signals",
+    "prompt": "Write a churn reduction PRD when signals conflict with strategy targets.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "opposing_first_pass": {
+    "run_id": "conflict-2026-04-14-064639731Z-churn-conflicting-signals",
+    "side_id": "side_a",
+    "round": "first_pass",
+    "artifact_markdown": "# Churn Reduction PRD: Conflict-Tolerant Retention Program\n\n## Overview\nBuild a churn reduction program that prioritizes reversible, segment-specific interventions instead of a single global retention push when observed churn signals conflict with strategy targets. The product should reduce avoidable churn in high-value segments without distorting long-term positioning or overreacting to noisy indicators.\n\n## Problem\nThe business has churn pressure, but the available signals are directionally inconsistent. Some inputs imply urgent retention action, while strategy targets may favor focus, pricing discipline, or customer quality over broad save tactics. A standard churn project risks optimizing the wrong users, masking product-market fit issues, or creating retention gains that conflict with strategy.\n\n## Goal\nCreate a churn reduction system that:\n1. Identifies actionable churn drivers at the segment level.\n2. Separates strategic churn from undesirable churn.\n3. Deploys low-regret interventions first.\n4. Produces decision-quality evidence for whether to scale, narrow, or stop retention investments.\n\n## Non-Goals\n1. Blanket discounting across the full customer base.\n2. Retention tactics that preserve low-fit customers at the expense of margin or positioning.\n3. Rewriting company strategy based on ambiguous churn data alone.\n4. Full lifecycle CRM rebuild.\n\n## Users\n1. Retention owner or PM responsible for churn outcomes.\n2. Lifecycle or growth team executing interventions.\n3. GTM and support teams handling at-risk accounts.\n4. Leadership evaluating whether churn action aligns with strategic targets.\n\n## Core Insight\nWhen churn signals conflict, the right product response is not immediate broad optimization. The right response is to classify churn, isolate high-confidence intervention points, and generate evidence fast enough to support a strategic decision.\n\n## Product Requirements\n### 1. Churn Classification Layer\nThe system must classify churn into at least three buckets:\n1. Value-destruction churn: users who should have been retained and are leaving due to product, onboarding, support, or preventable experience failures.\n2. Neutral churn: users with weak evidence of long-term fit where intervention value is uncertain.\n3. Strategic churn: users misaligned with target segment, pricing model, or product direction.\n\nAcceptance criteria:\n1. Every churn event in scope is tagged to one of the three buckets.\n2. Tagging logic is explicit and reviewable.\n3. Segment definitions are stable enough to compare over time.\n\n### 2. Signal Confidence Layer\nThe system must mark each churn signal by confidence level rather than treating all evidence equally.\n\nAcceptance criteria:\n1. Each signal is tagged as high, medium, or low confidence.\n2. Contradictory signals are surfaced, not averaged away.\n3. Dashboard or reporting clearly distinguishes observed behavior from inferred cause.\n\n### 3. Segment-First Intervention Engine\nInterventions must be targeted first to high-value segments with likely preventable churn.\n\nInitial intervention types:\n1. Onboarding rescue for early-life users showing activation failure.\n2. Usage recovery prompts for previously active users with recent drop-off.\n3. Human save motion for high-value accounts with identifiable blockers.\n4. Exit capture and reason coding for all voluntary churn in test segments.\n\nAcceptance criteria:\n1. No intervention launches globally before segment-level readout.\n2. Each intervention has a defined target segment, owner, and success metric.\n3. At least one intervention is reversible within one cycle.\n\n### 4. Strategy Guardrails\nRetention work must not violate strategy targets.\n\nGuardrails:\n1. Do not use broad discounting unless approved as an explicit pricing experiment.\n2. Do not prioritize retention of customers outside target profile over target-profile customers.\n3. Do not count retained but unprofitable customers as a success without margin review.\n4. Do not let save tactics conceal unresolved product quality issues.\n\nAcceptance criteria:\n1. Every intervention is reviewed against strategy and margin guardrails.\n2. Reporting includes both churn impact and strategic-fit impact.\n\n### 5. Decision Review Cadence\nThe team must review evidence on a fixed cadence and choose one of three actions: scale, continue testing, or stop.\n\nAcceptance criteria:\n1. Review cadence is no longer than monthly.\n2. Every review records evidence, decision, and rationale.\n3. Leadership can see whether churn reduction is helping or diluting strategy.\n\n## Success Metrics\nPrimary metrics:\n1. Reduction in preventable churn rate within prioritized segments.\n2. Retained revenue or accounts from value-destruction churn bucket.\n\nGuardrail metrics:\n1. Gross margin impact of interventions.\n2. Share of retained customers inside target segment.\n3. Activation and engagement trend after intervention.\n4. Discount usage, if any.\n\nDecision metrics:\n1. Percent of churn events with usable reason classification.\n2. Percent of interventions with segment-level readout.\n3. Time from churn signal detection to decision.\n\n## Rollout Plan\n### Phase 1: Instrument and classify\n1. Define churn buckets and segment schema.\n2. Add confidence tagging to existing signals.\n3. Stand up minimum decision dashboard.\n\n### Phase 2: Run low-regret tests\n1. Launch onboarding rescue for new-user activation failures.\n2. Launch usage recovery flow for formerly healthy users.\n3. Launch structured exit capture.\n\n### Phase 3: Evaluate strategic fit\n1. Compare retention gains by target vs non-target segments.\n2. Quantify revenue saved, margin impact, and signal confidence.\n3. Decide whether to scale, narrow, or stop.\n\n## Risks\n1. Teams may relabel all churn as preventable and create scope creep.\n2. Low-confidence signals may drive noisy interventions.\n3. Short-term saves may conflict with product positioning.\n4. Incomplete reason capture may weaken conclusions.\n\n## Decision Frame\nProceed with a segment-first churn reduction program only if it distinguishes preventable churn from strategic churn and uses explicit strategy guardrails. The decision is not whether churn matters; it is whether the organization can reduce the right churn without undermining target-customer discipline.\n\n## Unknowns & Evidence Gaps\n1. No concrete evidence packet identifies the actual churn drivers.\n2. No segment-level churn breakdown is provided.\n3. No proof exists that current churn is concentrated in strategically important customers.\n4. No profitability or pricing context is available to judge whether saves are worth preserving.\n5. No baseline confidence model exists for conflicting signals.\n\n## Pass/Fail Readiness\nPass if the team can classify churn, define priority segments, instrument a minimum review loop, and launch low-regret interventions with guardrails.\n\nFail if the team cannot separate strategic churn from undesirable churn, cannot measure intervention impact by segment, or intends to use broad save tactics before establishing evidence quality.\n\n## Recommended Next Artifact\nRetention experiment brief with segment definitions, intervention hypotheses, success metrics, and review thresholds.",
+    "claims": [
+      {
+        "claim_id": "side_a-claim-1",
+        "summary": "A churn reduction PRD is only decision-useful under conflicting signals if it separates preventable churn from strategic churn and applies segment-specific, guardrailed interventions instead of a blanket retention push.",
+        "evidence_refs": [
+          "ctx-1"
+        ],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_a-claim-2",
+        "summary": "When evidence is ambiguous, the product should optimize for reversible learning and classification quality before scaling retention tactics.",
+        "evidence_refs": [
+          "ctx-1"
+        ],
+        "is_major": true
+      }
+    ],
+    "citations": [
+      "ctx-1"
+    ],
+    "open_questions": [
+      "What specific churn signals are in conflict, and which segments do they point to?",
+      "Which customer segments are strategic targets versus acceptable attrition?",
+      "What baseline churn, retained revenue, and margin metrics are available today?",
+      "How reliable is current churn-reason data collection?"
+    ],
+    "critique_responses": []
+  }
+}

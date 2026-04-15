@@ -1,0 +1,98 @@
+Your previous judge output was close but rejected by schema validation.
+Rewrite it as ONLY a JSON object that preserves the same winner, margin, rubric_scores, judge_confidence, needs_human_review, decisive_findings, and rationale unless the schema absolutely requires clarification.
+You MUST include these missing required properties with substantive content:
+- dimension_rationales
+- side_summaries
+
+Required schema shape:
+{
+  "winner": "tie",
+  "margin": 0,
+  "rubric_scores": {
+    "side_a": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    },
+    "side_b": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    }
+  },
+  "dimension_rationales": {
+    "claim_quality": "Which side made the stronger claims and why.",
+    "evidence_discipline": "How each side used or overstated evidence.",
+    "responsiveness_to_critique": "How each side responded to the critique phase.",
+    "internal_consistency": "Contradictions, coherence, or missing logic.",
+    "decision_usefulness": "Which artifact better supports an actual decision."
+  },
+  "side_summaries": {
+    "side_a": {
+      "strengths": [
+        "One concise strength of Side A."
+      ],
+      "weaknesses": [
+        "One concise weakness of Side A."
+      ]
+    },
+    "side_b": {
+      "strengths": [
+        "One concise strength of Side B."
+      ],
+      "weaknesses": [
+        "One concise weakness of Side B."
+      ]
+    }
+  },
+  "decisive_findings": [
+    "Replace with the actual decisive findings from this run."
+  ],
+  "judge_confidence": "low",
+  "needs_human_review": true,
+  "rationale": "One-paragraph explanation of the verdict."
+}
+
+Validation errors:
+Verdict packet failed validation:
+$.dimension_rationales: Missing required property.
+$.side_summaries: Missing required property.
+
+Previous verdict JSON:
+{
+  "winner": "side_a",
+  "margin": 0.1,
+  "rubric_scores": {
+    "side_a": {
+      "claim_quality": 4,
+      "evidence_discipline": 4,
+      "responsiveness_to_critique": 5,
+      "internal_consistency": 5,
+      "decision_usefulness": 4,
+      "weighted_total": 4.2
+    },
+    "side_b": {
+      "claim_quality": 4,
+      "evidence_discipline": 4,
+      "responsiveness_to_critique": 4,
+      "internal_consistency": 5,
+      "decision_usefulness": 4,
+      "weighted_total": 4.1
+    }
+  },
+  "decisive_findings": [
+    "Side A's final artifact critically incorporates the critique regarding financial projections by explicitly stating that proposed cost savings are unvalidated hypotheses requiring a gating financial model for validation. This shift from assertion to conditional recommendation makes its strategy more prudent.",
+    "Side B's final artifact successfully addresses the critique on subscriber retention, acknowledging the risk and recommending cohort-level testing for repricing effectiveness.",
+    "Side A's recommendation to continue with structural reforms and invest in streaming, contingent on financial validation, presents a more forward-looking strategy that preserves competitive optionality compared to Side B's more immediate cost-cutting approach, which risks conceding the market.",
+    "Both sides demonstrated strong responsiveness to critiques, significantly improving their initial submissions."
+  ],
+  "judge_confidence": "medium",
+  "needs_human_review": true,
+  "rationale": "Side A is determined the winner due to its superior responsiveness to critique, specifically by correctly framing its financial projections as unvalidated hypotheses and making a comprehensive financial model a gating dependency for its recommendation. While Side B also improved significantly by addressing retention risks, Side A's approach offers a more strategically forward-looking path that balances competitive pressure and future market transition, conditional on rigorous financial validation. The close scores reflect the quality of both final artifacts, but Side A's nuanced and conditional recommendation is deemed slightly more useful."
+}

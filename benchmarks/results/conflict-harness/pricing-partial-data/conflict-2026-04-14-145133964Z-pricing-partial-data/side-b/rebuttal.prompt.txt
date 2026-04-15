@@ -1,0 +1,119 @@
+You are SIDE_B in the rebuttal phase for run conflict-2026-04-14-145133964Z-pricing-partial-data.
+Attack only visible claims from the opposing first-pass artifact.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "target_side": "side_a",
+  "finding_id": "runner-will-assign",
+  "target_claim_ids": [
+    "side_a-claim-1"
+  ],
+  "claim_under_attack": "The opposing claim to challenge.",
+  "attack_type": "evidence_gap",
+  "evidence_or_reason": "Why the visible claim is weak.",
+  "severity": "medium"
+}
+
+Case packet:
+{
+  "scenario_id": "pricing-partial-data",
+  "title": "Pricing change with partial market data",
+  "prompt": "Draft a pricing strategy recommendation under partial market data.",
+  "artifact_type": "strategy",
+  "rubric": {
+    "dimensions": [
+      "claim quality",
+      "evidence discipline",
+      "responsiveness to critique",
+      "internal consistency",
+      "decision usefulness"
+    ],
+    "scoring_scale": "1-5",
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "constraints": {
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "expect_structured": true,
+    "context_files": [],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "evidence": [],
+  "max_rounds": 3,
+  "tool_policy": "none",
+  "sharing_policy": {
+    "share_case_packet": true,
+    "share_committed_artifacts_after_first_pass": true,
+    "share_critiques_after_open": true,
+    "share_hidden_reasoning": false,
+    "share_provider_identity": false,
+    "share_internal_coalition_drafts": false
+  },
+  "success_condition": {
+    "type": "validator_contract",
+    "description": "Produce a strategy artifact that satisfies the scenario validator contract.",
+    "validator": {
+      "artifact_type": "strategy",
+      "expect_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true
+    }
+  }
+}
+
+Opposing first-pass artifact:
+{
+  "run_id": "conflict-2026-04-14-145133964Z-pricing-partial-data",
+  "side_id": "side_a",
+  "round": "first_pass",
+  "artifact_markdown": "# Pricing Strategy Recommendation\n\n## Recommendation\nAdopt a staged pricing change rather than a full immediate repricing. Move to a limited-scope test with modest price uplift, preserve a fallback path for existing customers, and instrument conversion, expansion, and churn before broader rollout. Under partial market data, the objective is not to find the theoretically optimal price now; it is to make the next pricing move safely, learn quickly, and avoid irreversible demand damage.\n\n## Decision Frame\n- Decision: pursue a measured pricing increase through a controlled experiment, not a portfolio-wide reset.\n- Why now: current information is sufficient to justify learning-oriented action, but insufficient to support a one-way strategic pricing commit.\n- Guardrails: protect renewal risk, isolate effects by segment, and require predefined rollback thresholds.\n- Operating principle: optimize for decision quality under uncertainty, not for apparent confidence.\n\n## Approach\n1. Apply the pricing change first to the lowest-risk segment: new customers or a clearly bounded cohort.\n2. Keep packaging stable unless there is direct evidence that packaging, not price level, is the primary problem.\n3. Test one core variable at a time: headline price, discount policy, or feature gate.\n4. Define success on a contribution basis, not just top-line ARPU: conversion quality, gross retention, and payback all matter.\n5. Preserve comparability by running the test long enough to observe early retention and sales-cycle effects.\n\n## Rationale\n- Partial market data supports directional movement, not precision pricing.\n- A staged test creates real willingness-to-pay evidence faster than waiting for perfect external benchmarks.\n- Pricing errors are asymmetric: overpricing can damage pipeline and retention faster than underpricing modestly suppresses upside.\n- The highest-value near-term output is a cleaner pricing signal by segment.\n\n## Execution Guidance\n- Start with a moderate uplift range rather than an aggressive step-change.\n- Exempt current contracted customers unless retention risk is already understood.\n- Track funnel progression, win rate, discounting behavior, sales objections, activation quality, and early churn signals.\n- Predefine stop conditions: significant win-rate degradation, rising discount dependence, or retention deterioration.\n- At test close, decide among four paths: expand, refine, revert, or redesign packaging.\n\n## Unknowns & Evidence Gaps\n- True competitive price positioning is unclear because market data is incomplete.\n- Segment-level willingness to pay is not yet validated.\n- It is unknown whether current monetization issues are driven more by price point, packaging, or sales execution.\n- Retention sensitivity to a pricing change is uncertain, especially for existing accounts.\n- Discounting behavior may obscure whether nominal price changes are real pricing changes in practice.\n\n## Pass/Fail Readiness\n- Pass if the team can isolate a cohort, measure conversion and retention outcomes, and commit to explicit rollback thresholds.\n- Pass if finance, sales, and product agree on the success metrics and experiment window.\n- Fail if the change must be rolled out universally with no protected segment or rollback path.\n- Fail if instrumentation cannot separate price effects from packaging or sales-process changes.\n\n## Recommended Next Artifact\nCreate a pricing experiment brief that specifies target segment, hypothesis, tested price points, success metrics, guardrails, experiment duration, and decision rules for rollout or reversal.",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "A staged pricing experiment is the strongest recommendation under partial market data because it creates decision-quality evidence while limiting downside risk.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "The organization should avoid a full immediate repricing because the available information does not support a high-confidence irreversible move.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-3",
+      "summary": "Success criteria must emphasize contribution economics and retention, not just higher headline price or ARPU.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1"
+  ],
+  "open_questions": [
+    "Which customer segment has the lowest retention risk and cleanest instrumentation for a first pricing test?",
+    "Is the main monetization problem price level, packaging design, or discounting behavior?",
+    "What rollback thresholds will leadership accept before the test begins?"
+  ],
+  "critique_responses": []
+}

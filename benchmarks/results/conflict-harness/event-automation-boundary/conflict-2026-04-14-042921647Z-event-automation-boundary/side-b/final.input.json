@@ -1,0 +1,118 @@
+{
+  "case_packet": {
+    "scenario_id": "event-automation-boundary",
+    "title": "Event automation platform with human-in-the-loop boundary constraints",
+    "prompt": "Write a Phase 1 PRD for an event management automation platform with a WhatsApp assistant, an internal console, human approval for pricing commitments, and strict deterministic boundaries around LLM usage.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass": {
+    "run_id": "conflict-2026-04-14-042921647Z-event-automation-boundary",
+    "side_id": "side_b",
+    "round": "first_pass",
+    "artifact_markdown": "# Phase 1 PRD: Event Automation Platform with Human-in-the-Loop Boundaries\n\n## Decision Frame\n\n**What decision does this PRD support?**\nWhether to greenlight Phase 1 engineering for an event management automation platform that combines a WhatsApp-based assistant for external users, an internal operations console, and strict deterministic boundaries around where LLM inference is permitted versus where human approval is required.\n\n**Who decides?** Product lead + engineering lead, with sign-off from legal/compliance on the pricing commitment approval workflow.\n\n**What happens if we don't build this?**\nEvent coordinators continue managing bookings, pricing, and vendor logistics through fragmented tools (spreadsheets, email threads, ad-hoc WhatsApp groups). Pricing errors from manual processes persist. No audit trail for pricing commitments.\n\n**Phase 1 scope boundary:** MVP covers single-venue event booking with WhatsApp inquiry handling, human-approved pricing, and an internal console for operations staff. Multi-venue, marketplace features, and payment processing are explicitly out of scope.\n\n---\n\n## Product Overview\n\n### Problem Statement\nEvent management businesses handle high volumes of WhatsApp inquiries about availability, pricing, and logistics. Current workflows are manual, error-prone, and lack audit trails — particularly around pricing commitments that carry contractual weight.\n\n### Target Users\n1. **Event inquirers** (external): Prospective clients asking about venue availability, packages, and pricing via WhatsApp.\n2. **Operations staff** (internal): Team members who approve pricing, confirm bookings, and manage event logistics through the internal console.\n\n### Core Value Proposition\nAutomate the repeatable parts of event inquiry handling while enforcing human approval gates on any action that creates a financial or contractual commitment.\n\n---\n\n## System Architecture: LLM Boundary Policy\n\n### Deterministic Boundary Principle\nThe platform enforces a strict separation between what the LLM may do autonomously and what requires human approval. This is not a soft guideline — it is enforced architecturally.\n\n| Zone | What happens | LLM role | Human role |\n|------|-------------|----------|------------|\n| **Green (autonomous)** | Answer FAQs, parse inquiry intent, extract structured data (dates, headcount, preferences) | LLM processes and responds | Monitoring only |\n| **Yellow (assist)** | Draft responses involving package details, suggest pricing tiers, compose follow-up messages | LLM drafts; human reviews before send | Approve/edit/reject draft |\n| **Red (human-only)** | Commit to a price, confirm a booking, issue a contract or invoice, override availability | LLM may not act | Human executes directly |\n\n### Enforcement Mechanism\n- All outbound WhatsApp messages pass through a **message gateway** that classifies each message against the boundary policy before delivery.\n- Messages containing pricing figures, booking confirmations, or contractual language are **held in a review queue** and cannot be sent without explicit staff approval in the internal console.\n- Classification uses deterministic rules (regex + keyword matching on structured fields), NOT LLM self-classification. The LLM does not decide its own boundary.\n- Boundary violations are logged and trigger alerts to the ops team.\n\n---\n\n## Feature Specifications\n\n### F1: WhatsApp Assistant\n- **Channel:** WhatsApp Business API integration.\n- **Capabilities (Green zone):** Respond to availability queries, provide general info (hours, location, capacity), collect inquiry details into structured format, handle greetings and FAQ.\n- **Capabilities (Yellow zone):** Draft personalized package recommendations with pricing ranges. These are queued for human review, not sent directly.\n- **Constraints:** Assistant never confirms a price, never confirms a booking, never sends contractual language. If the user asks for a firm price, the assistant responds with: \"Let me connect you with our events team who can confirm pricing for you.\"\n- **Fallback:** Any query the LLM confidence score falls below threshold on is escalated to human handoff with full conversation context.\n\n### F2: Internal Operations Console\n- **Purpose:** Single pane of glass for operations staff to manage the inquiry pipeline.\n- **Key views:**\n  - **Review queue:** Messages awaiting approval (Yellow zone drafts, escalated conversations).\n  - **Active inquiries:** Pipeline view of all open conversations with status.\n  - **Booking calendar:** Availability grid with conflict detection.\n  - **Audit log:** Every message sent, every approval decision, every boundary enforcement event.\n- **Approval workflow:** Staff can approve, edit, or reject LLM-drafted messages. Approved messages are sent via the gateway. Rejections return to draft with staff notes.\n\n### F3: Pricing Commitment Approval Gate\n- **Trigger:** Any outbound message classified as containing a pricing commitment.\n- **Flow:** Message held → notification to authorized approver → approver reviews in console → approve (with optional edit) or reject → message sent or returned to draft.\n- **Authorization:** Only designated roles (e.g., Sales Manager, GM) can approve pricing commitments. Role-based access enforced in console.\n- **SLA:** Target <15 min approval turnaround during business hours. Console shows aging indicators for pending approvals.\n- **Audit:** Every pricing approval captures: approver identity, timestamp, original draft, any edits made, final sent version.\n\n### F4: Conversation Context Persistence\n- **Requirement:** Full conversation history maintained per inquiry, accessible to both the LLM (for context-aware responses) and operations staff (in console).\n- **Retention:** 90 days active, then archived. Compliant with data protection requirements for the operating jurisdiction.\n\n---\n\n## Technical Constraints\n\n1. **LLM calls are stateless per-turn:** Each LLM invocation receives the conversation history as context but does not maintain server-side state. This prevents drift and makes behavior reproducible.\n2. **No LLM-in-the-loop for boundary classification:** The message gateway uses deterministic rules to classify messages. The LLM does not self-assess whether its output requires approval.\n3. **Structured output extraction:** LLM responses are parsed into structured fields (proposed_price, booking_confirmed, contractual_language) using JSON schema validation before boundary classification.\n4. **Rate limiting:** WhatsApp assistant limited to 1 response per user message to prevent runaway generation.\n5. **Model versioning:** LLM model version pinned per deployment. Model upgrades require regression testing against the boundary policy test suite before rollout.\n\n---\n\n## Unknowns & Evidence Gaps\n\n| ID | Unknown | Impact if wrong | Mitigation plan |\n|----|---------|-----------------|----------------|\n| U1 | WhatsApp Business API rate limits and template message approval timelines may constrain response latency | Users experience delays, undermining the automation value prop | Prototype API integration in week 1; measure actual latency under realistic load |\n| U2 | Deterministic boundary classification accuracy — regex/keyword rules may produce false positives (blocking benign messages) or false negatives (letting pricing language through) | False positives degrade staff efficiency; false negatives create unauthorized commitments | Build a test corpus of 200+ real WhatsApp inquiries, measure precision/recall before launch. Target: <2% false negative rate on pricing detection |\n| U3 | Staff adoption of the approval workflow — if turnaround exceeds 15 min consistently, users will abandon the WhatsApp channel | Automation investment wasted; user experience worse than status quo | Instrument approval latency from day 1; set up alerts at 10 min; design escalation path for unresponsive approvers |\n| U4 | LLM response quality for event-specific domain — no evidence yet on how well general-purpose LLMs handle venue-specific package details without fine-tuning | Poor responses erode trust and increase escalation rate, overwhelming human staff | Pilot with 50 real inquiries in shadow mode (LLM drafts, humans respond independently) to measure alignment before going live |\n| U5 | User expectations around WhatsApp interaction — unclear whether users expect instant pricing or accept a \"let me check\" handoff | Misaligned expectations may cause drop-off at the handoff point | Survey 30 recent inquirers on their expectation for pricing response time; A/B test handoff language |\n\n---\n\n## Pass/Fail Readiness\n\n### Pass Criteria (all must be met for Phase 1 launch)\n- [ ] Boundary classification test suite achieves <2% false negative rate on pricing/commitment detection across 200+ test messages.\n- [ ] WhatsApp assistant correctly escalates to human handoff in 100% of Red zone scenarios in testing.\n- [ ] Internal console approval workflow end-to-end functional: draft → review → approve/reject → send/hold.\n- [ ] Median approval turnaround <15 minutes in a 1-week staff pilot.\n- [ ] Audit log captures all required fields for every pricing approval.\n- [ ] Shadow mode pilot with 50 real inquiries shows LLM draft alignment >70% with human responses (measured by ops staff blind review).\n\n### Fail Criteria (any one blocks launch)\n- [ ] False negative rate on pricing detection exceeds 5% — unauthorized pricing commitments are an unacceptable risk.\n- [ ] LLM generates fabricated availability or package details in >10% of test cases.\n- [ ] Staff approval turnaround consistently exceeds 30 minutes — defeats the purpose of automation.\n- [ ] WhatsApp Business API integration cannot support required message volume within cost constraints.\n\n---\n\n## Recommended Next Artifact\n\n**Technical Design Document** covering:\n1. Message gateway architecture and boundary classification rule engine specification.\n2. WhatsApp Business API integration design (webhook handling, template messages, session management).\n3. Internal console data model and approval workflow state machine.\n4. LLM prompt engineering guidelines and structured output schema.\n5. Monitoring and alerting design for boundary violations and approval SLA breaches.\n\nThis should be produced before engineering begins, validated against the boundary classification test corpus, and reviewed by both engineering and legal/compliance.",
+    "claims": [
+      {
+        "claim_id": "side_b-claim-1",
+        "summary": "LLM boundary enforcement must be architecturally deterministic (regex/keyword rules on structured output fields), not LLM self-classification, because allowing the LLM to assess its own boundary compliance creates an unauditable feedback loop where the system that generates pricing language also decides whether that language requires approval.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-2",
+        "summary": "A three-zone model (Green/Yellow/Red) with explicit enforcement at the message gateway provides a clear, testable contract between autonomous automation and human control — each zone has different LLM permissions and different human responsibilities, eliminating ambiguity about who owns what.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-3",
+        "summary": "The boundary classification system requires a quantified false-negative target (<2%) validated against a real-message test corpus before launch, because even a small rate of undetected pricing commitments creates contractual and financial liability.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-4",
+        "summary": "Shadow mode piloting (LLM drafts evaluated against independent human responses) is the minimum viable evidence needed before live deployment — without it, LLM response quality for domain-specific event inquiries is entirely unvalidated.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-5",
+        "summary": "Staff approval turnaround SLA (<15 min median) must be instrumented and monitored from day one because if human-in-the-loop latency exceeds user patience thresholds, the system fails not on technical grounds but on workflow adoption.",
+        "evidence_refs": [],
+        "is_major": false
+      }
+    ],
+    "citations": [],
+    "open_questions": [
+      "What jurisdiction-specific data protection requirements apply to storing WhatsApp conversation data, and do they mandate on-premise storage or permit cloud?",
+      "Does the business currently have WhatsApp Business API access, or does onboarding need to be factored into the Phase 1 timeline?",
+      "What is the current inquiry volume (messages/day) and peak load profile to size the infrastructure appropriately?",
+      "Are there existing pricing rules or a pricing engine, or does Phase 1 need to encode pricing logic from scratch?"
+    ],
+    "critique_responses": []
+  },
+  "critique_packet": {
+    "target_side": "side_b",
+    "finding_id": "finding-1",
+    "target_claim_ids": [
+      "side_b-claim-3"
+    ],
+    "claim_under_attack": "The boundary classification system requires a quantified false-negative target (<2%) validated against a real-message test corpus before launch, because even a small rate of undetected pricing commitments creates contractual and financial liability.",
+    "attack_type": "evidence_gap",
+    "evidence_or_reason": "The claim asserts a specific pre-launch threshold of <2% false negatives, but the artifact provides no evidence that 2% is the right cutoff, that a 200-message corpus is statistically sufficient, or that this level of residual risk is acceptable for pricing commitments with contractual consequences. The liability rationale could just as easily support a stricter standard, a different metric, or a different control design; without evidence, the numeric target reads as arbitrary rather than decision-useful.",
+    "severity": "medium"
+  }
+}

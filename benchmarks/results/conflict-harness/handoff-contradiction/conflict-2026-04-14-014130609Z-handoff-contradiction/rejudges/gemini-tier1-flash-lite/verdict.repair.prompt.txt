@@ -1,0 +1,102 @@
+Your previous judge output was close but rejected by schema validation.
+Rewrite it as ONLY a JSON object that preserves the same winner, margin, rubric_scores, decisive_dimension, judge_confidence, needs_human_review, decisive_findings, and rationale unless the schema absolutely requires clarification.
+You MUST include these missing required properties with substantive content:
+- dimension_rationales
+- side_summaries
+- decisive_dimension
+- rubric_scores.side_a.weighted_total
+- rubric_scores.side_b.weighted_total
+
+Required schema shape:
+{
+  "winner": "tie",
+  "margin": 0,
+  "rubric_scores": {
+    "side_a": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    },
+    "side_b": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    }
+  },
+  "dimension_rationales": {
+    "claim_quality": "Which side made the stronger claims and why.",
+    "evidence_discipline": "How each side used or overstated evidence.",
+    "responsiveness_to_critique": "How each side responded to the critique phase.",
+    "internal_consistency": "Contradictions, coherence, or missing logic.",
+    "decision_usefulness": "Which artifact better supports an actual decision."
+  },
+  "side_summaries": {
+    "side_a": {
+      "strengths": [
+        "One concise strength of Side A."
+      ],
+      "weaknesses": [
+        "One concise weakness of Side A."
+      ]
+    },
+    "side_b": {
+      "strengths": [
+        "One concise strength of Side B."
+      ],
+      "weaknesses": [
+        "One concise weakness of Side B."
+      ]
+    }
+  },
+  "decisive_dimension": "decision_usefulness",
+  "decisive_findings": [
+    "Replace with the actual decisive findings from this run."
+  ],
+  "judge_confidence": "low",
+  "needs_human_review": true,
+  "rationale": "One-paragraph explanation of the verdict."
+}
+
+Validation errors:
+Verdict packet failed validation:
+$.dimension_rationales: Missing required property.
+$.side_summaries: Missing required property.
+$.decisive_dimension: Missing required property.
+
+Previous verdict JSON:
+{
+  "winner": "side_b",
+  "margin": 1,
+  "rubric_scores": {
+    "side_a": {
+      "claim_quality": 4,
+      "evidence_discipline": 4,
+      "responsiveness_to_critique": 4,
+      "internal_consistency": 4,
+      "decision_usefulness": 4,
+      "weighted_total": 4
+    },
+    "side_b": {
+      "claim_quality": 5,
+      "evidence_discipline": 5,
+      "responsiveness_to_critique": 5,
+      "internal_consistency": 5,
+      "decision_usefulness": 5,
+      "weighted_total": 5
+    }
+  },
+  "decisive_findings": [
+    "Side B's final artifact is superior because it directly addresses the scenario's core constraint: the absence of source documents and evidence. Its claims are more grounded in the observable packet contents, and its execution baseline is appropriately constrained.",
+    "Side B's adoption of the high-severity critique was more impactful, transforming its artifact to focus on logging actual observable contradictions, whereas Side A adopted a medium-severity critique and focused on content that was less central to the scenario's specific challenge.",
+    "Side A's initial timeline claim was speculative and required correction, whereas Side B's final artifact is consistently cautious about what can be stated given the evidence gaps."
+  ],
+  "judge_confidence": "high",
+  "needs_human_review": false,
+  "rationale": "Side B's final artifact is judged superior because it directly addresses the scenario's core problem: producing a useful handoff PRD when source documents are withheld. Its claims are more grounded in the observable evidence (or lack thereof) within the case packet, and its execution baseline is appropriately constrained. Side B's adoption of the high-severity critique significantly improved its artifact by focusing on logging actual observable contradictions rather than generic processes. While Side A provided specific content, its claims were less focused on the fundamental constraint of missing information, and its initial timeline speculation was a notable weakness."
+}

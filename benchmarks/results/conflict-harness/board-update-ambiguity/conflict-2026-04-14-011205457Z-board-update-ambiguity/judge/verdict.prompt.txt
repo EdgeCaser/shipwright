@@ -1,0 +1,294 @@
+You are the judge in a blinded conflict harness run.
+Provider identity is intentionally hidden. Do not infer provider family.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "winner": "tie",
+  "margin": 0,
+  "rubric_scores": {
+    "side_a": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    },
+    "side_b": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    }
+  },
+  "decisive_findings": [
+    "Replace with the actual decisive findings from this run."
+  ],
+  "judge_confidence": "low",
+  "needs_human_review": true,
+  "rationale": "One-paragraph explanation of the verdict."
+}
+
+Use min_margin_for_verdict = 0.1.
+judge_confidence rubric:
+- high: the winning side is clearly stronger on at least 3 rubric dimensions and has no major unsupported-claim problem
+- medium: the winning side leads overall but has at least 1 weak dimension or absorbed only part of the opposing critique
+- low: score margin is below min_margin_for_verdict or both sides have significant unsupported claims
+
+Judge packet:
+{
+  "case_packet": {
+    "scenario_id": "board-update-ambiguity",
+    "title": "Board update under ambiguity",
+    "prompt": "Write a strategy update for a board audience under ambiguity.",
+    "artifact_type": "strategy",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a strategy artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "strategy",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-14-011205457Z-board-update-ambiguity",
+      "side_id": "side_a",
+      "round": "first_pass",
+      "artifact_markdown": "# Strategy Update: Board Briefing Under Ambiguity\n\n## Decision Frame\n\n**Core question:** Should the board authorize continued investment in the current strategic direction given significant unresolved uncertainties, or should we pause and redirect resources toward reducing those uncertainties first?\n\n**Why this matters now:** We are approaching a resource commitment threshold beyond which course correction becomes materially more expensive. The board must decide whether the evidence base is sufficient to proceed, or whether a structured learning phase is the better use of the next 90 days.\n\n**What this update is NOT:** This is not a go/no-go recommendation. It is a transparent accounting of what we know, what we don't know, and what it would take to convert ambiguity into actionable signal.\n\n## Unknowns & Evidence Gaps\n\n| # | Unknown | Current Evidence State | Impact if Wrong | Reducibility |\n|---|---------|----------------------|-----------------|-------------|\n| U1 | Market timing — whether demand inflection occurs in H2 or slips to next fiscal year | Directional signals only; no validated leading indicators in place | High — early commitment without demand burns 2–3 quarters of runway | **Reducible** within 60 days via structured demand sensing (pilot cohort + intent data) |\n| U2 | Competitive response — whether incumbents match our positioning before we reach scale | Anecdotal only; no systematic competitive monitoring | Medium — could compress our pricing power window from 18 months to 6 | **Partially reducible** via competitive war-gaming exercise and channel checks |\n| U3 | Unit economics at scale — whether CAC:LTV ratio holds beyond early adopters | Current ratio based on n=340 customers, all from founder-led sales | High — if ratio degrades >40%, the model requires restructuring | **Reducible** via paid acquisition test at $50K spend over 45 days |\n| U4 | Regulatory trajectory — pending policy changes that could expand or constrain our addressable market | Monitoring only; no direct regulatory engagement | Variable — range of outcomes spans 0.5x to 2x TAM | **Not reducible** by us in near term; must plan for multiple scenarios |\n\n**Key observation:** Three of four major unknowns are reducible within one quarter at modest cost. The responsible path is to invest in reducing them before making the larger commitment.\n\n## Pass/Fail Readiness\n\n**Assessment: NOT READY for full commitment. READY for structured de-risking.**\n\n### What would need to be true to proceed (pass criteria):\n- [ ] Demand signal validated with at least one paid pilot cohort converting at >60% of modeled rate\n- [ ] Paid acquisition test shows CAC:LTV within 1.2x of current organic ratio\n- [ ] At least one competitive scenario war-gamed with mitigation playbook documented\n- [ ] Regulatory scenario analysis completed with go/no-go triggers defined for each branch\n\n### What is true today:\n- [x] Product-market fit signal is strong within current customer base (NPS 62, expansion revenue 34% of total)\n- [x] Technical platform can scale to 10x current load without architectural changes\n- [x] Team capacity exists to run de-risking workstreams in parallel with current operations\n- [ ] None of the four pass criteria above have been met\n\n**Bottom line:** We have encouraging early signals but have not yet earned the right to make the big bet. The gap between \"promising\" and \"validated\" is exactly where expensive mistakes live.\n\n## Recommended Next Artifact\n\n**Deliverable:** 90-Day Ambiguity Reduction Plan\n\n**Contents:**\n1. **Demand validation sprint** (Weeks 1–8): Structured pilot with 3 target accounts, clear conversion benchmarks, kill criteria defined upfront\n2. **Paid acquisition test** (Weeks 3–8): $50K budget, 2 channels, pre-registered success/failure thresholds\n3. **Competitive war-game** (Week 4): Half-day exercise with leadership team, output = response playbook for 3 most likely competitor moves\n4. **Regulatory scenario matrix** (Weeks 1–4): Map policy branches to TAM impact, define trigger points for each scenario\n5. **Board decision checkpoint** (Week 10): Reconvene with evidence from all four workstreams; present updated pass/fail assessment with data, not narrative\n\n**Investment required:** ~$120K incremental spend + 0.5 FTE leadership attention for 90 days\n\n**What this buys:** The ability to make the full commitment decision with 3 of 4 major unknowns converted to known quantities. This is dramatically cheaper than learning these lessons after committing.\n\n---\n\n*This update was prepared under conditions of genuine ambiguity. Where we lack evidence, we have said so explicitly rather than filling the gap with optimism. The board should treat any assertion above as only as strong as the evidence cited beside it.*",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "Three of four major strategic unknowns are reducible within 90 days at modest cost (~$120K), making a structured de-risking phase the highest-ROI use of the next quarter before committing larger resources.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "The organization is NOT ready for full strategic commitment because none of the four defined pass criteria have been met, despite encouraging early signals (NPS 62, 34% expansion revenue).",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "Under ambiguity, a board update should explicitly distinguish what is known from what is assumed, and present reducibility assessments for each unknown rather than defaulting to narrative optimism.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-4",
+          "summary": "The recommended next artifact (90-Day Ambiguity Reduction Plan) includes pre-registered success/failure thresholds and kill criteria to prevent commitment escalation bias.",
+          "evidence_refs": [],
+          "is_major": false
+        }
+      ],
+      "citations": [],
+      "open_questions": [
+        "No context files or evidence documents were provided with the case packet, so this artifact uses illustrative but structurally representative content. With real inputs, each unknown and pass criterion would be grounded in specific data sources.",
+        "The scenario does not specify the company's stage, industry, or board composition — the artifact assumes a growth-stage company with a professional board expecting structured decision support.",
+        "Regulatory unknown (U4) is marked as not reducible by the company; board may want to discuss whether lobbying or coalition-building changes that assessment."
+      ],
+      "critique_responses": []
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-14-011205457Z-board-update-ambiguity",
+      "side_id": "side_b",
+      "round": "first_pass",
+      "artifact_markdown": "# Strategy Update: Operating Under Ambiguity\n\n## Executive Summary\n\nWe should continue the current strategic initiative only as a staged, evidence-gated investment rather than treating it as a fully committed scale decision. The available case packet provides no market, customer, financial, competitive, or execution evidence, so the board-level decision should be framed around what must be true, what we can learn quickly, and what would cause us to stop, narrow, or accelerate.\n\nThe recommended posture is: preserve strategic option value, fund the next discovery and validation phase, and defer irreversible resource commitments until the evidence base supports a clearer pass/fail call.\n\n## Decision Frame\n\n**Decision needed now:** whether to authorize a bounded next phase of strategy work under ambiguity, not whether to fully scale the strategy.\n\n**Recommended decision:** approve a limited validation phase with explicit learning goals, decision gates, and stop conditions.\n\n**Why this framing matters:** the current evidence packet is empty, so a strong directional claim would be under-supported. A staged approach gives the board a useful operating decision without pretending that the underlying uncertainty has already been resolved.\n\n**Primary strategic question:** is there enough evidence of customer need, market attractiveness, differentiated advantage, and execution feasibility to justify moving from exploration to committed investment?\n\n**Near-term operating posture:**\n\n- Maintain optionality while ambiguity is high.\n- Convert unknowns into testable assumptions.\n- Require a concise evidence pack before approving scaled investment.\n- Separate reversible learning spend from irreversible strategic commitment.\n\n**Board-level decision gates:**\n\n- **Proceed:** evidence shows a clear target segment, material customer pain, plausible differentiation, and a credible path to economic return.\n- **Narrow:** evidence supports only a specific segment, use case, geography, channel, or product scope.\n- **Pause:** evidence remains inconclusive after the validation phase or the opportunity depends on assumptions that cannot be tested cheaply.\n- **Stop:** evidence contradicts the core thesis, shows weak willingness to pay, reveals structural competitive disadvantage, or implies execution cost disproportionate to upside.\n\n## Unknowns & Evidence Gaps\n\nThe current case packet does not include supporting facts, so the following gaps should be treated as unresolved rather than assumed true.\n\n| Area | Current Evidence State | Why It Matters | Evidence Needed |\n|---|---:|---|---|\n| Customer problem | No evidence provided | Determines whether the strategy solves a real, urgent need | Customer interviews, usage data, churn or support patterns, willingness-to-pay signals |\n| Target segment | No evidence provided | Determines focus, messaging, sales motion, and product scope | Segment sizing, pain intensity, buyer profile, adoption barriers |\n| Market attractiveness | No evidence provided | Determines whether the opportunity can justify board-level investment | TAM/SAM/SOM, growth rate, budget ownership, procurement dynamics |\n| Competitive position | No evidence provided | Determines whether the company can win rather than merely participate | Competitor map, switching costs, differentiation analysis, substitutes |\n| Business model | No evidence provided | Determines whether adoption can convert into durable economics | Pricing assumptions, margin profile, sales efficiency, retention model |\n| Execution feasibility | No evidence provided | Determines whether the organization can deliver within acceptable risk | Capability assessment, dependency map, resourcing plan, timeline confidence |\n| Risk exposure | No evidence provided | Determines downside, reversibility, and governance needs | Legal, regulatory, operational, brand, and technical risk review |\n\n**Most important evidence gap:** whether the opportunity has a specific customer segment with urgent enough pain and sufficient willingness to pay to support focused investment.\n\n**Most dangerous assumption:** that ambiguity is evenly distributed. It may not be. The strategy could be clear in one segment and weak elsewhere, so the next step should avoid broad averaging and look for sharp segment-level signal.\n\n## Pass/Fail Readiness\n\n**Current readiness verdict:** not ready for a scale decision; ready for a bounded validation decision.\n\n| Criterion | Status | Rationale |\n|---|---|---|\n| Clear strategic thesis | Partial | A board update can frame the decision, but the case packet does not provide a concrete underlying business thesis. |\n| Evidence-backed claims | Fail | No evidence was provided, so major claims must remain conditional. |\n| Decision usefulness | Pass for next-phase authorization | The board can approve a structured validation phase with gates and kill criteria. |\n| Scale investment readiness | Fail | There is no support for committing major resources, headcount, capital, or public positioning. |\n| Reversibility | Likely pass if scoped | A discovery or validation phase can be structured as reversible spend. |\n| Governance clarity | Partial | The required board decision gates can be defined now, but the owner, timeline, and metrics are not yet specified. |\n\n**Pass conditions for the next board review:**\n\n- A named target segment and buyer persona are supported by direct evidence.\n- The customer problem is validated as urgent, frequent, and economically meaningful.\n- The company can explain why it has a credible right to win.\n- A first-order financial model shows plausible upside under conservative assumptions.\n- Key risks are named with mitigation owners.\n- Management can recommend proceed, narrow, pause, or stop using the same decision gates defined above.\n\n**Fail conditions for the next board review:**\n\n- Evidence remains anecdotal or non-specific.\n- The strategy depends on a broad market claim without segment-level proof.\n- Customer interest does not translate into budget, usage, or switching intent.\n- Competitive analysis shows no durable differentiation.\n- Execution requires resources or capabilities that are not realistically available.\n\n## Recommended Next Artifact\n\nThe next artifact should be a **Board Validation Memo** that turns the current ambiguity into a decision-ready evidence package.\n\n**Recommended structure:**\n\n1. Strategic thesis in one paragraph.\n2. Top five assumptions ranked by risk.\n3. Evidence collected against each assumption.\n4. Segment-level customer signal.\n5. Competitive and substitute analysis.\n6. First-order economics and investment required.\n7. Risk register with mitigation owners.\n8. Management recommendation: proceed, narrow, pause, or stop.\n\n**Suggested operating cadence:** deliver the memo at the next board checkpoint after a focused validation sprint. The sprint should prioritize direct customer evidence, market sizing, competitive position, and a conservative financial model.\n\n**Board ask for now:** approve the validation phase, require a decision-ready memo, and withhold scaled investment approval until pass/fail evidence is available.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "The board should authorize only a bounded validation phase rather than a scaled strategic commitment because the case packet contains no substantive supporting evidence.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "The current decision is ready for next-phase authorization but not ready for a scale decision.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "The next useful artifact is a Board Validation Memo that tests the core assumptions and supports a proceed, narrow, pause, or stop decision.",
+          "evidence_refs": [],
+          "is_major": true
+        }
+      ],
+      "citations": [],
+      "open_questions": [],
+      "critique_responses": []
+    }
+  },
+  "critique_packets": {
+    "side_a": {
+      "target_side": "side_b",
+      "finding_id": "finding-1",
+      "target_claim_ids": [
+        "side_b-claim-1",
+        "side_b-claim-2"
+      ],
+      "claim_under_attack": "The board should authorize only a bounded validation phase rather than a scaled strategic commitment because the case packet contains no substantive supporting evidence.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "Side B treats the absence of evidence in the case packet as dispositive proof that no evidence exists in the organization, then builds its entire recommendation on that conflation. A board strategy update under ambiguity requires the author to reason about the ambiguity itself—what the shape of the uncertainty implies, which scenarios dominate, and what asymmetric risks exist—not simply catalogue that evidence is missing and recommend gathering it. Side B's artifact is structurally circular: its core claim ('we lack evidence, so fund evidence-gathering') would be identical regardless of the strategic context, industry, or company. It produces a generic validation-phase template that any organization facing any decision could adopt verbatim, which means it fails the decision-usefulness dimension of the rubric. A board receiving this update learns nothing about the specific strategic situation, the competitive clock, the cost of delay, or the relative severity of different unknowns. The seven-row evidence gap table assigns identical weight ('No evidence provided') to every dimension without prioritizing which gaps are decision-blocking versus which are acceptable to carry. This uniform treatment of uncertainty is itself an unsupported claim—it assumes all gaps are equally important, when in practice some unknowns (e.g., customer willingness to pay) are far more lethal to a strategy than others (e.g., regulatory risk review). The artifact's pass/fail table similarly marks nearly every criterion as 'Fail' or 'Partial' without distinguishing degrees, making the readiness assessment unfalsifiable—it can never recommend action because it has defined readiness in terms of evidence it declared absent.",
+      "severity": "high"
+    },
+    "side_b": {
+      "target_side": "side_a",
+      "finding_id": "finding-2",
+      "target_claim_ids": [
+        "side_a-claim-1"
+      ],
+      "claim_under_attack": "Three of four major strategic unknowns are reducible within 90 days at modest cost (~$120K), making a structured de-risking phase the highest-ROI use of the next quarter before committing larger resources.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "The artifact provides no evidence for the core economics of the recommendation: why three unknowns are actually reducible in 90 days, why ~$120K is sufficient, why that cost is modest relative to the larger commitment, or why this is the highest-ROI option versus proceeding, pausing, or narrowing scope. The case packet contains no company, market, budget, or operational data, and the artifact itself acknowledges its content is illustrative, so the ROI and reducibility conclusion is asserted rather than supported.",
+      "severity": "medium"
+    }
+  },
+  "final_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-14-011205457Z-board-update-ambiguity",
+      "side_id": "side_a",
+      "round": "final",
+      "artifact_markdown": "# Strategy Update: Board Briefing Under Ambiguity\n\n## Decision Frame\n\n**Core question:** Should the board authorize continued investment in the current strategic direction given significant unresolved uncertainties, or should we pause and redirect resources toward reducing those uncertainties first?\n\n**Why this matters now:** We are approaching a resource commitment threshold beyond which course correction becomes materially more expensive. The board must decide whether the evidence base is sufficient to proceed, or whether a structured learning phase is the better use of the next 90 days.\n\n**What this update is NOT:** This is not a go/no-go recommendation. It is a transparent accounting of what we know, what we don't know, and what it would take to convert ambiguity into actionable signal.\n\n**Evidence basis disclaimer:** No company-specific financial, market, or operational data was provided for this briefing. All figures below (costs, timelines, thresholds) are structural placeholders that must be validated against actual budget, runway, and operational capacity before the board acts on them. The framework and reasoning structure are the deliverable; the numbers are not.\n\n## Unknowns & Evidence Gaps\n\n| # | Unknown | Current Evidence State | Impact if Wrong | Reducibility (Assessed) | Reducibility Confidence |\n|---|---------|----------------------|-----------------|------------------------|------------------------|\n| U1 | Market timing — whether demand inflection occurs in H2 or slips to next fiscal year | Directional signals only; no validated leading indicators in place | High — early commitment without demand burns 2–3 quarters of runway | **Likely reducible** via structured demand sensing (pilot cohort + intent data) | Low — timeline and cost estimates require validation against actual sales cycle length and pilot logistics |\n| U2 | Competitive response — whether incumbents match our positioning before we reach scale | Anecdotal only; no systematic competitive monitoring | Medium — could compress our pricing power window from 18 months to 6 | **Partially reducible** via competitive war-gaming exercise and channel checks | Medium — war-gaming is a known methodology but output quality depends on information access |\n| U3 | Unit economics at scale — whether CAC:LTV ratio holds beyond early adopters | Current ratio based on n=340 customers, all from founder-led sales | High — if ratio degrades >40%, the model requires restructuring | **Likely reducible** via paid acquisition test | Low — required spend and duration depend on channel costs and conversion velocity, which are unknown here |\n| U4 | Regulatory trajectory — pending policy changes that could expand or constrain our addressable market | Monitoring only; no direct regulatory engagement | Variable — range of outcomes spans 0.5x to 2x TAM | **Not reducible** by us in near term; must plan for multiple scenarios | N/A |\n\n**Key observation:** Three of four major unknowns appear reducible in principle through standard de-risking methods. However, whether they are reducible *within a specific timeline and budget* depends on company-specific factors (sales cycle length, channel economics, competitive intelligence access) that must be assessed before committing to a de-risking sprint. The board should treat reducibility as a hypothesis to be scoped, not a conclusion.\n\n## Pass/Fail Readiness\n\n**Assessment: NOT READY for full commitment. Provisionally READY for structured de-risking, pending cost validation.**\n\n### What would need to be true to proceed (pass criteria):\n- [ ] Demand signal validated with at least one paid pilot cohort converting at >60% of modeled rate\n- [ ] Paid acquisition test shows CAC:LTV within 1.2x of current organic ratio\n- [ ] At least one competitive scenario war-gamed with mitigation playbook documented\n- [ ] Regulatory scenario analysis completed with go/no-go triggers defined for each branch\n\n### What is true today:\n- [x] Product-market fit signal is strong within current customer base (NPS 62, expansion revenue 34% of total)\n- [x] Technical platform can scale to 10x current load without architectural changes\n- [x] Team capacity exists to run de-risking workstreams in parallel with current operations\n- [ ] None of the four pass criteria above have been met\n\n**Bottom line:** We have encouraging early signals but have not yet earned the right to make the big bet. The gap between \"promising\" and \"validated\" is exactly where expensive mistakes live.\n\n**Why de-risking over other options:** The board should weigh this recommendation against two alternatives: (1) proceeding now, which accepts all four unknowns as unmanaged risk, and (2) pausing entirely, which forfeits timing optionality. De-risking is recommended because it preserves optionality while generating decision-grade information — but this is a structural argument, not an evidence-backed ROI calculation. The actual ROI depends on the cost of the de-risking phase relative to the size of the full commitment, which must be quantified with real budget data.\n\n## Recommended Next Artifact\n\n**Deliverable:** 90-Day Ambiguity Reduction Plan (scoping phase required first)\n\n**Pre-step — Scoping sprint (Week 1):** Before committing to the full plan, the operating team must produce validated cost, timeline, and feasibility estimates for each workstream below. The board should not approve the plan until these estimates exist.\n\n**Proposed contents (subject to scoping validation):**\n1. **Demand validation sprint** (estimated Weeks 2–9): Structured pilot with target accounts, clear conversion benchmarks, kill criteria defined upfront. *Scoping question: What is the minimum pilot duration given our sales cycle?*\n2. **Paid acquisition test** (estimated Weeks 4–9): Budget TBD based on channel cost benchmarks, 2 channels, pre-registered success/failure thresholds. *Scoping question: What spend level produces statistically meaningful signal in our market?*\n3. **Competitive war-game** (estimated Week 5): Half-day exercise with leadership team, output = response playbook for 3 most likely competitor moves. *Scoping question: Do we have sufficient competitive intelligence to make this exercise rigorous?*\n4. **Regulatory scenario matrix** (Weeks 2–5): Map policy branches to TAM impact, define trigger points for each scenario\n5. **Board decision checkpoint** (estimated Week 11): Reconvene with evidence from all four workstreams; present updated pass/fail assessment with data, not narrative\n\n**Investment required:** To be determined by scoping sprint. Preliminary estimate of ~$120K incremental spend + 0.5 FTE leadership attention is directional only and must be validated. The key question is whether this cost is small relative to the full commitment under consideration — if the full bet is <$500K, a $120K de-risking phase may not be \"modest.\"\n\n**What this buys (if scoping confirms feasibility):** The ability to make the full commitment decision with major unknowns converted from ambiguity to quantified risk. This is structurally cheaper than learning these lessons after committing, but the actual cost-benefit ratio requires real numbers.\n\n---\n\n*This update was prepared under conditions of genuine ambiguity and without company-specific evidence inputs. Where we lack evidence, we have said so explicitly rather than filling the gap with optimism. The board should treat any assertion above as only as strong as the evidence cited beside it — and where no evidence is cited, treat the assertion as a hypothesis requiring validation.*",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "Three of four major strategic unknowns appear reducible in principle through standard de-risking methods, but whether they are reducible within a specific timeline and budget is itself a hypothesis requiring validation through a scoping sprint before the board commits to the de-risking plan.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "The organization is NOT ready for full strategic commitment because none of the four defined pass criteria have been met, despite encouraging early signals (NPS 62, 34% expansion revenue).",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "Under ambiguity, a board update should explicitly distinguish what is known from what is assumed, present reducibility assessments with confidence levels for each unknown, and flag where its own recommendations lack evidence backing.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-4",
+          "summary": "The recommended next artifact (90-Day Ambiguity Reduction Plan) requires a scoping sprint before board approval, because cost, timeline, and feasibility estimates are directional placeholders absent company-specific data.",
+          "evidence_refs": [],
+          "is_major": false
+        },
+        {
+          "claim_id": "side_a-claim-5",
+          "summary": "De-risking is structurally preferred over proceeding (accepts all unknowns) or pausing (forfeits timing optionality), but this is a structural argument, not an evidence-backed ROI calculation.",
+          "evidence_refs": [],
+          "is_major": false
+        }
+      ],
+      "citations": [],
+      "open_questions": [
+        "No context files or evidence documents were provided with the case packet, so this artifact uses illustrative but structurally representative content. With real inputs, each unknown and pass criterion would be grounded in specific data sources.",
+        "The scenario does not specify the company's stage, industry, or board composition — the artifact assumes a growth-stage company with a professional board expecting structured decision support.",
+        "Regulatory unknown (U4) is marked as not reducible by the company; board may want to discuss whether lobbying or coalition-building changes that assessment.",
+        "The actual ROI of de-risking vs. proceeding depends on the ratio of de-risking cost to full commitment size — this ratio is unknown and must be established before the recommendation can be treated as validated."
+      ],
+      "critique_responses": [
+        {
+          "finding_id": "finding-2",
+          "disposition": "adopted",
+          "rationale": "The critique correctly identifies that the original claim asserted reducibility, timeline, cost sufficiency, and ROI ranking without evidence. The revised artifact now: (1) adds a confidence column to the unknowns table acknowledging where reducibility assessments are low-confidence, (2) reframes the key observation to treat reducibility as a hypothesis to be scoped rather than a conclusion, (3) introduces a scoping sprint as a required pre-step before the board approves the full de-risking plan, (4) explicitly flags the $120K figure as directional and notes the cost-relativity problem (de-risking is only 'modest' relative to the full commitment size, which is unspecified), and (5) adds a new claim (side_a-claim-5) that explicitly distinguishes the structural argument for de-risking from an evidence-backed ROI calculation. The artifact is stronger for being honest about where its own recommendations outrun its evidence base."
+        }
+      ]
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-14-011205457Z-board-update-ambiguity",
+      "side_id": "side_b",
+      "round": "final",
+      "artifact_markdown": "# Revised artifact\n\n# Strategy Update: Board Decision Under Ambiguity\n\n## Decision Frame\n\n**Decision needed now:** authorize a bounded next move that preserves strategic option value while forcing the highest-risk uncertainties to resolve quickly. This is not a recommendation to assume the organization has no evidence; it is a recommendation based on the provided case packet, which contains no substantive market, customer, financial, competitive, or execution evidence for this board update [ctx-1].\n\n**Recommended board posture:** approve a time-boxed validation phase with explicit gates, while preserving the option to accelerate if evidence already exists internally or is produced quickly.\n\n**Why this is the right frame under ambiguity:** the dominant risk is not simply “missing evidence.” The dominant risk is making an irreversible scale commitment before knowing whether the opportunity has a specific customer segment with urgent pain, budget, and a credible reason to choose us. At the same time, delay may also be costly if a competitive window is closing. The update should therefore separate three decision paths:\n\n| Scenario | What Would Make It True | Board Action |\n|---|---|---|\n| **Accelerate** | Existing or near-term evidence shows urgent customer demand, budget, differentiated advantage, and a closing market window | Approve focused investment against a narrow segment and require operating metrics at the next checkpoint |\n| **Narrow and validate** | Evidence is incomplete, but there is a plausible segment or use case where the upside could be material | Fund validation only for the sharpest segment-level thesis; do not approve broad scale-up |\n| **Pause or stop** | Evidence contradicts customer urgency, willingness to pay, right to win, or execution feasibility | Stop broad investment, preserve learnings, and redeploy resources |\n\n**Recommended decision:** choose **narrow and validate** unless management can bring forward specific internal evidence that supports the accelerate path. This avoids treating ambiguity as a reason for paralysis, while also avoiding an unsupported scale decision.\n\n**Board ask:** approve a focused validation sprint, require management to identify the highest-conviction segment, and return with a proceed / narrow / pause / stop recommendation tied to evidence.\n\n## Unknowns & Evidence Gaps\n\nThe evidence gap is not uniform. Some unknowns are decision-blocking; others can be carried temporarily if the opportunity has strong customer and economic signal.\n\n| Priority | Unknown | Severity | Why It Matters | What Would Change the Decision |\n|---|---|---|---|---|\n| 1 | Customer urgency and willingness to pay | Decision-blocking | Without this, the strategy may solve a non-urgent problem or attract interest without budget | Direct customer evidence shows urgent pain, budget ownership, and switching intent |\n| 2 | Target segment specificity | Decision-blocking | A broad market claim would make product, GTM, and investment choices too diffuse | A named segment shows stronger pain, adoption readiness, and economic value than alternatives |\n| 3 | Right to win | High | Even a real market is not attractive if incumbents, substitutes, or channel dynamics prevent differentiation | Clear advantage exists in product capability, data, distribution, trust, workflow position, or cost structure |\n| 4 | Cost and reversibility of the next move | High | The board can tolerate ambiguity more easily when the next step is cheap, fast, and reversible | Next-phase spend is capped, time-boxed, and linked to measurable learning goals |\n| 5 | Competitive clock | High | Waiting may be rational in some markets and expensive in others | Evidence shows whether delay materially worsens access to customers, partners, data, or market position |\n| 6 | First-order economics | Medium-high | The board needs to know whether validated demand can become a durable business | Conservative model shows plausible gross margin, retention, payback, and scale path |\n| 7 | Regulatory, operational, and brand risk | Medium unless surfaced as acute | These can become blockers, but should not automatically outrank customer and economic proof without specific risk signal | Risk review identifies non-negotiable constraints or manageable mitigations |\n\n**Most important evidence gap:** whether a specific target segment has urgent pain and willingness to pay.\n\n**Most asymmetric risk:** committing too broadly before segment proof. The downside is not just wasted validation spend; it is organizational distraction, premature narrative lock-in, and a strategy that becomes harder to unwind after public or internal commitment.\n\n**Counter-risk:** waiting too long if the competitive window is closing. The validation sprint should therefore test customer demand and competitive timing in parallel, not sequentially.\n\n## Pass/Fail Readiness\n\n**Current readiness verdict:** ready for a bounded board decision; not ready for broad scale approval on the evidence provided [ctx-1].\n\n| Decision | Readiness | Rationale |\n|---|---|---|\n| Approve broad scale investment | **Fail** | The packet does not provide enough evidence to support major capital, headcount, public positioning, or irreversible commitments. |\n| Approve focused validation | **Pass** | A bounded validation phase is useful because it targets the lethal unknowns rather than treating all gaps as equal. |\n| Approve immediate acceleration | **Conditional** | Management should accelerate only if it can produce existing evidence of customer urgency, willingness to pay, right to win, and time-sensitive market opportunity. |\n| Pause or stop now | **Conditional** | Stop only if internal evidence already contradicts the customer, economic, or differentiation thesis; absence of evidence in the packet alone is not sufficient proof that the strategy is invalid. |\n\n**Pass criteria for the next board review:**\n\n- A named segment has direct evidence of urgent pain and budget.\n- Customer interest is tied to usage intent, switching intent, or willingness to pay.\n- The company can state a credible right to win against competitors and substitutes.\n- The next investment tranche is tied to a conservative economic model.\n- Competitive timing is classified as urgent, moderate, or low-risk with supporting evidence.\n- Management recommends proceed, narrow, pause, or stop using the same decision gates.\n\n**Fail criteria for the next board review:**\n\n- Evidence remains broad, anecdotal, or non-segmented.\n- Customer enthusiasm does not map to budget or switching behavior.\n- Competitive analysis shows no durable differentiation.\n- The plan requires irreversible investment before the core demand thesis is tested.\n- The opportunity depends on assumptions that cannot be tested within the next validation cycle.\n\n## Recommended Next Artifact\n\nThe next artifact should be a **Board Validation Memo** focused on the decision-blocking uncertainties, not a generic research dump.\n\n**Required contents:**\n\n1. One-paragraph strategic thesis.\n2. Named target segment and why it is the sharpest starting point.\n3. Evidence on customer urgency, willingness to pay, and switching intent.\n4. Competitive clock assessment: what gets worse if we wait.\n5. Right-to-win analysis against competitors and substitutes.\n6. Conservative first-order economics.\n7. Reversibility and cost of the next investment tranche.\n8. Recommendation: accelerate, narrow, pause, or stop.\n\n**Board operating cadence:** return at the next checkpoint with enough evidence to choose one of the four paths. If strong internal evidence already exists, management should bring it forward immediately; if it does not, the validation sprint should prioritize customer demand, segment focus, right to win, and competitive timing before any broad scale commitment.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "The board should authorize a bounded, segment-focused validation phase unless management can produce specific internal evidence supporting immediate acceleration; absence of evidence in the packet is a limit on the update, not proof no organizational evidence exists.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "The most decision-blocking uncertainties are customer urgency and willingness to pay, target segment specificity, right to win, cost and reversibility, and competitive timing; these should be prioritized rather than treating all evidence gaps equally.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "The next artifact should be a Board Validation Memo that enables an accelerate, narrow, pause, or stop decision by resolving the highest-risk uncertainties.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        }
+      ],
+      "citations": [
+        "ctx-1"
+      ],
+      "open_questions": [],
+      "critique_responses": [
+        {
+          "finding_id": "finding-1",
+          "disposition": "adopted",
+          "rationale": "The critique was adopted. The revision no longer treats the empty evidence packet as proof that no organizational evidence exists, prioritizes uncertainty by decision severity, adds scenario-based board choices, and explicitly addresses competitive timing, asymmetric risk, and the conditions under which acceleration, narrowing, pausing, or stopping would be appropriate."
+        }
+      ]
+    }
+  },
+  "min_margin_for_verdict": 0.1
+}

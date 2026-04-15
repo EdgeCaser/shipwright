@@ -1,0 +1,102 @@
+{
+  "case_packet": {
+    "scenario_id": "churn-conflicting-signals",
+    "title": "Churn diagnosis with conflicting signals",
+    "prompt": "Write a churn reduction PRD when signals conflict with strategy targets.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "opposing_first_pass": {
+    "run_id": "conflict-2026-04-14-042007507Z-churn-conflicting-signals",
+    "side_id": "side_a",
+    "round": "first_pass",
+    "artifact_markdown": "# Churn Reduction PRD\n\n## Title\nConflict-Tolerant Churn Reduction Program\n\n## Problem\nChurn signals are directionally inconsistent across sources. Behavioral usage data suggests declining engagement in a subset of accounts, while strategy targets prioritize growth in segments that do not yet show the same churn pattern. The team needs a churn-reduction plan that improves retention without overfitting to noisy or contradictory inputs.\n\n## Goal\nReduce preventable churn by prioritizing interventions that are evidence-bounded, segment-specific, and reversible.\n\n## Non-Goals\n- Repositioning the entire product strategy in this cycle\n- Broad pricing changes without segment-level validation\n- Shipping one global retention program across all customer segments\n\n## Users / Segments\n- At-risk existing customers with declining engagement\n- Strategic target accounts whose retention patterns are not yet well understood\n- Customer success and lifecycle teams responsible for intervention execution\n\n## Core Hypothesis\nWhen churn signals conflict, the highest-confidence path is to separate retention work into segment-specific plays, instrument the decision points that currently create ambiguity, and ship the smallest interventions that can both reduce churn and improve future diagnosis.\n\n## Product Requirements\n### 1. Churn Risk Segmentation\nCreate a risk model with explicit confidence levels:\n- `High-risk / high-confidence`\n- `High-risk / low-confidence`\n- `Strategic segment / insufficient evidence`\n\nEach at-risk account must be tagged with both churn risk and evidence confidence.\n\n### 2. Intervention Routing\nSupport three intervention paths:\n- Save play for high-risk, high-confidence accounts\n- Diagnostic outreach for high-risk, low-confidence accounts\n- Observation plus lightweight onboarding reinforcement for strategic accounts with unclear signals\n\n### 3. Reason Capture\nFor every intervention, require structured reason codes:\n- Product value gap\n- Onboarding failure\n- Low feature adoption\n- Price / budget\n- Competitive displacement\n- Organizational change\n- Unknown\n\n### 4. Measurement Layer\nTrack:\n- Gross churn rate by segment\n- Save rate by intervention type\n- Expansion/contraction side effects\n- Share of churn tagged `unknown`\n- Time from risk flag to intervention\n\n### 5. Guardrails\nDo not roll out punitive or high-cost retention tactics globally unless they outperform control within the validated segment.\n\n## Prioritization\n### P0\n- Segment accounts by risk and evidence confidence\n- Add intervention routing logic\n- Capture structured churn reason codes\n- Launch dashboard for segment-level churn outcomes\n\n### P1\n- Add diagnostic survey and CSM workflow support\n- Add lifecycle messaging for early-warning accounts\n- Create experiment framework for save offers or onboarding assists\n\n### P2\n- Automate next-best-action recommendations\n- Integrate qualitative feedback into risk scoring\n\n## User Stories\n- As a CSM, I need to know whether an account is at risk and how confident the system is, so I can choose the right retention play.\n- As a retention owner, I need segment-level outcomes, so I do not generalize from mixed signals.\n- As a product manager, I need churn reasons captured in a structured way, so future strategy decisions use better evidence.\n\n## Success Metrics\n### Primary\n- Reduction in churn within `high-risk / high-confidence` segment\n- Reduction in `unknown` churn reasons\n\n### Secondary\n- Improved save rate for routed interventions\n- Faster intervention time after risk detection\n- No material retention decline in strategic target segment\n\n## Rollout Plan\n### Phase 1\nInstrument segmentation, routing, and reason capture.\n\n### Phase 2\nRun segment-specific retention plays with holdouts where feasible.\n\n### Phase 3\nPromote only interventions that show positive retention impact without unacceptable margin or experience degradation.\n\n## Risks\n- False positives may waste CS capacity\n- False negatives may hide churn in strategic segments\n- Teams may overreact to early directional data\n- Mixed signals may reflect measurement gaps rather than real behavior changes\n\n## Decision Frame\nProceed with a segmented churn program, not a single unified churn initiative. The decision rule is to act aggressively only where both churn risk and evidence confidence are high, while treating conflicting or weak signals as a measurement-and-diagnosis problem first.\n\n## Unknowns & Evidence Gaps\n- Which segments are truly over-indexed on preventable churn\n- Whether current churn labels distinguish voluntary vs. involuntary or avoidable vs. unavoidable loss\n- Whether strategy-target segments are under-instrumented rather than healthier\n- Which intervention type produces durable retention versus temporary saves\n\n## Pass/Fail Readiness\nPass if the team can operationalize segment tagging, structured reason capture, and segment-level measurement before launch. Fail if interventions are still applied globally, if `unknown` remains a dominant churn reason, or if no holdout/comparison method exists.\n\n## Recommended Next Artifact\nChurn analysis brief with segment-level evidence table, instrumentation gaps, and experiment design for the first two intervention plays.",
+    "claims": [
+      {
+        "claim_id": "side_a-claim-1",
+        "summary": "When churn signals conflict, retention work should be segmented by both churn risk and evidence confidence rather than deployed as a single global program.",
+        "evidence_refs": [
+          "ctx-1"
+        ],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_a-claim-2",
+        "summary": "The immediate product requirement is better diagnosis and measurement, not just more interventions, because conflicting signals indicate unresolved evidence gaps.",
+        "evidence_refs": [
+          "ctx-1"
+        ],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_a-claim-3",
+        "summary": "Success criteria should combine churn reduction with reduction in unknown churn causes, so the program improves both outcomes and decision quality.",
+        "evidence_refs": [
+          "ctx-1"
+        ],
+        "is_major": false
+      }
+    ],
+    "citations": [
+      "ctx-1"
+    ],
+    "open_questions": [
+      "Which customer segments currently show the strongest validated churn risk versus the strongest strategic importance?",
+      "What proportion of churn events currently lack reliable reason attribution?",
+      "Can the team support holdouts or comparable controls for the first retention interventions?"
+    ],
+    "critique_responses": []
+  }
+}

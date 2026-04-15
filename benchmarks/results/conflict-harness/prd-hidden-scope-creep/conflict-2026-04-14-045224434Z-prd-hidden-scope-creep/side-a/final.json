@@ -1,0 +1,52 @@
+{
+  "run_id": "conflict-2026-04-14-045224434Z-prd-hidden-scope-creep",
+  "side_id": "side_a",
+  "round": "final",
+  "artifact_markdown": "# Revised artifact\n\n## PRD: Team Inbox Workflow Handoff Improvement\n\n## Overview\nImprove handoffs in the team inbox so one teammate can transfer ownership of a conversation to another without losing context, creating duplicate work, or delaying response to the customer.\n\n## Problem\nCurrent handoffs are inconsistent and partially manual. When ownership changes, agents may rely on ad hoc notes, verbal updates, or ambiguous assignment changes. This creates hidden scope risk: requests for \"better handoff\" can expand into workflow redesign, analytics, SLA policy, and staffing features unless explicitly bounded.\n\n## Goal\nEnable reliable, fast, low-friction handoff of inbox conversations.\n\n## Non-Goals\n- Redesign the full inbox information architecture\n- Build workforce management or staffing tools\n- Add SLA policy engines\n- Add customer-facing status notifications\n- Build long-term performance analytics beyond MVP instrumentation\n- Build routing automation or suggested assignee logic in MVP\n\n## Users\n- Primary: support agent or operations teammate handing off a conversation\n- Secondary: receiving teammate who needs enough context to continue work immediately\n- Tertiary: team lead monitoring whether handoffs are functioning reliably\n\n## Jobs To Be Done\n- When I cannot complete a conversation, I want to hand it off with clear context so the next teammate can act without re-reading everything.\n- When I receive a handoff, I want to know why it was handed off, what has been done, and what I should do next.\n- When I manage the team inbox, I want handoffs to be traceable enough to reduce dropped or duplicated work.\n\n## User Stories\n1. As a current owner, I can reassign a conversation to a teammate and include a structured handoff note.\n2. As a receiving owner, I can see the handoff reason, summary, and next action in the conversation view.\n3. As a current owner, I am prevented from completing a handoff without the minimum required context.\n4. As a team lead, I can audit basic handoff events to investigate dropped conversations.\n\n## Product Requirements\n### Core Workflow\n1. User selects `Handoff` from a conversation.\n2. User chooses receiving teammate.\n3. User enters required fields:\n   - handoff reason\n   - short summary of current state\n   - explicit next step or requested action\n4. System reassigns conversation and stores the handoff event in history.\n5. Receiving teammate sees a clear handoff card at the top of the thread until acknowledged or updated.\n\n### Functional Requirements\n- The system must support handoff between individual teammates within the same inbox/team.\n- The system must require structured handoff fields before reassignment completes.\n- The system must record the sender, recipient, timestamp, and handoff content.\n- The system must render the latest handoff context prominently in the conversation UI.\n- The system must notify the receiving teammate in the existing internal notification pattern.\n- The system must preserve prior handoff events in conversation history.\n- The system must allow the recipient to acknowledge the handoff.\n\n### Validation Rules\n- Recipient is required.\n- Reason is required.\n- Summary is required and capped at a practical length.\n- Next action is required.\n- Handoff cannot target the current owner.\n\n## UX Requirements\n- Handoff should take less than 30 seconds for a trained user.\n- Required fields should be visible in one modal or side panel.\n- Receiving user should not need to search history to understand the handoff.\n- Visual treatment should distinguish handoff context from general internal notes.\n\n## Success Metrics And MVP Instrumentation\nThis PRD does not assume baseline values exist today. MVP includes only the minimum event instrumentation needed to establish a baseline during pilot and evaluate whether the workflow improves handoff quality.\n\n### Required Events\n- `handoff_initiated`\n- `handoff_completed`\n- `handoff_acknowledged`\n- `post_handoff_first_action`\n- `post_handoff_reassignment`\n- `post_handoff_sender_recipient_clarification_note`\n\n### Pilot Metrics\n- Median time from `handoff_completed` to `post_handoff_first_action`\n- Percentage of handoffs acknowledged within same business day\n- Percentage of handed-off conversations reassigned again before next meaningful action\n- Average count of sender-recipient clarification notes after handoff\n\n### Measurement Plan\n- Collect baseline for at least 2 weeks before broad rollout using current reassignment behavior where possible.\n- Run MVP pilot on one inbox/team and compare pilot period against pre-pilot baseline on the same workflow.\n- If baseline logging is impossible before build, release only to pilot cohort and treat first 2 weeks as instrumentation baseline period before judging outcome.\n- Do not expand scope to dashboards or long-term reporting in MVP; a simple analyst query or internal report is sufficient.\n\n### Launch Decision Threshold\n- Pilot can advance only if instrumentation is live and the team agrees on baseline period and comparison method before rollout.\n- If instrumentation is not available, launch is blocked because success and failure cannot be distinguished.\n\n## MVP Scope\n- Manual handoff between teammates\n- Structured handoff form\n- Stored handoff event in thread history\n- Recipient notification\n- Recipient acknowledgment\n- Minimal event instrumentation required for pilot evaluation\n\n## Post-MVP Candidates\n- Suggested recipients\n- Handoff templates by issue type\n- Reporting dashboard for handoff quality trends\n- Cross-team or cross-queue routing logic\n\n## Risks\n- Users may perceive required fields as extra friction and bypass quality with low-value text.\n- Over-scoping into routing automation could delay the core workflow improvement.\n- If handoff context is not surfaced clearly, the feature becomes a data-entry layer without operational benefit.\n- If instrumentation is omitted, the team will not be able to evaluate whether the workflow actually improved handoffs.\n\n## Dependencies\n- Existing conversation assignment model\n- Existing internal notification system\n- Conversation history/event logging support\n- Ability to emit or query basic workflow events for pilot measurement\n\n## Launch Plan\n- Instrument current and MVP handoff workflow\n- Pilot with one team inbox\n- Measure median time to next action, acknowledgment rate, repeat reassignment rate, and clarification-note rate\n- Expand only after instrumentation is validated and pilot results show operational improvement without major workflow friction\n\n## Decision Frame\nBuild a narrowly scoped MVP focused on structured person-to-person handoff inside the team inbox. Include only the minimum instrumentation required to measure pilot outcomes. Do not expand this PRD into routing automation, staffing logic, SLA management, dashboards, or broad analytics.\n\n## Unknowns & Evidence Gaps\n- Current baseline frequency and failure modes of handoffs are not provided.\n- No evidence quantifies which context fields matter most to recipients.\n- No user research confirms whether acknowledgment is essential for MVP.\n- No technical constraints are provided for assignment, notifications, audit history, or event instrumentation.\n- Target thresholds for acceptable improvement are not yet specified and should be set before pilot review.\n\n## Pass/Fail Readiness\nPass if the team agrees the problem is specifically handoff quality within an existing inbox workflow, the MVP scope remains limited to structured reassignment with visible context, and minimum pilot instrumentation is included so outcomes can be measured against a defined baseline period. Fail if stakeholders expect this PRD to also solve queue routing, staffing allocation, SLA enforcement, dashboard reporting, or any launch without agreed measurement.\n\n## Recommended Next Artifact\nTechnical spec for the handoff data model, event logging, UI entry point, validation rules, notification behavior, and pilot measurement queries.",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "The PRD should explicitly constrain scope to a narrow MVP for structured teammate-to-teammate handoff, because the scenario signals hidden scope creep risk.",
+      "evidence_refs": [
+        "ctx-scenario-title",
+        "ctx-prompt"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "A useful PRD for this request needs concrete workflow, requirements, non-goals, and a minimum measurement plan with required instrumentation and baseline collection rules so the team can implement handoff improvement without drifting into adjacent systems.",
+      "evidence_refs": [
+        "ctx-prompt",
+        "ctx-rubric",
+        "ctx-critique-finding-2"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-3",
+      "summary": "The artifact must include the four specified Shipwright closing sections to satisfy the validator contract and improve decision usefulness.",
+      "evidence_refs": [
+        "ctx-constraints",
+        "ctx-success-condition"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-scenario-title",
+    "ctx-prompt",
+    "ctx-rubric",
+    "ctx-constraints",
+    "ctx-success-condition",
+    "ctx-critique-finding-2"
+  ],
+  "open_questions": [],
+  "critique_responses": [
+    {
+      "finding_id": "finding-2",
+      "disposition": "adopted",
+      "rationale": "The critique is correct that the original success metrics were too aspirational to act as real guardrails. The revision adds explicit MVP instrumentation, a baseline-collection plan, launch-blocking measurement requirements, and narrows analytics scope to minimum pilot evaluation so the PRD is more concrete and internally consistent."
+    }
+  ]
+}

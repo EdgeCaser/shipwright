@@ -1,0 +1,13 @@
+# Critique: finding-1
+
+- Target Side: side_b
+- Target Claim IDs: side_b-claim-1
+- Attack Type: evidence_gap
+- Severity: high
+
+## Claim Under Attack
+Google should proactively move toward a controlled structural separation rather than fight exclusively for behavioral remedies.
+
+## Evidence Or Reason
+The recommendation's entire load-bearing joint is an expected-value assertion — 'on expected value, the answer is likely yes' — yet the memo's own Unknowns section concedes that 'the standalone economics of AdX and DFP / Google Ad Manager under separation are not quantified here.' An expected-value judgment without quantified inputs is not analysis; it is a conclusion dressed as analysis. The comparison requires at minimum: (a) probability-weighted outcomes for each litigation path, (b) EBITDA impact of separation under plausible transition scenarios, and (c) the magnitude of cross-case credibility benefits the memo calls 'inferential, not proven.' Without those numbers, the claim that proactive structural separation produces better expected enterprise value than a conduct-remedy fight is unsupported. The memo recommends giving up a profitable, integrated business stack based on an admitted estimate, not evidence. A decision of this magnitude — one the memo itself frames as appropriate for a board-level options memo — cannot responsibly rest on unquantified intuition about strategic tradeoffs.
+

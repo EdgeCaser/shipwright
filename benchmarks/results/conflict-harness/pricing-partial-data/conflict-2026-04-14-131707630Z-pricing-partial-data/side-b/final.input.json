@@ -1,0 +1,93 @@
+{
+  "case_packet": {
+    "scenario_id": "pricing-partial-data",
+    "title": "Pricing change with partial market data",
+    "prompt": "Draft a pricing strategy recommendation under partial market data.",
+    "artifact_type": "strategy",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a strategy artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "strategy",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass": {
+    "run_id": "conflict-2026-04-14-131707630Z-pricing-partial-data",
+    "side_id": "side_b",
+    "round": "first_pass",
+    "artifact_markdown": "# Pricing Strategy Recommendation\n\n## Decision Frame\nRecommend a controlled pricing move rather than a full repricing. Hold core list prices for the current cycle, introduce a limited test on one segment or package boundary, and use packaging/discount controls to improve monetization while market evidence is incomplete. This is the highest-utility decision under partial data because it preserves upside learning while limiting broad revenue and conversion risk.\n\n## Unknowns & Evidence Gaps\nThe case packet provides no market evidence, customer willingness-to-pay data, win/loss pricing patterns, competitive price map, elasticity estimates, or segment-level retention risk. The key unresolved questions are which customer segment has the lowest price sensitivity, whether current underpricing is material, and whether the larger opportunity is price increase, packaging redesign, or discount discipline.\n\n## Pass/Fail Readiness\nPass for a bounded experiment decision. Fail for a market-wide pricing reset. The available information is sufficient to authorize a time-boxed test with explicit guardrails, but insufficient to support a broad permanent change across the full customer base.\n\n## Recommended Next Artifact\nA pricing experiment brief with target segment, hypothesis, test cell design, success thresholds, guardrails, and data collection plan.",
+    "claims": [
+      {
+        "claim_id": "side_b-claim-1",
+        "summary": "With no usable market evidence in the case packet, the decision-useful recommendation is to avoid a full pricing reset and instead run a bounded pricing experiment while preserving current core prices.",
+        "evidence_refs": [
+          "ctx-1"
+        ],
+        "is_major": true
+      }
+    ],
+    "citations": [
+      "ctx-1"
+    ],
+    "open_questions": [],
+    "critique_responses": []
+  },
+  "critique_packet": {
+    "target_side": "side_b",
+    "finding_id": "finding-1",
+    "target_claim_ids": [
+      "side_b-claim-1"
+    ],
+    "claim_under_attack": "With no usable market evidence in the case packet, the decision-useful recommendation is to avoid a full pricing reset and instead run a bounded pricing experiment while preserving current core prices.",
+    "attack_type": "evidence_gap",
+    "evidence_or_reason": "The claim asserts a bounded experiment is the 'highest-utility decision' yet provides no framework for why experimentation dominates other partial-data strategies such as value-based pricing interviews, competitive proxy benchmarking, or cohort-level willingness-to-pay inference from existing transaction data. The artifact treats 'run a test' as self-evidently correct without establishing that the organization has the instrumentation, sample size, or cycle time to produce statistically meaningful results — all of which are themselves unknown. An experiment recommendation under partial data that does not assess whether the experiment itself is feasible is circular: it defers the data gap to a future artifact whose viability depends on the same missing information.",
+    "severity": "medium"
+  }
+}

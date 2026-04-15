@@ -1,0 +1,112 @@
+You are SIDE_B in the rebuttal phase for run conflict-2026-04-14-050032003Z-pricing-partial-data.
+Attack only visible claims from the opposing first-pass artifact.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "target_side": "side_a",
+  "finding_id": "runner-will-assign",
+  "target_claim_ids": [
+    "side_a-claim-1"
+  ],
+  "claim_under_attack": "The opposing claim to challenge.",
+  "attack_type": "evidence_gap",
+  "evidence_or_reason": "Why the visible claim is weak.",
+  "severity": "medium"
+}
+
+Case packet:
+{
+  "scenario_id": "pricing-partial-data",
+  "title": "Pricing change with partial market data",
+  "prompt": "Draft a pricing strategy recommendation under partial market data.",
+  "artifact_type": "strategy",
+  "rubric": {
+    "dimensions": [
+      "claim quality",
+      "evidence discipline",
+      "responsiveness to critique",
+      "internal consistency",
+      "decision usefulness"
+    ],
+    "scoring_scale": "1-5",
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "constraints": {
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "expect_structured": true,
+    "context_files": [],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "evidence": [],
+  "max_rounds": 3,
+  "tool_policy": "none",
+  "sharing_policy": {
+    "share_case_packet": true,
+    "share_committed_artifacts_after_first_pass": true,
+    "share_critiques_after_open": true,
+    "share_hidden_reasoning": false,
+    "share_provider_identity": false,
+    "share_internal_coalition_drafts": false
+  },
+  "success_condition": {
+    "type": "validator_contract",
+    "description": "Produce a strategy artifact that satisfies the scenario validator contract.",
+    "validator": {
+      "artifact_type": "strategy",
+      "expect_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true
+    }
+  }
+}
+
+Opposing first-pass artifact:
+{
+  "run_id": "conflict-2026-04-14-050032003Z-pricing-partial-data",
+  "side_id": "side_a",
+  "round": "first_pass",
+  "artifact_markdown": "# Pricing Strategy Recommendation\n\n## Decision Frame\nRecommend a staged pricing change rather than a full repricing: keep list prices stable for the current base plan, introduce a higher-priced premium tier with 10-20% uplift versus the current anchor, and use controlled sales or self-serve experiments to validate willingness to pay before migrating the broader catalog. Under partial market data, this is the highest-information, lowest-regret move because it preserves revenue continuity while creating a clean test of price elasticity, feature-package fit, and buyer segmentation.\n\nDecision logic:\n- Avoid broad across-the-board price increases until elasticity and competitive parity are better evidenced.\n- Use packaging before pricing where possible: move high-value or advanced capabilities into the premium tier so the monetization event is tied to clearer value.\n- Grandfather existing customers for a fixed period to reduce churn risk and protect account trust.\n- Define success on three measures: upgrade conversion, net revenue retention impact, and win-rate/churn stability.\n\nSuggested first-pass operating plan:\n- Current plan: unchanged for existing customers and default low-risk entry point.\n- New premium tier: 10-20% above current effective price, targeted at highest-value segment.\n- Enterprise/custom deals: preserve negotiation room; do not hard-code broad increases until test data returns.\n- Review window: 30-45 days for initial signal, 60-90 days for retention and expansion effects.\n\n## Unknowns & Evidence Gaps\nThe recommendation is constrained by missing market inputs. The key unknowns are:\n- Competitive price benchmarks by segment and package level.\n- Customer willingness to pay by persona, company size, and urgency of problem.\n- Historical elasticity from prior pricing, discounting, or packaging changes.\n- Margin sensitivity and support/delivery cost by tier.\n- Churn risk for legacy customers exposed to new packaging boundaries.\n\nEvidence gaps that most affect the decision:\n- Whether current pricing is below market, at market, or already stretched.\n- Whether premium features are strong enough to support a higher anchor.\n- Whether buyers perceive enough differentiation between tiers.\n\n## Pass/Fail Readiness\nPass for immediate execution if:\n- The team can launch a premium tier or controlled pricing test without billing-system disruption.\n- Existing customers can be grandfathered or contractually insulated.\n- Core metrics are instrumented for conversion, churn, expansion, discount rate, and sales win rate.\n- Product and GTM teams agree on feature boundaries and positioning.\n\nFail for broad repricing now if:\n- Billing or entitlement systems cannot support segmented rollout.\n- There is no reliable way to measure conversion and retention by cohort.\n- The proposed premium tier lacks clearly differentiated value.\n- The business is currently exposed to churn or pipeline fragility that cannot absorb pricing risk.\n\n## Recommended Next Artifact\nA pricing strategy brief with:\n- Tier design and packaging logic.\n- Test plan by segment and channel.\n- Success metrics and stop/go thresholds.\n- Competitive benchmark table.\n- Customer research plan for willingness-to-pay validation.",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "A staged packaging-led pricing change is preferable to a broad repricing when market data is partial because it reduces downside risk while generating the missing elasticity and willingness-to-pay evidence.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "Keeping the base plan stable and introducing a premium tier with a 10-20% uplift is the most decision-useful near-term move under uncertainty.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-3",
+      "summary": "Broad repricing should be deferred until the team can measure upgrade conversion, churn, net revenue retention, and competitive positioning with cohort-level clarity.",
+      "evidence_refs": [],
+      "is_major": true
+    }
+  ],
+  "citations": [],
+  "open_questions": [
+    "What customer segments and personas drive the highest willingness to pay?",
+    "How does current pricing compare with direct competitors at equivalent package depth?",
+    "Which features are differentiated enough to justify a premium tier?",
+    "Can billing, entitlement, and analytics systems support grandfathering and segmented tests?"
+  ],
+  "critique_responses": []
+}

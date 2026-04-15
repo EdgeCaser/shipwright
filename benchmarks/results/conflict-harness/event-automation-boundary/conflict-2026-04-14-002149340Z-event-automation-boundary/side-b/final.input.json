@@ -1,0 +1,109 @@
+{
+  "case_packet": {
+    "scenario_id": "event-automation-boundary",
+    "title": "Event automation platform with human-in-the-loop boundary constraints",
+    "prompt": "Write a Phase 1 PRD for an event management automation platform with a WhatsApp assistant, an internal console, human approval for pricing commitments, and strict deterministic boundaries around LLM usage.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass": {
+    "run_id": "conflict-2026-04-14-002149340Z-event-automation-boundary",
+    "side_id": "side_b",
+    "round": "first_pass",
+    "artifact_markdown": "# Phase 1 PRD: Event Automation Platform\n\n## Metadata\n- Status: Draft for Phase 1 validation\n- Product surface: WhatsApp assistant, internal operations console, deterministic workflow and approval engine\n- Evidence basis: Case packet only; no customer interviews, usage data, pricing policy, or technical constraints were supplied [ctx-1]\n- Primary decision: Build a constrained automation layer that accelerates event intake and coordination while keeping pricing commitments and other commercial obligations behind explicit human approval [ctx-1]\n\n## 1. Problem And Objective\nEvent teams need faster intake, follow-up, and coordination across WhatsApp without allowing an LLM to make commitments the business cannot honor. Phase 1 should automate low-risk event-management work, centralize human review in an internal console, and create auditable deterministic boundaries around any action that affects pricing, availability, contract terms, refunds, or vendor/customer commitments.\n\nPhase 1 objective: reduce manual triage and response latency for event requests while achieving zero unauthorized pricing commitments.\n\n## 2. Target Users\n| User | Job To Be Done | Phase 1 Need |\n|---|---|---|\n| Event requester | Start or update an event request through WhatsApp | Get fast, clear intake questions and status updates |\n| Event operations agent | Manage inbound event requests and escalations | See structured context, suggested next steps, and approval queues |\n| Pricing approver | Review commercial commitments before they reach customers | Approve, reject, or edit exact pricing language before send |\n| Admin/operator | Configure policies and monitor risk | Maintain deterministic rules, templates, roles, and audit trails |\n\n## 3. Goals And Success Metrics\n| Goal | Metric | Baseline | Phase 1 Target |\n|---|---|---|---|\n| Faster intake | Median time from first WhatsApp message to structured event record | TBD | TBD after baseline; provisional target under 5 minutes |\n| Safer automation | Unauthorized pricing commitments sent externally | 0 expected | 0 |\n| Human-in-the-loop control | Percent of pricing commitment messages with recorded approver, preview, and timestamp | TBD | 100% |\n| Operational leverage | Percent of non-pricing intake conversations resolved without manual retyping | TBD | TBD after pilot |\n| Traceability | Percent of outbound commitment-bearing messages linked to policy decision and audit event | TBD | 100% |\n\nGuardrails:\n- No LLM output can directly write pricing, availability, contract, refund, or customer-commitment fields to a system of record.\n- No outbound WhatsApp message containing price, discount, minimum spend, payment term, cancellation term, availability guarantee, or refund commitment can be sent without deterministic policy approval and, when required, human approval.\n- If classification confidence, schema validation, or policy evaluation fails, the workflow escalates to the internal console.\n\n## 4. Phase 1 Scope\n### In Scope\n- WhatsApp assistant for event intake, clarification questions, status updates, and handoff notices.\n- Internal console with conversation timeline, extracted event details, task queue, approval queue, and outbound message preview.\n- Deterministic workflow engine for state transitions such as new inquiry, missing details, ready for pricing review, approved, sent, escalated, closed.\n- Human approval workflow for all pricing commitments and commercial terms.\n- Typed LLM adapter for extraction, classification, summarization, and draft response generation only.\n- Policy gate that validates every proposed action before execution.\n- Audit trail for message receipt, extraction, policy decision, approval, outbound send, and manual override.\n- Role-based access for operations agent, pricing approver, and admin.\n- Basic admin configuration for approved templates, escalation rules, and pricing-commitment keywords or action types.\n\n### Out Of Scope\n- Fully autonomous quoting or negotiation.\n- LLM-generated discounts, package prices, or contract terms without deterministic calculation and approval.\n- Payment collection, contract signing, invoice generation, or vendor marketplace workflows.\n- Multi-channel support beyond WhatsApp and internal console.\n- Automated vendor booking or customer availability guarantees.\n- Advanced CRM, ERP, or calendar integrations unless required for the Phase 1 pilot.\n\n## 5. Core User Stories And Acceptance Criteria\n### WhatsApp Event Intake\nAs an event requester, I want to describe my event in WhatsApp so the team can capture the right details without a phone call.\n\nAcceptance criteria:\n- The assistant captures event type, date, time, location, guest count, budget if volunteered, contact details, and special requirements.\n- Missing required fields trigger deterministic follow-up prompts from approved templates.\n- Ambiguous or sensitive requests are escalated to an operations agent.\n- The requester is told when a human is reviewing pricing or terms.\n\n### Internal Console Review\nAs an operations agent, I want a structured view of each conversation so I can resolve exceptions quickly.\n\nAcceptance criteria:\n- The console shows raw WhatsApp messages, extracted fields, confidence, workflow state, next recommended action, and escalation reason.\n- Agents can correct extracted fields before advancing workflow state.\n- Agent edits are auditable and become the source of truth for downstream deterministic steps.\n\n### Pricing Approval\nAs a pricing approver, I want to approve the exact customer-facing pricing message before it is sent.\n\nAcceptance criteria:\n- Any pricing commitment creates an approval task instead of sending automatically.\n- The approver sees event context, deterministic pricing inputs, proposed message text, policy flags, and recipient.\n- The approver can approve, reject, or edit the exact outbound message.\n- The platform records approver identity, timestamp, approved terms, and sent message ID.\n\n### Deterministic LLM Boundary\nAs an admin, I want LLM usage to be constrained so automation cannot create unauthorized commitments.\n\nAcceptance criteria:\n- LLM calls return typed JSON or draft text only; they cannot call send, pricing, contract, or database mutation APIs directly.\n- All LLM outputs pass schema validation, allowlisted field mapping, confidence thresholds, and policy evaluation before use.\n- Side effects are executed only by deterministic services after policy checks.\n- The system logs prompt version, model response ID if available, extracted fields, validation result, and downstream action decision.\n\n## 6. LLM Usage Policy\nPermitted LLM tasks:\n- Classify inbound messages by intent.\n- Extract event details into a typed schema.\n- Summarize conversation history for human review.\n- Draft non-binding response text for human or policy-gated review.\n- Identify missing information and propose clarification questions from approved templates.\n\nProhibited LLM tasks:\n- Calculate final price, discount, minimum spend, or fees.\n- Promise availability, staffing, vendor booking, refunds, cancellations, or contract terms.\n- Send WhatsApp messages directly.\n- Mutate source-of-truth records directly.\n- Override policy gates, confidence thresholds, or human approval requirements.\n- Generate unsupported claims about services, guarantees, or legal terms.\n\nBoundary implementation requirements:\n- Use a deterministic orchestrator as the only component allowed to execute state transitions and side effects.\n- Use a policy gate before every external send and source-of-truth mutation.\n- Require human approval for any action type tagged pricing_commitment, commercial_term, availability_guarantee, refund_commitment, contract_term, or policy_exception.\n- Treat LLM output as untrusted input until parsed, validated, and accepted by deterministic code.\n\n## 7. Functional Requirements\n| Area | Requirement | Priority |\n|---|---|---|\n| WhatsApp intake | Receive inbound messages and link them to requester and event record | P0 |\n| WhatsApp intake | Send approved template-based clarification and status messages | P0 |\n| Console | Show queue filtered by state, SLA, risk flag, and owner | P0 |\n| Console | Allow agents to edit extracted event fields with audit logging | P0 |\n| Pricing approval | Block outbound pricing commitments until approved | P0 |\n| Pricing approval | Present exact outbound preview before send | P0 |\n| Policy engine | Classify proposed actions and required approvals deterministically | P0 |\n| LLM adapter | Return structured extraction with confidence and validation result | P0 |\n| Audit | Store message, extraction, decision, approval, and send events | P0 |\n| Admin | Configure templates, role permissions, and escalation rules | P1 |\n| Observability | Dashboard for failures, escalations, latency, and unauthorized-send attempts | P1 |\n\n## 8. Non-Functional Requirements\n- Security: Role-based access, least-privilege service credentials, encrypted storage for conversation and customer data.\n- Privacy: Explicit retention policy for WhatsApp conversations and extracted personal data; redact sensitive fields in logs where feasible.\n- Reliability: Failed LLM calls, schema failures, or WhatsApp API errors must not lose the event record; they must create retry or manual-review tasks.\n- Latency: Non-pricing automated responses should be fast enough for conversational use; exact target TBD after channel and infrastructure decisions.\n- Auditability: Every external commitment must be reconstructable from source message, policy decision, human approval, and final sent content.\n- Testability: Include unit tests for policy gate rules, contract tests for LLM schemas, and scenario tests for prohibited pricing-send paths.\n\n## 9. Rollout Plan\n1. Internal sandbox: test WhatsApp intake, extraction, console review, and policy gates with synthetic event conversations.\n2. Controlled pilot: route a limited set of real inquiries through the console with all outbound messages human-reviewed.\n3. Limited automation: enable automated non-binding clarification and status messages while keeping pricing and commercial terms approval-gated.\n4. Phase 1 readiness review: evaluate unauthorized-commitment rate, approval coverage, extraction correction rate, and operator SLA before broader rollout.\n\n## 10. Key Risks And Mitigations\n| Risk | Impact | Mitigation |\n|---|---|---|\n| LLM generates a pricing or availability promise | Customer trust and financial exposure | Treat draft text as untrusted; deterministic policy gate plus approval before send |\n| Extracted event details are wrong | Bad pricing or poor service delivery | Confidence thresholds, console correction, audit trail, and explicit human review for pricing |\n| Approval workflow slows response time | Lower customer responsiveness | Separate low-risk clarification automation from approval-gated commitments |\n| Policy coverage misses a commitment type | Unauthorized send | Maintain action taxonomy, keyword checks, regression tests, and admin review of override logs |\n| Operators bypass the console | Incomplete audit trail | Make WhatsApp outbound sends for managed conversations flow through the platform |\n\n## Decision Frame\nRecommendation: Build Phase 1 as a constrained event operations automation platform, not an autonomous event agent.\n\nDecision: Proceed to prototype only if the team accepts that deterministic workflow, policy gates, and approval auditability are P0 scope rather than compliance polish.\n\nTrade-off: This will reduce the amount of automation available in Phase 1, but it directly protects the business from unauthorized pricing and commercial commitments.\n\nConfidence: Medium on product structure because the case packet clearly specifies WhatsApp assistant, internal console, human pricing approval, and deterministic LLM boundaries; low on metric targets and prioritization because no customer, operational, or technical evidence was supplied [ctx-1].\n\nOwner: Product lead with engineering and operations sign-off.\n\nRevisit trigger: Any request to let the LLM calculate, approve, or send pricing terms; any pilot incident involving an unauthorized commitment; or approval SLA materially worse than current manual handling.\n\n## Unknowns & Evidence Gaps\n- Current event intake volume, response-time baseline, and manual handling cost are unknown.\n- Pricing policy, discount authority, package catalog, and approval roles are undefined.\n- WhatsApp Business API constraints, consent requirements, and template approval requirements are not supplied.\n- Customer tolerance for automated intake versus immediate human handoff is unvalidated.\n- Required integrations with CRM, calendar, inventory, vendor, or payment systems are unknown.\n- Data retention, privacy, and jurisdiction-specific compliance requirements are unknown.\n- Phase 1 pilot segment and success thresholds require stakeholder confirmation.\n\n## Pass/Fail Readiness\nReadiness: FAIL for build approval; PASS for prototype scoping.\n\nRationale: The PRD has explicit scope boundaries, a deterministic LLM boundary model, and safety-critical acceptance criteria, but it lacks the evidence bar needed for a full build decision: no customer evidence, operational baselines, pricing policy inputs, or integration constraints were provided. The next step should validate the workflow and evidence gaps before committing full Phase 1 engineering capacity.\n\n## Recommended Next Artifact\nRecommended next artifact: Technical specification focused on the workflow state machine, policy gate, approval model, LLM adapter contract, audit schema, and WhatsApp integration boundaries. This should be paired with a short discovery plan for operations and pricing stakeholders to fill the missing baselines and approval-policy details.",
+    "claims": [
+      {
+        "claim_id": "side_b-claim-1",
+        "summary": "Phase 1 should be scoped as constrained event-operations automation with WhatsApp intake, an internal console, and human approval for all pricing commitments, rather than as a fully autonomous event agent.",
+        "evidence_refs": [
+          "ctx-1"
+        ],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-2",
+        "summary": "The LLM boundary must treat model output as untrusted input: permitted for extraction, classification, summarization, and drafts, but prohibited from pricing, sending, direct mutation, or commercial commitment decisions.",
+        "evidence_refs": [
+          "ctx-1"
+        ],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-3",
+        "summary": "The artifact is not ready for full build approval because the case packet supplies requirements constraints but no customer evidence, operational baselines, pricing policy, or integration details.",
+        "evidence_refs": [
+          "ctx-1"
+        ],
+        "is_major": true
+      }
+    ],
+    "citations": [
+      "ctx-1"
+    ],
+    "open_questions": [],
+    "critique_responses": []
+  },
+  "critique_packet": {
+    "target_side": "side_b",
+    "finding_id": "finding-1",
+    "target_claim_ids": [
+      "side_b-claim-3"
+    ],
+    "claim_under_attack": "The artifact is not ready for full build approval because the case packet supplies requirements constraints but no customer evidence, operational baselines, pricing policy, or integration details.",
+    "attack_type": "evidence_gap",
+    "evidence_or_reason": "This claim conflates 'evidence not supplied in the case packet' with 'evidence does not exist.' The case packet explicitly specifies WhatsApp assistant, internal console, human approval for pricing, and deterministic LLM boundaries — these are stakeholder-validated requirements, not hypothetical features. A PRD that faithfully translates clear stakeholder requirements into buildable scope does meet the bar for Phase 1 prototype approval. Side B's FAIL verdict for build approval sets an artificially high evidence bar by demanding operational baselines and pricing policy details that are discovery-phase outputs, not PRD prerequisites. The PRD itself acknowledges TBD metrics and proposes a rollout plan to gather them — which means the document already accounts for missing baselines through its phased approach. Declaring FAIL while simultaneously saying PASS for prototype scoping is internally contradictory: if the scope is well-defined enough to prototype, the missing evidence is about calibration (target values, thresholds) not about whether to build at all.",
+    "severity": "medium"
+  }
+}

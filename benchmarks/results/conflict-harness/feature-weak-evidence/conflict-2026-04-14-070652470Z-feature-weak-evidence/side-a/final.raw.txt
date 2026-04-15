@@ -1,0 +1,38 @@
+{
+  "run_id": "conflict-2026-04-14-070652470Z-feature-weak-evidence",
+  "side_id": "side_a",
+  "round": "final",
+  "artifact_markdown": "# Revised artifact\n\n## PRD: Evidence-Gated Feature Validation Sprint\n\n## Summary\nThe case packet provides no supporting evidence for the proposed feature. This PRD therefore does not authorize a broad feature launch. It authorizes a single validation sprint with explicit scope, concrete decision thresholds, and a mandatory stop/go review. The output is not \"ship the feature\"; the output is a falsifiable decision on whether the feature deserves a full PRD.\n\n## Problem Statement\nA feature idea exists, but there is no validated user segment, no quantified pain, no baseline workflow data, and no business evidence. Under these conditions, the product risk is not only building the wrong thing; it is creating a document that sounds decisive while committing to nothing testable.\n\n## Target User\nUnconfirmed. For validation purposes, the team must nominate one candidate segment before work starts and restrict the test to that segment only.\n\n## Validation Hypothesis\nIf one named target segment is given a narrowly scoped version of the feature for one workflow, then enough users will both try it and report meaningful value to justify deeper investment.\n\n## Product Requirement\nBuild one reversible beta for one workflow with one entry point and full instrumentation. Do not build platformized infrastructure, broad integrations, or secondary workflows.\n\nRequired in scope:\n- one target segment\n- one workflow\n- one entry point\n- event instrumentation for exposure, activation, completion, repeat usage, and error states\n- in-product or follow-up feedback capture\n- kill switch\n\nExplicitly out of scope:\n- general availability\n- multi-segment rollout\n- advanced customization\n- downstream integrations\n- roadmap commitment beyond this validation sprint\n\n## Success Metrics And Decision Gates\nThese thresholds are intentionally concrete so the validation can fail.\n\nGo to full PRD only if all of the following are met during the beta window:\n- At least 20 users from the named target segment are exposed to the feature.\n- Activation rate is at least 40 percent of exposed users.\n- Task completion rate among activated users is at least 70 percent.\n- Repeat usage within the evaluation window is at least 30 percent of activated users.\n- At least 8 qualitative feedback responses are collected.\n- At least 60 percent of respondents say the feature solved a real problem for them.\n- No guardrail metric breaches occur: severe defect rate under 5 percent of activated users, no material degradation to the adjacent workflow, and support burden remains manageable for the beta owner.\n\nIterate and rerun only if:\n- instrumentation worked,\n- at least 10 users were exposed,\n- at least one leading signal is positive,\n- and the main failure mode is clearly fixable within one additional sprint.\n\nStop and do not scale if any of the following occur:\n- fewer than 10 qualified users can be recruited,\n- activation is below 20 percent,\n- repeat usage is below 15 percent,\n- fewer than 40 percent of respondents report meaningful value,\n- or guardrails are breached.\n\n## Launch Plan\n- Stage 1: internal smoke test for instrumentation and obvious defects.\n- Stage 2: beta release to one named cohort for a fixed evaluation window.\n- Stage 3: decision review against thresholds above.\n\n## Risks\n- The proposed feature may address a nonexistent or low-priority problem.\n- A small cohort can create noisy data.\n- Qualitative enthusiasm can overstate durable value.\n- Recruitment failure may indicate weak demand or poor targeting.\n\n## Decision Frame\nDecision to make: should the team fund a validation sprint for this feature?\n\nRecommendation: yes, but only under a bounded validation contract with the thresholds above. No approval is granted for broad delivery or strategic commitment.\n\nWhy this is decision-useful:\n- It converts an evidence-free feature idea into a falsifiable test.\n- It defines what counts as success, what counts as failure, and what result warrants one more iteration.\n- It prevents ambiguous outcomes from being narrated as success.\n\n## Unknowns & Evidence Gaps\n- The actual target segment is still unknown.\n- Pain frequency and severity are unproven.\n- Baseline behavior is unmeasured.\n- Business value after early usage is unknown.\n- Competitive substitutes are unreviewed.\n- Engineering cost is still unestimated.\n\n## Pass/Fail Readiness\nPass for beta build only if all are true before implementation starts:\n- one target segment is named,\n- one workflow is selected,\n- event schema is defined,\n- a cohort recruitment plan exists for at least 20 users,\n- an owner is assigned for the review,\n- and the team accepts the stop criteria.\n\nFail readiness if any are missing.\n\nCurrent readiness: fail until the team names the segment, workflow, owner, and recruitment plan; conditional pass once those are supplied.\n\n## Recommended Next Artifact\nA validation brief is still the next artifact, but its scope is now narrow: fill in the named segment, chosen workflow, cohort source, event schema, and review date required to execute this PRD.",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "With no supporting evidence in the case packet, the feature should be approved only as a tightly bounded validation sprint, not as a full product commitment.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "A decision-useful PRD in this scenario must include concrete validation scope, explicit numeric stop/go thresholds, and a mandatory review gate so the proposal can be falsified rather than deferred indefinitely.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1"
+  ],
+  "open_questions": [
+    "Which single user segment will be named for the beta?",
+    "Which single workflow will be used as the validation target?"
+  ],
+  "critique_responses": [
+    {
+      "finding_id": "finding-2",
+      "disposition": "adopted",
+      "rationale": "The critique was correct that the first-pass artifact described a validation philosophy without committing to concrete gates. The revision adds explicit scope constraints, numeric thresholds, iterate criteria, stop criteria, and readiness requirements so the PRD itself is decision-useful instead of deferring the real decisions to a future document."
+    }
+  ]
+}

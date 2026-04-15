@@ -1,0 +1,87 @@
+You are SIDE_A in a sealed first-pass conflict harness run.
+Do not reveal provider identity.
+Do not mention or speculate about the opponent.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "run_id": "conflict-2026-04-14-021703410Z-yahoo-microsoft",
+  "side_id": "side_a",
+  "round": "first_pass",
+  "artifact_markdown": "# Your artifact",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "One major claim",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1"
+  ],
+  "open_questions": [],
+  "critique_responses": []
+}
+
+Case packet:
+{
+  "scenario_id": "yahoo-microsoft",
+  "title": "Yahoo rejecting Microsoft: hold independent or accept acquisition",
+  "prompt": "You are a strategy advisor to Yahoo's board in May 2008. Microsoft has offered to acquire Yahoo for $33 per share ($47.5 billion), a 62% premium over Yahoo's pre-offer price of ~$20. CEO Jerry Yang and the board have rejected the offer, arguing it undervalues Yahoo's strategic assets.\n\nMicrosoft CEO Steve Ballmer has since withdrawn the offer but signaled willingness to return with a revised bid. Yahoo has entered a search advertising partnership with Google as a defensive measure, but the DOJ is reviewing it for antitrust concerns.\n\nThe context: Yahoo's display advertising business is still #1 in the US, but search — the highest-growth, highest-margin segment — is dominated by Google (60%+ share). Yahoo Search has ~20% share and declining. Yahoo's Panama search platform (launched 2007) narrowed the monetization gap with Google but hasn't reversed share losses.\n\nKey evidence available:\n- Microsoft offer: $33/share ($47.5B), rejected by Yahoo board as too low\n- Yahoo pre-offer stock price: ~$20/share; post-rejection: ~$24/share\n- Yahoo board's stated minimum: $37/share\n- Yahoo 2007 revenue: $6.97B; operating income: $695M (10% margin)\n- Google 2007 revenue: $16.6B; operating income: $5.1B (31% margin)\n- Yahoo display ad market share: #1 in US (15.6% of total digital ad spend)\n- Yahoo search share: ~20% and declining (Google: ~63%, Microsoft: ~10%)\n- Yahoo Mail users: 260M+ (largest email service globally in 2008)\n- Yahoo Finance, Yahoo Sports, Flickr: high-traffic properties with strong engagement\n- Yahoo Japan stake: 34% ownership, valued at ~$8-10B independently\n- Alibaba stake: ~40% ownership (pre-IPO), valued at ~$3-4B in 2008\n- Panama search platform: improved revenue-per-search by 15-20% since launch\n- Google-Yahoo search partnership: would outsource Yahoo search ads to Google for 3+ years\n- DOJ antitrust review of Google-Yahoo deal: likely to block or severely limit scope\n- Microsoft's strategic need: desperately needs search scale to compete with Google\n- Carl Icahn (activist investor): acquired 5% Yahoo stake, pushing board to accept Microsoft offer\n- Yahoo headcount: ~14,300 employees (2008), up from 11,400 (2006)\n- Social media shift: Facebook growing from 100M to 200M users in 2008, fragmenting display ad attention\n\nThe board must decide: reopen negotiations with Microsoft at a higher price, or pursue an independent strategy built on display advertising dominance, the Google partnership, and the Alibaba/Yahoo Japan stakes?\n\nWrite a strategic recommendation memo. Take a clear position — sell or stay independent — and defend it with evidence. Acknowledge the strongest counterarguments and explain why your position is still correct.",
+  "artifact_type": "strategy",
+  "rubric": {
+    "dimensions": [
+      "claim quality",
+      "evidence discipline",
+      "responsiveness to critique",
+      "internal consistency",
+      "decision usefulness"
+    ],
+    "scoring_scale": "1-5",
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "constraints": {
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "expect_structured": true,
+    "context_files": [],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "evidence": [],
+  "max_rounds": 3,
+  "tool_policy": "none",
+  "sharing_policy": {
+    "share_case_packet": true,
+    "share_committed_artifacts_after_first_pass": true,
+    "share_critiques_after_open": true,
+    "share_hidden_reasoning": false,
+    "share_provider_identity": false,
+    "share_internal_coalition_drafts": false
+  },
+  "success_condition": {
+    "type": "validator_contract",
+    "description": "Produce a strategy artifact that satisfies the scenario validator contract.",
+    "validator": {
+      "artifact_type": "strategy",
+      "expect_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true
+    }
+  }
+}

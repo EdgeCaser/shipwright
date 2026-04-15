@@ -1,0 +1,13 @@
+# Critique: finding-1
+
+- Target Side: side_b
+- Target Claim IDs: side_b-claim-1
+- Attack Type: evidence_gap
+- Severity: medium
+
+## Claim Under Attack
+The decision is not ready for commitment: the three highest-impact unknowns (competitor pricing, price elasticity, WTP distribution) are all closable within 4-8 weeks at moderate cost, making it irrational to act now without a forcing function.
+
+## Evidence Or Reason
+This claim asserts specific closure timelines, cost levels, and a strong decision rule ('irrational to act now') without any cited evidence from the case packet or artifact. With no market data, no operational constraints, and no proof that these gaps are actually closable in 4-8 weeks for this context, the conclusion overreaches. The visible artifact shows a plausible generic process, but not support for why waiting dominates all immediate pricing actions under the stated partial-data scenario.
+

@@ -1,0 +1,57 @@
+# Revised artifact
+
+# Recommendation Memo: Reopen Negotiations and Sell to Microsoft
+
+Yahoo should reopen negotiations with Microsoft and pursue a sale at an improved price, ideally at or above the board's stated $37 per share threshold. The strongest basis for that recommendation is not that $33 has been conclusively proven above standalone intrinsic value; it is that Yahoo's independent path depends on solving a deteriorating search position without a credible operating fix, while its main defensive alternative, the Google partnership, is exposed to likely antitrust intervention. The board's job is to choose the highest probability path to realized shareholder value, not the path with the best narrative about latent asset value.
+
+Yahoo still owns real strategic assets. It is the #1 US display advertising player, has 260M+ Mail users, and controls premium consumer properties including Finance, Sports, and Flickr. It also holds minority stakes in Yahoo Japan and Alibaba worth roughly $11-14B combined. Those facts mean the board was right to reject the idea that $33 was obviously full value. They also strengthen Yahoo's negotiating leverage for a higher bid. But they do not answer the harder question: can Yahoo, as an independent company, convert those assets into durable operating improvement in the segment that matters most?
+
+On the evidence available, the answer is no. Search is the highest-growth, highest-margin part of online advertising, and Yahoo's search share is about 20% and falling while Google holds more than 60%. Panama improved revenue-per-search by 15-20%, which shows Yahoo can optimize monetization, but it did not stop share decline. That distinction matters. Better monetization of a shrinking search base is not the same as regaining strategic position in a scale business where query volume, advertiser liquidity, and data advantages compound over time.
+
+The independence case therefore rests on two supports, and both are weaker than they first appear. First, Yahoo can lean on display leadership and audience scale. That helps near-term cash generation, but display attention is fragmenting as Facebook rapidly scales from 100M toward 200M users in 2008. Second, Yahoo can use the Google search deal to lift monetization while preserving independence. But the DOJ is already reviewing that arrangement and is likely to block or sharply limit it. A board should not anchor strategy to a defense whose core mechanism may be unavailable.
+
+The right conclusion is not that Yahoo is worth only $24 because the stock traded there after the rejection. That trading level is relevant as a market signal, but not a clean standalone valuation because it is contaminated by deal expectations and uncertainty. The better conclusion is narrower and more defensible: the market is not giving Yahoo credit today for a confident standalone turnaround, and the board does not yet have evidence of an executable independent plan that would reliably unlock a value superior to a negotiated sale. Sum-of-the-parts value may justify pushing Microsoft above $33; it does not, by itself, justify continued independence if the operating business continues to weaken.
+
+Microsoft's strategic need remains Yahoo's leverage. Microsoft sits at roughly 10% search share and needs Yahoo's scale to become relevant against Google. That urgency gives Yahoo a path to improve price and terms, including treatment of key assets, employee retention, and execution protections. The board should use that leverage aggressively. But it should use it to maximize a transaction, not to rationalize an independent strategy that still lacks a credible answer to Yahoo's search problem.
+
+The strongest counterargument is that selling now crystallizes value before Yahoo's Asian stakes and core media properties are fully appreciated. That is real. If the board had hard evidence that a standalone sum-of-the-parts realization plan could deliver clearly superior shareholder value on a reasonable timetable without depending on the Google deal, the recommendation would change. On the current record, it does not. The balance of evidence supports reopening negotiations, demanding a higher price, and treating a sale as the default path.
+
+## Decision Frame
+
+Decision: Reopen negotiations with Microsoft and pursue a sale at a higher price, rather than commit to a standalone strategy.
+
+Why this is the right call:
+- Yahoo's central strategic problem is declining search share in the most important profit pool.
+- Panama improved monetization but did not restore competitive position.
+- The Google partnership may improve short-term economics but is vulnerable to DOJ action.
+- Yahoo's strategic assets and minority stakes support negotiating leverage and a higher price, but do not by themselves create an executable independent turnaround.
+- The board has more evidence for value maximization through a negotiated transaction than for value creation through independence.
+
+## Unknowns & Evidence Gaps
+
+- A rigorous probability-weighted sum-of-the-parts valuation, including what portion of Alibaba and Yahoo Japan value is realistically realizable in the near to medium term.
+- The precise price Microsoft would pay if Yahoo re-engages immediately and credibly.
+- The likely DOJ outcome and timing on the Google partnership.
+- Whether Yahoo can produce a standalone operating plan with quantified milestones that stabilizes search share rather than only improving revenue-per-search.
+- The magnitude of integration risk in a Microsoft-Yahoo combination.
+
+## Pass/Fail Readiness
+
+Pass if:
+- Microsoft indicates willingness to improve terms toward or above the board's threshold.
+- A standalone valuation review shows Yahoo may be worth more than $33 in theory, but not more than the best realistic transaction on a risk-adjusted, realizable basis.
+- The board confirms that the independent plan still depends materially on a Google arrangement that may not survive antitrust review.
+
+Fail if:
+- A credible standalone plan shows Yahoo can preserve or grow search position without relying on Google.
+- A disciplined sum-of-the-parts analysis shows near-term realizable value clearly above Microsoft's best likely bid.
+- Microsoft refuses to improve price or provide acceptable certainty and protections.
+
+## Recommended Next Artifact
+
+A board decision memo with a risk-adjusted options model comparing:
+1. Sale to Microsoft at $33, $35, and $37+ per share.
+2. Independence with Google partnership allowed, limited, or blocked.
+3. Sum-of-the-parts realization paths for Alibaba, Yahoo Japan, and the core media/display business.
+
+That memo should distinguish clearly between theoretical intrinsic value and value that is realistically realizable for shareholders within the board's decision horizon.

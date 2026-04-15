@@ -1,0 +1,124 @@
+{
+  "case_packet": {
+    "scenario_id": "pricing-partial-data",
+    "title": "Pricing change with partial market data",
+    "prompt": "Draft a pricing strategy recommendation under partial market data.",
+    "artifact_type": "strategy",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a strategy artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "strategy",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass": {
+    "run_id": "conflict-2026-04-14-020458448Z-pricing-partial-data",
+    "side_id": "side_b",
+    "round": "first_pass",
+    "artifact_markdown": "# Pricing Strategy Recommendation Under Partial Market Data\n\n## Recommendation\nAdopt a staged pricing change rather than a full repricing: run a narrow, reversible price increase on the highest-intent segment first, preserve current pricing for the broad base, and pair the test with tighter packaging and explicit guardrails. Under partial market data, the correct decision is not to freeze pricing indefinitely or to roll out a portfolio-wide change with false confidence; it is to convert uncertainty into measured evidence while protecting revenue and conversion. [ctx-1][ctx-2]\n\n## Decision Frame\n\n### Decision\nProceed with a limited pricing test instead of a full launch.\n\n### Why This Is The Best Current Move\nThe scenario requires a pricing recommendation despite incomplete market evidence. In that condition, the most decision-useful path is a bounded experiment that answers willingness-to-pay and elasticity questions before broad rollout. This preserves upside if pricing is too low, while limiting downside if the market is more price-sensitive than expected. [ctx-1][ctx-2]\n\n### Recommended Operating Shape\n- Increase price only for a clearly defined segment with strongest purchase intent or lowest expected churn sensitivity.\n- Keep legacy pricing for existing customers during the first test window unless there is a contractual reason not to.\n- Tighten packaging so the higher price is attached to a clearer value tier, not just a naked price jump.\n- Define rollback triggers before launch: conversion decline, churn increase, sales-cycle elongation, or win-rate deterioration.\n- Time-box the test and require a ship/no-ship review before expansion. [ctx-1]\n\n### Strategic Rationale\nWhen market data is partial, pricing should be treated as a risk-managed learning system. The company does not yet know whether the constraint is underpricing, weak positioning, low differentiation, or segment mismatch. A staged test yields evidence across those possibilities; a full rollout confounds them and makes diagnosis harder. [ctx-1][ctx-2]\n\n## Unknowns & Evidence Gaps\n- No competitor pricing evidence is provided, so relative market position is unknown. [ctx-2]\n- No willingness-to-pay data is provided, so elasticity assumptions are unvalidated. [ctx-2]\n- No current funnel metrics are provided, so acceptable conversion degradation thresholds must be estimated before launch. [ctx-2]\n- No retention, expansion, or segment profitability data is provided, so the best entry segment for testing is still an open operational choice. [ctx-2]\n- No packaging or feature-differentiation evidence is provided, so part of the observed response may reflect value communication rather than price alone. [ctx-2]\n\n## Pass/Fail Readiness\n\n### Pass Conditions\n- A target segment is identifiable and operationally reachable.\n- Baseline metrics exist for conversion, win rate, churn, and sales-cycle length.\n- Rollback thresholds are precommitted.\n- Pricing can be exposed to only the test cohort.\n- Sales, support, and success teams have a consistent narrative for the tested offer. [ctx-1]\n\n### Fail Conditions\n- Pricing systems cannot isolate the test cohort.\n- Baseline performance metrics are too weak or noisy to interpret results.\n- Management expects a broad permanent repricing from this first move.\n- Packaging remains ambiguous, making value and price impossible to disentangle.\n- The business cannot tolerate short-term volatility in bookings or conversion. [ctx-1][ctx-2]\n\n## Recommended Next Artifact\nCreate a pricing experiment brief with:\n- hypothesis and target segment\n- proposed price and package variants\n- success metrics and guardrails\n- test duration and sample threshold\n- rollback criteria\n- decision rule for expand, hold, or revert [ctx-1]\n\n## Bottom Line\nRecommend a controlled segment-based price test, not a full market-wide pricing change. That is the highest-quality decision available under partial market data because it creates evidence without forcing the business into a low-confidence irreversible move. [ctx-1][ctx-2]",
+    "claims": [
+      {
+        "claim_id": "side_b-claim-1",
+        "summary": "Under partial market data, the best recommendation is a staged, reversible pricing test rather than a full repricing.",
+        "evidence_refs": [
+          "ctx-1",
+          "ctx-2"
+        ],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-2",
+        "summary": "The initial test should target a high-intent or lower-sensitivity segment and use precommitted rollback guardrails.",
+        "evidence_refs": [
+          "ctx-1"
+        ],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-3",
+        "summary": "Missing competitor, elasticity, funnel, and retention data are material evidence gaps that prevent a confident broad rollout.",
+        "evidence_refs": [
+          "ctx-2"
+        ],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-4",
+        "summary": "The next artifact should be a pricing experiment brief that defines hypotheses, variants, metrics, thresholds, and decision rules.",
+        "evidence_refs": [
+          "ctx-1"
+        ],
+        "is_major": false
+      }
+    ],
+    "citations": [
+      "ctx-1",
+      "ctx-2"
+    ],
+    "open_questions": [
+      "Which customer segment has the strongest combination of purchase intent and lowest churn sensitivity?",
+      "What are current baseline metrics for conversion, win rate, retention, expansion, and sales-cycle length?",
+      "Can the pricing system isolate test cohorts without leakage across channels or contracts?",
+      "Is the proposed price change paired with a packaging change strong enough to explain increased value?"
+    ],
+    "critique_responses": []
+  },
+  "critique_packet": {
+    "target_side": "side_b",
+    "finding_id": "finding-1",
+    "target_claim_ids": [
+      "side_b-claim-1"
+    ],
+    "claim_under_attack": "Under partial market data, the best recommendation is a staged, reversible pricing test rather than a full repricing.",
+    "attack_type": "evidence_gap",
+    "evidence_or_reason": "This claim presents staged testing as universally optimal under uncertainty, but provides no evidence or reasoning for when a staged test would be the wrong move. Several common conditions undermine it: (1) if the company is severely underpriced and losing money per unit, delay costs real margin daily; (2) if competitors are about to reprice, a slow test cedes positioning; (3) if the product has low transaction volume, a segment test will never reach statistical significance within a useful timeframe. The artifact treats 'partial data' as a monolithic condition warranting one response, when the optimal action depends on which data is missing and what the cost of inaction is. The citations ctx-1 and ctx-2 are self-referential context markers with no external evidence supporting the claim that staged testing dominates other approaches (e.g., conjoint analysis, competitive benchmarking, or even a confident full reprice with monitoring).",
+    "severity": "high"
+  }
+}

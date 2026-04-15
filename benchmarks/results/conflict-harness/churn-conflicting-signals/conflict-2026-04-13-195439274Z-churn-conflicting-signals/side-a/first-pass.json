@@ -1,0 +1,59 @@
+{
+  "run_id": "conflict-2026-04-13-195439274Z-churn-conflicting-signals",
+  "side_id": "side_a",
+  "round": "first_pass",
+  "artifact_markdown": "# Churn Reduction PRD: Resolving Conflicting Signals\n\n## Decision Frame\n\n**Problem statement:** Churn metrics are sending conflicting signals relative to strategic growth targets. Specifically:\n\n- **Signal conflict 1:** Net revenue retention (NRR) appears healthy at 105%+, but logo churn is accelerating (monthly logo churn rising from 3.2% to 4.8% over two quarters). Expansion revenue from surviving accounts masks the loss of smaller accounts.\n- **Signal conflict 2:** NPS scores remain stable (42-45 range), yet support ticket volume per account has increased 30%. Customers are dissatisfied but not yet at the point of scoring detractors — a lagging indicator problem.\n- **Signal conflict 3:** Product usage metrics show increased DAU/MAU ratio, but session depth is declining. Users log in more frequently but do less each time — potentially a sign of workflow fragmentation rather than engagement.\n\n**Strategic tension:** The current strategy prioritizes land-and-expand (upsell existing accounts). Churn reduction efforts that slow expansion motion (e.g., shifting CS resources from upsell to save plays) directly conflict with quarterly expansion targets. This PRD must resolve that tension with a clear recommendation.\n\n**Decision to be made:** Should we (a) rebalance CS capacity toward retention at the cost of expansion velocity, (b) build product-led retention mechanisms that don't consume CS bandwidth, or (c) accept current logo churn as the cost of the expansion strategy and set a ceiling rather than a floor?\n\n**Who decides:** VP Product + VP Customer Success, with CFO sign-off if CS headcount reallocation exceeds 20%.\n\n**Decision deadline:** End of Q3 planning cycle.\n\n## Unknowns & Evidence Gaps\n\n| # | Unknown | Why it matters | Current evidence | What would resolve it |\n|---|---------|---------------|-----------------|----------------------|\n| U1 | Are churning accounts fundamentally different from expanding accounts (segment, ACV, use case)? | If churn is concentrated in a segment we're deprioritizing anyway, the conflict is illusory. | We have logo churn counts but no segmented cohort analysis by ACV band or use case. | Run cohort survival analysis segmented by ACV quartile, industry, and primary use case. |\n| U2 | What is the revenue-weighted churn rate vs. logo churn rate? | Logo churn of 4.8% could represent 1% of revenue or 15%. The strategic response differs dramatically. | NRR is reported in aggregate. Revenue churn by cohort is not broken out. | Finance to produce revenue churn by monthly cohort for last 8 quarters. |\n| U3 | Is declining session depth causal to churn or merely correlated? | If shallow sessions predict churn, product-led intervention is viable. If not, we're optimizing the wrong signal. | No predictive model exists linking usage patterns to churn probability. | Build a logistic regression churn predictor using usage telemetry from last 12 months. |\n| U4 | What is the actual CS capacity split between expansion and retention today? | We cannot rebalance what we haven't measured. | CS leadership estimates 70/30 expansion/retention but no time-tracking data exists. | Two-week CS time audit with activity categorization. |\n| U5 | Are churned customers recoverable, and at what cost? | Win-back economics inform whether prevention or recovery is the better investment. | Anecdotal: some accounts have returned. No systematic win-back data. | Survey last 6 months of churned accounts; track win-back attempts and conversion rates. |\n\n## Pass/Fail Readiness\n\n**Readiness verdict: NOT READY to commit to a specific churn intervention.**\n\nRationale:\n\n- **FAIL — Evidence sufficiency:** The three signal conflicts cannot be resolved without U1 and U2 (segmented churn data). Without knowing *who* is churning and *how much revenue* they represent, any intervention is untargeted.\n- **FAIL — Causal understanding:** U3 (session depth → churn causality) is unresolved. Product-led retention investment without this analysis risks building features that don't move the churn needle.\n- **FAIL — Capacity baseline:** U4 (CS time allocation) is estimated, not measured. Rebalancing from an unknown baseline produces unpredictable results.\n- **PASS — Strategic framing:** The decision frame is clear, the stakeholders are identified, and the three options are well-defined. We know what decision we need to make; we lack the evidence to make it.\n- **PASS — Urgency calibration:** Logo churn trend (3.2% → 4.8%) is concerning but not crisis-level. We have one quarter to gather evidence before the trend becomes structural. Rushing a response risks misallocation.\n\n**Minimum evidence required before proceeding:**\n1. Segmented cohort churn analysis (U1 + U2) — 2 weeks to produce\n2. CS capacity audit (U4) — 2 weeks to produce\n3. Preliminary churn predictor (U3) — 4 weeks to produce (can run in parallel)\n\n## Recommended Next Artifact\n\n**Next artifact: Evidence Sprint Plan**\n\nBefore writing a full churn reduction roadmap, execute a 4-week evidence sprint to close U1-U4:\n\n| Week | Deliverable | Owner | Feeds into |\n|------|------------|-------|------------|\n| 1-2 | Segmented cohort survival analysis (U1 + U2) | Data/Analytics | Decision between options (a), (b), (c) |\n| 1-2 | CS time allocation audit (U4) | CS Ops | Feasibility of option (a) |\n| 1-4 | Churn predictor v0 using usage telemetry (U3) | Data Science | Feasibility of option (b) |\n| 3 | Win-back survey of last 6 months churned accounts (U5) | CS + Marketing | Recovery economics |\n| 4 | Evidence review + decision meeting | VP Product + VP CS | Commit to (a), (b), or (c) with data |\n\nAfter the evidence sprint, the recommended follow-on artifact is a **Prioritized Intervention Roadmap** — a PRD with specific retention features, CS process changes, or strategic acceptance criteria, depending on which option the evidence supports.\n\n**What we will NOT do in the interim:**\n- No reactive CS reallocation before the capacity audit completes.\n- No new retention features until the churn predictor identifies actionable signals.\n- No changes to expansion targets until revenue-weighted churn is quantified.\n\nThis deliberate pause is itself a decision: we are choosing evidence over speed because the signal conflicts mean that fast action is as likely to be wrong as right.",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "The organization is not ready to commit to a churn intervention because three fundamental signal conflicts (NRR vs logo churn, NPS vs ticket volume, DAU/MAU vs session depth) cannot be resolved without segmented cohort data that does not currently exist.",
+      "evidence_refs": [
+        "ctx-signal-conflicts"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "Logo churn acceleration (3.2% to 4.8%) may be illusory if concentrated in segments the expansion strategy is deliberately deprioritizing — making segmented analysis the single highest-leverage evidence gap.",
+      "evidence_refs": [
+        "ctx-signal-conflicts"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-3",
+      "summary": "A 4-week evidence sprint is the correct next step because the cost of a wrong intervention (misallocating CS capacity or building unused features) exceeds the cost of one quarter of continued trend observation.",
+      "evidence_refs": [
+        "ctx-strategic-tension"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-4",
+      "summary": "The three strategic options (CS rebalance, product-led retention, accept-and-cap) each require different evidence to validate, and no single option can be justified with current data.",
+      "evidence_refs": [
+        "ctx-decision-frame"
+      ],
+      "is_major": false
+    },
+    {
+      "claim_id": "side_a-claim-5",
+      "summary": "Aggregate NRR masks logo churn severity — revenue-weighted churn by cohort is a critical missing metric that could change the strategic calculus entirely.",
+      "evidence_refs": [
+        "ctx-signal-conflicts"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-signal-conflicts",
+    "ctx-strategic-tension",
+    "ctx-decision-frame"
+  ],
+  "open_questions": [
+    "Is the expansion-strategy itself contributing to churn by attracting poor-fit accounts that expand briefly then leave?",
+    "Should the churn ceiling (option c) be defined in logo terms, revenue terms, or both?",
+    "Are there quick-win retention signals visible in existing data that could justify a small parallel experiment during the evidence sprint?"
+  ],
+  "critique_responses": []
+}

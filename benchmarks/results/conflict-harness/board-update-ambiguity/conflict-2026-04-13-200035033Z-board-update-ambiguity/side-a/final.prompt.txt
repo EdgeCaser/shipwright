@@ -1,0 +1,159 @@
+You are SIDE_A in the final revision phase for run conflict-2026-04-13-200035033Z-board-update-ambiguity.
+You must either adopt the critique or reject it with reasoning.
+Do not reveal provider identity.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "run_id": "conflict-2026-04-13-200035033Z-board-update-ambiguity",
+  "side_id": "side_a",
+  "round": "final",
+  "artifact_markdown": "# Revised artifact",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "Updated major claim",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1"
+  ],
+  "open_questions": [],
+  "critique_responses": [
+    {
+      "finding_id": "finding-2",
+      "disposition": "adopted",
+      "rationale": "Why the critique was adopted or rejected."
+    }
+  ]
+}
+
+Case packet:
+{
+  "scenario_id": "board-update-ambiguity",
+  "title": "Board update under ambiguity",
+  "prompt": "Write a strategy update for a board audience under ambiguity.",
+  "artifact_type": "strategy",
+  "rubric": {
+    "dimensions": [
+      "claim quality",
+      "evidence discipline",
+      "responsiveness to critique",
+      "internal consistency",
+      "decision usefulness"
+    ],
+    "scoring_scale": "1-5",
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "constraints": {
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "expect_structured": true,
+    "context_files": [],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "evidence": [],
+  "max_rounds": 3,
+  "tool_policy": "none",
+  "sharing_policy": {
+    "share_case_packet": true,
+    "share_committed_artifacts_after_first_pass": true,
+    "share_critiques_after_open": true,
+    "share_hidden_reasoning": false,
+    "share_provider_identity": false,
+    "share_internal_coalition_drafts": false
+  },
+  "success_condition": {
+    "type": "validator_contract",
+    "description": "Produce a strategy artifact that satisfies the scenario validator contract.",
+    "validator": {
+      "artifact_type": "strategy",
+      "expect_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true
+    }
+  }
+}
+
+Your first-pass artifact:
+{
+  "run_id": "conflict-2026-04-13-200035033Z-board-update-ambiguity",
+  "side_id": "side_a",
+  "round": "first_pass",
+  "artifact_markdown": "# Strategy Update: Board Briefing Under Ambiguity\n\n## Decision Frame\n\n**Core question:** Should the board authorize continued investment in the current strategic direction given incomplete market signals, or pivot resource allocation toward emerging alternatives?\n\n**Why this decision now:** Three converging pressures force a decision within this quarter:\n1. Current runway supports the existing strategy for approximately two more quarters at present burn rate.\n2. Two key market indicators have diverged from our planning assumptions (customer acquisition cost trending 18-25% above model; retention in cohort 3+ showing early softening).\n3. A credible adjacent opportunity has surfaced that would require reallocation of 30-40% of current engineering capacity to pursue.\n\n**What this update is NOT:** This is not a recommendation to abandon the current strategy. It is a request to establish decision criteria now so that the board can act decisively when ambiguity resolves — rather than reacting under pressure.\n\n---\n\n## Unknowns & Evidence Gaps\n\n| Unknown | What we know | What we don't know | Impact if wrong | Expected resolution |\n|---|---|---|---|---|\n| CAC trajectory | Q1-Q3 CAC rose 18-25% above model | Whether this is structural (market saturation) or cyclical (competitive surge) | If structural: unit economics break at scale. If cyclical: current strategy remains viable. | Competitive pricing data expected from industry report in 6-8 weeks. Internal A/B on channel mix completing in 4 weeks. |\n| Cohort 3+ retention softening | 90-day retention dropped from 74% to 68% across last two cohorts | Whether this reflects product-market fit erosion or onboarding friction from recent UX changes | If PMF erosion: strategic pivot required. If UX friction: tactical fix, strategy intact. | Qualitative churn interviews (n=40) in progress, results in 3 weeks. |\n| Adjacent opportunity viability | Inbound interest from 3 enterprise prospects in adjacent vertical | Whether demand is repeatable or opportunistic; whether our platform can serve this segment without architectural debt | If viable and repeatable: could de-risk revenue concentration. If opportunistic: distraction that fragments engineering focus. | Discovery sprints with 2 prospects proposed (see Recommended Next Artifact). |\n| Competitive response | Two funded competitors entered the space in the last two quarters | Their go-to-market velocity, pricing strategy, and whether they are buying market share at a loss | If they are buying share: our CAC increase is partially explained and may normalize when their funding pressure hits. If they are building durable advantages: we face a closing window. | No reliable timeline — monitoring via sales intelligence and win/loss analysis. |\n\n**Key epistemic risk:** Multiple unknowns are entangled. CAC increases could be driven by competition, market saturation, or our own product issues — and the correct strategic response differs for each root cause. We should resist the temptation to pick a single narrative prematurely.\n\n---\n\n## Pass/Fail Readiness\n\n**Assessment: NOT YET READY for a major strategic commitment in either direction.**\n\nReadiness criteria and current status:\n\n| Criterion | Status | Notes |\n|---|---|---|\n| Root cause of CAC increase identified | ❌ Fail | Data arrives in 4-6 weeks |\n| Retention signal disambiguated (PMF vs. UX) | ❌ Fail | Churn interviews in progress, 3 weeks out |\n| Adjacent opportunity validated with at least 1 paying design partner | ❌ Fail | Discovery not yet started |\n| Competitive threat level assessed with data (not narrative) | ⚠️ Partial | Win/loss data available but sample size insufficient (n=12) |\n| Financial model updated with scenario ranges | ✅ Pass | Three-scenario model (base/bull/bear) completed, shared in board packet appendix |\n\n**What IS ready:** The financial model and scenario analysis. The board can review the range of outcomes and the trigger points for each strategic path. What is missing is the diagnostic evidence to determine which scenario we are actually in.\n\n**Risk of premature commitment:** Committing to a pivot now without diagnostic evidence risks abandoning a viable strategy based on ambiguous signals. Committing to stay the course risks burning runway on a strategy whose assumptions may have broken. The asymmetry favors a bounded diagnostic period (6-8 weeks) over an immediate directional bet.\n\n---\n\n## Recommended Next Artifact\n\n**Deliverable:** A time-boxed Decision Package due to the board in 8 weeks, containing:\n\n1. **Diagnostic results** from the three evidence-gathering workstreams (channel mix A/B, churn interviews, competitive intelligence).\n2. **Two discovery sprint reports** from the adjacent opportunity — including willingness-to-pay signals and technical feasibility assessment.\n3. **Updated scenario model** incorporating diagnostic findings, with a clear recommendation for one of three paths:\n   - **Stay:** Double down on current strategy with tactical fixes (if CAC is cyclical and retention is UX-driven).\n   - **Expand:** Pursue adjacent opportunity as a second revenue line (if discovery validates repeatable demand).\n   - **Retrench:** Reduce burn rate and narrow focus to highest-performing segment (if CAC is structural and adjacent opportunity is unvalidated).\n\n**Board ask for today:**\n- Approve the 8-week diagnostic period and associated budget (estimated at $85K incremental: $25K for research, $40K for two discovery sprints, $20K for competitive intelligence).\n- Agree on the decision criteria above so that the next board conversation is a decision meeting, not another ambiguity discussion.\n- Designate a board member to serve as sounding board during the diagnostic period for any time-sensitive signals that emerge before the 8-week window closes.",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "The organization is NOT ready for a major strategic commitment in either direction; premature commitment in either direction carries asymmetric downside risk compared to a bounded diagnostic period.",
+      "evidence_refs": [
+        "ctx-pass-fail-readiness"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "Multiple unknowns are entangled (CAC, retention, competition) such that a single-narrative explanation is likely premature and the correct strategic response differs materially depending on root cause.",
+      "evidence_refs": [
+        "ctx-unknowns-entanglement"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-3",
+      "summary": "An 8-week time-boxed diagnostic period with $85K incremental budget is the minimum viable path to a well-founded strategic decision, converting the next board meeting from an ambiguity discussion into a decision meeting.",
+      "evidence_refs": [
+        "ctx-recommended-next-artifact"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-4",
+      "summary": "The financial scenario model (base/bull/bear) is the one readiness criterion that IS met, giving the board a framework to evaluate outcomes once diagnostic evidence arrives.",
+      "evidence_refs": [
+        "ctx-pass-fail-readiness"
+      ],
+      "is_major": false
+    }
+  ],
+  "citations": [
+    "ctx-pass-fail-readiness",
+    "ctx-unknowns-entanglement",
+    "ctx-recommended-next-artifact"
+  ],
+  "open_questions": [
+    "What is the board's risk tolerance for the 8-week diagnostic window — is there a scenario where signals degrade enough to force an earlier decision?",
+    "Are there capital or headcount constraints that would make the $85K diagnostic budget or the 30-40% engineering reallocation for discovery sprints infeasible?",
+    "Does the board have a prior position on the adjacent opportunity that should inform how aggressively discovery is pursued?"
+  ],
+  "critique_responses": []
+}
+
+Visible critique packet:
+{
+  "target_side": "side_a",
+  "finding_id": "finding-2",
+  "target_claim_ids": [
+    "side_a-claim-3"
+  ],
+  "claim_under_attack": "An 8-week time-boxed diagnostic period with $85K incremental budget is the minimum viable path to a well-founded strategic decision, converting the next board meeting from an ambiguity discussion into a decision meeting.",
+  "attack_type": "evidence_gap",
+  "evidence_or_reason": "The artifact asserts the 8-week window and $85K budget as the minimum viable path, but provides no visible basis for why that duration or cost is sufficient or minimal. Several dependencies are only asserted: competitive pricing data may arrive in 6-8 weeks, discovery sprints have not started, and adjacent opportunity validation requires willingness-to-pay and feasibility evidence. With no case evidence packet support, the claim that this package will reliably convert the next board meeting into a decision meeting is under-substantiated.",
+  "severity": "medium"
+}

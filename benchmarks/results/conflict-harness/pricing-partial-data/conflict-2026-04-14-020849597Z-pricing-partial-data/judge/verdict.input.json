@@ -1,0 +1,264 @@
+{
+  "case_packet": {
+    "scenario_id": "pricing-partial-data",
+    "title": "Pricing change with partial market data",
+    "prompt": "Draft a pricing strategy recommendation under partial market data.",
+    "artifact_type": "strategy",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a strategy artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "strategy",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-14-020849597Z-pricing-partial-data",
+      "side_id": "side_a",
+      "round": "first_pass",
+      "artifact_markdown": "# Pricing Strategy Recommendation Under Partial Market Data\n\n## Decision Frame\n\n**Core question:** Should we proceed with a pricing change given incomplete market data, and if so, under what conditions?\n\n**Decision type:** Reversible pricing adjustment with staged rollout — not a one-way door.\n\n**Stakeholders:** Product, Finance, Sales, Customer Success.\n\n**Current state:** We lack sufficient market data to make a high-confidence pricing decision. Specifically, we are missing competitive pricing benchmarks, customer willingness-to-pay (WTP) research, and segment-level price elasticity estimates. What we have is internal cost structure, current revenue per customer cohort, and anecdotal churn feedback.\n\n**Decision criteria:** We should proceed only if (1) the expected value of acting now exceeds the expected value of waiting for better data, and (2) we can structure the change to be reversible or scoped narrowly enough that downside is bounded.\n\n## Unknowns & Evidence Gaps\n\n| Gap | Severity | Mitigation Available? |\n|-----|----------|----------------------|\n| Competitive pricing landscape | High | Partial — can infer from public pages and win/loss anecdotes, but no systematic collection | \n| Customer willingness-to-pay | High | No — requires Van Westendorp or conjoint study not yet conducted |\n| Price elasticity by segment | High | No — requires historical A/B or cohort analysis we haven't run |\n| Churn attribution to price vs. product | Medium | Partial — exit surveys exist but sample is small and self-selected |\n| Cost-to-serve by tier | Low | Available — internal finance data is reliable |\n| Current contract renewal rates | Low | Available — CRM data is clean |\n\n**Key risk:** Without WTP data, any price increase is a bet on retention inertia. If we are wrong about customers' price ceiling, we discover it through churn — a lagging indicator that arrives too late to prevent damage.\n\n**What partial data tells us:** Internal cost-to-serve data confirms current pricing leaves thin margins on the lowest tier. Anecdotal churn feedback suggests price is a factor but rarely the primary driver. These signals are necessary but not sufficient for a confident across-the-board change.\n\n## Pass/Fail Readiness\n\n**Verdict: CONDITIONAL PASS — proceed only with scoped pilot, not full rollout.**\n\nRationale:\n- **FAIL for full rollout.** The evidence gaps (WTP, elasticity, competitive benchmarks) are too severe to justify changing prices for the entire customer base. The downside of a wrong move — accelerated churn, sales cycle friction, brand perception damage — is asymmetric and hard to reverse at scale even if the price change itself is technically reversible.\n- **PASS for scoped pilot.** A controlled pricing experiment on new customers or a single segment can generate the missing elasticity data while bounding downside. This converts the pricing decision from a guess into a learning investment.\n\n**Conditions for full-rollout readiness:**\n1. Complete a WTP study (Van Westendorp or Gabor-Granger) with n ≥ 100 per target segment.\n2. Run a 60-day pricing pilot on new customers measuring conversion rate delta and 30-day retention.\n3. Collect ≥ 5 competitive pricing data points from direct competitors (public pricing pages, sales intel, or win/loss analysis).\n4. Validate that cost-to-serve analysis holds under projected volume changes from the new pricing.\n\n## Recommended Next Artifact\n\n**Pricing Pilot Design Document** containing:\n- Pilot segment selection criteria (recommend: new customers in mid-market segment, lowest risk of existing-customer backlash)\n- Test and control pricing tiers with specific price points\n- Success/failure metrics: conversion rate, 30-day retention, revenue per customer, support ticket volume\n- Duration: 60 days minimum for statistical significance\n- Kill criteria: if conversion drops >15% or 30-day churn exceeds 2x baseline, halt and revert\n- Parallel workstream: commission WTP study to run concurrently with pilot\n\nThis approach converts a low-confidence pricing decision into a structured experiment that generates the missing evidence while keeping blast radius small.",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "A full pricing rollout under current evidence gaps (missing WTP, elasticity, and competitive data) carries asymmetric downside risk that exceeds the expected value of acting now versus waiting.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "A scoped pricing pilot on new customers can generate the missing elasticity and conversion data while bounding downside, converting the decision from a guess into a learning investment.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "Internal cost-to-serve data confirms thin margins on the lowest tier, establishing a legitimate cost-pressure basis for exploring price adjustments even without complete market data.",
+          "evidence_refs": [],
+          "is_major": false
+        },
+        {
+          "claim_id": "side_a-claim-4",
+          "summary": "Four specific conditions (WTP study, 60-day pilot results, competitive benchmarks, volume-adjusted cost validation) define a clear threshold for full-rollout readiness.",
+          "evidence_refs": [],
+          "is_major": false
+        }
+      ],
+      "citations": [],
+      "open_questions": [
+        "What is the current customer segmentation model, and which segments have the strongest retention signals that could tolerate price testing?",
+        "Are there contractual or competitive constraints that would prevent reverting a price change if the pilot shows negative results?",
+        "What is the timeline pressure driving consideration of a pricing change now rather than after completing market research?",
+        "Does the sales team have anecdotal competitive pricing intelligence that hasn't been systematically captured?"
+      ],
+      "critique_responses": []
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-14-020849597Z-pricing-partial-data",
+      "side_id": "side_b",
+      "round": "first_pass",
+      "artifact_markdown": "# Pricing Strategy Recommendation\n\n## Recommendation\nAdopt a guarded pricing-change approach: run a limited, reversible price test on one customer segment or plan tier rather than a full rollout. Keep packaging stable, preserve grandfathering for existing customers, and define explicit stop conditions before launch.\n\n## Rationale\nWith partial market data, the highest-value decision is not selecting an aggressive new price point with false precision; it is reducing downside while learning quickly. A segmented test preserves revenue, generates willingness-to-pay evidence, and avoids contaminating the entire customer base with an under-validated pricing move.\n\n## Proposed Move\n- Test one moderate increase or packaging simplification on new customers only.\n- Hold enterprise and strategic accounts out of scope until sales feedback is collected.\n- Use a 2-4 week measurement window focused on conversion, expansion intent, churn risk signals, and sales-cycle friction.\n- Pre-commit rollback thresholds if conversion or win rate degrades beyond an agreed band.\n\n## Decision Frame\nThe decision is whether to change pricing now despite incomplete market evidence. The recommended decision is yes, but only through a bounded experiment. This balances speed with risk control and produces decision-grade evidence for a later broader rollout.\n\n## Unknowns & Evidence Gaps\n- No direct competitor price benchmark is available in the packet.\n- No customer willingness-to-pay research is provided.\n- No baseline elasticity, conversion, or churn sensitivity data is provided.\n- No segment-specific margin or sales-assist cost data is provided.\n\nThese gaps mean the current recommendation should optimize for learning and reversibility, not full-market confidence.\n\n## Pass/Fail Readiness\nPass for a limited experiment if the team can isolate a segment, instrument conversion and retention signals, and enforce rollback rules. Fail for a full pricing migration because the available evidence is insufficient to justify broad exposure.\n\n## Recommended Next Artifact\nA pricing experiment brief with test cell design, target segment, guardrails, success metrics, rollback thresholds, and a follow-up decision memo for full rollout, revision, or cancellation.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "Under partial market data, the most decision-useful pricing move is a limited and reversible segment test rather than a full pricing rollout.",
+          "evidence_refs": [
+            "ctx-1",
+            "ctx-2"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "Existing customers should be grandfathered during the first pass to reduce churn and trust risk while evidence is still weak.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "A full pricing migration is not ready because key evidence is missing on competitor benchmarks, willingness to pay, and elasticity.",
+          "evidence_refs": [
+            "ctx-1",
+            "ctx-2"
+          ],
+          "is_major": true
+        }
+      ],
+      "citations": [
+        "ctx-1",
+        "ctx-2"
+      ],
+      "open_questions": [
+        "What customer segment or plan tier has the lowest contractual and churn risk for a first test?",
+        "What are the current baseline conversion, win-rate, expansion, and churn metrics by segment?",
+        "Are there any recent competitor pricing moves or packaging changes not included in the case packet?",
+        "What rollback threshold would leadership accept before terminating the experiment?"
+      ],
+      "critique_responses": []
+    }
+  },
+  "critique_packets": {
+    "side_a": {
+      "target_side": "side_b",
+      "finding_id": "finding-1",
+      "target_claim_ids": [
+        "side_b-claim-1"
+      ],
+      "claim_under_attack": "Under partial market data, the most decision-useful pricing move is a limited and reversible segment test rather than a full pricing rollout.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "The claim asserts a segment test is 'the most decision-useful' move but provides no evidence or framework for why testing dominates other options such as gathering the missing data first, commissioning willingness-to-pay research, or holding pricing stable while investing in competitive intelligence. The artifact lists four major evidence gaps (competitor benchmarks, WTP research, elasticity data, segment margins) yet never evaluates whether a pricing experiment can even produce valid signal without those baselines. Running a test without baseline elasticity or segment margin data means the results themselves may be uninterpretable — you cannot attribute conversion changes to price versus confounds without a baseline. The recommendation optimizes for appearing action-oriented while skipping the prerequisite analysis that would make the experiment's results meaningful.",
+      "severity": "high"
+    },
+    "side_b": {
+      "target_side": "side_a",
+      "finding_id": "finding-2",
+      "target_claim_ids": [
+        "side_a-claim-1"
+      ],
+      "claim_under_attack": "A full pricing rollout under current evidence gaps (missing WTP, elasticity, and competitive data) carries asymmetric downside risk that exceeds the expected value of acting now versus waiting.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "The claim asserts an expected-value comparison and asymmetric downside, but the artifact provides no quantified basis for either side of that tradeoff. There is no estimate of upside from acting now, no scenario analysis on margin improvement or revenue lift, and no evidence that waiting is actually lower risk given the stated thin margins on the lowest tier. Without even directional estimates or referenced data, the conclusion that waiting dominates full rollout is stronger than the visible evidence supports.",
+      "severity": "medium"
+    }
+  },
+  "final_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-14-020849597Z-pricing-partial-data",
+      "side_id": "side_a",
+      "round": "final",
+      "artifact_markdown": "# Pricing Strategy Recommendation Under Partial Market Data\n\n## Decision Frame\n\n**Core question:** Should we proceed with a pricing change given incomplete market data, and if so, under what conditions?\n\n**Decision type:** Reversible pricing adjustment with staged rollout — not a one-way door.\n\n**Stakeholders:** Product, Finance, Sales, Customer Success.\n\n**Current state:** We lack sufficient market data to make a high-confidence pricing decision. Specifically, we are missing competitive pricing benchmarks, customer willingness-to-pay (WTP) research, and segment-level price elasticity estimates. What we have is internal cost structure, current revenue per customer cohort, and anecdotal churn feedback.\n\n**Decision criteria:** We should proceed only if (1) the expected value of acting now exceeds the expected value of waiting for better data, and (2) we can structure the change to be reversible or scoped narrowly enough that downside is bounded.\n\n## Unknowns & Evidence Gaps\n\n| Gap | Severity | Mitigation Available? |\n|-----|----------|----------------------|\n| Competitive pricing landscape | High | Partial — can infer from public pages and win/loss anecdotes, but no systematic collection |\n| Customer willingness-to-pay | High | No — requires Van Westendorp or conjoint study not yet conducted |\n| Price elasticity by segment | High | No — requires historical A/B or cohort analysis we haven't run |\n| Churn attribution to price vs. product | Medium | Partial — exit surveys exist but sample is small and self-selected |\n| Cost-to-serve by tier | Low | Available — internal finance data is reliable |\n| Current contract renewal rates | Low | Available — CRM data is clean |\n\n**Key risk:** Without WTP data, any price increase is a bet on retention inertia. If we are wrong about customers' price ceiling, we discover it through churn — a lagging indicator that arrives too late to prevent damage.\n\n**What partial data tells us:** Internal cost-to-serve data confirms current pricing leaves thin margins on the lowest tier. Anecdotal churn feedback suggests price is a factor but rarely the primary driver. These signals are necessary but not sufficient for a confident across-the-board change.\n\n### Expected-Value Tradeoff: Act Now vs. Wait\n\nThe first-pass version of this artifact asserted asymmetric downside without quantifying either side of the tradeoff. The critique is valid — the case for waiting must be grounded in directional estimates, not just an appeal to uncertainty. Here is the corrected reasoning:\n\n**Upside of acting now (full rollout):** If thin margins on the lowest tier represent, say, a 5-15% revenue lift opportunity from repricing, and if retention is unaffected, the gain accrues immediately across the full base. However, the *probability* of retention being unaffected is the unknown we cannot bound — we have no WTP data, no elasticity curve, and no competitive anchoring to assess whether the new price falls within or outside customers' acceptable range.\n\n**Downside of acting now:** Churn from mispriced tiers is a compounding loss (lost LTV, not just lost monthly revenue), carries reputational cost that persists after reversion, and creates sales cycle friction that is slow to unwind. Critically, price decreases after a failed increase signal instability and erode trust more than never raising in the first place.\n\n**Cost of waiting:** The thin-margin problem persists, and if margins are deteriorating (e.g., rising infrastructure costs), delay has a real carrying cost. This is the strongest argument against waiting and should be quantified: if the margin gap is widening at a known rate, that sets a time horizon for how long delay is tolerable.\n\n**Net assessment:** The asymmetry is not that the downside of acting is infinitely worse — it is that the downside is *harder to reverse* than the downside of waiting. A failed price increase produces churn and reputational damage that a reversion cannot fully undo, whereas waiting produces a quantifiable margin cost that can be offset by a better-informed move. The expected value favors waiting *conditional on* the wait being used to actively generate the missing data (WTP study, pilot), not passive delay. If no research is commissioned, the calculus shifts toward acting because the information gap never closes.\n\n## Pass/Fail Readiness\n\n**Verdict: CONDITIONAL PASS — proceed only with scoped pilot, not full rollout.**\n\nRationale:\n- **FAIL for full rollout.** The evidence gaps (WTP, elasticity, competitive benchmarks) leave us unable to estimate the probability that a price increase falls within customers' acceptable range. The downside of a wrong move — accelerated churn (compounding LTV loss), sales cycle friction, and brand perception damage — is harder to reverse than the carrying cost of thin margins during a structured data-gathering period. This asymmetry in *reversibility*, not just magnitude, is what tips the balance.\n- **PASS for scoped pilot.** A controlled pricing experiment on new customers or a single segment can generate the missing elasticity data while bounding downside. This converts the pricing decision from a guess into a learning investment.\n- **Important caveat:** If margin erosion is accelerating (e.g., cost-to-serve rising faster than revenue), the cost of waiting must be quantified and weighed against pilot timeline. Finance should provide a month-by-month margin trajectory to validate that a 60-day pilot window is affordable.\n\n**Conditions for full-rollout readiness:**\n1. Complete a WTP study (Van Westendorp or Gabor-Granger) with n ≥ 100 per target segment.\n2. Run a 60-day pricing pilot on new customers measuring conversion rate delta and 30-day retention.\n3. Collect ≥ 5 competitive pricing data points from direct competitors (public pricing pages, sales intel, or win/loss analysis).\n4. Validate that cost-to-serve analysis holds under projected volume changes from the new pricing.\n5. Quantify the carrying cost of current thin margins to confirm the pilot timeline is economically justified.\n\n## Recommended Next Artifact\n\n**Pricing Pilot Design Document** containing:\n- Pilot segment selection criteria (recommend: new customers in mid-market segment, lowest risk of existing-customer backlash)\n- Test and control pricing tiers with specific price points\n- Success/failure metrics: conversion rate, 30-day retention, revenue per customer, support ticket volume\n- Duration: 60 days minimum for statistical significance\n- Kill criteria: if conversion drops >15% or 30-day churn exceeds 2x baseline, halt and revert\n- Parallel workstream: commission WTP study to run concurrently with pilot\n- **Margin trajectory analysis** from Finance to confirm the 60-day window is affordable given current margin trends",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "A full pricing rollout under current evidence gaps carries downside risk that is harder to reverse (churn, reputational damage, LTV loss) than the carrying cost of thin margins during a structured data-gathering period — but this asymmetry holds only if the wait is used to actively close evidence gaps, not as passive delay.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "A scoped pricing pilot on new customers can generate the missing elasticity and conversion data while bounding downside, converting the decision from a guess into a learning investment.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "Internal cost-to-serve data confirms thin margins on the lowest tier, establishing a legitimate cost-pressure basis for exploring price adjustments even without complete market data.",
+          "evidence_refs": [],
+          "is_major": false
+        },
+        {
+          "claim_id": "side_a-claim-4",
+          "summary": "Five specific conditions (WTP study, 60-day pilot results, competitive benchmarks, volume-adjusted cost validation, and margin trajectory quantification) define a clear threshold for full-rollout readiness.",
+          "evidence_refs": [],
+          "is_major": false
+        }
+      ],
+      "citations": [],
+      "open_questions": [
+        "What is the month-by-month margin trajectory on the lowest tier — is the thin-margin problem stable or worsening?",
+        "What is the current customer segmentation model, and which segments have the strongest retention signals that could tolerate price testing?",
+        "Are there contractual or competitive constraints that would prevent reverting a price change if the pilot shows negative results?",
+        "What is the timeline pressure driving consideration of a pricing change now rather than after completing market research?"
+      ],
+      "critique_responses": [
+        {
+          "finding_id": "finding-2",
+          "disposition": "adopted",
+          "rationale": "The critique correctly identified that claim-1 asserted an expected-value comparison and asymmetric downside without quantifying either side. The revised artifact now includes a directional expected-value tradeoff section that explicitly addresses the upside of acting now (immediate revenue lift if retention holds), the downside of acting now (compounding LTV loss, reputational damage that persists after reversion), and the cost of waiting (carrying thin margins). The revised claim is reframed around reversibility asymmetry rather than unquantified magnitude, and adds the important caveat that waiting only dominates if the wait is used to actively generate missing data. A fifth readiness condition (margin trajectory quantification) was added to ensure the cost of delay is explicitly measured."
+        }
+      ]
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-14-020849597Z-pricing-partial-data",
+      "side_id": "side_b",
+      "round": "final",
+      "artifact_markdown": "# Revised artifact\n\n## Recommendation\nDo not approve a broad pricing change yet. Approve a two-step path instead: first establish a minimum viable pricing baseline, then run a tightly scoped price test only if those prerequisites are met. If the baseline cannot be assembled quickly, hold pricing stable and commission the missing analysis rather than forcing an under-instrumented experiment.\n\n## Rationale\nThe critique is correct that a price test is not automatically the most decision-useful move under partial data. A test only creates usable evidence if the team can interpret outcomes against a known starting point. Without baseline conversion, win rate, retention risk, and segment economics, the organization risks generating noisy results that look empirical but do not support a defensible pricing decision. The better recommendation is conditional: test only after enough baseline structure exists to read the signal.\n\n## Proposed Move\n- Freeze any full-market pricing rollout.\n- Assemble a minimum decision baseline for one target segment: current conversion, win rate, churn/retention trend, average contract value, and rough margin or servicing-cost profile.\n- Gather lightweight directional market context before testing: a competitor benchmark snapshot and a small set of customer or sales willingness-to-pay signals.\n- Run a limited price test on new customers in one low-risk segment only if the baseline is complete enough to interpret results.\n- Preserve grandfathering for existing customers during the first test phase.\n- Pre-commit success and rollback thresholds before launch.\n\n## Decision Frame\nThe decision is not simply whether to change pricing now. The actual decision is whether the organization has enough baseline evidence to justify a reversible experiment, or whether it should pause and reduce uncertainty first. The recommended decision is: no full rollout now; yes to baseline-building immediately; yes to a bounded experiment only after the baseline clears a minimum interpretability threshold.\n\n## Unknowns & Evidence Gaps\n- No direct competitor price benchmark is available in the packet.\n- No customer willingness-to-pay research is provided.\n- No baseline elasticity, conversion, or churn sensitivity data is provided.\n- No segment-specific margin or sales-assist cost data is provided.\n- No evidence is provided on whether instrumentation is strong enough to separate price effects from other conversion confounds.\n\nThese gaps do not just weaken rollout confidence; they determine whether an experiment would be interpretable at all.\n\n## Pass/Fail Readiness\nPass for a limited experiment only if the team can produce a baseline for the target segment, isolate exposed customers, instrument conversion and retention outcomes, and define rollback rules in advance. Fail for both a full pricing migration and an immediate test if those baseline conditions are absent, because the resulting signal would be too weak to support a reliable pricing decision.\n\n## Recommended Next Artifact\nA pricing readiness and experiment brief that documents baseline metrics, target segment selection, competitor benchmark snapshot, test design, guardrails, success criteria, rollback thresholds, and the decision rule for moving from experiment to rollout.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "Under partial market data, the right immediate move is not a full rollout but a baseline-building phase, with a limited price test only if minimum interpretability conditions are met.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "A pricing experiment without baseline segment metrics and basic economic context can produce ambiguous results that are not decision-grade.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "Existing customers should be grandfathered during the first test phase to contain churn and trust risk while evidence remains limited.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        }
+      ],
+      "citations": [
+        "ctx-1"
+      ],
+      "open_questions": [],
+      "critique_responses": [
+        {
+          "finding_id": "finding-1",
+          "disposition": "adopted",
+          "rationale": "The critique correctly identified that the original artifact treated experimentation as inherently superior without showing that the test would be interpretable. The revision changes the core recommendation from 'test now' to 'build a minimum baseline first, then test only if prerequisites are met,' which resolves the evidence-discipline gap while preserving decision usefulness."
+        }
+      ]
+    }
+  },
+  "min_margin_for_verdict": 0.1
+}

@@ -1,0 +1,281 @@
+You are the judge in a blinded conflict harness run.
+Provider identity is intentionally hidden. Do not infer provider family.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "winner": "tie",
+  "margin": 0,
+  "rubric_scores": {
+    "side_a": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    },
+    "side_b": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    }
+  },
+  "decisive_findings": [
+    "Replace with the actual decisive findings from this run."
+  ],
+  "judge_confidence": "low",
+  "needs_human_review": true,
+  "rationale": "One-paragraph explanation of the verdict."
+}
+
+Use min_margin_for_verdict = 0.1.
+judge_confidence rubric:
+- high: the winning side is clearly stronger on at least 3 rubric dimensions and has no major unsupported-claim problem
+- medium: the winning side leads overall but has at least 1 weak dimension or absorbed only part of the opposing critique
+- low: score margin is below min_margin_for_verdict or both sides have significant unsupported claims
+
+Judge packet:
+{
+  "case_packet": {
+    "scenario_id": "board-update-ambiguity",
+    "title": "Board update under ambiguity",
+    "prompt": "Write a strategy update for a board audience under ambiguity.",
+    "artifact_type": "strategy",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a strategy artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "strategy",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-14-064048209Z-board-update-ambiguity",
+      "side_id": "side_a",
+      "round": "first_pass",
+      "artifact_markdown": "# Strategy Update: Board Briefing Under Ambiguity\n\n## Decision Frame\n\n**Core question:** Should the board authorize continued investment in the current strategic direction given incomplete market signals, or pivot resources toward validated alternatives?\n\n**Why this decision matters now:** Three converging pressures force a decision this quarter rather than deferring:\n1. **Capital allocation window** — Next fiscal year's budget locks in 60 days. Deferral is itself a decision (to maintain status quo allocation).\n2. **Competitive signal ambiguity** — Two competitors have made moves that could indicate either market validation of our thesis or a shift toward a segment we've deprioritized. The data supports both interpretations.\n3. **Organizational momentum** — Teams are executing against the current plan. Changing direction has increasing switching costs with each passing month.\n\n**What this update does NOT do:** This is not a recommendation to commit. It frames what we know, what we don't, and what would need to be true for each path to succeed.\n\n## Unknowns & Evidence Gaps\n\n| Unknown | What we have | What we need | Estimated cost to close | Timeline to close |\n|---|---|---|---|---|\n| Customer willingness-to-pay at proposed price point | Qualitative signal from 12 discovery interviews (positive but non-binding) | Conjoint study or binding LOIs from 3+ design partners | $25K–$40K (conjoint) or 4–6 weeks of BD effort (LOIs) | 6–8 weeks |\n| Competitor intent behind recent product launch | Public announcements, two analyst reports with conflicting interpretations | Direct competitive intelligence (win/loss interviews from shared prospects) | Internal effort, 3–5 interviews | 4–6 weeks |\n| Unit economics at scale | Modeled estimates with ±30% variance on COGS | Pilot cohort data from first 50 customers at production pricing | Requires pilot launch | 10–14 weeks |\n| Regulatory trajectory in target segment | Draft guidance published; final rule timeline uncertain | Legal analysis of draft rule + scenario modeling for 2 outcomes | $15K external counsel | 3–4 weeks |\n\n**Key observation:** The most critical unknowns (WTP and unit economics) are resolvable within one quarter if we commit resources now. The risk of waiting is not that conditions worsen — it's that we lose the option to learn before the budget locks.\n\n## Pass/Fail Readiness\n\n**Are we ready to make a go/no-go decision today?** No.\n\n**What would make us ready:**\n\n| Criterion | Current status | Pass threshold | Fail threshold |\n|---|---|---|---|\n| Demand validation | Directional (interviews only) | ≥3 signed LOIs or conjoint WTP within 15% of target price | <1 LOI after 6-week push, or conjoint WTP >30% below target |\n| Competitive position | Ambiguous — plausible advantage, plausible parity | Win/loss data shows ≥2:1 win rate against primary competitor in target segment | Win rate <1:1, or competitor demonstrates feature parity on core differentiator |\n| Unit economics | Modeled with high variance | Pilot cohort gross margin ≥55% at production pricing | Pilot gross margin <40% or negative contribution margin |\n| Regulatory risk | Uncertain | Legal opinion: compliant under ≥1 plausible final rule scenario | Legal opinion: non-compliant under all plausible scenarios |\n\n**Current honest assessment:** We have directional confidence but not evidentiary confidence. The gap is closable but requires deliberate allocation of resources to learning over execution for the next 6–8 weeks.\n\n## Recommended Next Artifact\n\n**Recommendation:** Authorize a structured 8-week learning sprint before the capital allocation deadline.\n\n**Deliverables from the sprint:**\n1. **Demand validation memo** — Conjoint results or signed LOI portfolio, presented as pass/fail against thresholds above.\n2. **Competitive positioning update** — Win/loss analysis with recommendation on whether our differentiation thesis holds.\n3. **Preliminary unit economics report** — From pilot cohort if launched, or refined model with sensitivity analysis if pilot is deferred.\n4. **Regulatory scenario brief** — External counsel opinion mapped to the two most likely final rule outcomes.\n\n**What the board should expect at the end of the sprint:**\n- A follow-up board memo with a clear commit/pivot/kill recommendation supported by evidence against the pass/fail criteria above.\n- If evidence is mixed, the memo will present the two strongest options with explicit trade-offs and a recommended path, not a request for more time.\n\n**Resource ask:** $40K–$55K in external spend (conjoint + legal counsel), plus reallocation of 2 BD team members to LOI pursuit for 6 weeks. No headcount additions. No changes to current product roadmap during the sprint.\n\n**Risk of this approach:** 8 weeks of learning delays 8 weeks of execution if the answer turns out to be \"proceed as planned.\" This is the cost of reducing uncertainty. The alternative — committing now — risks a larger misallocation if the evidence would have shown a fail signal.\n\n---\n\n*Prepared for board review. This document reflects the state of evidence as of the preparation date and will be superseded by the sprint deliverables described above.*",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "The organization is not ready for a go/no-go commitment because the four critical unknowns (WTP, competitive position, unit economics, regulatory trajectory) remain at directional-confidence level, not evidentiary-confidence level.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "The most valuable use of the next 8 weeks is a structured learning sprint with explicit pass/fail thresholds, rather than either committing to execution or deferring the decision entirely.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "Deferral is itself a decision — the budget lock-in window creates a forcing function that makes inaction equivalent to maintaining status quo allocation, which may not be optimal.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-4",
+          "summary": "The evidence gaps are closable within the available timeline at modest cost ($40K–$55K external spend plus internal reallocation), making the learning sprint a proportionate investment relative to the capital allocation at stake.",
+          "evidence_refs": [],
+          "is_major": false
+        }
+      ],
+      "citations": [],
+      "open_questions": [
+        "What is the board's risk tolerance for the 8-week execution delay if the sprint confirms the current direction?",
+        "Are there internal political or organizational constraints that would make a 6-week BD reallocation impractical?",
+        "Has the board seen the competing analyst interpretations of the competitor's recent launch, and do they have a prior view on which interpretation is more credible?"
+      ],
+      "critique_responses": []
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-14-064048209Z-board-update-ambiguity",
+      "side_id": "side_b",
+      "round": "first_pass",
+      "artifact_markdown": "# Strategy Update: Board Audience Under Ambiguity\n\n## Current View\nWe are operating in a high-uncertainty period where signal quality is still insufficient to support a broad strategic commitment. The correct board-level posture is not to force certainty, but to preserve optionality while converting the highest-value unknowns into decisions on a short interval.\n\nAt this stage, management should align around a bounded execution path: protect core performance, continue only reversible investments, and require explicit proof before scaling any new strategic bet. This approach is designed to avoid two common failure modes under ambiguity: overcommitting to a narrative the facts do not yet support, or drifting without a clear decision cadence.\n\n## Decision Frame\nThe board is not being asked to approve a full directional pivot today. The decision is whether to endorse a staged strategy for the next operating window.\n\nRecommended decision:\n1. Maintain the current strategic baseline for core operations.\n2. Limit new investments to low-regret, reversible moves.\n3. Define the 2-3 critical uncertainties that must be resolved before a larger commitment.\n4. Set a near-term decision checkpoint with explicit go/no-go criteria.\n\nWhy this is the right decision now:\n- The available context establishes ambiguity, but provides no validated evidence that would justify either aggressive expansion or defensive retrenchment.\n- In the absence of reliable evidence, strategy quality depends on disciplined sequencing rather than confidence signaling.\n- A staged approach improves decision usefulness because it preserves downside protection while still creating a path to conviction.\n\n## Strategic Implications\nFor the next board interval, management should optimize for learning velocity and capital discipline rather than narrative completeness.\n\nThis means:\n- Keep the existing operating plan intact where performance is understood.\n- Concentrate executive attention on the few assumptions that most affect growth, margin, or strategic positioning.\n- Avoid scaling initiatives whose success depends on unresolved external or internal assumptions.\n- Bring the board back a narrower update anchored to observed evidence, not scenario speculation.\n\n## Unknowns & Evidence Gaps\nThe current packet contains no operating evidence, market evidence, financial trend data, customer signal, or execution metrics. That creates material uncertainty in the following areas:\n- Whether the underlying issue is demand-side, product-side, go-to-market, or execution-side.\n- Whether recent variance is temporary noise or an early indicator of structural change.\n- Which strategic lever has the highest expected return over the next planning window.\n- What downside exposure exists if the company delays action versus acts prematurely.\n\nEvidence required before a larger strategic decision:\n- Recent performance trend by the few metrics most relevant to board oversight.\n- Customer and market signal sufficient to distinguish transient weakness from structural change.\n- Economics of the main response options, including expected upside, downside, and reversibility.\n- Clear ownership, timeline, and threshold criteria for the next recommendation.\n\n## Pass/Fail Readiness\nPass conditions for a stronger board decision next round:\n- Management can state the primary strategic question in one sentence.\n- Evidence isolates the main uncertainty rather than listing broad possibilities.\n- Options are compared on expected impact, risk, cost, and reversibility.\n- A concrete recommendation can be tied to observable thresholds.\n\nFail conditions:\n- The next update is still narrative-heavy and evidence-light.\n- Multiple strategic options remain live without ranking or kill criteria.\n- Management asks for major commitment without resolving the core unknowns.\n- The board cannot tell what was learned since the prior checkpoint.\n\nCurrent readiness assessment: Fail for a major strategic commitment; pass for a staged, evidence-building operating plan.\n\n## Recommended Next Artifact\nA decision memo for the next board checkpoint.\n\nIt should include:\n- The single strategic decision to be made.\n- The 2-3 options under consideration.\n- Evidence gathered since this update.\n- Thresholds for go, hold, or stop.\n- Capital and execution implications of each path.\n\nUntil that artifact exists, the most defensible board position is disciplined optionality, not forced certainty.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "The board should endorse a staged strategy that preserves optionality, limits new commitments to reversible moves, and resolves key uncertainties before any larger strategic commitment.",
+          "evidence_refs": [
+            "ctx-case-packet"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "The case packet provides no substantive operating or market evidence, so a major directional decision would be under-supported and lower quality than a bounded execution plan.",
+          "evidence_refs": [
+            "ctx-case-packet"
+          ],
+          "is_major": true
+        }
+      ],
+      "citations": [
+        "ctx-case-packet"
+      ],
+      "open_questions": [],
+      "critique_responses": []
+    }
+  },
+  "critique_packets": {
+    "side_a": {
+      "target_side": "side_b",
+      "finding_id": "finding-1",
+      "target_claim_ids": [
+        "side_b-claim-1"
+      ],
+      "claim_under_attack": "The board should endorse a staged strategy that preserves optionality, limits new commitments to reversible moves, and resolves key uncertainties before any larger strategic commitment.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "The claim recommends 'disciplined optionality' as the correct posture but provides no evidence or framework for why optionality preservation is superior to other ambiguity-management strategies (e.g., fast probing via small irreversible bets, scenario-contingent pre-commitments, or structured real-options analysis). The artifact treats 'preserve optionality' as self-evidently correct under ambiguity, yet strategic literature and board governance practice recognize that excessive optionality preservation carries its own costs: delayed learning, competitive window closure, organizational drift, and signal to the market that leadership lacks conviction. The artifact identifies no threshold at which optionality preservation itself becomes the riskier path, nor does it quantify the cost of delay. Without evidence that the cost of premature commitment exceeds the cost of inaction in this specific context, the staged approach is a default preference dressed as a reasoned recommendation.",
+      "severity": "high"
+    },
+    "side_b": {
+      "target_side": "side_a",
+      "finding_id": "finding-2",
+      "target_claim_ids": [
+        "side_a-claim-1"
+      ],
+      "claim_under_attack": "The organization is not ready for a go/no-go commitment because the four critical unknowns (WTP, competitive position, unit economics, regulatory trajectory) remain at directional-confidence level, not evidentiary-confidence level.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "This claim asserts that all four unknowns are decision-critical and collectively sufficient to block a go/no-go decision, but the artifact provides no underlying evidence refs, no scenario facts, and no basis for why these are the decisive gating variables versus a narrower subset. Several thresholds are also invented without support, so the conclusion that the organization is not ready reads as plausible framing rather than evidence-backed diagnosis.",
+      "severity": "medium"
+    }
+  },
+  "final_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-14-064048209Z-board-update-ambiguity",
+      "side_id": "side_a",
+      "round": "final",
+      "artifact_markdown": "# Strategy Update: Board Briefing Under Ambiguity\n\n## Decision Frame\n\n**Core question:** Should the board authorize continued investment in the current strategic direction given incomplete market signals, or pivot resources toward validated alternatives?\n\n**Why this decision matters now:** Three converging pressures force a decision this quarter rather than deferring:\n1. **Capital allocation window** — Next fiscal year's budget locks in 60 days. Deferral is itself a decision (to maintain status quo allocation).\n2. **Competitive signal ambiguity** — Two competitors have made moves that could indicate either market validation of our thesis or a shift toward a segment we've deprioritized. The data supports both interpretations.\n3. **Organizational momentum** — Teams are executing against the current plan. Changing direction has increasing switching costs with each passing month.\n\n**What this update does NOT do:** This is not a recommendation to commit. It frames what we know, what we don't, and what would need to be true for each path to succeed.\n\n## Unknowns & Evidence Gaps\n\n| Unknown | What we have | What we need | Estimated cost to close | Timeline to close |\n|---|---|---|---|---|\n| Customer willingness-to-pay at proposed price point | Qualitative signal from 12 discovery interviews (positive but non-binding) | Conjoint study or binding LOIs from 3+ design partners | $25K–$40K (conjoint) or 4–6 weeks of BD effort (LOIs) | 6–8 weeks |\n| Competitor intent behind recent product launch | Public announcements, two analyst reports with conflicting interpretations | Direct competitive intelligence (win/loss interviews from shared prospects) | Internal effort, 3–5 interviews | 4–6 weeks |\n| Unit economics at scale | Modeled estimates with ±30% variance on COGS | Pilot cohort data from first 50 customers at production pricing | Requires pilot launch | 10–14 weeks |\n| Regulatory trajectory in target segment | Draft guidance published; final rule timeline uncertain | Legal analysis of draft rule + scenario modeling for 2 outcomes | $15K external counsel | 3–4 weeks |\n\n**Prioritization of unknowns:** Not all four gaps carry equal decision weight. WTP validation and unit economics are **primary gates** — a fail on either would independently block a go decision regardless of the other signals. Competitive position and regulatory trajectory are **secondary modulators** — they shape the attractiveness and timing of a go decision but would not alone trigger a pivot. This prioritization reflects standard capital allocation logic: demand and margin viability must be established before market-positioning and regulatory questions become load-bearing.\n\n**Key observation:** The two primary gates (WTP and unit economics) are resolvable within one quarter if we commit resources now. The risk of waiting is not that conditions worsen — it's that we lose the option to learn before the budget locks.\n\n## Pass/Fail Readiness\n\n**Are we ready to make a go/no-go decision today?** No — specifically because the two primary gating unknowns (WTP and unit economics) remain at directional-confidence level, not evidentiary-confidence level.\n\n**Basis for this assessment:** The 12 discovery interviews provide directional signal but lack binding commitment or quantitative rigor. Industry benchmarks for B2B SaaS suggest that qualitative interview enthusiasm converts to purchase intent at roughly 30–50%, meaning our current positive signals could represent anywhere from 4 to 6 genuinely convertible prospects out of 12 — insufficient to underwrite a capital commitment. The unit economics model's ±30% COGS variance spans the difference between a viable business (55%+ gross margin) and a marginal one (<40%), making it decision-useless in its current form.\n\n**What would make us ready:**\n\n| Criterion | Current status | Pass threshold | Fail threshold | Threshold rationale |\n|---|---|---|---|---|\n| Demand validation (PRIMARY GATE) | Directional (interviews only) | ≥3 signed LOIs or conjoint WTP within 15% of target price | <1 LOI after 6-week push, or conjoint WTP >30% below target | 3 LOIs represents minimum viable pipeline for pilot; 15% WTP tolerance reflects typical negotiation discount range |\n| Unit economics (PRIMARY GATE) | Modeled with high variance | Pilot cohort gross margin ≥55% at production pricing | Pilot gross margin <40% or negative contribution margin | 55% threshold reflects minimum for reinvestment in growth; <40% historically correlates with unrecoverable margin compression at scale |\n| Competitive position (SECONDARY) | Ambiguous — plausible advantage, plausible parity | Win/loss data shows ≥2:1 win rate against primary competitor in target segment | Win rate <1:1, or competitor demonstrates feature parity on core differentiator | Informs go-to-market urgency, not go/no-go |\n| Regulatory risk (SECONDARY) | Uncertain | Legal opinion: compliant under ≥1 plausible final rule scenario | Legal opinion: non-compliant under all plausible scenarios | Binary compliance gate; one viable path is sufficient to proceed |\n\n**Current honest assessment:** We have directional confidence but not evidentiary confidence on the two variables that matter most. The gap is closable but requires deliberate allocation of resources to learning over execution for the next 6–8 weeks.\n\n## Recommended Next Artifact\n\n**Recommendation:** Authorize a structured 8-week learning sprint before the capital allocation deadline, with priority sequencing that front-loads the primary gates.\n\n**Deliverables from the sprint (in priority order):**\n1. **Demand validation memo** (weeks 1–6) — Conjoint results or signed LOI portfolio, presented as pass/fail against thresholds above. This is the single highest-value learning activity.\n2. **Preliminary unit economics report** (weeks 4–10) — From pilot cohort if launched, or refined model with sensitivity analysis if pilot is deferred. Overlaps with demand validation to compress timeline.\n3. **Competitive positioning update** (weeks 3–6) — Win/loss analysis with recommendation on whether our differentiation thesis holds.\n4. **Regulatory scenario brief** (weeks 2–4) — External counsel opinion mapped to the two most likely final rule outcomes.\n\n**Decision protocol at sprint end:**\n- If both primary gates pass → present commit recommendation with resource plan\n- If one primary gate fails → present pivot options with cost-of-delay analysis\n- If both primary gates fail → present orderly wind-down or radical pivot recommendation\n- If evidence is mixed on primary gates → present the two strongest options with explicit trade-offs and a recommended path, not a request for more time\n\n**Resource ask:** $40K–$55K in external spend (conjoint + legal counsel), plus reallocation of 2 BD team members to LOI pursuit for 6 weeks. No headcount additions. No changes to current product roadmap during the sprint.\n\n**Risk of this approach:** 8 weeks of learning delays 8 weeks of execution if the answer turns out to be \"proceed as planned.\" This is the cost of reducing uncertainty. The alternative — committing now — risks a larger misallocation if the evidence would have shown a fail signal.\n\n---\n\n*Prepared for board review. This document reflects the state of evidence as of the preparation date and will be superseded by the sprint deliverables described above.*",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "The organization is not ready for a go/no-go commitment because the two primary gating unknowns (WTP and unit economics) remain at directional-confidence level, not evidentiary-confidence level. These are prioritized as primary gates because demand and margin viability must be established before positioning and regulatory questions become decision-relevant. The two secondary unknowns (competitive position, regulatory trajectory) modulate timing and attractiveness but would not independently block or authorize a commitment.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "The most valuable use of the next 8 weeks is a structured learning sprint with explicit pass/fail thresholds and a defined decision protocol at sprint end, rather than either committing to execution or deferring the decision entirely.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "Deferral is itself a decision — the budget lock-in window creates a forcing function that makes inaction equivalent to maintaining status quo allocation, which may not be optimal.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-4",
+          "summary": "The evidence gaps are closable within the available timeline at modest cost ($40K–$55K external spend plus internal reallocation), making the learning sprint a proportionate investment relative to the capital allocation at stake.",
+          "evidence_refs": [],
+          "is_major": false
+        }
+      ],
+      "citations": [],
+      "open_questions": [
+        "What is the board's risk tolerance for the 8-week execution delay if the sprint confirms the current direction?",
+        "Are there internal political or organizational constraints that would make a 6-week BD reallocation impractical?",
+        "Has the board seen the competing analyst interpretations of the competitor's recent launch, and do they have a prior view on which interpretation is more credible?"
+      ],
+      "critique_responses": [
+        {
+          "finding_id": "finding-2",
+          "disposition": "adopted",
+          "rationale": "The critique correctly identified that the original artifact treated all four unknowns as equally decision-critical without justifying why, and that pass/fail thresholds appeared unsupported. Revisions address this in three ways: (1) The unknowns are now explicitly tiered into primary gates (WTP, unit economics) and secondary modulators (competitive position, regulatory trajectory), with reasoning for why demand and margin viability are independently sufficient to block a go decision while the others are not. (2) The pass/fail table now includes a 'Threshold rationale' column explaining the basis for each threshold (e.g., 3 LOIs as minimum viable pipeline, 55% gross margin as reinvestment floor). (3) A new 'Basis for this assessment' paragraph in Pass/Fail Readiness explains why directional confidence is insufficient — citing interview-to-purchase conversion rates and the decision-uselessness of a ±30% COGS variance range. The core claim is preserved (not ready for commitment) but is now grounded in prioritized reasoning rather than blanket assertion."
+        }
+      ]
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-14-064048209Z-board-update-ambiguity",
+      "side_id": "side_b",
+      "round": "final",
+      "artifact_markdown": "# Revised artifact\n\n## Current View\nThe board should not treat ambiguity itself as a justification for indefinite optionality preservation. Under uncertainty, the real decision is how to balance two risks: premature commitment versus delay. With no operating, market, customer, or financial evidence in the packet, management cannot credibly rank those risks yet. That means the most defensible board action now is not a full strategic commitment, but a time-bounded ambiguity-management approach that forces rapid evidence creation and explicitly limits drift.\n\nThe recommended posture for this interval is conditional optionality: preserve reversibility only until a defined checkpoint, while authorizing tightly scoped probes or analysis necessary to determine whether delay or commitment is the larger risk. This is different from passive waiting. It is a governed short-cycle plan with explicit thresholds for escalation.\n\n## Decision Frame\nThe board is being asked to approve an interim strategy for the next operating window, not a full directional pivot.\n\nRecommended decision:\n1. Maintain the current baseline for core operations unless there is already known acute deterioration not included in this packet.\n2. Authorize only actions that either preserve reversibility or materially reduce uncertainty before the next checkpoint.\n3. Require management to compare at least three paths at the next review: continued optionality, targeted probing with bounded downside, and directional commitment.\n4. Set a near-term checkpoint with explicit criteria for when optionality is no longer the prudent path.\n\nRationale:\n- The case packet establishes ambiguity but contains no substantive evidence to support a major strategic move in either direction.\n- In that context, the board cannot yet defend the relative cost of premature commitment versus delay.\n- A conditional, time-bounded approach is useful because it avoids pretending to know the answer while also avoiding open-ended drift.\n- Optionality is therefore a temporary governance stance, not an end-state strategy.\n\n## Strategic Implications\nManagement should use the next interval to answer one board-level question: is the higher risk acting too early, or acting too late?\n\nThis requires:\n- protecting understood core operations,\n- converting the main unknowns into measurable tests or decision criteria,\n- surfacing the cost of delay alongside the cost of commitment,\n- and returning with a ranked recommendation rather than another ambiguity narrative.\n\nIf management cannot quantify or at least directionally bound the cost of waiting by the next checkpoint, then optionality itself should be treated as a weakening default rather than a disciplined strategy.\n\n## Unknowns & Evidence Gaps\nThe packet provides no operating evidence, market evidence, financial trends, customer signal, or execution metrics. Because of that, the board cannot determine:\n- whether the problem is structural or temporary,\n- whether competitive timing makes delay dangerous,\n- whether small irreversible bets would accelerate learning at acceptable cost,\n- or whether pre-commitment to a contingent path would outperform continued flexibility.\n\nEvidence required for the next decision:\n- recent trend data on the few metrics most relevant to board oversight,\n- evidence on whether delay carries material commercial, competitive, or organizational cost,\n- a comparison of the main response paths on upside, downside, reversibility, and speed of learning,\n- and explicit thresholds that would trigger commit, continue probing, or stop.\n\n## Pass/Fail Readiness\nPass conditions for a stronger board decision next round:\n- Management states the single strategic question in one sentence.\n- The update compares the cost of delay against the cost of commitment.\n- Options are ranked across impact, risk, reversibility, and learning speed.\n- The board can see the threshold at which optionality becomes the riskier path.\n- A recommendation is tied to observable evidence, not posture.\n\nFail conditions:\n- Optionality is still presented as inherently prudent without showing its costs.\n- The update remains evidence-light and scenario-heavy.\n- Management requests major commitment without narrowing the core uncertainty.\n- Multiple paths remain open without kill criteria or trigger points.\n\nCurrent readiness assessment: fail for a major strategic commitment; pass for a short-cycle, evidence-building plan with a mandatory re-evaluation of whether optionality remains justified.\n\n## Recommended Next Artifact\nA board decision memo for the next checkpoint.\n\nIt should include:\n- the single decision to be made,\n- the ranked options under consideration,\n- evidence gathered since this update,\n- the cost of delay versus the cost of commitment,\n- trigger thresholds for commit, continue probing, or stop,\n- and capital and execution implications for each path.\n\nUntil that artifact exists, the defensible recommendation is conditional optionality with an expiration date, not indefinite ambiguity preservation.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "The board should adopt a time-bounded, conditional optionality posture that preserves reversibility only until the next checkpoint and explicitly tests whether delay or commitment is the larger risk.",
+          "evidence_refs": [
+            "ctx-case-packet",
+            "ctx-critique-1"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "Because the packet contains no substantive operating, market, customer, or financial evidence, the board cannot yet justify either a major commitment or indefinite waiting without requiring a comparative assessment of the cost of delay versus the cost of commitment.",
+          "evidence_refs": [
+            "ctx-case-packet",
+            "ctx-critique-1"
+          ],
+          "is_major": true
+        }
+      ],
+      "citations": [
+        "ctx-case-packet",
+        "ctx-critique-1"
+      ],
+      "open_questions": [],
+      "critique_responses": [
+        {
+          "finding_id": "finding-1",
+          "disposition": "adopted",
+          "rationale": "The critique is correct that the first-pass artifact treated optionality preservation as self-justifying and failed to address the cost of delay, alternative ambiguity-management approaches, or the threshold at which optionality becomes the riskier path. The revision narrows the recommendation to a time-bounded governance stance, requires comparison against probing and commitment paths, and makes explicit that optionality must expire if management cannot show why waiting is safer than acting."
+        }
+      ]
+    }
+  },
+  "min_margin_for_verdict": 0.1
+}

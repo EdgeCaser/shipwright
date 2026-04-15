@@ -1,0 +1,116 @@
+{
+  "case_packet": {
+    "scenario_id": "pricing-partial-data",
+    "title": "Pricing change with partial market data",
+    "prompt": "Draft a pricing strategy recommendation under partial market data.",
+    "artifact_type": "strategy",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a strategy artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "strategy",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass": {
+    "run_id": "conflict-2026-04-14-144723800Z-pricing-partial-data",
+    "side_id": "side_a",
+    "round": "first_pass",
+    "artifact_markdown": "# Pricing Strategy Recommendation Under Partial Market Data\n\n## Recommendation\nAdopt a staged pricing change rather than a full pricing reset: keep the current list price architecture intact, introduce one tightly scoped price increase or packaging upgrade on the highest-value segment first, and gate broader rollout on fast evidence collection. Under partial market data, the objective is not to find the globally optimal price now; it is to make a reversible move that improves monetization while limiting downside.\n\n## Rationale\nThe case provides no direct market evidence, competitor benchmarks, willingness-to-pay data, segment elasticity, or churn sensitivity inputs. That rules out a high-confidence recommendation for a broad portfolio repricing. A narrower move is more defensible because it preserves optionality, limits revenue-at-risk, and creates the data needed for a stronger second decision.\n\nRecommended operating approach:\n1. Target the segment with the clearest delivered value and lowest expected price sensitivity.\n2. Prefer packaging changes over blunt base-price increases when value communication is weak.\n3. Protect existing customers where possible through grandfathering, renewal caps, or delayed enforcement.\n4. Set explicit guardrails before launch: conversion, win rate, expansion, churn, and sales-cycle impact.\n5. Treat the first change as an instrumented test with a fixed review window.\n\n## Decision Frame\nRecommend a partial, reversible pricing move now only if the business needs near-term monetization improvement and can instrument outcomes within one review cycle. Do not attempt a company-wide repricing based on the current packet because the evidence base is materially incomplete. The decision is therefore between:\n\n- `Preferred`: limited rollout to a defined segment or package tier with clear success/fail thresholds.\n- `Not Recommended`: full repricing across all segments and plans without supporting elasticity or competitive evidence.\n\nThe governing logic is simple: when market data is partial, optimize for downside control and learning velocity, not theoretical price maximization.\n\n## Unknowns & Evidence Gaps\nCritical missing inputs:\n\n- Segment-level willingness to pay.\n- Current win/loss reasons tied to price.\n- Competitor pricing and packaging comparables.\n- Gross retention and expansion sensitivity to price changes.\n- Sales discounting behavior and realized price variance.\n- Whether the pricing problem is price level, package design, or value communication.\n\nBecause these gaps are unresolved, any recommendation for a broad change would be under-evidenced.\n\n## Pass/Fail Readiness\n`Pass` if all of the following are true:\n\n- The proposed change is limited to a defined segment, tier, or package.\n- Success metrics and rollback thresholds are pre-specified.\n- Customer communication and commercial exception handling are prepared.\n- The business can observe impact on conversion, churn, and expansion quickly enough to intervene.\n\n`Fail` if any of the following are true:\n\n- The plan assumes uniform elasticity across segments.\n- The rollout is broad and hard to reverse.\n- No baseline metrics exist for comparison.\n- Leadership expects high-confidence optimization rather than a measured learning step.\n\nCurrent readiness: `Fail for broad repricing`, `Pass with conditions for a constrained test or phased rollout`.\n\n## Recommended Next Artifact\nCreate a pricing experiment brief that includes:\n\n- target segment and hypothesis\n- current vs proposed package/price\n- guardrail metrics and decision thresholds\n- sales and customer-success exception rules\n- evidence plan for competitor checks and customer willingness-to-pay follow-up\n\nThat artifact should be the decision vehicle for the next round because it converts partial market data into a controlled operating plan.",
+    "claims": [
+      {
+        "claim_id": "side_a-claim-1",
+        "summary": "A staged, reversible pricing change is the strongest recommendation under partial market data; a broad repricing is not currently justified.",
+        "evidence_refs": [
+          "ctx-1"
+        ],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_a-claim-2",
+        "summary": "The main decision criterion should be downside control and learning velocity, not immediate price optimization, because the packet lacks core elasticity and competitor evidence.",
+        "evidence_refs": [
+          "ctx-1"
+        ],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_a-claim-3",
+        "summary": "Current readiness supports a constrained test or phased rollout, but not a full portfolio repricing.",
+        "evidence_refs": [
+          "ctx-1"
+        ],
+        "is_major": false
+      }
+    ],
+    "citations": [
+      "ctx-1"
+    ],
+    "open_questions": [
+      "What customer segments exist, and which have the clearest value realization and lowest expected price sensitivity?",
+      "Is the monetization issue primarily price level, packaging structure, discount leakage, or weak value communication?",
+      "What are the current baseline metrics for win rate, gross retention, net retention, expansion, and discounting by segment?",
+      "What competitor pricing and packaging benchmarks are most relevant to the target segment?",
+      "How quickly can the business observe and act on post-change conversion and churn signals?"
+    ],
+    "critique_responses": []
+  },
+  "critique_packet": {
+    "target_side": "side_a",
+    "finding_id": "finding-2",
+    "target_claim_ids": [
+      "side_a-claim-1",
+      "side_a-claim-2"
+    ],
+    "claim_under_attack": "A staged, reversible pricing change is the strongest recommendation under partial market data; the main decision criterion should be downside control and learning velocity rather than price optimization.",
+    "attack_type": "evidence_gap",
+    "evidence_or_reason": "The artifact assumes without evidence that a staged rollout is lower-risk than maintaining the status quo. Under partial data, the current price may already be significantly misaligned — either too low (leaving revenue on the table daily) or too high (silently bleeding prospects who never enter the pipeline). The recommendation treats 'do a small test' as inherently safe, but a slow, narrow test carries its own costs: delayed revenue capture if underpriced, continued competitive exposure, internal resource burn on instrumentation, and the risk that a small-segment test produces non-generalizable results due to segment selection bias. The artifact lists six critical unknowns yet never weighs the cost of inaction against those unknowns — it implicitly treats the current price as a neutral baseline when partial data means that assumption is exactly as unsupported as any proposed change. A decision-useful strategy under uncertainty should explicitly compare the expected cost of a wrong move against the expected cost of delayed action, not default to conservatism as though caution is free.",
+    "severity": "high"
+  }
+}

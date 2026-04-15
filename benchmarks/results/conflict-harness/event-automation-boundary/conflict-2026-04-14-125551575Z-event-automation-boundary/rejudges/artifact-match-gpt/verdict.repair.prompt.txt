@@ -1,0 +1,103 @@
+Your previous judge output was close but rejected by schema validation.
+Rewrite it as ONLY a JSON object that preserves the same winner, margin, rubric_scores, decisive_dimension, judge_confidence, needs_human_review, decisive_findings, and rationale unless the schema absolutely requires clarification.
+Any rubric_scores.*.weighted_total value must be a normalized aggregate on the same 1-5 scale as the rubric dimensions, not a raw sum.
+You MUST include these missing required properties with substantive content:
+- dimension_rationales
+- side_summaries
+- decisive_dimension
+- rubric_scores.side_a.weighted_total
+- rubric_scores.side_b.weighted_total
+
+Required schema shape:
+{
+  "winner": "tie",
+  "margin": 0,
+  "rubric_scores": {
+    "side_a": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    },
+    "side_b": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    }
+  },
+  "dimension_rationales": {
+    "claim_quality": "Which side made the stronger claims and why.",
+    "evidence_discipline": "How each side used or overstated evidence.",
+    "responsiveness_to_critique": "How each side responded to the critique phase.",
+    "internal_consistency": "Contradictions, coherence, or missing logic.",
+    "decision_usefulness": "Which artifact better supports an actual decision."
+  },
+  "side_summaries": {
+    "side_a": {
+      "strengths": [
+        "One concise strength of Side A."
+      ],
+      "weaknesses": [
+        "One concise weakness of Side A."
+      ]
+    },
+    "side_b": {
+      "strengths": [
+        "One concise strength of Side B."
+      ],
+      "weaknesses": [
+        "One concise weakness of Side B."
+      ]
+    }
+  },
+  "decisive_dimension": "decision_usefulness",
+  "decisive_findings": [
+    "Replace with the actual decisive findings from this run."
+  ],
+  "judge_confidence": "low",
+  "needs_human_review": true,
+  "rationale": "One-paragraph explanation of the verdict."
+}
+
+Validation errors:
+Verdict packet failed validation:
+$.dimension_rationales: Missing required property.
+$.side_summaries: Missing required property.
+$.decisive_dimension: Missing required property.
+
+Previous verdict JSON:
+{
+  "winner": "side_b",
+  "margin": 0.2,
+  "rubric_scores": {
+    "side_a": {
+      "claim_quality": 3.2,
+      "evidence_discipline": 2.6,
+      "responsiveness_to_critique": 4,
+      "internal_consistency": 3.8,
+      "decision_usefulness": 4,
+      "weighted_total": 3.5
+    },
+    "side_b": {
+      "claim_quality": 3.8,
+      "evidence_discipline": 3.4,
+      "responsiveness_to_critique": 3.8,
+      "internal_consistency": 4.1,
+      "decision_usefulness": 3.9,
+      "weighted_total": 3.7
+    }
+  },
+  "decisive_findings": [
+    "Side B improved more on the central critique by removing unsupported internal-state, entity, and console specificity and reframing those details as deferred technical-spec decisions until operating evidence exists.",
+    "Side A remained more prescriptive and PRD-like, but it still carried several unsupported quantitative and market claims that were not grounded in the packet, which weakened evidence discipline despite a strong safety-boundary design.",
+    "Both sides preserved the required human-approval and deterministic-boundary constraints, but Side B produced the cleaner decision frame for this prompt: what must be fixed now versus what should wait for discovery."
+  ],
+  "judge_confidence": "low",
+  "needs_human_review": true,
+  "rationale": "Side B wins narrowly because it better aligned the artifact to the actual decision at hand: defining the automation boundary, approval model, and deterministic control surface without overcommitting to unsupported implementation detail. Side A was stronger as an operationally detailed PRD and responded well to critique by improving the pricing-gate design, but it still relied on several unsubstantiated thresholds, segment assumptions, and success metrics that were not evidenced in the packet. Side B was more disciplined about separating current decisions from deferred decisions, which gave it a small edge in evidence discipline and overall judgment quality, but the margin is close and both artifacts still contain unsupported claims, so confidence remains low."
+}

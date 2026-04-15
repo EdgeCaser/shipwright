@@ -1,0 +1,117 @@
+You are SIDE_A in the rebuttal phase for run conflict-2026-04-14-045224434Z-prd-hidden-scope-creep.
+Attack only visible claims from the opposing first-pass artifact.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "target_side": "side_b",
+  "finding_id": "runner-will-assign",
+  "target_claim_ids": [
+    "side_b-claim-1"
+  ],
+  "claim_under_attack": "The opposing claim to challenge.",
+  "attack_type": "evidence_gap",
+  "evidence_or_reason": "Why the visible claim is weak.",
+  "severity": "medium"
+}
+
+Case packet:
+{
+  "scenario_id": "prd-hidden-scope-creep",
+  "title": "PRD with hidden scope creep",
+  "prompt": "Write a PRD for a team inbox workflow handoff improvement.",
+  "artifact_type": "prd",
+  "rubric": {
+    "dimensions": [
+      "claim quality",
+      "evidence discipline",
+      "responsiveness to critique",
+      "internal consistency",
+      "decision usefulness"
+    ],
+    "scoring_scale": "1-5",
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "constraints": {
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "expect_structured": true,
+    "context_files": [],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "evidence": [],
+  "max_rounds": 3,
+  "tool_policy": "none",
+  "sharing_policy": {
+    "share_case_packet": true,
+    "share_committed_artifacts_after_first_pass": true,
+    "share_critiques_after_open": true,
+    "share_hidden_reasoning": false,
+    "share_provider_identity": false,
+    "share_internal_coalition_drafts": false
+  },
+  "success_condition": {
+    "type": "validator_contract",
+    "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+    "validator": {
+      "artifact_type": "prd",
+      "expect_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true
+    }
+  }
+}
+
+Opposing first-pass artifact:
+{
+  "run_id": "conflict-2026-04-14-045224434Z-prd-hidden-scope-creep",
+  "side_id": "side_b",
+  "round": "first_pass",
+  "artifact_markdown": "# PRD: Team Inbox Workflow Handoff Improvement\n\n## Decision Frame\n\n**Problem statement:** Team inbox handoff between shifts, roles, or escalation tiers produces dropped conversations, duplicated effort, and delayed responses. Customers experience this as being \"passed around\" or having to repeat context.\n\n**Decision to be made:** Should we invest in a structured handoff mechanism within the team inbox, and if so, what is the minimum scope that addresses the core failure modes?\n\n**Who decides:** Product lead (owns team inbox), with sign-off from Engineering lead on feasibility and Support Operations lead on workflow fit.\n\n**Decision deadline:** End of current planning cycle. If we miss this window, the next opportunity is Q3.\n\n**Scope boundary:** This PRD covers handoff between agents within a single team inbox. It does NOT cover:\n- Cross-team routing or re-assignment workflows\n- Automated triage or AI-assisted classification\n- SLA engine changes\n- Customer-facing status notifications\n- Analytics dashboards or reporting\n\nThese are adjacent concerns that may arise during implementation discussion. They are explicitly out of scope to prevent the handoff improvement from becoming a platform rewrite.\n\n## Background & Evidence\n\n**Observed failure modes (from support operations data):**\n1. **Context loss on handoff:** Agent B picks up a conversation without knowing what Agent A already tried or promised. Result: repeated questions, contradictory answers.\n2. **Ambiguous ownership:** Conversations sit in a \"handed off\" limbo where neither the originating nor receiving agent considers it theirs. Result: response time spikes.\n3. **Silent handoffs:** Agent A leaves for the day, conversation returns to queue with no annotation. Result: next agent starts from scratch.\n\n**What we do NOT yet know:** See Unknowns section below.\n\n## Proposed Solution (Minimum Viable)\n\n### Core capability: Structured Handoff Note\nWhen an agent hands off a conversation, the system requires a structured handoff note containing:\n- **Summary:** What the customer needs (1-2 sentences)\n- **Status:** What has been done so far\n- **Next step:** What the receiving agent should do next\n- **Commitments:** Any promises made to the customer (e.g., \"told them we'd respond by EOD\")\n\nThis note is visible to the receiving agent as a pinned annotation at the top of the conversation thread.\n\n### Core capability: Explicit Ownership Transfer\n- Handoff is a discrete action (not just re-assignment) that transfers ownership with an audit trail.\n- Conversation cannot enter an unowned state. If the target agent does not accept within a configurable window, it returns to the team queue with the handoff note preserved.\n- The originating agent remains on the hook until ownership is accepted.\n\n### Core capability: Handoff Visibility\n- Team lead view shows all in-flight handoffs with time-since-handoff.\n- Conversations with pending handoffs are visually distinct in the queue.\n\n## What This PRD Intentionally Excludes\n\nThe following features are reasonable extensions but represent scope creep risk. Each is flagged with the rationale for exclusion:\n\n| Feature | Why excluded | When to revisit |\n|---|---|---|\n| Auto-generated handoff summaries (AI) | Adds ML dependency, training data requirement, accuracy risk | After v1 proves handoff notes are valuable |\n| Cross-team handoff | Different routing logic, permission models | Separate PRD if intra-team handoff succeeds |\n| Customer notification of handoff | Requires customer-facing copy decisions, notification channel work | Post-launch based on CSAT signal |\n| Handoff analytics dashboard | Reporting is valuable but not blocking the core workflow fix | Fast-follow, can use raw data exports initially |\n| SLA clock adjustments during handoff | Complex policy decision, varies by team | Requires ops stakeholder alignment |\n\n## Unknowns & Evidence Gaps\n\n1. **Handoff volume:** We do not have reliable data on how many conversations per day involve a handoff. Estimate: 15-30% of conversations based on anecdotal input from team leads. **Action needed:** Pull queue reassignment logs for last 90 days before committing to implementation timeline.\n\n2. **Agent compliance:** Will agents fill out structured handoff notes, or will they treat them as friction and enter minimal/garbage data? **Action needed:** Run a 2-week manual pilot with paper-based handoff notes in one team to measure completion quality before building the feature.\n\n3. **Acceptance window duration:** What is the right timeout before an unaccepted handoff returns to queue? Too short creates pressure; too long defeats the purpose. **Action needed:** Interview 5 team leads on shift-change patterns to inform the default.\n\n4. **Receiving agent capacity:** Handoff assumes the target agent can take on more work. No capacity signal exists today. **Risk:** Handoffs pile up on already-overloaded agents. **Mitigation for v1:** Return-to-queue fallback. Capacity-aware routing is a future enhancement, not a v1 requirement.\n\n5. **Impact magnitude:** We believe handoff failures cause ~20% of negative CSAT responses in multi-touch conversations. This is an estimate, not a measurement. **Action needed:** Tag a sample of 100 low-CSAT multi-touch conversations to validate.\n\n## Pass/Fail Readiness\n\n**This PRD is NOT ready for engineering commitment.** It is ready for stakeholder alignment on scope.\n\n| Readiness criterion | Status | Blocker? |\n|---|---|---|\n| Problem validated with data | Partial — anecdotal, not measured | Yes |\n| Scope boundaries agreed by stakeholders | Draft — needs review | Yes |\n| Solution validated with users | No — need pilot results | Yes |\n| Technical feasibility assessed | Not started | Yes |\n| Success metrics defined | Draft (see below) | No |\n| Edge cases enumerated | Partial | No |\n\n**Draft success metrics (to be validated):**\n- Primary: Reduce median time-to-first-response-after-handoff by 40%\n- Secondary: Reduce repeat-context customer messages (\"as I already explained...\") by 25%\n- Guardrail: Handoff note completion rate >80% (below this, the feature is adding friction without value)\n\n**What must be true before this PRD advances:**\n1. Handoff volume data confirms this is a >10% of conversations problem\n2. Manual pilot shows agents will complete structured notes at >70% quality rate\n3. Engineering confirms structured handoff can be built within the existing inbox architecture (no platform migration required)\n\n## Recommended Next Artifact\n\n**Next artifact: Discovery spike (1 week)**\n\nBefore advancing to technical design, run a parallel discovery:\n1. **Data pull:** Quantify handoff volume from reassignment logs (Engineering, 2 days)\n2. **Manual pilot:** Paper handoff notes with one support team (Ops lead, 2 weeks)\n3. **Tech feasibility check:** Can structured handoff be added to existing conversation model without schema migration? (Engineering, 2 days)\n\nIf all three return positive signals, advance to **Technical Design Document** scoped to the three core capabilities above. If the manual pilot shows <50% compliance, revisit whether the problem is better solved by workflow automation rather than agent-driven handoff notes.",
+  "claims": [
+    {
+      "claim_id": "side_b-claim-1",
+      "summary": "Team inbox handoff failures produce context loss, ownership ambiguity, and silent handoffs — but the magnitude of the problem is currently unquantified and must be validated before engineering commitment.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-2",
+      "summary": "A structured handoff note with explicit ownership transfer is the minimum viable intervention, but agent compliance is an unknown risk that requires a manual pilot before building the feature.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-3",
+      "summary": "Adjacent features (AI summaries, cross-team routing, analytics dashboards, SLA adjustments, customer notifications) are explicitly excluded as scope creep risks with defined revisit conditions.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-4",
+      "summary": "The PRD is not ready for engineering commitment — it is ready for stakeholder scope alignment, with three specific pass/fail gates that must clear before advancing to technical design.",
+      "evidence_refs": [],
+      "is_major": false
+    }
+  ],
+  "citations": [],
+  "open_questions": [
+    "What is the actual handoff volume per day across teams? Current estimate (15-30%) is anecdotal.",
+    "Will agents comply with structured handoff notes, or will the friction produce garbage data?",
+    "Can the existing inbox data model support structured handoff metadata without a schema migration?"
+  ],
+  "critique_responses": []
+}

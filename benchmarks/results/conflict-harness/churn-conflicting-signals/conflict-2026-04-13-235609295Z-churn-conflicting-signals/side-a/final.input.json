@@ -1,0 +1,119 @@
+{
+  "case_packet": {
+    "scenario_id": "churn-conflicting-signals",
+    "title": "Churn diagnosis with conflicting signals",
+    "prompt": "Write a churn reduction PRD when signals conflict with strategy targets.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass": {
+    "run_id": "conflict-2026-04-13-235609295Z-churn-conflicting-signals",
+    "side_id": "side_a",
+    "round": "first_pass",
+    "artifact_markdown": "# Churn Reduction PRD: Navigating Conflicting Signals\n\n## Decision Frame\n\n**Problem statement:** Customer churn metrics are sending conflicting signals relative to strategic growth targets. Usage-based indicators suggest increasing engagement among active cohorts, yet revenue churn is accelerating and NPS scores are declining in segments the strategy prioritizes for expansion. The core tension: optimizing for retention in high-churn segments may require investment reallocation away from growth initiatives that leadership has committed to.\n\n**Decision to be made:** Should the organization (a) pause or slow growth-oriented feature investment to fund targeted retention interventions, (b) maintain current growth trajectory and treat churn as an acceptable cost of acquisition-led strategy, or (c) pursue a hybrid approach that ring-fences a retention budget without materially slowing growth commitments?\n\n**Stakeholders:** Product leadership, Growth team, Customer Success, Finance, Engineering capacity planners.\n\n**Time horizon:** 90-day diagnostic + intervention pilot; 180-day measurement window for cohort-level impact.\n\n**Constraints:**\n- Engineering capacity is already allocated 70/30 growth vs. maintenance through Q3.\n- Strategic plan commits to 40% ARR growth, creating tension with any retention-first reallocation.\n- Customer Success team reports anecdotal signals (pricing sensitivity, competitor mentions) that contradict product analytics showing healthy feature adoption.\n\n## Unknowns & Evidence Gaps\n\n| # | Unknown | Impact if unresolved | Current evidence quality | Recommended investigation |\n|---|---------|---------------------|------------------------|---------------------------|\n| U1 | Which churn cohort drives the revenue signal? Logo churn may be flat while revenue churn rises due to contraction in mid-market accounts. | High — interventions will be mis-targeted if we treat all churn as homogeneous. | **Weak.** Current dashboards aggregate all segments. No cohort-level revenue churn view exists. | Build segmented churn waterfall by plan tier, tenure, and ARR band within 2 weeks. |\n| U2 | Is the NPS decline causal or coincident with churn? NPS surveys may oversample dissatisfied users post-support-ticket. | Medium — NPS-driven prioritization could chase noise. | **Weak.** Survey sampling methodology not audited in 12+ months. | Audit NPS sampling frame; run parallel CSAT pulse on random sample. |\n| U3 | Are CS anecdotal signals (pricing, competitor mentions) representative or availability-biased? | High — pricing intervention is expensive and irreversible if wrong. | **Very weak.** Anecdotal only; no structured win/loss data. | Implement structured exit survey + 10 churned-customer interviews within 30 days. |\n| U4 | Does increased engagement among active cohorts mask a bimodal distribution where power users grow while casual users silently disengage? | High — engagement metrics would be misleading. | **Medium.** DAU/MAU ratio available but not segmented by account health score. | Segment engagement metrics by account health quartile. |\n| U5 | What is the actual competitive displacement rate vs. budget cuts / consolidation churn? | Medium — different root causes require fundamentally different responses. | **None.** No competitive churn tagging exists. | Add churn reason taxonomy to CS workflow + exit surveys. |\n\n## Pass/Fail Readiness\n\n**Verdict: NOT READY to commit to a specific churn intervention.**\n\n**Rationale:** The conflicting signals are not yet diagnosed — they are symptoms of measurement gaps, not a well-understood problem. Committing resources to a retention program now risks:\n\n1. **Mis-targeting:** Without U1 resolved, interventions may address the wrong segment.\n2. **Misattribution:** Without U2 and U3 resolved, we cannot distinguish signal from noise in qualitative feedback.\n3. **Opportunity cost miscalculation:** Without U4 resolved, we cannot accurately model the revenue impact of inaction vs. intervention.\n\n**What would make this ready:**\n- [ ] Segmented churn waterfall completed (U1) — **hard gate, no intervention design without this**\n- [ ] At least 10 structured exit interviews completed (U3) — **hard gate for any pricing-related intervention**\n- [ ] Engagement segmentation by health quartile available (U4) — **hard gate for engagement-based retention tactics**\n- [ ] NPS sampling audit complete (U2) — soft gate; can proceed with caveat\n- [ ] Churn reason taxonomy deployed (U5) — soft gate; improves future measurement but not blocking\n\n**Risk of waiting:** If revenue churn is accelerating at current rate (~2% MoM increase assumed), a 90-day diagnostic window could cost an estimated 6% incremental ARR loss. This is acceptable if the alternative is a poorly targeted intervention that costs more and delays correct action.\n\n## Recommended Next Artifact\n\n**Next artifact:** Churn Diagnostic Research Brief (target: 30 days)\n\n**Scope:** Resolve U1, U3, and U4 (the three hard gates) through:\n1. Data engineering sprint to build segmented churn waterfall (1-2 weeks, requires analytics + data eng)\n2. Customer research: 10 structured exit interviews with churned accounts from highest-revenue-impact segment (2-3 weeks, requires CS + UXR)\n3. Engagement bimodality analysis segmented by health score (1 week, requires product analytics)\n\n**Decision point after diagnostic:** With hard gates resolved, reconvene to select intervention approach (a, b, or c from Decision Frame) with evidence-backed targeting. The diagnostic brief should include a recommendation with confidence interval and expected ROI range for each option.\n\n**What this PRD deliberately does NOT do:** Prescribe a solution. The conflicting signals indicate a diagnosis problem, not a solution problem. Jumping to intervention design (e.g., \"add onboarding flow,\" \"launch save offer\") before resolving the unknowns would be premature optimization against ambiguous data.",
+    "claims": [
+      {
+        "claim_id": "side_a-claim-1",
+        "summary": "The conflicting signals (rising engagement + rising revenue churn + declining NPS) represent a measurement and segmentation gap, not a well-understood problem ready for intervention design.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_a-claim-2",
+        "summary": "Committing to a churn intervention before resolving three hard-gate unknowns (segmented churn waterfall, structured exit interviews, engagement bimodality analysis) risks mis-targeting and wasted investment.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_a-claim-3",
+        "summary": "The correct next step is a 30-day diagnostic research brief, not a retention feature or pricing change, because the problem is under-specified.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_a-claim-4",
+        "summary": "A 90-day diagnostic window carries an estimated 6% incremental ARR loss risk, which is acceptable relative to the cost of a poorly targeted intervention.",
+        "evidence_refs": [],
+        "is_major": false
+      },
+      {
+        "claim_id": "side_a-claim-5",
+        "summary": "Anecdotal CS signals about pricing and competitors are availability-biased and should not drive intervention design without structured exit survey validation.",
+        "evidence_refs": [],
+        "is_major": false
+      }
+    ],
+    "citations": [],
+    "open_questions": [
+      "What is the current segmented churn rate by ARR band and customer tenure?",
+      "Is the NPS decline driven by sampling bias or genuine sentiment shift?",
+      "What proportion of churn is competitive displacement vs. budget consolidation?",
+      "Does the engagement data mask a bimodal distribution between power users and silently disengaging accounts?",
+      "What is leadership's tolerance for diagnostic delay given the ARR growth commitment?"
+    ],
+    "critique_responses": []
+  },
+  "critique_packet": {
+    "target_side": "side_a",
+    "finding_id": "finding-2",
+    "target_claim_ids": [
+      "side_a-claim-4"
+    ],
+    "claim_under_attack": "A 90-day diagnostic window carries an estimated 6% incremental ARR loss risk, which is acceptable relative to the cost of a poorly targeted intervention.",
+    "attack_type": "evidence_gap",
+    "evidence_or_reason": "The 6% ARR loss estimate and the acceptability judgment are both unsupported. The artifact admits that churn is not segmented, revenue impact is unresolved, and leadership tolerance is an open question, so it lacks the baseline churn rate, affected ARR bands, intervention cost range, and risk appetite needed to justify waiting 90 days as an acceptable tradeoff.",
+    "severity": "medium"
+  }
+}

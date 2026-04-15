@@ -1,0 +1,64 @@
+{
+  "run_id": "conflict-2026-04-14-203355822Z-churn-conflicting-signals",
+  "side_id": "side_a",
+  "round": "first_pass",
+  "artifact_markdown": "# Churn Reduction PRD: Resolving Conflicting Signals\n\n## Decision Frame\n\n**Problem Statement:** Customer churn signals are contradicting stated strategy targets, creating paralysis in prioritization. Specifically:\n\n- **Signal conflict 1:** NPS scores are stable/improving while monthly churn rate is increasing — satisfaction metrics suggest health, but revenue loss tells a different story.\n- **Signal conflict 2:** High-value cohorts show lower churn intent in surveys but higher actual churn in billing data — stated preference diverges from revealed preference.\n- **Signal conflict 3:** Growth strategy targets net-new acquisition at 3:1 spend ratio vs. retention, but CAC is rising while existing-customer LTV is compressing due to churn.\n\n**Decision to be made:** Should we redirect resources from acquisition toward retention interventions, and if so, which churn segments justify intervention given that our leading indicators (NPS, survey intent) are unreliable predictors of actual churn behavior?\n\n**Stakeholders:** Product (owns intervention surface), Growth (owns acquisition budget allocation), Finance (owns LTV/CAC model), CS (owns relationship signals).\n\n**Decision deadline:** End of Q3 planning cycle. Delay beyond this means the acquisition-heavy budget locks in for 6 months.\n\n---\n\n## Unknowns & Evidence Gaps\n\n| # | Unknown | Why It Matters | Current Evidence Quality | Required Evidence |\n|---|---------|---------------|------------------------|------------------|\n| 1 | Why NPS and churn diverge | If NPS is a lagging/vanity metric for our segment, our entire health dashboard is miscalibrated | **Weak** — no causal analysis linking NPS movement to churn cohorts | Cohort-level NPS-to-churn correlation study (min 4 quarters) |\n| 2 | What triggers high-value silent churn | High-value customers leave without complaint; survey intent doesn't predict | **Absent** — no exit interview or behavioral sequence data for this cohort | Behavioral event sequence analysis for churned high-value accounts (last 12mo) |\n| 3 | True retention ROI vs. acquisition ROI | Strategy assumes acquisition is more efficient; churn suggests LTV denominator is broken | **Conflicting** — Finance model uses 24mo LTV but actual median tenure may be shorter | Recalculate LTV using actual observed tenure distributions, not projected |\n| 4 | Whether churn is product-driven or market-driven | Competitive entry could explain churn independent of product quality | **Weak** — anecdotal sales loss reports only | Win/loss analysis with churned accounts (n≥30) |\n| 5 | Intervention effectiveness baseline | No prior retention program to benchmark against | **Absent** | Controlled pilot required before budget commitment |\n\n**Critical finding:** The conflicting signals are not a data problem to be resolved analytically — they indicate that our measurement framework was built for a market position we no longer occupy. NPS was calibrated during low-competition period; it measures satisfaction relative to expectations that competitors have now raised.\n\n---\n\n## Pass/Fail Readiness\n\n**Readiness verdict: FAIL — not ready for full resource reallocation.**\n\n### What we CAN decide now:\n- **Approve a bounded retention pilot** (≤15% of one quarter's acquisition budget) targeting high-value silent churn cohort, because the cost of learning is low relative to the cost of continued ignorance.\n- **Decommission NPS as a churn predictor** in executive dashboards. Replace with behavioral leading indicators (login frequency decay, feature breadth contraction, support ticket absence in previously-active accounts).\n- **Commission the 4 evidence-gathering workstreams** identified above with 6-week delivery targets.\n\n### What we CANNOT decide now:\n- Full budget reallocation from acquisition to retention — the ROI comparison (Unknown #3) is genuinely unresolved, and acting on the assumption that retention is cheaper could be wrong if churn is market-driven (Unknown #4).\n- Specific retention intervention design — without behavioral sequence data (Unknown #2), we'd be guessing at mechanisms.\n\n### Failure criteria for the pilot:\n- If pilot cohort shows <5% churn reduction vs. control after 90 days, retention intervention hypothesis is weak and acquisition-heavy strategy may be correct despite rising CAC.\n- If behavioral indicators fail to predict churn better than NPS within 2 quarters, our observability problem is deeper than metric selection.\n\n---\n\n## Recommended Next Artifact\n\n**Next artifact: Retention Pilot Design Brief**\n\nScope:\n1. Define high-value silent churn cohort using behavioral (not survey) signals\n2. Design 3 intervention variants for controlled test (re-engagement, value demonstration, preemptive CS outreach)\n3. Specify success metrics, sample size, and duration for statistical validity\n4. Include kill criteria — conditions under which the pilot is terminated early\n\n**Parallel workstream:** Measurement Framework Audit — separate artifact examining which leading indicators actually correlate with churn across all segments, to replace the broken NPS-as-health-proxy assumption.\n\n**Timeline:** Pilot design brief within 2 weeks. Evidence workstreams report at 6 weeks. Full retention-vs-acquisition decision at Q3 planning with pilot data + evidence workstream outputs.\n\n---\n\n### Key Principle: Resolve Conflicts by Trusting Revealed Preference Over Stated Preference\n\nWhen billing data says customers leave and surveys say they're happy, billing data wins. The strategic implication is that we've been optimizing for a satisfaction metric that doesn't predict the behavior we care about. This PRD doesn't resolve the signal conflict — it acknowledges it as the central finding and structures decisions around learning which signal to trust, rather than prematurely picking one.",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "NPS-churn divergence indicates a broken measurement framework, not a data anomaly — satisfaction metrics were calibrated for a low-competition environment and no longer predict retention behavior",
+      "evidence_refs": [
+        "ctx-nps-churn-divergence"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "Revealed preference (billing/churn data) must override stated preference (surveys/NPS) when they conflict — this is the governing principle for resolving the signal conflict",
+      "evidence_refs": [
+        "ctx-behavioral-vs-stated"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-3",
+      "summary": "Full budget reallocation from acquisition to retention is premature because the retention ROI case depends on unresolved unknowns (market-driven vs product-driven churn, true observed LTV)",
+      "evidence_refs": [
+        "ctx-roi-uncertainty"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-4",
+      "summary": "A bounded retention pilot (≤15% of quarterly acquisition budget) is the correct next move because it generates learning at low cost relative to either full reallocation or inaction",
+      "evidence_refs": [
+        "ctx-pilot-economics"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-5",
+      "summary": "High-value silent churn (customers who leave without complaint or declining survey scores) represents the highest-leverage segment because it is both the most damaging and the least understood",
+      "evidence_refs": [
+        "ctx-silent-churn-pattern"
+      ],
+      "is_major": false
+    }
+  ],
+  "citations": [
+    "ctx-nps-churn-divergence",
+    "ctx-behavioral-vs-stated",
+    "ctx-roi-uncertainty",
+    "ctx-pilot-economics",
+    "ctx-silent-churn-pattern"
+  ],
+  "conclusion_confidence": "medium",
+  "open_questions": [
+    "Is the NPS-churn divergence uniform across segments or concentrated in specific cohorts?",
+    "What is the actual median customer tenure vs. the 24-month LTV projection assumption?",
+    "Are competitors actively targeting our high-value cohort, or is churn distributed across value tiers?",
+    "Does the 3:1 acquisition-to-retention spend ratio reflect a deliberate strategy decision or historical inertia?",
+    "What is the minimum detectable effect size for a retention pilot given our cohort sizes?"
+  ],
+  "critique_responses": []
+}

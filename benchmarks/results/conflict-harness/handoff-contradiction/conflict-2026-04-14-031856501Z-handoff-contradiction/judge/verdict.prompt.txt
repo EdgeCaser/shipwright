@@ -1,0 +1,297 @@
+You are the judge in a blinded conflict harness run.
+Provider identity is intentionally hidden. Do not infer provider family.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "winner": "tie",
+  "margin": 0,
+  "rubric_scores": {
+    "side_a": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    },
+    "side_b": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    }
+  },
+  "decisive_findings": [
+    "Replace with the actual decisive findings from this run."
+  ],
+  "judge_confidence": "low",
+  "needs_human_review": true,
+  "rationale": "One-paragraph explanation of the verdict."
+}
+
+Use min_margin_for_verdict = 0.1.
+judge_confidence rubric:
+- high: the winning side is clearly stronger on at least 3 rubric dimensions and has no major unsupported-claim problem
+- medium: the winning side leads overall but has at least 1 weak dimension or absorbed only part of the opposing critique
+- low: score margin is below min_margin_for_verdict or both sides have significant unsupported claims
+
+Judge packet:
+{
+  "case_packet": {
+    "scenario_id": "handoff-contradiction",
+    "title": "Handoff artifact with cross-document contradictions",
+    "prompt": "Write a technical handoff PRD aligned to a platform strategy and challenge review.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-14-031856501Z-handoff-contradiction",
+      "side_id": "side_a",
+      "round": "first_pass",
+      "artifact_markdown": "# Technical Handoff PRD\n\n## Overview\nThis PRD defines a technical handoff artifact intended to stay aligned with both platform strategy and challenge review feedback. Because the case packet provides no underlying strategy memo, challenge review, or source evidence beyond the harness instructions, this document is deliberately structured to prevent contradiction propagation and to make unresolved conflicts explicit rather than silently reconciling them.\n\n## Problem Statement\nTeams need a handoff-ready PRD that engineering can act on without inheriting cross-document ambiguity. The immediate risk is that strategy language, delivery requirements, and critique findings may disagree, creating downstream rework, scope confusion, and unclear decision authority.\n\n## Goal\nProduce a PRD format and decision protocol that:\n- preserves traceability from strategic intent to implementation requirements\n- surfaces contradictions as first-class blockers\n- enables engineering handoff only when core product, scope, and ownership decisions are coherent\n\n## Non-Goals\n- Inventing missing strategic decisions not present in source materials\n- Resolving business tradeoffs without an explicit decision owner\n- Treating critique comments as approved requirements unless adopted into the decision record\n\n## Users\n- Product manager authoring the handoff\n- Engineering lead accepting implementation scope\n- Platform lead validating strategic alignment\n- Reviewer validating that prior challenge findings were addressed or deferred explicitly\n\n## Requirements\n1. Every major requirement must map to a source-of-truth decision record.\n2. Contradictory inputs across source documents must be captured in a contradictions register before handoff approval.\n3. Requirements accepted from critique must be labeled as either adopted, rejected, or deferred.\n4. Engineering-facing scope must distinguish committed work from open questions.\n5. Acceptance criteria must be testable and tied to the committed scope only.\n\n## Functional Spec\n- The PRD must include a source map listing each major requirement and its originating decision reference.\n- The PRD must include a contradiction log with fields: topic, conflicting statements, impact, owner, disposition, and required follow-up.\n- The PRD must include implementation scope, dependencies, risks, and acceptance criteria.\n- The PRD must block final handoff status if any contradiction affects architecture, API contract, data model, rollout, or ownership.\n\n## Decision Rules\n- Strategy documents define intent and guardrails.\n- Challenge review informs risk, weakness, and missing evidence; it does not override strategy by default.\n- The handoff PRD is authoritative only for decisions explicitly resolved within it or explicitly inherited from a named source.\n- When two upstream documents conflict, the PRD must record the conflict and name the decision owner; it must not silently pick one.\n\n## Handoff Readiness Criteria\n- Core problem, user, scope, and success metric are stated.\n- Engineering dependencies and owners are named.\n- No unresolved contradiction remains in a ship-blocking area.\n- Deferred items are separated from committed scope.\n\n## Decision Frame\nApprove this PRD pattern for first-pass handoff only as a contradiction-aware scaffold, not as a fully decision-complete implementation brief. The packet lacks the actual platform strategy and challenge review contents, so the useful decision is to enforce a stricter handoff contract: unresolved cross-document contradictions must be logged and assigned before engineering commitment.\n\n## Unknowns & Evidence Gaps\n- The platform strategy source is not included, so strategic claims cannot be verified.\n- The challenge review source is not included, so critique adoption cannot be audited.\n- No product context, user needs, technical architecture, or success metrics are provided.\n- No evidence pack or context files are supplied, so all substantive product requirements remain provisional.\n\n## Pass/Fail Readiness\nFail for production handoff.\nPass only for template-level review.\nReason: the validator contract can be satisfied structurally, but the underlying decision content required for a real technical handoff is absent.\n\n## Recommended Next Artifact\nA contradiction-resolved source map addendum that includes:\n- platform strategy excerpts mapped to requirements\n- challenge review findings with adopted/rejected/deferred status\n- named decision owners for each unresolved conflict\n- final committed scope and acceptance criteria suitable for engineering execution",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "A useful first-pass PRD must make cross-document contradictions explicit and block handoff on unresolved ship-blocking conflicts.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "This case packet supports only a structurally valid scaffold PRD, not a fully substantiated implementation handoff, because no source strategy, critique, or evidence documents are provided.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        }
+      ],
+      "citations": [
+        "ctx-1"
+      ],
+      "open_questions": [
+        "What exact platform strategy statements must this PRD align to?",
+        "Which challenge review findings are mandatory to adopt before handoff approval?",
+        "Which contradictions are currently known across the source documents?"
+      ],
+      "critique_responses": []
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-14-031856501Z-handoff-contradiction",
+      "side_id": "side_b",
+      "round": "first_pass",
+      "artifact_markdown": "# Technical Handoff PRD: Platform Migration — Cross-Document Reconciliation\n\n## Decision Frame\n\n**Problem:** The platform team is handing off a migration initiative to the delivery team, but the existing documentation contains cross-document contradictions that create execution risk. The strategy document, challenge review, and prior technical specs disagree on scope, timeline, and integration requirements. This PRD reconciles those contradictions and establishes the canonical source of truth for the handoff.\n\n**Decision to be made:** Should the delivery team accept the handoff as-scoped, or must specific contradictions be resolved before work begins?\n\n**Stakeholders:**\n- Platform team (handing off)\n- Delivery/engineering team (receiving)\n- Product leadership (approving scope)\n- Dependent service owners (affected by integration changes)\n\n**Scope boundaries:**\n- IN: API migration (v2 → v3), auth layer consolidation, data model alignment\n- OUT: UI redesign, new feature development, performance optimization beyond parity\n\n### Contradiction Register\n\n| # | Document A | Document B | Contradiction | Resolution |\n|---|-----------|-----------|---------------|------------|\n| C-1 | Platform strategy states \"full backward compatibility required\" | Challenge review identifies backward compatibility as \"the primary cost driver — consider breaking changes\" | Direct conflict on compatibility posture | **Unresolved — requires product leadership decision before sprint planning** |\n| C-2 | Technical spec estimates 6-week delivery | Strategy document references Q3 completion (12+ weeks) | Timeline disagreement of 2x | Technical spec scope is subset; strategy includes rollout. **Resolved: 6 weeks build + 6 weeks rollout = Q3 target is consistent** |\n| C-3 | Strategy doc lists 4 integration partners | Technical spec lists 3 (omits payments service) | Scope disagreement on integration surface | **Unresolved — payments team must confirm whether they consume the affected APIs** |\n| C-4 | Challenge review flags rate limiting as \"must-have for launch\" | Technical spec defers rate limiting to post-migration phase | Prioritization conflict | **Resolved in favor of challenge review: rate limiting is a launch gate given v3 exposes new public endpoints** |\n\n## Unknowns & Evidence Gaps\n\n1. **Backward compatibility cost** (blocks C-1): No quantified estimate exists for maintaining full backward compatibility vs. a breaking migration with a deprecation window. Without this, the team cannot make an informed scope decision.\n   - *Evidence needed:* Engineering spike (2-3 days) to measure compatibility shim complexity and ongoing maintenance burden.\n\n2. **Payments service dependency** (blocks C-3): The payments integration was added to the strategy doc after the technical spec was written. No one has confirmed whether payments actually calls the migrating endpoints.\n   - *Evidence needed:* API call graph analysis or direct confirmation from payments team lead.\n\n3. **Load profile for v3 endpoints:** The challenge review flags rate limiting because v3 opens new public surface area, but no traffic projection exists.\n   - *Evidence needed:* Historical v2 traffic data extrapolated to v3 surface area, plus any committed external partner volumes.\n\n4. **Rollback plan:** No document addresses what happens if the migration fails mid-rollout. The strategy assumes success; the challenge review assumes problems but prescribes no fallback.\n   - *Evidence needed:* Rollback runbook drafted before migration begins, validated with on-call team.\n\n5. **Data model alignment verification:** The technical spec references schema changes but does not include migration scripts or a diff against production schema.\n   - *Evidence needed:* Schema diff review with DBA sign-off.\n\n## Pass/Fail Readiness\n\n| Gate | Status | Blocker? |\n|------|--------|----------|\n| Contradiction C-1 resolved (compatibility posture) | FAIL | Yes — cannot estimate work without this decision |\n| Contradiction C-3 resolved (payments scope) | FAIL | Yes — may add 2+ weeks if payments is in scope |\n| Contradiction C-4 resolved (rate limiting) | PASS | Resolved: rate limiting is in scope for launch |\n| Contradiction C-2 resolved (timeline) | PASS | Resolved: build + rollout = Q3 |\n| Rollback plan exists | FAIL | Yes — required before migration start |\n| Schema migration scripts reviewed | FAIL | Yes — required before sprint 1 |\n| Engineering spike on compatibility cost | NOT STARTED | Blocks C-1 resolution |\n| Traffic projections for rate limit design | NOT STARTED | Blocks rate limiting implementation |\n\n**Overall readiness: NOT READY FOR HANDOFF**\n\nTwo blocking contradictions (C-1, C-3) and two missing artifacts (rollback plan, schema scripts) must be resolved before the delivery team can accept this handoff with confidence.\n\n## Recommended Next Artifact\n\n**Immediate (this week):**\n1. **Decision brief for product leadership** on contradiction C-1 (backward compatibility posture). Format: one-page options memo with cost/risk for each path. This is the single highest-leverage blocker.\n2. **Payments team confirmation** on C-3 — a single Slack thread or 15-minute call, not a document.\n\n**Before handoff acceptance (next 1-2 weeks):**\n3. **Engineering spike results** quantifying backward compatibility cost (feeds into the decision brief above).\n4. **Rollback runbook** — owned by platform team since they have migration context.\n5. **Schema diff document** with DBA review sign-off.\n\n**After handoff acceptance:**\n6. **Sprint plan** for the delivery team, built on resolved scope.\n7. **Rate limiting design doc** informed by traffic projections.\n\nThe handoff should be re-evaluated once gates C-1 and C-3 are resolved. Target: re-review in 5 business days.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "Cross-document contradictions must be explicitly registered, classified as resolved or unresolved, and blocking contradictions must gate handoff acceptance — implicit reconciliation creates execution risk.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "The handoff is not ready: two unresolved contradictions (backward compatibility posture and payments service scope) and two missing artifacts (rollback plan, schema migration scripts) block acceptance.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "The backward compatibility decision (C-1) is the single highest-leverage blocker because it determines scope, cost, and timeline for the entire migration — it should be resolved first via a structured options memo to product leadership.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-4",
+          "summary": "Rate limiting must be a launch gate (resolving C-4 in favor of the challenge review) because v3 exposes new public endpoints that did not exist in v2.",
+          "evidence_refs": [],
+          "is_major": false
+        },
+        {
+          "claim_id": "side_b-claim-5",
+          "summary": "The apparent 2x timeline contradiction (C-2) is actually consistent when decomposed into build phase (6 weeks) plus rollout phase (6 weeks) equaling the Q3 target.",
+          "evidence_refs": [],
+          "is_major": false
+        }
+      ],
+      "citations": [],
+      "open_questions": [
+        "What is the quantified cost of full backward compatibility vs. breaking changes with a deprecation window?",
+        "Does the payments service actually consume the APIs being migrated?",
+        "What are the projected traffic volumes for newly public v3 endpoints?",
+        "Who owns the rollback runbook — platform team or delivery team?"
+      ],
+      "critique_responses": []
+    }
+  },
+  "critique_packets": {
+    "side_a": {
+      "target_side": "side_b",
+      "finding_id": "finding-1",
+      "target_claim_ids": [
+        "side_b-claim-4"
+      ],
+      "claim_under_attack": "Rate limiting must be a launch gate (resolving C-4 in favor of the challenge review) because v3 exposes new public endpoints that did not exist in v2.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "This elevates rate limiting to a mandatory launch gate without any visible evidence that the new endpoints materially change abuse risk, traffic shape, or failure impact. The artifact itself admits there are no traffic projections, and it provides no cited basis for the assertion that v3 newly exposes public endpoints or that launch should be blocked absent rate limiting. That makes the resolution premature rather than evidence-disciplined.",
+      "severity": "medium"
+    },
+    "side_b": {
+      "target_side": "side_a",
+      "finding_id": "finding-2",
+      "target_claim_ids": [
+        "side_a-claim-2"
+      ],
+      "claim_under_attack": "This case packet supports only a structurally valid scaffold PRD, not a fully substantiated implementation handoff, because no source strategy, critique, or evidence documents are provided.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "Side A uses the absence of external source documents to justify delivering a meta-PRD about how PRDs should handle contradictions, rather than a PRD that itself demonstrates the handoff pattern. The scenario prompt asks to 'write a technical handoff PRD aligned to a platform strategy and challenge review' — it does not ask for a template or process document. A competent PRD author facing incomplete inputs should construct reasonable placeholder content (hypothetical platform, plausible challenge findings) to demonstrate the artifact's structure under realistic conditions, then flag assumptions explicitly. Instead, Side A treats missing context as license to avoid substantive product decisions entirely, producing a document that an engineering team could not act on even at template level. The Pass/Fail section concedes the artifact fails for production handoff, which undermines the claim that the structural scaffold alone constitutes a useful response to the prompt. A scaffold that self-declares failure does not satisfy the scenario's success condition of producing a PRD artifact — it produces a PRD-shaped process memo.",
+      "severity": "high"
+    }
+  },
+  "final_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-14-031856501Z-handoff-contradiction",
+      "side_id": "side_a",
+      "round": "final",
+      "artifact_markdown": "# Revised artifact\n\n# Technical Handoff PRD\n\n## Overview\nThis PRD defines a technical handoff for a platform capability that standardizes service-to-service handoff metadata across internal products. Because the case packet omits the actual platform strategy and challenge review, this artifact uses explicit assumptions to demonstrate a decision-useful handoff pattern rather than stopping at process guidance.\n\n## Assumed Source Alignment\n**Assumed platform strategy.** Consolidate fragmented integration patterns onto a shared platform contract, reduce bespoke service coupling, and improve operational visibility.\n\n**Assumed challenge review findings.** Prior drafts were vulnerable to cross-team ownership ambiguity, rollout risk from breaking interface changes, and weak acceptance criteria around migration completeness.\n\nThese assumptions are placeholders for demonstration and must be replaced by actual source text before execution.\n\n## Problem Statement\nInternal teams currently hand off workflow state between services through inconsistent payloads and ad hoc ownership boundaries. This creates contradictory implementations, difficult debugging, and migration friction when downstream services interpret state differently.\n\n## Goal\nDeliver a versioned Handoff Contract service and migration plan that:\n- standardizes handoff metadata for participating platform services\n- preserves backward compatibility during migration\n- assigns clear ownership for schema, rollout, and exception handling\n- gives engineering an executable scope with testable acceptance criteria\n\n## Non-Goals\n- Rewriting all upstream business workflows in this phase\n- Forcing immediate migration of every dependent service\n- Solving analytics or billing use cases beyond required handoff fields\n\n## Users\n- Platform engineering team owning the shared contract\n- Product engineering teams integrating as producers or consumers\n- SRE and support teams diagnosing failed handoffs\n\n## Scope\n**In scope.** Define a canonical handoff schema, expose validation and retrieval APIs, instrument handoff lifecycle events, and migrate the first two dependent services.\n\n**Out of scope.** Long-tail service migrations, policy engine redesign, and non-platform payload enrichment.\n\n## Requirements\n1. The platform must expose a versioned handoff schema with required fields for `handoff_id`, `source_service`, `target_service`, `state`, `created_at`, and `expiry_at`.\n2. Producers must validate payloads against the shared schema before submission.\n3. Consumers must support both legacy and new contract formats during the migration window.\n4. Ownership for schema changes must sit with the platform team; consuming teams own integration correctness in their services.\n5. Rollout must be gated by per-service migration readiness and observable error-rate thresholds.\n\n## Functional Spec\n- `POST /handoffs` creates a handoff record after schema validation.\n- `GET /handoffs/{handoff_id}` returns current state and audit metadata.\n- Validation errors return machine-readable codes for producer debugging.\n- Lifecycle events are emitted for create, accept, expire, and fail transitions.\n- A compatibility adapter translates legacy payloads for two launch-partner services during phase one.\n\n## Acceptance Criteria\n- Two launch-partner services can create and consume handoffs via the shared contract in staging and production.\n- Validation rejects malformed payloads with documented error codes.\n- Contract version `v1` supports backward-compatible reads for legacy payloads during the migration window.\n- Dashboard coverage exists for handoff volume, validation failures, expiry failures, and cross-service latency.\n- Ownership matrix is published for schema approval, rollout signoff, and incident response.\n\n## Dependencies\n- Platform API gateway support for new endpoints\n- Shared schema registry or equivalent contract publication mechanism\n- Observability pipeline for lifecycle event metrics\n- Staffing from two launch-partner service teams\n\n## Risks And Mitigations\n- **Risk:** Schema ownership remains ambiguous across teams.\n  **Mitigation:** Publish a RACI in the handoff package and require platform approval for contract changes.\n- **Risk:** Breaking changes disrupt dependent services.\n  **Mitigation:** Freeze `v1` semantics during rollout and use adapters for legacy clients.\n- **Risk:** Migration stalls after pilot adoption.\n  **Mitigation:** Treat pilot success metrics as a gate for broader rollout and keep non-pilot migrations out of committed scope.\n\n## Contradictions Register\n| Topic | Conflicting position | Resolution in this PRD | Owner |\n|---|---|---|---|\n| Ownership | Feature teams vs platform team own schema changes | Platform team owns schema; feature teams own service integrations | Platform lead |\n| Rollout | Big-bang migration vs phased rollout | Phased rollout with two launch partners | Engineering lead |\n| Compatibility | New contract only vs dual-read migration | Dual-read during migration window, `v1` frozen | Platform lead |\n\n## Decision Frame\nApprove a phased handoff-contract rollout for two launch-partner services as the implementation decision for this PRD. This adopts the critique that a handoff artifact must make substantive product and engineering choices even under incomplete source context. The artifact therefore uses explicit assumptions to show a decision-useful path: centralized schema ownership, versioned APIs, dual-read migration, and observable rollout gates.\n\n## Unknowns & Evidence Gaps\n- The actual platform strategy text is unavailable, so strategic alignment is demonstrated through stated assumptions rather than verified excerpts.\n- The actual challenge review is unavailable, so the ownership, rollout, and acceptance-criteria concerns are inferred placeholders.\n- Launch-partner service names, data volumes, and latency/error baselines are not provided.\n- Final migration window length and SLA thresholds require real operational input.\n\n## Pass/Fail Readiness\nConditional pass for technical handoff as a demonstration artifact.\n\nPass conditions:\n- Engineering can act on the core scope, API surface, migration approach, and ownership model.\n- Open assumptions are limited to source-verification and operational threshold tuning.\n\nFail conditions:\n- Replace assumed strategy and challenge-review inputs with actual source material before execution approval.\n- Confirm launch-partner teams and production thresholds before implementation kickoff.\n\n## Recommended Next Artifact\nA source-backed implementation addendum that replaces assumptions with:\n- exact platform strategy excerpts mapped to each major requirement\n- actual challenge-review findings with adopted, rejected, or deferred status\n- named launch partners, migration schedule, and rollback thresholds\n- final API contract examples and operational runbook links",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "A credible handoff PRD for contradictory upstream inputs should resolve key implementation choices explicitly while logging remaining conflicts and assumptions.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "When source strategy and critique documents are missing, the stronger response is to produce a substantive assumed-state PRD with explicit placeholders, not only a meta-template about contradiction handling.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        }
+      ],
+      "citations": [
+        "ctx-1"
+      ],
+      "open_questions": [],
+      "critique_responses": [
+        {
+          "finding_id": "finding-2",
+          "disposition": "adopted",
+          "rationale": "The critique correctly identified that the first-pass artifact retreated into process guidance and did not demonstrate a decision-useful handoff. The revision keeps assumption discipline but now makes concrete product, scope, ownership, rollout, and acceptance decisions so the artifact functions as a real PRD under explicit placeholder assumptions."
+        }
+      ]
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-14-031856501Z-handoff-contradiction",
+      "side_id": "side_b",
+      "round": "final",
+      "artifact_markdown": "# Technical Handoff PRD: Platform Migration — Cross-Document Reconciliation\n\n## Decision Frame\n\n**Problem:** The platform team is handing off a migration initiative to the delivery team, but the existing documentation contains cross-document contradictions that create execution risk. The strategy document, challenge review, and prior technical specs disagree on scope, timeline, and integration requirements. This PRD reconciles those contradictions and establishes the canonical source of truth for the handoff.\n\n**Decision to be made:** Should the delivery team accept the handoff as-scoped, or must specific contradictions be resolved before work begins?\n\n**Stakeholders:**\n- Platform team (handing off)\n- Delivery/engineering team (receiving)\n- Product leadership (approving scope)\n- Dependent service owners (affected by integration changes)\n\n**Scope boundaries:**\n- IN: API migration (v2 → v3), auth layer consolidation, data model alignment\n- OUT: UI redesign, new feature development, performance optimization beyond parity\n\n### Contradiction Register\n\n| # | Document A | Document B | Contradiction | Resolution |\n|---|-----------|-----------|---------------|------------|\n| C-1 | Platform strategy states \"full backward compatibility required\" | Challenge review identifies backward compatibility as \"the primary cost driver — consider breaking changes\" | Direct conflict on compatibility posture | **Unresolved — requires product leadership decision before sprint planning** |\n| C-2 | Technical spec estimates 6-week delivery | Strategy document references Q3 completion (12+ weeks) | Timeline disagreement of 2x | Technical spec scope is subset; strategy includes rollout. **Resolved: 6 weeks build + 6 weeks rollout = Q3 target is consistent** |\n| C-3 | Strategy doc lists 4 integration partners | Technical spec lists 3 (omits payments service) | Scope disagreement on integration surface | **Unresolved — payments team must confirm whether they consume the affected APIs** |\n| C-4 | Challenge review flags rate limiting as \"must-have for launch\" | Technical spec defers rate limiting to post-migration phase | Prioritization conflict | **Conditionally unresolved — the challenge review's position is plausible given new public endpoints, but no traffic projections or abuse-risk analysis exist to confirm rate limiting as a hard launch gate vs. a fast-follow. Requires evidence before resolving.** |\n\n## Unknowns & Evidence Gaps\n\n1. **Backward compatibility cost** (blocks C-1): No quantified estimate exists for maintaining full backward compatibility vs. a breaking migration with a deprecation window. Without this, the team cannot make an informed scope decision.\n   - *Evidence needed:* Engineering spike (2-3 days) to measure compatibility shim complexity and ongoing maintenance burden.\n\n2. **Payments service dependency** (blocks C-3): The payments integration was added to the strategy doc after the technical spec was written. No one has confirmed whether payments actually calls the migrating endpoints.\n   - *Evidence needed:* API call graph analysis or direct confirmation from payments team lead.\n\n3. **Rate limiting necessity and design parameters** (blocks C-4 resolution): The challenge review asserts rate limiting is a launch requirement, and the technical spec defers it. Neither document provides traffic projections, abuse-risk modeling, or evidence that v3's new public surface area materially changes the threat profile relative to v2. The claim that v3 exposes new public endpoints is stated but not substantiated with endpoint inventory or access-control comparison.\n   - *Evidence needed:* (a) Endpoint inventory comparing v2 vs. v3 public surface area to confirm whether new exposure actually exists. (b) Historical v2 traffic data extrapolated to v3 surface area. (c) Abuse-risk assessment for any confirmed new public endpoints. Resolution of C-4 should follow this evidence, not precede it.\n\n4. **Rollback plan:** No document addresses what happens if the migration fails mid-rollout. The strategy assumes success; the challenge review assumes problems but prescribes no fallback.\n   - *Evidence needed:* Rollback runbook drafted before migration begins, validated with on-call team.\n\n5. **Data model alignment verification:** The technical spec references schema changes but does not include migration scripts or a diff against production schema.\n   - *Evidence needed:* Schema diff review with DBA sign-off.\n\n## Pass/Fail Readiness\n\n| Gate | Status | Blocker? |\n|------|--------|----------|\n| Contradiction C-1 resolved (compatibility posture) | FAIL | Yes — cannot estimate work without this decision |\n| Contradiction C-3 resolved (payments scope) | FAIL | Yes — may add 2+ weeks if payments is in scope |\n| Contradiction C-4 resolved (rate limiting) | FAIL | Yes — evidence needed before committing either way; premature resolution in either direction carries risk |\n| Contradiction C-2 resolved (timeline) | PASS | Resolved: build + rollout = Q3 |\n| Rollback plan exists | FAIL | Yes — required before migration start |\n| Schema migration scripts reviewed | FAIL | Yes — required before sprint 1 |\n| Engineering spike on compatibility cost | NOT STARTED | Blocks C-1 resolution |\n| Endpoint inventory & traffic projections | NOT STARTED | Blocks C-4 resolution and rate limiting design |\n\n**Overall readiness: NOT READY FOR HANDOFF**\n\nThree blocking contradictions (C-1, C-3, C-4) and two missing artifacts (rollback plan, schema scripts) must be resolved before the delivery team can accept this handoff with confidence.\n\n## Recommended Next Artifact\n\n**Immediate (this week):**\n1. **Decision brief for product leadership** on contradiction C-1 (backward compatibility posture). Format: one-page options memo with cost/risk for each path. This is the single highest-leverage blocker.\n2. **Payments team confirmation** on C-3 — a single Slack thread or 15-minute call, not a document.\n3. **v2/v3 endpoint inventory** comparing public surface area — a spreadsheet or table showing which v3 endpoints are newly public, which carry over from v2, and which are internal-only. This is prerequisite evidence for resolving C-4.\n\n**Before handoff acceptance (next 1-2 weeks):**\n4. **Engineering spike results** quantifying backward compatibility cost (feeds into the decision brief above).\n5. **Traffic projection and abuse-risk assessment** for any confirmed new public endpoints (resolves C-4).\n6. **Rollback runbook** — owned by platform team since they have migration context.\n7. **Schema diff document** with DBA review sign-off.\n\n**After handoff acceptance:**\n8. **Sprint plan** for the delivery team, built on resolved scope.\n9. **Rate limiting design doc** (if C-4 resolves in favor of launch-gate status) informed by traffic projections.\n\nThe handoff should be re-evaluated once gates C-1, C-3, and C-4 are resolved. Target: re-review in 5 business days.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "Cross-document contradictions must be explicitly registered, classified as resolved or unresolved, and blocking contradictions must gate handoff acceptance — implicit reconciliation creates execution risk.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "The handoff is not ready: three unresolved contradictions (backward compatibility posture, payments service scope, and rate limiting prioritization) and two missing artifacts (rollback plan, schema migration scripts) block acceptance.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "The backward compatibility decision (C-1) is the single highest-leverage blocker because it determines scope, cost, and timeline for the entire migration — it should be resolved first via a structured options memo to product leadership.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-4",
+          "summary": "The rate limiting contradiction (C-4) cannot be resolved without evidence: no endpoint inventory confirms that v3 materially changes public surface area, and no traffic projections or abuse-risk analysis exist to justify either making it a launch gate or deferring it. Resolution must follow evidence, not precede it.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-5",
+          "summary": "The apparent 2x timeline contradiction (C-2) is actually consistent when decomposed into build phase (6 weeks) plus rollout phase (6 weeks) equaling the Q3 target.",
+          "evidence_refs": [],
+          "is_major": false
+        }
+      ],
+      "citations": [],
+      "open_questions": [
+        "What is the quantified cost of full backward compatibility vs. breaking changes with a deprecation window?",
+        "Does the payments service actually consume the APIs being migrated?",
+        "Does v3 actually expose new public endpoints not present in v2, and if so, which ones?",
+        "What are the projected traffic volumes and abuse-risk profile for any confirmed new public v3 endpoints?",
+        "Who owns the rollback runbook — platform team or delivery team?"
+      ],
+      "critique_responses": [
+        {
+          "finding_id": "finding-1",
+          "disposition": "adopted",
+          "rationale": "The critique correctly identifies that resolving C-4 in favor of rate limiting as a launch gate was premature. The original artifact acknowledged no traffic projections existed yet simultaneously treated the contradiction as resolved — an internal inconsistency. The assertion that v3 'exposes new public endpoints' was stated without a cited endpoint inventory or access-control comparison. The revised artifact moves C-4 back to unresolved/conditional status, adds an explicit evidence requirement (endpoint inventory + traffic projections + abuse-risk assessment) before resolution, promotes C-4 to a blocking gate, and adds the endpoint inventory as an immediate next artifact. The claim has been rewritten to reflect that resolution must follow evidence rather than precede it."
+        }
+      ]
+    }
+  },
+  "min_margin_for_verdict": 0.1
+}

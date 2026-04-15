@@ -1,0 +1,13 @@
+# Critique: finding-2
+
+- Target Side: side_a
+- Target Claim IDs: side_a-claim-3
+- Attack Type: evidence_gap
+- Severity: high
+
+## Claim Under Attack
+Netflix can obtain most of the strategic benefits of separation through internal business-unit and P&L separation without imposing separate brands, sites, billing, and queues on customers.
+
+## Evidence Or Reason
+This claim is asserted as self-evident but lacks any supporting evidence or precedent. The memo provides zero examples of companies that successfully maintained distinct strategic focus for a declining legacy business and a high-growth business under a single consumer brand with shared infrastructure. In fact, the organizational behavior literature and corporate history suggest the opposite: when two units share a brand, billing system, and customer queue, the declining business consistently cannibalizes engineering attention, product roadmap priority, and executive mindshare from the growth business. The memo acknowledges the pro-split argument that bundling creates 'organizational drag' and calls it 'credible,' then dismisses it with a structural remedy (separate P&Ls and leadership) that has no cited track record of working in analogous situations. Separate P&Ls under one brand did not prevent HP's printer division from dragging down its computing strategy, nor did it prevent Yahoo's portal business from starving its search and mobile efforts. The claim that 'most of the strategic benefits' are achievable internally is doing enormous load-bearing work in the argument — it is the linchpin that makes reversal appear costless — yet it rests entirely on assertion rather than evidence, cohort modeling, or organizational precedent.
+

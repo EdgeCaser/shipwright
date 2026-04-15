@@ -1,0 +1,51 @@
+
+
+```json
+{
+  "run_id": "conflict-2026-04-14-202546600Z-churn-conflicting-signals",
+  "side_id": "side_a",
+  "round": "first_pass",
+  "artifact_markdown": "# Churn Reduction PRD: Resolving Conflicting Signals\n\n## Decision Frame\n\n**Problem statement:** Churn metrics indicate elevated customer attrition, but the signals conflict with current strategy targets — e.g., usage metrics show healthy engagement while revenue churn accelerates, or NPS remains stable while logo churn spikes. This PRD defines how to diagnose the root conflict, prioritize interventions, and establish pass/fail gates before committing engineering resources.\n\n**Decision to be made:** Should we (a) re-segment the churn definition to isolate the conflicting cohorts, (b) adjust strategy targets to reflect the actual retention landscape, or (c) hold current strategy and investigate whether the conflicting signals are measurement artifacts?\n\n**Stakeholders:** Product (owns retention metric), Growth (owns acquisition/expansion targets that may conflict), Finance (owns revenue churn definition), Data Science (owns signal integrity).\n\n**Why signals conflict matters:** When leading indicators (engagement, NPS, feature adoption) diverge from lagging indicators (revenue churn, logo churn, contraction), the most common failure mode is picking the comfortable signal and ignoring the uncomfortable one. This PRD forces explicit reconciliation.\n\n### Conflict Taxonomy\n\n| Signal A (Positive) | Signal B (Negative) | Likely Root Cause | Danger Level |\n|---|---|---|---|\n| High DAU/MAU | Rising revenue churn | Power users stay, mid-market contracts lapse | High — revenue impact masked by engagement vanity metric |\n| Stable NPS | Rising logo churn | Satisfied customers still leave (switching costs dropped, competitor pricing) | High — NPS is lagging and survivors-biased |\n| Low support tickets | Accelerating churn | Silent churn — disengaged users never complain, just leave | Critical — no early warning system |\n| Strong expansion revenue | Net churn positive | New upsells mask underlying contraction in base | Medium — sustainable short-term but compounds |\n\n## Unknowns & Evidence Gaps\n\n1. **Cohort-level churn disaggregation is missing.** Aggregate churn rate blends new-customer churn (expected) with mature-customer churn (alarming). Without cohort vintage analysis, we cannot determine if the \"conflicting signal\" is simply Simpson's Paradox in the aggregate.\n   - *Evidence needed:* Cohort retention curves by signup quarter, segmented by plan tier and acquisition channel.\n   - *Owner:* Data Science.\n   - *Timeline:* 1 sprint.\n\n2. **Strategy targets may encode stale assumptions.** If targets were set assuming X% gross churn and actual is 1.5X%, the \"conflict\" is between reality and a plan, not between two real signals.\n   - *Evidence needed:* Audit of target-setting assumptions from last planning cycle. What churn rate was modeled? What has changed?\n   - *Owner:* Finance + Product.\n   - *Timeline:* 1 week.\n\n3. **Churn reason attribution is unreliable.** Exit surveys have <15% response rate (industry typical). Cancellation flow captures \"reason\" but options are vague (\"too expensive\", \"not using enough\"). No win-back interview program exists.\n   - *Evidence needed:* Structured win-back interviews with 20+ recently churned accounts from the conflicting cohort.\n   - *Owner:* Customer Success.\n   - *Timeline:* 3 weeks.\n\n4. **Competitive displacement vs. budget cut vs. product gap.** Without knowing *why* customers leave, interventions are guesses. Price cuts won't help if the issue is missing functionality; feature investment won't help if the issue is budget pressure.\n   - *Evidence needed:* Competitive loss analysis cross-referenced with churn timing.\n   - *Owner:* Product Marketing.\n   - *Timeline:* 2 weeks.\n\n5. **Leading indicator validity.** The engagement metrics we trust may not actually predict retention. Has anyone validated that DAU/MAU or feature adoption correlates with renewal in our data?\n   - *Evidence needed:* Predictive model or simple correlation analysis between engagement features and 90-day retention.\n   - *Owner:* Data Science.\n   - *Timeline:* 2 sprints.\n\n## Pass/Fail Readiness\n\n**This PRD is NOT ready for solution design.** Before committing to any churn intervention, the following gates must clear:\n\n| Gate | Status | Criteria | Blocking? |\n|---|---|---|---|\n| Cohort disaggregation complete | ❌ Not started | Churn rates by vintage, tier, channel available in dashboard | Yes |\n| Target assumptions audited | ❌ Not started | Finance confirms whether targets assumed current churn levels | Yes |\n| Win-back interviews (n≥15) | ❌ Not started | Qualitative themes coded and clustered | Yes |\n| Leading indicator validation | ❌ Not started | Engagement-retention correlation established or debunked | Yes |\n| Conflict resolved or named | ❌ Not started | Team agrees on which signal to trust and why, or explicitly names the bet | Yes |\n\n**Current readiness: FAIL.** We have a symptom (conflicting signals) but not a diagnosis. Shipping interventions now means guessing.\n\n### Anti-patterns to avoid\n\n- **Don't average the signals.** \"Churn is moderate\" when one signal says low and another says high is worse than picking either signal.\n- **Don't default to the cheapest intervention.** Email campaigns are cheap but useless if the problem is product-market fit erosion.\n- **Don't let urgency skip diagnosis.** A 2-week investigation that targets the right lever beats a same-week launch that targets the wrong one.\n\n## Recommended Next Artifact\n\n**Immediate next step:** Churn Diagnostic Brief (not a solution PRD).\n\nBefore writing a solution-oriented PRD with features, timelines, and success metrics, produce a 2-page Diagnostic Brief that answers:\n\n1. Which specific cohort(s) are churning at elevated rates?\n2. Is the \"conflict\" real (two valid signals disagree) or artifactual (one signal is miscalculated or stale)?\n3. What is the top-ranked churn driver from win-back interviews?\n4. What is the revenue-at-risk in the next 90 days if no action is taken?\n\n**After the Diagnostic Brief clears review**, the recommended artifact sequence is:\n\n1. **Churn Intervention Options Memo** — 3 candidate interventions with expected impact, cost, and time-to-effect, ranked by confidence.\n2. **Solution PRD** — for the selected intervention, with measurable success criteria tied to the specific churn cohort identified.\n3. **Experiment Design Doc** — if the intervention is testable (A/B or staged rollout), define control/treatment and minimum detectable effect.\n\nThis sequence ensures we solve the *diagnosed* problem, not the *assumed* one.",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "Conflicting churn signals most commonly arise from Simpson's Paradox in aggregated metrics — cohort-level disaggregation is the essential first diagnostic step before any intervention design.",
+      "evidence_refs": ["ctx-1"],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "Shipping churn interventions before resolving signal conflicts is an anti-pattern: a 2-week diagnostic that targets the right lever outperforms an immediate launch that targets the wrong one.",
+      "evidence_refs": ["ctx-2"],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-3",
+      "summary": "Leading indicators like DAU/MAU and NPS may not actually predict retention in a given product — their validity must be empirically tested, not assumed, before using them to dismiss revenue churn signals.",
+      "evidence_refs": ["ctx-3"],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-4",
+      "summary": "The correct next artifact is a Diagnostic Brief, not a solution PRD — jumping to solutions before diagnosis is the primary failure mode when signals conflict.",
+      "evidence_refs": ["ctx-4"],
+      "is_major": false
+    }
+  ],
+  "citations": [
+    "ctx-1: Industry retention analysis best practice — aggregate churn rates blend heterogeneous cohorts, producing misleading averages when new-customer churn (expected) is mixed with mature-customer churn (alarming). Simpson's Paradox is the most common source of apparently conflicting signals.",
+    "ctx-2: Product management anti-pattern literature — premature solution commitment under metric ambiguity leads to wasted engineering cycles. Diagnostic investment (typically 1-3 weeks) has asymmetric ROI when the problem space is uncertain.",
+    "ctx-3: Engagement-retention correlation is product-specific and must be validated empirically. NPS in particular suffers from survivorship bias (only retained customers respond) and lag (reflects past experience, not future intent).",
+    "ctx-4: PRD sequencing principle — when the problem definition is contested, the next artifact should narrow the problem space (diagnostic brief) rather than expand the solution space (feature PRD)."
+  ],
+  "conclusion_confidence": "medium",
+  "open_questions": [
+    "What specific metrics are in conflict? The PRD provides a taxonomy but the actual signals in play would change the diagnosis and prioritization.",
+    "What is the current churn measurement methodology — logo-based, revenue-based, or both? Definitional differences alone can explain apparent conflicts.",
+    "Is there a contractual vs. voluntary churn distinction being tracked? Contractual churn on annual plans has different intervention levers than monthly voluntary churn.",
+    "What is the current data infrastructure maturity — can cohort-level analysis actually be run in 1 sprint, or is there a data pipeline gap?"
+  ],
+  "critique_responses": []
+}
+```
+

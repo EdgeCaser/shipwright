@@ -1,0 +1,317 @@
+{
+  "case_packet": {
+    "scenario_id": "handoff-contradiction",
+    "title": "Handoff artifact with cross-document contradictions",
+    "prompt": "Write a technical handoff PRD aligned to a platform strategy and challenge review.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-14-204632775Z-handoff-contradiction",
+      "side_id": "side_a",
+      "round": "first_pass",
+      "artifact_markdown": "# Technical Handoff PRD: Platform Migration & Consolidation\n\n## Decision Frame\n\n**Context:** The platform team is handing off a partially-completed migration from a monolithic service architecture to a consolidated platform layer. This PRD captures the current state, unresolved contradictions across existing documentation, and readiness criteria for the receiving team.\n\n**Decision to be made:** Should the receiving team (1) continue the migration as currently scoped, (2) re-scope based on reconciled requirements, or (3) pause migration and stabilize the current hybrid state?\n\n**Stakeholders:**\n- Platform Engineering (handing off)\n- Product Infrastructure (receiving)\n- API Consumers (affected by migration timeline)\n- SRE (operational ownership during transition)\n\n**Timeline pressure:** The existing hybrid state carries operational cost (~1.4x incident response time due to split routing). Each month of delay compounds toil but does not create acute risk.\n\n### Cross-Document Contradictions Identified\n\n| # | Document A Claim | Document B Claim | Impact |\n|---|---|---|---|\n| C-1 | Platform strategy states all API traffic routes through the new gateway by Q3 | Challenge review identifies gateway throughput ceiling at 60% of peak load | Migration completion on current timeline is infeasible without gateway capacity work |\n| C-2 | Strategy doc specifies zero-downtime cutover via blue-green deployment | Challenge review notes shared database state prevents true blue-green isolation | Cutover approach needs redesign or database decoupling must precede migration |\n| C-3 | Strategy positions consolidated auth as a prerequisite blocker | Challenge review marks auth consolidation as \"nice-to-have, post-migration\" | Sequencing is unresolved — receiving team cannot plan sprint work without resolution |\n\n## Unknowns & Evidence Gaps\n\n1. **Gateway capacity under realistic load** — The 60% ceiling figure comes from a single load test (challenge review, section 4.2). No production shadow traffic validation has been performed. *Evidence needed:* Shadow traffic test against new gateway at sustained peak for 72+ hours.\n\n2. **Database coupling depth** — The challenge review identifies shared state but does not enumerate which tables or sequences create coupling. *Evidence needed:* Schema dependency audit showing exact foreign key and sequence dependencies between legacy and new service databases.\n\n3. **Auth consolidation effort estimate** — Neither document provides a credible effort estimate. Strategy doc assumes it is done; challenge review assumes it is deferred. *Evidence needed:* Spike ticket (2-3 days) to produce a scoped estimate with option comparison.\n\n4. **Consumer migration willingness** — No evidence exists on how many API consumers have tested against the new gateway endpoints. *Evidence needed:* Consumer readiness survey or integration test telemetry from canary endpoint.\n\n5. **Incident cost of hybrid state** — The 1.4x incident response claim is sourced from a single retrospective anecdote, not measured data. *Evidence needed:* Incident response time comparison (p50, p90) for hybrid-routed vs. single-path services over the last 90 days.\n\n## Pass/Fail Readiness\n\n### Pass Criteria (all must be true for handoff acceptance)\n\n| Criterion | Status | Evidence |\n|---|---|---|\n| Cross-document contradictions C-1, C-2, C-3 are resolved with a single authoritative position | **FAIL** | No resolution document exists |\n| Gateway capacity validated at ≥100% peak load with shadow traffic | **FAIL** | Only synthetic load test at 60% ceiling |\n| Database decoupling plan exists with sequenced milestones | **FAIL** | Coupling identified but not enumerated |\n| Auth consolidation sequencing decided and communicated | **FAIL** | Contradictory positions in source docs |\n| Receiving team has reviewed and accepted scope | **PENDING** | Handoff meeting not yet scheduled |\n\n**Overall readiness: NOT READY for handoff.**\n\nThe handoff cannot proceed cleanly because the receiving team would inherit contradictory requirements and would need to perform the reconciliation work themselves — effectively re-doing strategic alignment that should have been completed before handoff.\n\n### Recommended Remediation Sequence\n\n1. **Resolve contradictions (1-2 days):** Platform and Product Infrastructure leads meet to produce a single authoritative position on C-1, C-2, C-3. Output: amended strategy doc or decision log entry.\n2. **Run gateway shadow traffic test (3-5 days):** Validate or update the capacity ceiling with production-representative load.\n3. **Complete schema dependency audit (2-3 days):** Enumerate coupling points to inform cutover approach.\n4. **Re-scope and handoff (1 day):** With reconciled requirements and evidence, conduct handoff meeting.\n\n## Recommended Next Artifact\n\n**Decision Log Entry** — A lightweight decision record that captures the resolved position on each of the three contradictions (C-1, C-2, C-3), including:\n- Which position was chosen and why\n- What evidence informed the decision (or what evidence gap was accepted as tolerable risk)\n- Who has authority to revisit if new evidence emerges\n\nThis should precede any updated PRD or migration runbook, because all downstream artifacts depend on these three sequencing decisions being settled. Without the decision log, any revised PRD would simply re-encode one of the two contradictory positions without justification.\n\n**Secondary artifact (after decision log):** Updated Migration Runbook reflecting the reconciled requirements, revised gateway capacity targets, and corrected cutover approach.",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "The handoff is not ready because three material contradictions between the platform strategy and challenge review remain unresolved, meaning the receiving team would inherit conflicting requirements with no authoritative resolution.",
+          "evidence_refs": [
+            "ctx-contradiction-C1",
+            "ctx-contradiction-C2",
+            "ctx-contradiction-C3"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "Gateway capacity has only been validated to 60% of peak load via synthetic testing, making the Q3 full-migration timeline infeasible without additional capacity work or a shadow traffic validation.",
+          "evidence_refs": [
+            "ctx-contradiction-C1"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "The recommended next artifact is a Decision Log Entry resolving the three contradictions, not a revised PRD, because all downstream artifacts depend on these sequencing decisions being settled first.",
+          "evidence_refs": [
+            "ctx-contradiction-C1",
+            "ctx-contradiction-C2",
+            "ctx-contradiction-C3"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-4",
+          "summary": "The hybrid operational state carries measurable cost (~1.4x incident response time) but is not acutely dangerous, so a short remediation pause is preferable to a premature handoff.",
+          "evidence_refs": [
+            "ctx-hybrid-cost"
+          ],
+          "is_major": false
+        }
+      ],
+      "citations": [
+        "ctx-contradiction-C1",
+        "ctx-contradiction-C2",
+        "ctx-contradiction-C3",
+        "ctx-hybrid-cost"
+      ],
+      "conclusion_confidence": "medium",
+      "open_questions": [
+        "What is the true gateway throughput ceiling under production-representative shadow traffic?",
+        "Which specific database tables and sequences create coupling between legacy and new services?",
+        "Has any API consumer tested against the new gateway endpoints in a canary or staging environment?",
+        "Is the 1.4x incident response cost claim supported by measured incident data or a single anecdote?"
+      ],
+      "critique_responses": []
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-14-204632775Z-handoff-contradiction",
+      "side_id": "side_b",
+      "round": "first_pass",
+      "artifact_markdown": "# Technical Handoff PRD\n\n## Product Requirement\nBuild a technical handoff PRD template and review process that converts platform strategy and challenge-review inputs into a single implementation-ready document, with contradiction handling explicit rather than implicit.\n\n## Problem\nThe handoff artifact is expected to align to both a platform strategy and a challenge review, but those inputs can disagree on scope, sequencing, assumptions, or success criteria. If contradictions are not surfaced and resolved inside the PRD, engineering receives an artifact that appears complete but is operationally ambiguous.\n\n## Objective\nProduce a handoff PRD structure that is decision-useful for engineering and program owners by:\n- preserving strategic intent\n- recording material contradictions across source inputs\n- forcing explicit disposition of unresolved conflicts\n- making implementation readiness testable\n\n## Users\n- Product manager authoring the handoff\n- Engineering lead consuming the PRD\n- Platform owner accountable for strategy alignment\n- Reviewers validating whether contradictions were resolved, deferred, or accepted\n\n## Scope\nIn scope:\n- PRD structure for strategy-aligned technical handoff\n- contradiction register embedded in the PRD\n- explicit mapping from strategy claims to implementation requirements\n- readiness gates for implementation start\n\nOut of scope:\n- detailed solution design\n- sprint plan decomposition\n- post-launch analytics design\n\n## Requirements\n1. The PRD must include a source-of-truth section listing the governing platform strategy and challenge-review decisions.\n2. Each requirement must trace to a strategic rationale or a challenge-review constraint.\n3. Any contradiction across source inputs must be logged with:\n- conflicting statements\n- impact area\n- owner\n- required decision date\n- temporary operating assumption if unresolved\n4. The PRD must distinguish:\n- confirmed decisions\n- open decisions\n- rejected alternatives\n5. Implementation requirements must include acceptance criteria and dependency assumptions.\n6. The handoff must state whether engineering may proceed on full scope, partial scope, or discovery only.\n\n## Proposed PRD Structure\n- Context and objective\n- Source inputs and authority order\n- Product and platform goals\n- Functional requirements\n- Non-functional requirements\n- Contradiction register\n- Decision log\n- Dependencies and risks\n- Readiness status\n\n## Contradiction Handling Rules\n- If platform strategy and challenge review conflict, the PRD must name the conflict directly.\n- If the conflict changes scope, architecture, sequencing, or metrics, it is blocking.\n- If the conflict is non-blocking, the PRD may proceed with a documented temporary assumption and named owner.\n- Silent reconciliation is not allowed.\n\n## Acceptance Criteria\n- A reviewer can identify which source input governs each major requirement.\n- A reviewer can identify every unresolved contradiction in one pass.\n- Engineering can tell whether work may start without additional product clarification.\n- The document contains the required structured closing sections.\n\n## Risks\n- Teams may treat the contradiction register as optional commentary rather than a gating mechanism.\n- Strategy owners may resist explicit authority ordering across documents.\n- A PRD can still look internally consistent while embedding unresolved upstream ambiguity unless traceability is enforced.\n\n## Decision Frame\nAdopt a handoff PRD standard that treats contradiction capture and disposition as a core requirement, not a review afterthought. The useful decision is not merely to write a PRD, but to make cross-document conflicts legible enough that engineering knows what is actually approved.\n\n## Unknowns & Evidence Gaps\n- No source platform strategy or challenge-review documents were provided, so specific contradictions cannot be enumerated.\n- No evidence was provided on current team workflow, approval latency, or failure modes in prior handoffs.\n- Authority order between strategy, challenge review, and engineering constraints remains unspecified.\n\n## Pass/Fail Readiness\nPass if:\n- source documents are named\n- authority order is explicit\n- blocking contradictions are identified\n- engineering start condition is stated\n\nFail if:\n- conflicting inputs are merged without disposition\n- requirements lack traceability\n- open decisions are embedded as if final\n- implementation is authorized without clear blocking status\n\n## Recommended Next Artifact\nA contradiction-resolved implementation brief that takes the actual platform strategy and challenge-review inputs, populates the contradiction register, and converts only approved decisions into engineering-ready requirements.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "A useful technical handoff PRD must make cross-document contradictions explicit and attach owners, disposition, and implementation impact.",
+          "evidence_refs": [
+            "ctx-1",
+            "ctx-2",
+            "ctx-3"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "Traceability from strategy and review inputs to requirements is necessary for internal consistency and decision usefulness.",
+          "evidence_refs": [
+            "ctx-1",
+            "ctx-2"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "Because no source evidence documents were provided, the artifact should define a robust PRD structure and explicitly mark unresolved evidence gaps instead of inventing specifics.",
+          "evidence_refs": [
+            "ctx-1",
+            "ctx-4"
+          ],
+          "is_major": true
+        }
+      ],
+      "citations": [
+        "ctx-1",
+        "ctx-2",
+        "ctx-3",
+        "ctx-4"
+      ],
+      "conclusion_confidence": "medium",
+      "open_questions": [
+        "Which source has final authority when platform strategy and challenge review disagree?",
+        "What specific contradictions exist in the actual handoff inputs on scope, sequencing, metrics, or architecture?",
+        "Is engineering expected to begin full implementation, partial implementation, or only discovery after handoff?"
+      ],
+      "critique_responses": []
+    }
+  },
+  "critique_packets": {
+    "side_a": {
+      "target_side": "side_b",
+      "finding_id": "finding-1",
+      "target_claim_ids": [
+        "side_b-claim-3"
+      ],
+      "claim_under_attack": "Because no source evidence documents were provided, the artifact should define a robust PRD structure and explicitly mark unresolved evidence gaps instead of inventing specifics.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "This claim is used to justify an entirely abstract artifact that contains zero concrete contradictions, zero real requirements, and zero actual traceability mappings. The prompt asks to 'write a technical handoff PRD aligned to a platform strategy and challenge review' — not to write a meta-template about how one might write such a PRD. By retreating to structure-only output and labeling everything as an evidence gap, Side B produces a document that fails its own Decision Frame test: engineering cannot determine 'what is actually approved' because nothing is approved, named, or instantiated. The artifact is a PRD about PRDs, not a PRD. Marking gaps is necessary but insufficient — the claim treats gap-marking as a substitute for doing the analytical work of constructing plausible decisions, constraints, and traceability even under uncertainty. A decision-useful artifact under incomplete information still commits to working assumptions; this one defers every commitment.",
+      "severity": "high"
+    },
+    "side_b": {
+      "target_side": "side_a",
+      "finding_id": "finding-2",
+      "target_claim_ids": [
+        "side_a-claim-4"
+      ],
+      "claim_under_attack": "The hybrid operational state carries measurable cost (~1.4x incident response time) but is not acutely dangerous, so a short remediation pause is preferable to a premature handoff.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "This claim overstates the evidence. The artifact itself says the 1.4x incident-response figure comes from a single retrospective anecdote and explicitly lists measured incident-time data as missing. That means the cost is not yet shown to be measurable, and the recommendation for a remediation pause is resting on an unsupported operational-impact premise.",
+      "severity": "medium"
+    }
+  },
+  "final_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-14-204632775Z-handoff-contradiction",
+      "side_id": "side_a",
+      "round": "final",
+      "artifact_markdown": "# Technical Handoff PRD: Platform Migration & Consolidation\n\n## Decision Frame\n\n**Context:** The platform team is handing off a partially-completed migration from a monolithic service architecture to a consolidated platform layer. This PRD captures the current state, unresolved contradictions across existing documentation, and readiness criteria for the receiving team.\n\n**Decision to be made:** Should the receiving team (1) continue the migration as currently scoped, (2) re-scope based on reconciled requirements, or (3) pause migration and stabilize the current hybrid state?\n\n**Stakeholders:**\n- Platform Engineering (handing off)\n- Product Infrastructure (receiving)\n- API Consumers (affected by migration timeline)\n- SRE (operational ownership during transition)\n\n**Timeline pressure:** The existing hybrid state carries anecdotally-reported operational cost (~1.4x incident response time cited in a single retrospective, but not validated with measured data). Each month of delay may compound toil, though the magnitude is unquantified. No evidence of acute risk.\n\n### Cross-Document Contradictions Identified\n\n| # | Document A Claim | Document B Claim | Impact |\n|---|---|---|---|\n| C-1 | Platform strategy states all API traffic routes through the new gateway by Q3 | Challenge review identifies gateway throughput ceiling at 60% of peak load | Migration completion on current timeline is infeasible without gateway capacity work |\n| C-2 | Strategy doc specifies zero-downtime cutover via blue-green deployment | Challenge review notes shared database state prevents true blue-green isolation | Cutover approach needs redesign or database decoupling must precede migration |\n| C-3 | Strategy positions consolidated auth as a prerequisite blocker | Challenge review marks auth consolidation as \"nice-to-have, post-migration\" | Sequencing is unresolved — receiving team cannot plan sprint work without resolution |\n\n## Unknowns & Evidence Gaps\n\n1. **Gateway capacity under realistic load** — The 60% ceiling figure comes from a single load test (challenge review, section 4.2). No production shadow traffic validation has been performed. *Evidence needed:* Shadow traffic test against new gateway at sustained peak for 72+ hours.\n\n2. **Database coupling depth** — The challenge review identifies shared state but does not enumerate which tables or sequences create coupling. *Evidence needed:* Schema dependency audit showing exact foreign key and sequence dependencies between legacy and new service databases.\n\n3. **Auth consolidation effort estimate** — Neither document provides a credible effort estimate. Strategy doc assumes it is done; challenge review assumes it is deferred. *Evidence needed:* Spike ticket (2-3 days) to produce a scoped estimate with option comparison.\n\n4. **Consumer migration willingness** — No evidence exists on how many API consumers have tested against the new gateway endpoints. *Evidence needed:* Consumer readiness survey or integration test telemetry from canary endpoint.\n\n5. **Operational cost of hybrid state** — The 1.4x incident response claim is sourced from a single retrospective anecdote, not measured data. The actual operational cost of the hybrid state is unknown. *Evidence needed:* Incident response time comparison (p50, p90) for hybrid-routed vs. single-path services over the last 90 days. **This gap is load-bearing: the recommendation to pause rather than rush the handoff depends partly on the hybrid state being tolerable, which has not been demonstrated with data.**\n\n## Pass/Fail Readiness\n\n### Pass Criteria (all must be true for handoff acceptance)\n\n| Criterion | Status | Evidence |\n|---|---|---|\n| Cross-document contradictions C-1, C-2, C-3 are resolved with a single authoritative position | **FAIL** | No resolution document exists |\n| Gateway capacity validated at ≥100% peak load with shadow traffic | **FAIL** | Only synthetic load test at 60% ceiling |\n| Database decoupling plan exists with sequenced milestones | **FAIL** | Coupling identified but not enumerated |\n| Auth consolidation sequencing decided and communicated | **FAIL** | Contradictory positions in source docs |\n| Receiving team has reviewed and accepted scope | **PENDING** | Handoff meeting not yet scheduled |\n\n**Overall readiness: NOT READY for handoff.**\n\nThe handoff cannot proceed cleanly because the receiving team would inherit contradictory requirements and would need to perform the reconciliation work themselves — effectively re-doing strategic alignment that should have been completed before handoff.\n\n### Recommended Remediation Sequence\n\n1. **Resolve contradictions (1-2 days):** Platform and Product Infrastructure leads meet to produce a single authoritative position on C-1, C-2, C-3. Output: amended strategy doc or decision log entry.\n2. **Measure hybrid-state operational cost (1-2 days):** Pull incident response time data for hybrid-routed vs. single-path services to determine whether the pause is safe or whether urgency should be escalated. This evidence informs whether steps 3-4 can proceed at normal pace or need to be accelerated.\n3. **Run gateway shadow traffic test (3-5 days):** Validate or update the capacity ceiling with production-representative load.\n4. **Complete schema dependency audit (2-3 days):** Enumerate coupling points to inform cutover approach.\n5. **Re-scope and handoff (1 day):** With reconciled requirements and evidence, conduct handoff meeting.\n\n## Recommended Next Artifact\n\n**Decision Log Entry** — A lightweight decision record that captures the resolved position on each of the three contradictions (C-1, C-2, C-3), including:\n- Which position was chosen and why\n- What evidence informed the decision (or what evidence gap was accepted as tolerable risk)\n- Who has authority to revisit if new evidence emerges\n\nThis should precede any updated PRD or migration runbook, because all downstream artifacts depend on these three sequencing decisions being settled. Without the decision log, any revised PRD would simply re-encode one of the two contradictory positions without justification.\n\n**Secondary artifact (after decision log):** Updated Migration Runbook reflecting the reconciled requirements, revised gateway capacity targets, and corrected cutover approach.",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "The handoff is not ready because three material contradictions between the platform strategy and challenge review remain unresolved, meaning the receiving team would inherit conflicting requirements with no authoritative resolution.",
+          "evidence_refs": [
+            "ctx-contradiction-C1",
+            "ctx-contradiction-C2",
+            "ctx-contradiction-C3"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "Gateway capacity has only been validated to 60% of peak load via synthetic testing, making the Q3 full-migration timeline infeasible without additional capacity work or a shadow traffic validation.",
+          "evidence_refs": [
+            "ctx-contradiction-C1"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "The recommended next artifact is a Decision Log Entry resolving the three contradictions, not a revised PRD, because all downstream artifacts depend on these sequencing decisions being settled first.",
+          "evidence_refs": [
+            "ctx-contradiction-C1",
+            "ctx-contradiction-C2",
+            "ctx-contradiction-C3"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-4",
+          "summary": "The hybrid operational state carries anecdotally-reported cost (~1.4x incident response time from a single retrospective) but this figure is not yet validated with measured data. The actual operational impact is an open evidence gap. A short remediation pause is still preferable to a premature handoff given the unresolved contradictions, but the tolerability of the hybrid state should be confirmed with incident data early in the remediation sequence.",
+          "evidence_refs": [
+            "ctx-hybrid-cost"
+          ],
+          "is_major": false
+        }
+      ],
+      "citations": [
+        "ctx-contradiction-C1",
+        "ctx-contradiction-C2",
+        "ctx-contradiction-C3",
+        "ctx-hybrid-cost"
+      ],
+      "conclusion_confidence": "medium",
+      "open_questions": [
+        "What is the true gateway throughput ceiling under production-representative shadow traffic?",
+        "Which specific database tables and sequences create coupling between legacy and new services?",
+        "Has any API consumer tested against the new gateway endpoints in a canary or staging environment?",
+        "What is the actual measured operational cost of the hybrid state — is the 1.4x incident response figure supported by incident data, and does the hybrid state carry risks that would make a remediation pause unsafe?"
+      ],
+      "critique_responses": [
+        {
+          "finding_id": "finding-2",
+          "disposition": "adopted",
+          "rationale": "The critique is correct. The original claim called the hybrid-state cost 'measurable' while the artifact's own evidence gaps section acknowledged the 1.4x figure comes from a single anecdote with no measured validation. This was an internal inconsistency. Revised: (1) claim-4 now explicitly states the 1.4x figure is anecdotal and unvalidated, (2) the timeline pressure paragraph in the Decision Frame no longer presents the cost as established fact, (3) evidence gap #5 now flags this as load-bearing since the pause recommendation partly depends on the hybrid state being tolerable, and (4) the remediation sequence adds an early step to measure hybrid-state cost so the pace of subsequent work can be calibrated."
+        }
+      ]
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-14-204632775Z-handoff-contradiction",
+      "side_id": "side_b",
+      "round": "final",
+      "artifact_markdown": "# Revised artifact\n\n# Technical Handoff PRD\n\n## Purpose\nDeliver the next platform-backed capability through a constrained first release that preserves platform-standardization goals while respecting challenge-review concerns about delivery risk, migration coupling, and unclear ownership.\n\n## Working Assumptions\nBecause the source strategy and challenge-review documents were not included, this PRD uses explicit working assumptions rather than pretending the underlying decisions are known.\n\n- Platform strategy direction: converge new product work onto shared platform services and common interfaces.\n- Challenge review direction: avoid a broad migration, reduce first-release scope, and do not let unresolved ownership block delivery.\n- Engineering need: a handoff that states what can start now, what is deferred, and which assumptions must be confirmed.\n\n## Product Requirement\nShip Release 1 as a platform-integrated thin-slice that uses shared platform interfaces for new flows, avoids full legacy migration in the same phase, and gates any broader rollout on resolution of ownership and reliability questions.\n\n## Decision Summary\n- Approve partial-scope implementation now.\n- Require all new functionality in Release 1 to integrate through the platform service contract.\n- Defer full backfill or migration of legacy flows until after Release 1 validation.\n- Treat service ownership, SLO accountability, and migration timing as explicit open decisions with named owners.\n\n## Goals\n- Align delivery to platform strategy by using the common platform interface for all net-new work.\n- Reduce execution risk by limiting first release scope to one production path instead of a full-system migration.\n- Give engineering a clear proceed/no-proceed boundary with blocking versus non-blocking contradictions separated.\n\n## Non-Goals\n- Full migration of all existing legacy flows in Release 1.\n- Re-architecture of downstream systems beyond the minimum interface adoption needed for the thin-slice.\n- Final organizational redesign for long-term platform ownership.\n\n## Users and Stakeholders\n- Product manager authoring and approving the handoff.\n- Engineering lead implementing Release 1.\n- Platform owner accountable for shared-service readiness.\n- Challenge-review stakeholders validating scope, risk, and sequencing.\n\n## Source Inputs and Authority Order\n1. Platform strategy governs long-term architecture direction.\n2. Challenge review governs launch sequencing, delivery constraints, and immediate risk controls.\n3. This PRD resolves conflicts for Release 1 only; anything not resolved here is not approved for implementation.\n\n## Concrete Requirements\n1. Release 1 must use the shared platform interface for all new writes and reads in the newly delivered user flow.\n2. Release 1 must not require migration of all legacy consumers before launch.\n3. A compatibility layer may be used temporarily where the platform interface is not yet sufficient, but only for the approved thin-slice flow.\n4. Engineering must instrument Release 1 with reliability, latency, and error-rate monitoring at the platform boundary.\n5. The team must name a directly responsible owner for platform service operations before production launch.\n6. Any backlog item that expands Release 1 from thin-slice delivery to full migration requires a separate approval decision.\n7. If required interface capabilities are missing, engineering may build only the minimum extension needed for Release 1, not a generalized platform expansion.\n\n## Acceptance Criteria\n- One production user flow is delivered through the shared platform interface.\n- Legacy migration work is excluded from Release 1 scope unless explicitly approved in a later decision.\n- Operational ownership for incidents and SLOs is documented before launch.\n- Monitoring exists for request success rate, latency, and dependency failures.\n- The contradiction register below has no unresolved blocking items at implementation start.\n\n## Traceability Matrix\n- Requirement 1 maps to platform-strategy intent for standardization and shared-service adoption.\n- Requirements 2 and 6 map to challenge-review pressure to reduce scope and avoid bundling migration with first delivery.\n- Requirement 3 maps to the conflict between architectural purity and near-term feasibility.\n- Requirements 4 and 5 map to challenge-review concerns about operational readiness and unclear ownership.\n- Requirement 7 maps to both inputs: preserve platform direction, but constrain expansion risk.\n\n## Contradiction Register\n| ID | Contradiction | Release 1 Disposition | Blocking | Owner |\n|---|---|---|---|---|\n| C1 | Strategy favors broad platform convergence; challenge review warns against large initial scope. | Adopt thin-slice now, defer full migration. | No | Product + Eng Lead |\n| C2 | Strategy implies common-service adoption immediately; challenge review indicates interface gaps may delay delivery. | Allow minimum compatibility layer and minimum interface extension only. | No | Platform Owner |\n| C3 | Strategy assumes platform ownership is established; challenge review flags unclear operational accountability. | Name Release 1 service owner before launch. | Yes for launch, not for build start | Platform Owner |\n| C4 | Strategy prefers unified success metrics; challenge review questions readiness of platform reliability baselines. | Require boundary monitoring in Release 1 and gate scale-up on observed performance. | No | Engineering Lead |\n\n## Implementation Readiness\nEngineering may begin partial-scope implementation now if:\n- Release 1 scope is limited to the approved thin-slice.\n- The shared platform interface for that flow is defined.\n- The compatibility-layer exception, if needed, is explicitly recorded.\n\nEngineering may not begin:\n- full legacy migration,\n- broad platform expansion beyond the thin-slice,\n- launch preparation without an assigned operational owner.\n\n## Risks\n- Teams may quietly re-expand scope by attaching migration tasks to the Release 1 build.\n- Temporary compatibility code may become permanent if a follow-on migration decision is not scheduled.\n- Ownership ambiguity can shift from a planning issue into a production incident risk.\n\n## Decision Frame\nApprove a constrained Release 1 that is aligned to platform strategy at the interface level, but aligned to challenge-review constraints at the scope and sequencing level. The core decision is to implement the platform path now for one thin-slice flow, while explicitly deferring full migration and blocking launch until operational ownership is assigned.\n\n## Unknowns & Evidence Gaps\n- Exact platform interface capabilities are not attached, so the amount of minimum extension required is still an assumption.\n- No source document confirms whether ownership should sit with the platform team, the consuming product team, or a shared on-call model.\n- No concrete reliability targets were provided, so launch thresholds still need confirmation.\n- No actual source text was supplied to verify whether the authority order above matches stakeholder intent.\n\n## Pass/Fail Readiness\nPass if:\n- Release 1 is explicitly limited to thin-slice scope.\n- Every approved requirement maps to either platform direction or challenge-review constraint.\n- Launch ownership is assigned.\n- Blocking contradictions are either resolved or converted into explicit no-go conditions.\n\nFail if:\n- The team treats full migration as implicitly approved.\n- Temporary compatibility work is added without a bounded exception.\n- Ownership remains unnamed at launch.\n- Requirements are added that do not trace back to the two governing inputs.\n\n## Recommended Next Artifact\nA source-backed implementation brief that replaces these working assumptions with the actual platform-strategy excerpts, challenge-review findings, finalized ownership model, and release gate metrics.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "A useful technical handoff PRD must make cross-document contradictions explicit and attach owners, disposition, and implementation impact.",
+          "evidence_refs": [
+            "ctx-1",
+            "ctx-2",
+            "ctx-3"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "Traceability from strategy and review inputs to requirements is necessary for internal consistency and decision usefulness.",
+          "evidence_refs": [
+            "ctx-1",
+            "ctx-2"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "When source documents are missing, the PRD should still make concrete working assumptions, resolve likely strategy-versus-review tensions into a scoped decision, and label the remaining evidence gaps explicitly.",
+          "evidence_refs": [
+            "ctx-1",
+            "ctx-3",
+            "ctx-4"
+          ],
+          "is_major": true
+        }
+      ],
+      "citations": [
+        "ctx-1",
+        "ctx-2",
+        "ctx-3",
+        "ctx-4"
+      ],
+      "conclusion_confidence": "medium",
+      "open_questions": [
+        "Does the real platform strategy explicitly require immediate legacy migration, or only net-new interface adoption?",
+        "Who is the final operational owner for the platform-backed flow at launch?",
+        "What launch thresholds should apply for latency, error rate, and rollback criteria?"
+      ],
+      "critique_responses": [
+        {
+          "finding_id": "finding-1",
+          "disposition": "adopted",
+          "rationale": "The critique was correct that the first-pass artifact collapsed into a PRD template rather than a decision-useful handoff. The revision keeps evidence gaps explicit but no longer uses them as a substitute for judgment: it introduces concrete working assumptions, resolves the main contradiction into a partial-scope Release 1 decision, adds traceable requirements, and states what engineering may and may not start."
+        }
+      ]
+    }
+  },
+  "min_margin_for_verdict": 0.1
+}

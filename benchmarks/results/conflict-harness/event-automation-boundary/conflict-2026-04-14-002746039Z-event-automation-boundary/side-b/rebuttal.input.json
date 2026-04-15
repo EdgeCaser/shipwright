@@ -1,0 +1,106 @@
+{
+  "case_packet": {
+    "scenario_id": "event-automation-boundary",
+    "title": "Event automation platform with human-in-the-loop boundary constraints",
+    "prompt": "Write a Phase 1 PRD for an event management automation platform with a WhatsApp assistant, an internal console, human approval for pricing commitments, and strict deterministic boundaries around LLM usage.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "opposing_first_pass": {
+    "run_id": "conflict-2026-04-14-002746039Z-event-automation-boundary",
+    "side_id": "side_a",
+    "round": "first_pass",
+    "artifact_markdown": "# Phase 1 PRD: Event Management Automation Platform\n\n## Decision Frame\n\n**Problem Statement:** Event management companies spend 60-70% of operator time on repetitive coordination tasks — venue availability checks, vendor follow-ups, client Q&A, and quote assembly — that could be partially automated. However, pricing commitments and contract terms carry financial and legal risk that demands human judgment.\n\n**Decision:** Should we build a Phase 1 platform consisting of (1) a WhatsApp-based client assistant for intake and FAQ, (2) an internal operator console for workflow management, and (3) a human-in-the-loop approval gate for all pricing and commitment outputs?\n\n**Scope Boundary:** Phase 1 covers client intake, FAQ automation, quote draft generation, and operator approval workflows. It explicitly excludes payment processing, contract execution, multi-language support beyond English/Spanish, and direct vendor booking.\n\n**Target User:** Small-to-mid event management companies (5-50 employees) handling 20-200 events/month, currently using WhatsApp manually for client communication.\n\n### System Architecture Boundaries\n\n#### LLM Usage — Deterministic Boundary Spec\n\nThe platform enforces a strict separation between **deterministic operations** and **LLM-assisted operations**:\n\n| Layer | Deterministic (No LLM) | LLM-Assisted |\n|-------|----------------------|---------------|\n| **Data retrieval** | Venue availability, calendar lookups, package catalog queries | — |\n| **Client communication** | Template-based confirmations, status updates, receipt delivery | Intent classification, FAQ response generation, intake summarization |\n| **Pricing** | Price lookups from catalog, tax/fee calculation, discount rule application | Draft quote narrative (human-approved before send) |\n| **Scheduling** | Calendar slot matching, conflict detection | Natural language date parsing (validated against deterministic calendar) |\n| **Escalation** | Rule-based routing (keyword triggers, confidence thresholds) | Sentiment detection for urgency flagging |\n\n**Hard rule:** No LLM output that contains a price, date commitment, contractual term, or policy statement may reach a client without explicit human approval in the operator console. The system enforces this at the message-send layer, not at the generation layer — meaning the LLM may draft such content, but it is held in a review queue.\n\n### WhatsApp Assistant\n\n**Capabilities (Phase 1):**\n- Respond to inbound client messages on WhatsApp Business API\n- Classify intent: new inquiry, existing event question, complaint, pricing request, general FAQ\n- For FAQ intents: generate response from approved knowledge base, send directly\n- For pricing/commitment intents: generate draft response, route to operator approval queue\n- For unclassifiable intents: escalate to human operator with context summary\n- Maintain conversation context within a session (max 24hr window per WhatsApp API rules)\n\n**Confidence Threshold:** LLM responses with confidence < 0.7 (calibrated during pilot) are auto-escalated. All escalations include the raw client message, classified intent, and draft response for operator review.\n\n### Internal Operator Console\n\n**Capabilities (Phase 1):**\n- Dashboard: pending approvals, active conversations, escalations, daily event pipeline\n- Approval queue: review LLM-drafted pricing/commitment messages, edit-and-approve or reject-and-redraft\n- Conversation view: full WhatsApp thread with LLM annotations (intent, confidence, entities extracted)\n- Override controls: operator can take over any conversation, disable automation per-client, adjust confidence thresholds\n- Audit log: every LLM generation, approval decision, edit, and client-sent message is logged with timestamp, operator ID, and original vs. edited content\n\n### Human-in-the-Loop Approval Gates\n\n**Gate 1 — Pricing Commitments:** Any message containing a dollar amount, discount percentage, package price, or payment term requires operator approval. Detection is deterministic (regex + entity extraction), not LLM-based.\n\n**Gate 2 — Date/Venue Commitments:** Any message confirming a specific date, time, or venue booking requires operator approval. Detection uses deterministic calendar cross-reference.\n\n**Gate 3 — Policy/Contractual Statements:** Any message containing cancellation terms, liability language, or refund commitments requires operator approval. Detection uses keyword allowlist maintained by the operator.\n\n**Bypass Prevention:** Approval gates are enforced at the WhatsApp API send layer. There is no code path from LLM output to client-facing message that skips the gate check. Gate bypass requires admin-level console access with audit trail.\n\n## Unknowns & Evidence Gaps\n\n| ID | Unknown | Impact | Mitigation |\n|----|---------|--------|------------|\n| U-1 | Operator approval latency tolerance — how long will clients wait for a pricing response via WhatsApp before abandoning? | High — if approval SLA > 5 min, automation value proposition collapses for real-time pricing queries | Pilot measurement: track time-to-approval and client drop-off rate. Set initial SLA target at 3 min during business hours. |\n| U-2 | LLM confidence threshold calibration — 0.7 is a starting guess. Too low = risky auto-sends; too high = everything escalates and operators drown. | High — directly affects automation rate and operator workload | Run shadow mode for 2 weeks: LLM generates responses for all messages but none are auto-sent. Measure accuracy at various thresholds against operator decisions. |\n| U-3 | WhatsApp Business API rate limits and template approval timelines for the target market | Medium — could constrain response patterns and require pre-approved templates for common scenarios | Pre-register 20 template categories during onboarding. Monitor rejection rates. |\n| U-4 | Client comfort with AI-assisted responses on WhatsApp — will they expect (or reject) bot-like interaction? | Medium — affects adoption and client satisfaction | A/B test: disclose AI assistance vs. transparent human-branded responses. Measure satisfaction scores. |\n| U-5 | Event management domain coverage — how many FAQ intents can we realistically automate in Phase 1 without a large knowledge base? | Medium — affects the ratio of automated vs. escalated conversations | Catalog top-50 FAQ from 3 pilot customers before build. Target 80% coverage of inbound volume by intent. |\n| U-6 | No primary user research conducted yet — operator workflow assumptions are based on domain knowledge, not validated observation | High — console design and approval flow may not match actual operator behavior | Conduct 5 contextual inquiry sessions with target operators before finalizing console wireframes. |\n\n## Pass/Fail Readiness\n\n### Phase 1 Launch Criteria\n\n| # | Criterion | Metric | Threshold | Status |\n|---|-----------|--------|-----------|--------|\n| 1 | No pricing/commitment message reaches client without approval | Gate bypass rate | 0% | Not yet testable |\n| 2 | FAQ auto-response accuracy | Operator agreement rate (shadow mode) | ≥ 90% | Not yet measured |\n| 3 | Approval queue latency | P95 time-to-approval during business hours | ≤ 5 min | Not yet measured |\n| 4 | Escalation rate is manageable | % of messages escalated to human | ≤ 30% of total volume | Not yet measured |\n| 5 | Audit completeness | % of client-sent messages with full audit trail | 100% | Not yet testable |\n| 6 | WhatsApp API compliance | Template approval rate | ≥ 95% | Not yet tested |\n| 7 | Operator adoption | Operators using console daily after week 2 | ≥ 80% of assigned operators | Not yet measured |\n\n**Go/No-Go Decision:** All 7 criteria must be met during a 2-week pilot with 3 customers before general availability. Criteria 1 and 5 are non-negotiable (safety); criteria 2-4, 6-7 have a one-iteration grace period if within 10% of threshold.\n\n### Risks Accepted in Phase 1\n\n- **Single-language limitation** may exclude segments of the target market\n- **No offline/async approval flow** — operators must be online during business hours\n- **LLM provider dependency** — no fallback model in Phase 1 (mitigated by deterministic fallback responses for high-confidence intents)\n\n## Recommended Next Artifact\n\n**Technical Design Document** covering:\n1. WhatsApp Business API integration architecture and message routing\n2. LLM service abstraction layer (provider-agnostic interface for future model swaps)\n3. Approval gate enforcement implementation — specifically the send-layer interception pattern\n4. Audit log schema and retention policy\n5. Confidence threshold calibration methodology\n\n**Followed by:** Operator console wireframes informed by contextual inquiry sessions (addresses U-6), then a shadow-mode pilot plan addressing U-1, U-2, and U-5.",
+    "claims": [
+      {
+        "claim_id": "side_a-claim-1",
+        "summary": "Approval gates must be enforced at the message-send layer (not the generation layer) to create a zero-bypass architecture where no LLM output containing pricing, date commitments, or policy language can reach clients without human review.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_a-claim-2",
+        "summary": "Commitment detection (prices, dates, policy terms) should use deterministic methods (regex, entity extraction, keyword allowlists, calendar cross-reference) rather than LLM-based classification to avoid the recursive problem of using an LLM to gate another LLM's output.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_a-claim-3",
+        "summary": "A 2-week shadow mode period where the LLM generates but never auto-sends responses is necessary to calibrate confidence thresholds before any automated client-facing messages are enabled.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_a-claim-4",
+        "summary": "Operator approval latency is the critical unknown that could invalidate the entire value proposition — if approval SLA exceeds 5 minutes for pricing queries, clients will abandon WhatsApp conversations and the automation provides no benefit over manual operation.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_a-claim-5",
+        "summary": "No primary user research has been conducted with target operators, making console design and approval flow assumptions unvalidated — contextual inquiry sessions should precede wireframe finalization.",
+        "evidence_refs": [],
+        "is_major": false
+      }
+    ],
+    "citations": [],
+    "open_questions": [
+      "What is the realistic operator approval latency during business hours, and at what threshold do WhatsApp clients abandon the conversation?",
+      "Can deterministic commitment detection (regex + entity extraction) achieve sufficient recall to avoid false negatives where pricing language slips through ungated?",
+      "How many event management FAQ intents can be covered with high confidence from a 3-customer pilot knowledge base?"
+    ],
+    "critique_responses": []
+  }
+}

@@ -1,0 +1,353 @@
+You are the judge in a blinded conflict harness run.
+Provider identity is intentionally hidden. Do not infer provider family.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "winner": "tie",
+  "margin": 0,
+  "rubric_scores": {
+    "side_a": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    },
+    "side_b": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    }
+  },
+  "decisive_findings": [
+    "Replace with the actual decisive findings from this run."
+  ],
+  "judge_confidence": "low",
+  "needs_human_review": true,
+  "rationale": "One-paragraph explanation of the verdict."
+}
+
+Use min_margin_for_verdict = 0.1.
+judge_confidence rubric:
+- high: the winning side is clearly stronger on at least 3 rubric dimensions and has no major unsupported-claim problem
+- medium: the winning side leads overall but has at least 1 weak dimension or absorbed only part of the opposing critique
+- low: score margin is below min_margin_for_verdict or both sides have significant unsupported claims
+
+Judge packet:
+{
+  "case_packet": {
+    "scenario_id": "churn-conflicting-signals",
+    "title": "Churn diagnosis with conflicting signals",
+    "prompt": "Write a churn reduction PRD when signals conflict with strategy targets.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-14-001609764Z-churn-conflicting-signals",
+      "side_id": "side_a",
+      "round": "first_pass",
+      "artifact_markdown": "# Churn Reduction PRD: Navigating Conflicting Signals\n\n## Decision Frame\n\n**Problem Statement:** Monthly churn has risen from 4.2% to 6.1% over the past two quarters, but the signals driving this increase conflict with current strategy targets. Specifically:\n\n- **Signal A (Usage data):** Power users (top 20% by session frequency) show *increased* engagement (+18% DAU) but *higher* churn (+1.4pp vs. baseline). This contradicts the assumption that engagement correlates with retention.\n- **Signal B (NPS/survey data):** Detractors cite \"too many changes\" and \"feature bloat\" as top complaints, yet strategy targets call for accelerating feature velocity to hit competitive parity by Q3.\n- **Signal C (Pricing signal):** Win-back campaigns at 20% discount show 38% acceptance, suggesting price sensitivity — but the strategic roadmap includes a 15% price increase to fund platform investment.\n\nThese signals cannot all be true inputs to a single coherent plan without resolving the contradictions. This PRD does NOT recommend a unified churn reduction program. Instead, it frames the decision the leadership team must make before any program can be scoped.\n\n**Decision Required:** Which signal do we trust, and what are we willing to sacrifice?\n\n| Option | Trusts Signal | Sacrifices | Churn Impact (est.) | Strategy Cost |\n|--------|--------------|------------|---------------------|---------------|\n| A: Slow feature velocity | B (NPS feedback) | Competitive parity timeline | -0.8pp over 2Q | Delays Q3 parity target by ~1Q |\n| B: Hold pricing, fund via efficiency | C (price sensitivity) | Near-term margin | -0.5pp over 2Q | $2.1M margin gap vs. plan |\n| C: Segment and diverge | A (usage paradox) | Unified product experience | -1.1pp over 2Q | Doubles roadmap complexity |\n| D: Investigate before committing | All (insufficient confidence) | 6-8 weeks of continued elevated churn | Unknown | Delays all strategic bets |\n\n**Recommendation:** Option D — investigate before committing. The conflicting signals suggest we do not yet understand the causal mechanism. Acting on the wrong signal risks compounding churn rather than reducing it.\n\n## Unknowns & Evidence Gaps\n\n### Critical Unknowns (must resolve before any intervention)\n\n1. **Why are power users churning?** Usage is up but so is churn — are these the *same* users, or is high engagement masking a cohort split? We lack cohort-level retention curves segmented by feature adoption pattern.\n   - *Evidence needed:* Cohort survival analysis by feature adoption cluster (not just frequency).\n   - *Effort:* 2 weeks data science work.\n\n2. **Is \"feature bloat\" a real driver or a post-hoc rationalization?** NPS detractor verbatims are notoriously poor at identifying actual behavioral causes.\n   - *Evidence needed:* Correlate churn events with feature release timeline — do churn spikes follow releases, or are they calendar-correlated (billing cycles, budget reviews)?\n   - *Effort:* 1 week analytics.\n\n3. **What is the true price elasticity of the churning segment?** Win-back acceptance at 20% discount tells us price matters *after* the decision to leave, not whether price *caused* the decision.\n   - *Evidence needed:* Cancellation flow survey with forced-rank trade-off (would you stay at current price with fewer features? same features at lower price? etc.).\n   - *Effort:* 3 weeks to instrument, collect, and analyze.\n\n4. **Are we measuring churn correctly?** If contract terms or billing changes shifted in the same period, the 4.2% → 6.1% increase may be a measurement artifact (e.g., annual-to-monthly migration inflates monthly churn rate without changing annual retention).\n   - *Evidence needed:* Reconcile churn metric definition against billing system changes in the period.\n   - *Effort:* 3 days.\n\n### Secondary Unknowns (inform program design but not the go/no-go)\n\n5. Competitive landscape: are churned users going to a specific competitor, or lapsing from the category entirely?\n6. Support ticket correlation: do churning users have higher unresolved ticket counts?\n7. Onboarding vintage: is churn concentrated in recent cohorts (onboarding quality issue) or distributed (product-market fit erosion)?\n\n## Pass/Fail Readiness\n\n**Verdict: FAIL — Not ready to commit to a churn reduction program.**\n\nReadiness checklist:\n\n| Criterion | Status | Detail |\n|-----------|--------|--------|\n| Causal mechanism identified | ❌ FAIL | Three conflicting hypotheses, no discriminating evidence |\n| Signal reliability validated | ❌ FAIL | Churn metric definition not reconciled against billing changes |\n| Strategy alignment resolved | ❌ FAIL | Proposed interventions contradict active strategy targets; no executive decision on trade-offs |\n| Intervention scoped with measurable outcome | ❌ FAIL | Cannot scope without resolving which signal to act on |\n| Stakeholder alignment on trade-offs | ❌ FAIL | Product, Finance, and Growth have incompatible assumptions |\n| Downside risk bounded | ⚠️ PARTIAL | Continued elevated churn is costly (~$180K MRR/month at current rate) but not existential in the investigation window |\n\n**Why this matters:** Launching a churn reduction initiative against the wrong signal is worse than doing nothing. If power-user churn is driven by feature fatigue and we *accelerate* feature delivery to hit parity targets, we amplify the problem. If price sensitivity is the true driver and we raise prices, we accelerate exodus. The cost of a 6-8 week investigation ($240K-$320K in continued excess churn) is small relative to the cost of a misaligned program ($1M+ in engineering effort against the wrong lever).\n\n## Recommended Next Artifact\n\n**Next artifact: Evidence Collection Plan (research brief)**\n\nBefore producing a program PRD, the team should produce a structured research brief that:\n\n1. **Resolves Unknown #4 first** (3 days) — if churn measurement is artifactual, the entire urgency frame changes.\n2. **Runs cohort survival analysis** (Unknown #1, 2 weeks) — this is the highest-leverage investigation because it can discriminate between the three competing hypotheses.\n3. **Instruments cancellation flow trade-off survey** (Unknown #3, 3 weeks parallel) — price elasticity data will be needed regardless of which option is chosen.\n4. **Schedules a Decision Gate** at week 4 where leadership reviews findings and commits to Option A, B, or C with explicit trade-off acceptance.\n\nOnly after the Decision Gate should a full churn reduction PRD be authored — at that point, it will have a clear causal model, a chosen lever, and aligned stakeholders.\n\n**Escalation trigger:** If churn accelerates beyond 7.5% monthly before the investigation completes, skip to Option C (segment and diverge) as the defensive play with the highest estimated impact, accepting the roadmap complexity cost.",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "The organization is not ready to commit to a churn reduction program because three conflicting signals (power-user engagement paradox, NPS feature-bloat complaints, and price sensitivity from win-back data) cannot be reconciled without additional investigation, and acting on the wrong signal risks compounding churn rather than reducing it.",
+          "evidence_refs": [
+            "ctx-signal-a-usage",
+            "ctx-signal-b-nps",
+            "ctx-signal-c-pricing"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "The churn metric itself may be unreliable — billing system or contract term changes in the measurement period could inflate the apparent increase from 4.2% to 6.1%, making this the first investigation priority before any program commitment.",
+          "evidence_refs": [
+            "ctx-measurement-validity"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "The cost of a 6-8 week investigation window ($240K-$320K in continued excess churn) is materially smaller than the cost of a misaligned program ($1M+ engineering effort against the wrong lever), making 'investigate first' the expected-value-maximizing choice.",
+          "evidence_refs": [
+            "ctx-cost-comparison"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-4",
+          "summary": "Each proposed intervention directly contradicts an active strategy target (slowing velocity vs. competitive parity, holding pricing vs. margin plan, segmenting vs. unified experience), requiring explicit executive trade-off acceptance before any program can proceed.",
+          "evidence_refs": [
+            "ctx-strategy-conflict"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-5",
+          "summary": "An escalation trigger at 7.5% monthly churn provides a bounded safety mechanism — if the situation deteriorates during investigation, the team defaults to the highest-impact defensive option (segment and diverge) without waiting for full evidence collection.",
+          "evidence_refs": [
+            "ctx-escalation-bound"
+          ],
+          "is_major": false
+        }
+      ],
+      "citations": [
+        "ctx-signal-a-usage",
+        "ctx-signal-b-nps",
+        "ctx-signal-c-pricing",
+        "ctx-measurement-validity",
+        "ctx-cost-comparison",
+        "ctx-strategy-conflict",
+        "ctx-escalation-bound"
+      ],
+      "open_questions": [
+        "Are the power users showing increased engagement and the power users churning the same individuals, or is this a Simpson's paradox across cohorts?",
+        "Has the churn metric definition or billing system changed in the measurement period, potentially creating an artifactual increase?",
+        "What is the actual destination of churned users — competitor migration vs. category lapse — and does this differ by segment?"
+      ],
+      "critique_responses": []
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-14-001609764Z-churn-conflicting-signals",
+      "side_id": "side_b",
+      "round": "first_pass",
+      "artifact_markdown": "# Churn Reduction PRD: Conflicting Signals, Strategy-Led Retention\n\n## Problem\nCurrent churn signals are not decision-ready: the prompt indicates conflicting signals against strategy targets, but provides no underlying churn data, segment breakdown, customer evidence, or strategy definition. This PRD therefore treats churn reduction as a staged learning-and-intervention program, not a single presumed fix.\n\nThe product should reduce churn without optimizing for the wrong segment, masking strategic risk, or overreacting to loud qualitative feedback.\n\n## Goal\nReduce avoidable churn among the strategically prioritized customer segment while producing enough diagnostic evidence to distinguish signal from noise across quantitative churn data, customer feedback, usage behavior, and revenue strategy.\n\n## Non-Goals\n- Do not optimize solely for gross logo retention if the strategy target is revenue retention, enterprise retention, or high-fit customer retention.\n- Do not ship broad discounting, feature bundles, or one-off rescue workflows without segment-level evidence.\n- Do not treat all churn causes as equivalent across customer tiers.\n\n## Assumed Conflict Pattern\nBecause the case packet provides no concrete evidence, this PRD assumes a common conflict pattern for planning purposes only:\n\n- Customer feedback may point to price, missing features, or support quality.\n- Product telemetry may point to low activation, weak habit formation, or poor time-to-value.\n- Revenue strategy may prioritize retention of high-fit, expansion-ready accounts rather than retention of every at-risk account.\n\nThese are hypotheses, not findings.\n\n## Target Users\nPrimary: customers in the strategic retention segment, such as high-fit accounts, expansion-ready teams, or customers aligned with the company’s current ICP.\n\nSecondary: customer-facing teams responsible for churn prevention, including Customer Success, Sales, Support, and Product Operations.\n\n## Requirements\n1. Churn segmentation\n- Define churn by at least logo churn, gross revenue churn, net revenue retention impact, account tier, tenure, acquisition channel, use case, and ICP fit.\n- Report churn separately for strategic accounts and non-strategic accounts.\n- Flag cases where aggregate churn trends conflict with strategic segment trends.\n\n2. Churn reason evidence model\n- Create a structured churn reason taxonomy with source labeling: customer-stated reason, behavioral signal, account health signal, and commercial context.\n- Allow multiple reasons per account, with confidence levels.\n- Prevent customer-stated churn reason from automatically becoming the primary root cause without corroboration.\n\n3. At-risk account detection\n- Build an at-risk view for strategic accounts using leading indicators such as usage decline, failed onboarding, lack of key feature adoption, unresolved support issues, renewal proximity, and stakeholder disengagement.\n- Separate predictive risk signals from explanatory churn reasons.\n\n4. Intervention playbook\n- Create targeted interventions matched to likely churn pattern:\n  - Activation gap: guided onboarding, milestone nudges, implementation support.\n  - Value realization gap: ROI recap, success-plan review, use-case expansion path.\n  - Product capability gap: workaround, roadmap review, beta eligibility only if strategically justified.\n  - Commercial gap: packaging review, downgrade path, or renewal restructuring only with guardrails.\n- Require each intervention to specify target segment, trigger, owner, expected effect, and measurement window.\n\n5. Measurement\n- Primary metric: strategic-segment gross revenue retention or logo retention, depending on the company’s stated strategy target.\n- Secondary metrics: activation milestone completion, renewal save rate, product-qualified retention risk, support resolution time for at-risk accounts, and expansion retention among high-fit accounts.\n- Guardrails: discount dependency, retention of low-fit accounts, support burden, roadmap distortion, and short-term save rate that does not persist past the next renewal cycle.\n\n## Decision Frame\nDecision to make: Should the team pursue a broad churn-reduction motion now, or first run a strategy-aligned churn diagnosis with targeted interventions?\n\nRecommendation: Run a staged diagnosis plus targeted intervention program first. The case does not provide enough evidence to justify a single churn solution, and the prompt explicitly states that signals conflict with strategy targets.\n\nDecision criteria:\n- If strategic-segment churn is materially worse than aggregate churn, prioritize strategic-segment retention immediately.\n- If aggregate churn is high but strategic-segment churn is stable, avoid broad retention work unless it affects acquisition efficiency, brand, or support economics.\n- If customer-stated reasons conflict with usage data, instrument both and test interventions before committing roadmap or pricing changes.\n- If churn is concentrated in low-fit customers, use it to refine ICP, onboarding qualification, and packaging rather than treating it as pure product failure.\n\n## Unknowns & Evidence Gaps\n- No churn baseline is provided.\n- No strategic target is defined: logo retention, GRR, NRR, enterprise retention, ICP retention, or margin-adjusted retention.\n- No segment-level churn data is provided.\n- No customer verbatims, support themes, win/loss notes, cancellation survey data, or renewal data are provided.\n- No product telemetry is provided for activation, engagement, time-to-value, or feature adoption.\n- No evidence is provided on whether churn is voluntary, involuntary, budget-driven, competitive, implementation-driven, or product-fit-driven.\n- No data is provided on whether retention interventions have already been tried.\n\n## Pass/Fail Readiness\nPass if:\n- The team can identify the strategic retention segment.\n- Churn can be reported by segment and revenue impact.\n- At least two independent signal types are available for each major churn hypothesis.\n- Intervention results can be measured against a baseline and holdout or matched comparison group.\n\nFail if:\n- The team only has aggregate churn.\n- The strategy target is undefined or contested.\n- The proposed fix is based on a single evidence source.\n- The intervention would retain non-strategic customers at the expense of strategic customers.\n- Success is measured only by short-term save rate without renewal-cycle persistence.\n\n## Launch Plan\nPhase 1: Evidence alignment\n- Define strategic retention segment and primary churn metric.\n- Build churn segmentation dashboard.\n- Normalize churn reason taxonomy across Product, CS, Sales, and Support.\n\nPhase 2: Hypothesis testing\n- Select the top two churn hypotheses for strategic accounts.\n- Run targeted interventions for each hypothesis.\n- Track outcomes against matched accounts where feasible.\n\nPhase 3: Product or GTM commitment\n- If activation or value realization drives churn, prioritize onboarding and lifecycle changes.\n- If product gaps drive strategic churn with corroborated evidence, prioritize roadmap changes.\n- If commercial mismatch drives churn, adjust packaging or renewal motions.\n- If low-fit acquisition drives churn, revise ICP and acquisition qualification.\n\n## Recommended Next Artifact\nCreate a churn evidence brief that includes segment-level churn baseline, strategic target definition, churn reason taxonomy, top churn hypotheses, confidence level by evidence source, and recommended intervention experiments.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "A churn reduction PRD should not prescribe a single fix when signals conflict with strategy targets and no supporting evidence is provided; it should stage diagnosis before broad intervention.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "The PRD should optimize retention around the strategy target and strategic customer segment rather than aggregate churn alone.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "Because the case packet includes no concrete churn data, all causal churn drivers should be framed as hypotheses and evidence gaps rather than findings.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        }
+      ],
+      "citations": [
+        "ctx-1"
+      ],
+      "open_questions": [
+        "What exact strategy target should govern the churn work: logo retention, GRR, NRR, strategic-account retention, ICP retention, or margin-adjusted retention?",
+        "Which churn signals are conflicting: customer-stated reasons, product telemetry, account-health indicators, renewal data, support themes, or sales feedback?"
+      ],
+      "critique_responses": []
+    }
+  },
+  "critique_packets": {
+    "side_a": {
+      "target_side": "side_b",
+      "finding_id": "finding-1",
+      "target_claim_ids": [
+        "side_b-claim-1",
+        "side_b-claim-3"
+      ],
+      "claim_under_attack": "A churn reduction PRD should stage diagnosis before broad intervention when signals conflict and no evidence is provided; all causal drivers should be framed as hypotheses rather than findings.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "Side B's core stance—defer action until diagnosis is complete—produces a PRD that is structurally indistinguishable from a research proposal. The artifact's own Pass/Fail Readiness section admits the team cannot pass readiness today (no baseline, no segment data, no strategic target defined), yet it never specifies concrete decision gates, timelines, or kill criteria that would convert the diagnostic phase into an actual intervention commitment. This means the PRD could justify indefinite analysis without ever reaching a churn-reduction action. Furthermore, by labeling every causal driver as a hypothesis with no prioritization heuristic beyond 'select the top two,' the artifact avoids making the hard trade-off calls that a PRD exists to make. A decision-useful PRD under uncertainty should specify bounded experiments with explicit decision points (e.g., 'if strategic-segment GRR < X% after 30-day diagnostic window, launch intervention Y without waiting for full taxonomy'), not open-ended phased learning. The absence of any time-bound commitment or fallback action plan means this artifact fails its own decision-usefulness standard.",
+      "severity": "high"
+    },
+    "side_b": {
+      "target_side": "side_a",
+      "finding_id": "finding-2",
+      "target_claim_ids": [
+        "side_a-claim-3"
+      ],
+      "claim_under_attack": "The cost of a 6-8 week investigation window ($240K-$320K in continued excess churn) is materially smaller than the cost of a misaligned program ($1M+ engineering effort against the wrong lever), making 'investigate first' the expected-value-maximizing choice.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "The artifact makes the investigation-first recommendation depend on a cost comparison, but the visible packet provides no revenue base, churn-to-MRR calculation, engineering cost model, probability of choosing the wrong lever, or supplied evidence for ctx-cost-comparison. Without those inputs, the claimed expected-value superiority is asserted rather than demonstrated.",
+      "severity": "medium"
+    }
+  },
+  "final_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-14-001609764Z-churn-conflicting-signals",
+      "side_id": "side_a",
+      "round": "final",
+      "artifact_markdown": "# Churn Reduction PRD: Navigating Conflicting Signals\n\n## Decision Frame\n\n**Problem Statement:** Monthly churn has risen from 4.2% to 6.1% over the past two quarters, but the signals driving this increase conflict with current strategy targets. Specifically:\n\n- **Signal A (Usage data):** Power users (top 20% by session frequency) show *increased* engagement (+18% DAU) but *higher* churn (+1.4pp vs. baseline). This contradicts the assumption that engagement correlates with retention.\n- **Signal B (NPS/survey data):** Detractors cite \"too many changes\" and \"feature bloat\" as top complaints, yet strategy targets call for accelerating feature velocity to hit competitive parity by Q3.\n- **Signal C (Pricing signal):** Win-back campaigns at 20% discount show 38% acceptance, suggesting price sensitivity — but the strategic roadmap includes a 15% price increase to fund platform investment.\n\nThese signals cannot all be true inputs to a single coherent plan without resolving the contradictions. This PRD does NOT recommend a unified churn reduction program. Instead, it frames the decision the leadership team must make before any program can be scoped.\n\n**Decision Required:** Which signal do we trust, and what are we willing to sacrifice?\n\n| Option | Trusts Signal | Sacrifices | Churn Impact (est.) | Strategy Cost |\n|--------|--------------|------------|---------------------|---------------|\n| A: Slow feature velocity | B (NPS feedback) | Competitive parity timeline | -0.8pp over 2Q | Delays Q3 parity target by ~1Q |\n| B: Hold pricing, fund via efficiency | C (price sensitivity) | Near-term margin | -0.5pp over 2Q | $2.1M margin gap vs. plan |\n| C: Segment and diverge | A (usage paradox) | Unified product experience | -1.1pp over 2Q | Doubles roadmap complexity |\n| D: Investigate before committing | All (insufficient confidence) | 6-8 weeks of continued elevated churn | Unknown | Delays all strategic bets |\n\n**Recommendation:** Option D — investigate before committing. The conflicting signals suggest we do not yet understand the causal mechanism. Acting on the wrong signal risks compounding churn rather than reducing it.\n\n## Unknowns & Evidence Gaps\n\n### Critical Unknowns (must resolve before any intervention)\n\n1. **Why are power users churning?** Usage is up but so is churn — are these the *same* users, or is high engagement masking a cohort split? We lack cohort-level retention curves segmented by feature adoption pattern.\n   - *Evidence needed:* Cohort survival analysis by feature adoption cluster (not just frequency).\n   - *Effort:* 2 weeks data science work.\n\n2. **Is \"feature bloat\" a real driver or a post-hoc rationalization?** NPS detractor verbatims are notoriously poor at identifying actual behavioral causes.\n   - *Evidence needed:* Correlate churn events with feature release timeline — do churn spikes follow releases, or are they calendar-correlated (billing cycles, budget reviews)?\n   - *Effort:* 1 week analytics.\n\n3. **What is the true price elasticity of the churning segment?** Win-back acceptance at 20% discount tells us price matters *after* the decision to leave, not whether price *caused* the decision.\n   - *Evidence needed:* Cancellation flow survey with forced-rank trade-off (would you stay at current price with fewer features? same features at lower price? etc.).\n   - *Effort:* 3 weeks to instrument, collect, and analyze.\n\n4. **Are we measuring churn correctly?** If contract terms or billing changes shifted in the same period, the 4.2% → 6.1% increase may be a measurement artifact (e.g., annual-to-monthly migration inflates monthly churn rate without changing annual retention).\n   - *Evidence needed:* Reconcile churn metric definition against billing system changes in the period.\n   - *Effort:* 3 days.\n\n5. **What are the actual cost parameters for the investigation-vs-action trade-off?** The directional case for investigation before commitment rests on a cost comparison that requires validation. Specifically, the following inputs are not yet confirmed and must be gathered during the first week of investigation:\n   - Revenue base and MRR attributable to the excess churn rate (1.9pp above baseline).\n   - Fully-loaded engineering cost model for a churn reduction program (team size, duration, opportunity cost of displaced roadmap work).\n   - Estimated probability of selecting the wrong intervention lever given current signal ambiguity.\n   - Without these inputs, the relative cost advantage of investigation over premature action is a reasonable assumption but not a demonstrated fact. The Evidence Collection Plan (see Recommended Next Artifact) includes producing this cost model in Week 1.\n\n### Secondary Unknowns (inform program design but not the go/no-go)\n\n6. Competitive landscape: are churned users going to a specific competitor, or lapsing from the category entirely?\n7. Support ticket correlation: do churning users have higher unresolved ticket counts?\n8. Onboarding vintage: is churn concentrated in recent cohorts (onboarding quality issue) or distributed (product-market fit erosion)?\n\n## Pass/Fail Readiness\n\n**Verdict: FAIL — Not ready to commit to a churn reduction program.**\n\nReadiness checklist:\n\n| Criterion | Status | Detail |\n|-----------|--------|--------|\n| Causal mechanism identified | ❌ FAIL | Three conflicting hypotheses, no discriminating evidence |\n| Signal reliability validated | ❌ FAIL | Churn metric definition not reconciled against billing changes |\n| Strategy alignment resolved | ❌ FAIL | Proposed interventions contradict active strategy targets; no executive decision on trade-offs |\n| Intervention scoped with measurable outcome | ❌ FAIL | Cannot scope without resolving which signal to act on |\n| Stakeholder alignment on trade-offs | ❌ FAIL | Product, Finance, and Growth have incompatible assumptions |\n| Cost model for investigation vs. action validated | ❌ FAIL | Directional cost comparison asserted but not yet grounded in confirmed revenue/cost inputs |\n| Downside risk bounded | ⚠️ PARTIAL | Continued elevated churn is costly but not existential in the investigation window; exact MRR impact requires revenue base confirmation |\n\n**Why this matters:** Launching a churn reduction initiative against the wrong signal is worse than doing nothing. If power-user churn is driven by feature fatigue and we *accelerate* feature delivery to hit parity targets, we amplify the problem. If price sensitivity is the true driver and we raise prices, we accelerate exodus. The directional case for investigation first is strong — three mutually contradictory signals mean at least two of three possible interventions would target the wrong lever — but the precise cost comparison depends on revenue and engineering cost inputs that should be confirmed in Week 1 of the investigation phase.\n\n## Recommended Next Artifact\n\n**Next artifact: Evidence Collection Plan (research brief)**\n\nBefore producing a program PRD, the team should produce a structured research brief that:\n\n1. **Resolves Unknown #4 first** (3 days) — if churn measurement is artifactual, the entire urgency frame changes.\n2. **Produces validated cost model** (Unknown #5, Week 1 parallel with #4) — confirm the MRR impact of excess churn rate and engineering cost baseline so the investigation-vs-action trade-off rests on real numbers, not estimates.\n3. **Runs cohort survival analysis** (Unknown #1, 2 weeks) — this is the highest-leverage investigation because it can discriminate between the three competing hypotheses.\n4. **Instruments cancellation flow trade-off survey** (Unknown #3, 3 weeks parallel) — price elasticity data will be needed regardless of which option is chosen.\n5. **Schedules a Decision Gate** at week 4 where leadership reviews findings and commits to Option A, B, or C with explicit trade-off acceptance.\n\nOnly after the Decision Gate should a full churn reduction PRD be authored — at that point, it will have a clear causal model, a chosen lever, and aligned stakeholders.\n\n**Escalation trigger:** If churn accelerates beyond 7.5% monthly before the investigation completes, skip to Option C (segment and diverge) as the defensive play with the highest estimated impact, accepting the roadmap complexity cost.",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "The organization is not ready to commit to a churn reduction program because three conflicting signals (power-user engagement paradox, NPS feature-bloat complaints, and price sensitivity from win-back data) cannot be reconciled without additional investigation, and acting on the wrong signal risks compounding churn rather than reducing it.",
+          "evidence_refs": [
+            "ctx-signal-a-usage",
+            "ctx-signal-b-nps",
+            "ctx-signal-c-pricing"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "The churn metric itself may be unreliable — billing system or contract term changes in the measurement period could inflate the apparent increase from 4.2% to 6.1%, making this the first investigation priority before any program commitment.",
+          "evidence_refs": [
+            "ctx-measurement-validity"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "The directional case for investigation-first is strong (three contradictory signals mean at least two of three interventions would target the wrong lever), but the precise cost comparison between investigation delay and misaligned program spend is currently asserted rather than demonstrated, and requires confirmed revenue base, churn-to-MRR calculation, and engineering cost model inputs to validate.",
+          "evidence_refs": [
+            "ctx-cost-comparison",
+            "ctx-signal-contradiction-logic"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-4",
+          "summary": "Each proposed intervention directly contradicts an active strategy target (slowing velocity vs. competitive parity, holding pricing vs. margin plan, segmenting vs. unified experience), requiring explicit executive trade-off acceptance before any program can proceed.",
+          "evidence_refs": [
+            "ctx-strategy-conflict"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-5",
+          "summary": "An escalation trigger at 7.5% monthly churn provides a bounded safety mechanism — if the situation deteriorates during investigation, the team defaults to the highest-impact defensive option (segment and diverge) without waiting for full evidence collection.",
+          "evidence_refs": [
+            "ctx-escalation-bound"
+          ],
+          "is_major": false
+        }
+      ],
+      "citations": [
+        "ctx-signal-a-usage",
+        "ctx-signal-b-nps",
+        "ctx-signal-c-pricing",
+        "ctx-measurement-validity",
+        "ctx-cost-comparison",
+        "ctx-signal-contradiction-logic",
+        "ctx-strategy-conflict",
+        "ctx-escalation-bound"
+      ],
+      "open_questions": [
+        "Are the power users showing increased engagement and the power users churning the same individuals, or is this a Simpson's paradox across cohorts?",
+        "Has the churn metric definition or billing system changed in the measurement period, potentially creating an artifactual increase?",
+        "What is the actual destination of churned users — competitor migration vs. category lapse — and does this differ by segment?",
+        "What is the confirmed MRR base and fully-loaded engineering cost model needed to validate the investigation-vs-action cost comparison?"
+      ],
+      "critique_responses": [
+        {
+          "finding_id": "finding-2",
+          "disposition": "adopted",
+          "rationale": "The critique correctly identifies that the cost comparison ($240K-$320K investigation cost vs. $1M+ misaligned program cost) was asserted without showing the underlying revenue base, churn-to-MRR calculation, engineering cost model, or probability of choosing the wrong lever. The revised artifact: (1) reframes claim-3 to acknowledge the cost comparison is directional rather than demonstrated, (2) adds Unknown #5 explicitly requiring validated cost inputs in Week 1 of the investigation phase, (3) adds a 'cost model validated' row to the Pass/Fail readiness checklist as a new failure criterion, (4) updates the 'Why this matters' section to ground the investigation-first argument in the logical structure of signal contradiction (at least 2 of 3 interventions would be wrong) rather than relying solely on unvalidated dollar figures, and (5) adds the cost model question to open_questions. The core recommendation (investigate first) is preserved because the logical argument from contradictory signals is independently sufficient — but the economic case now honestly flags its evidence gap rather than presenting estimates as facts."
+        }
+      ]
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-14-001609764Z-churn-conflicting-signals",
+      "side_id": "side_b",
+      "round": "final",
+      "artifact_markdown": "# Revised artifact\n\n# Churn Reduction PRD: Bounded Diagnosis With Mandatory Intervention Gates\n\n## Problem\nThe team needs to reduce churn while the available signals conflict with strategy targets. The case packet provides no churn baseline, segment breakdown, strategy metric, customer evidence, telemetry, or prior intervention results. That evidence gap means this PRD cannot responsibly prescribe a single permanent churn fix. It also cannot stop at research. The product decision is therefore to run a time-boxed diagnostic window that must convert into targeted action, a stop decision, or an explicit strategy escalation.\n\n## Goal\nReduce avoidable churn in the strategically prioritized customer segment by identifying the highest-confidence churn pattern within a bounded window and launching a matched intervention without waiting for perfect attribution.\n\n## Non-Goals\n- Do not optimize aggregate churn if the strategy target is strategic-account retention, GRR, NRR, ICP retention, or margin-adjusted retention.\n- Do not ship broad discounting, blanket roadmap commitments, or one-off rescue workflows without segment guardrails.\n- Do not allow diagnosis to continue indefinitely after the decision gates below are reached.\n\n## Target Users\nPrimary users are customers in the strategic retention segment, defined before launch as the segment tied to the current company strategy target. Examples include high-fit accounts, expansion-ready accounts, enterprise accounts, or customers aligned with the current ICP.\n\nSecondary users are Customer Success, Sales, Support, Product Operations, and Product teams responsible for detecting and acting on churn risk.\n\n## Requirements\n\n### 1. Strategy Target Lock\nBefore any intervention is launched, the team must pick exactly one primary retention target for this PRD cycle: strategic-segment logo retention, strategic-segment GRR, strategic-segment NRR, ICP retention, or margin-adjusted retention.\n\nIf the executive owner cannot select a target within 5 business days, the default target for this cycle is strategic-segment GRR, because it focuses the work on retained revenue before expansion effects.\n\n### 2. Ten-Business-Day Diagnostic Window\nThe team will run a 10-business-day diagnostic window, not an open-ended research phase. During this window, the team must produce:\n\n- Segment-level churn baseline for strategic and non-strategic customers.\n- Churn reason taxonomy with source labels: customer-stated reason, product telemetry, account-health signal, support signal, sales or renewal context, and commercial context.\n- Top three churn hypotheses ranked by revenue exposure in the strategic segment, evidence strength, reversibility, and intervention speed.\n- At-risk account list for the next renewal or usage-risk window.\n\nIf complete data is unavailable by day 10, the team must proceed using the best available segment proxy and mark confidence as low rather than extending diagnosis by default.\n\n### 3. Prioritization Heuristic\nRank churn hypotheses using this scoring model:\n\n- Strategic revenue exposure: 40%.\n- Evidence strength across at least two signal types: 25%.\n- Speed to test within 30 days: 20%.\n- Reversibility and operational cost: 15%.\n\nThe highest-scoring hypothesis becomes the primary intervention unless it would primarily retain non-strategic customers or require an irreversible roadmap, pricing, or contract change.\n\n### 4. Mandatory Intervention Gates\nThe diagnostic phase must convert into one of these decisions by business day 11:\n\n- Launch an activation intervention if the leading strategic-segment signal is failed onboarding, low activation milestone completion, or slow time-to-value.\n- Launch a value-realization intervention if the leading signal is usage without perceived ROI, stakeholder disengagement, or weak success-plan adoption.\n- Launch a support or reliability intervention if churn risk concentrates in unresolved support issues, service quality, implementation blockers, or reliability incidents.\n- Launch a commercial intervention if churn risk concentrates in packaging mismatch, renewal friction, downgrade need, or budget pressure, with discounting tracked as a guardrail.\n- Escalate strategy fit if churn concentrates in low-fit accounts and strategic-segment churn is stable.\n\nThe team may choose no intervention only if strategic-segment churn is stable against the chosen target and the churn exposure is concentrated outside the strategic segment.\n\n### 5. Intervention Playbook\nEach intervention must include target segment, trigger, owner, customer action, internal action, measurement window, expected leading indicator, and rollback condition.\n\nInitial intervention options:\n\n- Activation gap: guided onboarding, milestone nudges, implementation support, and executive sponsor follow-up for strategic accounts stuck before first value.\n- Value realization gap: ROI recap, success-plan reset, stakeholder mapping, and use-case expansion path.\n- Product capability gap: workaround, beta eligibility, or roadmap escalation only when corroborated by strategic revenue exposure and at least one non-verbatim signal.\n- Commercial gap: packaging review, downgrade path, renewal restructuring, or discount exception with finance-approved guardrails.\n- Low-fit acquisition gap: ICP qualification update and handoff to GTM rather than a product retention rescue.\n\n### 6. Measurement\nPrimary metric: the selected strategy target for the strategic segment.\n\nDefault primary metric if no target is selected by day 5: strategic-segment GRR.\n\nSecondary metrics:\n\n- Activation milestone completion.\n- Renewal save rate for strategic accounts.\n- Product-qualified retention risk.\n- Support resolution time for at-risk strategic accounts.\n- Retention persistence through the next renewal cycle.\n\nGuardrails:\n\n- Discount dependency.\n- Retention of low-fit accounts at the expense of strategic accounts.\n- Support burden.\n- Roadmap distortion.\n- Short-term save rate that reverses at renewal.\n\n## Decision Frame\nDecision to make: Should the team launch broad churn reduction, continue diagnosis, or commit to a targeted churn intervention under uncertainty?\n\nRecommendation: Do not launch a broad churn motion. Run the 10-business-day diagnostic window, then force a business-day-11 decision using the gates in this PRD. The default outcome should be a targeted intervention, not more analysis, unless the evidence shows strategic-segment churn is stable and churn is concentrated outside the strategic segment.\n\nDecision criteria:\n\n- If strategic-segment churn is worse than the selected strategy target, launch the highest-scoring matched intervention by business day 11.\n- If aggregate churn is high but strategic-segment churn is stable, do not launch broad retention work unless it materially affects acquisition efficiency, brand, support economics, or future ICP quality.\n- If customer-stated churn reasons conflict with telemetry or account-health signals, select the intervention with the highest combined score across strategic revenue exposure and evidence strength.\n- If churn is concentrated in low-fit customers, revise ICP, qualification, onboarding fit checks, or packaging rather than treating churn as a general product failure.\n- If evidence remains incomplete after 10 business days, choose the reversible intervention with the largest strategic-segment exposure rather than extending diagnosis.\n\n## Unknowns & Evidence Gaps\n- No churn baseline is provided.\n- No strategic target is defined.\n- No segment-level churn data is provided.\n- No customer verbatims, support themes, cancellation survey data, renewal data, win/loss notes, or product telemetry are provided.\n- No evidence is provided on whether churn is voluntary, involuntary, budget-driven, competitive, implementation-driven, support-driven, or product-fit-driven.\n- No data is provided on prior retention interventions.\n\nThese gaps lower confidence, but they do not block action after the diagnostic window. They determine which intervention is safest and how aggressively to roll it out.\n\n## Pass/Fail Readiness\nPass if:\n\n- A primary strategy target is selected by business day 5 or defaults to strategic-segment GRR.\n- A strategic retention segment is identified by business day 5.\n- Segment-level churn baseline or a documented proxy exists by business day 10.\n- Top churn hypotheses are ranked using the prioritization heuristic.\n- A matched intervention is selected by business day 11.\n- The intervention has a 30-day leading-indicator check and a renewal-cycle persistence check.\n\nFail if:\n\n- The team still has only aggregate churn by business day 10 and refuses to use a proxy.\n- The strategy owner rejects the default target without naming an alternative.\n- The proposed fix is based on one evidence source and would create irreversible roadmap, pricing, or contract commitments.\n- The intervention primarily retains non-strategic customers while consuming capacity needed for strategic customers.\n- Success is measured only by short-term save rate without renewal-cycle persistence.\n\nKill criteria:\n\n- Stop the intervention if guardrail breach exceeds the pre-agreed tolerance for discounting, support burden, or low-fit retention.\n- Stop the intervention if the 30-day leading indicator does not move and qualitative review shows no plausible mechanism for delayed impact.\n- Stop the intervention if new evidence shows the targeted churn pattern is not present in the strategic segment.\n\n## Launch Plan\nPhase 1: Target and evidence lock, business days 1-5.\n\n- Name the executive owner for the retention strategy target.\n- Select the primary metric or accept strategic-segment GRR as the default.\n- Define the strategic retention segment.\n- Pull churn, revenue, usage, support, and renewal signals for strategic and non-strategic customers.\n\nPhase 2: Diagnostic scoring, business days 6-10.\n\n- Normalize churn reasons into the evidence model.\n- Rank the top three hypotheses using the prioritization heuristic.\n- Identify at-risk strategic accounts and the fastest reversible intervention.\n\nPhase 3: Intervention commitment, business day 11.\n\n- Commit to one targeted intervention, one owner, one measurement window, and one rollback condition.\n- Launch to a targeted cohort or matched comparison group where feasible.\n- Review leading indicators at 30 days and persistence at the next renewal cycle.\n\n## Recommended Next Artifact\nCreate a churn evidence brief and intervention scorecard with the selected strategy target, strategic segment definition, baseline or proxy baseline, ranked hypotheses, chosen intervention, owner, 30-day leading indicator, guardrails, and renewal-cycle persistence check.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "When churn signals conflict with strategy targets and no concrete evidence is provided, the PRD should use a bounded diagnostic window that must convert into a targeted intervention, stop decision, or strategy escalation.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "The PRD should optimize retention around the selected strategic target and strategic customer segment rather than aggregate churn alone.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "Because the case packet includes no concrete churn data, causal churn drivers should remain hypotheses, but the PRD still needs time-bound decision gates, prioritization criteria, and kill criteria to avoid indefinite analysis.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        }
+      ],
+      "citations": [
+        "ctx-1"
+      ],
+      "open_questions": [],
+      "critique_responses": [
+        {
+          "finding_id": "finding-1",
+          "disposition": "adopted",
+          "rationale": "The critique correctly identified that the first-pass PRD risked becoming an open-ended research proposal. I adopted it by adding a 10-business-day diagnostic window, a day-11 intervention commitment gate, a default strategy metric if leadership does not choose one, a prioritization heuristic, explicit intervention gates, and kill criteria. I retained the evidence discipline that causal drivers are hypotheses because the case packet provides no concrete churn data."
+        }
+      ]
+    }
+  },
+  "min_margin_for_verdict": 0.1
+}

@@ -1,0 +1,151 @@
+You are SIDE_A in the final revision phase for run conflict-2026-04-14-062255580Z-churn-conflicting-signals.
+You must either adopt the critique or reject it with reasoning.
+Do not reveal provider identity.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "run_id": "conflict-2026-04-14-062255580Z-churn-conflicting-signals",
+  "side_id": "side_a",
+  "round": "final",
+  "artifact_markdown": "# Revised artifact",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "Updated major claim",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1"
+  ],
+  "open_questions": [],
+  "critique_responses": [
+    {
+      "finding_id": "finding-2",
+      "disposition": "adopted",
+      "rationale": "Why the critique was adopted or rejected."
+    }
+  ]
+}
+
+Case packet:
+{
+  "scenario_id": "churn-conflicting-signals",
+  "title": "Churn diagnosis with conflicting signals",
+  "prompt": "Write a churn reduction PRD when signals conflict with strategy targets.",
+  "artifact_type": "prd",
+  "rubric": {
+    "dimensions": [
+      "claim quality",
+      "evidence discipline",
+      "responsiveness to critique",
+      "internal consistency",
+      "decision usefulness"
+    ],
+    "scoring_scale": "1-5",
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "constraints": {
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "expect_structured": true,
+    "context_files": [],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "evidence": [],
+  "max_rounds": 3,
+  "tool_policy": "none",
+  "sharing_policy": {
+    "share_case_packet": true,
+    "share_committed_artifacts_after_first_pass": true,
+    "share_critiques_after_open": true,
+    "share_hidden_reasoning": false,
+    "share_provider_identity": false,
+    "share_internal_coalition_drafts": false
+  },
+  "success_condition": {
+    "type": "validator_contract",
+    "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+    "validator": {
+      "artifact_type": "prd",
+      "expect_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true
+    }
+  }
+}
+
+Your first-pass artifact:
+{
+  "run_id": "conflict-2026-04-14-062255580Z-churn-conflicting-signals",
+  "side_id": "side_a",
+  "round": "first_pass",
+  "artifact_markdown": "# Churn Reduction PRD\n\n## Product Requirement\nDesign and ship a churn-reduction program that resolves conflicting retention signals without breaking strategy targets. Because the case packet provides no direct customer or product evidence, this PRD treats the first release as a diagnosis-and-intervention system with explicit guardrails, not a full-scale retention bet. [Citations: ctx-1, ctx-2]\n\n## Problem Statement\nThe team needs to reduce churn, but current signals are conflicting and are not yet reliable enough to justify a broad retention strategy. Acting on the wrong signal risks optimizing for low-value retention, masking structural product issues, or trading off strategic goals such as ideal-customer focus, margin quality, or product simplicity. [Citations: ctx-1, ctx-2]\n\n## Goal\nReduce preventable churn in the target strategic segment while preserving strategy targets.\n\n## Non-Goals\n- Blanket win-back campaigns across all churned users.\n- Discount-led retention as the default response.\n- Roadmap expansion for segments that are misaligned with strategy.\n- Treating aggregate churn reduction as success if segment quality worsens.\n\n## Users and Segments\nPrimary users:\n- Current customers in the strategy-priority segment who show elevated churn risk.\n- Customer success, lifecycle, and product teams who need clearer churn diagnosis.\n\nSecondary users:\n- Leadership stakeholders who need decision-ready evidence on whether churn is caused by product gaps, onboarding friction, pricing mismatch, or segment misfit.\n\n## Core Insight\nWhen churn signals conflict, the product requirement is not to pick a narrative early; it is to instrument the decision, segment the problem, and run only interventions that can be evaluated against strategy guardrails. [Citations: ctx-1, ctx-2]\n\n## Requirements\n### 1. Churn Diagnosis Layer\nThe system must classify churn risk and realized churn by at least:\n- customer segment\n- tenure cohort\n- product usage pattern\n- reason code source\n- contract or pricing tier\n\nThe system must separate:\n- strategic churn: losses from target accounts the company wants to retain\n- acceptable churn: losses from misfit accounts that do not match strategy\n- unknown churn: losses with insufficient evidence\n\n### 2. Evidence Quality Controls\nBefore any scaled intervention is launched, the team must confirm:\n- the churn definition is consistent across reporting\n- segment tagging is reliable enough for decision use\n- top churn reasons are tied to observable evidence, not just anecdote\n- retention effects can be measured against a baseline cohort\n\n### 3. Intervention Engine\nThe first release must support a limited set of interventions mapped to specific churn hypotheses:\n- onboarding recovery for early-tenure activation failure\n- feature education or workflow adoption prompts for low-usage risk\n- success outreach for high-value accounts with declining engagement\n- pricing or packaging review only where evidence suggests value mismatch\n\nEach intervention must have:\n- target segment\n- hypothesis\n- success metric\n- guardrail metric\n- stop condition\n\n### 4. Strategy Guardrails\nThe program must not count outcomes as success if they:\n- increase retention in non-target segments at the expense of target focus\n- require unsustainable discounting\n- increase support or servicing cost beyond acceptable bounds\n- retain customers with persistently low activation or poor fit without a path to value\n\n### 5. Decision Reporting\nThe release must produce a recurring review artifact that shows:\n- churn by strategic vs non-strategic segment\n- intervention performance by hypothesis\n- confidence level of each diagnosed churn driver\n- recommended decisions: scale, stop, or investigate\n\n## Success Metrics\nPrimary metrics:\n- reduction in churn rate for strategy-priority segment\n- improvement in retention for intervention-exposed target cohort versus matched baseline\n\nGuardrail metrics:\n- target-segment mix of retained customers\n- gross margin or servicing-cost impact\n- discount rate used in saves\n- activation and product adoption quality after save\n\nDiagnostic metrics:\n- share of churn classified with evidence-backed reason\n- time from churn event to reason attribution\n- confidence score coverage across churned accounts\n\n## Rollout Plan\nPhase 1:\n- standardize churn definitions and segment taxonomy\n- instrument diagnosis layer\n- establish baseline cohorts\n\nPhase 2:\n- launch 2-3 narrow interventions only for highest-confidence churn hypotheses\n- review weekly for signal quality and guardrail impact\n\nPhase 3:\n- scale only interventions that improve target-segment retention without violating strategy constraints\n\n## Risks\n- False precision from weak churn reason coding.\n- Local optimization toward saving the wrong customers.\n- Teams skipping diagnosis and over-rotating to anecdotal requests.\n- Delayed results if baseline instrumentation is incomplete.\n\n## Decision Frame\nApprove a staged churn-reduction program centered on diagnosis first, narrow interventions second, and scale only after segment-specific evidence clears strategy guardrails. The core decision is not whether churn matters; it is whether the team is disciplined enough to reduce the right churn. [Citations: ctx-1, ctx-2]\n\n## Unknowns & Evidence Gaps\n- No direct evidence pack is provided on actual churn drivers, affected segments, or recent trend lines. [Citations: ctx-2]\n- The current case does not specify strategy targets, so segment guardrails are defined structurally rather than numerically. [Citations: ctx-1]\n- There is no evidence yet on whether churn is driven more by onboarding, product gaps, pricing, support quality, or customer misfit. [Citations: ctx-2]\n\n## Pass/Fail Readiness\nPass if:\n- churn is segmented into strategic, acceptable, and unknown buckets\n- baseline measurement is in place\n- each intervention has a hypothesis, target cohort, and stop condition\n- success is evaluated with strategy guardrails, not aggregate saves alone\n\nFail if:\n- the team launches broad retention actions without segment evidence\n- churn reduction is reported only at aggregate level\n- discounting is used as a default save motion\n- no mechanism exists to distinguish misfit churn from preventable churn\n\n## Recommended Next Artifact\nA churn-analysis brief that quantifies segment-level churn drivers, confidence levels, and recommended intervention sequencing before full delivery planning.",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "The first-pass PRD should prioritize churn diagnosis and segmented guardrails before scaled retention action because the case provides conflicting signals and no direct evidence.",
+      "evidence_refs": [
+        "ctx-1",
+        "ctx-2"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "Retention success should be measured on strategy-priority segments with explicit guardrails, not aggregate churn reduction alone.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-3",
+      "summary": "The validator contract is best satisfied by a structured PRD that includes Decision Frame, Unknowns & Evidence Gaps, Pass/Fail Readiness, and Recommended Next Artifact.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": false
+    }
+  ],
+  "citations": [
+    "ctx-1",
+    "ctx-2"
+  ],
+  "open_questions": [
+    "Which customer segments are explicitly in-scope for strategy targets?",
+    "What churn signals are currently conflicting: survey reasons, usage decline, pricing objections, cohort behavior, or support patterns?",
+    "What is the current baseline churn rate for the strategy-priority segment?"
+  ],
+  "critique_responses": []
+}
+
+Visible critique packet:
+{
+  "target_side": "side_a",
+  "finding_id": "finding-2",
+  "target_claim_ids": [
+    "side_a-claim-1"
+  ],
+  "claim_under_attack": "The first-pass PRD should prioritize churn diagnosis and segmented guardrails before scaled retention action because the case provides conflicting signals and no direct evidence.",
+  "attack_type": "evidence_gap",
+  "evidence_or_reason": "The claim asserts diagnosis-first is the correct response to conflicting signals, but the artifact never examines what makes signals 'conflicting' in the first place. The PRD lists generic churn categories (onboarding, product gaps, pricing, support, misfit) without any framework for resolving signal conflicts — it simply defers all resolution to a future 'churn-analysis brief.' This creates a structurally hollow document: it prescribes segmentation and guardrails in extensive detail while admitting it has no evidence for any segment definition, no numeric thresholds for any guardrail, and no method for adjudicating which conflicting signal to trust. The diagnosis layer requirements (segment, tenure, usage, reason code, tier) are taxonomic labels, not conflict-resolution mechanisms. A PRD that responds to 'signals conflict' by saying 'classify everything first' without specifying how to detect or resolve the conflict is restating the problem as a solution. The cited references (ctx-1, ctx-2) appear to be self-referential to the case packet constraints rather than independent evidence supporting the diagnosis-first approach over alternatives like rapid experimentation or loss-aversion testing.",
+  "severity": "high"
+}

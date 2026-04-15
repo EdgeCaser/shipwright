@@ -1,0 +1,106 @@
+{
+  "case_packet": {
+    "scenario_id": "feature-weak-evidence",
+    "title": "New feature with weak evidence",
+    "prompt": "Draft a PRD for a new feature with weak supporting evidence.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass": {
+    "run_id": "conflict-2026-04-14-204303957Z-feature-weak-evidence",
+    "side_id": "side_a",
+    "round": "first_pass",
+    "artifact_markdown": "# PRD: [Proposed Feature — Insufficient Evidence to Name]\n\n## Decision Frame\n\n**What decision does this PRD support?** Whether to invest discovery resources into defining and validating a new feature, given that no supporting evidence currently exists.\n\n**Current state:** No user research, usage data, competitive analysis, or stakeholder input has been provided to justify this feature. The PRD is being drafted against an empty evidence base.\n\n**Decision options:**\n1. **Do not proceed** — Return to discovery. No feature should advance past ideation without at least one validated signal.\n2. **Proceed to evidence-gathering sprint** — Time-box 2 weeks to collect minimum viable evidence before re-evaluating.\n3. **Proceed to build (not recommended)** — Ship without evidence. High risk of waste.\n\n**Recommendation:** Option 2 — run a structured evidence-gathering sprint before any further PRD refinement.\n\n---\n\n## Unknowns & Evidence Gaps\n\n| Gap ID | Unknown | Required Evidence | Current Status | Severity |\n|--------|---------|-------------------|----------------|----------|\n| G-1 | Who is the target user? | User segment definition, persona interviews (n≥5) | **Missing entirely** | Critical |\n| G-2 | What problem does this solve? | Problem statements validated by user research or support data | **Missing entirely** | Critical |\n| G-3 | How large is the affected population? | Usage analytics, TAM/SAM sizing, or support ticket volume | **Missing entirely** | Critical |\n| G-4 | What is the expected business impact? | Revenue model, retention impact estimate, or cost-avoidance projection | **Missing entirely** | High |\n| G-5 | Are there existing workarounds? | Competitive audit, user behavior analysis | **Missing entirely** | High |\n| G-6 | What is the technical feasibility? | Engineering spike or architecture review | **Missing entirely** | Medium |\n| G-7 | What are the risks of building this? | Risk register, dependency map | **Missing entirely** | Medium |\n\n**Evidence quality assessment:** Zero of seven critical-to-high gaps have any evidence. This PRD cannot responsibly recommend proceeding to design or engineering.\n\n---\n\n## Pass/Fail Readiness\n\n### Readiness Gate Checklist\n\n| Gate | Criterion | Status | Verdict |\n|------|-----------|--------|---------|\n| 1 | At least one validated user need | No evidence | **FAIL** |\n| 2 | Quantified addressable population | No evidence | **FAIL** |\n| 3 | Business case with stated assumptions | No evidence | **FAIL** |\n| 4 | Technical feasibility assessed | No evidence | **FAIL** |\n| 5 | Risk/downside bounded | No evidence | **FAIL** |\n\n**Overall Readiness: FAIL — 0/5 gates passed.**\n\nThis feature is not ready for prioritization, design, or engineering investment. Advancing it in this state would violate basic product discipline and risk building something nobody needs.\n\n---\n\n## Recommended Next Artifact\n\n**Next artifact:** Discovery Brief (not a fuller PRD)\n\n**Why not a PRD?** A PRD presupposes enough evidence to define requirements. We have none. The correct next step is upstream of the PRD.\n\n**Discovery Brief scope:**\n1. **Hypothesis statement** — Articulate the falsifiable hypothesis this feature rests on (\"We believe [user segment] struggles with [problem] and would [behavior change] if we built [solution]\")\n2. **Evidence collection plan** — 5 user interviews, 1 competitive scan, 1 data pull from existing analytics\n3. **Kill criteria** — Pre-commit to what evidence would cause us to abandon this feature (e.g., fewer than 2/5 interviewees report the problem unprompted)\n4. **Time box** — 2-week sprint with go/no-go checkpoint\n\n**If discovery succeeds:** Return to PRD with validated inputs for gaps G-1 through G-5 at minimum.\n\n**If discovery fails:** Archive this PRD as a record of the investigation. No further investment.\n\n---\n\n*This PRD is intentionally sparse because honesty about evidence gaps is more valuable than fabricating justifications. A PRD built on weak evidence is worse than no PRD — it creates false confidence and wastes downstream effort.*",
+    "claims": [
+      {
+        "claim_id": "side_a-claim-1",
+        "summary": "A feature with zero supporting evidence must not advance past ideation; the correct response is to fail the readiness gate explicitly and redirect to a time-boxed discovery sprint with pre-committed kill criteria.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_a-claim-2",
+        "summary": "All seven identified evidence gaps (user segment, problem validation, population sizing, business impact, workarounds, technical feasibility, risk assessment) are currently at zero — no partial credit is warranted.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_a-claim-3",
+        "summary": "The recommended next artifact should be a Discovery Brief (upstream of PRD), not a more detailed PRD, because requirements definition presupposes validated evidence that does not yet exist.",
+        "evidence_refs": [],
+        "is_major": true
+      }
+    ],
+    "citations": [],
+    "conclusion_confidence": "high",
+    "open_questions": [
+      "What triggered this feature request — was there an internal stakeholder ask, a competitive observation, or user feedback that simply was not included in the case packet?",
+      "Is there an organizational norm for minimum evidence thresholds before PRD drafting, or is this the first attempt to establish one?",
+      "What discovery resources (researchers, analytics access, user panel) are available for the recommended 2-week sprint?"
+    ],
+    "critique_responses": []
+  },
+  "critique_packet": {
+    "target_side": "side_a",
+    "finding_id": "finding-2",
+    "target_claim_ids": [
+      "side_a-claim-2"
+    ],
+    "claim_under_attack": "All seven identified evidence gaps are currently at zero and no partial credit is warranted.",
+    "attack_type": "evidence_gap",
+    "evidence_or_reason": "The visible case packet says the feature has weak supporting evidence, not necessarily zero evidence across every listed dimension. The artifact infers a total absence of user, market, business, technical, and risk evidence from the fact that no evidence was included in the packet, but that is an omission in the prompt context, not proof that each gap is empty. That makes the 'all seven are zero' conclusion stronger than the visible record supports.",
+    "severity": "medium"
+  }
+}

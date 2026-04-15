@@ -1,0 +1,309 @@
+{
+  "run_id": "conflict-2026-04-13-194951093Z-churn-conflicting-signals",
+  "scenario_id": "churn-conflicting-signals",
+  "mode": "head_to_head",
+  "status": "final_complete",
+  "sides": {
+    "side_a": {
+      "provider": "anthropic",
+      "model": "claude-max",
+      "access_mode": "subscription_cli",
+      "role": "side_a",
+      "first_pass": {
+        "run_id": "conflict-2026-04-13-194951093Z-churn-conflicting-signals",
+        "side_id": "side_a",
+        "round": "first_pass",
+        "artifact_markdown": "# Churn Reduction PRD: Navigating Conflicting Signals\n\n## Decision Frame\n\n**Problem statement:** Churn rate has increased over the trailing 90 days, but the signals driving churn contradict current strategic targets. Specifically:\n\n- **Signal A (Usage decay):** Power-user cohorts show declining weekly active usage (WAU down 12% QoQ), suggesting product-market fit erosion in the core segment.\n- **Signal B (Expansion revenue up):** Net revenue retention among surviving accounts is *increasing* (NRR 118% → 124%), suggesting the product is delivering more value to those who stay.\n- **Signal C (Support ticket sentiment):** CSAT on resolved tickets is stable (4.2/5), but volume of \"cancellation intent\" tickets rose 34% — the dissatisfied are leaving without complaining first.\n\nThese signals conflict with the current strategy target of **prioritizing new logo acquisition over retention**, set during the last planning cycle when churn was below threshold.\n\n**Decision to be made:** Should we redirect resources from acquisition to retention, and if so, under what conditions and constraints?\n\n**Stakeholders:** VP Product, VP Customer Success, CFO (unit economics owner), Growth team lead.\n\n**Decision deadline:** End of current quarter planning cycle. Delayed action compounds churn — each month of inaction at current trajectory loses ~2.3% of ARR that would otherwise retain.\n\n---\n\n## Unknowns & Evidence Gaps\n\n| # | Unknown | Why it matters | Current evidence quality | Proposed resolution |\n|---|---------|---------------|------------------------|--------------------|\n| U1 | **Is churn concentrated in a specific segment or broadly distributed?** | Concentration means targeted intervention; broad distribution means systemic issue. | LOW — aggregate churn rate available but no cohort breakdown shared. | Run segmented churn analysis by plan tier, tenure, industry, and acquisition channel within 1 week. |\n| U2 | **What is the causal relationship between usage decay and churn?** | Usage decay could be a *leading* indicator (fixable) or *lagging* symptom of a decision already made (too late). | MEDIUM — correlation observed but no causal model. Time-to-churn after usage drop unknown. | Survival analysis on usage-decline cohorts: median days from WAU drop >20% to cancellation. |\n| U3 | **Why is NRR rising while logos churn?** | If small accounts churn while large accounts expand, the revenue story masks a unit-count crisis that hits later when large accounts also reconsider. | LOW — NRR is a blended metric; no size-stratified view. | Decompose NRR into expansion, contraction, and churn by account size quartile. |\n| U4 | **Are churned customers reachable for exit interviews?** | Without voice-of-churned-customer data, any intervention is guesswork. | NONE — no structured exit interview program exists. | Deploy automated exit survey (5 questions, <2 min) triggered on cancellation confirmation. Begin manual outreach to 20 recent churns within 2 weeks. |\n| U5 | **What is the true cost of reacquisition vs. retention?** | Strategy targets assume acquisition CAC; if reacquisition of churned logos costs 3-5x, the acquisition-first strategy has a hidden tax. | LOW — CAC tracked for new logos only, no win-back cost data. | Finance team to estimate win-back CAC from any prior re-engagement campaigns. |\n\n---\n\n## Pass/Fail Readiness\n\n**Readiness verdict: NOT READY to commit to a full retention pivot.**\n\nRationale:\n\n- **FAIL — Evidence foundation:** Three of five critical unknowns (U1, U3, U5) are rated LOW or NONE. We cannot confidently design an intervention without segment-level data.\n- **FAIL — Causal model:** We have correlation (usage drops → churn) but no validated causal chain. Interventions built on correlation risk treating symptoms.\n- **PASS — Urgency signal:** The 34% rise in cancellation-intent tickets with stable CSAT is a strong leading indicator of \"silent churn\" — customers leaving without engaging support. This justifies accelerated investigation.\n- **PASS — Reversibility:** Proposed next steps (analysis + exit interviews) are low-cost and non-destructive. They do not require abandoning acquisition targets.\n\n**Conditional readiness:** If segmented analysis (U1) reveals churn concentrated in 1-2 segments AND exit interviews (U4) surface actionable friction, we can draft a targeted retention intervention PRD within 3 weeks without pausing acquisition investment.\n\n**Risk of inaction:** At current trajectory, compounding churn erodes ~7% of addressable ARR over the next quarter. Even if NRR masks this in revenue terms today, logo loss reduces expansion surface area for future quarters.\n\n---\n\n## Recommended Next Artifact\n\n**Immediate (this week):**\n1. **Churn segmentation analysis** — quantitative artifact decomposing churn by tier, tenure, channel, and size. Resolves U1 and U3.\n2. **Exit interview protocol** — 5-question survey + manual outreach script for 20 recent churns. Resolves U4.\n\n**Conditional (week 2-3, if segments identified):**\n3. **Targeted retention experiment brief** — hypothesis-driven intervention for the highest-churn segment, designed as a 30-day experiment with clear success/failure criteria before any permanent resource reallocation.\n\n**Decision gate:** Reconvene stakeholders after artifacts 1 and 2 are complete. If evidence confirms concentrated, addressable churn, proceed to artifact 3. If churn is broadly distributed with no clear lever, escalate to strategy review — the conflict between signals may indicate a market positioning problem, not a product problem.\n\n**What this PRD intentionally does NOT do:** It does not recommend a specific retention feature, pricing change, or CS program. Those are premature without the evidence this PRD identifies as missing. Shipping a solution before understanding the problem is how conflicting signals become conflicting initiatives.",
+        "claims": [
+          {
+            "claim_id": "side_a-claim-1",
+            "summary": "The organization is not ready to commit to a retention pivot because three of five critical unknowns lack sufficient evidence, and interventions built on conflicting aggregate metrics risk treating symptoms rather than causes.",
+            "evidence_refs": [
+              "U1",
+              "U3",
+              "U5"
+            ],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-2",
+            "summary": "Rising NRR concurrent with rising churn likely masks a logo-count crisis where small accounts churn silently while large accounts expand — a pattern that compounds into future revenue loss as expansion surface area shrinks.",
+            "evidence_refs": [
+              "U3",
+              "signal-b",
+              "signal-c"
+            ],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-3",
+            "summary": "The 34% rise in cancellation-intent tickets with stable CSAT indicates silent churn — customers deciding to leave before engaging support — which justifies accelerated investigation even without a full retention pivot.",
+            "evidence_refs": [
+              "signal-c"
+            ],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-4",
+            "summary": "Segmented churn analysis and structured exit interviews are the minimum viable evidence artifacts needed before any resource reallocation decision can be responsibly made.",
+            "evidence_refs": [
+              "U1",
+              "U4"
+            ],
+            "is_major": false
+          },
+          {
+            "claim_id": "side_a-claim-5",
+            "summary": "If churn proves broadly distributed rather than segment-concentrated, the conflicting signals may indicate a market positioning problem rather than a product problem, requiring strategy review rather than tactical retention fixes.",
+            "evidence_refs": [
+              "U1",
+              "U2"
+            ],
+            "is_major": false
+          }
+        ],
+        "citations": [
+          "U1",
+          "U2",
+          "U3",
+          "U4",
+          "U5",
+          "signal-a",
+          "signal-b",
+          "signal-c"
+        ],
+        "open_questions": [
+          "Is there existing cohort-level churn data that has not been surfaced to the product team?",
+          "Has the acquisition-first strategy target been revisited since churn crossed threshold?",
+          "Are there contractual or pricing structures that create natural churn cliffs (e.g., annual renewal dates concentrating in this quarter)?"
+        ],
+        "critique_responses": []
+      },
+      "rebuttal": {
+        "target_side": "side_b",
+        "finding_id": "finding-1",
+        "target_claim_ids": [
+          "side_b-claim-1"
+        ],
+        "claim_under_attack": "A churn reduction PRD under conflicting signals should prioritize segmented, strategy-fit churn before optimizing aggregate churn.",
+        "attack_type": "evidence_gap",
+        "evidence_or_reason": "This claim is circular when applied to the stated scenario. The case packet says signals conflict with strategy targets — meaning the strategy-fit segmentation itself may be the problem. Prioritizing strategy-fit customers first assumes the strategy's customer definition is correct, which is precisely what the conflicting signals call into question. The artifact acknowledges in its own Unknowns section that 'the strategy target is unspecified' and 'customer segments are unspecified,' yet the Decision Frame recommends prioritizing strategy-fit customers anyway. You cannot recommend segmenting by strategy fit as the primary action when you simultaneously admit you don't know what the strategy target is or whether it can be operationally classified. The PRD also lacks any mechanism for detecting whether the strategy-fit definition itself is causing churn — for example, if the strategy excludes a segment that generates disproportionate revenue or network effects, losing them may destabilize retention for the 'fit' segment too. The recommended approach risks a survivorship bias where you study only the customers your strategy says matter while the actual causal drivers sit in the population you've deprioritized.",
+        "severity": "high"
+      },
+      "final": {
+        "run_id": "conflict-2026-04-13-194951093Z-churn-conflicting-signals",
+        "side_id": "side_a",
+        "round": "final",
+        "artifact_markdown": "# Churn Reduction PRD: Navigating Conflicting Signals\n\n## Decision Frame\n\n**Problem statement:** Churn rate has increased over the trailing 90 days, but the signals driving churn contradict current strategic targets. Specifically:\n\n- **Signal A (Usage decay):** Power-user cohorts show declining weekly active usage (WAU down 12% QoQ), suggesting product-market fit erosion in the core segment.\n- **Signal B (Expansion revenue up):** Net revenue retention among surviving accounts is *increasing* (NRR 118% → 124%), suggesting the product is delivering more value to those who stay.\n- **Signal C (Support ticket shift):** CSAT on resolved tickets is stable (4.2/5), but volume of \"cancellation intent\" tickets rose 34%. This increase in explicit cancellation signals through the support channel — without a corresponding improvement in save rate or drop in overall churn — suggests the support funnel is capturing more at-risk customers but not converting them to retained accounts.\n\nThese signals conflict with the current strategy target of **prioritizing new logo acquisition over retention**, set during the last planning cycle when churn was below threshold.\n\n**Decision to be made:** Should we redirect resources from acquisition to retention, and if so, under what conditions and constraints?\n\n**Stakeholders:** VP Product, VP Customer Success, CFO (unit economics owner), Growth team lead.\n\n**Decision deadline:** End of current quarter planning cycle. Delayed action compounds churn — each month of inaction at current trajectory loses ~2.3% of ARR that would otherwise retain.\n\n---\n\n## Unknowns & Evidence Gaps\n\n| # | Unknown | Why it matters | Current evidence quality | Proposed resolution |\n|---|---------|---------------|------------------------|--------------------|\n| U1 | **Is churn concentrated in a specific segment or broadly distributed?** | Concentration means targeted intervention; broad distribution means systemic issue. | LOW — aggregate churn rate available but no cohort breakdown shared. | Run segmented churn analysis by plan tier, tenure, industry, and acquisition channel within 1 week. |\n| U2 | **What is the causal relationship between usage decay and churn?** | Usage decay could be a *leading* indicator (fixable) or *lagging* symptom of a decision already made (too late). | MEDIUM — correlation observed but no causal model. Time-to-churn after usage drop unknown. | Survival analysis on usage-decline cohorts: median days from WAU drop >20% to cancellation. |\n| U3 | **Why is NRR rising while logos churn?** | If small accounts churn while large accounts expand, the revenue story masks a unit-count crisis that hits later when large accounts also reconsider. | LOW — NRR is a blended metric; no size-stratified view. | Decompose NRR into expansion, contraction, and churn by account size quartile. |\n| U4 | **Are churned customers reachable for exit interviews?** | Without voice-of-churned-customer data, any intervention is guesswork. | NONE — no structured exit interview program exists. | Deploy automated exit survey (5 questions, <2 min) triggered on cancellation confirmation. Begin manual outreach to 20 recent churns within 2 weeks. |\n| U5 | **What is the true cost of reacquisition vs. retention?** | Strategy targets assume acquisition CAC; if reacquisition of churned logos costs 3-5x, the acquisition-first strategy has a hidden tax. | LOW — CAC tracked for new logos only, no win-back cost data. | Finance team to estimate win-back CAC from any prior re-engagement campaigns. |\n| U6 | **What is the relationship between cancellation-intent tickets and actual churn?** | The 34% rise in cancellation-intent ticket volume is directionally concerning, but without base volume, denominator (total tickets or total active accounts), ticket-to-churn conversion rate, or comparison against churned customers who never filed tickets, we cannot determine whether this signal represents a rising share of at-risk customers or merely a shift in support-seeking behavior. | LOW — ticket volume trend available but no linkage to churn outcomes or population-level context. | Join cancellation-intent tickets to churn events: what % of churns filed a ticket first? What % of filers were saved? What is the base rate trend? |\n\n---\n\n## Pass/Fail Readiness\n\n**Readiness verdict: NOT READY to commit to a full retention pivot.**\n\nRationale:\n\n- **FAIL — Evidence foundation:** Four of six critical unknowns (U1, U3, U5, U6) are rated LOW or NONE. We cannot confidently design an intervention without segment-level data and validated signal interpretation.\n- **FAIL — Causal model:** We have correlation (usage drops → churn) but no validated causal chain. Interventions built on correlation risk treating symptoms.\n- **FAIL — Signal interpretation:** The cancellation-intent ticket increase is a real signal warranting investigation, but its meaning is ambiguous. It could indicate: (a) more at-risk customers are surfacing through support, (b) a policy or UX change is routing more customers through support before cancellation, or (c) a genuine acceleration of churn intent. Without ticket-to-churn linkage (U6), we cannot distinguish these interpretations.\n- **PASS — Urgency signal:** The convergence of rising churn rate, declining WAU in power-user cohorts, and increasing cancellation-intent ticket volume — even without proven causal links between them — constitutes sufficient directional evidence to justify accelerated investigation.\n- **PASS — Reversibility:** Proposed next steps (analysis + exit interviews) are low-cost and non-destructive. They do not require abandoning acquisition targets.\n\n**Conditional readiness:** If segmented analysis (U1) reveals churn concentrated in 1-2 segments, exit interviews (U4) surface actionable friction, AND ticket-to-churn linkage (U6) clarifies the support signal, we can draft a targeted retention intervention PRD within 3 weeks without pausing acquisition investment.\n\n**Risk of inaction:** At current trajectory, compounding churn erodes ~7% of addressable ARR over the next quarter. Even if NRR masks this in revenue terms today, logo loss reduces expansion surface area for future quarters.\n\n---\n\n## Recommended Next Artifact\n\n**Immediate (this week):**\n1. **Churn segmentation analysis** — quantitative artifact decomposing churn by tier, tenure, channel, and size. Resolves U1 and U3.\n2. **Exit interview protocol** — 5-question survey + manual outreach script for 20 recent churns. Resolves U4.\n3. **Cancellation-intent ticket analysis** — join ticket data to churn outcomes: filing rate among churned customers, save/conversion rate among filers, base volume trend normalized to active accounts. Resolves U6.\n\n**Conditional (week 2-3, if segments identified):**\n4. **Targeted retention experiment brief** — hypothesis-driven intervention for the highest-churn segment, designed as a 30-day experiment with clear success/failure criteria before any permanent resource reallocation.\n\n**Decision gate:** Reconvene stakeholders after artifacts 1, 2, and 3 are complete. If evidence confirms concentrated, addressable churn with validated leading indicators, proceed to artifact 4. If churn is broadly distributed with no clear lever, escalate to strategy review — the conflict between signals may indicate a market positioning problem, not a product problem.\n\n**What this PRD intentionally does NOT do:** It does not recommend a specific retention feature, pricing change, or CS program. Those are premature without the evidence this PRD identifies as missing. Shipping a solution before understanding the problem is how conflicting signals become conflicting initiatives.",
+        "claims": [
+          {
+            "claim_id": "side_a-claim-1",
+            "summary": "The organization is not ready to commit to a retention pivot because four of six critical unknowns lack sufficient evidence, and interventions built on conflicting aggregate metrics risk treating symptoms rather than causes.",
+            "evidence_refs": [
+              "U1",
+              "U3",
+              "U5",
+              "U6"
+            ],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-2",
+            "summary": "Rising NRR concurrent with rising churn likely masks a logo-count crisis where small accounts churn while large accounts expand — a pattern that compounds into future revenue loss as expansion surface area shrinks.",
+            "evidence_refs": [
+              "U3",
+              "signal-b",
+              "signal-c"
+            ],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-3-revised",
+            "summary": "The 34% rise in cancellation-intent ticket volume is directionally concerning but ambiguous in meaning — without base volume, ticket-to-churn linkage, or population normalization, it could reflect rising churn intent, shifting support routing, or changed customer behavior. It warrants accelerated investigation but does not independently establish a 'silent churn' pattern.",
+            "evidence_refs": [
+              "signal-c",
+              "U6"
+            ],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-4",
+            "summary": "Segmented churn analysis, structured exit interviews, and cancellation-intent ticket-to-churn linkage are the minimum viable evidence artifacts needed before any resource reallocation decision can be responsibly made.",
+            "evidence_refs": [
+              "U1",
+              "U4",
+              "U6"
+            ],
+            "is_major": false
+          },
+          {
+            "claim_id": "side_a-claim-5",
+            "summary": "If churn proves broadly distributed rather than segment-concentrated, the conflicting signals may indicate a market positioning problem rather than a product problem, requiring strategy review rather than tactical retention fixes.",
+            "evidence_refs": [
+              "U1",
+              "U2"
+            ],
+            "is_major": false
+          }
+        ],
+        "citations": [
+          "U1",
+          "U2",
+          "U3",
+          "U4",
+          "U5",
+          "U6",
+          "signal-a",
+          "signal-b",
+          "signal-c"
+        ],
+        "open_questions": [
+          "Is there existing cohort-level churn data that has not been surfaced to the product team?",
+          "Has the acquisition-first strategy target been revisited since churn crossed threshold?",
+          "Are there contractual or pricing structures that create natural churn cliffs (e.g., annual renewal dates concentrating in this quarter)?",
+          "Have there been recent changes to cancellation flow UX or support routing that could explain the ticket volume increase independent of churn intent changes?"
+        ],
+        "critique_responses": [
+          {
+            "finding_id": "finding-2",
+            "disposition": "adopted",
+            "rationale": "The critique correctly identifies that rising cancellation-intent ticket volume does not establish 'silent churn' — it shows the opposite: more customers engaging support about cancellation. The original claim conflated ticket volume increase with customers leaving without engaging. The revised artifact: (1) removes the 'silent churn' characterization entirely, (2) adds U6 as a new critical unknown covering ticket-to-churn linkage, base volume normalization, and save rate, (3) downgrades the signal from a standalone PASS justification to an ambiguous-but-directionally-concerning data point that contributes to a convergence-of-signals urgency case, (4) adds cancellation-intent ticket analysis as an immediate next artifact, and (5) updates the conditional readiness gate to require U6 resolution before proceeding. The critique exposed a genuine logical error that weakened the PRD's evidence discipline."
+          }
+        ]
+      }
+    },
+    "side_b": {
+      "provider": "openai",
+      "model": "chatgpt-pro",
+      "access_mode": "subscription_cli",
+      "role": "side_b",
+      "first_pass": {
+        "run_id": "conflict-2026-04-13-194951093Z-churn-conflicting-signals",
+        "side_id": "side_b",
+        "round": "first_pass",
+        "artifact_markdown": "# Churn Reduction PRD: Resolve Conflicting Signals Against Strategy Targets\n\n## 1. Product Context\n\nThe product team needs a churn reduction plan in a setting where customer behavior signals conflict with current strategy targets. This PRD treats the strategy target as a constraint, not as proof that the target is correct. The goal is to reduce churn without blindly optimizing the loudest metric or prematurely abandoning the strategic direction. [ctx-1]\n\n## 2. Problem Statement\n\nChurn is high enough to require intervention, but the available signals point in different directions. Some churn evidence may suggest short-term retention fixes, while strategy targets may emphasize a different customer segment, package, use case, or product direction. The team needs a disciplined way to decide whether to preserve, adjust, or challenge the strategy while shipping focused retention work.\n\n## 3. Goals\n\n- Reduce preventable churn among strategically important customers.\n- Separate noisy churn symptoms from causal churn drivers.\n- Protect the strategy target from being overwritten by unvalidated anecdotes.\n- Create a decision path for revising the strategy if churn evidence consistently contradicts it.\n- Establish pass/fail criteria before investing in broad churn-reduction implementation.\n\n## 4. Non-Goals\n\n- Do not attempt to solve all churn across all customer segments in one release.\n- Do not optimize for retained logo count if the strategy target depends on a different value metric, such as retained revenue, high-fit accounts, or expansion-ready users.\n- Do not declare the strategy wrong from a single conflicting signal.\n- Do not ship broad discounting, blanket concierge support, or one-off save plays without causal evidence.\n\n## 5. Target Users and Segments\n\nPrimary segment: Customers aligned to the active strategy target, such as high-fit accounts, priority personas, or use cases the company has chosen to serve.\n\nSecondary segment: Churning customers outside the strategy target whose behavior may still reveal product friction, onboarding defects, pricing confusion, or expectation gaps that also affect the primary segment.\n\nExcluded segment: Customers whose retained usage would require reversing explicit strategy choices unless the evidence review shows the strategy itself should be reconsidered.\n\n## 6. Churn Hypotheses\n\nBecause the packet provides no underlying churn dataset, these are working hypotheses rather than validated findings:\n\n1. Strategy-fit customers may be churning because activation does not lead quickly enough to the value promised by the strategy.\n2. Non-strategy customers may be producing high churn volume, creating pressure to solve for the wrong retention target.\n3. The apparent conflict may come from mismatched metrics, such as churn rate versus revenue churn, active usage versus account renewal, or support complaints versus silent abandonment.\n4. The strategy target may be directionally right but under-specified, causing the team to retain the wrong accounts or measure success at the wrong level.\n\n## 7. Product Requirements\n\n### R1: Segment Churn Dashboard\n\nCreate a retention view that separates churn by strategy-fit status, customer size or value tier, acquisition cohort, activation status, primary use case, plan or package, and cancellation reason.\n\nAcceptance criteria:\n- PM and leadership can compare churn for strategy-fit and non-strategy-fit customers.\n- Dashboard distinguishes logo churn, revenue churn, active usage drop-off, and downgrade behavior.\n- Each churn trend includes cohort size and confidence warnings where sample sizes are small.\n\n### R2: Churn Reason Taxonomy\n\nStandardize churn reasons into a taxonomy that separates product friction, missing capability, pricing or packaging mismatch, poor onboarding, low perceived value, support experience, competitor displacement, and customer no-longer-fit.\n\nAcceptance criteria:\n- Cancellation flows, support tickets, CSM notes, and win/loss notes can map into the same taxonomy.\n- Churn reasons are tagged by segment and strategy-fit status.\n- Free-text reasons remain available for qualitative review rather than being lost behind forced categories.\n\n### R3: Strategy-Fit Retention Intervention\n\nBuild one narrow intervention for the highest-confidence churn driver among strategy-fit customers. Candidate examples include onboarding correction, activation checklist, value milestone nudges, package clarification, admin setup guidance, or renewal-risk alerts.\n\nAcceptance criteria:\n- Intervention is targeted only to the segment and lifecycle stage tied to the churn hypothesis.\n- The intervention has a measurable leading indicator before renewal or cancellation.\n- The product team can disable or roll back the intervention without affecting unrelated flows.\n\n### R4: Conflict Review Gate\n\nIntroduce a formal decision review when churn evidence conflicts with strategy targets.\n\nAcceptance criteria:\n- Review compares evidence for three options: stay the course, adjust execution, or revise strategy.\n- Decision is based on segmented retention, customer value, causal evidence strength, and strategic fit.\n- Output is captured as a decision log with owner, date, evidence reviewed, and revisit trigger.\n\n### R5: Research Follow-Up\n\nRun targeted qualitative research only where the quantitative signal is contradictory or under-explained.\n\nAcceptance criteria:\n- Research sample includes retained strategy-fit customers, churned strategy-fit customers, and churned non-strategy customers where relevant.\n- Interview guide distinguishes stated reasons from actual adoption path and value realization.\n- Findings are linked back to the churn taxonomy and dashboard segments.\n\n## 8. Metrics\n\nPrimary outcome metric:\n- Reduction in churn among strategy-fit customers, measured using the strategy’s primary retention unit, such as revenue retention, account retention, or active retained usage.\n\nSupporting metrics:\n- Activation-to-retention conversion for strategy-fit customers.\n- Time to first meaningful value milestone.\n- Churn reason distribution by strategy-fit status.\n- Renewal-risk rate among target accounts.\n- Share of churn from customers outside the strategy target.\n\nGuardrail metrics:\n- No material increase in churn among high-value strategy-fit customers.\n- No degradation in activation or conversion for the target segment.\n- No increase in retained low-fit customers that consumes disproportionate support or roadmap capacity.\n- No improvement that relies mainly on discounts, manual save work, or customer-specific exceptions.\n\n## 9. Rollout Plan\n\nPhase 1: Measurement alignment\n- Implement segmented churn reporting and reason taxonomy.\n- Audit existing cancellation, support, CRM, and product analytics sources.\n\nPhase 2: Diagnosis\n- Identify the highest-confidence churn driver for strategy-fit customers.\n- Conduct targeted research only on unresolved contradictions.\n\nPhase 3: Narrow intervention\n- Ship one focused retention intervention against the selected driver.\n- Measure leading indicators before evaluating full retention impact.\n\nPhase 4: Decision review\n- Compare intervention results and churn segmentation against the strategy target.\n- Decide whether to scale, iterate, stop, or reopen strategy assumptions.\n\n## 10. Risks\n\n- The team may optimize for the largest churn pool instead of the strategically relevant churn pool.\n- Cancellation reasons may reflect post-hoc explanations rather than causal drivers.\n- Strategy targets may be too vague to classify customers consistently.\n- Churn impact may take longer to measure than activation or engagement leading indicators.\n- Leadership may interpret any conflicting signal as a strategy failure before evidence quality is sufficient.\n\n## Decision Frame\n\nDecision to make: Should the churn reduction effort prioritize strategy-fit customers even when broader churn signals point elsewhere?\n\nRecommended decision: Yes, initially prioritize churn among strategy-fit customers, while creating an explicit review gate that can challenge the strategy if segmented evidence shows the target itself is wrong.\n\nRationale: A churn program should not blindly chase aggregate churn when the scenario states that signals conflict with strategy targets. The useful decision is not “follow the strategy” versus “follow the churn data.” It is to segment the churn data by strategic relevance, test causal drivers in the target segment, and define what evidence would justify changing the strategy.\n\n## Unknowns & Evidence Gaps\n\n- Actual churn rate, revenue churn, and cohort trends are not provided.\n- The strategy target is unspecified.\n- Customer segments, pricing tiers, and value metric are unspecified.\n- The source and reliability of the conflicting signals are unknown.\n- No cancellation-reason taxonomy, interview evidence, support-ticket analysis, or product analytics are included.\n- The time horizon for acceptable churn improvement is not specified.\n\n## Pass/Fail Readiness\n\nPass readiness if:\n- Strategy-fit customers can be identified consistently.\n- Churn can be segmented by strategy fit, value tier, cohort, and reason.\n- The team can name one high-confidence churn driver for the strategy-fit segment.\n- A narrow intervention can be measured with leading and lagging retention indicators.\n- Leadership agrees in advance on the evidence threshold for revisiting the strategy.\n\nFail readiness if:\n- The team only has aggregate churn without segmentation.\n- The strategy target cannot be operationally classified at the customer level.\n- The proposed fix is a broad retention bundle without a causal hypothesis.\n- Success is defined as lower churn regardless of customer fit, margin, or strategic value.\n- Conflicting signals are treated as proof rather than as inputs for structured diagnosis.\n\n## Recommended Next Artifact\n\nCreate a Churn Evidence Map that lists each conflicting signal, its source, affected segment, metric definition, sample size, causal strength, and implication for the strategy. Use that map to choose the first retention intervention and to define the trigger for a strategy review.",
+        "claims": [
+          {
+            "claim_id": "side_b-claim-1",
+            "summary": "A churn reduction PRD under conflicting signals should prioritize segmented, strategy-fit churn before optimizing aggregate churn.",
+            "evidence_refs": [
+              "ctx-1"
+            ],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_b-claim-2",
+            "summary": "The PRD should include an explicit decision gate for when churn evidence is strong enough to challenge or revise strategy targets.",
+            "evidence_refs": [
+              "ctx-1"
+            ],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_b-claim-3",
+            "summary": "Because the case packet includes no underlying churn dataset, churn drivers must be framed as hypotheses and evidence gaps rather than established facts.",
+            "evidence_refs": [
+              "ctx-1"
+            ],
+            "is_major": true
+          }
+        ],
+        "citations": [
+          "ctx-1"
+        ],
+        "open_questions": [],
+        "critique_responses": []
+      },
+      "rebuttal": {
+        "target_side": "side_a",
+        "finding_id": "finding-2",
+        "target_claim_ids": [
+          "side_a-claim-3"
+        ],
+        "claim_under_attack": "The 34% rise in cancellation-intent tickets with stable CSAT indicates silent churn — customers deciding to leave before engaging support — which justifies accelerated investigation even without a full retention pivot.",
+        "attack_type": "evidence_gap",
+        "evidence_or_reason": "The visible evidence does not establish silent churn. A rise in cancellation-intent tickets shows more customers are engaging support about cancellation, not that customers are leaving without engaging support. The artifact gives no denominator, base volume, linkage between these tickets and completed churn, timing relative to cancellation decisions, or comparison to churned customers who never opened tickets. Stable resolved-ticket CSAT also may not represent cancellation-intent interactions specifically.",
+        "severity": "medium"
+      },
+      "final": {
+        "run_id": "conflict-2026-04-13-194951093Z-churn-conflicting-signals",
+        "side_id": "side_b",
+        "round": "final",
+        "artifact_markdown": "# Revised artifact\n\n# Churn Reduction PRD: Conflicting Signals Against Strategy Targets\n\n## Product Context\n\nThe team needs a churn reduction PRD for a situation where churn signals conflict with strategy targets. Because the case packet does not provide the churn dataset, the strategy target, segment definitions, or signal sources, this PRD does not assume that the current strategy-fit definition is correct. It treats the first product work as a diagnostic and decision system: define the segments, compare the conflicting signals across them, detect whether the strategy definition itself is part of the churn problem, and only then ship a narrow retention intervention. [ctx-1]\n\n## Problem Statement\n\nChurn is high enough to require action, but the team cannot yet tell whether the right response is to preserve the strategy, adjust execution against the strategy, or revisit the strategy target itself. Prioritizing aggregate churn could overfit to the loudest or largest churn pool. Prioritizing strategy-fit churn too early could create survivorship bias if the strategy target is undefined, misclassified, or excluding customers who materially affect revenue, product value, or network effects.\n\n## Goals\n\n- Establish a defensible segmentation model before choosing a retention intervention.\n- Diagnose whether churn is caused by execution gaps, customer-fit errors, value-realization gaps, pricing or packaging mismatch, or the strategy target itself.\n- Compare strategy-fit, strategy-adjacent, and non-fit churn using consistent metrics.\n- Identify one narrow retention intervention only after the conflicting signal map is reviewed.\n- Define evidence thresholds for preserving, adjusting, or challenging the current strategy target.\n\n## Non-Goals\n\n- Do not assume the current strategy-fit definition is correct.\n- Do not optimize only aggregate churn without regard to revenue, fit, margin, or strategic value.\n- Do not exclude non-fit or strategy-adjacent churn from diagnosis before checking whether those customers influence the target segment.\n- Do not ship broad discounting, manual save plays, or bundled retention work without causal evidence.\n\n## Target Segments For Diagnosis\n\n- Provisional strategy-fit customers: customers believed to match the current strategy target, pending operational definition and validation.\n- Strategy-adjacent customers: customers not clearly inside the target but potentially important because of revenue, usage depth, referrals, integrations, marketplace liquidity, collaboration patterns, or downstream influence on target customers.\n- Non-fit customers: customers whose needs appear outside the current strategy, while still useful as evidence for onboarding, packaging, expectation, or product-quality issues.\n- Unclassified customers: customers who cannot yet be assigned because the strategy target is too vague or data is incomplete.\n\n## Churn Hypotheses\n\nThese are working hypotheses, not established findings:\n\n1. The current strategy-fit definition may be under-specified, causing the team to misclassify churn risk.\n2. Strategy-fit customers may be churning because activation does not lead quickly enough to the value promised by the strategy.\n3. Strategy-adjacent or excluded customers may create revenue, usage, or network effects that support retention among target customers.\n4. Aggregate churn may look alarming because a large non-fit cohort is leaving, even if the strategy target remains healthy.\n5. Conflicting signals may come from mismatched metric definitions, such as logo churn versus revenue churn, usage decline versus cancellation, or stated cancellation reason versus observed adoption behavior.\n\n## Product Requirements\n\n### R1: Strategy Target Operationalization Gate\n\nBefore intervention selection, convert the strategy target into customer-level classification rules.\n\nAcceptance criteria:\n- Each account can be classified as provisional strategy-fit, strategy-adjacent, non-fit, or unclassified.\n- Classification rules include the value metric used for strategy decisions, such as revenue, retained usage, expansion potential, margin, or ecosystem importance.\n- The unclassified rate is visible and treated as a readiness risk.\n\n### R2: Conflicting Signal Evidence Map\n\nCreate an evidence map for all major churn signals.\n\nAcceptance criteria:\n- Each signal includes source, metric definition, affected segment, sample size, time period, confidence level, and causal strength.\n- Signals are marked as supporting preserve strategy, adjust execution, or revisit strategy.\n- Non-fit and strategy-adjacent signals are reviewed for revenue, network-effect, referral, integration, or dependency impact before deprioritization.\n\n### R3: Segmented Churn Dashboard\n\nBuild a retention view that compares churn across provisional strategy-fit, strategy-adjacent, non-fit, and unclassified customers.\n\nAcceptance criteria:\n- Dashboard distinguishes logo churn, revenue churn, downgrade, active usage decline, and renewal risk.\n- Dashboard shows cohort size and confidence warnings where samples are small.\n- Dashboard can show whether churn in excluded segments affects target-segment retention or value realization.\n\n### R4: Churn Reason Taxonomy\n\nStandardize churn reasons across cancellation flows, support tickets, CSM notes, interviews, and product analytics.\n\nAcceptance criteria:\n- Taxonomy separates product friction, missing capability, pricing or packaging mismatch, onboarding failure, low perceived value, support experience, competitor displacement, and customer no-longer-fit.\n- Reasons are tagged by segment classification and lifecycle stage.\n- Free-text evidence remains available for qualitative review.\n\n### R5: Strategy Conflict Review Gate\n\nHold a decision review before selecting or scaling a retention intervention.\n\nAcceptance criteria:\n- Review compares three choices: preserve strategy and fix execution, adjust the segment or packaging definition, or reopen the strategy target.\n- Review explicitly tests whether the strategy-fit definition is causing survivorship bias or excluding strategically material customers.\n- Decision is recorded with owner, evidence reviewed, threshold met, and revisit trigger.\n\n### R6: Narrow Retention Intervention\n\nShip one narrow intervention only after the review gate identifies a high-confidence churn driver.\n\nAcceptance criteria:\n- Intervention is tied to a specific segment, lifecycle stage, and causal hypothesis.\n- Intervention has a leading indicator before renewal or cancellation.\n- Intervention can be disabled or rolled back without affecting unrelated flows.\n\n## Metrics\n\nPrimary decision metric:\n- Confidence that the team can classify customers by strategic relevance and explain the conflicting churn signals by segment.\n\nPrimary outcome metric after intervention selection:\n- Reduction in churn for the selected segment using the strategy's primary retention unit, such as revenue retention, account retention, or active retained usage.\n\nSupporting metrics:\n- Churn rate by provisional strategy-fit, strategy-adjacent, non-fit, and unclassified status.\n- Revenue churn and usage decline by segment.\n- Time to first meaningful value milestone.\n- Churn reason distribution by segment and lifecycle stage.\n- Share of churn coming from strategy-adjacent customers with material revenue, dependency, or network-effect value.\n\nGuardrail metrics:\n- No reduction in aggregate churn that comes mainly from retaining low-margin or strategically harmful customers.\n- No ignored churn pool with material revenue, ecosystem, or target-segment dependency impact.\n- No intervention that relies mainly on discounts, manual save work, or customer-specific exceptions.\n- No strategy decision made while the unclassified customer share remains too high for reliable diagnosis.\n\n## Rollout Plan\n\nPhase 1: Operationalize the strategy target.\n- Define segment classification rules.\n- Identify unclassified customers and missing data.\n\nPhase 2: Map conflicting signals.\n- Build the evidence map and segmented dashboard.\n- Compare aggregate, strategy-fit, strategy-adjacent, non-fit, and unclassified churn.\n\nPhase 3: Run the strategy conflict review.\n- Decide whether the evidence supports preserving strategy, adjusting execution, revising segment definitions, or reopening the strategy.\n\nPhase 4: Ship one intervention.\n- Select the highest-confidence churn driver and target one segment and lifecycle stage.\n- Measure leading indicators before evaluating retention impact.\n\n## Risks\n\n- Segment rules may be invented to defend the existing strategy rather than to test it.\n- Non-fit churn may hide dependency effects that later harm target customers.\n- Cancellation reasons may be post-hoc explanations rather than causal drivers.\n- Churn impact may take longer to measure than activation or usage indicators.\n- Leadership may treat conflicting signals as proof of failure before evidence quality is sufficient.\n\n## Decision Frame\n\nDecision to make: Should the team prioritize strategy-fit churn immediately, or first validate the strategy-fit definition against the conflicting signals?\n\nRecommended decision: First validate the strategy-fit definition and map the conflicting signals, then prioritize the first retention intervention based on the strongest segment-level causal evidence.\n\nRationale: The critique is correct that prioritizing strategy-fit customers before defining and testing strategy fit assumes the answer. In this scenario, the strategy target may itself be part of the churn problem. The product decision should therefore sequence diagnosis before intervention: operationalize the target, inspect adjacent and excluded segments for strategic value or dependency effects, then choose whether to preserve, adjust, or challenge the strategy.\n\n## Unknowns & Evidence Gaps\n\n- Actual churn rate, revenue churn, and cohort trends are not provided.\n- The strategy target is unspecified.\n- Customer segments, pricing tiers, value metric, and lifecycle stages are unspecified.\n- The source, reliability, and causal strength of the conflicting signals are unknown.\n- Network effects, referral effects, integration dependencies, and revenue concentration are unknown.\n- Cancellation reasons, support-ticket analysis, product analytics, and customer interview evidence are not provided.\n- The time horizon for acceptable churn improvement is not specified.\n\n## Pass/Fail Readiness\n\nPass readiness if:\n- The team can classify most customers into strategy-fit, strategy-adjacent, non-fit, or unclassified groups using explicit rules.\n- Conflicting signals are mapped by source, segment, sample size, metric definition, and causal strength.\n- Strategy-adjacent and non-fit churn have been checked for material revenue, usage, dependency, or network-effect impact.\n- The team can name one high-confidence churn driver and explain why it is the right first intervention target.\n- Leadership agrees on the threshold for preserving, adjusting, or reopening the strategy.\n\nFail readiness if:\n- The team only has aggregate churn without segment-level evidence.\n- The strategy target cannot be operationally classified at the customer level.\n- The team assumes strategy-fit customers should be prioritized before testing whether the fit definition is valid.\n- The proposed fix is a broad retention bundle without a causal hypothesis.\n- Success is defined as lower churn regardless of customer fit, revenue quality, margin, dependency effects, or strategic value.\n\n## Recommended Next Artifact\n\nCreate a Churn Evidence Map and Strategy-Fit Classification Spec. The evidence map should list each conflicting signal, source, segment, metric definition, sample size, causal strength, and strategy implication. The classification spec should define strategy-fit, strategy-adjacent, non-fit, and unclassified customers well enough to support the first intervention decision.",
+        "claims": [
+          {
+            "claim_id": "side_b-claim-1",
+            "summary": "The PRD should validate and operationalize the strategy-fit definition before prioritizing strategy-fit churn interventions.",
+            "evidence_refs": [
+              "ctx-1"
+            ],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_b-claim-2",
+            "summary": "The PRD should diagnose aggregate, strategy-fit, strategy-adjacent, non-fit, and unclassified churn to avoid survivorship bias and premature deprioritization.",
+            "evidence_refs": [
+              "ctx-1"
+            ],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_b-claim-3",
+            "summary": "Because the case packet includes no underlying churn dataset or strategy definition, churn drivers must be framed as hypotheses and evidence gaps rather than established facts.",
+            "evidence_refs": [
+              "ctx-1"
+            ],
+            "is_major": true
+          }
+        ],
+        "citations": [
+          "ctx-1"
+        ],
+        "open_questions": [],
+        "critique_responses": [
+          {
+            "finding_id": "finding-1",
+            "disposition": "adopted",
+            "rationale": "The critique correctly identifies that the first-pass recommendation assumed the strategy-fit definition was usable before the PRD had established or tested that definition. I revised the artifact to make strategy-fit operationalization and conflicting-signal mapping the first readiness gate, added strategy-adjacent and unclassified segments, added checks for revenue, dependency, and network-effect impact in excluded segments, and changed the Decision Frame so intervention prioritization happens only after the strategy-fit definition is validated."
+          }
+        ]
+      }
+    }
+  },
+  "judge": {
+    "provider": "anthropic",
+    "model": "claude-max",
+    "access_mode": "subscription_cli",
+    "blind_labels": true,
+    "family_blind": false,
+    "selection_policy": "single_judge_cli",
+    "verdict": null
+  },
+  "budgets": {
+    "max_visible_rounds": 3,
+    "max_cost_usd": 1000000,
+    "max_latency_ms": 360000,
+    "min_margin_for_verdict": 0.1
+  },
+  "results": {
+    "winner": null,
+    "margin": null,
+    "judge_confidence": null,
+    "swap_stable": null,
+    "needs_human_review": null
+  },
+  "metrics": {
+    "disagreement_rate": null,
+    "adopted_critique_rate": null,
+    "unsupported_claim_count": null,
+    "self_contradiction_count": null,
+    "total_estimated_cost_usd": 0,
+    "swap_margin_delta": null,
+    "judge_margin": null,
+    "cost_per_resolved_run": null
+  },
+  "audit": {
+    "identity_leak_warnings": [],
+    "protocol_violations": []
+  }
+}

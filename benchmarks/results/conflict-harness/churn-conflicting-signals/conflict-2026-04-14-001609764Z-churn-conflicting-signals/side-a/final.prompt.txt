@@ -1,0 +1,173 @@
+You are SIDE_A in the final revision phase for run conflict-2026-04-14-001609764Z-churn-conflicting-signals.
+You must either adopt the critique or reject it with reasoning.
+Do not reveal provider identity.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "run_id": "conflict-2026-04-14-001609764Z-churn-conflicting-signals",
+  "side_id": "side_a",
+  "round": "final",
+  "artifact_markdown": "# Revised artifact",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "Updated major claim",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1"
+  ],
+  "open_questions": [],
+  "critique_responses": [
+    {
+      "finding_id": "finding-2",
+      "disposition": "adopted",
+      "rationale": "Why the critique was adopted or rejected."
+    }
+  ]
+}
+
+Case packet:
+{
+  "scenario_id": "churn-conflicting-signals",
+  "title": "Churn diagnosis with conflicting signals",
+  "prompt": "Write a churn reduction PRD when signals conflict with strategy targets.",
+  "artifact_type": "prd",
+  "rubric": {
+    "dimensions": [
+      "claim quality",
+      "evidence discipline",
+      "responsiveness to critique",
+      "internal consistency",
+      "decision usefulness"
+    ],
+    "scoring_scale": "1-5",
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "constraints": {
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "expect_structured": true,
+    "context_files": [],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "evidence": [],
+  "max_rounds": 3,
+  "tool_policy": "none",
+  "sharing_policy": {
+    "share_case_packet": true,
+    "share_committed_artifacts_after_first_pass": true,
+    "share_critiques_after_open": true,
+    "share_hidden_reasoning": false,
+    "share_provider_identity": false,
+    "share_internal_coalition_drafts": false
+  },
+  "success_condition": {
+    "type": "validator_contract",
+    "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+    "validator": {
+      "artifact_type": "prd",
+      "expect_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true
+    }
+  }
+}
+
+Your first-pass artifact:
+{
+  "run_id": "conflict-2026-04-14-001609764Z-churn-conflicting-signals",
+  "side_id": "side_a",
+  "round": "first_pass",
+  "artifact_markdown": "# Churn Reduction PRD: Navigating Conflicting Signals\n\n## Decision Frame\n\n**Problem Statement:** Monthly churn has risen from 4.2% to 6.1% over the past two quarters, but the signals driving this increase conflict with current strategy targets. Specifically:\n\n- **Signal A (Usage data):** Power users (top 20% by session frequency) show *increased* engagement (+18% DAU) but *higher* churn (+1.4pp vs. baseline). This contradicts the assumption that engagement correlates with retention.\n- **Signal B (NPS/survey data):** Detractors cite \"too many changes\" and \"feature bloat\" as top complaints, yet strategy targets call for accelerating feature velocity to hit competitive parity by Q3.\n- **Signal C (Pricing signal):** Win-back campaigns at 20% discount show 38% acceptance, suggesting price sensitivity — but the strategic roadmap includes a 15% price increase to fund platform investment.\n\nThese signals cannot all be true inputs to a single coherent plan without resolving the contradictions. This PRD does NOT recommend a unified churn reduction program. Instead, it frames the decision the leadership team must make before any program can be scoped.\n\n**Decision Required:** Which signal do we trust, and what are we willing to sacrifice?\n\n| Option | Trusts Signal | Sacrifices | Churn Impact (est.) | Strategy Cost |\n|--------|--------------|------------|---------------------|---------------|\n| A: Slow feature velocity | B (NPS feedback) | Competitive parity timeline | -0.8pp over 2Q | Delays Q3 parity target by ~1Q |\n| B: Hold pricing, fund via efficiency | C (price sensitivity) | Near-term margin | -0.5pp over 2Q | $2.1M margin gap vs. plan |\n| C: Segment and diverge | A (usage paradox) | Unified product experience | -1.1pp over 2Q | Doubles roadmap complexity |\n| D: Investigate before committing | All (insufficient confidence) | 6-8 weeks of continued elevated churn | Unknown | Delays all strategic bets |\n\n**Recommendation:** Option D — investigate before committing. The conflicting signals suggest we do not yet understand the causal mechanism. Acting on the wrong signal risks compounding churn rather than reducing it.\n\n## Unknowns & Evidence Gaps\n\n### Critical Unknowns (must resolve before any intervention)\n\n1. **Why are power users churning?** Usage is up but so is churn — are these the *same* users, or is high engagement masking a cohort split? We lack cohort-level retention curves segmented by feature adoption pattern.\n   - *Evidence needed:* Cohort survival analysis by feature adoption cluster (not just frequency).\n   - *Effort:* 2 weeks data science work.\n\n2. **Is \"feature bloat\" a real driver or a post-hoc rationalization?** NPS detractor verbatims are notoriously poor at identifying actual behavioral causes.\n   - *Evidence needed:* Correlate churn events with feature release timeline — do churn spikes follow releases, or are they calendar-correlated (billing cycles, budget reviews)?\n   - *Effort:* 1 week analytics.\n\n3. **What is the true price elasticity of the churning segment?** Win-back acceptance at 20% discount tells us price matters *after* the decision to leave, not whether price *caused* the decision.\n   - *Evidence needed:* Cancellation flow survey with forced-rank trade-off (would you stay at current price with fewer features? same features at lower price? etc.).\n   - *Effort:* 3 weeks to instrument, collect, and analyze.\n\n4. **Are we measuring churn correctly?** If contract terms or billing changes shifted in the same period, the 4.2% → 6.1% increase may be a measurement artifact (e.g., annual-to-monthly migration inflates monthly churn rate without changing annual retention).\n   - *Evidence needed:* Reconcile churn metric definition against billing system changes in the period.\n   - *Effort:* 3 days.\n\n### Secondary Unknowns (inform program design but not the go/no-go)\n\n5. Competitive landscape: are churned users going to a specific competitor, or lapsing from the category entirely?\n6. Support ticket correlation: do churning users have higher unresolved ticket counts?\n7. Onboarding vintage: is churn concentrated in recent cohorts (onboarding quality issue) or distributed (product-market fit erosion)?\n\n## Pass/Fail Readiness\n\n**Verdict: FAIL — Not ready to commit to a churn reduction program.**\n\nReadiness checklist:\n\n| Criterion | Status | Detail |\n|-----------|--------|--------|\n| Causal mechanism identified | ❌ FAIL | Three conflicting hypotheses, no discriminating evidence |\n| Signal reliability validated | ❌ FAIL | Churn metric definition not reconciled against billing changes |\n| Strategy alignment resolved | ❌ FAIL | Proposed interventions contradict active strategy targets; no executive decision on trade-offs |\n| Intervention scoped with measurable outcome | ❌ FAIL | Cannot scope without resolving which signal to act on |\n| Stakeholder alignment on trade-offs | ❌ FAIL | Product, Finance, and Growth have incompatible assumptions |\n| Downside risk bounded | ⚠️ PARTIAL | Continued elevated churn is costly (~$180K MRR/month at current rate) but not existential in the investigation window |\n\n**Why this matters:** Launching a churn reduction initiative against the wrong signal is worse than doing nothing. If power-user churn is driven by feature fatigue and we *accelerate* feature delivery to hit parity targets, we amplify the problem. If price sensitivity is the true driver and we raise prices, we accelerate exodus. The cost of a 6-8 week investigation ($240K-$320K in continued excess churn) is small relative to the cost of a misaligned program ($1M+ in engineering effort against the wrong lever).\n\n## Recommended Next Artifact\n\n**Next artifact: Evidence Collection Plan (research brief)**\n\nBefore producing a program PRD, the team should produce a structured research brief that:\n\n1. **Resolves Unknown #4 first** (3 days) — if churn measurement is artifactual, the entire urgency frame changes.\n2. **Runs cohort survival analysis** (Unknown #1, 2 weeks) — this is the highest-leverage investigation because it can discriminate between the three competing hypotheses.\n3. **Instruments cancellation flow trade-off survey** (Unknown #3, 3 weeks parallel) — price elasticity data will be needed regardless of which option is chosen.\n4. **Schedules a Decision Gate** at week 4 where leadership reviews findings and commits to Option A, B, or C with explicit trade-off acceptance.\n\nOnly after the Decision Gate should a full churn reduction PRD be authored — at that point, it will have a clear causal model, a chosen lever, and aligned stakeholders.\n\n**Escalation trigger:** If churn accelerates beyond 7.5% monthly before the investigation completes, skip to Option C (segment and diverge) as the defensive play with the highest estimated impact, accepting the roadmap complexity cost.",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "The organization is not ready to commit to a churn reduction program because three conflicting signals (power-user engagement paradox, NPS feature-bloat complaints, and price sensitivity from win-back data) cannot be reconciled without additional investigation, and acting on the wrong signal risks compounding churn rather than reducing it.",
+      "evidence_refs": [
+        "ctx-signal-a-usage",
+        "ctx-signal-b-nps",
+        "ctx-signal-c-pricing"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "The churn metric itself may be unreliable — billing system or contract term changes in the measurement period could inflate the apparent increase from 4.2% to 6.1%, making this the first investigation priority before any program commitment.",
+      "evidence_refs": [
+        "ctx-measurement-validity"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-3",
+      "summary": "The cost of a 6-8 week investigation window ($240K-$320K in continued excess churn) is materially smaller than the cost of a misaligned program ($1M+ engineering effort against the wrong lever), making 'investigate first' the expected-value-maximizing choice.",
+      "evidence_refs": [
+        "ctx-cost-comparison"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-4",
+      "summary": "Each proposed intervention directly contradicts an active strategy target (slowing velocity vs. competitive parity, holding pricing vs. margin plan, segmenting vs. unified experience), requiring explicit executive trade-off acceptance before any program can proceed.",
+      "evidence_refs": [
+        "ctx-strategy-conflict"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-5",
+      "summary": "An escalation trigger at 7.5% monthly churn provides a bounded safety mechanism — if the situation deteriorates during investigation, the team defaults to the highest-impact defensive option (segment and diverge) without waiting for full evidence collection.",
+      "evidence_refs": [
+        "ctx-escalation-bound"
+      ],
+      "is_major": false
+    }
+  ],
+  "citations": [
+    "ctx-signal-a-usage",
+    "ctx-signal-b-nps",
+    "ctx-signal-c-pricing",
+    "ctx-measurement-validity",
+    "ctx-cost-comparison",
+    "ctx-strategy-conflict",
+    "ctx-escalation-bound"
+  ],
+  "open_questions": [
+    "Are the power users showing increased engagement and the power users churning the same individuals, or is this a Simpson's paradox across cohorts?",
+    "Has the churn metric definition or billing system changed in the measurement period, potentially creating an artifactual increase?",
+    "What is the actual destination of churned users — competitor migration vs. category lapse — and does this differ by segment?"
+  ],
+  "critique_responses": []
+}
+
+Visible critique packet:
+{
+  "target_side": "side_a",
+  "finding_id": "finding-2",
+  "target_claim_ids": [
+    "side_a-claim-3"
+  ],
+  "claim_under_attack": "The cost of a 6-8 week investigation window ($240K-$320K in continued excess churn) is materially smaller than the cost of a misaligned program ($1M+ engineering effort against the wrong lever), making 'investigate first' the expected-value-maximizing choice.",
+  "attack_type": "evidence_gap",
+  "evidence_or_reason": "The artifact makes the investigation-first recommendation depend on a cost comparison, but the visible packet provides no revenue base, churn-to-MRR calculation, engineering cost model, probability of choosing the wrong lever, or supplied evidence for ctx-cost-comparison. Without those inputs, the claimed expected-value superiority is asserted rather than demonstrated.",
+  "severity": "medium"
+}

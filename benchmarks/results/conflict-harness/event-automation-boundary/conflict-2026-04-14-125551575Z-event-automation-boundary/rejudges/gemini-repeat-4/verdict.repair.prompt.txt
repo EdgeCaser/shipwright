@@ -1,0 +1,104 @@
+Your previous judge output was close but rejected by schema validation.
+Rewrite it as ONLY a JSON object that preserves the same winner, margin, rubric_scores, decisive_dimension, judge_confidence, needs_human_review, decisive_findings, and rationale unless the schema absolutely requires clarification.
+Any rubric_scores.*.weighted_total value must be a normalized aggregate on the same 1-5 scale as the rubric dimensions, not a raw sum.
+You MUST include these missing required properties with substantive content:
+- dimension_rationales
+- side_summaries
+- decisive_dimension
+- rubric_scores.side_a.weighted_total
+- rubric_scores.side_b.weighted_total
+
+Required schema shape:
+{
+  "winner": "tie",
+  "margin": 0,
+  "rubric_scores": {
+    "side_a": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    },
+    "side_b": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    }
+  },
+  "dimension_rationales": {
+    "claim_quality": "Which side made the stronger claims and why.",
+    "evidence_discipline": "How each side used or overstated evidence.",
+    "responsiveness_to_critique": "How each side responded to the critique phase.",
+    "internal_consistency": "Contradictions, coherence, or missing logic.",
+    "decision_usefulness": "Which artifact better supports an actual decision."
+  },
+  "side_summaries": {
+    "side_a": {
+      "strengths": [
+        "One concise strength of Side A."
+      ],
+      "weaknesses": [
+        "One concise weakness of Side A."
+      ]
+    },
+    "side_b": {
+      "strengths": [
+        "One concise strength of Side B."
+      ],
+      "weaknesses": [
+        "One concise weakness of Side B."
+      ]
+    }
+  },
+  "decisive_dimension": "decision_usefulness",
+  "decisive_findings": [
+    "Replace with the actual decisive findings from this run."
+  ],
+  "judge_confidence": "low",
+  "needs_human_review": true,
+  "rationale": "One-paragraph explanation of the verdict."
+}
+
+Validation errors:
+Verdict packet failed validation:
+$.dimension_rationales: Missing required property.
+$.side_summaries: Missing required property.
+$.decisive_dimension: Missing required property.
+
+Previous verdict JSON:
+{
+  "winner": "side_a",
+  "margin": 1,
+  "rubric_scores": {
+    "side_a": {
+      "claim_quality": 5,
+      "evidence_discipline": 5,
+      "responsiveness_to_critique": 5,
+      "internal_consistency": 5,
+      "decision_usefulness": 5,
+      "weighted_total": 5
+    },
+    "side_b": {
+      "claim_quality": 4,
+      "evidence_discipline": 4,
+      "responsiveness_to_critique": 4,
+      "internal_consistency": 4,
+      "decision_usefulness": 4,
+      "weighted_total": 4
+    }
+  },
+  "decisive_findings": [
+    "Side A's initial PRD was stronger, correctly prioritizing evidence-gathering on user workflows over premature technical specification, which was a core flaw in Side B's initial approach.",
+    "The critique against Side B (that it was 'prescriptive architecture masquerading as product definition') was more strategically significant than the critique against Side A, pointing to a fundamental difference in product development philosophy.",
+    "Side A's response to critique was superior. Instead of simply acknowledging a weakness, it proposed a sophisticated and practical layered detection architecture (a deterministic 'trust anchor' plus an LLM 'catch net') that solves the 'soft commitment' problem while upholding the core safety principle.",
+    "The final artifact from Side A is more decision-useful because its recommended next step—a workflow questionnaire to gather real-world user data—directly addresses the largest existential risks, whereas Side B's proposal for a technical spec is still a step behind foundational discovery."
+  ],
+  "judge_confidence": "high",
+  "needs_human_review": false,
+  "rationale": "Side A wins due to a stronger initial artifact and a more sophisticated response to critique. Its PRD was consistently more decision-useful, focusing on de-risking the most critical unknowns (user adoption and workflow realities) before committing to implementation details. While both sides effectively incorporated feedback, Side A's revised proposal for a layered approval gate (a deterministic rule-based trust anchor supplemented by an LLM-based flagger) was a particularly strong and practical solution to the problem of detecting 'soft commitments' without sacrificing the core safety invariant. Side B's initial artifact suffered from premature architectural specification, and while it corrected this in the final version, Side A's artifact was more focused and actionable from the start."
+}

@@ -1,0 +1,13 @@
+# Critique: finding-2
+
+- Target Side: side_a
+- Target Claim IDs: side_a-claim-4
+- Attack Type: evidence_gap
+- Severity: medium
+
+## Claim Under Attack
+The valid strategic insight (DVD and streaming need independent optimization) can be captured through internal organizational separation without splitting the customer experience — separate teams and P&Ls, unified brand and login.
+
+## Evidence Or Reason
+This claim asserts an operational substitute for Qwikster without visible evidence that internal separation would actually remove the cited organizational drag. The artifact provides no proof about the source of the drag, no examples of decision conflicts caused by the unified product surface, and no evidence that separate teams/P&Ls can solve licensing, prioritization, or capital-allocation tensions while keeping one website, one queue system, and one subscription construct. It may be directionally plausible, but as written it is an unsupported implementation leap.
+

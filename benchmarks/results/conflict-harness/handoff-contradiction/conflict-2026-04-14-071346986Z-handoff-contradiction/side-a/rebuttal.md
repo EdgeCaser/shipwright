@@ -1,0 +1,13 @@
+# Critique: finding-1
+
+- Target Side: side_b
+- Target Claim IDs: side_b-claim-1
+- Attack Type: evidence_gap
+- Severity: high
+
+## Claim Under Attack
+A contradiction-aware handoff PRD is the only defensible first-pass output because the packet requires alignment to source materials that are not provided.
+
+## Evidence Or Reason
+The claim asserts this is the 'only defensible' output, but the artifact itself demonstrates otherwise by producing functional requirements, a proposed handoff structure, a contradiction handling policy, and delivery guidance — all substantive PRD content that goes well beyond a mere contradiction-management shell. If the missing source materials truly made substantive output indefensible, the artifact should not have produced five functional requirements and a six-section handoff structure. The artifact contradicts its own framing: it claims nothing substantive can be written, then writes substantive content. A more honest framing would acknowledge that a useful PRD can be constructed from the scenario prompt and rubric constraints alone, with contradiction handling as one component rather than the entire rationale.
+

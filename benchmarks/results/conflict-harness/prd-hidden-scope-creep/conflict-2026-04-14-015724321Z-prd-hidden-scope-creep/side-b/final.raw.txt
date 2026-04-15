@@ -1,0 +1,43 @@
+{
+  "run_id": "conflict-2026-04-14-015724321Z-prd-hidden-scope-creep",
+  "side_id": "side_b",
+  "round": "final",
+  "artifact_markdown": "# Revised artifact\n\n## PRD: Team Inbox Workflow Handoff Improvement\n\n## Summary\nImprove team inbox handoffs so conversations move between agents or teams with less delay, less dropped context, and clearer ownership. This PRD remains narrowly scoped to handoff workflow quality inside the inbox experience. It does not authorize broader queue management, staffing, SLA policy, analytics expansion, customer messaging, or AI automation.\n\n## Problem\nTeams using a shared inbox lose time and context when one person needs to hand a conversation to another owner. Current handoffs are often informal, incomplete, or invisible, which creates three recurring failures:\n- The next owner lacks enough context to act quickly.\n- Ownership is ambiguous during or after transfer.\n- Customers experience slower or contradictory follow-up.\n\n## Goal\nEnable a lightweight inbox handoff flow that makes intended ownership transfer and required context visible enough to reduce dropped work.\n\n## Non-Goals\n- Redesigning the full inbox information architecture.\n- Changing initial routing rules.\n- Building workforce management or staffing recommendations.\n- Adding customer-facing status messaging.\n- Expanding analytics beyond minimal validation instrumentation.\n- Introducing AI summaries, suggested assignees, or auto-routing.\n\n## Users\n- Primary: Support agents and operations staff working from a shared inbox.\n- Secondary: Team leads who need confidence that work was transferred clearly.\n\n## User Stories\n- As an inbox user, I want to initiate a handoff to the right destination so the conversation continues without side-channel coordination.\n- As the receiving owner, I want the minimum necessary context attached to the handoff so I know what to do next.\n- As a team lead, I want handoff status and ownership intent to be visible so conversations do not get stranded.\n\n## Product Decision Status\nThe problem and scope are approved for exploration. The exact handoff mechanics are not fully decided. Requirements below are separated into confirmed V1 requirements versus design choices that must remain open until resolved.\n\n## Confirmed V1 Requirements\n1. A user can initiate a handoff from within the existing conversation workflow.\n2. A handoff captures an explicit destination target, subject to the final decision on whether V1 supports individuals, teams, or both.\n3. A handoff captures structured context for the next owner. The exact format may be a required short note or another equally lightweight mechanism.\n4. The thread shows handoff state clearly enough that sender, receiver, and lead can determine whether work is awaiting acceptance, transferred, or unresolved.\n5. The system records handoff events needed to validate adoption and basic workflow reliability.\n\n## Open Design Decisions That Must Not Be Assumed Resolved In This PRD\n1. Whether handoff completion transfers ownership immediately or creates a pending state that requires receiver acceptance.\n2. Whether V1 supports handoff to individuals, teams, or both.\n3. Whether the context field is strictly required, conditionally required, or template-based.\n4. What minimal event set is sufficient for validation reporting.\n5. What notification behavior is necessary for usability without expanding scope.\n\n## UX Constraints\n1. The handoff action must live in the existing thread workflow.\n2. The flow must stay lightweight enough for frequent operational use.\n3. Ownership or pending-handoff state must be legible in the thread view.\n4. The design should reduce reliance on freeform chat or verbal coordination.\n\n## Success Metrics\n- Reduction in conversations left with ambiguous ownership after a handoff attempt.\n- Reduction in median time between handoff initiation and first action by the next owner.\n- Reduction in conversations requiring repeated internal clarification before next customer response.\n- Improvement in qualitative user confidence that handoffs are visible and understandable.\n\n## Scope Guardrails\nThis PRD authorizes only the minimum workflow needed to perform, receive, and inspect a handoff. The following remain out of scope unless separately approved:\n- Queue prioritization logic.\n- Cross-system escalation workflows.\n- SLA engine changes.\n- Manager dashboards beyond minimal validation counts.\n- Customer notifications triggered by handoff.\n- AI summarization, suggested assignees, or auto-routing.\n\n## Risks\n- Over-specifying mechanics before resolving acceptance and destination semantics would create hidden scope creep.\n- Requiring too much input could reduce adoption.\n- Supporting team handoff without explicit state semantics could preserve ambiguity.\n- Thin instrumentation could make the pilot inconclusive.\n\n## Rollout Approach\n1. Resolve the open design decisions in a technical spec or prototype review.\n2. Pilot the smallest viable handoff flow with a limited internal cohort.\n3. Validate adoption, state clarity, and time-to-next-action before expansion.\n4. Reject adjacent requests unless pilot evidence shows they are required for the core handoff workflow to work.\n\n## Decision Frame\nApprove a narrowly scoped handoff workflow focused on visible transfer intent, context capture, and ownership-state clarity. Do not approve adjacent asks unless they are required to make the handoff primitive usable. The immediate decision is to fund a scoped handoff workflow, not a broader inbox redesign.\n\n## Unknowns & Evidence Gaps\n- No direct evidence was provided on current handoff failure rate, time loss, or customer impact.\n- It is unresolved whether handoff should transfer immediately or require explicit acceptance.\n- It is unresolved whether destination support in V1 should include individuals, teams, or both.\n- The minimum viable instrumentation set is not yet specified.\n- The current inbox permission model may constrain reassignment behavior.\n- No user evidence was provided to justify a required note versus a lighter context mechanism.\n\n## Pass/Fail Readiness\nPass if the team accepts the narrow scope, preserves the listed non-goals, and treats the open handoff mechanics as gated design decisions rather than settled requirements.\n\nFail if this PRD is used to authorize routing changes, staffing logic, advanced analytics, escalations, customer messaging, or AI assistance. Fail if the team treats unresolved ownership semantics as implicitly decided without evidence.\n\n## Recommended Next Artifact\nA technical spec that resolves ownership-state transitions, acceptance semantics, destination eligibility, notification behavior, event schema, and permission constraints before implementation.",
+  "claims": [
+    {
+      "claim_id": "side_b-claim-1",
+      "summary": "The revised PRD narrows scope to the core handoff workflow and explicitly blocks adjacent inbox, staffing, analytics, messaging, and AI expansions.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-2",
+      "summary": "The revised PRD distinguishes confirmed V1 requirements from unresolved design decisions so open questions constrain implementation rather than being silently assumed away.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-3",
+      "summary": "Because no supporting evidence was provided, the revised artifact keeps handoff mechanics conditional, surfaces evidence gaps, and gates the technical choices that still require validation.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1"
+  ],
+  "open_questions": [],
+  "critique_responses": [
+    {
+      "finding_id": "finding-1",
+      "disposition": "adopted",
+      "rationale": "The critique was correct that the first-pass artifact listed unknowns while still overcommitting to specific mechanics. I revised the PRD to separate confirmed scope from unresolved design decisions, converted previously hard requirements into conditional or outcome-based requirements, and made the open questions explicitly gating rather than merely noted."
+    }
+  ]
+}

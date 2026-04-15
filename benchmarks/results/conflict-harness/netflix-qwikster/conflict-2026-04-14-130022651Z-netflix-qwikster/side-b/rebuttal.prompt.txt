@@ -1,0 +1,163 @@
+You are SIDE_B in the rebuttal phase for run conflict-2026-04-14-130022651Z-netflix-qwikster.
+Attack only visible claims from the opposing first-pass artifact.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "target_side": "side_a",
+  "finding_id": "runner-will-assign",
+  "target_claim_ids": [
+    "side_a-claim-1"
+  ],
+  "claim_under_attack": "The opposing claim to challenge.",
+  "attack_type": "evidence_gap",
+  "evidence_or_reason": "Why the visible claim is weak.",
+  "severity": "medium"
+}
+
+Case packet:
+{
+  "scenario_id": "netflix-qwikster",
+  "title": "Netflix Qwikster: split streaming from DVD or reverse course",
+  "prompt": "You are a strategy advisor to Netflix's leadership team in September 2011. CEO Reed Hastings has just announced Qwikster — a plan to split Netflix into two separate companies: Netflix for streaming and Qwikster for DVD-by-mail. Each would have its own website, billing, and queue.\n\nThe rationale: DVD-by-mail is a declining business (peaked at ~20M subscribers), while streaming is the future. Bundling them creates organizational drag — product decisions for streaming are constrained by DVD logistics. Separating them lets each business optimize independently.\n\nHowever, the market reaction has been catastrophic. Netflix stock dropped 77% from its July 2011 peak of $298 to ~$65. The company lost 800,000 subscribers in Q3 2011 after a 60% price increase for the combined plan ($7.99 each vs $9.99 bundled). Customer anger is at an all-time high — the Netflix blog post announcing Qwikster received 27,000+ comments, overwhelmingly negative. The Qwikster Twitter handle is owned by someone else posting inappropriate content.\n\nKey evidence available:\n- Netflix subscribers: ~23.8M total (Q3 2011), down from 24.6M in Q2 2011\n- DVD-by-mail subscribers declining ~5% per quarter organically\n- Streaming content costs surging: licensing jumped from $180M (2010) to projected $2B (2012)\n- Netflix streaming library: ~20,000 titles vs ~100,000 on DVD\n- Competitors entering streaming: Amazon Prime Video, Hulu Plus, HBO GO all launched 2010-2011\n- International expansion underway: launched in Canada (2010), Latin America and UK (2011)\n- Price increase backlash: 60% increase for combo plan, announced July 2011\n- Customer satisfaction scores dropped from 79 to 52 (ACSI) in one quarter\n- Qwikster would require separate logins, separate queues, separate reviews\n- DVD business still generating significant cash flow (~$1B revenue, high margins)\n- Streaming business operating at a loss, subsidized by DVD profits\n- Hastings publicly apologized for the price increase but defended the strategic logic of separation\n- Wall Street analysts split: some see strategic clarity, most see execution disaster\n\nThe leadership team must decide: proceed with the Qwikster split as announced, or reverse course and keep both services under the Netflix brand?\n\nWrite a strategic recommendation memo. Take a clear position — split or reverse — and defend it with evidence. Acknowledge the strongest counterarguments and explain why your position is still correct.",
+  "artifact_type": "strategy",
+  "rubric": {
+    "dimensions": [
+      "claim quality",
+      "evidence discipline",
+      "responsiveness to critique",
+      "internal consistency",
+      "decision usefulness"
+    ],
+    "scoring_scale": "1-5",
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "constraints": {
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "expect_structured": true,
+    "context_files": [],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "evidence": [],
+  "max_rounds": 3,
+  "tool_policy": "none",
+  "sharing_policy": {
+    "share_case_packet": true,
+    "share_committed_artifacts_after_first_pass": true,
+    "share_critiques_after_open": true,
+    "share_hidden_reasoning": false,
+    "share_provider_identity": false,
+    "share_internal_coalition_drafts": false
+  },
+  "success_condition": {
+    "type": "validator_contract",
+    "description": "Produce a strategy artifact that satisfies the scenario validator contract.",
+    "validator": {
+      "artifact_type": "strategy",
+      "expect_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true
+    }
+  }
+}
+
+Opposing first-pass artifact:
+{
+  "run_id": "conflict-2026-04-14-130022651Z-netflix-qwikster",
+  "side_id": "side_a",
+  "round": "first_pass",
+  "artifact_markdown": "# Strategic Recommendation: Reverse the Qwikster Split Immediately\n\n## Decision Frame\n\n**Decision:** Abandon the Qwikster split and reunify DVD-by-mail and streaming under the Netflix brand. Execute the reversal within 72 hours of this memo.\n\n**Core thesis:** The Qwikster split is strategically directionally correct but operationally catastrophic and poorly timed. The separation imposes immediate, measurable harm on customers and the business while delivering benefits that are speculative and achievable through internal reorganization without a public split. The reversal is not a retreat from streaming-first strategy — it is a recognition that brand destruction and subscriber hemorrhage are existential threats that outweigh organizational optimization.\n\n**Why this decision now:** Every week the Qwikster announcement remains active, it compounds three forms of damage: (1) subscriber losses accelerate as confused customers choose \"neither\" instead of one service, (2) the Netflix brand — the company's single most valuable strategic asset for streaming expansion — erodes further, and (3) competitors exploit the chaos to acquire customers during their own critical launch windows.\n\n## Evidence-Based Analysis\n\n### The case for reversal\n\n**1. The split destroys customer value without creating business value.**\nQwikster requires separate logins, separate queues, and separate reviews for the same customer base. A subscriber who watches some titles on streaming and rents others on DVD — which describes the majority of combo subscribers — now manages two accounts, two billing relationships, and loses cross-format discovery. This is a net negative customer experience with zero customer benefit. No customer asked for this.\n\n**2. Subscriber losses are accelerating, not stabilizing.**\nNetflix lost 800,000 subscribers in Q3 2011, dropping from 24.6M to 23.8M. This is the first subscriber decline in the company's history. The losses stem from the July price increase, but the Qwikster announcement layered confusion on top of anger. Customers who might have grudgingly accepted a price increase are now questioning whether Netflix understands its own product. The 60% price increase already tested willingness to pay; adding service fragmentation tests willingness to stay.\n\n**3. The brand damage is measurable and severe.**\nCustomer satisfaction scores collapsed from 79 to 52 on ACSI — a 34% decline in one quarter. The 27,000+ negative comments on the announcement blog post represent the visible fraction of customer sentiment. The Qwikster Twitter handle debacle (owned by an unrelated individual posting inappropriate content) signals organizational unpreparedness that undermines confidence in execution. This is not a company that has earned the trust to ask customers for patience during a complex transition.\n\n**4. DVD cash flow subsidizes the streaming future — splitting it is premature.**\nThe DVD business generates approximately $1B in revenue at high margins. Streaming is operating at a loss, with content licensing costs surging from $180M (2010) to a projected $2B (2012). The DVD business is the financial engine funding international expansion (Canada 2010, Latin America and UK 2011) and content acquisition. Separating the cash cow from the growth business before the growth business is self-sustaining creates capital structure risk. The DVD business should be managed for harvest within Netflix, not spun off to die independently.\n\n**5. Competitive timing is the worst possible.**\nAmazon Prime Video, Hulu Plus, and HBO GO all launched between 2010-2011. Netflix's streaming library (~20,000 titles) is already thin compared to its DVD catalog (~100,000 titles). Competitors are acquiring content and customers during a window where Netflix is distracted by self-inflicted organizational surgery. Every dollar of brand equity and every subscriber lost to the Qwikster confusion is a gift to competitors who did nothing to earn it.\n\n### Strongest counterarguments — and why they don't hold\n\n**Counter: \"The DVD business is dying anyway; rip the band-aid off.\"**\nDVD subscribers are declining ~5% per quarter organically. This is a managed decline, not a collapse. At current rates, the DVD business remains material for 3-5 years. The correct strategy is to harvest this business quietly within Netflix — reduce investment, maintain service, extract cash flow — not to publicly brand it as a separate entity that signals abandonment. Managed decline within a unified brand is invisible to customers; a public split is a megaphone announcing that you're giving up on the thing they're paying for.\n\n**Counter: \"Organizational separation enables faster streaming innovation.\"**\nThis is achievable through internal restructuring — separate P&Ls, separate engineering teams, separate product roadmaps — without customer-facing brand separation. Amazon runs dozens of businesses under one account. Apple sells hardware and services under one login. The organizational benefits of separation do not require the customer experience costs of separation. Create internal walls, not external ones.\n\n**Counter: \"The stock price already crashed; reversing looks weak.\"**\nThe stock dropped 77% from $298 to ~$65. Reversal will generate short-term mockery and \"flip-flopping\" headlines. But the stock price reflects forward expectations of subscriber growth and competitive position. Stopping the bleeding — retaining subscribers, preserving brand, maintaining competitive posture — is the fastest path to stock recovery. Stubbornness in the face of clear evidence is not strength; it is the sunk cost fallacy applied to corporate strategy. Markets will reward subscriber stabilization far more than they will reward ideological consistency.\n\n## Unknowns & Evidence Gaps\n\n| Unknown | Why it matters | How to resolve |\n|---------|---------------|----------------|\n| What fraction of the 800K lost subscribers left due to price increase vs. Qwikster confusion? | Determines whether reversal alone stabilizes churn or whether pricing must also be revisited | Cohort analysis of cancellation timing (pre vs. post Qwikster announcement) and exit survey data |\n| How many combo subscribers would have chosen streaming-only if forced to pick one? | Informs whether the split would have naturally migrated users or simply lost them | A/B test with voluntary migration offers post-reversal, not forced split |\n| What is the true content cost trajectory for streaming rights? | If costs are genuinely unsustainable without DVD subsidy, financial restructuring is needed regardless of brand decisions | 18-month content deal pipeline analysis and original content production cost modeling |\n| How deep is internal organizational friction between DVD and streaming teams? | If the split was driven by genuine product velocity problems, internal restructuring must address them | Post-reversal internal audit of decision bottlenecks and team autonomy |\n| What is competitor subscriber acquisition rate during this crisis window? | Quantifies the strategic cost of distraction | Competitive intelligence on Amazon Prime, Hulu Plus, HBO GO Q3-Q4 signup rates |\n| Will content licensors use Netflix's weakened position to renegotiate terms? | Supplier power dynamics shift when buyer appears vulnerable | Immediate pulse check with top 10 content partners on deal pipeline |\n\n## Pass/Fail Readiness\n\n**Recommendation: REVERSE the split. Execute within 72 hours.**\n\n| Readiness criterion | Status | Notes |\n|---------------------|--------|-------|\n| Clear decision with stated rationale | PASS | Reverse Qwikster, reunify under Netflix brand |\n| Evidence supports the position | PASS | Subscriber losses, satisfaction collapse, competitive timing, financial dependency all favor reversal |\n| Counterarguments addressed | PASS | Three strongest counters engaged with specific rebuttals |\n| Unknowns identified | PASS | Six critical unknowns documented with resolution paths |\n| Execution path defined | PASS | 72-hour reversal announcement, internal restructuring to follow |\n| Risks of recommended action | PARTIAL | Reversal carries \"flip-flop\" reputation risk and may not recover all lost subscribers; the underlying strategic question of streaming-vs-DVD organizational tension remains unresolved |\n\n**Key risk of this recommendation:** Reversal solves the brand and customer experience crisis but does not solve the underlying strategic tension. DVD is declining. Streaming costs are surging. The company still needs to transition from DVD-subsidized streaming to self-sustaining streaming. The reversal buys time — it does not buy a strategy. The follow-up work (see below) is mandatory, not optional.\n\n## Recommended Next Artifact\n\n1. **Internal Restructuring Plan (within 30 days):** Design the internal organizational separation that captures the benefits Qwikster was supposed to deliver — separate P&Ls, autonomous product teams, independent roadmaps — without customer-facing brand fragmentation. This is the \"quiet split\" that should have been done first.\n\n2. **Subscriber Recovery Playbook (within 14 days):** Targeted retention and win-back campaigns for the 800K lost subscribers. Segment by reason for departure (price vs. confusion vs. competitive switch) and design specific offers for each cohort.\n\n3. **Content Strategy Roadmap (within 60 days):** Address the fundamental economics of streaming content costs. Evaluate original content production (the path Netflix ultimately took with House of Cards in 2013) as a hedge against licensing cost inflation and supplier power.\n\n4. **Pricing Architecture Review (within 30 days):** Determine whether the $7.99/$7.99 pricing is sustainable or whether a revised bundling strategy can recover combo subscribers without reverting to below-cost pricing.\n\n5. **Competitive Response Assessment (within 14 days):** Map competitor moves during the crisis window and identify any permanent market share losses that require strategic response.",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "The Qwikster split destroys customer value (separate logins, queues, reviews) without delivering any customer benefit, and the organizational benefits it seeks are achievable through internal restructuring without brand separation.",
+      "evidence_refs": [
+        "ctx-separate-logins",
+        "ctx-subscriber-loss"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "Subscriber losses of 800K in Q3 2011 — the first decline in company history — combined with ACSI satisfaction collapse from 79 to 52 represent an existential brand crisis that worsens every week the split remains active.",
+      "evidence_refs": [
+        "ctx-subscriber-loss",
+        "ctx-acsi-drop",
+        "ctx-blog-comments"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-3",
+      "summary": "The DVD business generates ~$1B in high-margin revenue that subsidizes money-losing streaming operations and international expansion; premature separation creates capital structure risk before streaming is self-sustaining.",
+      "evidence_refs": [
+        "ctx-dvd-revenue",
+        "ctx-streaming-loss",
+        "ctx-content-costs"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-4",
+      "summary": "Competitive timing is catastrophic — Amazon Prime Video, Hulu Plus, and HBO GO all launched 2010-2011, and Netflix's self-inflicted crisis gifts them customer acquisition opportunities during their critical growth windows.",
+      "evidence_refs": [
+        "ctx-competitors",
+        "ctx-streaming-library"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-5",
+      "summary": "The DVD business is declining at ~5% per quarter organically, which represents a managed 3-5 year harvest opportunity within the unified brand — not an emergency requiring public separation that signals abandonment.",
+      "evidence_refs": [
+        "ctx-dvd-decline"
+      ],
+      "is_major": false
+    },
+    {
+      "claim_id": "side_a-claim-6",
+      "summary": "Reversal carries flip-flop reputation risk but markets will reward subscriber stabilization and competitive repositioning far more than ideological consistency with a failing strategy.",
+      "evidence_refs": [
+        "ctx-stock-drop",
+        "ctx-analyst-split"
+      ],
+      "is_major": false
+    }
+  ],
+  "citations": [
+    "ctx-separate-logins",
+    "ctx-subscriber-loss",
+    "ctx-acsi-drop",
+    "ctx-blog-comments",
+    "ctx-dvd-revenue",
+    "ctx-streaming-loss",
+    "ctx-content-costs",
+    "ctx-competitors",
+    "ctx-streaming-library",
+    "ctx-dvd-decline",
+    "ctx-stock-drop",
+    "ctx-analyst-split"
+  ],
+  "open_questions": [
+    "What fraction of the 800K lost subscribers left due to the price increase versus Qwikster confusion specifically?",
+    "What is the true 18-month content licensing cost trajectory, and does it change the financial dependency on DVD margins?",
+    "How much permanent market share have competitors gained during this crisis window?",
+    "Will content licensors exploit Netflix's weakened negotiating position to demand higher rates?",
+    "What internal organizational friction between DVD and streaming teams originally motivated the split?"
+  ],
+  "critique_responses": []
+}

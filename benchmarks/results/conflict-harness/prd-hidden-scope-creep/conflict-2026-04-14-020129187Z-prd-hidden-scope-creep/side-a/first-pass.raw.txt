@@ -1,0 +1,43 @@
+
+
+```json
+{
+  "run_id": "conflict-2026-04-14-020129187Z-prd-hidden-scope-creep",
+  "side_id": "side_a",
+  "round": "first_pass",
+  "artifact_markdown": "# PRD: Team Inbox Workflow Handoff Improvement\n\n## Decision Frame\n\n**Problem statement:** When team inbox conversations require handoff between agents (shift changes, escalation, expertise routing), context is lost, customers repeat themselves, and resolution time inflates. This is a workflow efficiency problem, not a new product.\n\n**Decision to be made:** Should we invest in a structured handoff mechanism for team inbox conversations, and if so, what is the minimum viable scope?\n\n**Who decides:** Product lead (owns inbox roadmap) with engineering lead sign-off on feasibility.\n\n**Decision deadline:** End of current planning cycle. Delaying means another quarter of measured handoff friction.\n\n**Scope boundary:** This PRD covers handoff between human agents within a single team inbox. Explicitly OUT of scope:\n- Cross-team routing or escalation paths (separate initiative)\n- AI-assisted response drafting (adjacent but independent)\n- Customer-facing handoff notifications (fast-follow, not v1)\n- SLA/timer automation (operations concern, not handoff UX)\n- Analytics dashboards for handoff metrics (instrument first, dashboard later)\n\n**Why this scope boundary matters:** Handoff improvements naturally invite scope creep into routing logic, automation, and analytics. Each of those is a separate decision with separate evidence needs. This PRD addresses one thing: making the moment of handoff between two humans lossless and fast.\n\n### Core Requirements (v1)\n\n1. **Handoff summary capture:** When an agent initiates a handoff, they must provide or confirm a structured summary (customer intent, actions taken, open questions, recommended next step).\n2. **Receiving agent context panel:** The receiving agent sees the handoff summary prominently, without needing to scroll through full conversation history.\n3. **Handoff state tracking:** Conversations in handoff limbo are visibly flagged. No conversation should be in an unowned state for more than a configurable threshold.\n4. **Handoff acceptance:** Receiving agent explicitly accepts the handoff, confirming they have context. Until accepted, the originating agent remains accountable.\n\n### Success Criteria\n\n| Metric | Baseline (measure first) | Target |\n|---|---|---|\n| Customer repeats-self rate during handoffs | TBD (instrument) | Reduce by 30% |\n| Time from handoff initiation to acceptance | TBD (instrument) | < 2 minutes median |\n| Agent-reported context sufficiency (survey) | TBD (baseline survey) | > 80% \"sufficient\" |\n\n## Unknowns & Evidence Gaps\n\n| Unknown | Impact if wrong | How to resolve | Status |\n|---|---|---|---|\n| How often do handoffs actually occur? | If rare, ROI is low. | Instrument current inbox: count handoff events over 2 weeks. | **NOT STARTED — blocks go/no-go** |\n| What information do receiving agents actually need? | Building the wrong summary template wastes effort and gets ignored. | Interview 5-8 agents who regularly receive handoffs. Ask what they look for in history. | **NOT STARTED** |\n| Do customers perceive handoffs as a pain point? | If customers don't care, urgency drops. | Pull CSAT scores segmented by handoff vs. no-handoff conversations. | **NOT STARTED** |\n| Can we auto-generate summaries from conversation history? | Affects build complexity significantly. | Prototype with existing LLM tooling on 20 sample conversations. | **NOT STARTED — do NOT block v1 on this** |\n| What systems of record need integration? | Underestimating integration work is the #1 schedule risk. | Engineering spike: map current inbox architecture, identify where handoff state lives. | **NOT STARTED** |\n\n**Critical note:** Three of these unknowns are unresolved. We do not have the evidence to commit to building yet. The next step is evidence gathering, not design.\n\n## Pass/Fail Readiness\n\n**Readiness verdict: NOT READY TO BUILD**\n\n| Criterion | Status | Rationale |\n|---|---|---|\n| Problem validated with data | ❌ Fail | No instrumentation exists for handoff frequency or impact. We are assuming the problem is significant based on anecdote. |\n| User needs understood | ❌ Fail | No agent interviews conducted. Summary template design without input will miss. |\n| Scope is bounded and agreed | ⚠️ Partial | Scope boundary is defined above but has not been reviewed with engineering or stakeholders. Risk of creep at review time. |\n| Technical feasibility assessed | ❌ Fail | No architecture spike completed. Integration surface unknown. |\n| Success metrics baselined | ❌ Fail | All baselines are TBD. Cannot measure improvement without pre-measurement. |\n\n**What would change this to READY:**\n1. Complete handoff frequency instrumentation (1-2 weeks of data)\n2. Conduct agent interviews (5-8 agents, 1 week)\n3. Pull CSAT segmentation (1 query if data exists)\n4. Engineering spike on integration surface (1 week)\n\nEstimated time to readiness: 2-3 weeks of evidence work.\n\n## Recommended Next Artifact\n\n**Next artifact: Evidence-gathering brief**\n\nBefore any design or technical spec, produce a 1-page evidence brief that:\n1. Assigns owners to each unknown above\n2. Sets a timebox (2 weeks) for all evidence gathering\n3. Defines the go/no-go gate: if handoff volume is below X per week, or agent interviews reveal the real friction is elsewhere, this PRD is shelved or redirected\n\n**Do not proceed to:** technical spec, wireframes, or sprint planning until the evidence brief is complete and the go/no-go gate is passed.\n\n**Scope creep watchlist:** The following adjacent requests will likely surface during stakeholder review. Each requires its own decision frame, not absorption into this PRD:\n- \"Can we add routing rules while we're in there?\" → Separate PRD.\n- \"What about AI summaries?\" → v2 fast-follow if v1 manual summaries prove useful.\n- \"We need a handoff dashboard.\" → Instrument first, dashboard is a separate artifact after data exists.\n- \"What about cross-team handoffs?\" → Different workflow, different constraints, separate PRD.",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "The PRD is NOT ready to build because all five readiness criteria fail or partially fail — no handoff frequency data, no agent interviews, no technical spike, no baselined metrics, and scope not yet reviewed with stakeholders.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "Scope must be explicitly bounded to human-to-human handoff within a single team inbox, with a named watchlist of adjacent requests that each require separate decision frames to prevent hidden scope creep.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-3",
+      "summary": "The correct next artifact is an evidence-gathering brief with a timebox and go/no-go gate, not a technical spec or design — proceeding to build without evidence risks solving an assumed problem.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-4",
+      "summary": "Auto-generated summaries (AI/LLM) should be explicitly excluded from v1 scope and treated as a v2 fast-follow contingent on manual summaries proving useful, to avoid complexity creep.",
+      "evidence_refs": [],
+      "is_major": false
+    }
+  ],
+  "citations": [],
+  "open_questions": [
+    "No evidence was provided in the case packet, so all claims about problem severity and frequency are assumptions requiring validation before any commitment.",
+    "The prompt says 'team inbox' but does not specify the product or platform — requirements may shift significantly depending on whether this is email, chat, ticketing, or multi-channel."
+  ],
+  "critique_responses": []
+}
+```
+

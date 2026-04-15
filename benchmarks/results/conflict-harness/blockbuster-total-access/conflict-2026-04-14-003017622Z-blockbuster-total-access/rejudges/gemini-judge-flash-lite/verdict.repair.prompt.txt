@@ -1,0 +1,97 @@
+Your previous judge output was close but rejected by schema validation.
+Rewrite it as ONLY a JSON object that preserves the same winner, margin, rubric_scores, judge_confidence, needs_human_review, decisive_findings, and rationale unless the schema absolutely requires clarification.
+You MUST include these missing required properties with substantive content:
+- dimension_rationales
+- side_summaries
+
+Required schema shape:
+{
+  "winner": "tie",
+  "margin": 0,
+  "rubric_scores": {
+    "side_a": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    },
+    "side_b": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    }
+  },
+  "dimension_rationales": {
+    "claim_quality": "Which side made the stronger claims and why.",
+    "evidence_discipline": "How each side used or overstated evidence.",
+    "responsiveness_to_critique": "How each side responded to the critique phase.",
+    "internal_consistency": "Contradictions, coherence, or missing logic.",
+    "decision_usefulness": "Which artifact better supports an actual decision."
+  },
+  "side_summaries": {
+    "side_a": {
+      "strengths": [
+        "One concise strength of Side A."
+      ],
+      "weaknesses": [
+        "One concise weakness of Side A."
+      ]
+    },
+    "side_b": {
+      "strengths": [
+        "One concise strength of Side B."
+      ],
+      "weaknesses": [
+        "One concise weakness of Side B."
+      ]
+    }
+  },
+  "decisive_findings": [
+    "Replace with the actual decisive findings from this run."
+  ],
+  "judge_confidence": "low",
+  "needs_human_review": true,
+  "rationale": "One-paragraph explanation of the verdict."
+}
+
+Validation errors:
+Verdict packet failed validation:
+$.dimension_rationales: Missing required property.
+$.side_summaries: Missing required property.
+
+Previous verdict JSON:
+{
+  "winner": "side_a",
+  "margin": 0,
+  "rubric_scores": {
+    "side_a": {
+      "claim_quality": 4,
+      "evidence_discipline": 5,
+      "responsiveness_to_critique": 5,
+      "internal_consistency": 4,
+      "decision_usefulness": 4,
+      "weighted_total": 0
+    },
+    "side_b": {
+      "claim_quality": 4,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 4,
+      "internal_consistency": 4,
+      "decision_usefulness": 3,
+      "weighted_total": 0
+    }
+  },
+  "decisive_findings": [
+    "Side A's rigorous approach to evidence discipline, by explicitly flagging its projected cost savings as unvalidated hypotheses and establishing a financial modeling gate, provides a more robust and prudent strategic recommendation.",
+    "Side B's recommendation to eliminate the current Total Access program, while acknowledging subscriber retention risks, relies on an unproven assumption of subscriber continuity after removing the core benefit, making its path forward more speculative.",
+    "Side A's strategy offers a clearer, more defensible path by prioritizing the validation of critical financial assumptions, thus presenting a less risky and more actionable decision for the board."
+  ],
+  "judge_confidence": "high",
+  "needs_human_review": true,
+  "rationale": "Side A is the winner due to its superior evidence discipline and more prudent strategic framing. It clearly identifies its projected cost savings as unvalidated hypotheses requiring a critical financial model gate, making its recommendation conditional and robust. In contrast, Side B's recommendation, while responsive to critique regarding retention risk, still relies on an unproven assumption that subscribers will remain after the core benefit is removed, presenting a more speculative path. Side A's approach offers the board a clearer, less risky strategy by prioritizing the validation of essential financial assumptions, thus providing a more actionable decision."
+}

@@ -1,0 +1,13 @@
+# Critique: finding-1
+
+- Target Side: side_b
+- Target Claim IDs: side_b-claim-3
+- Attack Type: evidence_gap
+- Severity: medium
+
+## Claim Under Attack
+Brand equity — not technology — is Netflix's primary competitive moat in streaming, and the ACSI score collapse from 79 to 52 in one quarter represents irreversible damage if the Qwikster plan continues while Amazon, Hulu, and HBO are actively entering the market.
+
+## Evidence Or Reason
+The visible evidence shows customer satisfaction fell sharply and competitors are entering, but it does not establish that brand equity is Netflix's primary moat rather than scale, recommendation quality, installed subscriber base, or content relationships. It also does not support the stronger claim of 'irreversible' damage. A one-quarter ACSI drop is evidence of severe backlash, not proof that the harm cannot be recovered through reversal, pricing adjustment, or product improvement. The claim overreaches beyond the cited facts.
+

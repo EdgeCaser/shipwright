@@ -1,0 +1,13 @@
+# Critique: finding-1
+
+- Target Side: side_b
+- Target Claim IDs: side_b-claim-1
+- Attack Type: evidence_gap
+- Severity: high
+
+## Claim Under Attack
+The PRD should prioritize contradiction resolution and explicit source-of-truth rules, because the scenario is specifically about cross-document contradictions in a technical handoff artifact.
+
+## Evidence Or Reason
+Side B's artifact claims to prioritize contradiction resolution yet resolves zero actual contradictions. The Contradiction-Handling Rule (Section) is purely procedural — a meta-policy about how contradictions would be handled if they were identified — but the document never identifies, names, or resolves a single specific contradiction. A PRD that centers its value proposition on contradiction resolution but contains no concrete instances of resolved contradictions is structurally hollow: downstream teams receive a process description, not a decision artifact. The 'Decision Frame' section reinforces this gap by citing 'the scenario packet and validator expectations' as source of truth without demonstrating any case where two sources actually conflicted and a choice was made. This means the claim that the PRD 'prioritizes contradiction resolution' is aspirational rather than evidenced — the artifact delivers a template for resolution, not resolution itself.
+

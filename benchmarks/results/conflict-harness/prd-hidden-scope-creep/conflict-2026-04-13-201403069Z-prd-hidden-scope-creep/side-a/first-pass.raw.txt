@@ -1,0 +1,44 @@
+
+
+```json
+{
+  "run_id": "conflict-2026-04-13-201403069Z-prd-hidden-scope-creep",
+  "side_id": "side_a",
+  "round": "first_pass",
+  "artifact_markdown": "# PRD: Team Inbox Workflow Handoff Improvement\n\n## Decision Frame\n\n**Problem statement:** Team inbox handoff workflows suffer from dropped conversations, unclear ownership transitions, and loss of context when work passes between agents or shifts. This leads to repeated customer contacts, slower resolution times, and agent frustration.\n\n**Decision to be made:** Should we invest in a structured handoff protocol within the team inbox, and if so, what is the minimum viable scope that addresses the core ownership-gap problem without expanding into adjacent workflow areas?\n\n**Scope boundary:** This PRD covers *handoff mechanics* only — the moment one agent transfers ownership of a conversation to another agent or queue. It explicitly excludes:\n- Routing/assignment logic (how conversations arrive initially)\n- SLA engine or escalation policy changes\n- Customer-facing UI changes\n- Analytics/reporting dashboards\n- AI-assisted response drafting\n- Queue prioritization algorithms\n\n**Why this scope matters:** Handoff improvements are frequently used as a vehicle for broader workflow redesign. Each excluded item above is a real need, but bundling them creates a project that takes 3-4x longer, ships nothing for months, and optimizes for comprehensiveness over impact. This PRD intentionally draws a hard line.\n\n**Target users:** Support agents performing or receiving handoffs within shared team inboxes.\n\n**Success criteria:**\n- Reduce \"orphaned\" conversations (no owner for >30 min during business hours) by 60%\n- Reduce repeat customer contacts caused by lost handoff context by 40%\n- Agent-reported handoff friction score improves from current baseline (to be measured)\n\n## Core Requirements\n\n### R1: Explicit Handoff Action\nAgents must perform a deliberate handoff action (not just unassign). The handoff action requires:\n- Selecting a target (specific agent or queue)\n- Adding a handoff note (mandatory, minimum 20 characters)\n- Confirming the transfer\n\n**Rationale:** Today, conversations are \"handed off\" by unassigning — which is indistinguishable from abandonment. An explicit action creates accountability.\n\n### R2: Handoff Context Bundle\nWhen a handoff occurs, the receiving agent sees a structured context card:\n- Summary of customer issue (agent-written at handoff)\n- Actions already taken (auto-extracted from conversation timeline)\n- Reason for handoff (selected from taxonomy: shift end, expertise needed, escalation, workload)\n- Link to full conversation history\n\n**Rationale:** Context loss is the #1 driver of repeat contacts post-handoff.\n\n### R3: Ownership Continuity Guarantee\nThe system enforces that a conversation always has exactly one owner during business hours:\n- Handoff is atomic: old owner releases only when new owner accepts or auto-accept window (5 min) expires\n- If auto-accept expires, conversation returns to original owner with alert\n- After-hours: conversations enter a \"pending handoff\" queue visible to next shift\n\n**Rationale:** The current gap — where a conversation has zero owners — is the root cause of orphaned conversations.\n\n### R4: Handoff Audit Trail\nAll handoffs are logged with: timestamp, from-agent, to-agent/queue, handoff note, acceptance timestamp. This trail is visible to team leads but not customers.\n\n**Rationale:** Without observability, handoff quality cannot be measured or improved.\n\n## Unknowns & Evidence Gaps\n\n| # | Unknown | Impact if wrong | How to close | Status |\n|---|---------|-----------------|-------------|--------|\n| U1 | Actual orphaned conversation rate — we assume it's high but have no baseline metric | Success criteria may be miscalibrated; we can't measure improvement | Instrument current system to count ownership gaps >30 min over 2-week period | **Not started** |\n| U2 | Whether mandatory handoff notes create meaningful friction that slows agents | Could reduce throughput and create resentment; agents may write garbage notes | Run 1-week pilot with 2 teams, measure handle time delta and note quality | **Not started** |\n| U3 | Whether the 5-minute auto-accept window is the right duration | Too short = rejected handoffs pile up; too long = delayed responses | Analyze current response-to-assignment time distribution to pick p75 | **Not started** |\n| U4 | Whether agents will game the system by handing off difficult conversations | Could shift the problem rather than solve it; creates team friction | Monitor handoff-reason taxonomy usage during pilot; interview agents | **Not started** |\n| U5 | Integration constraints with existing inbox platform (API limits, webhook latency) | Could force architectural compromises that weaken the ownership guarantee | Engineering spike: 3 days to validate atomic handoff is feasible in current stack | **Not started** |\n\n## Pass/Fail Readiness\n\n**Current readiness: NOT READY to build.**\n\nBlocking gaps:\n1. **No baseline data (U1):** We cannot set meaningful success criteria or measure impact without knowing current orphaned conversation rates. This is a 2-week instrumentation effort.\n2. **Feasibility unvalidated (U5):** The atomic ownership guarantee (R3) is the core value proposition. If the platform can't support it, the design changes fundamentally. This requires a 3-day engineering spike.\n3. **Agent friction unknown (U2):** Mandatory handoff notes could backfire. A 1-week pilot with opt-in teams would derisk this before full build.\n\nNon-blocking but important:\n- U3 (auto-accept window) can be tuned post-launch with a config value\n- U4 (gaming) is a monitoring concern, not a build-blocker\n\n**Gate to proceed:** Close U1, U2, and U5 before committing engineering resources to full build. Estimated: 3 weeks of discovery work.\n\n## Recommended Next Artifact\n\n**Immediate next step:** Discovery brief covering U1, U2, and U5 in parallel:\n1. **Instrumentation plan** for orphaned conversation baseline (U1) — owner: engineering\n2. **Pilot design** for mandatory handoff notes with 2 volunteer teams (U2) — owner: product + support ops\n3. **Engineering spike scope** for atomic handoff feasibility (U5) — owner: engineering\n\nAfter discovery completes, the next artifact is a **revised PRD** with validated success criteria and confirmed technical approach, followed by a **technical design doc** for the handoff system.\n\n**What this PRD intentionally defers:** Any expansion into routing, SLA, analytics, or AI-assist. If discovery reveals that handoff improvement alone doesn't move the needle, the correct response is to reconsider the problem framing — not to silently expand scope.",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "Handoff improvement must be scoped strictly to ownership-transfer mechanics; bundling adjacent workflow concerns (routing, SLA, analytics, AI-assist) is hidden scope creep that delays delivery without proportional impact.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "The atomic ownership guarantee (exactly one owner at all times) is the highest-value requirement because zero-owner gaps are the root cause of orphaned conversations and repeat contacts.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-3",
+      "summary": "This PRD is not ready to build — three blocking unknowns (baseline metrics, agent friction from mandatory notes, platform feasibility for atomic handoff) must be closed through discovery before committing engineering resources.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-4",
+      "summary": "Mandatory handoff notes risk creating friction that degrades throughput; this must be validated via pilot before full rollout rather than assumed to be net-positive.",
+      "evidence_refs": [],
+      "is_major": false
+    }
+  ],
+  "citations": [],
+  "open_questions": [
+    "What is the actual baseline rate of orphaned conversations in the current system?",
+    "Can the existing inbox platform support atomic ownership transfer via its API?",
+    "Will mandatory handoff notes meaningfully improve context transfer or just add friction?"
+  ],
+  "critique_responses": []
+}
+```
+

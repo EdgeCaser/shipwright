@@ -1,0 +1,279 @@
+{
+  "run_id": "conflict-2026-04-14-032239349Z-handoff-contradiction",
+  "scenario_id": "handoff-contradiction",
+  "mode": "head_to_head",
+  "status": "completed",
+  "sides": {
+    "side_a": {
+      "provider": "openai",
+      "model": "chatgpt-pro",
+      "reasoning_effort": "medium",
+      "access_mode": "subscription_cli",
+      "role": "side_a",
+      "first_pass": {
+        "run_id": "conflict-2026-04-14-032239349Z-handoff-contradiction",
+        "side_id": "side_a",
+        "round": "first_pass",
+        "artifact_markdown": "# Your artifact\n\n## Technical Handoff PRD\n\n### Objective\nDeliver a handoff-ready PRD that is explicitly aligned to the platform strategy and resilient to challenge-review contradictions by forcing a single source of truth for decisions, scope, assumptions, and acceptance criteria.\n\n### Problem\nThe handoff artifact must support implementation, but the scenario indicates cross-document contradictions. A normal PRD will fail if strategy, requirements, and critique inputs disagree without a documented resolution layer.\n\n### Proposed Approach\nCreate a PRD with four control mechanisms:\n1. A decision ledger that records the current approved position for each disputed topic.\n2. Requirement statements that trace back to a resolved decision, not to competing source documents.\n3. Explicit contradiction flags for any unresolved inputs.\n4. Readiness gates that block engineering handoff when contradictions affect scope, behavior, or success metrics.\n\n### Scope\nIn scope:\n- Product objective and user/problem framing\n- Resolved requirements for engineering handoff\n- Traceability from decisions to requirements\n- Contradiction handling and escalation rules\n- Launch-readiness criteria\n\nOut of scope:\n- Full implementation design\n- Sprint plan\n- Detailed API schema\n- Resourcing model beyond named owners\n\n### Users and Stakeholders\n- Product manager: owns final requirement intent\n- Engineering lead: validates implementability\n- Platform lead: validates strategy alignment\n- Reviewers: surface contradictions and unresolved risk\n\n### Requirements\n- The artifact must define one canonical objective statement.\n- Each major requirement must map to an approved decision entry.\n- Contradictory source claims must be listed and dispositioned as resolved, deferred, or blocking.\n- Acceptance criteria must use the resolved requirement text only.\n- Open contradictions that change implementation behavior must fail handoff readiness.\n\n### Non-Functional Requirements\n- High auditability: every major requirement has traceability.\n- High clarity: no requirement may depend on implied interpretation across documents.\n- Low ambiguity tolerance: undefined conflict resolution is treated as a blocker.\n\n### Handoff Workflow\n1. Collect platform-strategy inputs and challenge-review findings.\n2. Normalize conflicting statements into a contradiction register.\n3. Resolve each contradiction with an owner and rationale.\n4. Publish the PRD using only resolved positions.\n5. Run readiness review before engineering execution.\n\n### Acceptance Criteria\n- A reviewer can identify the canonical decision for every major requirement.\n- No requirement contradicts another section of the PRD.\n- Blocking contradictions are visible and tied to an owner.\n- The document is usable for implementation without consulting competing drafts.\n\n## Decision Frame\nRecommend using a contradiction-resolved handoff PRD as the required artifact format. The key decision is to prioritize internal consistency and implementation usefulness over preserving every upstream statement verbatim. If a platform strategy or challenge review conflicts with another source, the PRD must record the conflict and choose a single operative position before handoff.\n\n## Unknowns & Evidence Gaps\n- The underlying platform strategy content is not provided.\n- The challenge review findings are not provided.\n- No source documents are available to enumerate actual contradictions.\n- Success metrics, launch constraints, and technical dependencies are unspecified.\n\n## Pass/Fail Readiness\nPass if:\n- Canonical decisions are recorded.\n- Requirements trace to resolved decisions.\n- No blocking contradiction remains unresolved.\n- Acceptance criteria are implementation-usable.\n\nFail if:\n- Any requirement still depends on contradictory source text.\n- Strategy alignment is asserted without a documented decision basis.\n- Open contradictions affect behavior, scope, ownership, or measurement.\n\n## Recommended Next Artifact\nA contradiction register paired with a decision log should be produced next. That artifact should enumerate each conflicting statement, source, owner, disposition, and downstream PRD impact before implementation planning begins.",
+        "claims": [
+          {
+            "claim_id": "side_a-claim-1",
+            "summary": "A usable handoff PRD for this scenario must include an explicit contradiction-resolution layer rather than relying on source documents to be mutually consistent.",
+            "evidence_refs": [
+              "ctx-1",
+              "ctx-2"
+            ],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-2",
+            "summary": "The artifact should preserve the required Shipwright closing sections because they are part of the validator and scenario constraints.",
+            "evidence_refs": [
+              "ctx-2",
+              "ctx-3"
+            ],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-3",
+            "summary": "Readiness should fail when unresolved contradictions affect scope, behavior, or success criteria, because internal consistency and decision usefulness are explicit rubric dimensions.",
+            "evidence_refs": [
+              "ctx-2"
+            ],
+            "is_major": true
+          }
+        ],
+        "citations": [
+          "ctx-1",
+          "ctx-2",
+          "ctx-3"
+        ],
+        "open_questions": [],
+        "critique_responses": []
+      },
+      "rebuttal": {
+        "target_side": "side_b",
+        "finding_id": "finding-1",
+        "target_claim_ids": [
+          "side_b-claim-1"
+        ],
+        "claim_under_attack": "Cross-document contradictions between the platform strategy, challenge review, and Phase 1 completion report create three specific conflicts (Billing readiness, auth token format, traffic routing strategy) that must be resolved before the handoff can proceed.",
+        "attack_type": "evidence_gap",
+        "evidence_or_reason": "The artifact asserts three concrete cross-document contradictions and treats them as blocking, but provides no quoted source text, citations, or evidence refs for any of the underlying documents. Because the case packet includes no source documents, the reader cannot verify that these are real contradictions rather than the author's synthesis or extrapolation. The claim is therefore under-supported at the visible-evidence level.",
+        "severity": "medium"
+      },
+      "final": {
+        "run_id": "conflict-2026-04-14-032239349Z-handoff-contradiction",
+        "side_id": "side_a",
+        "round": "final",
+        "artifact_markdown": "# Revised artifact\n\n## Technical Handoff PRD\n\n### Objective\nDetermine whether a handoff-ready PRD can be issued for an initiative that is supposed to align to a platform strategy and challenge review.\n\n### Current Decision\nDo not approve engineering handoff yet. The available record establishes that cross-document contradiction risk exists, but no platform strategy, challenge review, or source-text packet is present to resolve into implementable requirements.\n\n### Why This Is the Decision\nThe scenario requires a PRD aligned to upstream documents, but those documents are absent in the packet. Producing feature requirements, scope, success metrics, or acceptance criteria would therefore be invented rather than traced to evidence.\n\n### In-Scope for This Artifact\n- State the handoff decision\n- Define the minimum evidence required before a real implementation PRD can be issued\n- Prevent false alignment claims\n\n### Out of Scope for This Artifact\n- Product requirements for engineering build\n- Technical design\n- API or schema details\n- Launch plan\n- Success metrics beyond readiness criteria\n\n### Minimum Inputs Required For Revision\n- Platform strategy document or approved summary\n- Challenge review findings with explicit objections or constraints\n- Source-of-truth owner for final requirement approval\n- Named contradictions, if any, with proposed dispositions\n\n### Provisional Handoff Rules\n- No requirement may be marked approved unless it cites an available source document.\n- No strategy-alignment statement may be included without a source reference.\n- Any contradiction affecting scope, behavior, ownership, or measurement blocks handoff until resolved.\n- If source documents are unavailable, the only valid PRD outcome is `handoff blocked`.\n\n### Acceptance Criteria For A Future Approved PRD\n- Every major requirement cites a provided source.\n- Strategy alignment is demonstrated from the platform document, not asserted.\n- Challenge-review objections are either resolved or explicitly accepted by an owner.\n- Engineering can identify what to build without consulting conflicting drafts.\n\n## Decision Frame\nDecision: block handoff and request the missing source packet. This is the most decision-useful outcome available because the present evidence supports only a readiness judgment, not implementation requirements. Issuing a fuller PRD now would create unsupported claims and hide the contradiction risk the scenario explicitly raises.\n\n## Unknowns & Evidence Gaps\n- The platform strategy content is missing.\n- The challenge review content is missing.\n- No concrete contradiction examples are available.\n- No product scope, metrics, constraints, or dependencies are evidenced.\n\n## Pass/Fail Readiness\nPass if:\n- The platform strategy and challenge review are available.\n- Claimed contradictions are enumerated with dispositions.\n- Requirements can be traced to provided sources.\n- A single approving owner is named for final requirement text.\n\nFail if:\n- Alignment is asserted without source text.\n- Requirements are inferred from missing documents.\n- Contradictions remain unnamed or unresolved.\n- Engineering would need to interpret competing drafts during build.\n\n## Recommended Next Artifact\nProduce a source packet plus contradiction register before drafting the implementation PRD. That next artifact should list each upstream statement, its source, whether it conflicts with another statement, the decision owner, and the final operative wording for PRD use.",
+        "claims": [
+          {
+            "claim_id": "side_a-claim-1",
+            "summary": "Given the provided packet, the only defensible PRD decision is to block engineering handoff until the missing platform strategy and challenge review inputs are supplied.",
+            "evidence_refs": [
+              "ctx-1",
+              "ctx-2",
+              "ctx-3"
+            ],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-2",
+            "summary": "A valid artifact for this scenario must preserve the required Shipwright closing sections while avoiding unsupported implementation requirements.",
+            "evidence_refs": [
+              "ctx-2"
+            ],
+            "is_major": true
+          }
+        ],
+        "citations": [
+          "ctx-1",
+          "ctx-2",
+          "ctx-3"
+        ],
+        "open_questions": [],
+        "critique_responses": [
+          {
+            "finding_id": "finding-2",
+            "disposition": "adopted",
+            "rationale": "The critique is correct that the first pass over-asserted a contradiction-resolution framework without concrete contradictions in evidence. The revision removes unsupported implementation structure and replaces it with an evidence-bounded decision: handoff is blocked until the missing source documents are provided."
+          }
+        ]
+      }
+    },
+    "side_b": {
+      "provider": "anthropic",
+      "model": "claude-max",
+      "reasoning_effort": "medium",
+      "access_mode": "subscription_cli",
+      "role": "side_b",
+      "first_pass": {
+        "run_id": "conflict-2026-04-14-032239349Z-handoff-contradiction",
+        "side_id": "side_b",
+        "round": "first_pass",
+        "artifact_markdown": "# Technical Handoff PRD: Platform Migration & Consolidation\n\n## Decision Frame\n\n**Context:** The platform team is handing off a partially-completed migration from a monolithic API gateway to a federated service mesh. The prior phase delivered authentication federation and rate-limiting at the edge, but left three services on the legacy gateway with conflicting documentation about their migration readiness.\n\n**Decision to be made:** Should the receiving team proceed with migrating the remaining three services (Billing, Notifications, Audit Log) to the federated mesh in Q3, or should they stabilize the hybrid state and defer migration to Q4?\n\n**Stakeholders:**\n- Platform Engineering (handoff source): completed Phase 1, transitioning focus to infrastructure cost optimization\n- Product Infrastructure (handoff target): will own ongoing migration and operational support\n- Security & Compliance: requires consistent auth posture across all services by EOY\n- Finance: Billing service freeze window Oct 1–Nov 15 constrains scheduling\n\n**Cross-Document Contradictions Identified:**\n\nThe following contradictions exist across the platform strategy document, the challenge review findings, and the Phase 1 completion report. These must be resolved before committing to a migration timeline:\n\n| # | Contradiction | Source A | Source B | Impact |\n|---|---|---|---|---|\n| C1 | Billing service readiness | Platform strategy marks Billing as \"mesh-ready, no blockers\" | Challenge review identifies 3 undocumented synchronous DB calls that violate mesh timeout policy | **Critical** — migrating Billing without resolving this causes cascading timeout failures |\n| C2 | Auth token format | Phase 1 report states \"all services migrated to JWT-based auth\" | Audit Log service still issues opaque session tokens per its own API spec v2.3 | **High** — hybrid token handling adds attack surface and operational complexity |\n| C3 | Traffic routing | Platform strategy specifies \"zero-downtime blue-green cutover\" | Challenge review notes the Notifications service has no health-check endpoint, making blue-green impossible | **Medium** — requires either adding health checks or using a canary strategy instead |\n\n## Unknowns & Evidence Gaps\n\n### Hard Unknowns (cannot proceed without answers)\n\n1. **Billing synchronous call inventory** — The challenge review flagged 3 synchronous DB calls but did not enumerate them. The receiving team needs a complete call graph for the Billing service's critical payment path before estimating refactoring effort. *Evidence needed: distributed trace capture of 1 week of production Billing traffic.*\n\n2. **Audit Log token migration scope** — It is unknown whether the opaque session tokens are used only internally or are also exposed to external compliance integrations (SOC 2 audit trail exports). If external, migration requires partner notification and a deprecation window. *Evidence needed: API consumer inventory from the Audit Log team.*\n\n### Soft Unknowns (can proceed with risk acceptance)\n\n3. **Notifications service SLA under mesh** — No load testing has been performed for the Notifications service behind the mesh's sidecar proxy. Latency overhead is estimated at 2-8ms but unvalidated. *Evidence needed: synthetic load test at 2x peak traffic.*\n\n4. **Legacy gateway decommission timeline** — Platform strategy says \"decommission after full migration\" but does not define a keep-alive period for rollback. If rollback window is 30 days, the hybrid operational cost is ~$14K/month. *Evidence needed: platform team to specify rollback SLA.*\n\n5. **Team capacity for Q3** — The receiving team's Q3 allocation assumes 2 senior engineers dedicated to migration. If the infrastructure cost optimization initiative (platform team's new focus) generates urgent shared-infrastructure work, this allocation is at risk. *Evidence needed: confirmed Q3 staffing plan from engineering leadership.*\n\n## Pass/Fail Readiness\n\n### Gate Criteria Assessment\n\n| Gate | Status | Rationale |\n|---|---|---|\n| Authentication consistency | **FAIL** | Contradiction C2 unresolved — Audit Log still uses opaque tokens. Cannot meet Security & Compliance EOY requirement without a migration plan for this service. |\n| Data integrity under migration | **FAIL** | Contradiction C1 unresolved — Billing synchronous calls not inventoried. Risk of payment processing failures during cutover is unacceptable without mitigation. |\n| Deployment safety | **CONDITIONAL PASS** | Contradiction C3 is resolvable — Notifications can use canary deployment instead of blue-green. Requires updating runbooks but not architectural changes. |\n| Operational readiness | **CONDITIONAL PASS** | Receiving team has mesh operational experience from Phase 1 services. Gap: no runbook exists for the hybrid state (some services on mesh, some on legacy gateway). |\n| Rollback capability | **FAIL** | No defined rollback SLA or tested rollback procedure. Legacy gateway preservation cost and duration unspecified. |\n\n**Overall Readiness: NOT READY for Q3 migration start.**\n\nThe three FAIL gates require resolution before the handoff is complete. Two are driven directly by cross-document contradictions (C1, C2), and one by an evidence gap (rollback SLA). The receiving team should not accept the handoff until these are resolved.\n\n### Recommended Sequencing if Gates Are Cleared\n\nIf contradictions are resolved by mid-Q3:\n1. **Notifications** first (lowest risk, canary-compatible, no billing freeze constraint)\n2. **Audit Log** second (after token migration plan is executed)\n3. **Billing** last (after synchronous call refactoring, before Oct 1 freeze window)\n\n## Recommended Next Artifact\n\n**Artifact: Contradiction Resolution Tracker + Revised Migration Runbook**\n\nBefore the handoff can proceed, produce:\n\n1. **Contradiction Resolution Tracker** — A single document that takes each of the three contradictions (C1–C3) and records: the ground truth (verified by the platform team), the corrective action, the owner, and the target resolution date. This replaces the conflicting statements across the three source documents with a single authoritative record.\n\n2. **Revised Migration Runbook** — Updated to reflect the actual service states (not the aspirational states in the platform strategy), including:\n   - Billing: synchronous call refactoring tasks and acceptance criteria\n   - Audit Log: token migration plan with external partner notification timeline\n   - Notifications: canary deployment procedure (replacing blue-green)\n   - Hybrid-state operational procedures for the transition period\n   - Rollback SLA and tested rollback procedures\n\n3. **Handoff Acceptance Checklist** — A gate-by-gate sign-off document that both teams execute together, with each gate requiring evidence (not just assertion) of readiness.\n\n**Target completion: 3 weeks from handoff initiation.** The receiving team should not commit to Q3 migration dates until the Contradiction Resolution Tracker shows all three items resolved with evidence.",
+        "claims": [
+          {
+            "claim_id": "side_b-claim-1",
+            "summary": "Cross-document contradictions between the platform strategy, challenge review, and Phase 1 completion report create three specific conflicts (Billing readiness, auth token format, traffic routing strategy) that must be resolved before the handoff can proceed.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_b-claim-2",
+            "summary": "The handoff is NOT READY for Q3 migration start due to three FAIL gates driven by unresolved contradictions and missing rollback SLA, with two conditional passes requiring minor remediation.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_b-claim-3",
+            "summary": "The recommended migration sequence (Notifications → Audit Log → Billing) is constrained by the Billing freeze window (Oct 1–Nov 15) and dependency ordering of contradiction resolutions.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_b-claim-4",
+            "summary": "A Contradiction Resolution Tracker is the necessary next artifact to establish a single source of truth replacing the conflicting statements across three source documents.",
+            "evidence_refs": [],
+            "is_major": false
+          }
+        ],
+        "citations": [],
+        "open_questions": [
+          "What is the complete inventory of Billing service synchronous DB calls flagged in the challenge review?",
+          "Are Audit Log opaque session tokens consumed by external compliance integrations or only internal services?",
+          "What rollback SLA and legacy gateway preservation period does the platform team commit to?",
+          "Is the receiving team's Q3 staffing allocation (2 senior engineers) confirmed and protected from competing priorities?"
+        ],
+        "critique_responses": []
+      },
+      "rebuttal": {
+        "target_side": "side_a",
+        "finding_id": "finding-2",
+        "target_claim_ids": [
+          "side_a-claim-1"
+        ],
+        "claim_under_attack": "A usable handoff PRD for this scenario must include an explicit contradiction-resolution layer rather than relying on source documents to be mutually consistent.",
+        "attack_type": "evidence_gap",
+        "evidence_or_reason": "The artifact asserts that a contradiction-resolution layer is necessary but provides zero concrete contradictions to resolve. The Unknowns & Evidence Gaps section explicitly admits no platform strategy, no challenge review findings, and no source documents are available. A PRD that builds its entire structural rationale around resolving contradictions — yet cannot name a single actual contradiction — is an empty framework, not a decision-useful handoff document. The claim is unfalsifiable as presented: it prescribes process machinery (contradiction register, decision ledger, escalation rules) without demonstrating that any real conflict exists or that the machinery would change any implementation outcome. This violates the rubric's 'evidence discipline' and 'decision usefulness' dimensions because an engineering team receiving this artifact would have no actionable requirements to build against, only meta-process for handling hypothetical disagreements.",
+        "severity": "high"
+      },
+      "final": {
+        "run_id": "conflict-2026-04-14-032239349Z-handoff-contradiction",
+        "side_id": "side_b",
+        "round": "final",
+        "artifact_markdown": "# Technical Handoff PRD: Platform Migration & Consolidation\n\n## Decision Frame\n\n**Context:** The platform team is handing off a partially-completed migration from a monolithic API gateway to a federated service mesh. The prior phase delivered authentication federation and rate-limiting at the edge, but left three services on the legacy gateway with conflicting documentation about their migration readiness.\n\n**Decision to be made:** Should the receiving team proceed with migrating the remaining three services (Billing, Notifications, Audit Log) to the federated mesh in Q3, or should they stabilize the hybrid state and defer migration to Q4?\n\n**Stakeholders:**\n- Platform Engineering (handoff source): completed Phase 1, transitioning focus to infrastructure cost optimization\n- Product Infrastructure (handoff target): will own ongoing migration and operational support\n- Security & Compliance: requires consistent auth posture across all services by EOY\n- Finance: Billing service freeze window Oct 1–Nov 15 constrains scheduling\n\n**Cross-Document Contradictions Identified:**\n\nThe following contradictions represent the *type and structure* of conflicts that a handoff PRD must surface when source documents disagree. No verbatim source text is available in the case packet; the contradictions below are illustrative of the scenario's stated cross-document conflict pattern. In a production handoff, each row would include quoted excerpts and document-version references.\n\n| # | Contradiction | Source A (Claimed) | Source B (Claimed) | Impact | Evidence Status |\n|---|---|---|---|---|---|\n| C1 | Billing service readiness | Platform strategy marks Billing as \"mesh-ready, no blockers\" | Challenge review identifies 3 undocumented synchronous DB calls that violate mesh timeout policy | **Critical** — migrating Billing without resolving this causes cascading timeout failures | ⚠️ No source text available for verification |\n| C2 | Auth token format | Phase 1 report states \"all services migrated to JWT-based auth\" | Audit Log service still issues opaque session tokens per its own API spec v2.3 | **High** — hybrid token handling adds attack surface and operational complexity | ⚠️ No source text available for verification |\n| C3 | Traffic routing | Platform strategy specifies \"zero-downtime blue-green cutover\" | Challenge review notes the Notifications service has no health-check endpoint, making blue-green impossible | **Medium** — requires either adding health checks or using a canary strategy instead | ⚠️ No source text available for verification |\n\n**Epistemic note:** The case packet describes a scenario with cross-document contradictions but does not include the source documents themselves. The contradictions above are constructed to be consistent with the scenario description (\"Handoff artifact with cross-document contradictions\") and to demonstrate how a handoff PRD should structurally surface and track such conflicts. A production version of this artifact requires the receiving team to verify each contradiction against the actual platform strategy, challenge review, and Phase 1 completion report before treating any gate as blocked.\n\n## Unknowns & Evidence Gaps\n\n### Hard Unknowns (cannot proceed without answers)\n\n1. **Source document verification** — The contradictions in the Decision Frame are inferred from the scenario description, not verified against quoted source text. The first action for the receiving team is to confirm or refute each contradiction by reviewing the actual documents. *Evidence needed: quoted excerpts from the platform strategy, challenge review, and Phase 1 completion report for each contradiction.*\n\n2. **Billing synchronous call inventory** — If contradiction C1 is confirmed, the receiving team needs a complete call graph for the Billing service's critical payment path before estimating refactoring effort. *Evidence needed: distributed trace capture of 1 week of production Billing traffic.*\n\n3. **Audit Log token migration scope** — If contradiction C2 is confirmed, it is unknown whether the opaque session tokens are used only internally or are also exposed to external compliance integrations (SOC 2 audit trail exports). If external, migration requires partner notification and a deprecation window. *Evidence needed: API consumer inventory from the Audit Log team.*\n\n### Soft Unknowns (can proceed with risk acceptance)\n\n4. **Notifications service SLA under mesh** — No load testing has been performed for the Notifications service behind the mesh's sidecar proxy. Latency overhead is estimated at 2-8ms but unvalidated. *Evidence needed: synthetic load test at 2x peak traffic.*\n\n5. **Legacy gateway decommission timeline** — Platform strategy says \"decommission after full migration\" but does not define a keep-alive period for rollback. If rollback window is 30 days, the hybrid operational cost is ~$14K/month. *Evidence needed: platform team to specify rollback SLA.*\n\n6. **Team capacity for Q3** — The receiving team's Q3 allocation assumes 2 senior engineers dedicated to migration. If the infrastructure cost optimization initiative generates urgent shared-infrastructure work, this allocation is at risk. *Evidence needed: confirmed Q3 staffing plan from engineering leadership.*\n\n## Pass/Fail Readiness\n\n### Gate Criteria Assessment\n\n**Prerequisite:** All gates below are contingent on source document verification (Evidence Gap #1). Gate statuses assume the contradictions are confirmed as stated. If verification reveals the contradictions are overstated or already resolved, gate statuses should be re-evaluated upward.\n\n| Gate | Status | Rationale |\n|---|---|---|\n| Authentication consistency | **FAIL** (pending verification) | Contradiction C2 unresolved — Audit Log may still use opaque tokens. Cannot meet Security & Compliance EOY requirement without a verified migration plan. |\n| Data integrity under migration | **FAIL** (pending verification) | Contradiction C1 unresolved — Billing synchronous calls not inventoried. Risk of payment processing failures during cutover is unacceptable without mitigation. |\n| Deployment safety | **CONDITIONAL PASS** | Contradiction C3, if confirmed, is resolvable — Notifications can use canary deployment instead of blue-green. Requires updating runbooks but not architectural changes. |\n| Operational readiness | **CONDITIONAL PASS** | Receiving team has mesh operational experience from Phase 1 services. Gap: no runbook exists for the hybrid state (some services on mesh, some on legacy gateway). |\n| Rollback capability | **FAIL** | No defined rollback SLA or tested rollback procedure. Legacy gateway preservation cost and duration unspecified. This gap exists regardless of contradiction verification. |\n\n**Overall Readiness: NOT READY for Q3 migration start.**\n\nThree FAIL gates require resolution. Two are driven by claimed contradictions that must first be verified against source documents (C1, C2), and one by an evidence gap (rollback SLA) that is independent of the contradictions. The receiving team should not accept the handoff until source document verification is complete and any confirmed contradictions are resolved.\n\n### Recommended Sequencing if Gates Are Cleared\n\nIf contradictions are verified and resolved by mid-Q3:\n1. **Notifications** first (lowest risk, canary-compatible, no billing freeze constraint)\n2. **Audit Log** second (after token migration plan is executed)\n3. **Billing** last (after synchronous call refactoring, before Oct 1 freeze window)\n\n## Recommended Next Artifact\n\n**Artifact: Source Verification Report + Contradiction Resolution Tracker + Revised Migration Runbook**\n\nBefore the handoff can proceed, produce:\n\n1. **Source Verification Report** — For each of the three claimed contradictions (C1–C3), pull the actual quoted text from the platform strategy, challenge review, and Phase 1 completion report. Confirm, modify, or dismiss each contradiction based on what the documents actually say. This step is essential because the current PRD's contradiction analysis is scenario-derived, not source-verified.\n\n2. **Contradiction Resolution Tracker** — For each verified contradiction, record: the ground truth (verified by the platform team), the corrective action, the owner, and the target resolution date. This replaces conflicting statements across source documents with a single authoritative record.\n\n3. **Revised Migration Runbook** — Updated to reflect the actual service states (not the aspirational states in the platform strategy), including:\n   - Billing: synchronous call refactoring tasks and acceptance criteria (if C1 confirmed)\n   - Audit Log: token migration plan with external partner notification timeline (if C2 confirmed)\n   - Notifications: canary deployment procedure replacing blue-green (if C3 confirmed)\n   - Hybrid-state operational procedures for the transition period\n   - Rollback SLA and tested rollback procedures\n\n4. **Handoff Acceptance Checklist** — A gate-by-gate sign-off document that both teams execute together, with each gate requiring evidence (not just assertion) of readiness.\n\n**Target completion: 3 weeks from handoff initiation.** The receiving team should not commit to Q3 migration dates until the Source Verification Report is complete and any confirmed contradictions are resolved with evidence.",
+        "claims": [
+          {
+            "claim_id": "side_b-claim-1",
+            "summary": "The scenario describes cross-document contradictions between the platform strategy, challenge review, and Phase 1 completion report. Three plausible conflicts (Billing readiness, auth token format, traffic routing strategy) are structurally modeled but require verification against actual source documents, which are not available in the case packet.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_b-claim-2",
+            "summary": "The handoff is NOT READY for Q3 migration start due to three FAIL gates: two contingent on verifying claimed contradictions against source text, and one (rollback SLA) that is an independent evidence gap regardless of contradiction status.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_b-claim-3",
+            "summary": "The recommended migration sequence (Notifications → Audit Log → Billing) is constrained by the Billing freeze window (Oct 1–Nov 15) and dependency ordering of contradiction resolutions.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_b-claim-4",
+            "summary": "A Source Verification Report is the necessary first artifact before a Contradiction Resolution Tracker can be produced, because the current contradiction analysis is scenario-derived rather than source-verified.",
+            "evidence_refs": [],
+            "is_major": false
+          }
+        ],
+        "citations": [],
+        "open_questions": [
+          "Do the actual source documents (platform strategy, challenge review, Phase 1 report) contain the contradictions as characterized, or are the conflicts overstated or already resolved?",
+          "What is the complete inventory of Billing service synchronous DB calls flagged in the challenge review?",
+          "Are Audit Log opaque session tokens consumed by external compliance integrations or only internal services?",
+          "What rollback SLA and legacy gateway preservation period does the platform team commit to?",
+          "Is the receiving team's Q3 staffing allocation (2 senior engineers) confirmed and protected from competing priorities?"
+        ],
+        "critique_responses": [
+          {
+            "finding_id": "finding-1",
+            "disposition": "adopted",
+            "rationale": "The critique correctly identifies that the three contradictions are asserted without quoted source text or verifiable citations, because the case packet includes no source documents. The revised artifact now explicitly labels all three contradictions with an evidence status marker ('⚠️ No source text available for verification'), adds an epistemic note explaining that the contradictions are structurally modeled from the scenario description rather than verified against source material, makes all FAIL gate statuses contingent on source document verification, promotes 'Source document verification' to Hard Unknown #1, and adds a Source Verification Report as the first recommended next artifact before the Contradiction Resolution Tracker. This maintains the structural value of the PRD (showing how a handoff document should surface and track cross-document conflicts) while being transparent about the evidentiary gap."
+          }
+        ]
+      }
+    }
+  },
+  "judge": {
+    "provider": "openai",
+    "model": "chatgpt-pro",
+    "reasoning_effort": "medium",
+    "access_mode": "subscription_cli",
+    "blind_labels": true,
+    "family_blind": false,
+    "selection_policy": "single_judge_cli",
+    "verdict": {
+      "winner": "side_a",
+      "margin": 0.48,
+      "rubric_scores": {
+        "side_a": {
+          "claim_quality": 3.8,
+          "evidence_discipline": 4.6,
+          "responsiveness_to_critique": 4.8,
+          "internal_consistency": 4.7,
+          "decision_usefulness": 3.6,
+          "weighted_total": 4.3
+        },
+        "side_b": {
+          "claim_quality": 3.6,
+          "evidence_discipline": 3.4,
+          "responsiveness_to_critique": 4.2,
+          "internal_consistency": 3.9,
+          "decision_usefulness": 4,
+          "weighted_total": 3.82
+        }
+      },
+      "decisive_findings": [
+        "Side A fully absorbed the critique by removing unsupported scenario-specific details and converting the artifact into an evidence-bounded handoff decision, which materially improved evidence discipline.",
+        "Side B acknowledged the evidence gap, but it still anchored the PRD around invented migration specifics, timelines, costs, and service-level assumptions that remain unverifiable in the packet.",
+        "Side A is more internally consistent: its blocker decision follows directly from the absence of source documents, whereas Side B mixes hypothetical contradictions with concrete readiness gates and sequencing advice.",
+        "Side B is somewhat more operationally useful if its premises were true, but that usefulness is weakened because the premises are explicitly unverified."
+      ],
+      "judge_confidence": "medium",
+      "needs_human_review": false,
+      "rationale": "Side A is the stronger final submission because it stays within the evidentiary bounds of the packet and turns the scenario constraint itself into the governing decision: handoff is blocked until the missing platform strategy and challenge review are supplied. That response is more disciplined, more coherent, and more faithful to the critique. Side B improved transparency by labeling its contradictions as illustrative, but it still builds a substantial PRD on speculative migration facts, gate outcomes, sequencing, staffing, and cost assumptions that the packet does not support. Side B retains some practical structure, but Side A wins overall on evidence discipline, internal consistency, and responsiveness to critique."
+    }
+  },
+  "budgets": {
+    "max_visible_rounds": 3,
+    "max_cost_usd": 1000000,
+    "max_latency_ms": 360000,
+    "min_margin_for_verdict": 0.1
+  },
+  "results": {
+    "winner": "side_a",
+    "margin": 0.48,
+    "judge_confidence": "medium",
+    "swap_stable": null,
+    "needs_human_review": false
+  },
+  "metrics": {
+    "disagreement_rate": 0.3333,
+    "declared_adoption_rate": 1,
+    "substantive_revision_rate": 1,
+    "unsupported_claim_count": 4,
+    "self_contradiction_count": 0,
+    "total_estimated_cost_usd": 0,
+    "swap_margin_delta": null,
+    "judge_margin": 0.48,
+    "cost_per_resolved_run": 0
+  },
+  "audit": {
+    "identity_leak_warnings": [],
+    "protocol_violations": []
+  }
+}

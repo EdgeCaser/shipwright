@@ -1,0 +1,13 @@
+# Critique: finding-2
+
+- Target Side: side_a
+- Target Claim IDs: side_a-claim-2
+- Attack Type: evidence_gap
+- Severity: medium
+
+## Claim Under Attack
+A required handoff card with four fields (summary, status, commitments, next action) is the minimum viable intervention that addresses the context-loss failure mode without requiring AI or workflow engine changes.
+
+## Evidence Or Reason
+The visible artifact does not support the 'minimum viable' part of this claim. It proposes the handoff card alongside atomic ownership transfer, a handoff badge, and a keyword-overlap nudge, which means the intervention bundle is already larger than the four fields alone. It also provides no user evidence that these exact fields are sufficient, nor any comparison against smaller alternatives like required next action only, required note on reassignment, or display-only changes. Without comparative evidence, the PRD is asserting minimality and sufficiency rather than demonstrating them.
+

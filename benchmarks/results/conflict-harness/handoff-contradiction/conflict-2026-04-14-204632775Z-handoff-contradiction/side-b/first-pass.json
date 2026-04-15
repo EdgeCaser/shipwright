@@ -1,0 +1,49 @@
+{
+  "run_id": "conflict-2026-04-14-204632775Z-handoff-contradiction",
+  "side_id": "side_b",
+  "round": "first_pass",
+  "artifact_markdown": "# Technical Handoff PRD\n\n## Product Requirement\nBuild a technical handoff PRD template and review process that converts platform strategy and challenge-review inputs into a single implementation-ready document, with contradiction handling explicit rather than implicit.\n\n## Problem\nThe handoff artifact is expected to align to both a platform strategy and a challenge review, but those inputs can disagree on scope, sequencing, assumptions, or success criteria. If contradictions are not surfaced and resolved inside the PRD, engineering receives an artifact that appears complete but is operationally ambiguous.\n\n## Objective\nProduce a handoff PRD structure that is decision-useful for engineering and program owners by:\n- preserving strategic intent\n- recording material contradictions across source inputs\n- forcing explicit disposition of unresolved conflicts\n- making implementation readiness testable\n\n## Users\n- Product manager authoring the handoff\n- Engineering lead consuming the PRD\n- Platform owner accountable for strategy alignment\n- Reviewers validating whether contradictions were resolved, deferred, or accepted\n\n## Scope\nIn scope:\n- PRD structure for strategy-aligned technical handoff\n- contradiction register embedded in the PRD\n- explicit mapping from strategy claims to implementation requirements\n- readiness gates for implementation start\n\nOut of scope:\n- detailed solution design\n- sprint plan decomposition\n- post-launch analytics design\n\n## Requirements\n1. The PRD must include a source-of-truth section listing the governing platform strategy and challenge-review decisions.\n2. Each requirement must trace to a strategic rationale or a challenge-review constraint.\n3. Any contradiction across source inputs must be logged with:\n- conflicting statements\n- impact area\n- owner\n- required decision date\n- temporary operating assumption if unresolved\n4. The PRD must distinguish:\n- confirmed decisions\n- open decisions\n- rejected alternatives\n5. Implementation requirements must include acceptance criteria and dependency assumptions.\n6. The handoff must state whether engineering may proceed on full scope, partial scope, or discovery only.\n\n## Proposed PRD Structure\n- Context and objective\n- Source inputs and authority order\n- Product and platform goals\n- Functional requirements\n- Non-functional requirements\n- Contradiction register\n- Decision log\n- Dependencies and risks\n- Readiness status\n\n## Contradiction Handling Rules\n- If platform strategy and challenge review conflict, the PRD must name the conflict directly.\n- If the conflict changes scope, architecture, sequencing, or metrics, it is blocking.\n- If the conflict is non-blocking, the PRD may proceed with a documented temporary assumption and named owner.\n- Silent reconciliation is not allowed.\n\n## Acceptance Criteria\n- A reviewer can identify which source input governs each major requirement.\n- A reviewer can identify every unresolved contradiction in one pass.\n- Engineering can tell whether work may start without additional product clarification.\n- The document contains the required structured closing sections.\n\n## Risks\n- Teams may treat the contradiction register as optional commentary rather than a gating mechanism.\n- Strategy owners may resist explicit authority ordering across documents.\n- A PRD can still look internally consistent while embedding unresolved upstream ambiguity unless traceability is enforced.\n\n## Decision Frame\nAdopt a handoff PRD standard that treats contradiction capture and disposition as a core requirement, not a review afterthought. The useful decision is not merely to write a PRD, but to make cross-document conflicts legible enough that engineering knows what is actually approved.\n\n## Unknowns & Evidence Gaps\n- No source platform strategy or challenge-review documents were provided, so specific contradictions cannot be enumerated.\n- No evidence was provided on current team workflow, approval latency, or failure modes in prior handoffs.\n- Authority order between strategy, challenge review, and engineering constraints remains unspecified.\n\n## Pass/Fail Readiness\nPass if:\n- source documents are named\n- authority order is explicit\n- blocking contradictions are identified\n- engineering start condition is stated\n\nFail if:\n- conflicting inputs are merged without disposition\n- requirements lack traceability\n- open decisions are embedded as if final\n- implementation is authorized without clear blocking status\n\n## Recommended Next Artifact\nA contradiction-resolved implementation brief that takes the actual platform strategy and challenge-review inputs, populates the contradiction register, and converts only approved decisions into engineering-ready requirements.",
+  "claims": [
+    {
+      "claim_id": "side_b-claim-1",
+      "summary": "A useful technical handoff PRD must make cross-document contradictions explicit and attach owners, disposition, and implementation impact.",
+      "evidence_refs": [
+        "ctx-1",
+        "ctx-2",
+        "ctx-3"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-2",
+      "summary": "Traceability from strategy and review inputs to requirements is necessary for internal consistency and decision usefulness.",
+      "evidence_refs": [
+        "ctx-1",
+        "ctx-2"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-3",
+      "summary": "Because no source evidence documents were provided, the artifact should define a robust PRD structure and explicitly mark unresolved evidence gaps instead of inventing specifics.",
+      "evidence_refs": [
+        "ctx-1",
+        "ctx-4"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1",
+    "ctx-2",
+    "ctx-3",
+    "ctx-4"
+  ],
+  "conclusion_confidence": "medium",
+  "open_questions": [
+    "Which source has final authority when platform strategy and challenge review disagree?",
+    "What specific contradictions exist in the actual handoff inputs on scope, sequencing, metrics, or architecture?",
+    "Is engineering expected to begin full implementation, partial implementation, or only discovery after handoff?"
+  ],
+  "critique_responses": []
+}

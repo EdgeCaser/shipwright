@@ -1,0 +1,105 @@
+Your previous judge output was close but rejected by schema validation.
+Rewrite it as ONLY a JSON object that preserves the same winner, margin, rubric_scores, decisive_dimension, judge_confidence, needs_human_review, decisive_findings, and rationale unless the schema absolutely requires clarification.
+Any rubric_scores.*.weighted_total value must be a normalized aggregate on the same 1-5 scale as the rubric dimensions, not a raw sum.
+You MUST include these missing required properties with substantive content:
+- dimension_rationales
+- side_summaries
+- decisive_dimension
+- rubric_scores.side_a.weighted_total
+- rubric_scores.side_b.weighted_total
+
+Required schema shape:
+{
+  "winner": "tie",
+  "margin": 0,
+  "rubric_scores": {
+    "side_a": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    },
+    "side_b": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    }
+  },
+  "dimension_rationales": {
+    "claim_quality": "Which side made the stronger claims and why.",
+    "evidence_discipline": "How each side used or overstated evidence.",
+    "responsiveness_to_critique": "How each side responded to the critique phase.",
+    "internal_consistency": "Contradictions, coherence, or missing logic.",
+    "decision_usefulness": "Which artifact better supports an actual decision."
+  },
+  "side_summaries": {
+    "side_a": {
+      "strengths": [
+        "One concise strength of Side A."
+      ],
+      "weaknesses": [
+        "One concise weakness of Side A."
+      ]
+    },
+    "side_b": {
+      "strengths": [
+        "One concise strength of Side B."
+      ],
+      "weaknesses": [
+        "One concise weakness of Side B."
+      ]
+    }
+  },
+  "decisive_dimension": "decision_usefulness",
+  "decisive_findings": [
+    "Replace with the actual decisive findings from this run."
+  ],
+  "judge_confidence": "low",
+  "needs_human_review": true,
+  "rationale": "One-paragraph explanation of the verdict."
+}
+
+Validation errors:
+Verdict packet failed validation:
+$.dimension_rationales: Missing required property.
+$.side_summaries: Missing required property.
+$.decisive_dimension: Missing required property.
+
+Previous verdict JSON:
+{
+  "winner": "side_a",
+  "margin": 0.4,
+  "rubric_scores": {
+    "side_a": {
+      "claim_quality": 4,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 5,
+      "internal_consistency": 4,
+      "decision_usefulness": 5,
+      "weighted_total": 4.2
+    },
+    "side_b": {
+      "claim_quality": 4,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 4,
+      "internal_consistency": 4,
+      "decision_usefulness": 4,
+      "weighted_total": 3.8
+    }
+  },
+  "decisive_findings": [
+    "Side A received a high-severity critique (generic template with no actionable specifics, no thresholds, no owners) and fully adopted it — the final artifact adds a named owner (PM), 2-week duration, five specific methods, quantitative pass thresholds (3/5 interviews, 20% CTA conversion), and a half-day engineering feasibility cap. This is complete responsiveness to the most damaging critique in the round.",
+    "Side A's final artifact is immediately executable: a team could launch the validation sprint from the document as written without any additional decision step. Side B's final artifact, while improved, still requires the team to 'select based on feature class' before any work begins — adding a prerequisite decision layer that reduces immediate actionability.",
+    "Side B's feature-class investigation path menu (UX vs. data/infra vs. competitive vs. monetization) is conceptually more sophisticated than Side A's single-path prescription, and its adoption of the medium-severity critique (that a 2-week brief cannot be asserted as 'cheapest' for an unspecified feature) is substantively correct. This is the strongest contribution of the round.",
+    "Evidence discipline is a wash: neither side has external evidence to cite (the case packet is explicitly empty), and both are transparent about this constraint. Side A's 'ctx-1' citations are self-referential to the empty packet, which is marginally better than Side B's zero citations, but neither earns above a 3 on this dimension.",
+    "Side B's readiness gate table with 6 explicit FAIL verdicts and the evidence inventory table with signal strength ratings are structurally cleaner for stakeholder consumption than Side A's prose equivalent — a minor advantage in claim presentation that does not overcome the decision usefulness gap."
+  ],
+  "judge_confidence": "medium",
+  "needs_human_review": false,
+  "rationale": "Side A wins on the strength of its responsiveness to critique and decision usefulness in the final artifact. It absorbed the highest-severity finding in the round — that a weak-evidence PRD must still commit to enough specificity for a team to act within one cycle — and rebuilt the artifact accordingly with concrete owner assignment, timeline, methods, and quantitative pass/fail thresholds. Side B made a genuine improvement by replacing its unsupported single-path prescription with a feature-class–indexed investigation menu, and that menu is arguably the more epistemically honest recommendation for an unspecified feature; however, it requires one additional decision before any work can start, which keeps its decision usefulness below Side A's final level. Both sides are equally constrained by the empty evidence packet and score identically on evidence discipline. The margin (4.2 vs. 3.8) is driven primarily by responsiveness to critique and decision usefulness, where Side A's full adoption of a high-severity finding produced the more actionable final document."
+}

@@ -1,0 +1,45 @@
+{
+  "run_id": "conflict-2026-04-14-065124878Z-churn-conflicting-signals",
+  "side_id": "side_b",
+  "round": "first_pass",
+  "artifact_markdown": "# Churn Reduction PRD: Resolving Conflicting Signals\n\n## Decision Frame\n\n**Problem statement:** Churn telemetry presents contradictory signals that undermine confidence in any single intervention. NPS scores trend upward (+4 pts QoQ) while monthly logo churn accelerates (1.8% → 2.6% over two quarters). Usage frequency is stable among retained cohorts, yet expansion revenue per account is declining. These conflicts suggest the churn driver is not uniform dissatisfaction but rather a segmentation problem: satisfied customers stay and score high, while a distinct at-risk segment churns silently without depressing aggregate satisfaction metrics.\n\n**Strategic tension:** The company's current strategy targets net revenue retention (NRR) ≥ 110%. Churn reduction efforts compete for resources with expansion plays (upsell, cross-sell) that also feed NRR. A blanket retention program risks diluting expansion investment for marginal accounts that may not be worth saving at current CAC/LTV ratios.\n\n**Decision required:** Should we invest in a targeted churn intervention program for the identified at-risk segment, or redirect resources toward expansion in healthy accounts to offset churn through growth?\n\n**Recommendation:** Targeted churn intervention for the at-risk segment, scoped to a 90-day pilot with a kill threshold, not a blanket retention program.\n\n**Rationale for recommendation over alternative:**\n- Logo churn compounds: losing 2.6% monthly means ~27% annual logo loss, which eventually erodes the base that expansion revenue depends on.\n- The NPS/churn divergence strongly suggests a hidden segment. Intervening without identifying it wastes resources; identifying it without intervening wastes the insight.\n- A time-boxed pilot with clear kill criteria limits downside while generating the segmentation data we currently lack.\n\n## Unknowns & Evidence Gaps\n\n| # | Unknown | Impact if unresolved | Current evidence | Proposed resolution | Owner |\n|---|---------|---------------------|-----------------|---------------------|-------|\n| U1 | Which customer attributes predict membership in the silent-churn segment? | Cannot target intervention; waste spend on non-at-risk accounts | NPS and churn data exist but have not been joined at account level | Run cohort analysis joining NPS response history, usage telemetry, support tickets, and churn events within 2 weeks | Data/Analytics |\n| U2 | Is the churn driven by product gaps, pricing, or competitive displacement? | Wrong intervention type selected | Anecdotal from CS; no systematic exit survey data | Implement structured exit survey + win/loss interviews (n≥30) over 6 weeks | Product + CS |\n| U3 | What is the LTV of the churning segment vs. retained segment? | May be optimizing for low-value retention at the expense of high-value expansion | Revenue data available but not segmented by churn risk | Finance to deliver segmented LTV analysis within 2 weeks | Finance |\n| U4 | Do churning accounts show detectable usage decay before cancellation? | Determines whether predictive intervention is feasible | Usage data exists but no decay analysis has been run | Analytics to run usage trajectory clustering on last 6 months of churned accounts | Data/Analytics |\n| U5 | What is the competitive landscape shift? Are churners moving to a specific competitor? | Informs whether product investment or positioning is the right lever | No competitive win/loss data collected systematically | Include competitor question in exit survey; supplement with G2/Gartner review trend analysis | Product Marketing |\n\n**Conflicting signal reconciliation:**\n- NPS ↑ + Churn ↑ → Survivorship bias in NPS sampling. Churning customers either don't respond to NPS surveys or churn between survey windows. Action: cross-reference NPS non-respondents with churn list.\n- Usage stable + Expansion ↓ → Retained customers plateau at current tier without growth triggers. This is a separate problem (expansion playbook) and should not be conflated with churn reduction.\n- The strategic target (NRR ≥ 110%) can be met through churn reduction OR expansion. This PRD addresses churn; a parallel effort should address expansion. Combining them into one program creates accountability diffusion.\n\n## Pass/Fail Readiness\n\n**Assessment: CONDITIONAL PASS — proceed to pilot with gates.**\n\nThe PRD is ready to move to pilot design phase contingent on resolving U1 (segment identification) and U3 (LTV of churning segment) within 2 weeks. These two unknowns determine whether the intervention is economically justified and targetable.\n\n| Readiness criterion | Status | Condition |\n|---|---|---|\n| Problem validated with data | ⚠️ Partial | Churn acceleration confirmed; root segmentation not yet done |\n| Target segment identifiable | ❌ Blocked | Requires U1 resolution |\n| Intervention ROI estimable | ❌ Blocked | Requires U3 resolution |\n| Strategic alignment confirmed | ✅ Pass | Churn reduction directly feeds NRR target |\n| Resource availability assessed | ⚠️ Partial | Pilot scope limits resource draw; full program TBD |\n| Kill criteria defined | ✅ Pass | See below |\n\n**Pilot kill criteria (90-day window):**\n1. If segmentation analysis (U1) fails to identify a distinguishable at-risk cohort with ≥2x baseline churn probability → kill the targeted approach, pivot to blanket lightweight retention.\n2. If LTV of churning segment (U3) is <50% of retained segment LTV → kill churn intervention, redirect to expansion plays.\n3. If pilot cohort churn rate does not improve by ≥0.5 percentage points vs. control after 90 days → kill the intervention, publish learnings.\n\n**What this PRD intentionally does NOT decide:**\n- The specific intervention mechanism (that requires the segmentation and exit survey data)\n- Whether to also invest in expansion plays (parallel workstream, separate PRD)\n- Pricing changes (premature without U2 and U5 data)\n\n## Recommended Next Artifact\n\n**Primary:** Segmentation analysis deliverable (resolves U1 and U3) — 2-week timebox, owned by Data/Analytics and Finance.\n\n**Secondary (parallel):** Exit survey design and deployment plan (resolves U2 and U5) — owned by Product and CS, 1-week design + 5-week collection.\n\n**After gates clear:** Pilot design document specifying intervention type, target cohort, control group methodology, success metrics, and 90-day measurement plan.\n\n**Sequence:**\n1. Week 0-2: Segmentation analysis + LTV segmentation (gate check: proceed or kill)\n2. Week 1-6: Exit survey collection (parallel)\n3. Week 3: Pilot design document (if gate 1 passes)\n4. Week 4-16: Pilot execution\n5. Week 16: Pilot readout and scale/kill decision",
+  "claims": [
+    {
+      "claim_id": "side_b-claim-1",
+      "summary": "The NPS-churn divergence is best explained by survivorship bias in NPS sampling — churning customers either do not respond or churn between survey windows, creating an artificially positive NPS trend that masks a distinct at-risk segment.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-2",
+      "summary": "Logo churn at 2.6% monthly compounds to approximately 27% annual logo loss, which will eventually erode the customer base that expansion revenue depends on, making churn reduction the higher-leverage NRR intervention compared to expansion alone.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-3",
+      "summary": "A targeted pilot with explicit kill criteria (segment identifiability, LTV threshold, churn improvement threshold) is preferable to a blanket retention program because it limits downside while generating the segmentation data currently missing.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-4",
+      "summary": "Churn reduction and expansion revenue should be addressed as parallel workstreams with separate ownership to avoid accountability diffusion, even though both feed the same NRR target.",
+      "evidence_refs": [],
+      "is_major": false
+    },
+    {
+      "claim_id": "side_b-claim-5",
+      "summary": "The PRD is conditionally ready — two specific unknowns (segment identification and churning-segment LTV) must be resolved within 2 weeks before pilot design can proceed, creating a natural gate that prevents premature investment.",
+      "evidence_refs": [],
+      "is_major": false
+    }
+  ],
+  "citations": [],
+  "open_questions": [
+    "Is NPS survey sampling methodology documented well enough to confirm or refute the survivorship bias hypothesis?",
+    "Are there contractual or annual billing cycle effects that could explain the churn acceleration independent of satisfaction?",
+    "Does the company have the data infrastructure to join NPS, usage, support, and billing data at the account level within the proposed 2-week timeline?"
+  ],
+  "critique_responses": []
+}

@@ -1,0 +1,35 @@
+{
+  "run_id": "conflict-2026-04-14-065124878Z-churn-conflicting-signals",
+  "side_id": "side_a",
+  "round": "final",
+  "artifact_markdown": "# Revised artifact\n\n# Churn Reduction PRD: Conflicting Signals\n\n## Overview\nBuild a churn-reduction program that first resolves decision-critical uncertainty, then deploys segment-specific retention interventions. The product should not assume current strategy targets are the correct retention priority until segment churn, segment value, and strategy-fit baselines are established.\n\n## Problem\nCurrent churn signals conflict, and the team lacks the baseline required to know whether the problem is:\n- concentrated in a strategically important segment\n- concentrated in a low-fit or wrongly acquired segment\n- caused by product gaps, onboarding failures, pricing mismatch, or weak value communication\n- exposing that current strategy targets are themselves misaligned with the retained customer base\n\nWithout this baseline, a churn program risks optimizing for the wrong cohort or defending a strategy that the churn pattern is disproving.\n\n## Goal\nCreate a decision-ready churn system that:\n- makes churn measurable by segment, value tier, tenure, and use-case fit\n- distinguishes retention opportunities from strategy-misalignment signals\n- enables targeted, reversible interventions only after baseline validation\n\n## Non-Goals\n- Reduce aggregate churn at any cost.\n- Treat existing strategy targets as automatically correct.\n- Commit roadmap changes before root-cause evidence exists.\n- Scale retention interventions globally before segment validation.\n\n## Users\n- Existing customers at risk of churn.\n- PM, Success, Growth, and Leadership teams making retention tradeoffs.\n\n## Product Requirements\n1. Instrument churn reporting by segment, plan, tenure, revenue tier, acquisition source, and use-case fit.\n2. Create a baseline view that compares:\n- observed churn cohorts\n- current strategy-priority segments\n- revenue and expansion value by segment\n3. Require every retention proposal to specify:\n- target segment\n- evidence source\n- hypothesized churn driver\n- expected retention impact\n- effect on strategic fit\n4. Add a decision layer that classifies churn drivers into:\n- product gap\n- onboarding failure\n- value communication failure\n- pricing/packaging mismatch\n- wrong-customer acquisition\n- strategy-target misalignment\n5. Gate intervention rollout in two stages:\n- Diagnostic stage: collect segment baseline and validate whether strategy targets match retained-value cohorts.\n- Action stage: run reversible experiments only for segments with sufficient evidence.\n6. Trigger a strategy review when evidence shows that high-value churn is concentrated outside current target segments or that target segments exhibit structurally weak retention.\n7. Track guardrails so retention gains are not produced by excessive discounting, support burden, or preservation of persistently low-fit customers.\n\n## Success Metrics\n- Primary: revenue churn reduction in evidence-validated priority segments.\n- Secondary: activation rate, save rate, retained revenue after intervention, and time-to-diagnosis of churn driver.\n- Guardrails: support cost per retained account, discount dependency, retention of low-fit cohorts, and false-positive intervention rate.\n\n## Rollout\n- Phase 1: establish segment and strategy-alignment baseline.\n- Phase 2: classify churn drivers and identify whether the issue is retention execution or strategy fit.\n- Phase 3: run targeted, reversible experiments in validated priority segments.\n- Phase 4: scale successful interventions or escalate to strategy revision.\n\n## Decision Frame\nThe first decision is not which segment to save. The first decision is whether the current strategy targets are valid retention priorities once churn, value, and fit are viewed together. If baseline evidence confirms that strategically intended segments are both high-value and meaningfully at risk, prioritize retention there. If evidence shows churn is exposing a flawed targeting strategy, escalate to strategy review rather than forcing retention work through an invalid segment hierarchy. [ctx-1]\n\n## Unknowns & Evidence Gaps\n- Which segments have the highest churn by revenue, logo count, and strategic value.\n- Whether current strategy-priority segments are the same segments producing retained value.\n- Whether churn is driven by product gaps, onboarding failures, pricing mismatch, wrong-customer acquisition, or strategy misalignment.\n- What interventions have already been attempted and with what measured outcomes.\n\n## Pass/Fail Readiness\nPass if:\n- segment-level churn and value baselines exist\n- the team can compare strategy targets against actual churn cohorts\n- each intervention is tied to an explicit segment and churn-driver hypothesis\n- the PRD includes a clear trigger for strategy review when evidence contradicts current targets\n\nFail if:\n- segment churn cannot be measured\n- the plan assumes current strategy targets are correct without validation\n- interventions are launched before baseline evidence exists\n- the team cannot distinguish retention execution problems from strategy-misalignment problems\n\n## Recommended Next Artifact\nSegmented churn diagnostic brief with baseline tables, strategy-alignment assessment, and experiment recommendations.",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "Under conflicting churn signals, the PRD should first validate segment churn, segment value, and strategy-target alignment before prioritizing retention interventions.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "Retention actions should be limited to reversible, segment-specific experiments once a baseline exists, with explicit escalation to strategy review if churn contradicts target-segment assumptions.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1"
+  ],
+  "open_questions": [],
+  "critique_responses": [
+    {
+      "finding_id": "finding-2",
+      "disposition": "adopted",
+      "rationale": "The critique correctly identified that the original artifact treated strategic segment fit as a usable prioritization rule before validating whether segment churn data or target-segment alignment existed. The revision changes the decision sequence: baseline validation now precedes prioritization, and strategy review is an explicit branch when churn evidence contradicts current targets."
+    }
+  ]
+}

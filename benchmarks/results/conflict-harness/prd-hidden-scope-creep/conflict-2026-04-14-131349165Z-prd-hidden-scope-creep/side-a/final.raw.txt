@@ -1,0 +1,65 @@
+```json
+{
+  "run_id": "conflict-2026-04-14-131349165Z-prd-hidden-scope-creep",
+  "side_id": "side_a",
+  "round": "final",
+  "artifact_markdown": "# PRD: Team Inbox Workflow Handoff Improvement\n\n## Decision Frame\n\n**Problem statement:** Team inbox handoff between shifts, roles, or escalation tiers loses context, duplicates effort, and drops conversations. Customers experience repeated asks for information they already provided, and agents waste time reconstructing ticket history.\n\n**Decision to be made:** Should we invest in a structured handoff mechanism within the team inbox, and if so, what is the minimum viable scope that reduces handoff-related resolution time without requiring a full workflow engine rebuild?\n\n**Stakeholders:**\n- **Support operations lead** — owns inbox SLAs and staffing\n- **Front-line agents** — daily users who perform and receive handoffs\n- **Engineering** — builds and maintains the inbox platform\n- **Customers** — experience the downstream quality of handoffs\n\n**Scope boundary:** This PRD covers handoff between agents within a single team inbox. It explicitly excludes: cross-team routing, automated triage/classification, SLA policy engine changes, and customer-facing UI changes. These adjacent concerns are noted as future work, not commitments.\n\n**Success criteria:**\n- Reduce average handoff re-ask rate (customer asked to repeat information) by ≥30% within 8 weeks of launch\n- Reduce median time-to-resolution for handed-off tickets by ≥15%\n- Agent satisfaction with handoff process improves from current baseline (to be measured pre-launch)\n\n## Core Proposal\n\n### Handoff Summary Card\nWhen an agent initiates a handoff, the system generates a structured summary card attached to the conversation, containing:\n1. **Context snapshot** — auto-extracted: customer name, account tier, conversation duration, prior agents involved\n2. **Agent notes** — free-text field for the handing-off agent to describe current state, what was tried, and what remains\n3. **Suggested next action** — optional structured field (dropdown: \"awaiting customer reply\", \"needs escalation\", \"pending internal action\", \"ready to resolve\")\n4. **Linked artifacts** — references to any attachments, internal tickets, or knowledge base articles already surfaced\n\n### Handoff Queue View\nA dedicated queue view showing only conversations handed off to the current agent or role, sorted by urgency, with the summary card visible inline without opening the full thread.\n\n### Handoff Acceptance Flow\nReceiving agent must explicitly accept or reassign, preventing conversations from sitting in limbo. Acceptance timestamps feed SLA tracking.\n\n## Unknowns & Evidence Gaps\n\n| # | Unknown | Impact if wrong | Mitigation |\n|---|---------|----------------|------------|\n| U1 | We assume agents will fill in the notes field consistently. If adoption is low, summary cards add UI clutter without value. | Core value prop fails | Measure fill rate in pilot; consider making notes required for handoff completion |\n| U2 | Auto-extracted context accuracy depends on conversation parsing quality. No current data on extraction error rate. | Bad summaries erode trust faster than no summaries | Run extraction against 200 historical conversations before build; set accuracy threshold at 90% |\n| U3 | We lack baseline metrics on current handoff frequency, re-ask rate, and resolution time delta for handed-off vs. non-handed-off tickets. | Cannot measure success criteria; cannot confirm handoff is the right intervention target | Instrument current system and collect 4 weeks of baseline data before launch |\n| U4 | Agent workflow varies by team — some use tags, some use internal comments, some use external tools. Handoff card may not fit all patterns. | Adoption resistance in teams with established workarounds | Interview 3+ teams during design phase; allow card to coexist with existing patterns rather than replace them |\n| U5 | Scope pressure risk: the handoff queue view is adjacent to full inbox redesign. Engineering estimates may inflate if queue view scope isn't tightly constrained. | Timeline slips from 6 weeks to 12+ | Define queue view as a filtered view of existing inbox, not a new page. Explicit architectural constraint. |\n| U6 | We have not established that handoff friction is the dominant driver of resolution time and re-asks relative to competing explanations (routing quality, staffing gaps, knowledge base coverage, prioritization logic). | We may optimize a secondary contributor while the primary cause goes unaddressed | Design spike must include comparative analysis: handoff-attributed delays vs. other root causes from the same ticket sample |\n\n## Pass/Fail Readiness\n\n**Current readiness: CONDITIONAL PASS — proceed to design phase with gates.**\n\n| Gate | Status | Required for proceed |\n|------|--------|---------------------|\n| Baseline metrics instrumented | NOT STARTED | Must complete before development begins |\n| Handoff-vs-alternatives root cause validation | NOT STARTED | Baseline data must confirm handoff friction is a top-3 contributor to resolution time and re-ask rate before committing build resources |\n| Context extraction accuracy validated on historical data | NOT STARTED | Must achieve ≥90% accuracy on 200-conversation sample |\n| Agent interview findings (≥3 teams) | NOT STARTED | Must confirm handoff card concept addresses real friction, not assumed friction |\n| Engineering estimate for constrained queue view (filtered view, not new page) | NOT STARTED | Must confirm ≤6 engineer-weeks for full scope |\n| Scope lock signed off by eng lead and product | NOT STARTED | Explicit exclusion list acknowledged to prevent creep |\n\n**Pass condition:** All six gates green before development sprint begins.\n**Fail condition:** If context extraction accuracy <80%, agent interviews reveal handoff is not a top-3 pain point, or baseline data shows handoff-attributed delays are a minor fraction of total resolution time, kill the initiative and redirect effort to the higher-leverage root cause.\n\n## Recommended Next Artifact\n\n**Next artifact: Design Spike (1 week)**\n\nScope of the spike:\n1. Instrument baseline handoff metrics in production\n2. Analyze root cause distribution across handed-off tickets: quantify what fraction of resolution time and re-asks are attributable to handoff context loss vs. routing, staffing, knowledge gaps, or other factors\n3. Run context extraction accuracy test on 200 historical conversations\n4. Conduct 3 agent team interviews focused on handoff friction\n5. Produce low-fidelity wireframe of summary card and queue view for agent feedback\n6. Return with findings to validate or kill the initiative before committing engineering resources\n\nThe spike output feeds a go/no-go decision. If the root cause analysis shows handoff friction is not a top-3 contributor, the initiative should be killed regardless of extraction accuracy or agent enthusiasm. If go, the next artifact after the spike is a Technical Design Doc scoped to the summary card, acceptance flow, and filtered queue view — with the explicit exclusion list carried forward as architectural constraints.",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "Handoff quality is a plausible high-leverage intervention point in team inbox workflows because it sits at the junction of context loss, duplicated effort, and SLA risk — but this is a hypothesis, not an established fact. The design spike must validate that handoff friction is a top-3 contributor to resolution time relative to routing, staffing, and knowledge quality before committing build resources.",
+      "evidence_refs": [
+        "ctx-1",
+        "ctx-5"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "Scope containment is the primary execution risk: the handoff queue view must be defined as a filtered view of the existing inbox, not a new page, to prevent the PRD from silently expanding into a full inbox redesign.",
+      "evidence_refs": [
+        "ctx-2"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-3",
+      "summary": "A one-week design spike with explicit go/no-go gates is the correct next step — committing engineering resources before validating agent adoption willingness, extraction accuracy, and handoff's relative contribution to resolution time would be premature.",
+      "evidence_refs": [
+        "ctx-3",
+        "ctx-5"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-4",
+      "summary": "Agent notes adoption is the key behavioral risk: if agents don't fill in the free-text field, the summary card becomes UI clutter rather than a handoff improvement.",
+      "evidence_refs": [
+        "ctx-4"
+      ],
+      "is_major": false
+    }
+  ],
+  "citations": [
+    "ctx-1: Common pattern in support operations where handoff-related tickets show higher resolution times and repeated information requests, consistent with industry benchmarks on multi-touch support workflows.",
+    "ctx-2: Scope creep from 'filtered view' to 'new inbox page' is a documented anti-pattern in platform PRDs where adjacent UI surfaces pull in unplanned work.",
+    "ctx-3: Design spike methodology — validate assumptions with data before committing build resources — reduces wasted engineering effort on initiatives built on unvalidated assumptions.",
+    "ctx-4: Adoption risk for optional structured fields in agent workflows is well-documented; tools that add friction without immediate visible benefit to the agent performing the action see low voluntary usage.",
+    "ctx-5: Without baseline data decomposing resolution-time drivers, the claim that handoff friction is the highest-leverage target remains an assumption. Competing explanations (routing quality, staffing, knowledge gaps) must be ruled out or ranked during the spike."
+  ],
+  "open_questions": [
+    "What is the current handoff volume per day across teams, and what percentage of total inbox conversations involve at least one handoff?",
+    "Does the existing inbox platform support filtered views natively, or would the queue view require new infrastructure regardless of scope constraints?",
+    "Are there compliance or data retention implications for persisting agent handoff notes as structured metadata alongside conversation records?",
+    "What is the relative contribution of handoff friction vs. routing errors, staffing gaps, and knowledge base coverage to total resolution time for multi-touch tickets?"
+  ],
+  "critique_responses": [
+    {
+      "finding_id": "finding-2",
+      "disposition": "adopted",
+      "rationale": "The critique correctly identifies that asserting handoff as the 'highest-leverage' intervention is unsupported without baseline data. The generic industry pattern cited does not establish dominance over competing explanations (routing, staffing, knowledge quality). Revised: (1) claim-1 now frames handoff as a 'plausible high-leverage' hypothesis requiring validation, not an established fact; (2) added U6 to the Unknowns table explicitly flagging the competing-explanations gap; (3) added a new gate requiring root cause validation before build; (4) expanded the design spike to include comparative root cause analysis; (5) updated fail condition to kill the initiative if handoff is not a top-3 contributor. The gating structure already pointed toward 'do not build yet' — this revision ensures the prioritization claim is held to the same evidentiary standard as the build decision."
+    }
+  ]
+}
+```
+

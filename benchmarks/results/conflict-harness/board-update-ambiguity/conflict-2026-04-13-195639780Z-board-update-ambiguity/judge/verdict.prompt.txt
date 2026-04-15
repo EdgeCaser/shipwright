@@ -1,0 +1,308 @@
+You are the judge in a blinded conflict harness run.
+Provider identity is intentionally hidden. Do not infer provider family.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "winner": "tie",
+  "margin": 0,
+  "rubric_scores": {
+    "side_a": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    },
+    "side_b": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    }
+  },
+  "decisive_findings": [
+    "Replace with the actual decisive findings from this run."
+  ],
+  "judge_confidence": "low",
+  "needs_human_review": true,
+  "rationale": "One-paragraph explanation of the verdict."
+}
+
+Use min_margin_for_verdict = 0.1.
+judge_confidence rubric:
+- high: the winning side is clearly stronger on at least 3 rubric dimensions and has no major unsupported-claim problem
+- medium: the winning side leads overall but has at least 1 weak dimension or absorbed only part of the opposing critique
+- low: score margin is below min_margin_for_verdict or both sides have significant unsupported claims
+
+Judge packet:
+{
+  "case_packet": {
+    "scenario_id": "board-update-ambiguity",
+    "title": "Board update under ambiguity",
+    "prompt": "Write a strategy update for a board audience under ambiguity.",
+    "artifact_type": "strategy",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a strategy artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "strategy",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-13-195639780Z-board-update-ambiguity",
+      "side_id": "side_a",
+      "round": "first_pass",
+      "artifact_markdown": "# Strategy Update: Board Briefing Under Ambiguity\n\n## Decision Frame\n\n**Core question:** Given significant uncertainty in our operating environment, what strategic posture should the board endorse for the next 90 days?\n\n**Context:** The company faces a decision window where multiple external factors remain unresolved — market conditions, competitive moves, and regulatory signals are each individually ambiguous and collectively compounding. The temptation is to wait for clarity. The risk of waiting is that competitors who act under ambiguity capture positioning advantages that become expensive to reverse.\n\n**Decision type:** This is a *posture decision*, not a commitment decision. We are not asking the board to approve irreversible capital allocation. We are asking the board to endorse a bias-to-action framework that authorizes management to move within defined boundaries while ambiguity resolves.\n\n**Framing principle:** We distinguish between decisions that are reversible (two-way doors) and those that are not. Under ambiguity, we accelerate reversible moves and stage — but do not execute — irreversible ones.\n\n## Unknowns & Evidence Gaps\n\n| Unknown | What we know | What we don't know | Impact if resolved unfavorably | Expected resolution timeline |\n|---|---|---|---|---|\n| Market demand trajectory | Q1 pipeline is flat vs. prior year; win rates holding steady | Whether flat pipeline reflects seasonal noise or structural demand shift | 15-20% revenue shortfall in H2 if structural | 60 days (Q2 pipeline data) |\n| Competitive pricing pressure | Two competitors announced pricing changes in Q4 | Whether announced prices reflect actual transacted prices or list-price posturing | Margin compression of 3-5 points if real | 45 days (channel partner feedback cycle) |\n| Regulatory environment | Draft guidance published; comment period open | Final rule timing and whether safe-harbor provisions survive | Compliance cost delta of $2-4M annually | 90-120 days (agency timeline) |\n| Key talent retention | Three critical roles have received external offers | Whether counter-offers will hold; whether departures would cascade | 6-month execution delay on Product initiative | 30 days (offer decision deadlines) |\n\n**Evidence discipline note:** We have resisted the temptation to assign false precision to these unknowns. Probability estimates are omitted where the underlying distribution is not estimable. Where we state ranges, they reflect scenario bookends, not confidence intervals.\n\n## Pass/Fail Readiness\n\n**Are we ready to make a definitive strategic commitment today?** No.\n\n**Why not (specific gaps):**\n1. **Demand signal ambiguity** — We cannot distinguish between cyclical and structural explanations for flat pipeline with current data. Committing to either an expansion or contraction posture without this distinction risks being wrong in an expensive direction.\n2. **Competitive intelligence is lagging** — Announced prices ≠ transacted prices. We need 45 more days of channel data before repricing defensively or holding firm.\n3. **Regulatory timeline is outside our control** — Investing in compliance infrastructure before final rules risks building to a spec that changes.\n\n**What we ARE ready to do:**\n- Authorize $500K in accelerated demand-generation spend (reversible; can pause at 30 days if signal doesn't improve)\n- Execute retention packages for the three at-risk roles (time-sensitive; cost of delay exceeds cost of action)\n- Commission a 30-day competitive pricing study through channel partners (information-gathering; no commitment implied)\n- Draft — but not file — regulatory compliance plan for both plausible rule outcomes (preparation without commitment)\n\n**Pass/fail criteria for the next board checkpoint (90 days):**\n- If Q2 pipeline grows >5% vs. Q1: shift to expansion posture, request growth capital allocation\n- If Q2 pipeline declines >5% vs. Q1: shift to preservation posture, present cost restructuring plan\n- If pipeline is within ±5%: extend ambiguity posture for one additional quarter with tighter monitoring cadence\n- If competitive repricing is confirmed as real: present margin defense plan with pricing response options\n- If competitive repricing is posturing: hold current pricing, invest in value differentiation\n\n## Recommended Next Artifact\n\n**Immediate (this meeting):** Board endorsement of the bias-to-action framework above — specifically, authorization for the four reversible actions listed.\n\n**30-day artifact:** Management memo to the board with competitive pricing study results and updated demand signal reading. Format: 2-page decision memo, not a full strategy update.\n\n**90-day artifact:** Full strategy update with definitive posture recommendation (expand, preserve, or extend), supported by the evidence that will have resolved by then. This update should include a capital allocation request if the expansion trigger is met.\n\n**Standing request:** If any of the four unknowns resolves materially before the 30-day or 90-day checkpoints — favorably or unfavorably — management will issue an interim board communication within 5 business days rather than waiting for the scheduled artifact.\n\n---\n\n*This update deliberately avoids false confidence. Where we do not know, we say so. Where we can act without knowing, we recommend acting. Where acting requires knowing, we recommend waiting — and specify exactly what evidence would unlock the decision.*",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "Under ambiguity, the correct strategic posture is to accelerate reversible actions while staging but not executing irreversible ones, rather than either waiting for full clarity or committing prematurely.",
+          "evidence_refs": [
+            "ctx-decision-frame"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "The organization is not ready for a definitive strategic commitment because three of four key unknowns (demand trajectory, competitive pricing reality, regulatory outcome) cannot be resolved with available data and require 45-120 days to clarify.",
+          "evidence_refs": [
+            "ctx-unknowns-table"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "Four specific reversible actions should be authorized immediately because their cost-of-delay exceeds their cost-of-being-wrong: demand-gen spend, retention packages, competitive study, and dual-track compliance drafting.",
+          "evidence_refs": [
+            "ctx-pass-fail-actions"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-4",
+          "summary": "Explicit quantitative pass/fail triggers (±5% pipeline movement, confirmed vs. posturing repricing) convert ambiguity into a structured decision tree that prevents indefinite deferral.",
+          "evidence_refs": [
+            "ctx-pass-fail-criteria"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-5",
+          "summary": "A tiered artifact cadence (immediate endorsement, 30-day memo, 90-day full update, plus event-driven interim communications) ensures the board stays informed without requiring premature decisions.",
+          "evidence_refs": [
+            "ctx-next-artifact"
+          ],
+          "is_major": false
+        }
+      ],
+      "citations": [
+        "ctx-decision-frame",
+        "ctx-unknowns-table",
+        "ctx-pass-fail-actions",
+        "ctx-pass-fail-criteria",
+        "ctx-next-artifact"
+      ],
+      "open_questions": [
+        "What is the board's risk appetite for the reversible spend authorizations — is $500K within management's existing discretionary authority or does it require explicit board vote?",
+        "Are there additional unknowns the board is tracking that should be added to the evidence gaps table?",
+        "Does the 90-day checkpoint timeline align with the board's meeting cadence, or should we adjust to match scheduled sessions?"
+      ],
+      "critique_responses": []
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-13-195639780Z-board-update-ambiguity",
+      "side_id": "side_b",
+      "round": "first_pass",
+      "artifact_markdown": "# Strategy Update Under Ambiguity\n\n## Decision Frame\n\nThe board decision should not be framed as a full-scale approval or cancellation. Given the absence of validated market, financial, and execution evidence in the current packet, the defensible recommendation is a gated continuation: approve a limited next phase designed to reduce decision risk before committing major capital.\n\nRecommended board ask: authorize a time-boxed 60-90 day validation phase with explicit evidence gates, a capped budget, and a clear decision point at the end of the phase.\n\nThe strategy is to preserve option value while preventing premature scale-up. This keeps momentum where learning is still valuable, but makes the next investment conditional on proof rather than narrative confidence.\n\n## Unknowns & Evidence Gaps\n\nKey unknowns:\n\n- Customer demand: no evidence yet on urgency, willingness to pay, buying process, or target segment priority.\n- Competitive position: no evidence yet on alternatives, differentiation, switching costs, or defensibility.\n- Business model: no evidence yet on expected pricing, gross margin, sales efficiency, retention, or payback period.\n- Execution feasibility: no evidence yet on delivery complexity, operational burden, technical risk, or dependency risk.\n- Strategic fit: no evidence yet on whether this opportunity strengthens the company’s core position or distracts from higher-confidence priorities.\n\nThe board should treat the current state as pre-commitment ambiguity, not as a forecastable plan. Any revenue, margin, or adoption targets presented now should be labeled as assumptions until supported by primary evidence.\n\n## Pass/Fail Readiness\n\nPass criteria for moving from validation to scaled investment:\n\n- At least one clearly defined customer segment shows repeated, high-urgency demand.\n- Buyers can articulate the current pain, existing workaround, and reason to switch.\n- Early pricing evidence supports a viable gross margin and acquisition motion.\n- Competitive review shows a credible reason to win beyond feature parity.\n- Delivery plan identifies the top execution risks and shows they are manageable within current team capacity.\n- The opportunity ranks above alternative uses of capital on strategic importance and expected return.\n\nFail or pause criteria:\n\n- Demand is broad but shallow, with no segment showing urgent need.\n- Willingness to pay does not support the required economics.\n- Differentiation depends on claims that competitors can quickly copy.\n- Execution cost grows faster than the expected customer or revenue impact.\n- The initiative requires board-level capital before the team can validate basic adoption and economics.\n\nCurrent readiness: not ready for scaled investment; ready for bounded validation if the board accepts the learning objective and capped exposure.\n\n## Recommended Next Artifact\n\nPrepare a board validation memo before the next decision meeting. It should include:\n\n- The target customer segment and why it is the first segment to test.\n- The top five assumptions that must be true for the strategy to work.\n- The evidence plan for each assumption, including source, owner, and deadline.\n- A capped budget and staffing request for the validation phase.\n- A stop/continue/scale decision rubric tied to observed evidence.\n\nThe next artifact should make the board decision easier by separating what is known, what is assumed, and what must be proven before larger investment.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "The board should approve only a capped, time-boxed validation phase because the case packet provides no substantive market, financial, competitive, or execution evidence to justify scaled investment.",
+          "evidence_refs": [
+            "case-packet"
+          ],
+          "is_major": true
+        }
+      ],
+      "citations": [
+        "case-packet"
+      ],
+      "open_questions": [],
+      "critique_responses": []
+    }
+  },
+  "critique_packets": {
+    "side_a": {
+      "target_side": "side_b",
+      "finding_id": "finding-1",
+      "target_claim_ids": [
+        "side_b-claim-1"
+      ],
+      "claim_under_attack": "The board should approve only a capped, time-boxed validation phase because the case packet provides no substantive market, financial, competitive, or execution evidence to justify scaled investment.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "Side B's claim conflates the absence of evidence *in the case packet* with the absence of evidence *available to the organization*. The scenario prompt asks for a strategy update under ambiguity — it does not state that no internal data, prior research, or operational history exists. By treating the sparse case packet as the totality of organizational knowledge, Side B manufactures an artificially conservative posture and then presents a generic 60-90 day validation framework that could apply to any initiative regardless of context. The resulting pass/fail criteria (e.g., 'at least one clearly defined customer segment shows repeated, high-urgency demand') are textbook templates with no grounding in the specific strategic situation the board faces. A board receiving this artifact would learn nothing about *this* decision that they couldn't get from a strategy playbook. The claim's logical chain — no packet evidence → pre-commitment ambiguity → gated continuation only — ignores that a board update under ambiguity should surface what *is* known alongside what isn't, rather than defaulting to a uniform 'we know nothing' stance that renders the entire artifact context-free.",
+      "severity": "high"
+    },
+    "side_b": {
+      "target_side": "side_a",
+      "finding_id": "finding-2",
+      "target_claim_ids": [
+        "side_a-claim-3"
+      ],
+      "claim_under_attack": "Four specific reversible actions should be authorized immediately because their cost-of-delay exceeds their cost-of-being-wrong: demand-gen spend, retention packages, competitive study, and dual-track compliance drafting.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "The artifact asserts that cost-of-delay exceeds cost-of-being-wrong, but provides no visible evidence for that comparison: no expected ROI or payback logic for the $500K demand-gen spend, no retention package cost or probability of preventing departures, no cost estimate for dual-track compliance drafting, and no downside analysis if these actions are wrong. It also treats retention packages as reversible despite compensation changes often creating precedent and equity issues. The recommendation may be directionally reasonable, but the stated justification is not evidenced.",
+      "severity": "medium"
+    }
+  },
+  "final_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-13-195639780Z-board-update-ambiguity",
+      "side_id": "side_a",
+      "round": "final",
+      "artifact_markdown": "# Strategy Update: Board Briefing Under Ambiguity\n\n## Decision Frame\n\n**Core question:** Given significant uncertainty in our operating environment, what strategic posture should the board endorse for the next 90 days?\n\n**Context:** The company faces a decision window where multiple external factors remain unresolved — market conditions, competitive moves, and regulatory signals are each individually ambiguous and collectively compounding. The temptation is to wait for clarity. The risk of waiting is that competitors who act under ambiguity capture positioning advantages that become expensive to reverse.\n\n**Decision type:** This is a *posture decision*, not a commitment decision. We are not asking the board to approve irreversible capital allocation. We are asking the board to endorse a bias-to-action framework that authorizes management to move within defined boundaries while ambiguity resolves.\n\n**Framing principle:** We distinguish between decisions that are reversible (two-way doors), partially reversible (reversible with friction or precedent effects), and irreversible. Under ambiguity, we accelerate reversible moves, proceed with caution on partially reversible ones where delay costs are quantifiable, and stage — but do not execute — irreversible ones.\n\n## Unknowns & Evidence Gaps\n\n| Unknown | What we know | What we don't know | Impact if resolved unfavorably | Expected resolution timeline |\n|---|---|---|---|---|\n| Market demand trajectory | Q1 pipeline is flat vs. prior year; win rates holding steady | Whether flat pipeline reflects seasonal noise or structural demand shift | 15-20% revenue shortfall in H2 if structural | 60 days (Q2 pipeline data) |\n| Competitive pricing pressure | Two competitors announced pricing changes in Q4 | Whether announced prices reflect actual transacted prices or list-price posturing | Margin compression of 3-5 points if real | 45 days (channel partner feedback cycle) |\n| Regulatory environment | Draft guidance published; comment period open | Final rule timing and whether safe-harbor provisions survive | Compliance cost delta of $2-4M annually | 90-120 days (agency timeline) |\n| Key talent retention | Three critical roles have received external offers | Whether counter-offers will hold; whether departures would cascade | 6-month execution delay on Product initiative | 30 days (offer decision deadlines) |\n\n**Evidence discipline note:** We have resisted the temptation to assign false precision to these unknowns. Probability estimates are omitted where the underlying distribution is not estimable. Where we state ranges, they reflect scenario bookends, not confidence intervals.\n\n## Pass/Fail Readiness\n\n**Are we ready to make a definitive strategic commitment today?** No.\n\n**Why not (specific gaps):**\n1. **Demand signal ambiguity** — We cannot distinguish between cyclical and structural explanations for flat pipeline with current data. Committing to either an expansion or contraction posture without this distinction risks being wrong in an expensive direction.\n2. **Competitive intelligence is lagging** — Announced prices ≠ transacted prices. We need 45 more days of channel data before repricing defensively or holding firm.\n3. **Regulatory timeline is outside our control** — Investing in compliance infrastructure before final rules risks building to a spec that changes.\n\n**What we recommend authorizing, with cost-benefit rationale:**\n\n| Action | Cost | Reversibility | Cost of delay | Cost of being wrong | Net assessment |\n|---|---|---|---|---|---|\n| Accelerated demand-gen spend | $500K over 30 days | **Fully reversible** — pause at any point, unspent funds return to budget | Each week of delayed pipeline investment during a potential structural shift costs ~$200K in foregone H2 pipeline coverage (based on historical 90-day lead-to-close cycle) | $500K write-off against marketing budget; no structural commitment created | Delay cost ($800K/month pipeline risk) exceeds action cost ($500K, stoppable) |\n| Retention packages for 3 at-risk roles | ~$150K-$250K total (salary adjustments + accelerated vesting) | **Partially reversible** — compensation increases create internal equity precedent; cannot easily retract if roles prove less critical | Replacement cost per role: $80-120K (recruiter fees + 6-month ramp); cascade risk adds 2-3 additional departures historically | Overpay for roles that would have stayed, plus internal equity adjustment pressure for peer roles (~$100-200K exposure) | Delay cost ($240-360K replacement + 6-month execution delay) exceeds action cost, but board should note the precedent-setting nature of retention packages — this is not a pure two-way door |\n| 30-day competitive pricing study via channel partners | ~$50K (analyst time + channel incentives) | **Fully reversible** — information-gathering only, no market signal sent | Repricing decisions made without transacted-price data risk 3-5 point margin compression if we react to posturing, or market share loss if we ignore real repricing | $50K spent on a study that confirms what we already suspect | Low cost, high information value; no meaningful downside |\n| Dual-track regulatory compliance drafting | ~$75-100K (legal + consulting fees for two parallel drafts) | **Largely reversible** — one draft is discarded when rules finalize; sunk cost is the unused track | If final rules land without preparation, compliance buildout under time pressure historically costs 2-3x vs. planned implementation ($4-6M vs. $2-3M) | $75-100K for a draft that is discarded (the wrong-track cost) | Delay cost ($2-3M excess compliance spend) dramatically exceeds action cost |\n\n**Important caveat on retention packages:** The critique that retention packages are not purely reversible is correct. Compensation adjustments create precedent and internal equity expectations. We flag this explicitly for board awareness: authorizing retention packages is a *partially reversible* action with organizational second-order effects, not a clean two-way door. We still recommend proceeding because the cost of losing these roles (replacement cost + execution delay) materially exceeds the precedent cost, but the board should approve this with eyes open.\n\n**Pass/fail criteria for the next board checkpoint (90 days):**\n- If Q2 pipeline grows >5% vs. Q1: shift to expansion posture, request growth capital allocation\n- If Q2 pipeline declines >5% vs. Q1: shift to preservation posture, present cost restructuring plan\n- If pipeline is within ±5%: extend ambiguity posture for one additional quarter with tighter monitoring cadence\n- If competitive repricing is confirmed as real: present margin defense plan with pricing response options\n- If competitive repricing is posturing: hold current pricing, invest in value differentiation\n\n## Recommended Next Artifact\n\n**Immediate (this meeting):** Board endorsement of the bias-to-action framework above — specifically, authorization for the four actions listed, with explicit acknowledgment that retention packages carry precedent risk.\n\n**30-day artifact:** Management memo to the board with competitive pricing study results and updated demand signal reading. Format: 2-page decision memo, not a full strategy update.\n\n**90-day artifact:** Full strategy update with definitive posture recommendation (expand, preserve, or extend), supported by the evidence that will have resolved by then. This update should include a capital allocation request if the expansion trigger is met.\n\n**Standing request:** If any of the four unknowns resolves materially before the 30-day or 90-day checkpoints — favorably or unfavorably — management will issue an interim board communication within 5 business days rather than waiting for the scheduled artifact.\n\n---\n\n*This update deliberately avoids false confidence. Where we do not know, we say so. Where we can act without knowing, we show our cost-benefit reasoning. Where acting requires knowing, we recommend waiting — and specify exactly what evidence would unlock the decision.*",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "Under ambiguity, the correct strategic posture is to accelerate reversible actions, proceed cautiously on partially reversible ones with quantified justification, and stage but not execute irreversible ones.",
+          "evidence_refs": [
+            "ctx-decision-frame"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "The organization is not ready for a definitive strategic commitment because three of four key unknowns (demand trajectory, competitive pricing reality, regulatory outcome) cannot be resolved with available data and require 45-120 days to clarify.",
+          "evidence_refs": [
+            "ctx-unknowns-table"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "Four specific actions should be authorized with explicit cost-benefit rationale: demand-gen ($500K, fully reversible, delay costs ~$800K/month pipeline risk), retention ($150-250K, partially reversible with precedent risk, delay costs $240-360K replacement + execution delay), pricing study ($50K, fully reversible, high information value), and dual-track compliance ($75-100K, largely reversible, delay costs $2-3M excess spend).",
+          "evidence_refs": [
+            "ctx-pass-fail-actions",
+            "ctx-cost-benefit-table"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-4",
+          "summary": "Explicit quantitative pass/fail triggers (±5% pipeline movement, confirmed vs. posturing repricing) convert ambiguity into a structured decision tree that prevents indefinite deferral.",
+          "evidence_refs": [
+            "ctx-pass-fail-criteria"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-5",
+          "summary": "A tiered artifact cadence (immediate endorsement, 30-day memo, 90-day full update, plus event-driven interim communications) ensures the board stays informed without requiring premature decisions.",
+          "evidence_refs": [
+            "ctx-next-artifact"
+          ],
+          "is_major": false
+        }
+      ],
+      "citations": [
+        "ctx-decision-frame",
+        "ctx-unknowns-table",
+        "ctx-pass-fail-actions",
+        "ctx-cost-benefit-table",
+        "ctx-pass-fail-criteria",
+        "ctx-next-artifact"
+      ],
+      "open_questions": [
+        "What is the board's risk appetite for the reversible spend authorizations — is $500K within management's existing discretionary authority or does it require explicit board vote?",
+        "Does the board view the retention package precedent risk as acceptable given the execution delay exposure, or should management explore alternative retention mechanisms (e.g., project bonuses vs. base salary adjustments)?",
+        "Does the 90-day checkpoint timeline align with the board's meeting cadence, or should we adjust to match scheduled sessions?"
+      ],
+      "critique_responses": [
+        {
+          "finding_id": "finding-2",
+          "disposition": "adopted",
+          "rationale": "The critique correctly identified that the original artifact asserted cost-of-delay exceeds cost-of-being-wrong without providing supporting evidence. The revision adds a detailed cost-benefit table for each recommended action, including estimated costs, delay costs, and wrong-action costs with dollar figures. The critique also correctly noted that retention packages are not purely reversible due to compensation precedent and equity effects. The revision now explicitly reclassifies retention packages as 'partially reversible,' flags the precedent risk for board awareness, and updates the framing principle to distinguish three tiers of reversibility (fully reversible, partially reversible, irreversible) rather than the original binary. The underlying recommendation is unchanged — all four actions are still recommended — but the justification is now evidenced rather than asserted, and the board is asked to approve retention packages with explicit acknowledgment of their second-order effects."
+        }
+      ]
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-13-195639780Z-board-update-ambiguity",
+      "side_id": "side_b",
+      "round": "final",
+      "artifact_markdown": "# Revised artifact\n\n## Decision Frame\n\nThe board decision should be framed as a staged capital-allocation decision under incomplete information, not as a binary approval or cancellation. The available case packet establishes the need for a strategy update under ambiguity, but it does not provide initiative-specific market, financial, customer, competitive, or execution facts. That means the update should separate three categories clearly: what management already knows, what remains uncertain, and what decision the board is being asked to make now.\n\nRecommended board posture: authorize the next stage only if management can present enough current evidence to justify continued investment, while requiring a bounded decision gate for unresolved assumptions before any scaled commitment. This is not a claim that the organization has no evidence; it is a governance recommendation for handling ambiguity without overstating confidence.\n\nThe board should ask management to anchor the discussion around the highest-leverage unknowns: customer urgency, economic viability, competitive right to win, execution burden, and fit against other uses of capital. If existing internal data already supports any of these areas, it should be surfaced explicitly. If not, those gaps should become conditions for the next decision gate.\n\n## Unknowns & Evidence Gaps\n\nKnown from the case packet:\n\n- The audience is the board.\n- The artifact is a strategy update.\n- The strategic context is ambiguous.\n- No initiative-specific evidence is included in the packet provided for this exercise.\n\nEvidence that should be surfaced before a scaled commitment:\n\n- Customer demand: which segment has the clearest urgency, what behavior proves that urgency, and whether buyers have budget and authority.\n- Current traction or internal evidence: prior pilots, sales conversations, usage data, customer commitments, churn signals, support data, or strategic customer requests that management already has.\n- Competitive position: the alternatives customers use today, why those alternatives are insufficient, and whether the company has a durable reason to win.\n- Business model: pricing evidence, expected gross margin, acquisition path, payback period, retention assumptions, and downside cases.\n- Execution feasibility: delivery complexity, staffing needs, dependency risk, operational burden, and opportunity cost against existing priorities.\n- Strategic fit: why this initiative strengthens the company’s core position rather than distracting from a higher-confidence path.\n\nThe board should not treat missing evidence in the packet as proof that evidence does not exist. It should treat the absence of presented evidence as a disclosure gap that management must close in the board narrative.\n\n## Pass/Fail Readiness\n\nReady to continue if:\n\n- Management identifies the specific strategic decision required now and the investment exposure attached to it.\n- Existing internal evidence is summarized with source, recency, and relevance.\n- At least one target segment has credible proof of urgency or a clear plan to validate it quickly.\n- The economic case includes explicit assumptions for pricing, margin, acquisition cost, retention, and payback.\n- The competitive case names the real alternatives and explains the company’s right to win.\n- Execution risk is bounded with owners, milestones, and a clear view of what work would be displaced.\n\nNot ready for scaled investment if:\n\n- The board is asked to approve major capital before the core customer, economic, and execution assumptions are evidenced.\n- The update relies on broad market logic without segment-level proof.\n- Differentiation is asserted but not tested against specific competitors or substitutes.\n- The plan does not show what existing evidence is known versus what remains assumed.\n- The opportunity cannot be compared against alternative uses of capital.\n\nCurrent readiness: ready for a structured board discussion and possibly a bounded next stage, but not ready for scaled commitment unless management can supply initiative-specific evidence that is absent from the case packet.\n\n## Recommended Next Artifact\n\nPrepare a board validation memo that converts ambiguity into a decision-ready evidence map. It should include:\n\n- The decision requested now, the capital at risk, and the decision that will come next.\n- A concise inventory of existing evidence: source, date, owner, and implication.\n- The top assumptions that still determine success or failure.\n- A validation plan for unresolved assumptions, including method, owner, deadline, and pass/fail threshold.\n- A comparison against alternative uses of capital.\n- A stop/continue/scale rubric tied to observed evidence rather than narrative confidence.\n\nThe next artifact should help the board distinguish between uncertainty that is acceptable for this stage and uncertainty that must be resolved before larger investment.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "The revised board strategy update should not infer that the organization lacks evidence; it should treat the sparse case packet as an evidence-disclosure constraint and recommend a staged decision process that surfaces known facts, remaining assumptions, and pass/fail gates before scaled commitment.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        }
+      ],
+      "citations": [
+        "ctx-1"
+      ],
+      "open_questions": [],
+      "critique_responses": [
+        {
+          "finding_id": "finding-1",
+          "disposition": "adopted",
+          "rationale": "The critique correctly identifies that the first pass overreached by treating missing case-packet evidence as equivalent to missing organizational evidence. The revision narrows that claim, explicitly distinguishes packet limitations from organizational knowledge, adds a section for surfacing existing internal evidence, and keeps the gated recommendation as a governance response to ambiguity rather than a generic claim that nothing is known."
+        }
+      ]
+    }
+  },
+  "min_margin_for_verdict": 0.1
+}

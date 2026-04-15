@@ -1,0 +1,13 @@
+# Critique: finding-1
+
+- Target Side: side_b
+- Target Claim IDs: side_b-claim-2
+- Attack Type: evidence_gap
+- Severity: high
+
+## Claim Under Attack
+A two-stage approach is required because conflicting signals mean instrumentation and segmentation must precede scaled retention interventions.
+
+## Evidence Or Reason
+The claim that instrumentation must fully precede any intervention is asserted as a requirement but unsupported by evidence. The artifact's own Unknowns section admits no direct evidence on segment concentration, yet the two-stage design assumes the instrumentation phase will resolve the signal conflict before action. In practice, conflicting signals often clarify only through intervention experiments themselves—running small retention tests on obvious avoidable-churn cases (onboarding failures, missing capability gaps) generates causal signal that pure instrumentation cannot. The rigid stage-gate risks delaying action on high-confidence churn drivers that don't require full segmentation to address, while providing no timeline, cost bound, or exit criteria for Phase 1. Without specifying when instrumentation is 'good enough' to proceed, this two-stage framing could become an indefinite delay mechanism rather than a decision framework.
+

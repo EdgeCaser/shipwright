@@ -1,0 +1,109 @@
+{
+  "case_packet": {
+    "scenario_id": "prd-hidden-scope-creep",
+    "title": "PRD with hidden scope creep",
+    "prompt": "Write a PRD for a team inbox workflow handoff improvement.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "opposing_first_pass": {
+    "run_id": "conflict-2026-04-14-045224434Z-prd-hidden-scope-creep",
+    "side_id": "side_a",
+    "round": "first_pass",
+    "artifact_markdown": "# PRD: Team Inbox Workflow Handoff Improvement\n\n## Overview\nImprove handoffs in the team inbox so one teammate can transfer ownership of a conversation to another without losing context, creating duplicate work, or delaying response to the customer.\n\n## Problem\nCurrent handoffs are inconsistent and partially manual. When ownership changes, agents may rely on ad hoc notes, verbal updates, or ambiguous assignment changes. This creates hidden scope risk: requests for “better handoff” can expand into workflow redesign, analytics, SLA policy, and staffing features unless explicitly bounded.\n\n## Goal\nEnable reliable, fast, low-friction handoff of inbox conversations between teammates.\n\n## Non-Goals\n- Redesign the full inbox information architecture\n- Build workforce management or staffing tools\n- Add SLA policy engines\n- Add customer-facing status notifications\n- Build long-term performance analytics beyond basic success metrics\n\n## Users\n- Primary: support agent or operations teammate handing off a conversation\n- Secondary: receiving teammate who needs enough context to continue work immediately\n- Tertiary: team lead monitoring whether handoffs are functioning reliably\n\n## Jobs To Be Done\n- When I cannot complete a conversation, I want to hand it off with clear context so the next teammate can act without re-reading everything.\n- When I receive a handoff, I want to know why it was handed off, what has been done, and what I should do next.\n- When I manage the team inbox, I want handoffs to be traceable enough to reduce dropped or duplicated work.\n\n## User Stories\n1. As a current owner, I can reassign a conversation to a teammate and include a structured handoff note.\n2. As a receiving owner, I can see the handoff reason, summary, and next action in the conversation view.\n3. As a current owner, I am prevented from completing a handoff without the minimum required context.\n4. As a team lead, I can audit basic handoff events to investigate dropped conversations.\n\n## Product Requirements\n### Core Workflow\n1. User selects `Handoff` from a conversation.\n2. User chooses receiving teammate.\n3. User enters required fields:\n   - handoff reason\n   - short summary of current state\n   - explicit next step or requested action\n4. System reassigns conversation and stores the handoff event in history.\n5. Receiving teammate sees a clear handoff card at the top of the thread until acknowledged or updated.\n\n### Functional Requirements\n- The system must support handoff between individual teammates within the same inbox/team.\n- The system must require structured handoff fields before reassignment completes.\n- The system must record the sender, recipient, timestamp, and handoff content.\n- The system must render the latest handoff context prominently in the conversation UI.\n- The system must notify the receiving teammate in the existing internal notification pattern.\n- The system must preserve prior handoff events in conversation history.\n- The system must allow the recipient to acknowledge the handoff.\n\n### Validation Rules\n- Recipient is required.\n- Reason is required.\n- Summary is required and capped at a practical length.\n- Next action is required.\n- Handoff cannot target the current owner.\n\n## UX Requirements\n- Handoff should take less than 30 seconds for a trained user.\n- Required fields should be visible in one modal or side panel.\n- Receiving user should not need to search history to understand the handoff.\n- Visual treatment should distinguish handoff context from general internal notes.\n\n## Success Metrics\n- Reduction in conversations with multiple redundant internal touches after reassignment\n- Reduction in time from reassignment to next meaningful action\n- Reduction in reopened clarification pings between sender and recipient\n- Increase in successful first-response continuation after handoff\n\n## MVP Scope\n- Manual handoff between teammates\n- Structured handoff form\n- Stored handoff event in thread history\n- Recipient notification\n- Recipient acknowledgment\n\n## Post-MVP Candidates\n- Suggested recipients\n- Handoff templates by issue type\n- Reporting dashboard for handoff quality trends\n- Cross-team or cross-queue routing logic\n\n## Risks\n- Users may perceive required fields as extra friction and bypass quality with low-value text.\n- Over-scoping into routing automation could delay the core workflow improvement.\n- If handoff context is not surfaced clearly, the feature becomes a data-entry layer without operational benefit.\n\n## Dependencies\n- Existing conversation assignment model\n- Existing internal notification system\n- Conversation history/event logging support\n\n## Launch Plan\n- Pilot with one team inbox\n- Measure completion time, acknowledgment rate, and follow-up clarification rate\n- Expand after workflow friction is acceptable and no major edge cases block daily use\n\n## Decision Frame\nBuild a narrowly scoped MVP focused on structured person-to-person handoff inside the team inbox. Do not expand this PRD into routing automation, staffing logic, SLA management, or broad analytics.\n\n## Unknowns & Evidence Gaps\n- Current baseline frequency and failure modes of handoffs are not provided.\n- No evidence quantifies which context fields matter most to recipients.\n- No user research confirms whether acknowledgment is essential for MVP.\n- No technical constraints are provided for assignment, notifications, or audit history.\n\n## Pass/Fail Readiness\nPass if the team agrees the problem is specifically handoff quality within an existing inbox workflow, and the MVP scope remains limited to structured reassignment with visible context. Fail if stakeholders expect this PRD to also solve queue routing, staffing allocation, SLA enforcement, or reporting needs.\n\n## Recommended Next Artifact\nTechnical spec for the handoff data model, event logging, UI entry point, validation rules, and notification behavior.",
+    "claims": [
+      {
+        "claim_id": "side_a-claim-1",
+        "summary": "The PRD should explicitly constrain scope to a narrow MVP for structured teammate-to-teammate handoff, because the scenario signals hidden scope creep risk.",
+        "evidence_refs": [
+          "ctx-scenario-title",
+          "ctx-prompt"
+        ],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_a-claim-2",
+        "summary": "A useful PRD for this request needs concrete workflow, requirements, non-goals, and success metrics so the team can implement handoff improvement without drifting into adjacent systems.",
+        "evidence_refs": [
+          "ctx-prompt",
+          "ctx-rubric"
+        ],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_a-claim-3",
+        "summary": "The artifact must include the four specified Shipwright closing sections to satisfy the validator contract and improve decision usefulness.",
+        "evidence_refs": [
+          "ctx-constraints",
+          "ctx-success-condition"
+        ],
+        "is_major": true
+      }
+    ],
+    "citations": [
+      "ctx-scenario-title",
+      "ctx-prompt",
+      "ctx-rubric",
+      "ctx-constraints",
+      "ctx-success-condition"
+    ],
+    "open_questions": [
+      "What are the top current handoff failure modes: dropped ownership, duplicated work, delayed response, or missing context?",
+      "Should acknowledgment be mandatory for MVP or only tracked as an optional event?",
+      "Are handoffs limited to users within one inbox, or must cross-team routing be supported later?"
+    ],
+    "critique_responses": []
+  }
+}

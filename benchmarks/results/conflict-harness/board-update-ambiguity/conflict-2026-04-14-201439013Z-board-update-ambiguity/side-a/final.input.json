@@ -1,0 +1,116 @@
+{
+  "case_packet": {
+    "scenario_id": "board-update-ambiguity",
+    "title": "Board update under ambiguity",
+    "prompt": "Write a strategy update for a board audience under ambiguity.",
+    "artifact_type": "strategy",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a strategy artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "strategy",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass": {
+    "run_id": "conflict-2026-04-14-201439013Z-board-update-ambiguity",
+    "side_id": "side_a",
+    "round": "first_pass",
+    "artifact_markdown": "# Strategy Update: Board Briefing Under Ambiguity\n\n## Decision Frame\n\n**Core question:** Given significant uncertainty in our operating environment, what strategic posture should the board endorse for the next 90 days?\n\n**Context:** The organization faces a decision environment where key variables — market trajectory, competitive response, and regulatory outlook — remain unresolved. This update does not pretend clarity where none exists. Instead, it frames the decisions we *can* make now, identifies what we need to learn before committing further, and recommends a sequenced approach that preserves optionality while maintaining forward momentum.\n\n**Decision type:** This is a *posture* decision, not a *commitment* decision. We are selecting a strategic stance (accelerate, hold, or retrench) under conditions where the information needed for a full commitment decision is not yet available.\n\n**Recommendation:** Hold current resource allocation with two targeted probes (defined below) to resolve the highest-value unknowns within 60 days. Defer commitment-level decisions to the next board cycle when probe results are available.\n\n## Unknowns & Evidence Gaps\n\n| Unknown | Impact if Resolved | Current Evidence Quality | Recommended Probe |\n|---|---|---|---|\n| **Market demand signal** — Will the Q3 pipeline convert at historical rates or reflect the softening seen in peer reports? | High — determines whether we scale sales investment or conserve | Weak — anecdotal signals only, no structured data | Commission 30-day win/loss analysis across last two quarters |\n| **Competitive positioning** — Has the competitor's recent product launch shifted buyer consideration sets? | Medium — affects messaging and roadmap prioritization | Very weak — based on secondhand conference reports | Run 15 structured buyer interviews with recently churned and recently won accounts |\n| **Regulatory timeline** — Will proposed regulations materialize in this fiscal year? | Medium — affects compliance investment sequencing | Moderate — published comment periods give partial signal | Monitor only; no probe needed, timeline will self-resolve within 45 days |\n| **Internal execution capacity** — Can we absorb a second initiative without degrading the primary program? | High — determines whether parallel bets are feasible | Moderate — team leads report strain but no failures | Conduct capacity audit of top 3 delivery teams |\n\n**Key principle:** We distinguish between unknowns we can *resolve* (via probes) and unknowns we must *wait out* (external timelines). Resources go to the former; the latter get monitoring triggers, not investment.\n\n## Pass/Fail Readiness\n\n**Are we ready to make a major strategic commitment today?** No.\n\n**Readiness assessment:**\n\n- **Evidence sufficiency:** FAIL — Two of four key unknowns have weak or very weak evidence bases. Committing capital against unvalidated assumptions creates downside risk disproportionate to the opportunity cost of a 60-day delay.\n- **Alignment:** PASS — Leadership team is aligned on strategic direction; disagreement is on *timing and magnitude*, not *direction*. This is a healthy state for a hold posture.\n- **Execution capacity:** CONDITIONAL — Current primary initiative is on track. Parallel initiatives are feasible only if capacity audit confirms headroom. Launching without this confirmation risks degrading the program that is working.\n- **Stakeholder readiness:** PASS — Board has signaled comfort with a phased approach. Customers and partners are not expecting announcements this quarter.\n\n**Bottom line:** The responsible posture is to hold, probe, and reconvene with decision-grade evidence. The cost of a 60-day hold is low (estimated at 2-4 weeks of delayed market entry if we ultimately choose to accelerate). The cost of premature commitment against weak evidence is significantly higher (misallocated capital, organizational whiplash if we reverse).\n\n## Recommended Next Artifact\n\n**Deliverable:** Decision-grade strategy memo with commitment recommendations, due at next board meeting (60 days).\n\n**What it will contain:**\n1. Results from the two probes (win/loss analysis and buyer interviews), synthesized into demand and competitive position assessments\n2. Capacity audit findings with explicit go/no-go on parallel initiatives\n3. Updated regulatory timeline based on comment period outcomes\n4. Three scenario-specific action plans (accelerate / hold / retrench) with resource requirements, risk profiles, and trigger conditions for each\n5. A clear recommendation for board vote\n\n**Interim checkpoint:** 30-day progress update to board chair (written memo, no meeting required) confirming probes are on track and flagging any emerging signals that would warrant accelerating the decision timeline.\n\n**Escalation trigger:** If any of the following occur before the 60-day window closes, we will convene an ad-hoc board session rather than waiting:\n- Competitor announces pricing action that directly threatens >10% of current pipeline\n- Regulatory body issues final rule ahead of expected timeline\n- Primary initiative shows signs of stalling (two consecutive sprints below 70% delivery rate)",
+    "claims": [
+      {
+        "claim_id": "side_a-claim-1",
+        "summary": "Under current evidence conditions, a hold-and-probe posture is superior to premature commitment because two of four key unknowns have weak evidence bases, making the downside risk of committing now disproportionate to the low cost of a 60-day delay.",
+        "evidence_refs": [
+          "ctx-readiness-assessment"
+        ],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_a-claim-2",
+        "summary": "Strategic unknowns should be categorized by resolvability — investable probes for unknowns we can resolve, monitoring triggers for unknowns that will self-resolve — to avoid wasting resources on unactionable uncertainty.",
+        "evidence_refs": [
+          "ctx-unknowns-framework"
+        ],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_a-claim-3",
+        "summary": "The recommended next artifact is a decision-grade strategy memo at 60 days, with a 30-day interim checkpoint and explicit escalation triggers, ensuring the board retains control without requiring premature action.",
+        "evidence_refs": [
+          "ctx-next-artifact"
+        ],
+        "is_major": false
+      }
+    ],
+    "citations": [
+      "ctx-readiness-assessment",
+      "ctx-unknowns-framework",
+      "ctx-next-artifact"
+    ],
+    "conclusion_confidence": "medium",
+    "open_questions": [
+      "Without concrete financials or named market data, the cost-of-delay estimate (2-4 weeks) is asserted rather than derived — a real board would challenge this.",
+      "The scenario provides no evidence files, so all unknowns and readiness assessments are illustrative rather than grounded in actual organizational data.",
+      "The hold posture assumes the competitive environment permits a 60-day pause — if the market is winner-take-all, delay cost may be much higher than estimated."
+    ],
+    "critique_responses": []
+  },
+  "critique_packet": {
+    "target_side": "side_a",
+    "finding_id": "finding-2",
+    "target_claim_ids": [
+      "side_a-claim-1"
+    ],
+    "claim_under_attack": "Under current evidence conditions, a hold-and-probe posture is superior to premature commitment because two of four key unknowns have weak evidence bases, making the downside risk of committing now disproportionate to the low cost of a 60-day delay.",
+    "attack_type": "evidence_gap",
+    "evidence_or_reason": "The claim asserts a comparative decision case without any underlying business data to support either side of the tradeoff. The artifact itself admits there are no evidence files and flags the 2-4 week cost-of-delay estimate as asserted rather than derived. Without concrete financial exposure, pipeline size, burn implications, or quantified downside from delay versus action, the conclusion that hold is 'superior' is not evidence-backed; it is a plausible posture framed as a justified recommendation.",
+    "severity": "medium"
+  }
+}

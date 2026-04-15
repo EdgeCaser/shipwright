@@ -1,0 +1,13 @@
+# Critique: finding-2
+
+- Target Side: side_a
+- Target Claim IDs: side_a-claim-1
+- Attack Type: evidence_gap
+- Severity: high
+
+## Claim Under Attack
+Phase 1 should be designed as an operator-assist system with a hard human approval boundary on any pricing or customer commitment.
+
+## Evidence Or Reason
+The artifact asserts a hard human approval boundary as the correct design but provides no evidence on operator capacity, approval latency tolerance, or throughput impact. The Unknowns section itself admits 'approval SLA tolerance by internal staff is unknown' and 'current operator baseline metrics are not provided,' yet the Decision Frame treats the approval gate as a settled design choice rather than a hypothesis requiring validation. A hard gate on every pricing message could create a bottleneck that degrades response times below customer tolerance, effectively trading commitment risk for churn risk — but neither risk is quantified. Without staffing models, projected approval volumes, or even a rough SLA target, the claim that this boundary 'gives the team measurable workflow acceleration' is unsupported by the artifact's own evidence base.
+

@@ -1,0 +1,74 @@
+{
+  "run_id": "conflict-2026-04-14-002149340Z-event-automation-boundary",
+  "side_id": "side_a",
+  "round": "final",
+  "artifact_markdown": "# Phase 1 PRD: Event Management Automation Platform\n\n## Decision Frame\n\n**Problem statement:** Event management companies spend 60-80% of operator time on repetitive coordination tasks (venue availability queries, vendor follow-ups, client pricing discussions) that could be partially automated. However, pricing commitments and contract terms carry financial and legal risk that cannot be delegated to non-deterministic systems.\n\n**Decision to be made:** Should we build a Phase 1 platform combining a WhatsApp-based client assistant, an internal operations console, and strict human-in-the-loop gates for all pricing and commitment actions?\n\n**Scope boundary:** Phase 1 covers inquiry handling, availability lookup, and quote preparation workflows only. It does NOT cover payment processing, contract execution, post-event operations, or multi-tenant white-labeling.\n\n**Key stakeholders:** Event operations managers (primary users), clients (WhatsApp end-users), finance/legal (approval authority for pricing), engineering (build team).\n\n---\n\n## Product Overview\n\n### WhatsApp Assistant (Client-Facing)\n\n**Purpose:** Handle inbound client inquiries, collect event requirements, and surface availability — without making any pricing or commitment statements.\n\n**Deterministic boundary rules:**\n- The LLM is used ONLY for natural language understanding (intent classification, entity extraction) and response generation from approved templates.\n- The LLM NEVER generates pricing figures, discount offers, or availability confirmations autonomously.\n- All LLM outputs pass through a layered output gate (see Output Gate Architecture below) before reaching clients.\n- Fallback: Any message the gate cannot classify with >95% confidence routes to a human operator queue.\n\n**Conversation flows (Phase 1):**\n1. **Inquiry intake:** Collect event type, date range, estimated headcount, location preference, budget range.\n2. **Availability check:** Query internal calendar database (deterministic), return available slots.\n3. **Quote request:** Compile requirements into structured brief, push to internal console for operator pricing.\n4. **Status check:** Client asks about pending quotes — system returns status from database, no LLM inference needed.\n\n### Internal Operations Console\n\n**Purpose:** Operator dashboard for managing inquiries, preparing quotes, and approving all client-facing pricing.\n\n**Core features (Phase 1):**\n- **Inquiry queue:** All WhatsApp conversations requiring human action, sorted by priority (date proximity, estimated deal size).\n- **Quote builder:** Operator selects venue/vendor/service line items from catalog, system calculates total. No LLM involvement in price calculation.\n- **Approval workflow:** Two-step approval for quotes above configurable threshold (default: $5,000). Operator prepares → Manager approves → System sends via WhatsApp.\n- **Conversation monitor:** Real-time view of all active WhatsApp threads with ability to intervene, override, or take over from the assistant.\n- **Audit log:** Every message sent to a client, every price quoted, every approval decision — immutable, timestamped, attributed to a human approver.\n\n### LLM Usage Boundaries (Architecture Decision Record)\n\n| Layer | LLM Role | Deterministic Gate |\n|---|---|---|\n| Intent classification | Classify inbound message intent | Confidence threshold ≥0.95; below routes to human |\n| Entity extraction | Extract dates, headcount, preferences | Extracted values displayed to operator for confirmation before use |\n| Response generation | Draft natural-language replies from approved template set | Output gate (layered — see below); blocked messages queue for human review |\n| Price calculation | **PROHIBITED** | All pricing from catalog database + operator input only |\n| Commitment language | **PROHIBITED** | Output gate hard-blocks; allowlist-only architecture prevents bypass |\n| Contract/legal text | **PROHIBITED** | Out of Phase 1 scope entirely |\n\n### Output Gate Architecture\n\nThe output gate uses a **default-deny, allowlist-based** design rather than relying solely on a blocklist of prohibited patterns.\n\n**Layer 1 — Structural allowlist:** Every client-facing message must instantiate a registered response template. The LLM may fill variable slots (dates, venue names, headcount) but cannot introduce free-text outside the template skeleton. Messages that do not match a known template are rejected.\n\n**Layer 2 — Pattern blocklist (defense-in-depth):** Even within approved templates, a regex + keyword scanner blocks messages containing:\n- Currency symbols, numeric price patterns, and written-out price expressions (e.g., \"five hundred dollars\", \"2K per head\").\n- Commitment vocabulary including synonyms and softer variants (\"confirmed\", \"reserved\", \"guaranteed\", \"locked in\", \"penciled in\", \"held for you\", \"set aside\").\n- Discount/offer language (\"special rate\", \"we can do\", \"I'll give you\").\n\n**Layer 3 — Semantic classifier (post-launch hardening):** A lightweight classifier trained on labeled examples of pricing/commitment language, including indirect and paraphrased expressions. This layer is NOT a launch gate but is scheduled for deployment within 30 days of launch to catch evasion patterns that regex cannot.\n\n**Template governance:** New templates require engineering review and QA sign-off. Operators cannot create or modify templates directly — this prevents the approved-template path from becoming a bypass vector.\n\n**Monitoring commitment:** Filter block rate, false positive rate, and a weekly random sample of 50 passed messages are reviewed by an operator to detect drift. Any novel evasion pattern discovered feeds back into Layers 2 and 3.\n\n**Failure mode design:**\n- LLM service unavailable → System sends canned \"We've received your message, a team member will respond shortly\" and routes to human queue.\n- Output gate flags message → Message held, operator notified, must manually approve or rewrite.\n- Ambiguous intent → Route to human with LLM's best-guess annotation for operator context.\n\n---\n\n## Unknowns & Evidence Gaps\n\n| ID | Unknown | Impact | Mitigation |\n|---|---|---|---|\n| U1 | Client adoption rate for WhatsApp business interactions in target market | High — determines channel viability | Pre-launch survey of 50 existing clients; track opt-in rate in first 30 days |\n| U2 | False positive rate of output gate blocking legitimate operator-approved messages | Medium — too aggressive = operator fatigue | Tune on 500+ historical message corpus before launch; track block rate weekly; review 50 passed messages/week for false negatives |\n| U3 | Operator time savings vs. current workflow | High — core value proposition | Baseline current task times; measure post-launch with same operators |\n| U4 | LLM intent classification accuracy on domain-specific event management language | Medium — affects routing quality | Fine-tune or prompt-engineer on labeled dataset of 1,000+ real inquiries |\n| U5 | Legal/compliance requirements for automated messaging in target jurisdictions | High — could block launch | Legal review of WhatsApp Business API ToS + local consumer protection laws before build |\n| U6 | Whether two-step approval flow adds unacceptable latency to quote turnaround | Medium — could reduce client satisfaction | Measure current quote turnaround baseline; set SLA target (e.g., <2 hours during business hours) |\n| U7 | Coverage gap between regex blocklist and real-world pricing/commitment language | Medium — indirect or novel phrasing may evade pattern matching | Layer 3 semantic classifier scheduled for 30-day post-launch deployment; weekly human review of passed messages to detect evasion patterns pre-classifier |\n\n---\n\n## Pass/Fail Readiness\n\n### Pass criteria (all must be met for Phase 1 launch):\n- [ ] **Zero autonomous pricing:** No path exists in code where an LLM output directly sets or communicates a price to a client without human approval. Verified by security audit of all message-send code paths.\n- [ ] **Allowlist-only messaging:** Every client-facing message traces to a registered response template. Free-text generation by the LLM cannot reach clients.\n- [ ] **Blocklist baseline:** Layer 2 pattern blocklist catches ≥95% of prohibited patterns in a curated adversarial corpus of ≥1,000 messages including indirect pricing expressions and synonym variants. (Note: 100% static coverage is not achievable; residual risk is mitigated by Layer 1 allowlist and post-launch Layer 3 classifier.)\n- [ ] **Fallback reliability:** When LLM service is down, 100% of inbound messages receive canned response within 5 seconds and route to human queue.\n- [ ] **Audit completeness:** Every client-facing message traceable to either an approved template or a named human operator in audit log.\n- [ ] **Operator adoption:** ≥3 operators complete training and process ≥10 real inquiries each in supervised pilot.\n- [ ] **Legal sign-off:** Written approval from legal on WhatsApp messaging compliance for target market.\n- [ ] **Template governance process:** Documented review and QA sign-off procedure for new/modified response templates.\n\n### Fail criteria (any triggers stop/pivot):\n- [ ] Allowlist bypass discovered — any code path allows LLM free-text to reach a client → halt launch, close the path.\n- [ ] LLM intent classification accuracy <80% on real messages after tuning → revert to rule-based routing for Phase 1.\n- [ ] Client opt-in rate <20% in pilot → re-evaluate channel choice before scaling.\n- [ ] Operator quote turnaround exceeds current baseline → approval workflow needs redesign.\n\n---\n\n## Recommended Next Artifact\n\n**Technical Design Document** covering:\n1. WhatsApp Business API integration architecture (webhook handling, session management, message queuing).\n2. Output gate specification — Layer 1 template allowlist schema, Layer 2 prohibited pattern inventory (including indirect/synonym coverage), Layer 3 classifier training plan and deployment timeline.\n3. Template governance process — creation, review, QA, and deployment lifecycle.\n4. LLM integration contract — model selection criteria, prompt templates, confidence scoring methodology, latency budget.\n5. Internal console wireframes and API contracts.\n6. Audit log schema and retention policy.\n\n**Followed by:** Pilot plan defining target client cohort (10-20 clients), success metrics, 4-week timeline, and rollback triggers.",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "LLM must be architecturally prohibited from generating or communicating pricing — enforced by deterministic output gates and approval workflows, not by prompt instructions alone",
+      "evidence_refs": [
+        "ctx-scenario-constraints"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "Output gate uses a default-deny allowlist architecture (Layer 1: template allowlist) with defense-in-depth blocklist (Layer 2: regex patterns) and planned semantic classifier (Layer 3: post-launch); no single layer claims complete coverage — residual risk is mitigated by layered defense and ongoing human review",
+      "evidence_refs": [
+        "ctx-scenario-constraints"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-3",
+      "summary": "Every failure mode (LLM down, low confidence, gate flag) must route to a human queue with canned acknowledgment — no silent failures",
+      "evidence_refs": [
+        "ctx-scenario-constraints"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-4",
+      "summary": "Seven critical unknowns identified including client WhatsApp adoption rate, output gate false positive rate, blocklist coverage gaps, and legal compliance — each with specific mitigation actions",
+      "evidence_refs": [
+        "ctx-scenario-prompt"
+      ],
+      "is_major": false
+    },
+    {
+      "claim_id": "side_a-claim-5",
+      "summary": "Phase 1 scope explicitly excludes payment processing, contract execution, and multi-tenant features to maintain tight delivery boundary",
+      "evidence_refs": [
+        "ctx-scenario-prompt"
+      ],
+      "is_major": false
+    },
+    {
+      "claim_id": "side_a-claim-6",
+      "summary": "Template governance requires engineering review and QA sign-off to prevent approved templates from becoming a bypass vector for prohibited content",
+      "evidence_refs": [
+        "ctx-scenario-constraints"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-scenario-constraints",
+    "ctx-scenario-prompt"
+  ],
+  "open_questions": [
+    "What is the target market/jurisdiction for WhatsApp messaging compliance?",
+    "Is there an existing venue/vendor catalog database or does it need to be built?",
+    "What is the current average quote turnaround time to baseline against?",
+    "Are there existing client communication channels that WhatsApp would replace or supplement?",
+    "What volume of messages per day is expected to inform Layer 3 classifier training data requirements?"
+  ],
+  "critique_responses": [
+    {
+      "finding_id": "finding-2",
+      "disposition": "adopted",
+      "rationale": "The critique correctly identifies that 100% coverage on a finite adversarial corpus does not guarantee 100% coverage in production, and that the original prohibited pattern set was incomplete (missing written-out prices, synonym variants, soft commitment language). The artifact has been substantially revised: (1) The output gate now uses a default-deny allowlist architecture (Layer 1) where only registered templates can reach clients, making the blocklist a defense-in-depth layer rather than the primary control. (2) The blocklist (Layer 2) has been expanded to include written-out price expressions, commitment synonyms, and offer language, with the pass criterion reduced from 100% to ≥95% with an explicit acknowledgment that static coverage has limits. (3) A post-launch semantic classifier (Layer 3) is planned for 30-day deployment to catch indirect/paraphrased evasion. (4) Template governance prevents the approved-template path from becoming a bypass. (5) A new unknown (U7) explicitly tracks the blocklist coverage gap with mitigation. The primary safety guarantee now rests on the structural allowlist, not on the completeness of any pattern list."
+    }
+  ]
+}

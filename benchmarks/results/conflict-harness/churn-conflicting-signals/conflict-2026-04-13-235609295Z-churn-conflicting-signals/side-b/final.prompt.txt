@@ -1,0 +1,151 @@
+You are SIDE_B in the final revision phase for run conflict-2026-04-13-235609295Z-churn-conflicting-signals.
+You must either adopt the critique or reject it with reasoning.
+Do not reveal provider identity.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "run_id": "conflict-2026-04-13-235609295Z-churn-conflicting-signals",
+  "side_id": "side_b",
+  "round": "final",
+  "artifact_markdown": "# Revised artifact",
+  "claims": [
+    {
+      "claim_id": "side_b-claim-1",
+      "summary": "Updated major claim",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1"
+  ],
+  "open_questions": [],
+  "critique_responses": [
+    {
+      "finding_id": "finding-1",
+      "disposition": "adopted",
+      "rationale": "Why the critique was adopted or rejected."
+    }
+  ]
+}
+
+Case packet:
+{
+  "scenario_id": "churn-conflicting-signals",
+  "title": "Churn diagnosis with conflicting signals",
+  "prompt": "Write a churn reduction PRD when signals conflict with strategy targets.",
+  "artifact_type": "prd",
+  "rubric": {
+    "dimensions": [
+      "claim quality",
+      "evidence discipline",
+      "responsiveness to critique",
+      "internal consistency",
+      "decision usefulness"
+    ],
+    "scoring_scale": "1-5",
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "constraints": {
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "expect_structured": true,
+    "context_files": [],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "evidence": [],
+  "max_rounds": 3,
+  "tool_policy": "none",
+  "sharing_policy": {
+    "share_case_packet": true,
+    "share_committed_artifacts_after_first_pass": true,
+    "share_critiques_after_open": true,
+    "share_hidden_reasoning": false,
+    "share_provider_identity": false,
+    "share_internal_coalition_drafts": false
+  },
+  "success_condition": {
+    "type": "validator_contract",
+    "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+    "validator": {
+      "artifact_type": "prd",
+      "expect_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true
+    }
+  }
+}
+
+Your first-pass artifact:
+{
+  "run_id": "conflict-2026-04-13-235609295Z-churn-conflicting-signals",
+  "side_id": "side_b",
+  "round": "first_pass",
+  "artifact_markdown": "# Churn Reduction PRD: Conflicting Signals vs Strategy Targets\n\n## Decision Frame\n\n**Decision needed:** Approve a guarded churn-reduction initiative that prioritizes diagnosis, segmentation, and reversible interventions before committing to broad product or pricing changes.\n\n**Strategic tension:** The prompt asks for churn reduction where signals conflict with strategy targets. With no supporting evidence packet provided, this PRD treats the conflict itself as the core product risk: acting on one signal too early could reduce churn in a low-priority segment while pulling the product away from the strategic target.\n\n**Goal:** Reduce preventable churn in the strategy-target customer segment without optimizing for off-strategy retention.\n\n**Primary user/customer:** Existing customers in the strategy-target segment who are showing churn risk or downgrade intent.\n\n**Secondary user/customer:** Customer-facing teams who need clear retention playbooks and escalation paths.\n\n**Non-goals:**\n- Do not launch broad discounting as the default churn response.\n- Do not optimize retention for segments explicitly outside the strategy target unless required to protect material revenue during the learning period.\n- Do not ship irreversible roadmap changes until the churn drivers are validated by segment.\n\n**Hypothesis:** If we identify churn drivers by strategic segment and intervene only where the churn driver is both validated and strategically aligned, then we can reduce target-segment churn while avoiding retention work that distorts product direction.\n\n**Success metrics:**\n- Target-segment logo churn decreases versus a defined baseline.\n- Target-segment revenue churn or contraction decreases versus baseline.\n- Intervention acceptance rate improves among accounts with validated churn reasons.\n- No material increase in retention spend or discounting for off-strategy segments.\n\n**Guardrail metrics:**\n- Gross margin impact from retention offers.\n- Sales or CS time spent on off-strategy saves.\n- Product roadmap capacity diverted to off-strategy churn drivers.\n- Customer satisfaction after intervention.\n\n**Requirements:**\n1. Segment churn data by strategy-target segment, customer size, plan, tenure, acquisition channel, and primary use case.\n2. Require each churn reason to be tagged with evidence quality: observed behavior, customer-stated reason, CS-entered reason, inferred reason, or unknown.\n3. Build a churn-risk review workflow for target-segment accounts that surfaces leading indicators, recent product usage, support history, billing events, and renewal timeline.\n4. Define intervention playbooks by validated driver, such as onboarding gaps, missing workflow fit, support responsiveness, pricing friction, or stakeholder change.\n5. Add an explicit off-strategy triage rule: off-strategy churn may receive low-cost support, but roadmap or pricing changes require executive exception.\n6. Run a time-boxed pilot before broad rollout.\n7. Review outcomes by segment before deciding whether to scale, revise, or stop the initiative.\n\n**Pilot design:**\n- Duration: 6 to 8 weeks.\n- Population: target-segment customers with churn risk signals and enough account history to diagnose.\n- Comparison: matched holdout or pre/post baseline if holdout is not operationally feasible.\n- Exit decision: scale only if target-segment churn improves without meaningful off-strategy retention drag.\n\n## Unknowns & Evidence Gaps\n\n- No evidence packet was provided, so the actual conflicting signals are unknown.\n- The strategic target segment is not defined in the prompt.\n- Baseline churn, revenue concentration, and segment-level retention economics are not provided.\n- The strongest churn drivers are unknown and should not be assumed.\n- It is unknown whether churn is concentrated in onboarding, product fit, pricing, support, implementation, champion loss, or competitive displacement.\n- It is unknown whether current churn data is reliable enough for decision-making.\n\n## Pass/Fail Readiness\n\n**Ready to approve discovery and pilot:** Pass.\n\n**Ready to approve broad retention roadmap changes:** Fail until segment-level churn drivers and economics are validated.\n\n**Ready to approve discounting or packaging changes:** Fail until pricing-specific churn evidence is separated from general dissatisfaction or poor fit.\n\n**Ready to scale:** Pass only if the pilot shows a measurable reduction in target-segment churn, guardrails remain within agreed limits, and the intervention maps to validated strategic customers rather than noisy aggregate churn.\n\n## Recommended Next Artifact\n\nCreate a churn diagnostic brief with:\n- Segment-level churn baseline.\n- Conflicting signal inventory.\n- Evidence quality grading by churn driver.\n- Target vs off-strategy customer split.\n- Pilot cohort definition.\n- Retention intervention decision tree.\n- Scale/stop thresholds for the pilot.",
+  "claims": [
+    {
+      "claim_id": "side_b-claim-1",
+      "summary": "The PRD should prioritize a guarded diagnostic pilot because the scenario provides conflicting churn signals but no underlying evidence, making broad roadmap, pricing, or discounting changes premature.",
+      "evidence_refs": [
+        "case-packet"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-2",
+      "summary": "Churn reduction should be evaluated by strategic segment rather than aggregate churn so that retention work does not optimize for off-strategy customers.",
+      "evidence_refs": [
+        "case-packet"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-3",
+      "summary": "The artifact is not ready for broad implementation until churn drivers, target segment definition, baseline metrics, and evidence quality are established.",
+      "evidence_refs": [
+        "case-packet"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "case-packet"
+  ],
+  "open_questions": [
+    "What is the strategy-target segment?",
+    "Which churn signals conflict with the strategy targets?",
+    "What are the baseline logo churn, revenue churn, and contraction rates by segment?",
+    "What evidence quality exists for each stated churn driver?"
+  ],
+  "critique_responses": []
+}
+
+Visible critique packet:
+{
+  "target_side": "side_b",
+  "finding_id": "finding-1",
+  "target_claim_ids": [
+    "side_b-claim-1",
+    "side_b-claim-3"
+  ],
+  "claim_under_attack": "The PRD should prioritize a guarded diagnostic pilot because the scenario provides conflicting churn signals but no underlying evidence, making broad changes premature; the artifact is not ready for broad implementation until churn drivers, target segment, baselines, and evidence quality are established.",
+  "attack_type": "evidence_gap",
+  "evidence_or_reason": "The artifact uses the absence of a provided evidence packet as justification for deferring every substantive decision, but the scenario explicitly states signals CONFLICT with strategy targets — meaning signals exist, they just point in opposing directions. Rather than modeling the conflict (e.g., usage up but NPS down, expansion in off-target segments but contraction in target), the PRD treats 'conflicting signals' as equivalent to 'no signals' and produces requirements that are entirely contingent on future discovery. This collapses the PRD's decision usefulness: every requirement is conditional, every readiness gate is 'Fail', and the Recommended Next Artifact asks for exactly the analysis the PRD itself should have framed. A PRD that passes only its own discovery phase and fails everything else is not a product requirements document — it is a research proposal mislabeled as a PRD. The scenario demanded a churn reduction PRD when signals conflict, not a request for more data before writing one.",
+  "severity": "high"
+}

@@ -1,0 +1,93 @@
+{
+  "case_packet": {
+    "scenario_id": "board-update-ambiguity",
+    "title": "Board update under ambiguity",
+    "prompt": "Write a strategy update for a board audience under ambiguity.",
+    "artifact_type": "strategy",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a strategy artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "strategy",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass": {
+    "run_id": "conflict-2026-04-13-194517166Z-board-update-ambiguity",
+    "side_id": "side_b",
+    "round": "first_pass",
+    "artifact_markdown": "# Strategy Update Under Ambiguity\n\n## Decision Frame\n\nWe should treat the next board discussion as a decision-quality checkpoint, not as a final commitment to a single strategy. The current evidence packet contains no market, customer, financial, operational, or competitive facts, so the board should avoid approving irreversible resource allocation until the missing evidence is collected.\n\nThe decision in front of the board is therefore:\n\n1. Confirm the strategic question that matters most.\n2. Define the minimum evidence required to make that decision responsibly.\n3. Approve a bounded discovery and validation sprint instead of a full-scale execution plan.\n\nRecommended posture: proceed with disciplined option-shaping, but do not overstate confidence. The organization should preserve strategic flexibility while converting the highest-risk assumptions into testable evidence.\n\n## Unknowns & Evidence Gaps\n\nThe current packet provides no direct evidence, so the following gaps should be treated as decision blockers:\n\n- Customer evidence: no stated target segment, unmet need, buying trigger, urgency, willingness to pay, or proof of demand.\n- Market evidence: no market size, growth rate, category definition, timing signal, or adoption pattern.\n- Competitive evidence: no named alternatives, differentiation claim, switching barrier, incumbent response risk, or substitute behavior.\n- Business model evidence: no monetization path, margin profile, sales motion, implementation cost, or payback expectation.\n- Execution evidence: no delivery capacity, dependency map, regulatory/compliance exposure, partner requirement, or operational readiness signal.\n- Strategic fit evidence: no link between this initiative and company-level objectives, portfolio tradeoffs, or capital allocation priorities.\n\nThe board should ask management to separate what is known, assumed, and unknown. Any update that presents a directional strategy without this distinction would create false precision.\n\n## Pass/Fail Readiness\n\nPass readiness criteria for advancing beyond discovery:\n\n- A specific strategic choice is named, including the option being deprioritized.\n- The target customer or buyer is defined tightly enough to test demand.\n- At least one credible demand signal exists from the target segment.\n- The economic logic is explicit, even if still approximate.\n- The team can describe why now is the right time to act.\n- The top three risks have owners, tests, and decision dates.\n- The requested investment is staged and reversible where possible.\n\nFail conditions that should stop or reset the strategy:\n\n- The opportunity depends on broad category enthusiasm rather than customer-specific evidence.\n- The strategy cannot name the customer, job, alternative, or budget source.\n- The proposal requires large fixed investment before validating demand.\n- Differentiation is expressed as aspiration rather than a defensible advantage.\n- The team cannot explain what evidence would cause it to stop.\n\nCurrent readiness assessment: not ready for a full go decision. Ready for a board-approved evidence sprint if management can define the specific strategic question and decision threshold.\n\n## Recommended Next Artifact\n\nPrepare a board-facing Decision Memo for the next review. It should include:\n\n- The strategic question to be decided.\n- Three options: proceed, stage-gate, or stop.\n- The assumptions that matter most.\n- Evidence collected to date.\n- Evidence still missing.\n- A 30- to 45-day validation plan.\n- Decision thresholds for go, revise, or stop.\n- The smallest resource request needed to reduce uncertainty.\n\nThe board ask should be framed as approval for staged learning, not approval for scaled execution.",
+    "claims": [
+      {
+        "claim_id": "side_b-claim-1",
+        "summary": "Because the case packet contains no substantive evidence, the board update should recommend a staged evidence sprint rather than a full strategic commitment.",
+        "evidence_refs": [
+          "ctx-1"
+        ],
+        "is_major": true
+      }
+    ],
+    "citations": [
+      "ctx-1"
+    ],
+    "open_questions": [],
+    "critique_responses": []
+  },
+  "critique_packet": {
+    "target_side": "side_b",
+    "finding_id": "finding-1",
+    "target_claim_ids": [
+      "side_b-claim-1"
+    ],
+    "claim_under_attack": "Because the case packet contains no substantive evidence, the board update should recommend a staged evidence sprint rather than a full strategic commitment.",
+    "attack_type": "evidence_gap",
+    "evidence_or_reason": "SIDE_B conflates the absence of evidence in the case packet with the absence of evidence in the organization. The scenario prompt asks for a 'strategy update for a board audience under ambiguity' — meaning the strategist must demonstrate judgment under incomplete information, not refuse to exercise judgment until information is complete. SIDE_B's artifact is entirely procedural: it lists what evidence is missing and proposes gathering it, but offers zero strategic direction, no hypothesis about where value might lie, and no framework for how the board should weigh tradeoffs while waiting. A board receiving this update would learn nothing about management's strategic thinking — only that management has none yet. The rubric dimension 'decision usefulness' requires the artifact to help the board act; a comprehensive inventory of unknowns paired with a request for more time is the least decision-useful output possible. Real strategy under ambiguity requires stating a directional bet, naming the assumptions it depends on, and defining kill criteria — SIDE_B does only the last of these while avoiding the first two entirely.",
+    "severity": "high"
+  }
+}

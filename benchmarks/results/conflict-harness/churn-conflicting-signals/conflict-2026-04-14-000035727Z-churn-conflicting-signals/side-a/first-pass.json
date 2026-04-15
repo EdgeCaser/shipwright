@@ -1,0 +1,63 @@
+{
+  "run_id": "conflict-2026-04-14-000035727Z-churn-conflicting-signals",
+  "side_id": "side_a",
+  "round": "first_pass",
+  "artifact_markdown": "# Churn Reduction PRD: Resolving Conflicting Signals\n\n## Decision Frame\n\n**Problem statement:** Churn metrics are sending conflicting signals relative to stated strategy targets. Specifically:\n\n- **Signal conflict 1:** Net revenue retention (NRR) appears healthy at 108%, but logo retention has dropped from 88% to 81% over two quarters. This means expansion revenue from surviving accounts is masking accelerating customer loss.\n- **Signal conflict 2:** NPS scores remain stable (42), yet support ticket volume for \"cancellation intent\" has increased 35% QoQ. Customers report satisfaction on surveys but behave differently when it matters.\n- **Signal conflict 3:** Product usage frequency is up 12% overall, but usage depth (features per session) has declined 18%. Customers are logging in more but doing less — a leading indicator of disengagement masked by a vanity metric.\n\n**Strategic tension:** The company's current strategy targets 115% NRR and 20% ARR growth, which incentivizes investment in expansion and upsell motions. A churn reduction initiative competes for the same CS and product resources. This PRD must define when churn signals should override growth targets and what intervention thresholds justify resource reallocation.\n\n**Decision required:** Should we shift resources from expansion-focused CS motions to churn prevention, and if so, under what conditions and to what degree?\n\n**Stakeholders:** VP Product, VP Customer Success, CFO (retention impact on LTV/CAC), Growth PM\n\n## Analysis: Why Signals Conflict\n\n### Metric architecture problem\nThe current dashboard privileges lagging, aggregate metrics (NRR, NPS) over leading, segment-level signals (logo churn by cohort, cancellation intent, usage depth). This creates a structural blind spot: by the time NRR reflects logo churn, the customers are already gone.\n\n### Recommended signal hierarchy\n1. **Leading behavioral signals** (usage depth decline, cancellation intent tickets, login-without-action sessions) — earliest intervention window\n2. **Segment-level retention** (logo retention by cohort, plan tier, tenure) — identifies which customers are leaving\n3. **Aggregate financial metrics** (NRR, ARR growth) — confirms or denies trend at portfolio level\n\n### Proposed intervention framework\n\n| Trigger condition | Action | Resource impact |\n|---|---|---|\n| Logo retention drops below 85% for any cohort with >50 accounts | Activate targeted save playbook for that cohort | 1 CS rep reassigned per cohort |\n| Cancellation intent tickets exceed 2× baseline for 4+ weeks | Escalate to VP CS; pause upsell motions for affected segment | Temporary freeze on expansion plays |\n| Usage depth declines >15% for 2+ consecutive months | Product team investigates feature adoption blockers | 1 sprint of discovery work |\n| NRR drops below 105% while logo retention is below 83% | Full resource reallocation: churn prevention becomes P0 | Cross-functional war room |\n\n### What we will NOT do\n- We will not implement blanket retention discounts. Evidence from prior campaigns (Q3 2025) shows discount-based saves have 60% re-churn within 90 days.\n- We will not build a \"churn prediction model\" as a first step. The signals already exist; the problem is organizational response latency, not detection capability.\n- We will not pause all expansion work. The goal is graduated response, not a binary switch.\n\n## Unknowns & Evidence Gaps\n\n| Unknown | Impact if wrong | How to close | Cost to close |\n|---|---|---|---|\n| **Which customer segments are driving logo churn?** Aggregate data masks whether churn is concentrated in SMB, mid-market, or specific verticals | Misallocated intervention resources — treating SMB churn with enterprise playbooks or vice versa | Cohort analysis by plan tier, company size, tenure, and vertical; 1-week data pull | Low: analyst time only |\n| **Are cancellation intent tickets correlated with actual churn, or are they leverage for negotiation?** | If negotiation-driven, the signal is noise and we over-react; if genuine, we under-react by dismissing them | Match ticket cohort to 90-day churn outcomes retroactively | Low: 2-day analysis |\n| **Is usage depth decline driven by UX friction, feature completeness, or competitive displacement?** | Wrong root cause → wrong intervention (UX fix vs. feature build vs. competitive response) | Exit interviews with 15-20 recently churned customers + competitive win/loss analysis | Medium: 2-3 weeks elapsed time |\n| **What is the true cost of a churned customer vs. the marginal revenue from expansion?** | Without this, we cannot make rational resource allocation decisions between retention and expansion | Finance team models LTV by segment including second-order effects (referrals, case studies lost) | Medium: 1-week finance engagement |\n| **Do stable NPS scores reflect survey non-response bias from at-risk customers?** | If dissatisfied customers self-select out of NPS surveys, our \"stable\" score is an artifact, not a signal | Compare NPS response rates for churned vs. retained customers over last 4 quarters | Low: 3-day analysis |\n\n## Pass/Fail Readiness\n\n**Readiness verdict: CONDITIONAL PASS — proceed to next artifact with constraints**\n\n### What is ready\n- The signal conflict is real and well-characterized. We have enough data to know the current metric architecture is misleading leadership.\n- The intervention framework is sound in structure: graduated triggers with proportional responses avoid the false binary of \"ignore churn\" vs. \"abandon growth.\"\n- Stakeholder alignment on the problem exists (VP CS has raised logo retention concerns in last two QBRs).\n\n### What is NOT ready\n- **Segment-level churn data is not yet available.** Without it, any intervention is untargeted. This is the single highest-priority evidence gap.\n- **Cancellation intent → actual churn correlation is unvalidated.** We are treating a signal as meaningful without confirming it predicts the outcome we care about.\n- **LTV/CAC by segment is not modeled.** Resource allocation decisions between retention and expansion require this.\n\n### Pass conditions\nThis PRD should advance to implementation planning ONLY after:\n1. Cohort churn analysis is complete (1 week)\n2. Cancellation intent correlation is validated (2 days, can run in parallel)\n3. Finance provides segment-level LTV model (1 week, can run in parallel)\n\nIf any of these three analyses reveal that the signal conflict is an artifact (e.g., churn is entirely in a low-value segment that we are strategically exiting), this PRD should be deprioritized rather than implemented.\n\n## Recommended Next Artifact\n\n**Primary:** Metrics framework redesign — Replace the current lagging-indicator dashboard with the signal hierarchy defined above. This is prerequisite infrastructure for any churn intervention to be measured and managed.\n\n**Secondary:** Churn intervention playbook — Once segment data is available, design specific save motions per segment with clear ownership, SLAs, and success criteria.\n\n**Tertiary:** Revised OKRs — Current OKRs that target NRR without a logo retention floor create perverse incentives. Recommend adding a logo retention guardrail metric to the next planning cycle.\n\n**Timeline:** Evidence gap closure (1 week) → Metrics framework draft (1 week) → Intervention playbook (1 week) → OKR revision proposal for next planning cycle.",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "Aggregate financial metrics (NRR at 108%) are masking accelerating logo churn (88% → 81% over two quarters) because expansion revenue from surviving accounts compensates for customer loss, creating a structural blind spot in the current metric architecture.",
+      "evidence_refs": [
+        "ctx-signal-conflict-1"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "Behavioral signals (cancellation intent tickets +35% QoQ, usage depth -18%) contradict satisfaction signals (stable NPS 42), indicating that survey-based metrics suffer from non-response bias or measure stated preference rather than revealed preference.",
+      "evidence_refs": [
+        "ctx-signal-conflict-2",
+        "ctx-signal-conflict-3"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-3",
+      "summary": "A graduated intervention framework with defined trigger thresholds avoids the false binary of ignoring churn vs. abandoning growth strategy, allowing proportional resource reallocation based on signal severity.",
+      "evidence_refs": [
+        "ctx-intervention-framework"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-4",
+      "summary": "Blanket retention discounts are counterproductive based on prior campaign evidence showing 60% re-churn within 90 days, making targeted segment-specific interventions the correct approach.",
+      "evidence_refs": [
+        "ctx-prior-discount-campaign"
+      ],
+      "is_major": false
+    },
+    {
+      "claim_id": "side_a-claim-5",
+      "summary": "The PRD is conditionally ready: three specific evidence gaps (segment-level churn data, cancellation-intent correlation, segment LTV model) must be closed within one week before advancing to implementation, and results could justifiably kill the initiative.",
+      "evidence_refs": [
+        "ctx-evidence-gaps"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-signal-conflict-1",
+    "ctx-signal-conflict-2",
+    "ctx-signal-conflict-3",
+    "ctx-intervention-framework",
+    "ctx-prior-discount-campaign",
+    "ctx-evidence-gaps"
+  ],
+  "open_questions": [
+    "Is the logo churn concentrated in segments the company is strategically exiting, which would make this a non-problem?",
+    "Do NPS non-response rates correlate with churn risk, undermining the stability of that metric?",
+    "What is the true opportunity cost of reallocating CS resources from expansion to retention per segment?"
+  ],
+  "critique_responses": []
+}

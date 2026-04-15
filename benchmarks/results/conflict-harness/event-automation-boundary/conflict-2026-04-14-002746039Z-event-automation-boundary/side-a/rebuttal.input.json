@@ -1,0 +1,98 @@
+{
+  "case_packet": {
+    "scenario_id": "event-automation-boundary",
+    "title": "Event automation platform with human-in-the-loop boundary constraints",
+    "prompt": "Write a Phase 1 PRD for an event management automation platform with a WhatsApp assistant, an internal console, human approval for pricing commitments, and strict deterministic boundaries around LLM usage.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "opposing_first_pass": {
+    "run_id": "conflict-2026-04-14-002746039Z-event-automation-boundary",
+    "side_id": "side_b",
+    "round": "first_pass",
+    "artifact_markdown": "# Phase 1 PRD: Event Automation Platform\n\n## Decision Frame\n\n### Product decision\nBuild a Phase 1 event management automation platform that uses a WhatsApp assistant for requester and attendee interaction, an internal operations console for staff workflow, and deterministic system boundaries that prevent the LLM from making pricing commitments, policy exceptions, payments, or irreversible operational changes without human approval.\n\n### Target users\n- Event requesters: people coordinating venues, catering, invitations, schedules, or event logistics through WhatsApp.\n- Internal operators: event operations staff who review requests, approve pricing, resolve exceptions, and manage fulfillment status.\n- Managers or approvers: authorized staff who approve price commitments, discount exceptions, refunds, and scope changes.\n\n### Phase 1 goal\nReduce manual intake and coordination work while preserving human accountability for commercial commitments and high-risk decisions.\n\n### In scope\n- WhatsApp assistant for event intake, clarification questions, status updates, and handoff notifications.\n- Internal console for event request review, task status, quote draft review, approval workflow, conversation history, and audit log.\n- Deterministic orchestration layer that owns workflow state, eligibility rules, approval requirements, pricing-rule execution, and external system calls.\n- LLM usage limited to natural-language understanding, summarization, draft generation, message tone adaptation, and classification into predefined enums.\n- Human approval required before any pricing commitment, discount, refund, venue deposit instruction, cancellation penalty, contract term, or bespoke commercial promise is sent to a customer.\n- Audit logging for LLM inputs, generated drafts, human approvals, final outbound messages, and rule-engine outputs.\n\n### Out of scope for Phase 1\n- Fully autonomous quote commitment.\n- Fully autonomous negotiation.\n- Contract execution or legally binding e-signature flows.\n- Payment collection and refund processing.\n- Vendor marketplace procurement.\n- Multi-channel support beyond WhatsApp and the internal console.\n- Custom event design generation beyond operational draft assistance.\n\n### Core user stories\n- As an event requester, I want to describe my event in WhatsApp so I do not need to fill out a long form before getting help.\n- As an event requester, I want timely clarification questions so the organizer can understand date, location, headcount, budget, dietary needs, equipment, and schedule constraints.\n- As an internal operator, I want a structured event brief generated from the WhatsApp conversation so I can review requirements quickly.\n- As an internal operator, I want the system to flag missing information and policy-sensitive requests so I know what to resolve before a quote is prepared.\n- As an approver, I want pricing drafts and commercial exceptions routed to me before the customer sees them so commitments remain controlled.\n- As an internal operator, I want a full audit trail of assistant suggestions, human decisions, and customer-facing messages so disputes can be investigated.\n\n### Functional requirements\n\n#### WhatsApp assistant\n- Accept inbound customer messages through WhatsApp.\n- Identify whether the message is a new event request, follow-up, clarification answer, status request, cancellation request, complaint, or unsupported request.\n- Ask deterministic intake questions when required fields are missing: event date, location, attendee count, event type, budget range, service needs, contact identity, and deadline.\n- Generate draft customer replies using approved templates and conversation context.\n- Send only messages that pass policy checks and approval requirements.\n- Escalate to human review when the request includes pricing, discounts, refunds, penalties, contract terms, legal threats, safety concerns, VIP handling, or ambiguous intent.\n\n#### Internal console\n- Display all open event requests with status, owner, next action, risk flags, and SLA timer.\n- Show structured event brief extracted from conversation history.\n- Show missing fields and recommended next question.\n- Show draft quote components produced by deterministic pricing rules, if configured.\n- Require explicit human approval before any customer-facing price, discount, refund, or binding commitment is sent.\n- Let an operator edit outbound drafts before sending.\n- Record approval actor, timestamp, approved text, underlying rule output, and final sent message.\n- Provide search and filters by event date, requester, status, operator, and approval state.\n\n#### Deterministic workflow and LLM boundaries\n- Workflow state must be owned by application code, not by the LLM.\n- Pricing calculations must be performed by deterministic pricing services or rule tables, not by the LLM.\n- The LLM may draft a customer-facing explanation of an approved price but may not invent, alter, or commit to the price.\n- The LLM may classify requests only into predefined categories, with confidence thresholds and fallback to human review.\n- The LLM may summarize conversation history, but the console must retain source messages for verification.\n- Any action with external side effects must be represented as a typed command produced by application logic and validated before execution.\n- The assistant must refuse or escalate when user intent falls outside known workflow states or required confidence thresholds.\n\n### Phase 1 workflow\n1. Customer messages the WhatsApp assistant.\n2. System creates or retrieves event request record.\n3. LLM classifies intent into predefined workflow categories.\n4. Deterministic orchestrator checks current state and missing fields.\n5. Assistant asks the next approved intake question or routes to human review.\n6. Once required intake data is complete, the console generates an internal event brief.\n7. Pricing service or operator drafts quote components.\n8. Any price, discount, refund, penalty, or commitment is routed to a human approver.\n9. Approved response is sent through WhatsApp.\n10. System logs classification, summary, draft, approval, and sent message.\n\n### Non-functional requirements\n- Reliability: WhatsApp message ingestion and outbound sending should be idempotent to avoid duplicate customer messages.\n- Auditability: every automated draft, approval decision, and final outbound message must be traceable.\n- Latency: assistant replies for low-risk intake questions should be fast enough to feel conversational; human approval flows may follow operator SLA.\n- Security: role-based access control for console users and approvers.\n- Privacy: redact or restrict sensitive customer data according to internal data policies.\n- Observability: track message failures, classification confidence, escalation rate, approval turnaround time, and sent-message error rate.\n\n### Success metrics\n- Intake completion rate for WhatsApp-originated event requests.\n- Reduction in operator time spent converting raw conversation into structured event brief.\n- Percentage of pricing or commitment messages with recorded approval before send.\n- Escalation precision for risky commercial or policy-sensitive requests.\n- Customer response time for low-risk intake steps.\n- Zero known incidents where the assistant sends an unapproved pricing commitment.\n\n### Guardrail metrics\n- Unapproved commercial commitment incidents.\n- Incorrect price communicated to customer.\n- Duplicate outbound WhatsApp messages.\n- Unsupported request handled without escalation.\n- Operator override rate on LLM-generated drafts.\n- Customer complaint rate about confusing or incorrect assistant responses.\n\n### Launch criteria\n- All pricing commitments require approval in test and production paths.\n- LLM cannot directly call pricing, payment, contract, cancellation, or outbound-send APIs without deterministic validation.\n- Internal console shows source conversation and generated summary side by side.\n- Approval audit log is complete for every customer-facing price or commercial exception.\n- Manual fallback path exists for every workflow state.\n- Pilot operators have completed scenario testing for normal intake, missing data, discount request, cancellation request, angry customer, and ambiguous pricing question.\n\n## Unknowns & Evidence Gaps\n\n- Pricing model details are unspecified: fixed packages, custom quotes, tiered fees, vendor pass-through, discount limits, and tax/service-charge handling need definition before pricing automation can be fully specified.\n- The operating model is unspecified: number of operators, approval hierarchy, SLA expectations, and escalation coverage hours need confirmation.\n- WhatsApp compliance requirements need review, including template message rules, opt-in, and regional messaging constraints.\n- Event domain scope is undefined: corporate events, weddings, private parties, venue bookings, catering-only, or mixed service models may require different intake fields and risk rules.\n- Data retention, privacy, and access-control requirements need confirmation with legal/security stakeholders.\n- Source systems are unknown: calendar, CRM, inventory, venue availability, vendor management, billing, and contract systems may change integration sequencing.\n- No user research, operational baseline, or volume data was provided, so success metrics are framed as product metrics rather than committed targets.\n\n## Pass/Fail Readiness\n\n### Pass if\n- Phase 1 can launch with the LLM limited to drafting, summarization, classification, and extraction into typed fields.\n- Deterministic services own state transitions, pricing calculations, approval gates, and side-effect execution.\n- Human approval is enforced before any customer-facing pricing commitment, discount, refund, penalty, contract term, or bespoke promise.\n- Operators can inspect source messages before accepting generated summaries or drafts.\n- Audit logs can reconstruct who approved what, when, based on which inputs, and what was ultimately sent.\n\n### Fail if\n- The LLM can independently commit prices, discounts, refunds, penalties, or contract terms.\n- Pricing values are generated by free-form model output instead of deterministic pricing logic or human entry.\n- Outbound WhatsApp sends can bypass policy checks and approval gates.\n- The console does not expose enough context for humans to verify generated summaries and drafts.\n- Exceptions rely on prompt instructions alone rather than application-level controls.\n\n## Recommended Next Artifact\n\nCreate a technical specification for the Phase 1 workflow boundary, including state machine, typed tool/command schema, approval-gate matrix, pricing-rule interface, audit-log schema, RBAC model, and test scenarios for unsafe LLM behavior.",
+    "claims": [
+      {
+        "claim_id": "side_b-claim-1",
+        "summary": "Phase 1 should use the LLM for language tasks while deterministic application logic owns workflow state, pricing calculations, approval gates, and side-effect execution.",
+        "evidence_refs": [
+          "case-packet"
+        ],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-2",
+        "summary": "Human approval must be required before any customer-facing pricing commitment, discount, refund, penalty, contract term, or bespoke commercial promise is sent.",
+        "evidence_refs": [
+          "case-packet"
+        ],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-3",
+        "summary": "The internal console should provide structured intake review, approval workflow, source-message verification, and audit logs to make human-in-the-loop control operational rather than merely policy-based.",
+        "evidence_refs": [
+          "case-packet"
+        ],
+        "is_major": true
+      }
+    ],
+    "citations": [
+      "case-packet"
+    ],
+    "open_questions": [],
+    "critique_responses": []
+  }
+}

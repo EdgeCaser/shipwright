@@ -1,0 +1,13 @@
+# Critique: finding-1
+
+- Target Side: side_b
+- Target Claim IDs: side_b-claim-1
+- Attack Type: internal_contradiction
+- Severity: high
+
+## Claim Under Attack
+When churn signals conflict with strategy targets and no supporting evidence is provided, the PRD should prioritize segmentation and a bounded target-fit retention experiment over a broad aggregate churn reduction program.
+
+## Evidence Or Reason
+The claim's entire framework depends on reliably classifying customers as 'strategy-fit' vs 'non-strategy-fit,' yet the artifact's own Unknowns section explicitly states 'No strategy target definition is provided.' The PRD builds four requirements (R1–R4), a metrics hierarchy, and pass/fail criteria all anchored to a strategy-fit segmentation axis that it simultaneously admits cannot be constructed from available evidence. This is not a minor gap—it is a circular dependency: the recommended action (segment by strategy fit, then experiment on the fit segment) requires the very input the artifact flags as missing. A PRD that prescribes segmentation-first while acknowledging the segmentation axis is undefined does not reduce decision risk; it defers it behind a facade of structure. The artifact would be stronger if it named concrete conditions under which the strategy target could be operationalized, or offered a fallback decision frame for when strategy-fit classification itself is the contested signal.
+

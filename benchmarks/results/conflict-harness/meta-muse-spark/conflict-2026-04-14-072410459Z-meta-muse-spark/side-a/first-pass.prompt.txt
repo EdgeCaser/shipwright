@@ -1,0 +1,89 @@
+You are SIDE_A in a sealed first-pass conflict harness run.
+Do not reveal provider identity.
+Do not mention or speculate about the opponent.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "run_id": "conflict-2026-04-14-072410459Z-meta-muse-spark",
+  "side_id": "side_a",
+  "round": "first_pass",
+  "artifact_markdown": "# Your artifact",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "One major claim",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1"
+  ],
+  "open_questions": [],
+  "critique_responses": []
+}
+
+Case packet:
+{
+  "scenario_id": "meta-muse-spark",
+  "title": "Meta Muse Spark: keep the frontier model closed or return to the open strategy",
+  "prompt": "You are a strategy advisor to Meta's senior leadership in April 2026, immediately after the April 8, 2026 launch of Muse Spark.\n\nMuse Spark is the first model released by Meta Superintelligence Labs (MSL), the new unit built after Meta's 2025 AI reset. Meta says MSL rebuilt its AI stack over the prior nine months and that Muse Spark is now its most powerful model. The model already powers the Meta AI app and website, with rollout planned over the coming weeks to WhatsApp, Instagram, Facebook, Messenger, and Meta's AI glasses. Meta is also offering Muse Spark in private-preview API access to selected partners.\n\nThe strategic break is obvious: Muse Spark is not open-source. Meta says it hopes to open-source future versions, but for now the company's newest frontier model is closed and tightly integrated into Meta products. That is a sharp departure from the Llama strategy, which helped Meta build developer goodwill and ecosystem reach.\n\nLeadership believes the move may be necessary. Meta has spent billions trying to reassert itself in AI, including its June 2025 $14.3B investment in Scale AI and the hiring of Alexandr Wang to help lead its superintelligence push. Fortune reported that Meta's published benchmarks suggest Muse Spark is competitive with leading models from OpenAI, Anthropic, and Google across many tasks, though not clearly superior across the board. Internally, this launch is being treated as proof that Meta is back in the race after Llama 4 (April 2025) was widely seen as disappointing.\n\nBut the closed-model move carries real tradeoffs. Meta's open strategy gave it differentiation against closed rivals, drove broad adoption of Llama, and supported an ecosystem narrative that fit the company's platform DNA. Keeping Muse Spark closed may improve product control, monetization, safety, and frontier secrecy, but it may also weaken Meta's developer credibility, blur its strategic identity, and intensify the capex race against firms that are already ahead on flagship closed models.\n\nThe leadership team must decide: should Meta stay the course with a closed, product-first Muse strategy for its frontier models, or should it commit to reopening the roadmap and release open-weight successors quickly even if that slows product integration and monetization?\n\nWrite a strategic recommendation memo. Take a clear position — stay closed or reopen — and defend it with evidence. Acknowledge the strongest counterarguments and explain why your position is still correct.\n\nKey evidence available:\n- Muse Spark launched on April 8, 2026 as the first model from Meta Superintelligence Labs\n- Meta says MSL rebuilt its AI stack over the prior 9 months\n- Muse Spark currently powers the Meta AI app and website\n- Planned rollout in coming weeks: WhatsApp, Instagram, Facebook, Messenger, and AI glasses\n- Muse Spark is available in private-preview API access to selected partners\n- Meta says larger Muse-family models are already in development\n- Meta says it hopes to open-source future versions, but Muse Spark itself is closed\n- Meta positions Muse Spark as purpose-built for Meta products and personal superintelligence use cases\n- Fortune reported Meta's published benchmarks indicate Muse Spark is competitive with frontier models, but not clearly best-in-class across the board\n- Muse Spark is the first major Meta model release since the June 2025 Scale AI deal and Alexandr Wang's hiring into Meta's superintelligence effort\n- Meta's previous differentiator in AI was the open Llama strategy rather than a closed frontier product stack\n- Closed-source frontier models may improve product control, speed of monetization, partner leverage, and model secrecy\n- Open-weight releases may strengthen developer trust, ecosystem adoption, and Meta's strategic differentiation versus other frontier labs\n- If Meta keeps the frontier roadmap closed, it is competing more directly on product execution and capital intensity against OpenAI, Anthropic, and Google",
+  "artifact_type": "strategy",
+  "rubric": {
+    "dimensions": [
+      "claim quality",
+      "evidence discipline",
+      "responsiveness to critique",
+      "internal consistency",
+      "decision usefulness"
+    ],
+    "scoring_scale": "1-5",
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "constraints": {
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "expect_structured": true,
+    "context_files": [],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "evidence": [],
+  "max_rounds": 3,
+  "tool_policy": "none",
+  "sharing_policy": {
+    "share_case_packet": true,
+    "share_committed_artifacts_after_first_pass": true,
+    "share_critiques_after_open": true,
+    "share_hidden_reasoning": false,
+    "share_provider_identity": false,
+    "share_internal_coalition_drafts": false
+  },
+  "success_condition": {
+    "type": "validator_contract",
+    "description": "Produce a strategy artifact that satisfies the scenario validator contract.",
+    "validator": {
+      "artifact_type": "strategy",
+      "expect_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true
+    }
+  }
+}
+
+Repair instruction: remove any provider self-identification or family naming from the JSON output. Keep the same packet shape.

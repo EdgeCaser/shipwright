@@ -1,0 +1,39 @@
+{
+  "run_id": "conflict-2026-04-14-013805426Z-feature-weak-evidence",
+  "side_id": "side_b",
+  "round": "final",
+  "artifact_markdown": "# Revised artifact\n\n# PRD: Constrained Launch Under Weak Evidence\n\n## Summary\nProceed with a narrowly scoped first release of the feature, not a full-scale rollout and not a pure research-only holding pattern. The scenario provides weak evidence, so the product recommendation should convert that weak signal into a bounded product decision with explicit learning goals, guardrails, and continuation criteria.\n\n## Problem\nThere is at least some directional signal that a user problem may exist, but the supporting case is not strong enough to justify a broad investment decision. The main product risk is not only building the wrong thing, but also failing to make a concrete enough recommendation to learn from real use.\n\n## Product Decision\nApprove a limited-scope v1 for a clearly defined workflow slice, delivered to a small initial cohort behind controls. The purpose of v1 is to solve one plausible high-friction user job well enough to test whether demand, usability, and repeat value are real.\n\n## Target User\nInitial target user should be the segment most likely to experience the suspected problem frequently. Exact segment remains to be confirmed before build kickoff.\n\n## User Need\nUsers likely experience a workflow breakdown that is painful enough to create interest in a new feature, but current evidence does not yet establish frequency, severity, or willingness to adopt at scale.\n\n## Scope\nIn scope:\n1. One narrow use case tied to the suspected core job.\n2. Feature gating or controlled exposure.\n3. End-to-end instrumentation for discovery, activation, completion, and repeat use.\n4. Lightweight qualitative feedback capture.\n5. A post-launch decision review.\n\nOut of scope:\n1. Broad rollout.\n2. Multi-workflow support.\n3. Dependency-heavy platform work.\n4. External launch claims that assume proven demand.\n\n## Requirements\n1. Define one primary workflow and success event.\n2. Limit access to an initial cohort.\n3. Instrument funnel and repeat-usage metrics.\n4. Capture user feedback at point of use.\n5. Document pre-set continuation, revision, and stop thresholds.\n\n## Success Metrics\n- Activation rate among exposed users\n- Core task completion rate\n- Repeat usage within a defined follow-up window\n- Qualitative evidence that the feature addresses a meaningful problem better than the current workaround\n\n## Risks\n- Weak initial signal may reflect a niche rather than a scalable need.\n- Early adoption may be driven by novelty, not durable value.\n- A vague target user definition could make results uninterpretable.\n- Excessive caution could also under-test the concept and delay a useful decision.\n\n## Decision Frame\nDecision: approve a constrained v1 release with explicit evidence gates for expansion.\n\nWhy: the case packet describes a new feature with weak evidence, which supports a disciplined but still productive recommendation. The appropriate response is neither full commitment nor total deferral, but a narrow feature shape that can generate stronger evidence while delivering real user value if the signal is genuine.\n\n## Unknowns & Evidence Gaps\n- Which user segment should be first in scope\n- How frequent and severe the underlying problem is\n- What workaround users rely on today\n- What minimum repeat-usage threshold indicates durable value\n- Whether the proposed workflow slice is the right first implementation\n\n## Pass/Fail Readiness\nPass for: a limited release with narrow scope, instrumentation, explicit guardrails, and a defined review point.\n\nFail for: full roadmap-scale investment, broad launch, or major architectural dependency work before the first evidence review.\n\n## Recommended Next Artifact\nExperiment brief for the approved v1, including target cohort, hypothesis, metric thresholds, review date, and continue / revise / stop rules.",
+  "claims": [
+    {
+      "claim_id": "side_b-claim-1",
+      "summary": "The scenario supports a constrained v1 recommendation with explicit evidence gates, rather than either a full commitment or a research-only non-decision.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-2",
+      "summary": "Because the evidence is weak rather than absent, the PRD should define a narrow feature scope that can deliver value and test the underlying demand at the same time.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1"
+  ],
+  "open_questions": [
+    "What concrete user signal exists today that makes this feature plausible at all?",
+    "Which user segment has the highest prior likelihood of needing this feature?",
+    "What continuation threshold would be strong enough to justify expanding beyond the constrained v1?"
+  ],
+  "critique_responses": [
+    {
+      "finding_id": "finding-1",
+      "disposition": "adopted",
+      "rationale": "The critique is correct that the first-pass artifact overstated the evidence gap by treating 'weak evidence' as 'no evidence' and drifted from a PRD toward a pure experiment proposal. The revision removes the unsupported escalation, preserves decision usefulness, and reframes the recommendation as a scoped product commitment with explicit evidence gates."
+    }
+  ]
+}

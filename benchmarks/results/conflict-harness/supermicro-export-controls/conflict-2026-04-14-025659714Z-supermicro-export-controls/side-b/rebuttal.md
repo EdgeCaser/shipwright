@@ -1,0 +1,13 @@
+# Critique: finding-2
+
+- Target Side: side_a
+- Target Claim IDs: side_a-claim-5
+- Attack Type: evidence_gap
+- Severity: medium
+
+## Claim Under Attack
+Supermicro's prior compliance history (including 2020 SEC settlement) erodes the credibility of a 'first offense' framing and increases the regulatory penalty for underreaction.
+
+## Evidence Or Reason
+This claim depends on a material fact that is not established in the visible case packet: the alleged 2020 SEC settlement is introduced without packet support and without showing any link to export-control governance. Even if such a settlement occurred, the artifact does not demonstrate that accounting-related misconduct is probative of export-control failures or that regulators would treat the current matter as a repeated pattern rather than a distinct issue. The conclusion about a higher 'regulatory penalty for underreaction' is therefore an unsupported inference layered on an unsubstantiated premise.
+

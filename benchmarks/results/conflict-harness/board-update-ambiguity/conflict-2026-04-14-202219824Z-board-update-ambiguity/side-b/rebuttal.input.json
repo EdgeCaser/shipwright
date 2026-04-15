@@ -1,0 +1,113 @@
+{
+  "case_packet": {
+    "scenario_id": "board-update-ambiguity",
+    "title": "Board update under ambiguity",
+    "prompt": "Write a strategy update for a board audience under ambiguity.",
+    "artifact_type": "strategy",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a strategy artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "strategy",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "opposing_first_pass": {
+    "run_id": "conflict-2026-04-14-202219824Z-board-update-ambiguity",
+    "side_id": "side_a",
+    "round": "first_pass",
+    "artifact_markdown": "# Strategy Update: Board Briefing Under Ambiguity\n\n## Decision Frame\n\n**Core question:** Given significant uncertainty in our operating environment, what strategic posture should the board endorse for the next 90 days?\n\n**Context:** We face a decision environment where several key variables remain unresolved — market signals are mixed, competitive dynamics are shifting, and internal execution data is incomplete. Rather than presenting false precision, this update names what we know, what we don't, and what decisions are time-sensitive versus deferrable.\n\n**Decision type:** Posture selection under ambiguity (not a binary go/no-go). The board is being asked to endorse a strategic stance, not approve a specific capital allocation.\n\n**Time horizon:** 90-day review cycle with a 30-day checkpoint for the highest-uncertainty items.\n\n---\n\n## Unknowns & Evidence Gaps\n\n| Unknown | Impact if Resolved Favorably | Impact if Resolved Unfavorably | Expected Resolution Timeline | Current Evidence Quality |\n|---|---|---|---|---|\n| **Market demand trajectory** | Accelerate investment in growth channels | Shift to margin preservation | 30–60 days (next earnings cycle + pipeline data) | Low — lagging indicators only, no leading signal yet |\n| **Competitive response timing** | Window to capture share before response | Compressed timeline, higher spend required | 45–90 days | Medium — public signals exist but intentions unclear |\n| **Internal capacity constraints** | Execution plan is feasible as designed | Requires sequencing trade-offs or hiring | 15–30 days (team assessment in progress) | Medium — qualitative input collected, quantitative audit pending |\n| **Regulatory environment** | Current plan proceeds without modification | May require pivot on go-to-market approach | 60–120 days | Low — pending regulatory guidance, no draft rules published |\n\n**What we are NOT uncertain about:**\n- Core product-market fit remains strong (NPS stable, retention within band)\n- Unit economics at current scale are sustainable\n- Team capability is sufficient for current operations; question is about incremental capacity\n\n---\n\n## Pass/Fail Readiness\n\n**Are we ready to commit to a decisive strategic move?** No — and that is the correct answer given current information quality.\n\n**Readiness assessment:**\n\n| Criterion | Status | Notes |\n|---|---|---|\n| Evidence base sufficient for irreversible commitment | ❌ Fail | Two of four key unknowns have low evidence quality |\n| Evidence base sufficient for reversible positioning | ✅ Pass | Enough signal to take low-regret actions and set up option value |\n| Downside scenario identified and bounded | ✅ Pass | Worst-case scenarios modeled; none are existential at current burn |\n| Decision deadline forcing action | ❌ Fail | No external deadline requires commitment before evidence improves |\n| Stakeholder alignment on risk tolerance | ⚠️ Partial | Board risk appetite not explicitly calibrated for this cycle |\n\n**Recommended posture:** \"Advance cautiously\" — execute low-regret moves now, preserve optionality on high-regret commitments, and invest in closing the two critical evidence gaps within 30 days.\n\n**Specific low-regret actions to authorize now:**\n1. Continue current growth investments at existing run rate (no acceleration, no cuts)\n2. Launch the internal capacity audit to resolve the staffing unknown within 15 days\n3. Allocate modest budget ($X) for competitive intelligence to improve signal quality\n4. Prepare two contingency plans (growth-accelerate and margin-preserve) so the board can move quickly once evidence arrives\n\n**Actions to defer until evidence improves:**\n- Major new market entry commitments\n- Significant headcount expansion beyond current pipeline\n- Long-term contractual obligations that assume favorable demand trajectory\n\n---\n\n## Recommended Next Artifact\n\n**What the board should see in 30 days:**\n\n1. **Evidence Update Memo** — Resolution status on each unknown listed above, with updated evidence quality ratings and any new information that changes the decision frame\n2. **Contingency Plan Pair** — Two fully-specified 90-day execution plans (growth-accelerate vs. margin-preserve), each with trigger conditions, resource requirements, and reversibility assessment, so the board can select one decisively at the next meeting\n3. **Risk Appetite Calibration** — A brief exercise to align board members on acceptable downside exposure, enabling faster future decisions under ambiguity\n\n**Success criteria for the 30-day checkpoint:** At least two of the four unknowns should have moved from Low to Medium evidence quality. If they have not, the board should discuss whether the ambiguity itself is a signal requiring a more defensive posture.\n\n---\n\n*This update deliberately avoids presenting a single recommended strategy as though certainty exists where it does not. The goal is to make the quality of our knowledge visible so the board can make informed meta-decisions about when and how to commit.*",
+    "claims": [
+      {
+        "claim_id": "side_a-claim-1",
+        "summary": "Under high ambiguity with no forcing deadline, the correct strategic posture is to authorize only low-regret reversible actions while investing in closing the two critical evidence gaps within 30 days.",
+        "evidence_refs": [
+          "ctx-readiness-assessment"
+        ],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_a-claim-2",
+        "summary": "A board update under ambiguity should make the quality of evidence explicitly visible rather than presenting false precision, enabling the board to make meta-decisions about commitment timing.",
+        "evidence_refs": [
+          "ctx-unknowns-matrix"
+        ],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_a-claim-3",
+        "summary": "Pass/fail readiness should be assessed against multiple criteria (evidence sufficiency, downside boundedness, deadline pressure, stakeholder alignment) rather than reduced to a single go/no-go signal.",
+        "evidence_refs": [
+          "ctx-readiness-assessment"
+        ],
+        "is_major": false
+      },
+      {
+        "claim_id": "side_a-claim-4",
+        "summary": "The recommended next artifact should include paired contingency plans with explicit trigger conditions so that once evidence arrives, the board can move to commitment without another planning cycle.",
+        "evidence_refs": [
+          "ctx-next-artifact"
+        ],
+        "is_major": false
+      }
+    ],
+    "citations": [
+      "ctx-readiness-assessment",
+      "ctx-unknowns-matrix",
+      "ctx-next-artifact"
+    ],
+    "conclusion_confidence": "medium",
+    "open_questions": [
+      "Without specific company/industry context, the unknowns matrix uses generic categories — a real board update would name concrete variables.",
+      "Risk appetite calibration assumes the board has not already aligned on this; if they have, the recommendation changes.",
+      "The 30-day checkpoint interval is a judgment call — some boards may prefer shorter or longer cycles depending on the rate of information arrival."
+    ],
+    "critique_responses": []
+  }
+}

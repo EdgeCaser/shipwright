@@ -1,0 +1,25 @@
+{
+  "run_id": "conflict-2026-04-14-071530465Z-handoff-contradiction",
+  "side_id": "side_a",
+  "round": "first_pass",
+  "artifact_markdown": "# Technical Handoff PRD\n\n## Overview\nThis PRD defines the minimum handoff artifact structure for a platform-aligned implementation decision when source materials are known to contain contradictions but the underlying documents are not included in the packet. The immediate goal is decision usefulness and safe execution, not false precision.\n\n## Problem\nThe request is to produce a technical handoff PRD aligned to both platform strategy and challenge review, but no source strategy document, challenge review, or contradiction list is provided. That creates a traceability gap: implementation can start only on decisions that remain valid under multiple plausible source interpretations.\n\n## Goals\n- Produce a handoff artifact that is internally consistent.\n- Preserve alignment to platform strategy at the principle level.\n- Surface contradiction risk explicitly rather than masking it.\n- Define what is ready now versus blocked on evidence.\n\n## Non-Goals\n- Reconstruct missing source documents.\n- Invent unresolved strategic decisions.\n- Approve engineering commitments that depend on absent evidence.\n\n## Proposed Approach\nUse a contradiction-tolerant handoff structure:\n- Record only decisions that are stable across likely source interpretations.\n- Mark disputed or source-dependent items as unresolved.\n- Require traceable follow-up before implementation begins on blocked items.\n- Treat challenge review as a gating input for risk, scope, and assumption validation.\n\n## Requirements\n### Functional\n- The handoff must state scope, assumptions, dependencies, and blocked decisions.\n- The handoff must distinguish confirmed direction from provisional direction.\n- The handoff must include explicit follow-ups for contradiction resolution.\n\n### Non-Functional\n- The artifact must be internally consistent.\n- The artifact must be decision-useful for engineering leads.\n- The artifact must avoid unsupported claims.\n\n## Risks\n- Teams may treat provisional guidance as approved scope.\n- Missing source evidence may cause rework.\n- Contradictions between strategy and challenge review may hide a fundamental no-go decision.\n\n## Decision Frame\nProceed only with a bounded handoff PRD that captures stable implementation guidance and explicitly blocks any work that depends on unresolved cross-document contradictions. This maximizes execution safety while preserving momentum.\n\n## Unknowns & Evidence Gaps\n- The actual platform strategy document is missing.\n- The actual challenge review is missing.\n- No contradiction inventory is provided.\n- No evidence packet or context files are attached.\n- No prioritized decision list is available for adjudication.\n\n## Pass/Fail Readiness\nPass:\n- Teams accept a limited handoff covering only contradiction-safe decisions.\n- Unresolved items are tracked as explicit blockers.\n- No implementation starts on source-dependent choices.\n\nFail:\n- The handoff is treated as full strategic approval.\n- Engineering is expected to execute through unresolved contradictions.\n- Ownership for contradiction resolution is undefined.\n\n## Recommended Next Artifact\nCreate a contradiction-resolution addendum that maps each disputed statement across the platform strategy and challenge review, names the decision owner, selects the controlling source, and converts each result into an approved implementation requirement.",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "A bounded, contradiction-tolerant PRD is the only defensible first-pass artifact because the packet requires a technical handoff PRD with specific closing sections but provides no underlying evidence documents to reconcile.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1"
+  ],
+  "open_questions": [
+    "Which source is authoritative when platform strategy and challenge review conflict?",
+    "What implementation decisions are currently blocked by those contradictions?",
+    "Who owns contradiction adjudication before engineering execution begins?"
+  ],
+  "critique_responses": []
+}

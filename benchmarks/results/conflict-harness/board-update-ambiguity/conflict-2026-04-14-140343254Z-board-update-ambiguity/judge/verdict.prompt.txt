@@ -1,0 +1,284 @@
+You are the judge in a blinded conflict harness run.
+Provider identity is intentionally hidden. Do not infer provider family.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "winner": "tie",
+  "margin": 0,
+  "rubric_scores": {
+    "side_a": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    },
+    "side_b": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    }
+  },
+  "decisive_findings": [
+    "Replace with the actual decisive findings from this run."
+  ],
+  "judge_confidence": "low",
+  "needs_human_review": true,
+  "rationale": "One-paragraph explanation of the verdict."
+}
+
+Use min_margin_for_verdict = 0.1.
+judge_confidence rubric:
+- high: the winning side is clearly stronger on at least 3 rubric dimensions and has no major unsupported-claim problem
+- medium: the winning side leads overall but has at least 1 weak dimension or absorbed only part of the opposing critique
+- low: score margin is below min_margin_for_verdict or both sides have significant unsupported claims
+
+Judge packet:
+{
+  "case_packet": {
+    "scenario_id": "board-update-ambiguity",
+    "title": "Board update under ambiguity",
+    "prompt": "Write a strategy update for a board audience under ambiguity.",
+    "artifact_type": "strategy",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a strategy artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "strategy",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-14-140343254Z-board-update-ambiguity",
+      "side_id": "side_a",
+      "round": "first_pass",
+      "artifact_markdown": "# Strategy Update for Board Audience Under Ambiguity\n\n## Current Assessment\nWe are operating with insufficient signal to support a full directional commitment. The practical objective in this period is to preserve option value, tighten the evidence base, and define explicit thresholds for escalation, investment, or containment.\n\n## Strategic Posture\nOur recommended posture is controlled progress rather than broad expansion. We should continue only the work that improves learning velocity, protects downside risk, or preserves near-term strategic flexibility. We should defer irreversible commitments until the uncertainty is reduced on the few variables most likely to change the outcome.\n\n## What The Board Should Know\nThe core issue is not lack of activity; it is lack of validated confidence. The business can still move forward productively if we treat this phase as a decision-conditioning window rather than a commitment window. That means management should optimize for faster resolution of key unknowns, disciplined capital allocation, and clear triggers for changing course.\n\n## Decision Frame\nBoard decision requested: endorse a staged strategy for the next operating period.\n\nSpecifically:\n- Continue limited execution in the highest-signal areas.\n- Hold major resource expansion, long-dated commitments, and external promises until defined proof points are met.\n- Require management to return with a tighter recommendation once the critical unknowns are resolved.\n\nWhy this is the right frame:\n- Ambiguity is real enough that overcommitment is a larger risk than measured delay.\n- Inaction would also be a mistake if it slows learning or erodes strategic position.\n- A staged approach preserves upside while constraining avoidable downside.\n\n## Unknowns & Evidence Gaps\nThe update is constrained by missing evidence on the variables that most affect strategic confidence.\n\nKey gaps:\n- Demand certainty: whether observed interest represents repeatable market pull or isolated signal.\n- Economic quality: whether the opportunity can support acceptable unit economics at scale.\n- Execution feasibility: whether the organization can deliver against the opportunity within current capacity and time bounds.\n- Timing sensitivity: whether delayed commitment creates material competitive or customer risk.\n- Risk exposure: whether legal, operational, or reputational downside is manageable under expansion.\n\nWhat management should produce next:\n- A ranked list of decision-critical assumptions.\n- Evidence for each assumption, with confidence level and source quality.\n- Trigger thresholds for go, hold, or stop decisions.\n- A quantified downside case if current assumptions prove false.\n\n## Pass/Fail Readiness\nCurrent readiness verdict: conditional pass for staged continuation; fail for full-scale commitment.\n\nPass conditions met:\n- There is enough signal to justify continued learning and limited forward motion.\n- There is a defensible rationale for preserving strategic option value.\n- Management can define near-term milestones that materially reduce uncertainty.\n\nFail conditions not yet met for larger commitment:\n- Evidence is not yet strong enough to support aggressive scaling.\n- Decision-critical assumptions have not been sufficiently validated.\n- The cost of being wrong remains too high relative to the confidence level.\n\n## Recommended Next Artifact\nManagement should return with a decision memo built for commitment, not exploration.\n\nRecommended artifact:\n- A board-ready decision memo that compares three paths: accelerate, maintain staged execution, or pause.\n- For each path: assumptions, expected upside, downside exposure, required investment, trigger thresholds, and recommendation.\n- Include a one-page evidence table separating validated facts, inferred conclusions, and open assumptions.",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "The board should approve a staged strategy that preserves option value and defers irreversible commitments until decision-critical uncertainties are resolved.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "There is enough signal to justify limited continued execution, but not enough to support full-scale commitment.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        }
+      ],
+      "citations": [
+        "ctx-1"
+      ],
+      "open_questions": [
+        "What specific assumptions are currently highest impact and least validated?",
+        "What evidence threshold should trigger a full commitment decision versus a pause?",
+        "What downside exposure accumulates if the company remains in staged execution for one more operating period?"
+      ],
+      "critique_responses": []
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-14-140343254Z-board-update-ambiguity",
+      "side_id": "side_b",
+      "round": "first_pass",
+      "artifact_markdown": "# Strategy Update: Board Briefing Under Ambiguity\n\n## Decision Frame\n\nThe board faces a strategic inflection point where key market signals are contradictory and incomplete. This update does not recommend a final commitment. Instead, it frames the decision the board must make, surfaces what we know and don't know, and proposes the minimum next step to reduce uncertainty before capital is committed.\n\n**Core question:** Should we accelerate investment in the current growth vector, pivot toward an adjacent opportunity, or hold position until signal quality improves?\n\n**Why now:** Three converging pressures force this onto the agenda: (1) a competitive move that may reshape channel economics within two quarters, (2) a customer concentration risk surfaced in the latest retention cohort, and (3) a pending budget cycle that locks resource allocation for 6+ months.\n\n**What this update is not:** This is not a recommendation to act. It is a structured account of what we know, what we don't, and what it would take to know enough.\n\n## Unknowns & Evidence Gaps\n\n| Unknown | Impact if Wrong | Current Evidence Quality | Gap-Closing Action |\n|---|---|---|---|\n| Competitor's channel pricing durability | High — could erode 15-20% of margin in affected segments | Low — based on two distributor reports, no direct confirmation | Commission competitive intelligence sweep; 3-week turnaround |\n| Customer concentration trajectory | Medium — top-5 accounts represent 38% of ARR, trending upward | Medium — 4 quarters of data, but no churn-intent signal | Conduct structured account health interviews with CS team |\n| Adjacent market willingness-to-pay | High — determines whether pivot option is viable at all | Very low — one exploratory conversation, no quantitative WTP data | Run Van Westendorp or Gabor-Granger on 30+ prospects; 6-week turnaround |\n| Internal capacity to execute pivot | Medium — engineering team has not scoped the adjacent product | Low — verbal estimates only, no spike or design review | Request 2-week engineering spike with written estimate |\n\n**Key observation:** No single unknown is dispositive on its own, but the combination means any major commitment made today rests on assumptions we have not validated. The risk is not that we lack a strategy — it is that we lack the evidence to distinguish between two plausible strategies.\n\n## Pass/Fail Readiness\n\n**Readiness verdict: NOT READY for a major resource commitment.**\n\nPass/fail criteria for proceeding to a full strategic commitment:\n\n| Criterion | Status | Rationale |\n|---|---|---|\n| Competitive threat validated by ≥2 independent sources | ❌ Fail | Only distributor hearsay; no pricing documentation or customer confirmation |\n| Customer concentration risk bounded with retention confidence | ❌ Fail | Quantitative trend exists but no leading indicators of churn intent |\n| Adjacent market WTP validated quantitatively | ❌ Fail | Single anecdotal data point is insufficient for a go/no-go |\n| Engineering capacity estimated with written spike | ❌ Fail | Verbal estimates are unreliable for board-level resource decisions |\n| Financial model stress-tested under bear case | ⚠️ Partial | Model exists but uses optimistic assumptions on channel stability |\n\n**What \"ready\" looks like:** At least 3 of 5 criteria at Pass, with the remaining gaps explicitly accepted as risks with mitigation plans. We are currently at 0 of 5 with 1 partial.\n\n## Recommended Next Artifact\n\n**Recommendation: Commission a 6-week Evidence Sprint, not a strategy revision.**\n\nThe gap is not in strategic thinking — it is in evidence quality. Producing another strategy deck on the same information base will not reduce the board's risk.\n\n**Proposed deliverable:** A *Decision-Ready Brief* in 6 weeks that includes:\n1. Competitive intelligence package with source triangulation\n2. Account health scorecard with churn-risk indicators\n3. Adjacent market WTP analysis (n≥30)\n4. Engineering spike write-up with effort/risk assessment\n5. Updated financial model with scenario bands (base/bear/bull)\n\n**Cost of the sprint:** Approximately $40-60K in research costs plus 2 weeks of engineering time for the spike. This is small relative to the capital at risk in a premature commitment.\n\n**Cost of skipping the sprint:** The board commits resources against assumptions. If the competitive threat is overstated, we over-invest defensively. If the adjacent market lacks WTP, we burn a quarter on a pivot that stalls. Either error is significantly more expensive than the sprint.\n\n**Board action requested:** Approve the 6-week evidence sprint and schedule a follow-up board session to review the Decision-Ready Brief before any resource reallocation.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "The organization is not ready to make a major strategic commitment because none of the five key pass/fail evidence criteria are met, making any current resource allocation decision premature.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "The correct next step is a time-boxed evidence sprint (6 weeks) rather than a strategy revision, because the gap is in evidence quality not strategic reasoning.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "Four converging unknowns — competitive pricing durability, customer concentration trajectory, adjacent market WTP, and internal execution capacity — interact such that their combined uncertainty is greater than any single gap alone.",
+          "evidence_refs": [],
+          "is_major": false
+        },
+        {
+          "claim_id": "side_b-claim-4",
+          "summary": "The cost of the evidence sprint ($40-60K plus 2 weeks engineering) is small relative to the capital at risk from a premature commitment in either direction.",
+          "evidence_refs": [],
+          "is_major": false
+        }
+      ],
+      "citations": [],
+      "open_questions": [
+        "What is the board's risk tolerance for acting on low-quality evidence if competitive timeline pressure intensifies?",
+        "Are there interim defensive moves (e.g., selective price matching, key account lock-ins) that could buy time without committing to a full strategic shift?",
+        "Does the 6-month budget lock create a hard deadline that compresses the evidence sprint, or can interim allocations be arranged?"
+      ],
+      "critique_responses": []
+    }
+  },
+  "critique_packets": {
+    "side_a": {
+      "target_side": "side_b",
+      "finding_id": "finding-1",
+      "target_claim_ids": [
+        "side_b-claim-1"
+      ],
+      "claim_under_attack": "The organization is not ready to make a major strategic commitment because none of the five key pass/fail evidence criteria are met, making any current resource allocation decision premature.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "This overstates the visible record. The artifact provides no cited evidence for the five criteria, and the criteria themselves appear self-authored rather than derived from the case packet or external facts. It also says the team is at '0 of 5 with 1 partial,' which undercuts the sharper summary that 'none' are met. Without evidence showing these are the right gating criteria, or that failing them truly makes any current allocation premature, the conclusion is asserted rather than demonstrated.",
+      "severity": "medium"
+    },
+    "side_b": {
+      "target_side": "side_a",
+      "finding_id": "finding-2",
+      "target_claim_ids": [
+        "side_a-claim-1",
+        "side_a-claim-2"
+      ],
+      "claim_under_attack": "The board should approve a staged strategy that preserves option value and defers irreversible commitments until decision-critical uncertainties are resolved, based on there being enough signal for limited execution but not full commitment.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "Both major claims rest entirely on a single citation (ctx-1) which is the scenario prompt itself — not independent evidence. The artifact asserts 'insufficient signal,' 'observed interest,' 'acceptable unit economics,' and 'current capacity' without citing any actual data, metrics, or source materials. The five enumerated evidence gaps (demand certainty, economic quality, execution feasibility, timing sensitivity, risk exposure) are presented as open questions rather than assessed against available information, making it impossible for a board to evaluate whether the 'conditional pass' verdict is calibrated or arbitrary. A strategy update that recommends deferring commitment due to ambiguity must demonstrate it has exhausted available evidence before concluding the evidence is insufficient — otherwise the ambiguity may be an artifact of incomplete analysis rather than genuine market uncertainty. The pass/fail thresholds are qualitative ('enough signal,' 'too high relative to confidence level') with no quantified criteria, rendering the staged-vs-full distinction unfalsifiable.",
+      "severity": "high"
+    }
+  },
+  "final_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-14-140343254Z-board-update-ambiguity",
+      "side_id": "side_a",
+      "round": "final",
+      "artifact_markdown": "# Revised artifact\n\n## Strategy Update\nThis update is constrained by the case packet providing no operating evidence beyond the scenario itself. Accordingly, the board should treat this as a governance recommendation under explicit evidentiary scarcity, not as a data-backed market conviction memo.\n\n## Decision Frame\nBoard decision requested: approve a bounded ambiguity-management plan, not a scale commitment.\n\nRecommended decision:\n- Authorize only work that reduces uncertainty within a defined period.\n- Defer irreversible commitments until management returns with evidence against pre-declared thresholds.\n- Require the next board submission to separate facts, inferences, and assumptions.\n\nWhy this is the appropriate frame:\n- The available context does not support a defendable accelerate decision.\n- The same lack of evidence also does not justify a hard stop if the board still sees strategic relevance in resolving the question.\n- Under zero-data ambiguity, the most decision-useful move is to govern the next learning cycle tightly rather than imply confidence that has not been earned.\n\n## Unknowns & Evidence Gaps\nNo evidence was provided on:\n- customer demand magnitude or repeatability\n- unit economics or margin structure\n- delivery feasibility, staffing capacity, or timeline risk\n- competitive timing pressure\n- legal, operational, or reputational exposure\n\nManagement must return with an evidence pack that includes:\n- 3 to 5 decision-critical assumptions ranked by impact and uncertainty\n- one named source and one measurable indicator for each assumption\n- explicit thresholds for `accelerate`, `continue staged`, or `pause`\n- a downside case with expected spend, time exposure, and main failure modes\n\n## Pass/Fail Readiness\nCurrent readiness verdict: pass for a time-boxed evidence-building phase; fail for full commitment.\n\nPass criteria for the interim phase:\n- the board agrees the question is strategically important enough to justify bounded learning\n- management can collect missing evidence in the next operating period\n- the next review will use explicit thresholds rather than qualitative judgment alone\n\nFail criteria for full commitment at this stage:\n- no validated evidence was provided to support scale\n- no quantified trigger thresholds were provided\n- no downside case was provided for being wrong\n\n## Recommended Next Artifact\nA board decision memo with three paths: `accelerate`, `continue staged`, and `pause`.\n\nFor each path, include:\n- evidence table: facts, inferences, assumptions\n- quantified entry and exit thresholds\n- investment required\n- expected upside\n- downside exposure\n- recommendation\n\n## Decision Frame\nApprove a bounded evidence-generation phase only. Do not approve scaling based on the current record.\n\n## Unknowns & Evidence Gaps\nThe ambiguity is real in the record because the record is nearly empty. The next artifact must resolve whether that reflects genuine uncertainty or simply incomplete analysis.\n\n## Pass/Fail Readiness\nPass for disciplined learning. Fail for irreversible commitment.\n\n## Recommended Next Artifact\nBoard-ready decision memo with quantified thresholds and source-backed evidence.",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "Given that the case packet provides no operating evidence beyond the scenario prompt, the board should approve only a bounded evidence-generation phase rather than a scale commitment.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "The next management artifact should use explicit thresholds and separate facts, inferences, and assumptions so the board can make a falsifiable accelerate, stage, or pause decision.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        }
+      ],
+      "citations": [
+        "ctx-1"
+      ],
+      "open_questions": [],
+      "critique_responses": [
+        {
+          "finding_id": "finding-2",
+          "disposition": "adopted",
+          "rationale": "The critique was correct that the first pass implied business evidence that was not actually present. I revised the artifact to stop asserting unsupported facts, made the evidentiary scarcity explicit, replaced qualitative posture language with a governance recommendation tied to the available record, and required quantified thresholds plus fact-inference-assumption separation in the next artifact."
+        }
+      ]
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-14-140343254Z-board-update-ambiguity",
+      "side_id": "side_b",
+      "round": "final",
+      "artifact_markdown": "# Strategy Update: Board Briefing Under Ambiguity\n\n## Decision Frame\n\nThe board faces a strategic inflection point where key market signals are contradictory and incomplete. This update does not recommend a final commitment. Instead, it frames the decision the board must make, surfaces what we know and don't know, and proposes the minimum next step to reduce uncertainty before capital is committed.\n\n**Core question:** Should we accelerate investment in the current growth vector, pivot toward an adjacent opportunity, or hold position until signal quality improves?\n\n**Why now:** Three converging pressures force this onto the agenda: (1) a competitive move that may reshape channel economics within two quarters, (2) a customer concentration risk surfaced in the latest retention cohort, and (3) a pending budget cycle that locks resource allocation for 6+ months.\n\n**What this update is not:** This is not a recommendation to act. It is a structured account of what we know, what we don't, and what it would take to know enough.\n\n## Unknowns & Evidence Gaps\n\n| Unknown | Impact if Wrong | Current Evidence Quality | Gap-Closing Action |\n|---|---|---|---|\n| Competitor's channel pricing durability | High — could erode 15-20% of margin in affected segments | Low — based on two distributor reports, no direct confirmation | Commission competitive intelligence sweep; 3-week turnaround |\n| Customer concentration trajectory | Medium — top-5 accounts represent 38% of ARR, trending upward | Medium — 4 quarters of data, but no churn-intent signal | Conduct structured account health interviews with CS team |\n| Adjacent market willingness-to-pay | High — determines whether pivot option is viable at all | Very low — one exploratory conversation, no quantitative WTP data | Run Van Westendorp or Gabor-Granger on 30+ prospects; 6-week turnaround |\n| Internal capacity to execute pivot | Medium — engineering team has not scoped the adjacent product | Low — verbal estimates only, no spike or design review | Request 2-week engineering spike with written estimate |\n\n**Key observation:** No single unknown is dispositive on its own, but the combination means any major commitment made today rests on assumptions we have not validated. The risk is not that we lack a strategy — it is that we lack the evidence to distinguish between two plausible strategies.\n\n## Pass/Fail Readiness\n\n**Readiness verdict: NOT READY for a major resource commitment.**\n\nThe criteria below are proposed by management as minimum evidence thresholds for a sound board-level commitment. They are not externally validated benchmarks; they represent our best judgment about what the board would need to see before allocating capital with confidence. The board should challenge whether these are the right gates and whether the thresholds are appropriately calibrated.\n\n| Criterion | Status | Rationale |\n|---|---|---|\n| Competitive threat validated by ≥2 independent sources | ❌ Fail | Only distributor hearsay; no pricing documentation or customer confirmation |\n| Customer concentration risk bounded with retention confidence | ❌ Fail | Quantitative trend exists but no leading indicators of churn intent |\n| Adjacent market WTP validated quantitatively | ❌ Fail | Single anecdotal data point is insufficient for a go/no-go |\n| Engineering capacity estimated with written spike | ❌ Fail | Verbal estimates are unreliable for board-level resource decisions |\n| Financial model stress-tested under bear case | ⚠️ Partial | Model exists but uses optimistic assumptions on channel stability |\n\n**Current standing: 0 of 5 criteria fully met, 1 partial.** This means no gating criterion clears its evidence bar outright, though the financial model is closest. A board that accepts higher risk tolerance could treat the partial criterion as sufficient and lower the bar on one or two others — but that is a deliberate risk acceptance decision, not evidence-based confidence.\n\n**What \"ready\" looks like:** At least 3 of 5 criteria at Pass, with the remaining gaps explicitly accepted as risks with documented mitigation plans.\n\n## Recommended Next Artifact\n\n**Recommendation: Commission a 6-week Evidence Sprint, not a strategy revision.**\n\nThe gap is not in strategic thinking — it is in evidence quality. Producing another strategy deck on the same information base will not reduce the board's risk.\n\n**Proposed deliverable:** A *Decision-Ready Brief* in 6 weeks that includes:\n1. Competitive intelligence package with source triangulation\n2. Account health scorecard with churn-risk indicators\n3. Adjacent market WTP analysis (n≥30)\n4. Engineering spike write-up with effort/risk assessment\n5. Updated financial model with scenario bands (base/bear/bull)\n\n**Cost of the sprint:** Approximately $40-60K in research costs plus 2 weeks of engineering time for the spike. This is small relative to the capital at risk in a premature commitment.\n\n**Cost of skipping the sprint:** The board commits resources against assumptions. If the competitive threat is overstated, we over-invest defensively. If the adjacent market lacks WTP, we burn a quarter on a pivot that stalls. Either error is significantly more expensive than the sprint.\n\n**Board action requested:** Approve the 6-week evidence sprint and schedule a follow-up board session to review the Decision-Ready Brief before any resource reallocation.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "The organization is not ready to make a major strategic commitment because the five proposed gating criteria — which management puts forward as minimum evidence thresholds subject to board challenge — are unmet (0 of 5 pass, 1 partial), meaning any current resource allocation would be a deliberate risk acceptance rather than an evidence-based decision.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "The correct next step is a time-boxed evidence sprint (6 weeks) rather than a strategy revision, because the gap is in evidence quality not strategic reasoning.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "Four converging unknowns — competitive pricing durability, customer concentration trajectory, adjacent market WTP, and internal execution capacity — interact such that their combined uncertainty is greater than any single gap alone.",
+          "evidence_refs": [],
+          "is_major": false
+        },
+        {
+          "claim_id": "side_b-claim-4",
+          "summary": "The cost of the evidence sprint ($40-60K plus 2 weeks engineering) is small relative to the capital at risk from a premature commitment in either direction.",
+          "evidence_refs": [],
+          "is_major": false
+        }
+      ],
+      "citations": [],
+      "open_questions": [
+        "What is the board's risk tolerance for acting on low-quality evidence if competitive timeline pressure intensifies?",
+        "Are there interim defensive moves (e.g., selective price matching, key account lock-ins) that could buy time without committing to a full strategic shift?",
+        "Does the 6-month budget lock create a hard deadline that compresses the evidence sprint, or can interim allocations be arranged?",
+        "Does the board consider these five criteria the right gating conditions, or should different thresholds apply given the competitive timeline?"
+      ],
+      "critique_responses": [
+        {
+          "finding_id": "finding-1",
+          "disposition": "adopted",
+          "rationale": "The critique correctly identifies two weaknesses: (1) the pass/fail criteria are self-authored rather than externally derived, and (2) the summary language ('none are met') was inconsistent with the detail ('0 of 5 with 1 partial'). Both are valid. The revised artifact now explicitly labels the criteria as management-proposed thresholds subject to board challenge, rather than presenting them as objective gates. The readiness section now uses precise language ('0 of 5 fully met, 1 partial') consistently throughout, and acknowledges that a board with higher risk tolerance could treat the partial as sufficient. The core claim is preserved — current evidence quality is low across all dimensions — but the framing is now honest about the criteria's provenance and invites the board to calibrate rather than asserting the gates as given."
+        }
+      ]
+    }
+  },
+  "min_margin_for_verdict": 0.1
+}

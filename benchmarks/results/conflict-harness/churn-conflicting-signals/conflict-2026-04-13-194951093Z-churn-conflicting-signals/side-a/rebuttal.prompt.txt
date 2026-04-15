@@ -1,0 +1,115 @@
+You are SIDE_A in the rebuttal phase for run conflict-2026-04-13-194951093Z-churn-conflicting-signals.
+Attack only visible claims from the opposing first-pass artifact.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "target_side": "side_b",
+  "finding_id": "runner-will-assign",
+  "target_claim_ids": [
+    "side_b-claim-1"
+  ],
+  "claim_under_attack": "The opposing claim to challenge.",
+  "attack_type": "evidence_gap",
+  "evidence_or_reason": "Why the visible claim is weak.",
+  "severity": "medium"
+}
+
+Case packet:
+{
+  "scenario_id": "churn-conflicting-signals",
+  "title": "Churn diagnosis with conflicting signals",
+  "prompt": "Write a churn reduction PRD when signals conflict with strategy targets.",
+  "artifact_type": "prd",
+  "rubric": {
+    "dimensions": [
+      "claim quality",
+      "evidence discipline",
+      "responsiveness to critique",
+      "internal consistency",
+      "decision usefulness"
+    ],
+    "scoring_scale": "1-5",
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "constraints": {
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "expect_structured": true,
+    "context_files": [],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "evidence": [],
+  "max_rounds": 3,
+  "tool_policy": "none",
+  "sharing_policy": {
+    "share_case_packet": true,
+    "share_committed_artifacts_after_first_pass": true,
+    "share_critiques_after_open": true,
+    "share_hidden_reasoning": false,
+    "share_provider_identity": false,
+    "share_internal_coalition_drafts": false
+  },
+  "success_condition": {
+    "type": "validator_contract",
+    "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+    "validator": {
+      "artifact_type": "prd",
+      "expect_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true
+    }
+  }
+}
+
+Opposing first-pass artifact:
+{
+  "run_id": "conflict-2026-04-13-194951093Z-churn-conflicting-signals",
+  "side_id": "side_b",
+  "round": "first_pass",
+  "artifact_markdown": "# Churn Reduction PRD: Resolve Conflicting Signals Against Strategy Targets\n\n## 1. Product Context\n\nThe product team needs a churn reduction plan in a setting where customer behavior signals conflict with current strategy targets. This PRD treats the strategy target as a constraint, not as proof that the target is correct. The goal is to reduce churn without blindly optimizing the loudest metric or prematurely abandoning the strategic direction. [ctx-1]\n\n## 2. Problem Statement\n\nChurn is high enough to require intervention, but the available signals point in different directions. Some churn evidence may suggest short-term retention fixes, while strategy targets may emphasize a different customer segment, package, use case, or product direction. The team needs a disciplined way to decide whether to preserve, adjust, or challenge the strategy while shipping focused retention work.\n\n## 3. Goals\n\n- Reduce preventable churn among strategically important customers.\n- Separate noisy churn symptoms from causal churn drivers.\n- Protect the strategy target from being overwritten by unvalidated anecdotes.\n- Create a decision path for revising the strategy if churn evidence consistently contradicts it.\n- Establish pass/fail criteria before investing in broad churn-reduction implementation.\n\n## 4. Non-Goals\n\n- Do not attempt to solve all churn across all customer segments in one release.\n- Do not optimize for retained logo count if the strategy target depends on a different value metric, such as retained revenue, high-fit accounts, or expansion-ready users.\n- Do not declare the strategy wrong from a single conflicting signal.\n- Do not ship broad discounting, blanket concierge support, or one-off save plays without causal evidence.\n\n## 5. Target Users and Segments\n\nPrimary segment: Customers aligned to the active strategy target, such as high-fit accounts, priority personas, or use cases the company has chosen to serve.\n\nSecondary segment: Churning customers outside the strategy target whose behavior may still reveal product friction, onboarding defects, pricing confusion, or expectation gaps that also affect the primary segment.\n\nExcluded segment: Customers whose retained usage would require reversing explicit strategy choices unless the evidence review shows the strategy itself should be reconsidered.\n\n## 6. Churn Hypotheses\n\nBecause the packet provides no underlying churn dataset, these are working hypotheses rather than validated findings:\n\n1. Strategy-fit customers may be churning because activation does not lead quickly enough to the value promised by the strategy.\n2. Non-strategy customers may be producing high churn volume, creating pressure to solve for the wrong retention target.\n3. The apparent conflict may come from mismatched metrics, such as churn rate versus revenue churn, active usage versus account renewal, or support complaints versus silent abandonment.\n4. The strategy target may be directionally right but under-specified, causing the team to retain the wrong accounts or measure success at the wrong level.\n\n## 7. Product Requirements\n\n### R1: Segment Churn Dashboard\n\nCreate a retention view that separates churn by strategy-fit status, customer size or value tier, acquisition cohort, activation status, primary use case, plan or package, and cancellation reason.\n\nAcceptance criteria:\n- PM and leadership can compare churn for strategy-fit and non-strategy-fit customers.\n- Dashboard distinguishes logo churn, revenue churn, active usage drop-off, and downgrade behavior.\n- Each churn trend includes cohort size and confidence warnings where sample sizes are small.\n\n### R2: Churn Reason Taxonomy\n\nStandardize churn reasons into a taxonomy that separates product friction, missing capability, pricing or packaging mismatch, poor onboarding, low perceived value, support experience, competitor displacement, and customer no-longer-fit.\n\nAcceptance criteria:\n- Cancellation flows, support tickets, CSM notes, and win/loss notes can map into the same taxonomy.\n- Churn reasons are tagged by segment and strategy-fit status.\n- Free-text reasons remain available for qualitative review rather than being lost behind forced categories.\n\n### R3: Strategy-Fit Retention Intervention\n\nBuild one narrow intervention for the highest-confidence churn driver among strategy-fit customers. Candidate examples include onboarding correction, activation checklist, value milestone nudges, package clarification, admin setup guidance, or renewal-risk alerts.\n\nAcceptance criteria:\n- Intervention is targeted only to the segment and lifecycle stage tied to the churn hypothesis.\n- The intervention has a measurable leading indicator before renewal or cancellation.\n- The product team can disable or roll back the intervention without affecting unrelated flows.\n\n### R4: Conflict Review Gate\n\nIntroduce a formal decision review when churn evidence conflicts with strategy targets.\n\nAcceptance criteria:\n- Review compares evidence for three options: stay the course, adjust execution, or revise strategy.\n- Decision is based on segmented retention, customer value, causal evidence strength, and strategic fit.\n- Output is captured as a decision log with owner, date, evidence reviewed, and revisit trigger.\n\n### R5: Research Follow-Up\n\nRun targeted qualitative research only where the quantitative signal is contradictory or under-explained.\n\nAcceptance criteria:\n- Research sample includes retained strategy-fit customers, churned strategy-fit customers, and churned non-strategy customers where relevant.\n- Interview guide distinguishes stated reasons from actual adoption path and value realization.\n- Findings are linked back to the churn taxonomy and dashboard segments.\n\n## 8. Metrics\n\nPrimary outcome metric:\n- Reduction in churn among strategy-fit customers, measured using the strategy’s primary retention unit, such as revenue retention, account retention, or active retained usage.\n\nSupporting metrics:\n- Activation-to-retention conversion for strategy-fit customers.\n- Time to first meaningful value milestone.\n- Churn reason distribution by strategy-fit status.\n- Renewal-risk rate among target accounts.\n- Share of churn from customers outside the strategy target.\n\nGuardrail metrics:\n- No material increase in churn among high-value strategy-fit customers.\n- No degradation in activation or conversion for the target segment.\n- No increase in retained low-fit customers that consumes disproportionate support or roadmap capacity.\n- No improvement that relies mainly on discounts, manual save work, or customer-specific exceptions.\n\n## 9. Rollout Plan\n\nPhase 1: Measurement alignment\n- Implement segmented churn reporting and reason taxonomy.\n- Audit existing cancellation, support, CRM, and product analytics sources.\n\nPhase 2: Diagnosis\n- Identify the highest-confidence churn driver for strategy-fit customers.\n- Conduct targeted research only on unresolved contradictions.\n\nPhase 3: Narrow intervention\n- Ship one focused retention intervention against the selected driver.\n- Measure leading indicators before evaluating full retention impact.\n\nPhase 4: Decision review\n- Compare intervention results and churn segmentation against the strategy target.\n- Decide whether to scale, iterate, stop, or reopen strategy assumptions.\n\n## 10. Risks\n\n- The team may optimize for the largest churn pool instead of the strategically relevant churn pool.\n- Cancellation reasons may reflect post-hoc explanations rather than causal drivers.\n- Strategy targets may be too vague to classify customers consistently.\n- Churn impact may take longer to measure than activation or engagement leading indicators.\n- Leadership may interpret any conflicting signal as a strategy failure before evidence quality is sufficient.\n\n## Decision Frame\n\nDecision to make: Should the churn reduction effort prioritize strategy-fit customers even when broader churn signals point elsewhere?\n\nRecommended decision: Yes, initially prioritize churn among strategy-fit customers, while creating an explicit review gate that can challenge the strategy if segmented evidence shows the target itself is wrong.\n\nRationale: A churn program should not blindly chase aggregate churn when the scenario states that signals conflict with strategy targets. The useful decision is not “follow the strategy” versus “follow the churn data.” It is to segment the churn data by strategic relevance, test causal drivers in the target segment, and define what evidence would justify changing the strategy.\n\n## Unknowns & Evidence Gaps\n\n- Actual churn rate, revenue churn, and cohort trends are not provided.\n- The strategy target is unspecified.\n- Customer segments, pricing tiers, and value metric are unspecified.\n- The source and reliability of the conflicting signals are unknown.\n- No cancellation-reason taxonomy, interview evidence, support-ticket analysis, or product analytics are included.\n- The time horizon for acceptable churn improvement is not specified.\n\n## Pass/Fail Readiness\n\nPass readiness if:\n- Strategy-fit customers can be identified consistently.\n- Churn can be segmented by strategy fit, value tier, cohort, and reason.\n- The team can name one high-confidence churn driver for the strategy-fit segment.\n- A narrow intervention can be measured with leading and lagging retention indicators.\n- Leadership agrees in advance on the evidence threshold for revisiting the strategy.\n\nFail readiness if:\n- The team only has aggregate churn without segmentation.\n- The strategy target cannot be operationally classified at the customer level.\n- The proposed fix is a broad retention bundle without a causal hypothesis.\n- Success is defined as lower churn regardless of customer fit, margin, or strategic value.\n- Conflicting signals are treated as proof rather than as inputs for structured diagnosis.\n\n## Recommended Next Artifact\n\nCreate a Churn Evidence Map that lists each conflicting signal, its source, affected segment, metric definition, sample size, causal strength, and implication for the strategy. Use that map to choose the first retention intervention and to define the trigger for a strategy review.",
+  "claims": [
+    {
+      "claim_id": "side_b-claim-1",
+      "summary": "A churn reduction PRD under conflicting signals should prioritize segmented, strategy-fit churn before optimizing aggregate churn.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-2",
+      "summary": "The PRD should include an explicit decision gate for when churn evidence is strong enough to challenge or revise strategy targets.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-3",
+      "summary": "Because the case packet includes no underlying churn dataset, churn drivers must be framed as hypotheses and evidence gaps rather than established facts.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1"
+  ],
+  "open_questions": [],
+  "critique_responses": []
+}

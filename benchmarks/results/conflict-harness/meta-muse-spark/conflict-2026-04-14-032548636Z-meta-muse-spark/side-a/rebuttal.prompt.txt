@@ -1,0 +1,161 @@
+You are SIDE_A in the rebuttal phase for run conflict-2026-04-14-032548636Z-meta-muse-spark.
+Attack only visible claims from the opposing first-pass artifact.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "target_side": "side_b",
+  "finding_id": "runner-will-assign",
+  "target_claim_ids": [
+    "side_b-claim-1"
+  ],
+  "claim_under_attack": "The opposing claim to challenge.",
+  "attack_type": "evidence_gap",
+  "evidence_or_reason": "Why the visible claim is weak.",
+  "severity": "medium"
+}
+
+Case packet:
+{
+  "scenario_id": "meta-muse-spark",
+  "title": "Meta Muse Spark: keep the frontier model closed or return to the open strategy",
+  "prompt": "You are a strategy advisor to Meta's senior leadership in April 2026, immediately after the April 8, 2026 launch of Muse Spark.\n\nMuse Spark is the first model released by Meta Superintelligence Labs (MSL), the new unit built after Meta's 2025 AI reset. Meta says MSL rebuilt its AI stack over the prior nine months and that Muse Spark is now its most powerful model. The model already powers the Meta AI app and website, with rollout planned over the coming weeks to WhatsApp, Instagram, Facebook, Messenger, and Meta's AI glasses. Meta is also offering Muse Spark in private-preview API access to selected partners.\n\nThe strategic break is obvious: Muse Spark is not open-source. Meta says it hopes to open-source future versions, but for now the company's newest frontier model is closed and tightly integrated into Meta products. That is a sharp departure from the Llama strategy, which helped Meta build developer goodwill and ecosystem reach.\n\nLeadership believes the move may be necessary. Meta has spent billions trying to reassert itself in AI, including its June 2025 $14.3B investment in Scale AI and the hiring of Alexandr Wang to help lead its superintelligence push. Fortune reported that Meta's published benchmarks suggest Muse Spark is competitive with leading models from OpenAI, Anthropic, and Google across many tasks, though not clearly superior across the board. Internally, this launch is being treated as proof that Meta is back in the race after Llama 4 (April 2025) was widely seen as disappointing.\n\nBut the closed-model move carries real tradeoffs. Meta's open strategy gave it differentiation against closed rivals, drove broad adoption of Llama, and supported an ecosystem narrative that fit the company's platform DNA. Keeping Muse Spark closed may improve product control, monetization, safety, and frontier secrecy, but it may also weaken Meta's developer credibility, blur its strategic identity, and intensify the capex race against firms that are already ahead on flagship closed models.\n\nThe leadership team must decide: should Meta stay the course with a closed, product-first Muse strategy for its frontier models, or should it commit to reopening the roadmap and release open-weight successors quickly even if that slows product integration and monetization?\n\nWrite a strategic recommendation memo. Take a clear position — stay closed or reopen — and defend it with evidence. Acknowledge the strongest counterarguments and explain why your position is still correct.\n\nKey evidence available:\n- Muse Spark launched on April 8, 2026 as the first model from Meta Superintelligence Labs\n- Meta says MSL rebuilt its AI stack over the prior 9 months\n- Muse Spark currently powers the Meta AI app and website\n- Planned rollout in coming weeks: WhatsApp, Instagram, Facebook, Messenger, and AI glasses\n- Muse Spark is available in private-preview API access to selected partners\n- Meta says larger Muse-family models are already in development\n- Meta says it hopes to open-source future versions, but Muse Spark itself is closed\n- Meta positions Muse Spark as purpose-built for Meta products and personal superintelligence use cases\n- Fortune reported Meta's published benchmarks indicate Muse Spark is competitive with frontier models, but not clearly best-in-class across the board\n- Muse Spark is the first major Meta model release since the June 2025 Scale AI deal and Alexandr Wang's hiring into Meta's superintelligence effort\n- Meta's previous differentiator in AI was the open Llama strategy rather than a closed frontier product stack\n- Closed-source frontier models may improve product control, speed of monetization, partner leverage, and model secrecy\n- Open-weight releases may strengthen developer trust, ecosystem adoption, and Meta's strategic differentiation versus other frontier labs\n- If Meta keeps the frontier roadmap closed, it is competing more directly on product execution and capital intensity against OpenAI, Anthropic, and Google",
+  "artifact_type": "strategy",
+  "rubric": {
+    "dimensions": [
+      "claim quality",
+      "evidence discipline",
+      "responsiveness to critique",
+      "internal consistency",
+      "decision usefulness"
+    ],
+    "scoring_scale": "1-5",
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "constraints": {
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "expect_structured": true,
+    "context_files": [],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "evidence": [],
+  "max_rounds": 3,
+  "tool_policy": "none",
+  "sharing_policy": {
+    "share_case_packet": true,
+    "share_committed_artifacts_after_first_pass": true,
+    "share_critiques_after_open": true,
+    "share_hidden_reasoning": false,
+    "share_provider_identity": false,
+    "share_internal_coalition_drafts": false
+  },
+  "success_condition": {
+    "type": "validator_contract",
+    "description": "Produce a strategy artifact that satisfies the scenario validator contract.",
+    "validator": {
+      "artifact_type": "strategy",
+      "expect_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true
+    }
+  }
+}
+
+Opposing first-pass artifact:
+{
+  "run_id": "conflict-2026-04-14-032548636Z-meta-muse-spark",
+  "side_id": "side_b",
+  "round": "first_pass",
+  "artifact_markdown": "# Strategic Recommendation: Adopt a Staged Reopening of Meta's Frontier Model Roadmap\n\n## Decision Frame\n\n**Core question:** Should Meta maintain Muse Spark and its successors as closed, product-integrated frontier models, or commit to reopening the roadmap with open-weight releases?\n\n**Recommendation: Staged reopening.** Meta should keep Muse Spark closed for the current product integration cycle (60–90 days), then commit publicly to releasing open weights for Muse-family models on a defined trailing schedule — frontier models go closed-first for product integration, then open-weight within one quarter of internal deployment.\n\n**Rationale:** Meta's durable competitive advantage in AI is not model secrecy; it is distribution and ecosystem. The closed Muse Spark launch was a tactically sound way to control narrative after the Llama 4 stumble, but making closure the permanent strategy puts Meta on a battlefield — closed frontier product execution — where it has no structural edge over OpenAI, Anthropic, or Google, and where capital intensity alone determines position.\n\n### Why reopening is the correct strategic posture\n\n1. **Distribution is Meta's moat, not model secrecy.** Meta reaches 3B+ users across its family of apps. The value of a frontier model to Meta comes from integration into WhatsApp, Instagram, Messenger, and glasses — not from preventing external developers from running weights. No competitor can replicate Meta's distribution surface. Open weights do not erode this advantage; they reinforce it by making the Meta ecosystem the reference implementation.\n\n2. **The open strategy generated real, measurable ecosystem value.** Llama 2 and Llama 3 drove broad developer adoption, fine-tuning ecosystems, and enterprise deployments that created switching costs favoring Meta's toolchain and platform. Abandoning this positions Meta as just another closed API provider — a market where it has less credibility, less infrastructure maturity, and less developer trust than incumbents.\n\n3. **Benchmark parity is not a closed-model strategy.** Fortune's reporting indicates Muse Spark is competitive but not clearly best-in-class. A closed model that is roughly at parity has no compelling sales pitch against established closed providers. An open-weight model at parity, however, is enormously attractive: it offers comparable capability with deployment flexibility, fine-tuning access, and no vendor lock-in. Meta's strongest position is as the open alternative at the frontier, not as a closed also-ran.\n\n4. **Developer trust is fragile and expensive to rebuild.** Meta explicitly cultivated a reputation as the open-source AI leader. Every month Muse stays closed without a clear reopening commitment erodes that credibility. Developer communities do not forgive perceived bait-and-switch strategies — the goodwill cost compounds nonlinearly.\n\n5. **The Scale AI deal and MSL restructuring do not require closure.** The $14.3B Scale AI investment and Alexandr Wang's hiring are about capability uplift and data quality, not about model secrecy. These investments pay off regardless of weight-release strategy. Meta can justify the capex through product integration revenue and ecosystem dominance without keeping weights locked.\n\n### Strongest counterarguments and why they are insufficient\n\n**Counter: Releasing weights gives competitors free capability uplift.**\nThis is real but overstated. Competitors at the frontier are not capability-constrained by lack of access to Meta's weights — they have their own research pipelines. The primary beneficiaries of open weights are mid-tier developers, startups, and enterprises who would otherwise use a competitor's closed API. These are exactly the users Meta wants in its ecosystem.\n\n**Counter: Closed models enable faster monetization through API revenue.**\nMeta's AI monetization path runs through ad-supported products and platform engagement, not API subscriptions. Meta has no meaningful enterprise API sales infrastructure compared to Google Cloud, Azure/OpenAI, or AWS/Anthropic. Building one from scratch to compete on API revenue is a poor use of Meta's advantages. The private-preview API is useful for partner relationships, not as a revenue center.\n\n**Counter: Safety and alignment concerns justify keeping weights closed.**\nThis argument has merit for genuinely novel capabilities that pose differential risk. However, Muse Spark's benchmarks suggest parity, not breakthrough capability. The safety argument becomes compelling only when Meta achieves clearly superior performance in sensitive domains — at which point a selective delay (not permanent closure) is appropriate. The staged approach accommodates this.\n\n**Counter: The Llama 4 disappointment requires a reset; opening too soon risks another embarrassment.**\nThis is the strongest tactical argument. However, the staged approach addresses it directly: Meta controls the narrative by keeping Muse Spark closed for the initial launch window, proving product integration value, then reopening from a position of demonstrated competence rather than perceived desperation.\n\n## Unknowns & Evidence Gaps\n\n| Unknown | Why it matters | How to close it |\n|---|---|---|\n| **Muse Spark's actual capability delta vs. frontier** | Fortune reported parity, but internal benchmarks may show specific domains of strength or weakness that change the open/closed calculus | Commission independent red-team evaluation against GPT-5, Claude 4, and Gemini Ultra on Meta's priority use cases (personal AI, multimodal reasoning, agentic tasks) |\n| **Developer sentiment trajectory** | How much goodwill erosion has already occurred since the closed announcement? Is the damage reversible? | Run developer survey and track Llama download/deployment trends, GitHub activity, and HuggingFace model derivative counts month-over-month |\n| **Enterprise API revenue potential** | Is there a meaningful revenue opportunity Meta is leaving on the table by not pursuing closed API monetization? | Analyze private-preview partner pipeline: deal sizes, use cases, willingness-to-pay vs. comparable offerings from competitors |\n| **Regulatory trajectory for open-weight releases** | EU AI Act and US executive orders may impose obligations on open-weight frontier model releases that change the cost calculus | Legal and policy team assessment of regulatory exposure for open-weight release of models at Muse Spark's capability level |\n| **Internal capability pipeline** | How far ahead are the larger Muse-family models? If the next model is a clear leap, the reopening timeline matters differently | MSL roadmap review with capability projections for Muse 2 and beyond |\n| **Competitive response to closure** | Will OpenAI, Anthropic, or Google use Meta's closure as a marketing wedge, or does it go unnoticed? | Monitor competitor messaging and developer community discourse for signs of narrative exploitation |\n\n## Pass/Fail Readiness\n\n**This recommendation is CONDITIONALLY READY for decision, with the following gates:**\n\n| Gate | Status | Blocker? |\n|---|---|---|\n| Strategic logic is sound | PASS | No |\n| Evidence base is sufficient for directional decision | PASS | No |\n| Internal capability assessment available | FAIL — requires MSL roadmap data | Yes, for timeline specifics |\n| Developer sentiment data available | FAIL — requires survey/tracking | No — directional conclusion holds without it, but timeline calibration needs it |\n| Regulatory exposure assessed | FAIL — requires legal review | Conditional — if regulatory risk is high, staged reopening timeline extends but direction does not change |\n| Monetization opportunity quantified | FAIL — requires partner pipeline data | No — Meta's primary monetization path is product integration regardless |\n\n**Bottom line:** The directional recommendation (staged reopening) can be adopted now. The specific timeline (60–90 day closed window, then quarterly trailing open releases) should be calibrated after the MSL roadmap review and developer sentiment assessment.\n\n## Recommended Next Artifact\n\n1. **Reopening Roadmap with Decision Gates** — A detailed timeline mapping closed integration windows to open-weight release milestones, with explicit criteria for extending closure (e.g., breakthrough capability in sensitive domains, regulatory constraints). This should include communications strategy for developer audiences.\n\n2. **Developer Ecosystem Health Dashboard** — Metrics framework tracking Llama/Muse adoption, developer sentiment, model derivative activity, and competitive displacement to provide ongoing signal for calibrating the open/closed balance.\n\n3. **Competitive Positioning Brief** — Analysis of how each major competitor (OpenAI, Anthropic, Google, Mistral, xAI) is positioned relative to Meta's reopening strategy, identifying where open weights create maximum competitive pressure and where they create vulnerability.",
+  "claims": [
+    {
+      "claim_id": "side_b-claim-1",
+      "summary": "Meta's durable competitive advantage is distribution (3B+ users across apps), not model secrecy; open weights reinforce rather than erode this moat because no competitor can replicate Meta's product integration surface.",
+      "evidence_refs": [
+        "case-packet-distribution",
+        "case-packet-product-rollout"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-2",
+      "summary": "A closed model at benchmark parity has no compelling differentiation against established closed providers, whereas an open-weight model at parity is uniquely attractive to developers and enterprises seeking deployment flexibility.",
+      "evidence_refs": [
+        "case-packet-benchmarks",
+        "case-packet-llama-ecosystem"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-3",
+      "summary": "Meta lacks the enterprise API sales infrastructure to compete on closed-API revenue against Google Cloud, Azure/OpenAI, and AWS/Anthropic, making closed monetization a poor strategic fit.",
+      "evidence_refs": [
+        "case-packet-api-preview",
+        "case-packet-competitive-landscape"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-4",
+      "summary": "Developer trust erodes nonlinearly after perceived bait-and-switch; every month without a reopening commitment compounds goodwill damage from abandoning the open Llama strategy.",
+      "evidence_refs": [
+        "case-packet-llama-ecosystem",
+        "case-packet-open-strategy"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-5",
+      "summary": "A staged approach — closed for 60-90 day product integration window, then open-weight releases on a quarterly trailing schedule — captures the benefits of both strategies while mitigating the Llama 4 reputation risk.",
+      "evidence_refs": [
+        "case-packet-llama4-disappointment",
+        "case-packet-muse-closed"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-6",
+      "summary": "The $14.3B Scale AI investment and MSL restructuring justify themselves through capability uplift and data quality improvements regardless of weight-release strategy, and do not require permanent closure to deliver ROI.",
+      "evidence_refs": [
+        "case-packet-scale-ai-deal",
+        "case-packet-msl-rebuild"
+      ],
+      "is_major": false
+    }
+  ],
+  "citations": [
+    "case-packet-distribution",
+    "case-packet-product-rollout",
+    "case-packet-benchmarks",
+    "case-packet-llama-ecosystem",
+    "case-packet-api-preview",
+    "case-packet-competitive-landscape",
+    "case-packet-open-strategy",
+    "case-packet-llama4-disappointment",
+    "case-packet-muse-closed",
+    "case-packet-scale-ai-deal",
+    "case-packet-msl-rebuild"
+  ],
+  "open_questions": [
+    "What do internal (non-published) benchmarks show about Muse Spark's capability delta versus frontier competitors in Meta's priority use cases?",
+    "How much developer ecosystem activity (Llama downloads, HuggingFace derivatives, GitHub forks) has declined since the closed Muse announcement?",
+    "What is the regulatory exposure for open-weight release of frontier models under current EU AI Act and US executive order frameworks?",
+    "What is the realistic timeline and capability profile for the next Muse-family model, and does it represent a genuine capability leap that would change the open/closed calculus?",
+    "What revenue pipeline has materialized from the private-preview API, and how does it compare to Meta's product-integration monetization trajectory?"
+  ],
+  "critique_responses": []
+}

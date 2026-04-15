@@ -1,0 +1,111 @@
+You are SIDE_A in the rebuttal phase for run conflict-2026-04-14-071031469Z-feature-weak-evidence.
+Attack only visible claims from the opposing first-pass artifact.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "target_side": "side_b",
+  "finding_id": "runner-will-assign",
+  "target_claim_ids": [
+    "side_b-claim-1"
+  ],
+  "claim_under_attack": "The opposing claim to challenge.",
+  "attack_type": "evidence_gap",
+  "evidence_or_reason": "Why the visible claim is weak.",
+  "severity": "medium"
+}
+
+Case packet:
+{
+  "scenario_id": "feature-weak-evidence",
+  "title": "New feature with weak evidence",
+  "prompt": "Draft a PRD for a new feature with weak supporting evidence.",
+  "artifact_type": "prd",
+  "rubric": {
+    "dimensions": [
+      "claim quality",
+      "evidence discipline",
+      "responsiveness to critique",
+      "internal consistency",
+      "decision usefulness"
+    ],
+    "scoring_scale": "1-5",
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "constraints": {
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "expect_structured": true,
+    "context_files": [],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "evidence": [],
+  "max_rounds": 3,
+  "tool_policy": "none",
+  "sharing_policy": {
+    "share_case_packet": true,
+    "share_committed_artifacts_after_first_pass": true,
+    "share_critiques_after_open": true,
+    "share_hidden_reasoning": false,
+    "share_provider_identity": false,
+    "share_internal_coalition_drafts": false
+  },
+  "success_condition": {
+    "type": "validator_contract",
+    "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+    "validator": {
+      "artifact_type": "prd",
+      "expect_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true
+    }
+  }
+}
+
+Opposing first-pass artifact:
+{
+  "run_id": "conflict-2026-04-14-071031469Z-feature-weak-evidence",
+  "side_id": "side_b",
+  "round": "first_pass",
+  "artifact_markdown": "# PRD: Discovery-Gated Feature Proposal\n\n## Overview\nThis PRD does not authorize full feature delivery. It defines a constrained discovery and prototype phase for a proposed feature whose supporting evidence is currently insufficient.\n\n## Problem\nA potential user need has been identified, but there is no validated evidence in the case packet establishing demand, urgency, willingness to adopt, or expected business impact.\n\n## Goal\nDecide whether the feature should advance to a build-ready PRD by reducing the current evidence gap through targeted discovery.\n\n## Non-Goals\n- Full production launch\n- Broad roadmap commitment\n- Irreversible architecture investment\n\n## Users\nPrimary user segment is unknown.\n\n## Hypothesis\nIf the proposed feature addresses a real, high-frequency user pain point, then a limited prototype and structured discovery will produce measurable signals of user pull strong enough to justify a build decision.\n\n## Scope\n### In scope\n- Problem validation interviews\n- Clickable prototype or lightweight concierge test\n- Instrumented usability sessions\n- Build-readiness recommendation\n\n### Out of scope\n- Production-grade implementation\n- Cross-platform rollout\n- Pricing or packaging changes\n\n## Requirements\n### Functional\n1. Create a prototype sufficient to demonstrate the core user workflow.\n2. Run structured user conversations against the prototype.\n3. Capture evidence on problem severity, workflow fit, and intent to use.\n4. Document findings in a follow-on decision artifact.\n\n### Non-functional\n1. Minimize engineering effort until evidence improves.\n2. Ensure all findings are traceable to explicit interview or test outputs.\n3. Separate observed evidence from assumptions.\n\n## Success Metrics\n- At least 5 target users complete prototype evaluation.\n- At least 3 report the problem as frequent and important.\n- At least 3 indicate clear preference for this approach over current workaround.\n- No critical workflow confusion appears in more than 2 sessions.\n\n## Risks\n- Solving a low-priority problem\n- Misidentifying the target user\n- Overfitting to anecdotal feedback\n- Converting weak signals into premature roadmap commitment\n\n## Rollout Plan\n1. Run discovery sprint.\n2. Review evidence against pass/fail gates.\n3. Either stop, iterate on concept, or commission build-ready PRD.\n\n## Decision Frame\nThe decision in this document is not whether to ship the feature. The decision is whether the idea merits a bounded discovery investment. Given the absence of supporting evidence, the correct action is a discovery-gated PRD rather than a delivery PRD.\n\n## Unknowns & Evidence Gaps\n- Who specifically has the problem\n- How often the problem occurs\n- Current workaround quality\n- Whether the proposed feature is materially better\n- Whether users would adopt the behavior change required\n- Whether the opportunity is large enough to justify implementation cost\n\n## Pass/Fail Readiness\nFail for production build readiness.\nPass for a limited discovery and prototype phase only.\nA full build should proceed only if the success metrics above are met and the evidence is documented in a follow-on artifact.\n\n## Recommended Next Artifact\nDiscovery summary with interview evidence, prototype findings, quantified demand signals, and a build/no-build recommendation.",
+  "claims": [
+    {
+      "claim_id": "side_b-claim-1",
+      "summary": "The feature should not be treated as build-ready because the case packet provides weak support and no evidence artifacts.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-2",
+      "summary": "The appropriate PRD outcome is a discovery-gated prototype phase with explicit success thresholds rather than a production commitment.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1"
+  ],
+  "open_questions": [
+    "What specific user segment is expected to use the feature first?",
+    "What existing user behavior or workaround indicates this is a meaningful problem?",
+    "What business outcome would justify implementation cost if discovery succeeds?"
+  ],
+  "critique_responses": []
+}

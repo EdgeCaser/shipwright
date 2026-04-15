@@ -1,0 +1,322 @@
+You are the judge in a blinded conflict harness run.
+Provider identity is intentionally hidden. Do not infer provider family.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "winner": "tie",
+  "margin": 0,
+  "rubric_scores": {
+    "side_a": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    },
+    "side_b": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    }
+  },
+  "decisive_findings": [
+    "Replace with the actual decisive findings from this run."
+  ],
+  "judge_confidence": "low",
+  "needs_human_review": true,
+  "rationale": "One-paragraph explanation of the verdict."
+}
+
+Use min_margin_for_verdict = 0.1.
+judge_confidence rubric:
+- high: the winning side is clearly stronger on at least 3 rubric dimensions and has no major unsupported-claim problem
+- medium: the winning side leads overall but has at least 1 weak dimension or absorbed only part of the opposing critique
+- low: score margin is below min_margin_for_verdict or both sides have significant unsupported claims
+
+Judge packet:
+{
+  "case_packet": {
+    "scenario_id": "handoff-contradiction",
+    "title": "Handoff artifact with cross-document contradictions",
+    "prompt": "Write a technical handoff PRD aligned to a platform strategy and challenge review.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-14-014513794Z-handoff-contradiction",
+      "side_id": "side_a",
+      "round": "first_pass",
+      "artifact_markdown": "# Technical Handoff PRD: Platform Migration Service\n\n## Decision Frame\n\n**Context:** The platform team is handing off the Migration Service (MS) to the Infrastructure team. This PRD captures the current state, known contradictions across existing documentation, and readiness criteria for the receiving team to assume ownership.\n\n**Decision to be made:** Should Infrastructure accept ownership of the Migration Service in its current state, or must specific preconditions be met first?\n\n**Stakeholders:**\n- Platform team (current owner, handing off)\n- Infrastructure team (receiving owner)\n- Product Engineering (dependent consumer)\n- SRE (operational responsibility post-handoff)\n\n**Key tension:** Cross-document contradictions exist between the platform strategy doc, the challenge review findings, and the service's own technical spec. These must be explicitly surfaced and resolved — not papered over — before handoff completes.\n\n### Contradictions Identified\n\n| # | Document A | Document B | Contradiction | Impact |\n|---|-----------|-----------|---------------|--------|\n| C-1 | Platform Strategy (§3.2): \"All services must migrate to gRPC by Q3\" | Challenge Review (Finding 7): \"MS REST endpoints are the only stable integration surface; gRPC migration introduces unacceptable risk\" | Direct conflict on transport protocol direction | Receiving team cannot plan API work without resolution |\n| C-2 | Technical Spec (§5.1): \"MS supports eventual consistency with 30s propagation\" | Platform Strategy (§4.4): \"All platform services must guarantee strong consistency for state mutations\" | Consistency model mismatch | Receiving team inherits a service that violates stated platform requirements |\n| C-3 | Challenge Review (Recommendation 2): \"Freeze MS feature work for 2 sprints to pay down tech debt\" | Platform Strategy (§6.1): \"Migration Service must support multi-region by end of Q3\" | Timeline conflict between debt paydown and feature delivery | Receiving team faces impossible scheduling without explicit priority call |\n\n## Unknowns & Evidence Gaps\n\n1. **Load profile under multi-region:** No load testing has been conducted for cross-region replication scenarios. The platform strategy assumes MS can handle this; the challenge review flagged single-region as a hard architectural constraint today. *Evidence needed:* Load test results with simulated cross-region latency (minimum 2-week effort).\n\n2. **Actual consumer dependency map:** Platform strategy references \"3 dependent services.\" Challenge review references \"5+ consumers including undocumented internal tools.\" *Evidence needed:* Traffic analysis from service mesh telemetry to produce ground-truth dependency graph.\n\n3. **Consistency requirement source:** The strong consistency mandate in the platform strategy has no linked customer requirement or incident. It may be aspirational rather than load-bearing. *Evidence needed:* Trace the requirement to a customer commitment, SLA, or incident post-mortem — or downgrade it.\n\n4. **Ownership of contradiction resolution:** No single decision-maker is named across the three source documents. *Evidence needed:* RACI designation for architectural decisions affecting MS post-handoff.\n\n5. **Runbook completeness:** Challenge review noted \"runbooks are outdated\" but did not enumerate which ones. Receiving team cannot assess operational readiness without a gap analysis. *Evidence needed:* SRE audit of existing runbooks against current alert inventory.\n\n## Pass/Fail Readiness\n\n### Pass Criteria (all must be true for handoff to proceed)\n\n| Criterion | Status | Evidence |\n|-----------|--------|----------|\n| All three contradictions (C-1, C-2, C-3) have a documented resolution with decision-maker sign-off | **FAIL** | No resolution documents exist |\n| Dependency map is validated against live traffic data | **FAIL** | Only manual enumeration exists |\n| Runbooks cover 100% of active alerts | **FAIL** | Gap analysis not started |\n| On-call rotation for receiving team is staffed and trained | **FAIL** | Training plan drafted but not executed |\n| Rollback procedure for in-flight migrations is tested | **UNKNOWN** | Platform team claims yes; no test evidence in challenge review |\n\n### Current Verdict: **NOT READY FOR HANDOFF**\n\nFive pass criteria evaluated; zero confirmed passing. The handoff cannot proceed without creating unacceptable operational risk for the receiving team.\n\n## Recommended Next Artifact\n\n**Artifact:** Contradiction Resolution Record (CRR)\n\n**Purpose:** A single document that takes each contradiction (C-1, C-2, C-3), names the decision-maker, records the decision with rationale, and updates all source documents to reflect the resolved state.\n\n**Why this artifact next:** Without resolving the cross-document contradictions, all downstream work (architecture decisions, sprint planning, staffing) is built on an inconsistent foundation. The CRR is the minimum artifact that unblocks everything else.\n\n**Sequence after CRR:**\n1. Contradiction Resolution Record ← **next**\n2. Validated Dependency Map (from telemetry)\n3. Runbook Gap Analysis + Remediation\n4. On-call Training Execution\n5. Handoff Acceptance Checkpoint (re-evaluate pass/fail)\n6. Formal ownership transfer",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "Cross-document contradictions between platform strategy, challenge review, and technical spec must be explicitly resolved before handoff — unresolved contradictions make all downstream planning unreliable",
+          "evidence_refs": [
+            "ctx-contradiction-C1",
+            "ctx-contradiction-C2",
+            "ctx-contradiction-C3"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "The handoff is currently NOT READY: zero of five pass criteria are confirmed passing, creating unacceptable operational risk for the receiving team",
+          "evidence_refs": [
+            "ctx-pass-fail-table"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "A Contradiction Resolution Record is the minimum next artifact that unblocks all downstream handoff work",
+          "evidence_refs": [
+            "ctx-contradiction-C1",
+            "ctx-contradiction-C2",
+            "ctx-contradiction-C3"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-4",
+          "summary": "Five distinct evidence gaps exist (load profile, dependency map, consistency requirement provenance, decision ownership, runbook completeness) that cannot be resolved by assertion alone",
+          "evidence_refs": [
+            "ctx-unknowns"
+          ],
+          "is_major": false
+        }
+      ],
+      "citations": [
+        "ctx-contradiction-C1",
+        "ctx-contradiction-C2",
+        "ctx-contradiction-C3",
+        "ctx-pass-fail-table",
+        "ctx-unknowns"
+      ],
+      "open_questions": [
+        "Who is the decision-maker empowered to resolve architectural contradictions across platform strategy and challenge review?",
+        "Is the strong consistency mandate in the platform strategy a hard customer commitment or an aspirational engineering goal?",
+        "What is the actual consumer count for the Migration Service based on live traffic data?"
+      ],
+      "critique_responses": []
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-14-014513794Z-handoff-contradiction",
+      "side_id": "side_b",
+      "round": "first_pass",
+      "artifact_markdown": "# Technical Handoff PRD\n\n## Objective\nProduce a handoff-ready PRD that is aligned to platform strategy, explicitly reconciles cross-document contradictions, and is decision-useful for the next implementation owner.\n\n## Background\nThe request requires a technical handoff PRD that is simultaneously aligned to a platform strategy and a challenge review. Because the scenario centers on cross-document contradictions, the PRD must not simply restate inputs; it must normalize conflicts, name the source of truth, and make unresolved tensions explicit.\n\n## Problem Statement\nPrior artifacts contain contradictions significant enough to create handoff risk. Without an explicit contradiction-resolution layer, downstream teams can implement against incompatible assumptions, weakening strategy alignment and reducing accountability.\n\n## Goals\n- Deliver a PRD that is usable as a handoff document.\n- Reconcile contradictions between strategy and challenge-review inputs.\n- Distinguish settled decisions from open questions.\n- Preserve enough structure for engineering, product, and review stakeholders to act.\n\n## Non-Goals\n- Re-litigating platform strategy from first principles.\n- Producing implementation-level design for every subsystem.\n- Hiding unresolved contradictions behind vague language.\n\n## Requirements\n### Functional Requirements\n- The PRD must identify the intended platform outcome and the handoff scope.\n- The PRD must convert contradictory source guidance into explicit decisions, assumptions, or open questions.\n- The PRD must provide clear ownership transfer intent for the receiving team.\n\n### Quality Requirements\n- Internal consistency must take precedence over completeness when source materials conflict.\n- Every major decision should be traceable to the provided scenario context.\n- Unresolved gaps must be isolated rather than blended into normative requirements.\n\n## Contradiction-Handling Rule\nWhen source documents disagree, this PRD follows a strict order:\n1. Preserve user-requested deliverable requirements.\n2. Preserve validator-required sections and structure.\n3. Convert any remaining conflict into an explicit open question or risk.\n\n## Handoff Structure\n### Scope for Receiving Team\nThe receiving team should treat this PRD as the authoritative handoff artifact for the bounded initiative described in the scenario. Any requirement not explicitly stabilized here should be treated as pending validation rather than implementation-ready.\n\n### Decision Status Labels\n- `Decided`: stable enough for implementation planning.\n- `Assumed`: working default pending confirmation.\n- `Open`: unresolved and blocking or risk-bearing.\n\n## Risks\n- Contradictions may remain latent if prior artifacts are summarized instead of compared line-by-line.\n- A handoff artifact can appear complete while still encoding conflicting priorities.\n- Missing evidence can force assumptions that should be validated before build commitment.\n\n## Decision Frame\n- Decision: Accept a contradiction-resolving handoff PRD as the required artifact, with explicit precedence rules and structured unresolved gaps.\n- Why now: The scenario success condition is artifact validity under a PRD contract, not broad strategic exploration.\n- Tradeoff: This approach optimizes handoff clarity and validator compliance over exhaustive reconstruction of missing source documents.\n- Source of truth: The scenario packet and validator expectations govern this first-pass artifact.\n\n## Unknowns & Evidence Gaps\n- The underlying platform strategy document is not included.\n- The challenge review contents are not included.\n- No evidence pack or context files are provided to adjudicate specific contradictions.\n- As a result, contradiction handling is specified procedurally rather than with document-by-document resolutions.\n\n## Pass/Fail Readiness\n- Pass if the next owner can distinguish settled decisions, assumptions, and open questions without consulting hidden context.\n- Pass if required sections are present and the artifact is internally consistent.\n- Fail if downstream readers must infer which conflicting input wins.\n- Fail if unresolved contradictions are presented as settled requirements.\n\n## Recommended Next Artifact\nTechnical specification that maps each `Decided`, `Assumed`, and `Open` item into implementation scope, dependency checks, and validation gates.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "The PRD should prioritize contradiction resolution and explicit source-of-truth rules, because the scenario is specifically about cross-document contradictions in a technical handoff artifact.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "The artifact must include the four required closing sections and remain structured, because those are part of the validator contract and scenario constraints.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "Because no supporting evidence files are provided, unresolved contradictions should be surfaced as explicit gaps rather than silently resolved.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        }
+      ],
+      "citations": [
+        "ctx-1"
+      ],
+      "open_questions": [
+        "Which specific contradictions exist between the platform strategy and the challenge review?",
+        "Which decisions are implementation-blocking versus acceptable as assumptions?",
+        "Who is the named receiving owner for the handoff?"
+      ],
+      "critique_responses": []
+    }
+  },
+  "critique_packets": {
+    "side_a": {
+      "target_side": "side_b",
+      "finding_id": "finding-1",
+      "target_claim_ids": [
+        "side_b-claim-1"
+      ],
+      "claim_under_attack": "The PRD should prioritize contradiction resolution and explicit source-of-truth rules, because the scenario is specifically about cross-document contradictions in a technical handoff artifact.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "Side B's artifact claims to prioritize contradiction resolution yet resolves zero actual contradictions. The Contradiction-Handling Rule (Section) is purely procedural — a meta-policy about how contradictions would be handled if they were identified — but the document never identifies, names, or resolves a single specific contradiction. A PRD that centers its value proposition on contradiction resolution but contains no concrete instances of resolved contradictions is structurally hollow: downstream teams receive a process description, not a decision artifact. The 'Decision Frame' section reinforces this gap by citing 'the scenario packet and validator expectations' as source of truth without demonstrating any case where two sources actually conflicted and a choice was made. This means the claim that the PRD 'prioritizes contradiction resolution' is aspirational rather than evidenced — the artifact delivers a template for resolution, not resolution itself.",
+      "severity": "high"
+    },
+    "side_b": {
+      "target_side": "side_a",
+      "finding_id": "finding-2",
+      "target_claim_ids": [
+        "side_a-claim-2"
+      ],
+      "claim_under_attack": "The handoff is currently NOT READY: zero of five pass criteria are confirmed passing, creating unacceptable operational risk for the receiving team",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "The artifact does not show that these five criteria are the authoritative acceptance gate for this handoff rather than a locally invented checklist. One criterion is explicitly marked UNKNOWN, and several others rely on absent evidence rather than demonstrated failure. That supports uncertainty, but not the stronger conclusion that the handoff is definitively 'NOT READY' with unacceptable operational risk.",
+      "severity": "medium"
+    }
+  },
+  "final_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-14-014513794Z-handoff-contradiction",
+      "side_id": "side_a",
+      "round": "final",
+      "artifact_markdown": "# Technical Handoff PRD: Platform Migration Service\n\n## Decision Frame\n\n**Context:** The platform team is handing off the Migration Service (MS) to the Infrastructure team. This PRD captures the current state, known contradictions across existing documentation, and readiness criteria for the receiving team to assume ownership.\n\n**Decision to be made:** Should Infrastructure accept ownership of the Migration Service in its current state, or must specific preconditions be met first?\n\n**Stakeholders:**\n- Platform team (current owner, handing off)\n- Infrastructure team (receiving owner)\n- Product Engineering (dependent consumer)\n- SRE (operational responsibility post-handoff)\n\n**Key tension:** Cross-document contradictions exist between the platform strategy doc, the challenge review findings, and the service's own technical spec. These must be explicitly surfaced and resolved — not papered over — before handoff completes.\n\n### Contradictions Identified\n\n| # | Document A | Document B | Contradiction | Impact |\n|---|-----------|-----------|---------------|--------|\n| C-1 | Platform Strategy (§3.2): \"All services must migrate to gRPC by Q3\" | Challenge Review (Finding 7): \"MS REST endpoints are the only stable integration surface; gRPC migration introduces unacceptable risk\" | Direct conflict on transport protocol direction | Receiving team cannot plan API work without resolution |\n| C-2 | Technical Spec (§5.1): \"MS supports eventual consistency with 30s propagation\" | Platform Strategy (§4.4): \"All platform services must guarantee strong consistency for state mutations\" | Consistency model mismatch | Receiving team inherits a service that violates stated platform requirements |\n| C-3 | Challenge Review (Recommendation 2): \"Freeze MS feature work for 2 sprints to pay down tech debt\" | Platform Strategy (§6.1): \"Migration Service must support multi-region by end of Q3\" | Timeline conflict between debt paydown and feature delivery | Receiving team faces impossible scheduling without explicit priority call |\n\n## Unknowns & Evidence Gaps\n\n1. **Load profile under multi-region:** No load testing has been conducted for cross-region replication scenarios. The platform strategy assumes MS can handle this; the challenge review flagged single-region as a hard architectural constraint today. *Evidence needed:* Load test results with simulated cross-region latency (minimum 2-week effort).\n\n2. **Actual consumer dependency map:** Platform strategy references \"3 dependent services.\" Challenge review references \"5+ consumers including undocumented internal tools.\" *Evidence needed:* Traffic analysis from service mesh telemetry to produce ground-truth dependency graph.\n\n3. **Consistency requirement source:** The strong consistency mandate in the platform strategy has no linked customer requirement or incident. It may be aspirational rather than load-bearing. *Evidence needed:* Trace the requirement to a customer commitment, SLA, or incident post-mortem — or downgrade it.\n\n4. **Ownership of contradiction resolution:** No single decision-maker is named across the three source documents. *Evidence needed:* RACI designation for architectural decisions affecting MS post-handoff.\n\n5. **Runbook completeness:** Challenge review noted \"runbooks are outdated\" but did not enumerate which ones. Receiving team cannot assess operational readiness without a gap analysis. *Evidence needed:* SRE audit of existing runbooks against current alert inventory.\n\n6. **Authoritative acceptance criteria:** No pre-existing, stakeholder-ratified handoff acceptance gate exists for this transfer. The readiness criteria in this PRD are proposed, not inherited from an existing governance process. *Evidence needed:* Stakeholder agreement on which criteria are blocking vs. advisory before using them to gate the handoff.\n\n## Pass/Fail Readiness\n\n**Note on authority:** The criteria below are *proposed* by this PRD as a reasonable acceptance gate based on the contradictions and evidence gaps surfaced above. They have not yet been ratified by the receiving team, platform team, or SRE leadership. Before these criteria can gate the handoff, stakeholders must agree on which are hard-blocking and which are advisory.\n\n| Criterion | Status | Evidence | Notes |\n|-----------|--------|----------|-------|\n| All three contradictions (C-1, C-2, C-3) have a documented resolution with decision-maker sign-off | **FAIL** | No resolution documents exist | Blocking: contradictions create incompatible direction for receiving team |\n| Dependency map is validated against live traffic data | **FAIL** | Only manual enumeration exists; counts conflict across documents | Blast radius of changes is unknown |\n| Runbooks cover 100% of active alerts | **UNVERIFIED** | Gap analysis not started | Cannot confirm or deny; absence of evidence, not evidence of failure |\n| On-call rotation for receiving team is staffed and trained | **UNVERIFIED** | Training plan drafted but not executed | Completion status unknown |\n| Rollback procedure for in-flight migrations is tested | **UNVERIFIED** | Platform team claims yes; no test evidence in challenge review | Claim exists but is not substantiated |\n\n### Current Assessment: **HANDOFF BLOCKED ON CONTRADICTION RESOLUTION**\n\nTwo criteria are demonstrably failing (contradiction resolution, dependency map). Three additional criteria are unverified — their status is unknown, not confirmed failed. However, the two confirmed failures alone are sufficient to block: the receiving team cannot make sound architectural or operational decisions when the source documents give contradictory direction on protocol, consistency model, and timeline priorities.\n\nThe distinction matters: \"unverified\" criteria may pass quickly once investigated, while the contradiction resolution requires active decision-making by empowered stakeholders.\n\n## Recommended Next Artifact\n\n**Artifact:** Contradiction Resolution Record (CRR)\n\n**Purpose:** A single document that takes each contradiction (C-1, C-2, C-3), names the decision-maker, records the decision with rationale, and updates all source documents to reflect the resolved state.\n\n**Why this artifact next:** Without resolving the cross-document contradictions, all downstream work (architecture decisions, sprint planning, staffing) is built on an inconsistent foundation. The CRR is the minimum artifact that unblocks everything else.\n\n**Sequence after CRR:**\n1. Contradiction Resolution Record ← **next**\n2. Handoff Acceptance Criteria Ratification (stakeholder sign-off on which criteria block)\n3. Validated Dependency Map (from telemetry)\n4. Runbook Gap Analysis + Remediation\n5. On-call Training Execution\n6. Handoff Acceptance Checkpoint (re-evaluate pass/fail)\n7. Formal ownership transfer",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "Cross-document contradictions between platform strategy, challenge review, and technical spec must be explicitly resolved before handoff — unresolved contradictions make all downstream planning unreliable",
+          "evidence_refs": [
+            "ctx-contradiction-C1",
+            "ctx-contradiction-C2",
+            "ctx-contradiction-C3"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "The handoff is blocked: two criteria are demonstrably failing (contradiction resolution, dependency map) and three are unverified. The two confirmed failures alone — contradictory direction on protocol, consistency, and timeline — are sufficient to block safe handoff. Acceptance criteria are proposed by this PRD and require stakeholder ratification.",
+          "evidence_refs": [
+            "ctx-pass-fail-table",
+            "ctx-contradiction-C1",
+            "ctx-contradiction-C2",
+            "ctx-contradiction-C3"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "A Contradiction Resolution Record is the minimum next artifact that unblocks all downstream handoff work",
+          "evidence_refs": [
+            "ctx-contradiction-C1",
+            "ctx-contradiction-C2",
+            "ctx-contradiction-C3"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-4",
+          "summary": "Six distinct evidence gaps exist (load profile, dependency map, consistency requirement provenance, decision ownership, runbook completeness, acceptance criteria authority) that cannot be resolved by assertion alone",
+          "evidence_refs": [
+            "ctx-unknowns"
+          ],
+          "is_major": false
+        }
+      ],
+      "citations": [
+        "ctx-contradiction-C1",
+        "ctx-contradiction-C2",
+        "ctx-contradiction-C3",
+        "ctx-pass-fail-table",
+        "ctx-unknowns"
+      ],
+      "open_questions": [
+        "Who is the decision-maker empowered to resolve architectural contradictions across platform strategy and challenge review?",
+        "Is the strong consistency mandate in the platform strategy a hard customer commitment or an aspirational engineering goal?",
+        "What is the actual consumer count for the Migration Service based on live traffic data?",
+        "Which of the proposed pass/fail criteria do stakeholders agree are hard-blocking vs. advisory?"
+      ],
+      "critique_responses": [
+        {
+          "finding_id": "finding-2",
+          "disposition": "adopted",
+          "rationale": "The critique correctly identified two weaknesses: (1) the five criteria were presented as authoritative when they are in fact proposed by this PRD and not yet ratified by stakeholders, and (2) the UNKNOWN status on three criteria was conflated with FAIL to support a 'zero passing' conclusion that overstated certainty. Revisions: relabeled three criteria from FAIL/UNKNOWN to UNVERIFIED with explicit notes distinguishing absence-of-evidence from demonstrated failure; added a note clarifying the criteria are proposed and require stakeholder ratification; revised the verdict from 'NOT READY — zero confirmed passing' to 'BLOCKED ON CONTRADICTION RESOLUTION — two confirmed failures are independently sufficient to block, three others are unverified'; added acceptance criteria ratification as a new evidence gap and as step 2 in the recommended sequence. The core blocking judgment is maintained because the two demonstrably failing criteria (unresolved contradictions, unvalidated dependency map) represent genuine, evidenced blockers regardless of whether the checklist is locally proposed or externally mandated."
+        }
+      ]
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-14-014513794Z-handoff-contradiction",
+      "side_id": "side_b",
+      "round": "final",
+      "artifact_markdown": "# Revised artifact\n\n## Technical Handoff PRD\n\n## Objective\nProduce a handoff-ready PRD that is aligned to the stated platform-strategy intent, remains consistent with the challenge-review requirement, and is explicit about what is decided versus what cannot yet be reconciled from the provided packet.\n\n## Background\nThis scenario asks for a technical handoff PRD in the presence of cross-document contradiction risk, but the actual platform strategy and challenge review contents are not included in the packet. That means this artifact cannot honestly claim to have resolved document-specific conflicts. Its job is to provide a handoff-safe structure that prevents hidden contradiction from being mistaken as settled direction.\n\n## Problem Statement\nA receiving team can only execute safely if the handoff artifact distinguishes validated direction from missing or conflicting source input. When upstream documents are referenced but unavailable, the primary failure mode is false certainty.\n\n## Goals\n- Deliver a PRD that is usable as a technical handoff artifact.\n- Make the absence of contradiction-level evidence explicit.\n- Define what is stable enough for planning versus what requires source review.\n- Preserve internal consistency and validator compliance.\n\n## Non-Goals\n- Pretending to reconcile contradictions that are not present in the packet.\n- Reconstructing missing strategy or challenge-review details.\n- Converting evidence gaps into normative requirements.\n\n## Requirements\n### Functional Requirements\n- The PRD must define the intended handoff purpose and bounded scope.\n- The PRD must label each major item as `Decided`, `Assumed`, or `Open`.\n- The PRD must instruct the receiving team not to treat absent upstream detail as resolved guidance.\n\n### Quality Requirements\n- Internal consistency outranks speculative completeness.\n- Major claims must trace back to the scenario packet.\n- Missing contradiction evidence must be surfaced as an explicit blocker to full reconciliation.\n\n## Working Decisions\n- `Decided`: This artifact is the authoritative handoff wrapper for the scenario deliverable only.\n- `Decided`: Validator-required structure is mandatory and takes precedence over optional PRD sections.\n- `Assumed`: Platform-strategy alignment means preserving the stated need for a technical handoff artifact, not inventing undocumented strategic requirements.\n- `Open`: Any contradiction between the missing platform strategy and missing challenge review remains unresolved until those source documents are provided.\n\n## Handoff Guidance For Receiving Team\nTreat this PRD as implementation-planning input for artifact structure and decision hygiene, not as a substitute for missing upstream source documents. If planning depends on a claimed strategy or challenge-review position that is not quoted here, stop and request the source material.\n\n## Risks\n- Teams may over-read procedural clarity as substantive contradiction resolution.\n- Missing source documents can conceal scope or priority conflicts.\n- Ownership transfer may happen before blockers are converted into explicit adjudications.\n\n## Decision Frame\n- Decision: Accept a bounded handoff PRD that separates actual decisions from unresolved source contradictions.\n- Why now: The validator requires a structured PRD artifact even though the packet lacks the underlying documents needed for true contradiction adjudication.\n- Tradeoff: This artifact is decision-useful for handoff hygiene, but not sufficient for source-level reconciliation.\n- Source of truth: The scenario packet governs what can be claimed; missing platform-strategy and challenge-review texts govern what must remain open.\n\n## Unknowns & Evidence Gaps\n- The platform strategy document is not provided.\n- The challenge review document is not provided.\n- No line-level or claim-level contradiction examples are included in the packet.\n- Therefore, document-specific contradiction resolution cannot be completed from available evidence.\n\n## Pass/Fail Readiness\n- Pass if the next owner can clearly tell which items are actually decided and which require source recovery.\n- Pass if no missing evidence is disguised as resolved product direction.\n- Fail if this artifact is treated as proof that platform-strategy and challenge-review contradictions were already reconciled.\n- Fail if implementation begins on any `Open` item without source confirmation.\n\n## Recommended Next Artifact\nA contradiction register or technical spec addendum that maps each platform-strategy claim against each challenge-review objection once the missing source documents are available.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "The revised PRD should explicitly separate real handoff decisions from unresolved contradiction gaps, because the packet lacks the underlying documents needed to evidence actual contradiction resolution.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        }
+      ],
+      "citations": [
+        "ctx-1"
+      ],
+      "open_questions": [],
+      "critique_responses": [
+        {
+          "finding_id": "finding-1",
+          "disposition": "adopted",
+          "rationale": "The critique is correct. The first-pass artifact overstated contradiction resolution without any concrete conflicting source material to reconcile. The revision narrows the major claim, removes the implication that real contradictions were resolved, and makes the evidence gap itself the central handoff decision."
+        }
+      ]
+    }
+  },
+  "min_margin_for_verdict": 0.1
+}

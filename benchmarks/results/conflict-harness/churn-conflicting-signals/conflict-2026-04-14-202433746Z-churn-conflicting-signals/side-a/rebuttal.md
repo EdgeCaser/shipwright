@@ -1,0 +1,13 @@
+# Critique: finding-1
+
+- Target Side: side_b
+- Target Claim IDs: side_b-claim-1
+- Attack Type: evidence_gap
+- Severity: high
+
+## Claim Under Attack
+A broad churn reduction rollout should be blocked until signal reliability is validated at the segment level and tested against strategy guardrails.
+
+## Evidence Or Reason
+The artifact asserts that conflicting signals make unguarded retention work 'more dangerous than delayed rollout' but provides zero quantitative evidence for this cost comparison. No data is cited on the actual cost of delayed action — lost customers during the validation period, compounding churn effects, or competitive exposure. The Pass/Fail criteria require segment definitions and holdout experiments before any rollout, yet the Unknowns section simultaneously admits the team doesn't know 'which customer segments the strategy most wants to retain' or 'which churn signals are leading indicators.' This creates a circular dependency: you cannot pass readiness without segment clarity, but you've declared segment clarity an open unknown. The blocking posture is presented as the safe default, but without evidence that validation delay costs less than acting on imperfect signals, it is an uncosted preference masquerading as a risk-managed decision.
+

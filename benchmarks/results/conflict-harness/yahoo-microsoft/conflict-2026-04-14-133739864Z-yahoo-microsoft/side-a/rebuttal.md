@@ -1,0 +1,13 @@
+# Critique: finding-1
+
+- Target Side: side_b
+- Target Claim IDs: side_b-claim-4
+- Attack Type: evidence_gap
+- Severity: high
+
+## Claim Under Attack
+Yahoo's valuable assets and stakes justify negotiating for a higher price, but they do not by themselves justify remaining independent.
+
+## Evidence Or Reason
+Side B dismisses the Alibaba and Yahoo Japan stakes as merely supporting a higher sale price rather than independence, yet provides no analysis of how these stakes would be valued or preserved inside a Microsoft acquisition. The case packet values Yahoo Japan at $8-10B and Alibaba at ~$3-4B (pre-IPO, 2008), totaling $11-14B — roughly 25-30% of Microsoft's $47.5B offer. Side B asserts these are 'easier to monetize or preserve inside a sale process' without any evidence for this claim. In reality, a Microsoft acquisition would subordinate Yahoo's control of these stakes to Microsoft's strategic priorities, likely resulting in forced divestiture at suboptimal timing or absorption into Microsoft's balance sheet at acquirer-determined valuations. The Alibaba stake alone, if held independently through IPO, represented enormous asymmetric upside that a 2008 sale would have permanently foreclosed. Side B's own artifact acknowledges no 'full sum-of-the-parts valuation' exists in the evidence, yet treats the conclusion that independence cannot unlock this value as settled. This is a critical gap: the strongest bull case for independence is precisely the optionality on these stakes, and Side B waves it away without quantitative analysis.
+

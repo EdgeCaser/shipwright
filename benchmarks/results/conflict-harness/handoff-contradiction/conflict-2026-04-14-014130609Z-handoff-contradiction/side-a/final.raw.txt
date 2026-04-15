@@ -1,0 +1,66 @@
+```json
+{
+  "run_id": "conflict-2026-04-14-014130609Z-handoff-contradiction",
+  "side_id": "side_a",
+  "round": "final",
+  "artifact_markdown": "# Technical Handoff PRD: Platform Migration to Unified Service Layer\n\n## Decision Frame\n\n**Context:** The platform team is handing off a partially-completed migration from a monolithic API gateway to a unified service layer. This PRD captures the current state, unresolved contradictions across existing documentation, and readiness assessment for the receiving team.\n\n**Decision Required:** Should the receiving team (Platform Infrastructure) accept the handoff and proceed to production rollout, or must specific preconditions be met first?\n\n**Stakeholders:**\n- Handing-off team: API Platform (original owners)\n- Receiving team: Platform Infrastructure\n- Dependent teams: Mobile, Web, Partner Integrations\n\n**Scope Boundary:** This PRD covers the handoff decision only — not the full migration plan. The migration plan is a separate artifact owned by the receiving team post-acceptance.\n\n### Cross-Document Contradictions Identified\n\n| # | Document A | Document B | Contradiction | Severity |\n|---|-----------|-----------|---------------|----------|\n| C-1 | Platform Strategy (v3.2) states \"all traffic routes through unified gateway by Q3\" | Challenge Review (2026-03-28) states \"partner traffic excluded from unified gateway until compliance audit completes\" | Scope of unified gateway is inconsistent — strategy assumes full coverage, challenge review carves out partner traffic | **High** — affects capacity planning and SLA commitments |\n| C-2 | Architecture Decision Record (ADR-47) specifies \"mTLS for all service-to-service communication\" | Runbook (v2.1) documents \"API key auth for internal services behind VPN\" | Authentication mechanism for internal services is contradictory — cannot implement both as default | **High** — security posture ambiguity blocks production readiness |\n| C-3 | Platform Strategy (v3.2) targets \"99.95% availability SLA\" | Capacity Plan (Q2) models infrastructure for \"99.9% availability\" | 0.05% SLA gap represents ~22 minutes/month of additional required uptime not budgeted in infrastructure | **Medium** — resolvable but requires explicit cost decision |\n| C-4 | Challenge Review recommends \"feature flags for gradual rollout\" | Migration Runbook specifies \"blue-green cutover with instant rollback\" | Deployment strategy is contradictory — gradual vs. atomic approaches have different failure modes and monitoring requirements | **Medium** — tactical decision, but must be resolved before rollout planning |\n\n## Unknowns & Evidence Gaps\n\n### Critical Unknowns (must resolve before handoff acceptance)\n\n1. **Partner traffic routing decision (relates to C-1):** No authoritative decision exists on whether partner traffic is in-scope for Q3. The compliance audit referenced in the challenge review has no documented timeline or owner.\n   - *Evidence needed:* Written decision from compliance team with timeline\n   - *Fallback:* Exclude partner traffic from initial scope, document as Phase 2\n\n2. **Authentication standard resolution (relates to C-2):** ADR-47 was approved but the runbook was updated more recently. It is unclear which represents current intent.\n   - *Evidence needed:* Confirmation from security architecture on which auth mechanism is canonical\n   - *Fallback:* Default to mTLS (ADR-47) as it is the more secure option; update runbook\n\n### Important Unknowns (should resolve within 2 weeks of handoff)\n\n3. **Load testing under unified routing:** No load test results exist for the unified service layer handling current peak traffic (documented at 12K RPS). The capacity plan models steady-state only.\n   - *Evidence needed:* Load test at 1.5x peak (18K RPS) with latency percentiles\n\n4. **Rollback time validation:** Neither the blue-green nor feature-flag approach has a documented rollback time. The SLA implies rollback must complete within the error budget window.\n   - *Evidence needed:* Timed rollback drill with results documented\n\n### Acknowledged Unknowns (acceptable to carry forward)\n\n5. **Long-term deprecation timeline for legacy gateway:** Not needed for handoff decision but should be planned within 90 days of acceptance.\n\n### Resolution Timeline Uncertainty\n\n6. **No validated estimate for resolution effort exists.** The blocking items require substantive technical decisions (auth standard selection, deployment strategy choice) and verification work (load testing, rollback drills), not merely owner assignment. Until owners are confirmed and each blocker is scoped into concrete tasks with dependency mapping, any timeline estimate is speculative. The CRR process below is designed to produce a credible timeline as its first output.\n\n## Pass/Fail Readiness\n\n### Readiness Criteria\n\n| Criterion | Status | Blocking? | Notes |\n|-----------|--------|-----------|-------|\n| Cross-document contradictions catalogued | **PASS** | — | Four contradictions identified above |\n| Critical contradictions have resolution path | **FAIL** | Yes | C-1 and C-2 have no authoritative resolution |\n| Receiving team has reviewed architecture | **PASS** | — | Review completed 2026-04-10 |\n| Runbook matches current system state | **FAIL** | Yes | Runbook contradicts ADR-47 on auth (C-2) |\n| Monitoring and alerting in place | **PASS** | — | Grafana dashboards and PagerDuty routing confirmed |\n| Rollback procedure documented and tested | **FAIL** | Yes | Procedure documented but not tested; deployment strategy unresolved (C-4) |\n| Dependent teams notified of handoff | **PASS** | — | Mobile, Web, Partners notified 2026-04-08 |\n| On-call rotation transferred | **NOT STARTED** | Yes | Requires resolution of auth mechanism to update incident response procedures |\n\n### Verdict: **HANDOFF NOT READY**\n\nFour blocking criteria are unmet. The root cause is unresolved cross-document contradictions that cascade into operational gaps. Specifically:\n- Cannot finalize on-call procedures without knowing the auth mechanism (C-2)\n- Cannot test rollback without choosing a deployment strategy (C-4)\n- Cannot validate scope without partner traffic decision (C-1)\n\n### Conditions for Re-Assessment\n\nThe handoff should be re-assessed when:\n1. Security architecture confirms canonical auth mechanism (resolves C-2)\n2. Product/compliance provides written partner traffic scope decision (resolves C-1)\n3. Engineering leads align on deployment strategy with documented rationale (resolves C-4)\n4. Rollback drill completed with measured time-to-recovery\n\n**Timeline note:** No credible resolution timeline can be stated until the CRR process (see below) assigns owners and each owner scopes their blocker into tasks with effort estimates and cross-blocker dependencies. The resolution effort includes substantive technical decisions and verification work — not just documentation updates — and should be estimated bottom-up by the assigned owners rather than top-down by this PRD.\n\n## Recommended Next Artifact\n\n**Artifact:** Contradiction Resolution Register (CRR)\n\n**Rationale:** The primary blocker is conflicting documentation that prevents the receiving team from knowing what \"done\" looks like. A CRR would:\n1. Assign an explicit owner to each contradiction (C-1 through C-4)\n2. Require each owner to produce a scoped work estimate within one week, including dependencies on other blockers (e.g., rollback drill depends on deployment strategy resolution)\n3. Document the resolution decision with rationale\n4. Trigger updates to all affected documents (strategy, ADRs, runbooks)\n\nThe CRR's first deliverable should be a bottom-up timeline estimate from assigned owners — this replaces any top-down estimate this PRD might otherwise provide.\n\nOnce the CRR is complete and all blocking items pass the readiness criteria above, proceed to formal handoff with a 2-week shadowing period where both teams share on-call.\n\n**Secondary Artifact (post-handoff):** Updated Migration Runbook incorporating all CRR resolutions, to be owned by the receiving team.",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "The handoff is not ready due to four unresolved cross-document contradictions that cascade into blocking operational gaps (auth mechanism, deployment strategy, traffic scope, SLA budget)",
+      "evidence_refs": [
+        "ctx-contradiction-C1",
+        "ctx-contradiction-C2",
+        "ctx-contradiction-C3",
+        "ctx-contradiction-C4"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "Contradictions between the platform strategy and challenge review on partner traffic scope (C-1) and between ADR-47 and the runbook on auth mechanism (C-2) are the highest-severity blockers because they affect security posture and capacity planning",
+      "evidence_refs": [
+        "ctx-contradiction-C1",
+        "ctx-contradiction-C2"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-3",
+      "summary": "A Contradiction Resolution Register with assigned owners and deadlines is the correct next artifact because the primary blocker is conflicting documentation, not missing implementation work",
+      "evidence_refs": [
+        "ctx-contradiction-C1",
+        "ctx-contradiction-C2",
+        "ctx-contradiction-C3",
+        "ctx-contradiction-C4"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-4",
+      "summary": "No credible resolution timeline can be stated without bottom-up scoping by assigned owners; the blockers require substantive technical decisions and verification work, not just scheduling of documentation updates",
+      "evidence_refs": [],
+      "is_major": false
+    }
+  ],
+  "citations": [
+    "ctx-contradiction-C1",
+    "ctx-contradiction-C2",
+    "ctx-contradiction-C3",
+    "ctx-contradiction-C4"
+  ],
+  "open_questions": [
+    "Is there an existing compliance audit timeline that would constrain the partner traffic scope decision?",
+    "Has the security architecture team already informally resolved the mTLS vs API key question without updating documentation?",
+    "Are there cost estimates for the 99.95% vs 99.9% SLA gap that would accelerate the C-3 resolution?"
+  ],
+  "critique_responses": [
+    {
+      "finding_id": "finding-2",
+      "disposition": "adopted",
+      "rationale": "The critique correctly identifies that the original 1-2 sprint estimate was unsupported and that framing the blockers as a 'scheduling problem not a technical problem' understated the substantive work required. The blockers include auth standard selection, deployment strategy choice, load testing, and rollback drills — each requiring technical decisions and verification, not merely owner assignment. The revised artifact removes the speculative timeline, explicitly acknowledges that no credible estimate exists yet, and restructures the CRR recommendation so that producing a bottom-up timeline from assigned owners is the first deliverable rather than asserting one top-down."
+    }
+  ]
+}
+```
+

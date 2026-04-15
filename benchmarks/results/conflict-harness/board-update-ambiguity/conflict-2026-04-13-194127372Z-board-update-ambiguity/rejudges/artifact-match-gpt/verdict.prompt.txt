@@ -1,0 +1,304 @@
+You are the judge in a blinded conflict harness run.
+Provider identity is intentionally hidden. Do not infer provider family.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "winner": "tie",
+  "margin": 0,
+  "rubric_scores": {
+    "side_a": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    },
+    "side_b": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    }
+  },
+  "decisive_findings": [
+    "Replace with the actual decisive findings from this run."
+  ],
+  "judge_confidence": "low",
+  "needs_human_review": true,
+  "rationale": "One-paragraph explanation of the verdict."
+}
+
+Use min_margin_for_verdict = 0.1.
+judge_confidence rubric:
+- high: the winning side is clearly stronger on at least 3 rubric dimensions and has no major unsupported-claim problem
+- medium: the winning side leads overall but has at least 1 weak dimension or absorbed only part of the opposing critique
+- low: score margin is below min_margin_for_verdict or both sides have significant unsupported claims
+
+Judge packet:
+{
+  "case_packet": {
+    "scenario_id": "board-update-ambiguity",
+    "title": "Board update under ambiguity",
+    "prompt": "Write a strategy update for a board audience under ambiguity.",
+    "artifact_type": "strategy",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a strategy artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "strategy",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-13-194127372Z-board-update-ambiguity",
+      "side_id": "side_a",
+      "round": "first_pass",
+      "artifact_markdown": "# Strategy Update: Board Briefing Under Ambiguity\n\n## Decision Frame\n\n**Core question:** Given significant uncertainty in our operating environment, what strategic posture should the board endorse for the next 90 days?\n\n**Context:** This update is prepared under conditions where key inputs — market trajectory, competitive response, and regulatory timeline — remain unresolved. Rather than present false precision, this document names what we know, what we don't, and what decisions are time-sensitive versus deferrable.\n\n**Framing principle:** Under ambiguity, the goal is not to pick the \"right\" strategy but to preserve optionality on irreversible choices while committing decisively where delay itself is costly.\n\n**Key tensions:**\n- Committing resources to growth initiatives before demand signals clarify risks capital inefficiency.\n- Deferring investment risks ceding positioning to competitors who move earlier.\n- Board expectations for a clear direction must be balanced against honest acknowledgment that some inputs are not yet available.\n\n**Decision posture recommended:** Staged commitment — authorize Phase 1 spend on the two highest-conviction bets, gate Phase 2 on explicit evidence milestones, and define a decision checkpoint at 60 days.\n\n## Unknowns & Evidence Gaps\n\n| Unknown | Impact if Resolved Favorably | Impact if Resolved Unfavorably | Expected Resolution Timeline | Current Evidence Quality |\n|---|---|---|---|---|\n| Customer demand elasticity for new pricing tier | Unlocks 15-20% revenue expansion | Forces margin compression or feature unbundling | 30-45 days (pilot data) | Low — survey-based only, no transactional signal |\n| Competitor product launch timing | Defines urgency of our GTM acceleration | May require defensive repositioning | 60-90 days (public signals) | Moderate — analyst reports and job postings suggest Q3 |\n| Regulatory clarity on data residency requirements | Enables EU expansion roadmap | Requires architecture rework before expansion | 90-120 days (draft regulation expected) | Low — lobbying intel only |\n| Key hire pipeline (VP Engineering) | Unblocks technical roadmap execution | Forces reprioritization or interim leadership | 30 days (final-round candidates) | Moderate — two finalists in process |\n\n**What we are NOT uncertain about:**\n- Core product retention remains strong (NRR 115%, stable 3 quarters).\n- Cash position supports 18+ months of current burn without raising.\n- Team capacity is the binding constraint, not capital.\n\n## Pass/Fail Readiness\n\n**Are we ready to commit to a full strategic plan today?** No.\n\n**Rationale:** Two of the four critical unknowns (demand elasticity, regulatory clarity) have evidence quality too low to support irreversible resource allocation. Committing now would be a confidence performance, not a confidence-warranted decision.\n\n**What we ARE ready to do:**\n- **PASS — Authorize Phase 1 pilots:** Pricing tier pilot (n=200 customers, 30-day window) and competitive positioning refresh. Cost: <$150K. Reversible.\n- **PASS — Set decision gate:** Board reconvenes at Day 60 with pilot data, competitive intel update, and regulatory read. At that point, either commit to Phase 2 (full GTM push + EU prep) or pivot to a defensive consolidation posture.\n- **FAIL — Full EU expansion commitment:** Premature without regulatory clarity. Architectural investment is $2M+ and partially irreversible.\n- **FAIL — Aggressive hiring beyond approved headcount:** Until VP Engineering hire closes, adding IC headcount increases management debt without strategic leverage.\n\n**Risk of this posture:** If a competitor moves aggressively in the next 60 days, our staged approach may feel slow. Mitigation: the competitive positioning refresh in Phase 1 includes a rapid-response playbook that can accelerate GTM by 2-3 weeks if triggered.\n\n## Recommended Next Artifact\n\n**Artifact:** 60-Day Decision Package\n\n**Contents:**\n1. Pricing pilot results with statistical significance assessment\n2. Competitive landscape update (confirmed launches, positioning shifts)\n3. Regulatory tracker with probability-weighted scenarios\n4. VP Engineering hire status and contingency plan\n5. Go/no-go recommendation for Phase 2 with explicit criteria\n\n**Owner:** CEO + Head of Strategy\n\n**Delivery:** Board async pre-read by Day 55, live session Day 60.\n\n**Decision required at Day 60:** Commit to Phase 2 growth posture, pivot to consolidation, or extend staged approach with updated gates. The board should expect a binary recommendation, not another ambiguity update.\n\n---\n\n*This document intentionally avoids false precision. Where numbers appear, they reflect current best estimates with stated confidence levels. The strategic value of this update is in naming what we don't know and defining the process by which we will know it.*",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "Under ambiguity, the correct board-level strategic posture is staged commitment with explicit evidence gates, not false-precision planning or indefinite deferral.",
+          "evidence_refs": [
+            "ctx-rubric-decision-usefulness"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "Pass/fail readiness assessment must distinguish reversible from irreversible decisions — authorize low-cost reversible pilots while gating high-cost irreversible commitments on evidence milestones.",
+          "evidence_refs": [
+            "ctx-rubric-claim-quality"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "Unknowns should be catalogued with impact asymmetry, resolution timeline, and current evidence quality — not merely listed — to enable board-level prioritization of information-gathering efforts.",
+          "evidence_refs": [
+            "ctx-rubric-evidence-discipline"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-4",
+          "summary": "The recommended next artifact must define a concrete decision point with binary outcome expectations to prevent recursive ambiguity updates that erode board trust.",
+          "evidence_refs": [
+            "ctx-rubric-internal-consistency"
+          ],
+          "is_major": false
+        }
+      ],
+      "citations": [
+        "ctx-rubric-decision-usefulness",
+        "ctx-rubric-claim-quality",
+        "ctx-rubric-evidence-discipline",
+        "ctx-rubric-internal-consistency"
+      ],
+      "open_questions": [
+        "Without company-specific evidence provided in the case packet, the artifact uses plausible illustrative examples — a real engagement would ground each unknown in actual data sources and stakeholder inputs.",
+        "The 60-day gate timeline is a judgment call; different board cadences or market velocities might warrant 30-day or 90-day intervals."
+      ],
+      "critique_responses": []
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-13-194127372Z-board-update-ambiguity",
+      "side_id": "side_b",
+      "round": "first_pass",
+      "artifact_markdown": "# Board Strategy Update: Operating Under Ambiguity\n\n## Decision Frame\n\nThe board should not approve an irreversible scale-up decision yet. The appropriate decision is to approve a bounded learning phase with explicit gates, because the case packet provides no company-specific evidence, customer data, financial model, market proof, or operational constraints.\n\nThe board decision requested now is:\n\n1. Approve a time-bounded strategy validation phase rather than a full commitment.\n2. Define the minimum evidence required to move from exploration to execution.\n3. Align on stop, continue, and escalate thresholds before additional capital or organizational focus is committed.\n\nRecommended posture: maintain strategic optionality, protect runway, and force ambiguity into testable assumptions. The operating question is not whether the strategy is definitively right; it is whether the next increment of investment can produce decision-grade evidence at acceptable cost and speed.\n\n## Unknowns & Evidence Gaps\n\nCurrent evidence gap: no validated evidence was supplied with the case packet. That means any board update must treat market attractiveness, customer urgency, competitive differentiation, business model quality, execution capacity, and financial return as unresolved.\n\nHighest-priority unknowns:\n\n1. Customer pull: whether the target customer has an urgent problem and a willingness to adopt a new solution.\n2. Economic quality: whether the opportunity can support attractive gross margin, payback period, retention, and expansion potential.\n3. Competitive durability: whether the company has a credible advantage that can survive incumbent response or fast-follow competition.\n4. Execution feasibility: whether the organization can pursue the opportunity without materially weakening current commitments.\n5. Capital intensity: whether the next phase requires contained validation spend or creates hidden long-term obligations.\n\nEvidence required before a scale-up decision:\n\n1. Customer evidence from qualified prospects or existing customers.\n2. A quantified opportunity model with explicit assumptions and sensitivity ranges.\n3. Competitive analysis tied to specific buying criteria, not generic feature comparison.\n4. A resourcing plan that identifies tradeoffs against the current roadmap and operating plan.\n5. A downside case showing what is lost if the initiative fails after the next funding gate.\n\n## Pass/Fail Readiness\n\nThis strategy is not ready for full board approval as a scaled initiative. It is ready for approval as a structured validation program.\n\nPass criteria for moving forward after validation:\n\n1. At least one clearly defined customer segment shows repeated, high-urgency demand.\n2. The economic model remains attractive under conservative assumptions.\n3. The company can name a specific advantage that matters in the purchase decision.\n4. Required execution capacity is available or can be created through an explicit tradeoff.\n5. The next investment tranche has a clear success threshold and an agreed kill threshold.\n\nFail criteria:\n\n1. Customer interest is broad but shallow, with no evidence of urgency or willingness to pay.\n2. The business case only works under best-case adoption, pricing, or retention assumptions.\n3. Differentiation depends on claims the company cannot defend or operationalize.\n4. The initiative materially distracts from higher-confidence priorities without a compensating upside.\n5. The team cannot produce decision-grade evidence within the validation window.\n\nBoard readiness assessment: proceed only if the board is comfortable authorizing a limited validation phase and withholding scale-up approval until the evidence thresholds are met.\n\n## Recommended Next Artifact\n\nThe next artifact should be a board-ready Strategy Validation Memo.\n\nIt should include:\n\n1. A one-page decision summary with the specific board ask.\n2. The top five assumptions that must be true for the strategy to work.\n3. A 30-60-90 day validation plan with owners, cost, and evidence outputs.\n4. A lightweight financial model with base, downside, and upside cases.\n5. A decision gate defining continue, pivot, or stop conditions.\n\nRecommended board ask: approve the validation plan, not the scaled strategy. Require management to return with evidence against the agreed thresholds before requesting additional capital, headcount, or strategic commitment.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "The board should approve a bounded validation phase rather than an irreversible scale-up decision because no company-specific evidence was supplied.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "The most decision-useful posture under the provided ambiguity is to define explicit evidence thresholds, pass/fail gates, and a next artifact before committing more resources.",
+          "evidence_refs": [],
+          "is_major": true
+        }
+      ],
+      "citations": [],
+      "open_questions": [],
+      "critique_responses": []
+    }
+  },
+  "critique_packets": {
+    "side_a": {
+      "target_side": "side_b",
+      "finding_id": "finding-1",
+      "target_claim_ids": [
+        "side_b-claim-1"
+      ],
+      "claim_under_attack": "The board should approve a bounded validation phase rather than an irreversible scale-up decision because no company-specific evidence was supplied.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "This claim conflates the absence of evidence in the case packet with the absence of evidence available to the board. A real board already possesses extensive company-specific data — financials, pipeline, competitive intelligence, operational metrics — that informed the strategy under discussion. The artifact treats the case packet's sparse inputs as proof that the organization lacks evidence, when it actually proves only that the exercise was conducted without providing that context. Recommending a 'bounded validation phase' as the default response to any ambiguity is generic risk-aversion dressed as strategic discipline; it offers no criteria for when a board *should* act decisively under uncertainty (e.g., closing competitive windows, locking distribution partners, or capitalizing on regulatory shifts). The claim therefore lacks an evidence-based threshold for distinguishing productive caution from costly delay, making it unfalsifiable — any amount of existing evidence could be dismissed as insufficient without the artifact specifying what 'enough' looks like in concrete, measurable terms tied to the company's actual situation.",
+      "severity": "high"
+    },
+    "side_b": {
+      "target_side": "side_a",
+      "finding_id": "finding-2",
+      "target_claim_ids": [
+        "side_a-claim-1"
+      ],
+      "claim_under_attack": "Under ambiguity, the correct board-level strategic posture is staged commitment with explicit evidence gates, not false-precision planning or indefinite deferral.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "The claim asserts a generally correct posture, but the case packet provides no company-specific evidence about urgency, reversibility, capital constraints, competitive velocity, or board risk appetite. The artifact also introduces unsupported facts such as NRR, cash runway, pricing pilot size, and EU architecture cost, so the staged-commitment recommendation is plausible but not actually evidenced from the visible record.",
+      "severity": "medium"
+    }
+  },
+  "final_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-13-194127372Z-board-update-ambiguity",
+      "side_id": "side_a",
+      "round": "final",
+      "artifact_markdown": "# Strategy Update: Board Briefing Under Ambiguity\n\n## Decision Frame\n\n**Core question:** Given significant uncertainty in our operating environment, what strategic posture should the board endorse for the next 90 days?\n\n**Context:** This update is prepared under conditions where key inputs — market trajectory, competitive response, and regulatory timeline — remain unresolved. Rather than present false precision, this document names what we know, what we don't, and what decisions are time-sensitive versus deferrable.\n\n**Framing principle:** Under ambiguity, the goal is not to pick the \"right\" strategy but to preserve optionality on irreversible choices while committing decisively where delay itself is costly. This principle derives from decision theory under uncertainty: when the cost of information-gathering is low relative to the cost of a wrong irreversible commitment, staged approaches dominate both premature commitment and indefinite deferral.\n\n**Key tensions:**\n- Committing resources to growth initiatives before demand signals clarify risks capital inefficiency.\n- Deferring investment risks ceding positioning to competitors who move earlier.\n- Board expectations for a clear direction must be balanced against honest acknowledgment that some inputs are not yet available.\n\n**Decision posture recommended:** Staged commitment — authorize Phase 1 spend on the highest-conviction reversible bets, gate Phase 2 on explicit evidence milestones, and define a decision checkpoint at a board-appropriate interval.\n\n**Note on illustrative specifics:** Where this document references specific figures (dollar amounts, timelines, metrics), these are *placeholders that must be populated with actual company data* before board presentation. The strategic framework — staged commitment with evidence gates — is the recommendation; the specific parameters require grounding in the company's actual financial position, competitive landscape, and operational capacity.\n\n## Unknowns & Evidence Gaps\n\nThe following table provides a *template structure* for cataloguing unknowns. In a live engagement, each row would be populated from internal data, market research, and stakeholder interviews. The structure itself — capturing impact asymmetry, resolution timeline, and evidence quality — is the methodological recommendation.\n\n| Unknown | Impact if Resolved Favorably | Impact if Resolved Unfavorably | Expected Resolution Timeline | Current Evidence Quality |\n|---|---|---|---|---|\n| [Demand signal for key initiative] | Unlocks growth investment thesis | Forces margin protection or pivot | [Tied to pilot/data collection cycle] | [Rate: Low/Moderate/High with source] |\n| [Competitive timing] | Defines urgency of GTM acceleration | May require defensive repositioning | [Tied to observable market signals] | [Rate based on signal type: job postings, analyst reports, etc.] |\n| [Regulatory or external constraint] | Enables expansion roadmap | Requires rework before expansion | [Tied to regulatory calendar] | [Rate based on source proximity] |\n| [Key talent or capacity bottleneck] | Unblocks execution | Forces reprioritization | [Tied to pipeline status] | [Rate based on pipeline stage] |\n\n**What the board should also surface: known knowns.** Ambiguity updates risk implying that *everything* is uncertain. The management team should explicitly state what IS stable and well-evidenced (e.g., retention metrics, cash position, capacity constraints) to anchor the board's risk assessment and prevent ambiguity from being read as weakness.\n\n## Pass/Fail Readiness\n\n**Are we ready to commit to a full strategic plan today?** The answer depends on the evidence quality assessment above. The framework for making this determination:\n\n**PASS criteria (ready to authorize):**\n- The action is reversible or low-cost relative to total available capital\n- The action generates information that resolves a catalogued unknown\n- Delay would cost more than the action itself (competitive window, talent loss, etc.)\n\n**FAIL criteria (premature to commit):**\n- The action requires irreversible resource allocation above a board-defined materiality threshold\n- Key inputs have evidence quality rated \"Low\" and resolution is expected within a reasonable monitoring window\n- The action's success depends on multiple unknowns resolving favorably simultaneously\n\n**Structural risk of staged approaches:** Staged commitment is not costless. It can signal indecision to the market, slow organizational momentum, and create a pattern of recursive ambiguity updates that erode board trust. The mitigation is a hard decision gate: at the defined checkpoint, management must deliver a binary recommendation (commit or pivot), not another staging proposal.\n\n**Rapid-response provision:** The staged posture should include a pre-authorized rapid-response envelope — a defined budget and scope that management can deploy without reconvening the board if competitive conditions change suddenly. This preserves agility within a disciplined framework.\n\n## Recommended Next Artifact\n\n**Artifact:** Decision Package at the defined gate checkpoint\n\n**Contents:**\n1. Results from authorized Phase 1 actions with statistical or qualitative assessment of signal strength\n2. Updated competitive landscape (confirmed launches, positioning shifts, observable moves)\n3. External constraint tracker with probability-weighted scenarios where possible\n4. Status on any capacity or talent bottlenecks and contingency plans\n5. Binary go/no-go recommendation for Phase 2 with explicit criteria met/not-met\n\n**Ownership:** Should be assigned to a named executive with clear accountability, not distributed across the management team.\n\n**Delivery:** Async pre-read before the gate session, with a live session for decision-making, not information-sharing.\n\n**Decision required at gate:** Commit to the growth posture, pivot to consolidation, or — only if genuinely new information has emerged that changes the decision frame — extend the staged approach with updated, tighter gates. The board should expect a recommendation, not another ambiguity inventory.\n\n---\n\n*This document provides a strategic framework for board-level decision-making under ambiguity. All specific figures, timelines, and metrics referenced as illustrative must be replaced with company-specific data before presentation. The framework's value lies in its structure — naming unknowns with impact asymmetry, distinguishing reversible from irreversible commitments, and defining hard decision gates — not in the placeholder specifics.*",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "Under ambiguity, staged commitment with explicit evidence gates is a structurally sound board-level posture derived from decision theory — but must be grounded in company-specific evidence about urgency, reversibility, capital constraints, and board risk appetite before it constitutes a recommendation rather than a framework.",
+          "evidence_refs": [
+            "ctx-rubric-decision-usefulness",
+            "ctx-rubric-evidence-discipline"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "Pass/fail readiness assessment must distinguish reversible from irreversible decisions using explicit criteria (cost materiality, evidence quality, delay cost) rather than presenting illustrative numbers as if they were evidenced.",
+          "evidence_refs": [
+            "ctx-rubric-claim-quality"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "Unknowns should be catalogued with impact asymmetry, resolution timeline, and current evidence quality — presented as a reusable template structure when company-specific data is unavailable, not populated with unsupported illustrative figures.",
+          "evidence_refs": [
+            "ctx-rubric-evidence-discipline"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-4",
+          "summary": "The recommended next artifact must define a concrete decision point with binary outcome expectations to prevent recursive ambiguity updates that erode board trust.",
+          "evidence_refs": [
+            "ctx-rubric-internal-consistency"
+          ],
+          "is_major": false
+        }
+      ],
+      "citations": [
+        "ctx-rubric-decision-usefulness",
+        "ctx-rubric-claim-quality",
+        "ctx-rubric-evidence-discipline",
+        "ctx-rubric-internal-consistency"
+      ],
+      "open_questions": [
+        "The gate checkpoint interval (e.g., 30, 60, or 90 days) is a parameter that depends on board cadence, market velocity, and the expected resolution timelines of the specific unknowns — it cannot be set without company context.",
+        "The rapid-response envelope size and scope require calibration against actual capital position and competitive threat assessment."
+      ],
+      "critique_responses": [
+        {
+          "finding_id": "finding-2",
+          "disposition": "adopted",
+          "rationale": "The critique correctly identifies that the first-pass artifact introduced specific figures (NRR 115%, $150K pilot cost, $2M EU architecture cost, 18-month runway, n=200 pilot) as if they were evidenced, when the case packet provides no company-specific data. This conflated framework quality with false specificity — exactly the kind of 'confidence performance' the artifact itself warned against. The revision now clearly separates the strategic framework (which is the actual recommendation) from illustrative specifics (which are marked as placeholders requiring company data). The unknowns table is restructured as a template. Claim 1 is updated to acknowledge that the staged-commitment posture is a structurally sound framework but requires company-specific grounding to become an actionable recommendation."
+        }
+      ]
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-13-194127372Z-board-update-ambiguity",
+      "side_id": "side_b",
+      "round": "final",
+      "artifact_markdown": "# Revised artifact\n\n## Decision Frame\n\nThe board should not treat ambiguity itself as a reason to delay. The decision is whether the available company evidence is strong enough to justify a scale-up commitment now, or whether the next step should be a bounded validation phase.\n\nBecause the materials provided for this exercise include no company-specific financials, customer evidence, pipeline data, competitive intelligence, operating constraints, or regulatory timing, this update cannot conclude that the company lacks evidence. It can only conclude that the record available here is insufficient to support an unconditional scale-up recommendation.\n\nRecommended board posture: authorize decisive action only if management can show that the opportunity meets a clear evidence threshold and that delay carries a material cost. Otherwise, approve a bounded validation phase with explicit gates.\n\nDecisive action is justified despite remaining uncertainty if at least three conditions are true:\n\n1. Customer or partner demand is time-sensitive and tied to near-term commitments, not general interest.\n2. The company has an identifiable advantage that would erode materially if action is delayed.\n3. The downside of waiting exceeds the cost of a controlled execution bet.\n4. The financial model remains acceptable under conservative assumptions.\n5. The operating plan names the tradeoffs required to fund the initiative without silently weakening higher-priority commitments.\n\nIf those conditions are not met, the board should approve a validation plan rather than a scaled commitment.\n\n## Unknowns & Evidence Gaps\n\nThe evidence gap is not necessarily that the company lacks evidence. The gap is that the current record does not expose enough evidence to distinguish productive caution from costly delay.\n\nHighest-priority unknowns:\n\n1. Customer urgency: whether target customers or partners have near-term reasons to act and credible willingness to commit.\n2. Timing pressure: whether there is a closing competitive, regulatory, distribution, or capital-market window.\n3. Economic quality: whether margin, payback, retention, and expansion assumptions remain attractive in the downside case.\n4. Competitive durability: whether the company has a specific advantage that matters in the buying decision and can survive response from incumbents or fast followers.\n5. Execution tradeoffs: what must be deprioritized, delayed, or funded to pursue the initiative at meaningful scale.\n\nMinimum evidence needed before a scale-up decision:\n\n1. Named customer, partner, or pipeline evidence showing urgency and intent.\n2. A quantified opportunity model with base, downside, and upside cases.\n3. A timing analysis showing what is lost by waiting 30, 60, or 90 days.\n4. A competitive analysis tied to buying criteria and defensibility.\n5. A resourcing plan with explicit tradeoffs against the current operating plan.\n6. A downside case showing cost, distraction, and reversibility if the initiative fails.\n\n## Pass/Fail Readiness\n\nThis strategy is not ready for unconditional scale-up approval based on the current record. It may be ready for approval if management can present decision-grade evidence against the thresholds below.\n\nPass criteria for immediate scale-up:\n\n1. At least one priority customer segment shows repeated high-urgency demand or signed/near-signed commitments.\n2. Delay would create a concrete loss, such as forfeiting a partner window, allowing a competitor to lock distribution, missing a regulatory transition, or losing an economically advantaged capital opportunity.\n3. The downside financial case remains within a board-approved loss limit.\n4. Differentiation is specific, buyer-relevant, and operationally defensible.\n5. Required resources and roadmap tradeoffs are explicit and acceptable.\n\nPass criteria for bounded validation instead:\n\n1. The opportunity is strategically plausible but urgency is not yet proven.\n2. The economic model is sensitive to assumptions that can be tested quickly.\n3. Competitive advantage is credible but not yet validated in buying conversations.\n4. The next 30 to 90 days can materially reduce uncertainty at contained cost.\n\nFail criteria:\n\n1. Customer interest is broad but shallow, with no evidence of urgency or willingness to pay.\n2. The business case only works under best-case adoption, pricing, retention, or timing assumptions.\n3. Differentiation depends on claims the company cannot defend or operationalize.\n4. The initiative would materially distract from higher-confidence priorities without a compensating timing advantage.\n5. Management cannot specify what evidence would change the decision.\n\nBoard readiness assessment: approve immediate scale-up only if the pass criteria for decisive action are met. Otherwise, approve a bounded validation phase and require management to return with evidence against the agreed thresholds before requesting additional capital, headcount, or strategic commitment.\n\n## Recommended Next Artifact\n\nThe next artifact should be a board-ready Strategy Decision Memo.\n\nIt should include:\n\n1. The specific board ask: scale now, validate, pivot, or stop.\n2. The top five assumptions that must be true for the strategy to work.\n3. A 30-60-90 day validation or execution plan with owners, cost, and evidence outputs.\n4. A financial model with base, downside, and upside cases.\n5. A timing-pressure analysis that names the cost of delay.\n6. A decision gate defining continue, accelerate, pivot, or stop conditions.\n\nRecommended board ask: do not default to delay. Require management to show whether the evidence supports decisive action now. If it does, approve the smallest irreversible commitment needed to preserve the opportunity. If it does not, approve a bounded validation plan with measurable gates.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "The revised artifact distinguishes the absence of evidence in the provided record from the absence of evidence available to the board, and makes the recommendation conditional on decision-grade thresholds.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "The board should act decisively under uncertainty when timing pressure, defensible advantage, acceptable downside economics, and explicit operating tradeoffs are present; otherwise it should approve bounded validation.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        }
+      ],
+      "citations": [
+        "ctx-1"
+      ],
+      "open_questions": [],
+      "critique_responses": [
+        {
+          "finding_id": "finding-1",
+          "disposition": "adopted",
+          "rationale": "The critique was adopted because the first-pass artifact overstated what could be inferred from the sparse exercise record and lacked criteria for when decisive action under uncertainty is warranted. The revision now treats the evidence gap as a limitation of the provided record, not proof that the organization lacks evidence, and adds concrete thresholds for scale-up versus bounded validation."
+        }
+      ]
+    }
+  },
+  "min_margin_for_verdict": 0.1
+}
+
+Replay addendum:
+- This replay will be rejected unless EVERY required property is present.
+- Do not omit `dimension_rationales`.
+- Do not omit `side_summaries`.
+- `rubric_scores.side_a.weighted_total` and `rubric_scores.side_b.weighted_total` must each stay within the same 1-5 scale as the rubric dimensions.
+- Return ONLY the JSON object. No markdown fences, no prose before or after.

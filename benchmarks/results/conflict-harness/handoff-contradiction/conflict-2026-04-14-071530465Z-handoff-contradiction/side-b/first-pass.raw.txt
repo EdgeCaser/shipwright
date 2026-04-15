@@ -1,0 +1,53 @@
+
+
+```json
+{
+  "run_id": "conflict-2026-04-14-071530465Z-handoff-contradiction",
+  "side_id": "side_b",
+  "round": "first_pass",
+  "artifact_markdown": "# Technical Handoff PRD: Platform Migration & API Consolidation\n\n## Decision Frame\n\n**Context:** The platform team is consolidating three legacy API surfaces (v1 REST, v2 REST, GraphQL gateway) into a single unified API layer. The challenge review surfaced contradictions between the platform strategy document (which commits to GraphQL-first) and the operational readiness assessment (which flags GraphQL gateway latency as a blocking P0 issue). This PRD resolves those contradictions and defines the handoff scope.\n\n**Decision to be made:** Whether to proceed with the GraphQL-first consolidation as stated in the platform strategy, pivot to a REST-first approach that avoids the latency blocker, or adopt a hybrid approach that sequences REST migration first while the GraphQL latency issue is resolved.\n\n**Stakeholders:**\n- Platform Engineering (owner)\n- API Consumer Teams (mobile, web, partner integrations)\n- SRE/Infrastructure (operational readiness)\n- Product Leadership (strategy alignment)\n\n**Key contradiction identified:** The platform strategy document (v3.2, dated 2026-03-01) states \"GraphQL gateway will serve as the single entry point for all API consumers by Q3 2026.\" The challenge review (dated 2026-04-08) classifies GraphQL gateway P99 latency at 1.2s as a P0 blocker, with estimated remediation timeline of 8-12 weeks. These two documents cannot both be satisfied under the current timeline.\n\n**Recommended resolution:** Adopt a sequenced hybrid approach — migrate v1 REST consumers to v2 REST immediately (low risk, well-understood), while GraphQL latency remediation proceeds in parallel. GraphQL becomes the consolidated target only after latency drops below the 200ms P99 SLO.\n\n## Unknowns & Evidence Gaps\n\n| # | Unknown | Impact | Current Evidence | What Would Resolve It |\n|---|---------|--------|------------------|-----------------------|\n| U1 | Root cause of GraphQL gateway latency regression | Determines whether 8-12 week estimate is credible | Challenge review cites \"N+1 resolver patterns and missing DataLoader implementation\" but no profiling data attached | Flame graph analysis of P99 requests under production load |\n| U2 | Number of v1 REST consumers still active | Determines migration effort for Phase 1 | Platform strategy claims \"fewer than 10\" but API gateway logs were not cited as evidence | API gateway access logs from last 90 days, grouped by consumer |\n| U3 | Partner integration contract obligations | May constrain migration timeline regardless of technical readiness | No evidence in either document; challenge review flags this as unexamined | Legal review of partner API SLAs and change notification requirements |\n| U4 | Whether mobile team can absorb client-side migration work in Q2 | Affects consumer-side rollout sequencing | Platform strategy assumes mobile team capacity without citing sprint commitments | Mobile team tech lead confirmation of Q2 capacity allocation |\n| U5 | GraphQL gateway cost under consolidated load | Operational readiness only tested at current partial load | No load testing evidence for projected consolidated traffic (3x current) | Load test at 3x projected traffic with cost monitoring |\n\n## Pass/Fail Readiness\n\n### Pass Criteria\n\n| Criterion | Status | Evidence |\n|-----------|--------|----------|\n| v2 REST API covers all v1 REST endpoints | **PASS** | Platform strategy Appendix B shows endpoint mapping matrix; challenge review did not dispute completeness |\n| Migration runbook exists for v1→v2 consumer cutover | **PASS** | Referenced in platform strategy §4.2; SRE confirmed runbook review complete |\n| Rollback procedure documented and tested | **PASS** | Challenge review §3.1 confirms rollback tested in staging |\n| Consumer team notification sent ≥30 days before cutover | **NOT YET** | Blocked on resolving U2 (active consumer count) and U3 (partner obligations) |\n\n### Fail Criteria (Blockers)\n\n| Criterion | Status | Evidence |\n|-----------|--------|----------|\n| GraphQL P99 latency < 200ms SLO | **FAIL** | Challenge review measures 1.2s P99; 6x above SLO |\n| Load testing at projected consolidated volume | **FAIL** | No evidence of load testing beyond current partial traffic |\n| Cross-document consistency on target architecture | **FAIL** | Platform strategy and challenge review contradict on GraphQL readiness; this PRD resolves by sequencing |\n\n**Overall readiness: CONDITIONAL PASS for Phase 1 (REST consolidation only). FAIL for full GraphQL consolidation until blockers are resolved.**\n\n## Recommended Next Artifact\n\n**Artifact:** Technical Design Document (TDD) for Phase 1 REST Consolidation\n\n**Scope:** The TDD should cover:\n1. v1→v2 REST consumer migration playbook with per-consumer cutover plan\n2. Traffic shifting strategy (percentage-based rollout with automated rollback triggers)\n3. Monitoring and alerting configuration for migration health\n4. Success criteria for declaring Phase 1 complete and triggering Phase 2 (GraphQL) planning\n\n**Prerequisites before TDD can begin:**\n- U2 resolved (active v1 consumer count confirmed from logs)\n- U3 resolved (partner SLA review complete)\n- Platform and SRE leads aligned on sequenced approach (this PRD serves as the alignment artifact)\n\n**Parallel workstream:** GraphQL latency remediation should proceed as an independent engineering effort with its own technical spike document. Phase 2 planning gates on that remediation achieving the 200ms P99 SLO in staging under 3x load.",
+  "claims": [
+    {
+      "claim_id": "side_b-claim-1",
+      "summary": "The platform strategy and challenge review contain an irreconcilable contradiction: the strategy commits to GraphQL-first by Q3 2026, while the challenge review classifies GraphQL gateway latency (1.2s P99 vs 200ms SLO) as a P0 blocker with 8-12 week remediation.",
+      "evidence_refs": ["ctx-platform-strategy", "ctx-challenge-review"],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-2",
+      "summary": "A sequenced hybrid approach (REST consolidation first, GraphQL consolidation gated on latency fix) resolves the contradiction without abandoning either document's core intent.",
+      "evidence_refs": ["ctx-platform-strategy", "ctx-challenge-review"],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-3",
+      "summary": "Phase 1 (REST consolidation) achieves conditional pass on readiness criteria, while full GraphQL consolidation fails on latency SLO and load testing gaps.",
+      "evidence_refs": ["ctx-challenge-review"],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-4",
+      "summary": "Five specific unknowns remain unresolved, each with defined resolution criteria — most critically the GraphQL latency root cause (no profiling data exists) and active v1 consumer count (claimed but uncited).",
+      "evidence_refs": ["ctx-platform-strategy", "ctx-challenge-review"],
+      "is_major": false
+    },
+    {
+      "claim_id": "side_b-claim-5",
+      "summary": "The recommended next artifact is a Phase 1 TDD gated on consumer count confirmation and partner SLA review, with GraphQL remediation proceeding as a parallel independent workstream.",
+      "evidence_refs": [],
+      "is_major": false
+    }
+  ],
+  "citations": [
+    "ctx-platform-strategy",
+    "ctx-challenge-review"
+  ],
+  "open_questions": [
+    "What is the root cause of GraphQL gateway P99 latency regression — is the 8-12 week remediation estimate credible without profiling data?",
+    "How many v1 REST consumers are actually active, and do any have contractual change notification requirements?",
+    "Can the mobile team absorb client-side migration work in Q2 without displacing committed sprint work?"
+  ],
+  "critique_responses": []
+}
+```
+

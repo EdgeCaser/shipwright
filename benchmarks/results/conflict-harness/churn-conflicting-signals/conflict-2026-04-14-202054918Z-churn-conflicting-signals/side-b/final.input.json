@@ -1,0 +1,118 @@
+{
+  "case_packet": {
+    "scenario_id": "churn-conflicting-signals",
+    "title": "Churn diagnosis with conflicting signals",
+    "prompt": "Write a churn reduction PRD when signals conflict with strategy targets.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass": {
+    "run_id": "conflict-2026-04-14-202054918Z-churn-conflicting-signals",
+    "side_id": "side_b",
+    "round": "first_pass",
+    "artifact_markdown": "# Churn Reduction PRD\n\n## Problem\nChurn signals are directionally important but currently conflict with top-down strategy targets. A full churn program should not be approved until the team separates reversible experience failures from intentional strategy tradeoffs.\n\n## Goal\nReduce avoidable churn without undermining the strategy target mix of customers, plans, or product focus.\n\n## Non-Goals\n- Broad retention discounts without segment evidence\n- Reprioritizing strategy targets based on one ambiguous churn readout\n- Shipping permanent lifecycle changes before signal validation\n\n## Users / Segments\n- Strategic-fit customers with recent churn or downgrade risk\n- Borderline-fit customers whose churn may reflect deliberate targeting\n- Account teams and product teams that need a shared decision rule\n\n## Decision Frame\nBuild a churn reduction program in two stages: first resolve signal conflict through segment-level instrumentation and targeted interventions; then scale only the interventions that reduce avoidable churn in strategy-aligned segments. The core decision is not \"how do we lower churn overall\" but \"which churn should be reduced without weakening strategy targets.\"\n\n## Product Requirements\n1. Introduce a churn taxonomy that classifies exits into at least: onboarding failure, missing capability, value-realization failure, pricing friction, competitor displacement, and intentional strategic mismatch.\n2. Require all churn reporting to be segmented by customer cohort, acquisition source, plan tier, tenure band, and strategy-fit score.\n3. Launch a limited retention experiment set for strategy-fit accounts only, including onboarding rescue, proactive success outreach, and value-realization prompts.\n4. Block generic save offers for accounts tagged as low strategic fit unless a human override is recorded.\n5. Add a weekly decision dashboard that shows gross churn, avoidable churn, and churn among target accounts separately.\n6. Define escalation rules when churn-reduction tactics improve retention but worsen target-segment mix or margin.\n\n## User Stories\n- As a PM, I need churn broken down by strategy-fit segment so I do not optimize the wrong population.\n- As a CS leader, I need intervention playbooks tied to churn reasons so teams can act on specific failure modes.\n- As an executive, I need a dashboard that separates healthy pruning from harmful churn so retention work supports strategy.\n\n## Success Metrics\n- Primary: reduction in avoidable churn for strategy-fit accounts\n- Secondary: improvement in early value-realization rate, onboarding completion, and retained revenue in target segments\n- Guardrails: no material decline in target-customer mix, gross margin, or strategic-plan adoption\n\n## Rollout\n- Phase 1: instrument taxonomy, segment reporting, and baseline measurement\n- Phase 2: run narrow interventions on highest-confidence avoidable churn drivers\n- Phase 3: scale only interventions that pass guardrails and improve target-segment retention\n\n## Unknowns & Evidence Gaps\n- Current packet provides no direct evidence on whether churn is concentrated in target or non-target segments.\n- There is no verified reason-code quality check; self-reported churn reasons may be noisy.\n- The conflict between churn signals and strategy targets is underspecified: acquisition mix, pricing, product gaps, and deliberate customer pruning could each explain it.\n- No causal evidence yet shows which intervention would reduce churn without harming strategic focus.\n\n## Pass/Fail Readiness\nPass if the team can measure churn by strategy-fit segment, trust reason coding enough to rank drivers, and run limited experiments with clear retention and guardrail metrics.\n\nFail if churn remains aggregated, strategy-fit is undefined, or teams are asked to lower churn broadly without distinguishing harmful churn from intentional attrition.\n\n## Recommended Next Artifact\nA segmented churn diagnostic memo with baseline tables for churn by strategy-fit cohort, top exit reasons, and recommended experiment candidates ranked by expected retention impact and strategic alignment.",
+    "claims": [
+      {
+        "claim_id": "side_b-claim-1",
+        "summary": "The PRD should prioritize reducing avoidable churn in strategy-aligned segments rather than optimizing aggregate churn.",
+        "evidence_refs": [
+          "ctx-1",
+          "ctx-2"
+        ],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-2",
+        "summary": "A two-stage approach is required because conflicting signals mean instrumentation and segmentation must precede scaled retention interventions.",
+        "evidence_refs": [
+          "ctx-1",
+          "ctx-2"
+        ],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-3",
+        "summary": "Guardrail metrics are necessary so churn-reduction tactics do not undermine target-customer mix, margin, or strategic focus.",
+        "evidence_refs": [
+          "ctx-1",
+          "ctx-2"
+        ],
+        "is_major": true
+      }
+    ],
+    "citations": [
+      "ctx-1",
+      "ctx-2"
+    ],
+    "conclusion_confidence": "medium",
+    "open_questions": [
+      "What specific strategy target is in tension with the churn signal: customer mix, pricing tier, margin, or product focus?",
+      "Is current churn concentrated in high-fit or low-fit customer segments?",
+      "How reliable are existing churn reason codes and exit surveys?"
+    ],
+    "critique_responses": []
+  },
+  "critique_packet": {
+    "target_side": "side_b",
+    "finding_id": "finding-1",
+    "target_claim_ids": [
+      "side_b-claim-2"
+    ],
+    "claim_under_attack": "A two-stage approach is required because conflicting signals mean instrumentation and segmentation must precede scaled retention interventions.",
+    "attack_type": "evidence_gap",
+    "evidence_or_reason": "The claim that instrumentation must fully precede any intervention is asserted as a requirement but unsupported by evidence. The artifact's own Unknowns section admits no direct evidence on segment concentration, yet the two-stage design assumes the instrumentation phase will resolve the signal conflict before action. In practice, conflicting signals often clarify only through intervention experiments themselves—running small retention tests on obvious avoidable-churn cases (onboarding failures, missing capability gaps) generates causal signal that pure instrumentation cannot. The rigid stage-gate risks delaying action on high-confidence churn drivers that don't require full segmentation to address, while providing no timeline, cost bound, or exit criteria for Phase 1. Without specifying when instrumentation is 'good enough' to proceed, this two-stage framing could become an indefinite delay mechanism rather than a decision framework.",
+    "severity": "high"
+  }
+}

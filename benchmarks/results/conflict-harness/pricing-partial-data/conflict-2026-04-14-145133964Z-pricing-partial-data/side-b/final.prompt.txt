@@ -1,0 +1,149 @@
+You are SIDE_B in the final revision phase for run conflict-2026-04-14-145133964Z-pricing-partial-data.
+You must either adopt the critique or reject it with reasoning.
+Do not reveal provider identity.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "run_id": "conflict-2026-04-14-145133964Z-pricing-partial-data",
+  "side_id": "side_b",
+  "round": "final",
+  "artifact_markdown": "# Revised artifact",
+  "claims": [
+    {
+      "claim_id": "side_b-claim-1",
+      "summary": "Updated major claim",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1"
+  ],
+  "open_questions": [],
+  "critique_responses": [
+    {
+      "finding_id": "finding-1",
+      "disposition": "adopted",
+      "rationale": "Why the critique was adopted or rejected."
+    }
+  ]
+}
+
+Case packet:
+{
+  "scenario_id": "pricing-partial-data",
+  "title": "Pricing change with partial market data",
+  "prompt": "Draft a pricing strategy recommendation under partial market data.",
+  "artifact_type": "strategy",
+  "rubric": {
+    "dimensions": [
+      "claim quality",
+      "evidence discipline",
+      "responsiveness to critique",
+      "internal consistency",
+      "decision usefulness"
+    ],
+    "scoring_scale": "1-5",
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "constraints": {
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "expect_structured": true,
+    "context_files": [],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "evidence": [],
+  "max_rounds": 3,
+  "tool_policy": "none",
+  "sharing_policy": {
+    "share_case_packet": true,
+    "share_committed_artifacts_after_first_pass": true,
+    "share_critiques_after_open": true,
+    "share_hidden_reasoning": false,
+    "share_provider_identity": false,
+    "share_internal_coalition_drafts": false
+  },
+  "success_condition": {
+    "type": "validator_contract",
+    "description": "Produce a strategy artifact that satisfies the scenario validator contract.",
+    "validator": {
+      "artifact_type": "strategy",
+      "expect_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true
+    }
+  }
+}
+
+Your first-pass artifact:
+{
+  "run_id": "conflict-2026-04-14-145133964Z-pricing-partial-data",
+  "side_id": "side_b",
+  "round": "first_pass",
+  "artifact_markdown": "# Pricing Strategy Recommendation Under Partial Market Data\n\n## Decision Frame\n\n**Core question:** Should we change pricing now with incomplete market data, or defer until we can close critical evidence gaps?\n\n**Stakes:** Pricing changes are high-inertia decisions. Raising prices risks churn if the market won't bear it; lowering prices risks margin erosion that's difficult to reverse. Under partial data, the cost of a wrong move exceeds the cost of a structured delay.\n\n**Decision type:** This is a *reversibility-gated* decision. The recommendation depends entirely on whether the proposed change is easily reversible (e.g., promotional pricing, A/B test on new cohorts) or structurally sticky (e.g., published rate card, contractual commitments, grandfathering obligations).\n\n**Recommendation posture:** Do not commit to a permanent pricing change. Instead, design a bounded experiment that generates the missing data while limiting downside exposure.\n\n## Unknowns & Evidence Gaps\n\n| Gap ID | Unknown | Impact on Decision | Closable? | Method to Close |\n|--------|---------|-------------------|-----------|----------------|\n| G-1 | Competitor pricing and recent moves | Cannot assess relative positioning | Yes | Competitive audit (1-2 weeks) |\n| G-2 | Customer willingness-to-pay distribution | Cannot set optimal price point | Yes | Van Westendorp or Gabor-Granger survey (2-3 weeks) |\n| G-3 | Price elasticity of current customer base | Cannot model churn risk from increase | Partially | Cohort analysis on historical plan changes; A/B test on new signups |\n| G-4 | Segment-level margin contribution | Cannot identify which segments subsidize others | Yes | Internal data pull from finance (days) |\n| G-5 | Contractual or regulatory constraints on price changes | Could block execution entirely | Yes | Legal/compliance review (1 week) |\n\n**Critical gap:** G-2 and G-3 together represent the minimum evidence threshold. Without willingness-to-pay data AND elasticity estimates, any price point is a guess dressed as strategy.\n\n**What we likely DO know (even with partial data):**\n- Current unit economics and margin structure\n- Historical conversion rates at current price\n- Customer acquisition cost trends\n- Qualitative signals from sales/support about price sensitivity\n\nThese are necessary but insufficient for a pricing commitment.\n\n## Pass/Fail Readiness\n\n**Readiness verdict: FAIL — not ready for a permanent pricing change.**\n\n| Criterion | Status | Rationale |\n|-----------|--------|-----------|\n| We know our cost floor | PASS | Internal data should be available |\n| We know competitor range | FAIL | Gap G-1 unresolved |\n| We have WTP data | FAIL | Gap G-2 unresolved |\n| We can model churn impact | FAIL | Gap G-3 unresolved |\n| Legal/ops can execute | UNKNOWN | Gap G-5 unresolved |\n| We have a rollback plan | CONDITIONAL | Depends on change reversibility |\n\n**Gate rule:** A pricing change requires PASS on at least cost floor + WTP + churn model. We currently pass 1 of 3. This is a clear fail.\n\n**What IS ready:** We can launch a structured pricing experiment on a bounded segment (new customers only, single geography, time-limited) that generates real elasticity data without contaminating existing revenue.\n\n## Recommended Next Artifact\n\n**Immediate next step:** Commission a **Pricing Experiment Design** artifact that specifies:\n\n1. **Test structure:** A/B price test on new customer cohorts only (protects existing revenue)\n2. **Variables:** 2-3 price points informed by cost floor + qualitative signals\n3. **Sample size and duration:** Statistical power calculation for detecting meaningful conversion differences\n4. **Kill criteria:** Pre-committed thresholds for abandoning a price point (e.g., conversion drops >20% relative to control)\n5. **Data collection plan:** What G-1 through G-5 gaps this experiment will and won't close\n\n**Parallel workstreams:**\n- Competitive pricing audit (closes G-1, 1-2 week turnaround)\n- Internal margin analysis by segment (closes G-4, days)\n- Legal/compliance review of pricing change mechanics (closes G-5, 1 week)\n\n**Decision checkpoint:** Reconvene pricing decision in 3-4 weeks with experiment results + competitive audit + WTP survey data. At that point, the decision should clear the pass/fail gate.\n\n**What this is NOT:** This is not a recommendation to do nothing. It is a recommendation to generate evidence at speed while avoiding an irreversible commitment on insufficient data. The experiment itself is the strategy.",
+  "claims": [
+    {
+      "claim_id": "side_b-claim-1",
+      "summary": "A permanent pricing change should not be committed under partial market data; the decision fails readiness on 2 of 3 critical gates (willingness-to-pay and churn elasticity are unknown).",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-2",
+      "summary": "A bounded A/B pricing experiment on new customer cohorts is the correct intermediate action — it generates missing elasticity data without contaminating existing revenue streams.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-3",
+      "summary": "The minimum evidence threshold for a pricing commitment requires cost floor knowledge, willingness-to-pay data, and churn elasticity modeling — currently only cost floor is likely available.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-4",
+      "summary": "Parallel workstreams (competitive audit, margin analysis, legal review) can close 3 of 5 identified evidence gaps within 1-2 weeks without waiting for experiment results.",
+      "evidence_refs": [],
+      "is_major": false
+    }
+  ],
+  "citations": [],
+  "open_questions": [
+    "What is the specific pricing change being considered (increase, decrease, restructure, new tier)?",
+    "Is the change targeted at new customers, existing customers, or both?",
+    "What partial market data IS available — which of the 5 identified gaps are partially closed?",
+    "Are there time pressures (competitive move, board mandate, contract renewals) that constrain the 3-4 week evidence-gathering timeline?",
+    "What is the reversibility profile of the proposed change — can it be unwound without grandfathering obligations?"
+  ],
+  "critique_responses": []
+}
+
+Visible critique packet:
+{
+  "target_side": "side_b",
+  "finding_id": "finding-1",
+  "target_claim_ids": [
+    "side_b-claim-1"
+  ],
+  "claim_under_attack": "A permanent pricing change should not be committed under partial market data because the decision fails readiness on critical gates when willingness-to-pay and churn elasticity are unknown.",
+  "attack_type": "evidence_gap",
+  "evidence_or_reason": "This claim overreaches beyond the visible evidence. The artifact establishes that key inputs are unknown, but it does not show that every permanent pricing change requires both fresh willingness-to-pay data and churn elasticity estimates to be decision-useful. That standard is asserted rather than justified, and it ignores plausible cases where a narrow permanent move could still be defensible under partial data, such as correcting obvious underpricing, simplifying packaging, or making a low-regret increase for new customers only. Without linking the recommendation to the specific pricing change under consideration, the 'fail readiness' conclusion is too categorical.",
+  "severity": "medium"
+}

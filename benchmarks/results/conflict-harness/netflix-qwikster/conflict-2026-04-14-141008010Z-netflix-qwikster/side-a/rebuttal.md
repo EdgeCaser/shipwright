@@ -1,0 +1,13 @@
+# Critique: finding-1
+
+- Target Side: side_b
+- Target Claim IDs: side_b-claim-1
+- Attack Type: evidence_gap
+- Severity: medium
+
+## Claim Under Attack
+Organizational separation of streaming and DVD can be achieved through internal business-unit structure without customer-facing brand fragmentation, capturing the strategic benefit while avoiding customer harm.
+
+## Evidence Or Reason
+This claim asserts a clean substitute for Qwikster without showing that Netflix's actual constraints in 2011 were organizational rather than economic, contractual, or technical. The artifact offers analogies to Amazon and Apple, but no evidence that separate P&Ls and teams inside one brand would solve the specific conflicts Hastings was trying to address, such as content licensing economics, divergent product roadmaps, or investor transparency. Without concrete examples of blocked decisions that internal separation would unblock, the claim overstates a hypothetical alternative as if it were proven.
+

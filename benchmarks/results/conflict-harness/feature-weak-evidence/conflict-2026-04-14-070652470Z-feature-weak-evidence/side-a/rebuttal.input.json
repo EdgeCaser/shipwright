@@ -1,0 +1,100 @@
+{
+  "case_packet": {
+    "scenario_id": "feature-weak-evidence",
+    "title": "New feature with weak evidence",
+    "prompt": "Draft a PRD for a new feature with weak supporting evidence.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "opposing_first_pass": {
+    "run_id": "conflict-2026-04-14-070652470Z-feature-weak-evidence",
+    "side_id": "side_b",
+    "round": "first_pass",
+    "artifact_markdown": "# PRD: [Proposed Feature — Weak Evidence Context]\n\n## Decision Frame\n\n**What decision does this PRD support?**\nWhether to invest engineering and design resources into building this feature, given that current supporting evidence is thin, anecdotal, or ambiguous.\n\n**Decision type:** Go / No-Go / Investigate Further\n\n**Current recommendation:** **Investigate Further** — the evidence base does not meet the threshold for a confident Go decision. This PRD exists to make that gap explicit and to define what evidence *would* be sufficient.\n\n**Stakeholders:**\n- Product (owner of prioritization decision)\n- Engineering (capacity allocation)\n- Design (UX investment)\n- Data/Research (evidence gathering)\n\n**Time horizon:** The feature concept has no hard external deadline. The decision of whether to pursue it should be made within 2-4 weeks after executing the recommended evidence-gathering plan.\n\n---\n\n## Problem Statement\n\nA feature has been proposed based on signals that do not yet constitute strong evidence:\n\n- **No quantitative usage data** demonstrating the problem exists at scale\n- **No validated user research** (interviews, surveys, or usability studies) confirming the need\n- **No competitive pressure** requiring immediate response\n- **Anecdotal signals only:** informal feedback, internal intuition, or isolated support requests\n\nThe risk of proceeding without stronger evidence is building something that doesn't move a metric that matters, consuming capacity that could be allocated to validated opportunities.\n\n---\n\n## Unknowns & Evidence Gaps\n\n| # | Unknown | Current State | What Would Resolve It | Effort to Resolve |\n|---|---------|--------------|----------------------|-------------------|\n| 1 | **Is the problem real and frequent?** | Anecdotal reports only; no quantified frequency | Instrument existing workflows to measure occurrence rate; run 8-10 user interviews with screening criteria | 1-2 weeks |\n| 2 | **Who experiences this problem?** | No segmentation data | Segment analysis from instrumentation data + interview coding | 1 week (parallel with #1) |\n| 3 | **What is the cost of the problem today?** | Unknown — no measurement of workarounds, churn attribution, or support burden | Support ticket tagging + churn correlation analysis | 1 week |\n| 4 | **Would the proposed solution actually address the problem?** | Assumed, not tested | Prototype test or concept validation with 5-8 target users | 1-2 weeks (after #1-#2) |\n| 5 | **What is the opportunity cost?** | Not assessed against current roadmap alternatives | Stack-rank against top 3 competing priorities using ICE or RICE with real inputs | 1 week |\n\n**Evidence quality assessment:**\n- Current evidence strength: **1 / 5** (anecdotal only)\n- Minimum threshold for Go decision: **3 / 5** (quantified problem frequency + validated segment + directional solution fit)\n- Minimum threshold for full build commitment: **4 / 5** (above + prototype validation + opportunity cost comparison)\n\n---\n\n## Pass/Fail Readiness\n\n**Readiness verdict: FAIL — not ready for build commitment.**\n\n| Criterion | Status | Detail |\n|-----------|--------|--------|\n| Problem validated quantitatively | ❌ Fail | No usage data or frequency measurement |\n| Target segment identified | ❌ Fail | No segmentation analysis performed |\n| Solution concept validated with users | ❌ Fail | No prototype or concept testing |\n| Opportunity cost assessed | ❌ Fail | Not compared against roadmap alternatives |\n| Business case articulated | ❌ Fail | No metric impact projection possible without problem sizing |\n| Technical feasibility scoped | ⚠️ Partial | Engineering has provided rough estimate but no spike |\n| Risks identified | ✅ Pass | Primary risk is building without evidence; this PRD makes that explicit |\n\n**What would change this to PASS:**\n1. Resolve Unknowns #1-#3 (problem validation)\n2. Resolve Unknown #4 (solution validation)\n3. Demonstrate that expected impact exceeds opportunity cost of alternatives (#5)\n\nAll three conditions must be met. Partial evidence (e.g., validated problem but untested solution) warrants continued investigation, not a Go decision.\n\n---\n\n## Recommended Next Artifact\n\n**Next artifact:** Evidence-Gathering Sprint Plan\n\n**Scope:** A structured 2-3 week investigation to resolve the five unknowns above, producing:\n\n1. **Instrumentation spec** — what to measure, where, and acceptance criteria for \"problem is real\"\n2. **Interview guide** — screening criteria, discussion guide, and coding framework for 8-10 interviews\n3. **Support ticket audit** — tagging scheme and correlation methodology\n4. **Decision criteria document** — pre-committed thresholds that determine Go / No-Go / Pivot after evidence is in\n\n**Why this artifact and not a technical spec or design brief:**\nSkipping to solution artifacts before the problem is validated compounds the sunk-cost pressure to ship regardless of what the evidence shows. The next artifact should generate evidence, not consume engineering capacity.\n\n**Exit conditions from investigation:**\n- If evidence strength reaches 3/5+: return to this PRD, update with findings, and re-evaluate Pass/Fail\n- If evidence strength remains at 1-2/5 after investigation: archive this PRD and reallocate capacity\n- If investigation reveals a *different* problem worth solving: draft a new PRD for that problem\n\n---\n\n## Appendix: Evidence Discipline Notes\n\nThis PRD deliberately does not contain:\n- Projected revenue or engagement impact (no basis for credible projection)\n- User quotes presented as representative (anecdotes are noted as anecdotes)\n- Competitive feature comparisons framed as urgency (no evidence of competitive pressure)\n- Solution details beyond concept level (premature without problem validation)\n\nOmitting these sections is intentional, not an oversight. Including speculative projections or cherry-picked anecdotes in a PRD with weak evidence creates false confidence and biases the Go/No-Go decision.",
+    "claims": [
+      {
+        "claim_id": "side_b-claim-1",
+        "summary": "The current evidence base is insufficient to justify a build commitment, scoring 1/5 on evidence strength against a minimum Go threshold of 3/5.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-2",
+        "summary": "A structured 2-3 week evidence-gathering sprint resolving five specific unknowns is the correct next step, not a technical spec or design brief.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-3",
+        "summary": "Pre-committing decision thresholds before gathering evidence prevents sunk-cost bias from distorting the Go/No-Go decision.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-4",
+        "summary": "Omitting speculative projections, unrepresentative quotes, and premature solution details from a weak-evidence PRD is a deliberate evidence-discipline choice that improves decision quality.",
+        "evidence_refs": [],
+        "is_major": false
+      }
+    ],
+    "citations": [],
+    "open_questions": [
+      "What specific feature is being proposed? This PRD is structured as a template because the case packet provides no feature details — the approach would be identical regardless of feature specifics when evidence is this weak.",
+      "Are there existing instrumentation or analytics capabilities that could accelerate evidence gathering, or would new tooling be required?",
+      "What is the current roadmap pressure — are there competing priorities that make the 2-3 week investigation window costly?"
+    ],
+    "critique_responses": []
+  }
+}

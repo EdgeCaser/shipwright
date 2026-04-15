@@ -1,0 +1,51 @@
+
+
+```json
+{
+  "run_id": "conflict-2026-04-13-201554286Z-pricing-partial-data",
+  "side_id": "side_a",
+  "round": "first_pass",
+  "artifact_markdown": "# Pricing Strategy Recommendation Under Partial Market Data\n\n## Decision Frame\n\n**Core question:** Should we proceed with a pricing change given that our market data is incomplete?\n\n**Decision type:** Reversible pricing adjustment with monitoring gates, not a permanent structural commitment.\n\n**Stakes:** Pricing changes directly impact revenue, customer acquisition/retention, and competitive positioning. Acting on partial data risks mispricing in either direction — leaving money on the table or triggering churn. However, *not* acting also carries cost: if current pricing is misaligned, every week of delay compounds the revenue gap.\n\n**Framing constraint:** We lack complete market data. This means our recommendation must be structured as a phased approach with explicit go/no-go checkpoints rather than a single decisive move. The strategy must make the uncertainty *visible* in the decision, not hide it behind false precision.\n\n**Who decides:** This recommendation is addressed to the pricing owner (typically Product + Finance), with input required from Sales (deal velocity signals) and Customer Success (churn/upgrade signals).\n\n## Unknowns & Evidence Gaps\n\n| Gap ID | Unknown | Impact on Decision | Mitigation Available |\n|--------|---------|-------------------|---------------------|\n| G-1 | Competitor pricing for comparable tier | Cannot benchmark willingness-to-pay ceiling | Proxy: use publicly available pricing pages for 2-3 nearest competitors; accept ±15% error band |\n| G-2 | Price elasticity of current customer base | Cannot predict churn rate from increase or uptake from decrease | Proxy: analyze historical plan-change behavior around past pricing events; run Van Westendorp or Gabor-Granger on 50-customer sample |\n| G-3 | Segment-level willingness-to-pay | Cannot differentiate pricing by segment | Proxy: use existing usage data as WTP signal (heavy users tolerate more); defer segmented pricing until data exists |\n| G-4 | Cost-to-serve per tier | Cannot validate margin safety of any price point | Proxy: use infrastructure cost data from engineering; estimate within ±20% |\n| G-5 | Market growth rate and new entrant timeline | Cannot assess whether window for pricing power is narrowing | Proxy: industry analyst reports, job posting velocity at competitors |\n\n**Critical gap:** G-2 (price elasticity) is the highest-impact unknown. Without it, any specific price point is a guess. The entire strategy below is designed to *generate* this data rather than assume it.\n\n## Pass/Fail Readiness\n\n**Readiness verdict: CONDITIONAL PASS — proceed only with staged rollout and kill criteria.**\n\nWe have enough information to act, but not enough to act *decisively*. The conditions for proceeding:\n\n### Pass conditions (all must hold)\n1. **Staged rollout only.** No big-bang repricing. New pricing applies to new customers first (cohort A), then expanding to renewals (cohort B) after 30-day observation window.\n2. **Kill criteria defined in advance.** If cohort A shows >10% increase in sales cycle length or >5% decrease in conversion rate within 30 days, pause and reassess. These thresholds must be agreed *before* launch, not debated after data arrives.\n3. **Grandfather clause for existing customers.** Current customers retain current pricing for at least one renewal cycle. This limits blast radius and separates acquisition-price signal from retention-price signal.\n4. **Data collection is mandatory, not optional.** The staged rollout must instrument: conversion rate by price point, time-to-close, upgrade/downgrade rate, and stated reason for churn (exit survey). If instrumentation is not ready, the pricing change is not ready.\n\n### Fail conditions (any one blocks launch)\n- No agreement on kill criteria before launch\n- Instrumentation for conversion and churn tracking not deployed\n- Cost-to-serve data unavailable even at ±20% accuracy (margin safety unknown)\n- Pricing change is framed internally as \"permanent\" rather than \"testable\"\n\n### Confidence calibration\n- **Confidence in direction** (whether to raise, lower, or restructure): LOW — partial data means we are pattern-matching, not modeling\n- **Confidence in mechanism** (staged rollout with gates): HIGH — this is a well-established pricing experimentation pattern\n- **Confidence in reversibility**: HIGH — grandfathering + cohort isolation means we can revert without customer trust damage\n\n## Recommended Next Artifact\n\n**Immediate next step:** Pricing Experiment Design Document\n\nThis document should specify:\n1. **Exact cohort definitions** — who sees new pricing first, sample size requirements for statistical significance\n2. **Price points to test** — informed by whatever competitive proxy data we can gather (G-1 mitigation), structured as A/B or multivariate test\n3. **Success/failure metrics with thresholds** — not just \"we'll watch conversion\" but \"conversion must remain above X% at the 95% confidence level\"\n4. **Timeline and decision points** — 30-day cohort A observation, 14-day analysis, go/no-go for cohort B\n5. **Escalation path** — what happens if results are ambiguous (neither clearly pass nor fail)\n\n**Secondary artifact:** Customer WTP Research Brief — a lightweight (50-customer) willingness-to-pay study using Van Westendorp or Gabor-Granger methodology to close gap G-2 before or in parallel with the staged rollout.\n\n**What this strategy explicitly does NOT do:**\n- Recommend a specific price point (insufficient data to do so responsibly)\n- Assume current pricing is correct (status quo bias is not evidence)\n- Promise revenue impact projections (any number would be fabricated precision)\n- Treat pricing as a one-time event (it is an ongoing capability to build)",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "Partial market data is sufficient to proceed with a pricing change only if the rollout is staged with pre-committed kill criteria — a big-bang repricing is not justified.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "Price elasticity (G-2) is the highest-impact evidence gap because without it, any specific price point selection is arbitrary — the strategy must be designed to generate this data rather than assume it.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-3",
+      "summary": "The primary value of this strategy is the decision framework (staged rollout + gates + instrumentation), not a price recommendation — recommending a specific number under partial data would be fabricated precision.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-4",
+      "summary": "Grandfathering existing customers isolates acquisition-price signals from retention-price signals, enabling cleaner measurement and limiting blast radius.",
+      "evidence_refs": [],
+      "is_major": false
+    },
+    {
+      "claim_id": "side_a-claim-5",
+      "summary": "Instrumentation readiness is a hard prerequisite — launching a pricing change without conversion/churn tracking deployed means the change generates no learnable signal and cannot be evaluated against kill criteria.",
+      "evidence_refs": [],
+      "is_major": false
+    }
+  ],
+  "citations": [],
+  "open_questions": [
+    "What is the current pricing structure (flat rate, tiered, usage-based, per-seat)? The rollout mechanism differs significantly by model.",
+    "What triggered this pricing review — competitive pressure, margin compression, customer feedback, or growth plateau? The cause shapes which evidence gaps matter most.",
+    "Is there an existing experimentation infrastructure (feature flags, cohort assignment, analytics pipeline) or does this need to be built?",
+    "What is the contractual flexibility with existing customers — are there annual commitments that constrain when pricing changes can take effect?"
+  ],
+  "critique_responses": []
+}
+```
+

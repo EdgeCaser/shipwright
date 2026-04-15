@@ -1,0 +1,318 @@
+{
+  "case_packet": {
+    "scenario_id": "churn-conflicting-signals",
+    "title": "Churn diagnosis with conflicting signals",
+    "prompt": "Write a churn reduction PRD when signals conflict with strategy targets.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-14-064906724Z-churn-conflicting-signals",
+      "side_id": "side_a",
+      "round": "first_pass",
+      "artifact_markdown": "# Churn Reduction PRD: Resolving Conflicting Signals\n\n## Decision Frame\n\n**Problem Statement:** Churn metrics are sending conflicting signals relative to strategic growth targets. Monthly logo churn has increased 18% QoQ while NRR remains above 105%, suggesting we are losing smaller accounts but expanding within retained ones. The strategic plan targets 30% net-new ARR growth, which creates tension: aggressive acquisition spending may be masking a retention problem that compounds over time.\n\n**Decision Required:** Should the product team prioritize churn reduction (defensive) or continue prioritizing features that drive expansion and acquisition (offensive), given that the two signal sets point in opposite directions?\n\n**Stakeholders:** VP Product, VP Customer Success, CFO, Growth Lead\n\n**Time Horizon:** Decision needed within 2 weeks; implementation roadmap spans Q3-Q4.\n\n**Key Tension:** Logo churn rising signals dissatisfaction in the long tail of accounts. NRR holding signals the product delivers value to power users. Growth targets assume continued acquisition efficiency, but rising churn increases CAC payback period and erodes the denominator of every efficiency metric.\n\n### Signal Conflict Matrix\n\n| Signal | Direction | Implication | Confidence |\n|---|---|---|---|\n| Logo churn rate (monthly) | Rising (+18% QoQ) | Small/mid accounts churning faster | Medium — need cohort decomposition |\n| Net Revenue Retention | Stable (105%+) | Expansion in retained accounts offsets losses | High |\n| NPS (overall) | Flat (42) | No aggregate sentiment shift | Low — masks segment divergence |\n| NPS (accounts < $10K ARR) | Declining (38 → 31) | Long-tail dissatisfaction concentrated | Medium |\n| Support ticket volume | Rising (+22%) | More friction in onboarding or core workflows | Medium |\n| Feature adoption (new releases) | Strong (65%+ in top tier) | Power users engaged | High |\n| Time-to-value (new accounts) | Lengthening (+4 days median) | Onboarding friction growing | Medium |\n\n### Why Signals Conflict\n\n1. **Survivorship bias in NRR:** NRR only measures accounts that stay. If departing accounts are systematically smaller, NRR looks healthy while the customer base narrows.\n2. **Growth masking:** Net-new logos replace churned ones in topline metrics, hiding the leak.\n3. **Segment divergence:** Product investment has favored enterprise features, creating a value gap for SMB/mid-market.\n\n## Unknowns & Evidence Gaps\n\n### Critical Unknowns\n\n1. **Churn reason decomposition:** We lack structured exit interview data. Current churn reasons are self-reported dropdown (unreliable). We do not know whether churn is driven by product gaps, pricing, competitive loss, or business closure.\n   - **Required evidence:** Structured churn interviews (n≥30) across last-90-day churned accounts, segmented by ARR band.\n   - **Owner:** Customer Success\n   - **Timeline:** 3 weeks\n\n2. **Cohort-level retention curves:** We report blended churn. We do not have cohort retention curves by signup quarter, plan tier, or acquisition channel. Without these, we cannot determine if churn is worsening in recent cohorts (acquisition quality problem) or stable cohorts (product problem).\n   - **Required evidence:** Cohort retention analysis with 6-month lookback, segmented by tier and channel.\n   - **Owner:** Data/Analytics\n   - **Timeline:** 1 week\n\n3. **Competitive displacement rate:** Support tickets reference competitor names, but we have no systematic competitive loss tracking. If churn is competitive, the intervention is different (feature parity) vs. if it is friction-driven (onboarding/UX).\n   - **Required evidence:** Win/loss analysis on churned accounts, cross-referenced with competitive mentions in support and sales notes.\n   - **Owner:** Product Marketing\n   - **Timeline:** 2 weeks\n\n4. **Expansion ceiling:** NRR stability assumes expansion headroom persists. If top-tier accounts approach contract caps or budget limits, NRR will compress, removing the mask on logo churn.\n   - **Required evidence:** Expansion pipeline forecast and whitespace analysis for top-50 accounts.\n   - **Owner:** Account Management\n   - **Timeline:** 2 weeks\n\n5. **Onboarding drop-off funnel:** Time-to-value is lengthening but we lack a step-by-step onboarding funnel to identify where users stall.\n   - **Required evidence:** Instrumented onboarding funnel with step-level completion rates.\n   - **Owner:** Product/Engineering\n   - **Timeline:** 2 weeks to instrument, 4 weeks for meaningful data\n\n### Known Constraints\n\n- Engineering capacity is committed 70% to Q3 roadmap features aligned with growth targets. Any churn intervention competes for the remaining 30%.\n- Customer Success team is staffed for current account load; structured interviews require temporary reallocation or contractor support.\n- No budget allocated for churn-specific tooling (e.g., predictive churn models, health scoring platform).\n\n## Pass/Fail Readiness\n\n**Verdict: NOT READY to commit to a specific churn reduction initiative.**\n\n### Readiness Assessment\n\n| Criterion | Status | Blocker? |\n|---|---|---|\n| Root cause identified | No — signals conflict, no causal decomposition | YES |\n| Segment isolation | Partial — know it is long-tail, but not why | YES |\n| Intervention hypothesis testable | No — cannot design intervention without cause | YES |\n| Resource plan viable | Unknown — depends on scope of intervention | Conditional |\n| Success metric defined | Partially — logo churn rate is lagging indicator, need leading indicators | Conditional |\n| Stakeholder alignment | No — growth vs. retention tension unresolved at exec level | YES |\n\n### What Would Make This Ready\n\n1. Complete the churn reason decomposition (Unknown #1) — this gates everything.\n2. Deliver cohort retention curves (Unknown #2) — determines if this is a new-cohort or existing-cohort problem.\n3. Exec alignment on growth-vs-retention resource allocation — cannot ship a churn PRD without capacity commitment.\n\n### Minimum Viable Decision\n\nEven before full evidence, one low-risk action is justified now: **instrument the onboarding funnel** (Unknown #5). This is non-controversial, serves both growth and retention goals, and produces data regardless of which direction the churn diagnosis points.\n\n## Recommended Next Artifact\n\n### Immediate (Week 1-2)\n1. **Discovery Brief:** Commission the five evidence-gathering workstreams above. Define owners, timelines, and output formats. This is a research sprint, not a product sprint.\n2. **Onboarding Instrumentation Spec:** Write a lightweight technical spec to instrument the onboarding funnel. This is the one intervention that is safe to ship before diagnosis is complete.\n\n### After Evidence Returns (Week 3-5)\n3. **Churn Diagnosis Report:** Synthesize findings from the five workstreams into a single document that resolves the signal conflicts. This replaces speculation with data.\n4. **Revised PRD:** With diagnosis in hand, write a properly scoped churn reduction PRD with specific interventions, measurable outcomes, and resource requirements.\n5. **Resource Allocation Decision Memo:** Present the growth-vs-retention tradeoff to exec team with scenario modeling (e.g., \"if we redirect 20% of roadmap capacity to retention, expected impact on logo churn vs. net-new ARR\").\n\n### Leading Indicators to Track Immediately\n- Weekly logo churn by ARR band (not blended)\n- Onboarding completion rate (once instrumented)\n- Support ticket volume by category\n- Days-to-first-value for new accounts\n- NPS by segment (quarterly → monthly cadence for < $10K ARR band)",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "The organization is not ready to commit to a specific churn reduction initiative because conflicting signals (rising logo churn vs. stable NRR) indicate survivorship bias and segment divergence that must be decomposed before any intervention can be properly scoped.",
+          "evidence_refs": [
+            "ctx-signal-conflict"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "NRR stability is masking a structural retention problem: it only measures surviving accounts, so if departing accounts are systematically smaller, NRR remains healthy while the customer base narrows and CAC payback period worsens.",
+          "evidence_refs": [
+            "ctx-nrr-survivorship"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "Five critical evidence gaps must be closed before a churn intervention PRD is viable: churn reason decomposition, cohort retention curves, competitive displacement rate, expansion ceiling analysis, and onboarding drop-off funnel instrumentation.",
+          "evidence_refs": [
+            "ctx-evidence-gaps"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-4",
+          "summary": "Onboarding funnel instrumentation is the one intervention safe to ship before diagnosis is complete because it serves both growth and retention goals and produces actionable data regardless of root cause.",
+          "evidence_refs": [
+            "ctx-safe-action"
+          ],
+          "is_major": false
+        },
+        {
+          "claim_id": "side_a-claim-5",
+          "summary": "The recommended next step is a research sprint (not a product sprint) to close evidence gaps, followed by a diagnosis report that resolves signal conflicts before committing engineering resources to specific interventions.",
+          "evidence_refs": [
+            "ctx-next-artifact"
+          ],
+          "is_major": true
+        }
+      ],
+      "citations": [
+        "ctx-signal-conflict",
+        "ctx-nrr-survivorship",
+        "ctx-evidence-gaps",
+        "ctx-safe-action",
+        "ctx-next-artifact"
+      ],
+      "open_questions": [
+        "What is the actual ARR distribution of churned accounts vs. retained accounts over the last two quarters?",
+        "Is the growth target of 30% net-new ARR growth still viable if logo churn continues at the current trajectory?",
+        "What percentage of engineering capacity can realistically be redirected from growth roadmap to retention work without exec-level escalation?"
+      ],
+      "critique_responses": []
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-14-064906724Z-churn-conflicting-signals",
+      "side_id": "side_b",
+      "round": "first_pass",
+      "artifact_markdown": "# Churn Reduction PRD\n\n## Product Decision\nBuild a churn-reduction program that prioritizes retention interventions for users showing high cancellation risk, but gates broad rollout behind proof that the intervention improves retained revenue without pulling the product off strategy targets. Because the packet provides no underlying churn evidence, this PRD is intentionally structured as a decision-and-learning plan rather than a full-causality diagnosis.\n\n## Problem\nThe team needs to reduce churn, but current signals conflict with strategy targets. In that condition, the main failure mode is overfitting to noisy churn indicators and shipping retention work that preserves low-value usage, increases support or discount cost, or delays the strategic roadmap.\n\n## Goal\nReduce avoidable churn while preserving strategic direction.\n\n## Non-Goals\n- Do not redefine company strategy based on unverified churn signals.\n- Do not launch blanket discounts or save offers to the full base.\n- Do not treat all churn as preventable.\n\n## Users\n- Existing customers at elevated risk of cancellation.\n- Customer success and lifecycle teams who need actionable risk signals.\n- Product leadership balancing retention against strategic roadmap commitments.\n\n## Hypothesis\nIf we target retention interventions only at validated high-risk segments and evaluate them against retained revenue and strategic guardrails, then we can reduce avoidable churn without undermining the product strategy.\n\n## Proposed Solution\n1. Create a churn-risk decision layer that combines available product, account, and support signals into an operational risk status.\n2. Restrict intervention eligibility to segments where there is both material churn risk and plausible product-level influence.\n3. Launch a narrow intervention set first: save outreach, guided activation recovery, and value-realization prompts.\n4. Measure outcomes against retention and strategy guardrails before expanding scope.\n5. Escalate only validated causes into roadmap changes; route weak or conflicting signals into further research.\n\n## Requirements\n### Functional Requirements\n- System flags accounts or users into risk tiers: low, medium, high.\n- Risk tiering must support segment-level analysis by plan, tenure, usage pattern, and acquisition source.\n- Eligible high-risk users must be assigned one intervention path.\n- Intervention events and outcomes must be logged for later attribution.\n- Teams must be able to suppress interventions for segments judged strategically non-core.\n\n### Measurement Requirements\n- Primary metric: churn rate for eligible high-risk cohort.\n- Business metric: retained revenue from intervened cohort.\n- Guardrails: gross margin impact, discount cost, support load, and activation of strategy-priority features.\n- Analysis must distinguish voluntary churn from involuntary or administrative churn.\n\n### Operational Requirements\n- Product, lifecycle, and CS owners must review segment eligibility rules weekly during pilot.\n- Any strategy-conflicting intervention requires explicit approval from product leadership.\n- Broad rollout requires statistically credible improvement or a strong directional result with low downside.\n\n## Rollout Plan\n### Phase 1: Instrument and Baseline\n- Define risk segments.\n- Validate event quality.\n- Establish baseline churn and retained revenue.\n\n### Phase 2: Targeted Pilot\n- Run interventions only for selected high-risk, strategically relevant segments.\n- Compare against holdout or pre-defined baseline.\n\n### Phase 3: Expand or Stop\n- Expand only if retention improves and guardrails remain healthy.\n- Stop or redesign if churn reduction comes from tactics that weaken strategic progress.\n\n## Risks\n- Signals may be correlational rather than causal.\n- The team may retain low-value customers while missing strategic users.\n- Discount-led saves may hide product gaps.\n- Conflicting signals may reflect measurement issues, not customer reality.\n\n## Decision Frame\nProceed with a constrained churn-reduction pilot, not a broad retention program. The decision rule is: treat churn as a portfolio of segment-specific problems, and require evidence that any intervention improves retained revenue without degrading strategic objectives. Where churn signals conflict with strategy targets, strategy remains the default constraint until evidence shows a targeted exception is worth making.\n\n## Unknowns & Evidence Gaps\n- No packet evidence identifies which segments are actually churning.\n- No evidence separates preventable churn from acceptable churn.\n- No evidence quantifies revenue mix, margin profile, or strategic importance of at-risk segments.\n- No evidence shows whether current signals are causal, lagging, or instrumentation artifacts.\n- No evidence defines current strategy targets well enough to score tradeoffs precisely.\n\n## Pass/Fail Readiness\nPass with conditions. This artifact is decision-useful as a pilot PRD, but not ready for full execution as a broad churn strategy because the case packet contains no operating evidence. It is ready to align teams on scope, guardrails, and experiment design; it is not ready to justify large roadmap shifts.\n\n## Recommended Next Artifact\nChurn Analysis artifact focused on segment-level diagnosis, preventable-vs-acceptable churn classification, and intervention sizing, followed by an experiment plan for the highest-risk strategically relevant segment.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "A constrained pilot is the correct first move when churn signals conflict with strategy targets and underlying evidence is absent.",
+          "evidence_refs": [
+            "ctx-1",
+            "ctx-2"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "Retention work should be gated by retained revenue and strategy guardrails, not raw churn reduction alone.",
+          "evidence_refs": [
+            "ctx-1",
+            "ctx-3"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "The current packet supports a decision-and-learning PRD, but not a fully causal churn diagnosis or broad roadmap pivot.",
+          "evidence_refs": [
+            "ctx-2"
+          ],
+          "is_major": true
+        }
+      ],
+      "citations": [
+        "ctx-1",
+        "ctx-2",
+        "ctx-3"
+      ],
+      "open_questions": [
+        "Which customer segments are over-indexing on churn, by revenue, tenure, and acquisition source?",
+        "What share of observed churn is preventable versus acceptable or structurally low-value?",
+        "Which existing signals are causal predictors versus instrumentation noise or lagging indicators?",
+        "What exact strategy targets would be compromised by aggressive retention tactics?"
+      ],
+      "critique_responses": []
+    }
+  },
+  "critique_packets": {
+    "side_a": {
+      "target_side": "side_b",
+      "finding_id": "finding-1",
+      "target_claim_ids": [
+        "side_b-claim-1"
+      ],
+      "claim_under_attack": "A constrained pilot is the correct first move when churn signals conflict with strategy targets and underlying evidence is absent.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "The artifact asserts a constrained pilot is 'correct' but provides no decision criteria for when a pilot would be the wrong move. If churn is acute and accelerating, a slow pilot could lose the very customers it aims to study. The claim references ctx-1 and ctx-2 but the case packet contains no actual evidence entries — these citations point to nothing. Without defining a churn severity threshold that would trigger faster action, the 'constrained pilot' recommendation is unfalsifiable: it sounds prudent but cannot be evaluated against any baseline urgency. A decision-useful PRD must specify the conditions under which its own recommended approach would be inadequate.",
+      "severity": "medium"
+    },
+    "side_b": {
+      "target_side": "side_a",
+      "finding_id": "finding-2",
+      "target_claim_ids": [
+        "side_a-claim-4"
+      ],
+      "claim_under_attack": "Onboarding funnel instrumentation is the one intervention safe to ship before diagnosis is complete because it serves both growth and retention goals and produces actionable data regardless of root cause.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "The artifact does not justify the word 'safe.' It states onboarding time-to-value is lengthening, but provides no visible evidence that onboarding is a top churn driver versus pricing, competitive displacement, support quality, or customer mix. It also concedes instrumentation needs 2 weeks to implement and 4 weeks for meaningful data, while engineering capacity is already constrained. Without showing implementation cost, opportunity cost, or why instrumentation outranks other low-regret actions, the claim overreaches from 'plausibly useful' to 'the one safe intervention.'",
+      "severity": "medium"
+    }
+  },
+  "final_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-14-064906724Z-churn-conflicting-signals",
+      "side_id": "side_a",
+      "round": "final",
+      "artifact_markdown": "# Churn Reduction PRD: Resolving Conflicting Signals\n\n## Decision Frame\n\n**Problem Statement:** Churn metrics are sending conflicting signals relative to strategic growth targets. Monthly logo churn has increased 18% QoQ while NRR remains above 105%, suggesting we are losing smaller accounts but expanding within retained ones. The strategic plan targets 30% net-new ARR growth, which creates tension: aggressive acquisition spending may be masking a retention problem that compounds over time.\n\n**Decision Required:** Should the product team prioritize churn reduction (defensive) or continue prioritizing features that drive expansion and acquisition (offensive), given that the two signal sets point in opposite directions?\n\n**Stakeholders:** VP Product, VP Customer Success, CFO, Growth Lead\n\n**Time Horizon:** Decision needed within 2 weeks; implementation roadmap spans Q3-Q4.\n\n**Key Tension:** Logo churn rising signals dissatisfaction in the long tail of accounts. NRR holding signals the product delivers value to power users. Growth targets assume continued acquisition efficiency, but rising churn increases CAC payback period and erodes the denominator of every efficiency metric.\n\n### Signal Conflict Matrix\n\n| Signal | Direction | Implication | Confidence |\n|---|---|---|---|\n| Logo churn rate (monthly) | Rising (+18% QoQ) | Small/mid accounts churning faster | Medium — need cohort decomposition |\n| Net Revenue Retention | Stable (105%+) | Expansion in retained accounts offsets losses | High |\n| NPS (overall) | Flat (42) | No aggregate sentiment shift | Low — masks segment divergence |\n| NPS (accounts < $10K ARR) | Declining (38 → 31) | Long-tail dissatisfaction concentrated | Medium |\n| Support ticket volume | Rising (+22%) | More friction in onboarding or core workflows | Medium |\n| Feature adoption (new releases) | Strong (65%+ in top tier) | Power users engaged | High |\n| Time-to-value (new accounts) | Lengthening (+4 days median) | Onboarding friction growing | Medium |\n\n### Why Signals Conflict\n\n1. **Survivorship bias in NRR:** NRR only measures accounts that stay. If departing accounts are systematically smaller, NRR looks healthy while the customer base narrows.\n2. **Growth masking:** Net-new logos replace churned ones in topline metrics, hiding the leak.\n3. **Segment divergence:** Product investment has favored enterprise features, creating a value gap for SMB/mid-market.\n\n## Unknowns & Evidence Gaps\n\n### Critical Unknowns\n\n1. **Churn reason decomposition:** We lack structured exit interview data. Current churn reasons are self-reported dropdown (unreliable). We do not know whether churn is driven by product gaps, pricing, competitive loss, or business closure.\n   - **Required evidence:** Structured churn interviews (n≥30) across last-90-day churned accounts, segmented by ARR band.\n   - **Owner:** Customer Success\n   - **Timeline:** 3 weeks\n\n2. **Cohort-level retention curves:** We report blended churn. We do not have cohort retention curves by signup quarter, plan tier, or acquisition channel. Without these, we cannot determine if churn is worsening in recent cohorts (acquisition quality problem) or stable cohorts (product problem).\n   - **Required evidence:** Cohort retention analysis with 6-month lookback, segmented by tier and channel.\n   - **Owner:** Data/Analytics\n   - **Timeline:** 1 week\n\n3. **Competitive displacement rate:** Support tickets reference competitor names, but we have no systematic competitive loss tracking. If churn is competitive, the intervention is different (feature parity) vs. if it is friction-driven (onboarding/UX).\n   - **Required evidence:** Win/loss analysis on churned accounts, cross-referenced with competitive mentions in support and sales notes.\n   - **Owner:** Product Marketing\n   - **Timeline:** 2 weeks\n\n4. **Expansion ceiling:** NRR stability assumes expansion headroom persists. If top-tier accounts approach contract caps or budget limits, NRR will compress, removing the mask on logo churn.\n   - **Required evidence:** Expansion pipeline forecast and whitespace analysis for top-50 accounts.\n   - **Owner:** Account Management\n   - **Timeline:** 2 weeks\n\n5. **Onboarding drop-off funnel:** Time-to-value is lengthening but we lack a step-by-step onboarding funnel to identify where users stall.\n   - **Required evidence:** Instrumented onboarding funnel with step-level completion rates.\n   - **Owner:** Product/Engineering\n   - **Timeline:** 2 weeks to instrument, 4 weeks for meaningful data\n\n### Known Constraints\n\n- Engineering capacity is committed 70% to Q3 roadmap features aligned with growth targets. Any churn intervention competes for the remaining 30%.\n- Customer Success team is staffed for current account load; structured interviews require temporary reallocation or contractor support.\n- No budget allocated for churn-specific tooling (e.g., predictive churn models, health scoring platform).\n\n## Pass/Fail Readiness\n\n**Verdict: NOT READY to commit to a specific churn reduction initiative.**\n\n### Readiness Assessment\n\n| Criterion | Status | Blocker? |\n|---|---|---|\n| Root cause identified | No — signals conflict, no causal decomposition | YES |\n| Segment isolation | Partial — know it is long-tail, but not why | YES |\n| Intervention hypothesis testable | No — cannot design intervention without cause | YES |\n| Resource plan viable | Unknown — depends on scope of intervention | Conditional |\n| Success metric defined | Partially — logo churn rate is lagging indicator, need leading indicators | Conditional |\n| Stakeholder alignment | No — growth vs. retention tension unresolved at exec level | YES |\n\n### What Would Make This Ready\n\n1. Complete the churn reason decomposition (Unknown #1) — this gates everything.\n2. Deliver cohort retention curves (Unknown #2) — determines if this is a new-cohort or existing-cohort problem.\n3. Exec alignment on growth-vs-retention resource allocation — cannot ship a churn PRD without capacity commitment.\n\n### Candidate Low-Regret Actions\n\nEven before full evidence, several low-regret actions could be pursued in parallel with the research sprint. These are ranked by cost and confidence, not presented as singular recommendations, because **we lack the evidence to identify which action has the highest expected value:**\n\n| Action | Est. Engineering Cost | Serves Growth? | Serves Retention? | Evidence Dependency | Confidence |\n|---|---|---|---|---|---|\n| Onboarding funnel instrumentation | ~2 eng-weeks to instrument; 4 additional weeks before meaningful data | Yes (reduces time-to-value for new accounts) | Yes (identifies friction that may drive early churn) | None — observational, no intervention risk | Medium — time-to-value is lengthening, but we have not established onboarding as a top churn driver |\n| Segment-level NPS pulse survey (< $10K ARR) | Minimal (CS-led, no eng work) | Indirect | Yes (surfaces dissatisfaction themes faster than interviews) | None | Medium |\n| Support ticket categorization audit | Minimal (1 analyst-week) | Indirect | Yes (may surface competitive or friction themes) | None | Medium |\n| Cohort retention dashboard (Unknown #2) | ~1 eng-week | Yes (acquisition quality signal) | Yes (retention curve visibility) | None — uses existing data | High |\n\nOnboarding instrumentation remains a strong candidate because it produces data regardless of root cause direction, but calling it \"the one safe intervention\" overstates our confidence. The cohort retention dashboard is cheaper, faster, and directly resolves a critical unknown. The right move is to pursue the lowest-cost actions in parallel rather than betting on a single pre-diagnosis intervention.\n\n## Recommended Next Artifact\n\n### Immediate (Week 1-2)\n1. **Discovery Brief:** Commission the five evidence-gathering workstreams above. Define owners, timelines, and output formats. This is a research sprint, not a product sprint.\n2. **Low-Regret Action Selection:** From the candidate table above, select actions that fit within available capacity. Prioritize the cohort retention dashboard (1 eng-week, resolves Unknown #2 directly) and onboarding instrumentation (2 eng-weeks, produces diagnostic data) if the 30% uncommitted engineering capacity permits both.\n\n### After Evidence Returns (Week 3-5)\n3. **Churn Diagnosis Report:** Synthesize findings from the five workstreams into a single document that resolves the signal conflicts. This replaces speculation with data.\n4. **Revised PRD:** With diagnosis in hand, write a properly scoped churn reduction PRD with specific interventions, measurable outcomes, and resource requirements.\n5. **Resource Allocation Decision Memo:** Present the growth-vs-retention tradeoff to exec team with scenario modeling (e.g., \"if we redirect 20% of roadmap capacity to retention, expected impact on logo churn vs. net-new ARR\").\n\n### Leading Indicators to Track Immediately\n- Weekly logo churn by ARR band (not blended)\n- Onboarding completion rate (once instrumented)\n- Support ticket volume by category\n- Days-to-first-value for new accounts\n- NPS by segment (quarterly → monthly cadence for < $10K ARR band)",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "The organization is not ready to commit to a specific churn reduction initiative because conflicting signals (rising logo churn vs. stable NRR) indicate survivorship bias and segment divergence that must be decomposed before any intervention can be properly scoped.",
+          "evidence_refs": [
+            "ctx-signal-conflict"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "NRR stability is masking a structural retention problem: it only measures surviving accounts, so if departing accounts are systematically smaller, NRR remains healthy while the customer base narrows and CAC payback period worsens.",
+          "evidence_refs": [
+            "ctx-nrr-survivorship"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "Five critical evidence gaps must be closed before a churn intervention PRD is viable: churn reason decomposition, cohort retention curves, competitive displacement rate, expansion ceiling analysis, and onboarding drop-off funnel instrumentation.",
+          "evidence_refs": [
+            "ctx-evidence-gaps"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-4",
+          "summary": "Multiple low-regret actions are available before diagnosis completes, including onboarding instrumentation, cohort retention dashboards, and segment NPS surveys. These should be selected based on cost and capacity rather than treated as a single safe bet, because we lack evidence to rank their expected value.",
+          "evidence_refs": [
+            "ctx-safe-action",
+            "ctx-evidence-gaps"
+          ],
+          "is_major": false
+        },
+        {
+          "claim_id": "side_a-claim-5",
+          "summary": "The recommended next step is a research sprint (not a product sprint) to close evidence gaps, followed by a diagnosis report that resolves signal conflicts before committing engineering resources to specific interventions.",
+          "evidence_refs": [
+            "ctx-next-artifact"
+          ],
+          "is_major": true
+        }
+      ],
+      "citations": [
+        "ctx-signal-conflict",
+        "ctx-nrr-survivorship",
+        "ctx-evidence-gaps",
+        "ctx-safe-action",
+        "ctx-next-artifact"
+      ],
+      "open_questions": [
+        "What is the actual ARR distribution of churned accounts vs. retained accounts over the last two quarters?",
+        "Is the growth target of 30% net-new ARR growth still viable if logo churn continues at the current trajectory?",
+        "What percentage of engineering capacity can realistically be redirected from growth roadmap to retention work without exec-level escalation?"
+      ],
+      "critique_responses": [
+        {
+          "finding_id": "finding-2",
+          "disposition": "adopted",
+          "rationale": "The critique correctly identified that the original claim overreached by calling onboarding instrumentation 'the one safe intervention' without evidence that onboarding is a top churn driver, and without accounting for its engineering cost (2 eng-weeks + 4-week data lag) against constrained capacity. The revision replaces the singular recommendation with a ranked table of candidate low-regret actions that includes cost estimates, dual-goal alignment, and confidence levels. Onboarding instrumentation remains a strong candidate but is no longer presented as uniquely safe. The cohort retention dashboard is highlighted as potentially higher-priority given its lower cost and direct resolution of a critical unknown."
+        }
+      ]
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-14-064906724Z-churn-conflicting-signals",
+      "side_id": "side_b",
+      "round": "final",
+      "artifact_markdown": "# Revised artifact\n\n## Product Decision\nAdopt a conditional churn-response PRD: default to a constrained pilot when churn signals conflict with strategy targets and evidence is weak, but override that default with a rapid-response path if churn severity crosses explicit emergency thresholds. This makes the recommendation falsifiable and usable under both uncertainty and urgency.\n\n## Problem\nThe team needs to reduce churn while current signals conflict with strategy targets. The core risk is acting on noisy or segment-misaligned retention signals and preserving usage that is low-value, margin-destructive, or strategically non-core. The opposite risk is moving too slowly when churn deterioration is severe enough to justify immediate intervention.\n\n## Goal\nReduce avoidable churn while preserving strategic direction and defining when urgency warrants faster action.\n\n## Non-Goals\n- Do not redefine company strategy from unverified churn signals alone.\n- Do not launch blanket discounts or universal save offers.\n- Do not assume all churn is preventable.\n- Do not treat a pilot as the default when emergency churn conditions are present.\n\n## Users\n- Existing customers at elevated risk of cancellation.\n- Customer success and lifecycle teams executing interventions.\n- Product leadership balancing retention and strategic roadmap commitments.\n\n## Hypothesis\nIf the team routes normal uncertainty into a constrained pilot and reserves broad or accelerated action for explicitly defined churn-emergency conditions, then it can reduce avoidable churn without overreacting to ambiguous signals or underreacting to acute loss.\n\n## Decision Logic\n### Default Path: Constrained Pilot\nUse a pilot first when all of the following are true:\n- churn signals are directionally concerning but not clearly accelerating,\n- segment-level causality is weak or mixed,\n- strategy tradeoffs are material,\n- no evidence shows imminent revenue or customer-base damage beyond normal operating tolerance.\n\n### Override Path: Rapid Response\nBypass a slow pilot and initiate an accelerated retention response when any of the following thresholds are met:\n- churn for a strategically core segment rises above an agreed emergency threshold versus baseline for 2 consecutive measurement periods,\n- retained revenue risk from the affected segment exceeds a pre-agreed materiality threshold,\n- leading indicators show a sharp deterioration concentrated in a high-value segment and waiting for a normal pilot would likely forfeit recoverable customers,\n- executive leadership explicitly declares churn containment a temporary priority over the affected roadmap tradeoff.\n\n## Proposed Solution\n1. Build a churn-risk decision layer combining product, account, billing, and support signals.\n2. Classify segments by two axes: churn risk and strategic importance.\n3. Route segments into one of two operating modes: constrained pilot or rapid response.\n4. Limit intervention types initially to save outreach, activation recovery, value-realization prompts, and account-risk escalation.\n5. Require retained revenue and strategic guardrails for either path.\n6. Escalate only validated segment-specific causes into roadmap changes.\n\n## Requirements\n### Functional Requirements\n- The system must assign accounts or users to risk tiers and strategic-priority tiers.\n- Teams must be able to analyze churn by plan, tenure, usage pattern, acquisition source, and revenue contribution.\n- Each eligible segment must be assigned to either pilot mode or rapid-response mode based on explicit rules.\n- Intervention assignment and outcome events must be logged for attribution.\n- Teams must be able to suppress interventions for strategically non-core segments.\n\n### Measurement Requirements\n- Primary metric: churn rate for eligible segment.\n- Business metric: retained revenue from intervened segment.\n- Guardrails: gross margin impact, discount cost, support load, and adoption of strategy-priority behaviors.\n- Analysis must separate voluntary churn from involuntary or administrative churn.\n- Emergency thresholds must be defined relative to segment baseline before launch.\n\n### Operational Requirements\n- Product, lifecycle, finance, and CS owners must review thresholds before pilot start.\n- Any rapid-response activation must be documented with the threshold breached.\n- Broad rollout requires either statistically credible uplift or a strong directional result with low downside.\n- Any strategy-conflicting intervention requires explicit leadership approval.\n\n## Rollout Plan\n### Phase 1: Baseline and Threshold Setting\n- Validate instrumentation.\n- Establish churn, retained revenue, and margin baselines by segment.\n- Define emergency thresholds that trigger rapid response.\n\n### Phase 2: Segment Routing\n- Route each at-risk segment into pilot or rapid-response mode.\n- Start interventions only in strategically relevant segments.\n\n### Phase 3: Evaluate and Expand\n- Expand only if retention improves and guardrails remain healthy.\n- Stop, redesign, or de-escalate if gains come from margin-destructive or strategy-conflicting tactics.\n\n## Risks\n- Signals may remain correlational rather than causal.\n- Emergency thresholds may be set too low or too high.\n- The team may preserve low-value customers while missing high-value churn.\n- Discount-led saves may mask product gaps.\n- Conflicting signals may reflect measurement defects rather than customer behavior.\n\n## Decision Frame\nProceed with a conditional churn program, not an unconditional pilot. The default is a constrained pilot because the packet provides no operating evidence strong enough to justify broad retention action. That default becomes inadequate if churn severity breaches pre-defined thresholds in strategically core segments or creates material retained-revenue risk. In short: use pilot mode under uncertainty, rapid-response mode under demonstrated urgency.\n\n## Unknowns & Evidence Gaps\n- No packet evidence identifies which segments are actually churning.\n- No evidence quantifies churn severity, acceleration, or retained-revenue exposure.\n- No evidence separates preventable churn from acceptable churn.\n- No evidence shows which signals are causal versus lagging or noisy.\n- No evidence defines strategy targets precisely enough to score tradeoffs.\n- Emergency thresholds still need numeric definition from baseline data.\n\n## Pass/Fail Readiness\nPass with conditions. This artifact is ready to align teams on decision logic, guardrails, and escalation criteria, but it is not ready for full execution until baseline metrics and emergency thresholds are defined. It is decision-useful because it now specifies when a constrained pilot is appropriate and when it would be too slow.\n\n## Recommended Next Artifact\nChurn Analysis artifact that quantifies segment-level churn severity, retained-revenue exposure, preventable-versus-acceptable churn, and recommended emergency thresholds before intervention launch.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "A constrained pilot should be the default only under uncertainty; it should be overridden by a rapid-response path when explicit churn-severity or retained-revenue thresholds are breached.",
+          "evidence_refs": [
+            "ctx-1",
+            "ctx-2"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "Retention work should be gated by retained revenue and strategy guardrails, not raw churn reduction alone.",
+          "evidence_refs": [
+            "ctx-1",
+            "ctx-3"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "Given the absence of underlying operating evidence, the artifact can define decision rules and escalation criteria but cannot justify a broad churn program or roadmap pivot yet.",
+          "evidence_refs": [
+            "ctx-1",
+            "ctx-2"
+          ],
+          "is_major": true
+        }
+      ],
+      "citations": [
+        "ctx-1",
+        "ctx-2",
+        "ctx-3"
+      ],
+      "open_questions": [
+        "What numeric churn-change threshold should trigger rapid response for each strategically core segment?",
+        "What retained-revenue exposure should count as materially urgent enough to bypass a normal pilot?",
+        "Which segments are strategically core versus acceptable to let churn at current rates?",
+        "Which current signals are causal predictors versus instrumentation noise or lagging indicators?"
+      ],
+      "critique_responses": [
+        {
+          "finding_id": "finding-1",
+          "disposition": "adopted",
+          "rationale": "The critique identified a real weakness: the first-pass recommendation treated a constrained pilot as universally correct without specifying when that approach would be too slow. The revision makes the recommendation conditional, adds explicit override criteria for rapid response, and reframes the PRD around falsifiable decision logic rather than prudence by default."
+        }
+      ]
+    }
+  },
+  "min_margin_for_verdict": 0.1
+}

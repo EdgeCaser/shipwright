@@ -1,0 +1,334 @@
+You are the judge in a blinded conflict harness run.
+Provider identity is intentionally hidden. Do not infer provider family.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "winner": "tie",
+  "margin": 0,
+  "rubric_scores": {
+    "side_a": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    },
+    "side_b": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    }
+  },
+  "dimension_rationales": {
+    "claim_quality": "Brief explanation of which side made the stronger claims and why.",
+    "evidence_discipline": "Brief explanation of how the sides used or overstated evidence.",
+    "responsiveness_to_critique": "Brief explanation of how each side handled the critique phase.",
+    "internal_consistency": "Brief explanation of contradictions, coherence, or missing logic.",
+    "decision_usefulness": "Brief explanation of which artifact better supports an actual decision."
+  },
+  "side_summaries": {
+    "side_a": {
+      "strengths": [
+        "One concise strength of Side A."
+      ],
+      "weaknesses": [
+        "One concise weakness of Side A."
+      ]
+    },
+    "side_b": {
+      "strengths": [
+        "One concise strength of Side B."
+      ],
+      "weaknesses": [
+        "One concise weakness of Side B."
+      ]
+    }
+  },
+  "decisive_dimension": "decision_usefulness",
+  "decisive_findings": [
+    "Replace with the actual decisive findings from this run."
+  ],
+  "judge_confidence": "low",
+  "needs_human_review": true,
+  "rationale": "One-paragraph explanation of the verdict."
+}
+
+Use min_margin_for_verdict = 0.1.
+Set rubric_scores.*.weighted_total as a normalized aggregate on the same 1-5 scale as the rubric dimensions, not as a raw sum.
+Treat each side's reported conclusion_confidence as a calibration signal, not a vote multiplier.
+Reward confidence when it is well matched to the evidence and penalize overconfidence when the artifact overreaches.
+judge_confidence rubric:
+- high: the winning side is clearly stronger on at least 3 rubric dimensions and has no major unsupported-claim problem
+- medium: the winning side leads overall but has at least 1 weak dimension or absorbed only part of the opposing critique
+- low: score margin is below min_margin_for_verdict or both sides have significant unsupported claims
+
+Judge packet:
+{
+  "case_packet": {
+    "scenario_id": "board-update-ambiguity",
+    "title": "Board update under ambiguity",
+    "prompt": "Write a strategy update for a board audience under ambiguity.",
+    "artifact_type": "strategy",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a strategy artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "strategy",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-14-201439013Z-board-update-ambiguity",
+      "side_id": "side_a",
+      "round": "first_pass",
+      "artifact_markdown": "# Strategy Update: Board Briefing Under Ambiguity\n\n## Decision Frame\n\n**Core question:** Given significant uncertainty in our operating environment, what strategic posture should the board endorse for the next 90 days?\n\n**Context:** The organization faces a decision environment where key variables — market trajectory, competitive response, and regulatory outlook — remain unresolved. This update does not pretend clarity where none exists. Instead, it frames the decisions we *can* make now, identifies what we need to learn before committing further, and recommends a sequenced approach that preserves optionality while maintaining forward momentum.\n\n**Decision type:** This is a *posture* decision, not a *commitment* decision. We are selecting a strategic stance (accelerate, hold, or retrench) under conditions where the information needed for a full commitment decision is not yet available.\n\n**Recommendation:** Hold current resource allocation with two targeted probes (defined below) to resolve the highest-value unknowns within 60 days. Defer commitment-level decisions to the next board cycle when probe results are available.\n\n## Unknowns & Evidence Gaps\n\n| Unknown | Impact if Resolved | Current Evidence Quality | Recommended Probe |\n|---|---|---|---|\n| **Market demand signal** — Will the Q3 pipeline convert at historical rates or reflect the softening seen in peer reports? | High — determines whether we scale sales investment or conserve | Weak — anecdotal signals only, no structured data | Commission 30-day win/loss analysis across last two quarters |\n| **Competitive positioning** — Has the competitor's recent product launch shifted buyer consideration sets? | Medium — affects messaging and roadmap prioritization | Very weak — based on secondhand conference reports | Run 15 structured buyer interviews with recently churned and recently won accounts |\n| **Regulatory timeline** — Will proposed regulations materialize in this fiscal year? | Medium — affects compliance investment sequencing | Moderate — published comment periods give partial signal | Monitor only; no probe needed, timeline will self-resolve within 45 days |\n| **Internal execution capacity** — Can we absorb a second initiative without degrading the primary program? | High — determines whether parallel bets are feasible | Moderate — team leads report strain but no failures | Conduct capacity audit of top 3 delivery teams |\n\n**Key principle:** We distinguish between unknowns we can *resolve* (via probes) and unknowns we must *wait out* (external timelines). Resources go to the former; the latter get monitoring triggers, not investment.\n\n## Pass/Fail Readiness\n\n**Are we ready to make a major strategic commitment today?** No.\n\n**Readiness assessment:**\n\n- **Evidence sufficiency:** FAIL — Two of four key unknowns have weak or very weak evidence bases. Committing capital against unvalidated assumptions creates downside risk disproportionate to the opportunity cost of a 60-day delay.\n- **Alignment:** PASS — Leadership team is aligned on strategic direction; disagreement is on *timing and magnitude*, not *direction*. This is a healthy state for a hold posture.\n- **Execution capacity:** CONDITIONAL — Current primary initiative is on track. Parallel initiatives are feasible only if capacity audit confirms headroom. Launching without this confirmation risks degrading the program that is working.\n- **Stakeholder readiness:** PASS — Board has signaled comfort with a phased approach. Customers and partners are not expecting announcements this quarter.\n\n**Bottom line:** The responsible posture is to hold, probe, and reconvene with decision-grade evidence. The cost of a 60-day hold is low (estimated at 2-4 weeks of delayed market entry if we ultimately choose to accelerate). The cost of premature commitment against weak evidence is significantly higher (misallocated capital, organizational whiplash if we reverse).\n\n## Recommended Next Artifact\n\n**Deliverable:** Decision-grade strategy memo with commitment recommendations, due at next board meeting (60 days).\n\n**What it will contain:**\n1. Results from the two probes (win/loss analysis and buyer interviews), synthesized into demand and competitive position assessments\n2. Capacity audit findings with explicit go/no-go on parallel initiatives\n3. Updated regulatory timeline based on comment period outcomes\n4. Three scenario-specific action plans (accelerate / hold / retrench) with resource requirements, risk profiles, and trigger conditions for each\n5. A clear recommendation for board vote\n\n**Interim checkpoint:** 30-day progress update to board chair (written memo, no meeting required) confirming probes are on track and flagging any emerging signals that would warrant accelerating the decision timeline.\n\n**Escalation trigger:** If any of the following occur before the 60-day window closes, we will convene an ad-hoc board session rather than waiting:\n- Competitor announces pricing action that directly threatens >10% of current pipeline\n- Regulatory body issues final rule ahead of expected timeline\n- Primary initiative shows signs of stalling (two consecutive sprints below 70% delivery rate)",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "Under current evidence conditions, a hold-and-probe posture is superior to premature commitment because two of four key unknowns have weak evidence bases, making the downside risk of committing now disproportionate to the low cost of a 60-day delay.",
+          "evidence_refs": [
+            "ctx-readiness-assessment"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "Strategic unknowns should be categorized by resolvability — investable probes for unknowns we can resolve, monitoring triggers for unknowns that will self-resolve — to avoid wasting resources on unactionable uncertainty.",
+          "evidence_refs": [
+            "ctx-unknowns-framework"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "The recommended next artifact is a decision-grade strategy memo at 60 days, with a 30-day interim checkpoint and explicit escalation triggers, ensuring the board retains control without requiring premature action.",
+          "evidence_refs": [
+            "ctx-next-artifact"
+          ],
+          "is_major": false
+        }
+      ],
+      "citations": [
+        "ctx-readiness-assessment",
+        "ctx-unknowns-framework",
+        "ctx-next-artifact"
+      ],
+      "conclusion_confidence": "medium",
+      "open_questions": [
+        "Without concrete financials or named market data, the cost-of-delay estimate (2-4 weeks) is asserted rather than derived — a real board would challenge this.",
+        "The scenario provides no evidence files, so all unknowns and readiness assessments are illustrative rather than grounded in actual organizational data.",
+        "The hold posture assumes the competitive environment permits a 60-day pause — if the market is winner-take-all, delay cost may be much higher than estimated."
+      ],
+      "critique_responses": []
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-14-201439013Z-board-update-ambiguity",
+      "side_id": "side_b",
+      "round": "first_pass",
+      "artifact_markdown": "# Strategy Update\n\n## Current Assessment\nThe business appears to be in a transitional phase where the direction of demand, the durability of recent signals, and the speed of execution are not yet reliable enough to justify an irreversible scaling decision. The practical choice is not between optimism and caution; it is between preserving option value versus committing ahead of evidence.\n\n## Strategic Recommendation\nMaintain a controlled advance posture for the next operating window: continue investing in the highest-signal growth and product motions, but defer any major cost structure expansion, market-wide rollout, or long-horizon capital commitment until a tighter set of leading indicators clears a predefined threshold. This balances learning speed with downside protection.\n\n## What The Board Should Know Now\n1. Management has enough signal to keep moving, but not enough to declare product-market durability, operating leverage, or repeatable expansion economics.\n2. The highest-value objective in the next period is reducing strategic uncertainty, not maximizing surface-level activity.\n3. Decisions taken now should be explicitly reversible unless they improve learning velocity at low structural cost.\n\n## Decision Frame\nThe immediate board-level decision is whether to authorize aggressive scaling now or support a staged execution plan designed to convert ambiguity into decision-quality evidence. The recommended choice is staged execution. That means funding focused progress in areas with the strongest signal, while gating broader expansion on a short list of measurable proofs: demand consistency, retention or repeat usage quality, acquisition efficiency, and delivery capacity at acceptable margin. The core judgment is that preserving flexibility has higher expected value than premature commitment.\n\n## Unknowns & Evidence Gaps\nThe largest unresolved questions are whether current customer demand is durable or episodic, whether usage and retention indicate real pull versus trial behavior, whether go-to-market performance can improve without disproportionate spend, and whether operations can support growth without margin erosion or service degradation. We also lack enough evidence to distinguish a temporarily promising segment from the truly scalable wedge. These gaps matter because any one of them could change the recommended pace of investment.\n\n## Pass/Fail Readiness\nPass: proceed to the next investment stage only if the company can show repeated evidence that demand is stable, customer value realization is strong, acquisition or expansion economics are improving, and execution capacity can absorb growth without material deterioration. Fail: hold or narrow the plan if signals remain noisy, growth depends on exceptional effort or discounting, retention quality is weak, or operating strain rises faster than revenue quality. Readiness should be judged on trend consistency over a defined period, not on a single encouraging datapoint.\n\n## Recommended Next Artifact\nProduce a board decision memo for the next meeting that includes: the explicit scale/no-scale gate criteria, current performance against each criterion, the narrow set of experiments underway to close evidence gaps, and the trigger conditions for three paths: accelerate, continue staged execution, or retrench. That artifact should convert the current strategic posture into a concrete governance mechanism for the next decision.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "The highest-value board decision under current ambiguity is to support staged execution rather than immediate aggressive scaling.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "The company should prioritize reducing uncertainty around demand durability, retention quality, unit economics, and execution capacity before making irreversible commitments.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "Board usefulness increases when management defines explicit pass/fail gates and trigger conditions for accelerate, hold, or retrench paths.",
+          "evidence_refs": [],
+          "is_major": false
+        }
+      ],
+      "citations": [],
+      "conclusion_confidence": "medium",
+      "open_questions": [
+        "What leading indicators does management consider the most reliable proof of durable demand?",
+        "What time window is appropriate for judging trend consistency before authorizing scale?",
+        "Which planned investments are reversible versus structurally committed?"
+      ],
+      "critique_responses": []
+    }
+  },
+  "critique_packets": {
+    "side_a": {
+      "target_side": "side_b",
+      "finding_id": "finding-1",
+      "target_claim_ids": [
+        "side_b-claim-1",
+        "side_b-claim-2"
+      ],
+      "claim_under_attack": "The highest-value board decision under current ambiguity is to support staged execution rather than immediate aggressive scaling, prioritizing uncertainty reduction around demand durability, retention quality, unit economics, and execution capacity.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "Both major claims assert that staged execution has higher expected value than commitment, yet the artifact provides zero quantitative or qualitative evidence to support this judgment. No data on current demand signals, retention metrics, unit economics, or competitive dynamics is cited. The recommendation to defer is presented as self-evidently correct under ambiguity, but this ignores that delay itself carries costs—competitive window closure, team attrition, loss of momentum with early customers—none of which are acknowledged or weighed. A board receiving this update cannot evaluate whether the 'controlled advance posture' is genuinely optimal or simply risk-averse framing disguised as strategy. The pass/fail gates proposed (demand stability, retention quality, improving economics, execution capacity) are stated at a level of abstraction that makes them unfalsifiable: no thresholds, no timelines, no baseline measurements are provided. A strategy update that recommends deferral without quantifying the cost of waiting or specifying concrete decision criteria is not decision-useful—it merely pushes the actual decision to the next meeting while appearing rigorous.",
+      "severity": "high"
+    },
+    "side_b": {
+      "target_side": "side_a",
+      "finding_id": "finding-2",
+      "target_claim_ids": [
+        "side_a-claim-1"
+      ],
+      "claim_under_attack": "Under current evidence conditions, a hold-and-probe posture is superior to premature commitment because two of four key unknowns have weak evidence bases, making the downside risk of committing now disproportionate to the low cost of a 60-day delay.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "The claim asserts a comparative decision case without any underlying business data to support either side of the tradeoff. The artifact itself admits there are no evidence files and flags the 2-4 week cost-of-delay estimate as asserted rather than derived. Without concrete financial exposure, pipeline size, burn implications, or quantified downside from delay versus action, the conclusion that hold is 'superior' is not evidence-backed; it is a plausible posture framed as a justified recommendation.",
+      "severity": "medium"
+    }
+  },
+  "final_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-14-201439013Z-board-update-ambiguity",
+      "side_id": "side_a",
+      "round": "final",
+      "artifact_markdown": "# Strategy Update: Board Briefing Under Ambiguity\n\n## Decision Frame\n\n**Core question:** Given significant uncertainty in our operating environment, what strategic posture should the board endorse for the next 90 days?\n\n**Context:** The organization faces a decision environment where key variables — market trajectory, competitive response, and regulatory outlook — remain unresolved. This update does not pretend clarity where none exists. Instead, it frames the decisions we *can* make now, identifies what we need to learn before committing further, and recommends a sequenced approach that preserves optionality while maintaining forward momentum.\n\n**Decision type:** This is a *posture* decision, not a *commitment* decision. We are selecting a strategic stance (accelerate, hold, or retrench) under conditions where the information needed for a full commitment decision is not yet available.\n\n**Recommendation:** Hold current resource allocation with two targeted probes (defined below) to resolve the highest-value unknowns within 60 days. Defer commitment-level decisions to the next board cycle when probe results are available.\n\n**Important caveat on evidence basis:** This recommendation is made under acknowledged data constraints. No business-specific financial data, pipeline figures, or burn-rate projections were available for this briefing. The hold posture is recommended not because it is *proven* superior, but because it is the *lower-regret default* when evidence is insufficient to justify commitment in either direction. The board should treat this as a provisional stance subject to revision once the probes below yield decision-grade data.\n\n## Unknowns & Evidence Gaps\n\n| Unknown | Impact if Resolved | Current Evidence Quality | Recommended Probe |\n|---|---|---|---|\n| **Market demand signal** — Will the Q3 pipeline convert at historical rates or reflect the softening seen in peer reports? | High — determines whether we scale sales investment or conserve | Weak — anecdotal signals only, no structured data | Commission 30-day win/loss analysis across last two quarters |\n| **Competitive positioning** — Has the competitor's recent product launch shifted buyer consideration sets? | Medium — affects messaging and roadmap prioritization | Very weak — based on secondhand conference reports | Run 15 structured buyer interviews with recently churned and recently won accounts |\n| **Regulatory timeline** — Will proposed regulations materialize in this fiscal year? | Medium — affects compliance investment sequencing | Moderate — published comment periods give partial signal | Monitor only; no probe needed, timeline will self-resolve within 45 days |\n| **Internal execution capacity** — Can we absorb a second initiative without degrading the primary program? | High — determines whether parallel bets are feasible | Moderate — team leads report strain but no failures | Conduct capacity audit of top 3 delivery teams |\n\n**Key principle:** We distinguish between unknowns we can *resolve* (via probes) and unknowns we must *wait out* (external timelines). Resources go to the former; the latter get monitoring triggers, not investment.\n\n**Evidence gap disclosure:** This briefing operates without concrete financials, named market data, or quantified pipeline exposure. All unknowns and readiness assessments are framed illustratively. The probes recommended below are designed specifically to close this gap and produce the quantified inputs required for a commitment-grade decision.\n\n## Pass/Fail Readiness\n\n**Are we ready to make a major strategic commitment today?** No.\n\n**Readiness assessment:**\n\n- **Evidence sufficiency:** FAIL — Two of four key unknowns have weak or very weak evidence bases. This is the primary blocker. Without quantified financial exposure or validated demand signals, any directional commitment would rest on assertion rather than analysis.\n- **Alignment:** PASS — Leadership team is aligned on strategic direction; disagreement is on *timing and magnitude*, not *direction*. This is a healthy state for a hold posture.\n- **Execution capacity:** CONDITIONAL — Current primary initiative is on track. Parallel initiatives are feasible only if capacity audit confirms headroom. Launching without this confirmation risks degrading the program that is working.\n- **Stakeholder readiness:** PASS — Board has signaled comfort with a phased approach. Customers and partners are not expecting announcements this quarter.\n\n**Cost-of-delay analysis (unquantified — flagged for probe resolution):** The estimated 2–4 week delay cost assumes the market permits a 60-day observation window without irreversible competitive loss. This assumption is *not validated*. If the competitive landscape is winner-take-all or if a first-mover window is closing, the hold posture carries higher cost than estimated here. The buyer interview probe is designed in part to test this assumption. If early results (by day 15) indicate a closing window, the escalation trigger below applies.\n\n**Bottom line:** The hold posture is the lower-regret default under current information constraints, not a proven-superior strategy. It preserves optionality at an *estimated* low cost while probes generate the evidence needed for a justified commitment. The board should scrutinize the cost-of-delay assumption and override the hold recommendation if members possess market intelligence suggesting a closing window.\n\n## Recommended Next Artifact\n\n**Deliverable:** Decision-grade strategy memo with commitment recommendations, due at next board meeting (60 days).\n\n**What it will contain:**\n1. Results from the two probes (win/loss analysis and buyer interviews), synthesized into demand and competitive position assessments with *quantified* pipeline and financial exposure figures\n2. Capacity audit findings with explicit go/no-go on parallel initiatives\n3. Updated regulatory timeline based on comment period outcomes\n4. Three scenario-specific action plans (accelerate / hold / retrench) with resource requirements, risk profiles, and trigger conditions for each\n5. A validated cost-of-delay estimate replacing today's unquantified assertion\n6. A clear recommendation for board vote\n\n**Interim checkpoint:** 30-day progress update to board chair (written memo, no meeting required) confirming probes are on track and flagging any emerging signals that would warrant accelerating the decision timeline.\n\n**Escalation trigger:** If any of the following occur before the 60-day window closes, we will convene an ad-hoc board session rather than waiting:\n- Competitor announces pricing action that directly threatens >10% of current pipeline\n- Regulatory body issues final rule ahead of expected timeline\n- Primary initiative shows signs of stalling (two consecutive sprints below 70% delivery rate)\n- Early buyer interview results (by day 15) indicate a closing competitive window that makes the 60-day hold untenable",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "Under current information constraints, a hold-and-probe posture is the lower-regret default — not because it is proven superior, but because evidence is insufficient to justify commitment in either direction. The cost-of-delay estimate is unquantified and flagged as an assumption to be validated by the recommended probes.",
+          "evidence_refs": [
+            "ctx-readiness-assessment"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "Strategic unknowns should be categorized by resolvability — investable probes for unknowns we can resolve, monitoring triggers for unknowns that will self-resolve — to avoid wasting resources on unactionable uncertainty.",
+          "evidence_refs": [
+            "ctx-unknowns-framework"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "The recommended next artifact is a decision-grade strategy memo at 60 days, with a 30-day interim checkpoint, explicit escalation triggers, and a requirement to replace today's unquantified cost-of-delay estimate with validated figures.",
+          "evidence_refs": [
+            "ctx-next-artifact"
+          ],
+          "is_major": false
+        }
+      ],
+      "citations": [
+        "ctx-readiness-assessment",
+        "ctx-unknowns-framework",
+        "ctx-next-artifact"
+      ],
+      "conclusion_confidence": "medium",
+      "open_questions": [
+        "The cost-of-delay assumption remains unvalidated and is now explicitly flagged — early probe results at day 15 should test whether the competitive environment permits a 60-day hold.",
+        "Without concrete financials or named market data, all readiness assessments remain illustrative — the probes are designed to close this gap for the next board cycle.",
+        "If the board possesses market intelligence not captured in this briefing that suggests a closing window, the hold recommendation should be overridden."
+      ],
+      "critique_responses": [
+        {
+          "finding_id": "finding-2",
+          "disposition": "adopted",
+          "rationale": "The critique correctly identifies that the original claim framed the hold posture as 'superior' without quantified evidence to support the comparative judgment. The revised artifact now explicitly acknowledges the hold recommendation as a lower-regret default under information constraints rather than a proven-superior strategy. The cost-of-delay estimate is flagged as unquantified and unvalidated, with a specific probe mechanism (day-15 buyer interview checkpoint) to test the assumption. The next artifact deliverables now include a validated cost-of-delay estimate. The board is explicitly invited to override the recommendation if they possess market intelligence not captured here."
+        }
+      ]
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-14-201439013Z-board-update-ambiguity",
+      "side_id": "side_b",
+      "round": "final",
+      "artifact_markdown": "# Revised artifact\n\n## Board Strategy Update\n\n### Current Assessment\nThe central fact pattern is not weak performance or strong performance; it is decision-relevant ambiguity. Management does not yet have enough evidence in the packet to prove durable demand, efficient repeatable growth, or scalable operating readiness. Under those conditions, the board should treat this as a governance decision about what evidence must exist before authorizing irreversible scale, not as a confidence-based bet.\n\n### Strategic Recommendation\nAdopt a time-bounded staged execution posture for the next review window rather than approve broad scaling immediately. This is not a recommendation to wait passively. It is a recommendation to keep investing in learning, delivery, and the highest-signal commercial motions while withholding structurally hard-to-reverse commitments until management can show predefined evidence against explicit gates.\n\nThe recommendation is conditional, not absolute. If management can clear the gates below inside the next operating window, the board should be prepared to accelerate. If not, the board should narrow scope or hold investment. The strategy value comes from converting ambiguity into a governed decision, not from default caution.\n\n## Decision Frame\nThe board decision is whether to:\n1. authorize immediate aggressive scaling with incomplete evidence, or\n2. authorize a staged plan with explicit triggers for accelerate, continue, or retrench.\n\nRecommendation: choose staged execution for one defined review period, because the case packet contains no operating evidence strong enough to justify irreversible scale today, and because delay also has a cost that should be measured rather than ignored.\n\nBoard instruction to management for the next review period:\n1. quantify the cost of waiting versus the cost of premature scale,\n2. report baseline values for the core gates below,\n3. return with a scale/no-scale recommendation tied to those gates.\n\n## Unknowns & Evidence Gaps\nThe missing evidence that most affects the decision is:\n1. demand durability: whether recent demand is repeatable or episodic,\n2. retention or repeat usage quality: whether customers are sustaining value after initial adoption,\n3. unit economics trajectory: whether acquisition, expansion, and servicing economics improve with repetition rather than deteriorate,\n4. execution capacity: whether operations can absorb growth without margin damage or service degradation,\n5. cost of delay: whether waiting one operating window materially increases competitive risk, customer loss, or team attrition.\n\nThese gaps are decisive because either error is expensive: scaling too early can lock in bad economics, while waiting too long can forfeit timing advantages. The current packet does not let the board compare those risks with confidence.\n\n## Pass/Fail Readiness\nFor the next board meeting, management should present explicit thresholds, current baseline, trend line, and owner for each gate. Minimum structure:\n1. demand: stable or improving results across a defined multi-period window,\n2. retention: cohort behavior that shows sustained value beyond initial adoption,\n3. economics: unit economics at or above the board-approved floor, with trend improvement rather than one-off performance,\n4. capacity: service levels and delivery performance remaining within acceptable bounds under growth,\n5. cost of waiting: quantified estimate of lost pipeline, competitive exposure, or execution risk from deferral.\n\nPass: management shows baselines, thresholds, and trend evidence across the review window, plus a quantified case that accelerating now has higher expected value than continued staging.\n\nFail: management cannot establish baselines, cannot quantify the cost of waiting, or shows mixed signals that rely on narrative rather than trend evidence.\n\n## Recommended Next Artifact\nProduce a board decision memo for the next meeting with four tables:\n1. baseline metrics and target thresholds for each gate,\n2. trend data for the defined review window,\n3. quantified downside of premature scale versus quantified downside of waiting,\n4. recommendation across three paths: accelerate, continue staged execution, or retrench.\n\nThat memo should force the next decision to be evidence-backed and falsifiable rather than rhetorical.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "Given that the case packet provides ambiguity without supporting operating evidence, the most defensible board action now is a time-bounded staged execution plan rather than immediate irreversible scaling.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "The board should require management to quantify both the missing performance evidence and the cost of waiting before the next scale decision.",
+          "evidence_refs": [
+            "ctx-1",
+            "ctx-2"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "A decision-useful update under ambiguity must define concrete gate structure for the next review window even if current thresholds and baselines are not yet available in the packet.",
+          "evidence_refs": [
+            "ctx-2"
+          ],
+          "is_major": false
+        }
+      ],
+      "citations": [
+        "ctx-1",
+        "ctx-2"
+      ],
+      "conclusion_confidence": "medium",
+      "open_questions": [],
+      "critique_responses": [
+        {
+          "finding_id": "finding-1",
+          "disposition": "adopted",
+          "rationale": "The critique is correct that the first-pass version treated staged execution as obviously superior without acknowledging the cost of delay or the absence of supporting evidence. I revised the artifact to make the recommendation explicitly conditional on missing evidence, added the cost-of-waiting as a core unknown, and converted the pass/fail section from abstract criteria into a governance structure that requires baselines, thresholds, trends, and quantified tradeoffs at the next review."
+        }
+      ]
+    }
+  },
+  "min_margin_for_verdict": 0.1
+}

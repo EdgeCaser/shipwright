@@ -1,0 +1,291 @@
+{
+  "run_id": "conflict-2026-04-14-204303957Z-feature-weak-evidence",
+  "scenario_id": "feature-weak-evidence",
+  "mode": "head_to_head",
+  "status": "completed",
+  "sides": {
+    "side_a": {
+      "provider": "anthropic",
+      "model": "claude-max",
+      "reasoning_effort": "medium",
+      "access_mode": "subscription_cli",
+      "role": "side_a",
+      "first_pass": {
+        "run_id": "conflict-2026-04-14-204303957Z-feature-weak-evidence",
+        "side_id": "side_a",
+        "round": "first_pass",
+        "artifact_markdown": "# PRD: [Proposed Feature — Insufficient Evidence to Name]\n\n## Decision Frame\n\n**What decision does this PRD support?** Whether to invest discovery resources into defining and validating a new feature, given that no supporting evidence currently exists.\n\n**Current state:** No user research, usage data, competitive analysis, or stakeholder input has been provided to justify this feature. The PRD is being drafted against an empty evidence base.\n\n**Decision options:**\n1. **Do not proceed** — Return to discovery. No feature should advance past ideation without at least one validated signal.\n2. **Proceed to evidence-gathering sprint** — Time-box 2 weeks to collect minimum viable evidence before re-evaluating.\n3. **Proceed to build (not recommended)** — Ship without evidence. High risk of waste.\n\n**Recommendation:** Option 2 — run a structured evidence-gathering sprint before any further PRD refinement.\n\n---\n\n## Unknowns & Evidence Gaps\n\n| Gap ID | Unknown | Required Evidence | Current Status | Severity |\n|--------|---------|-------------------|----------------|----------|\n| G-1 | Who is the target user? | User segment definition, persona interviews (n≥5) | **Missing entirely** | Critical |\n| G-2 | What problem does this solve? | Problem statements validated by user research or support data | **Missing entirely** | Critical |\n| G-3 | How large is the affected population? | Usage analytics, TAM/SAM sizing, or support ticket volume | **Missing entirely** | Critical |\n| G-4 | What is the expected business impact? | Revenue model, retention impact estimate, or cost-avoidance projection | **Missing entirely** | High |\n| G-5 | Are there existing workarounds? | Competitive audit, user behavior analysis | **Missing entirely** | High |\n| G-6 | What is the technical feasibility? | Engineering spike or architecture review | **Missing entirely** | Medium |\n| G-7 | What are the risks of building this? | Risk register, dependency map | **Missing entirely** | Medium |\n\n**Evidence quality assessment:** Zero of seven critical-to-high gaps have any evidence. This PRD cannot responsibly recommend proceeding to design or engineering.\n\n---\n\n## Pass/Fail Readiness\n\n### Readiness Gate Checklist\n\n| Gate | Criterion | Status | Verdict |\n|------|-----------|--------|---------|\n| 1 | At least one validated user need | No evidence | **FAIL** |\n| 2 | Quantified addressable population | No evidence | **FAIL** |\n| 3 | Business case with stated assumptions | No evidence | **FAIL** |\n| 4 | Technical feasibility assessed | No evidence | **FAIL** |\n| 5 | Risk/downside bounded | No evidence | **FAIL** |\n\n**Overall Readiness: FAIL — 0/5 gates passed.**\n\nThis feature is not ready for prioritization, design, or engineering investment. Advancing it in this state would violate basic product discipline and risk building something nobody needs.\n\n---\n\n## Recommended Next Artifact\n\n**Next artifact:** Discovery Brief (not a fuller PRD)\n\n**Why not a PRD?** A PRD presupposes enough evidence to define requirements. We have none. The correct next step is upstream of the PRD.\n\n**Discovery Brief scope:**\n1. **Hypothesis statement** — Articulate the falsifiable hypothesis this feature rests on (\"We believe [user segment] struggles with [problem] and would [behavior change] if we built [solution]\")\n2. **Evidence collection plan** — 5 user interviews, 1 competitive scan, 1 data pull from existing analytics\n3. **Kill criteria** — Pre-commit to what evidence would cause us to abandon this feature (e.g., fewer than 2/5 interviewees report the problem unprompted)\n4. **Time box** — 2-week sprint with go/no-go checkpoint\n\n**If discovery succeeds:** Return to PRD with validated inputs for gaps G-1 through G-5 at minimum.\n\n**If discovery fails:** Archive this PRD as a record of the investigation. No further investment.\n\n---\n\n*This PRD is intentionally sparse because honesty about evidence gaps is more valuable than fabricating justifications. A PRD built on weak evidence is worse than no PRD — it creates false confidence and wastes downstream effort.*",
+        "claims": [
+          {
+            "claim_id": "side_a-claim-1",
+            "summary": "A feature with zero supporting evidence must not advance past ideation; the correct response is to fail the readiness gate explicitly and redirect to a time-boxed discovery sprint with pre-committed kill criteria.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-2",
+            "summary": "All seven identified evidence gaps (user segment, problem validation, population sizing, business impact, workarounds, technical feasibility, risk assessment) are currently at zero — no partial credit is warranted.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-3",
+            "summary": "The recommended next artifact should be a Discovery Brief (upstream of PRD), not a more detailed PRD, because requirements definition presupposes validated evidence that does not yet exist.",
+            "evidence_refs": [],
+            "is_major": true
+          }
+        ],
+        "citations": [],
+        "conclusion_confidence": "high",
+        "open_questions": [
+          "What triggered this feature request — was there an internal stakeholder ask, a competitive observation, or user feedback that simply was not included in the case packet?",
+          "Is there an organizational norm for minimum evidence thresholds before PRD drafting, or is this the first attempt to establish one?",
+          "What discovery resources (researchers, analytics access, user panel) are available for the recommended 2-week sprint?"
+        ],
+        "critique_responses": []
+      },
+      "rebuttal": {
+        "target_side": "side_b",
+        "finding_id": "finding-1",
+        "target_claim_ids": [
+          "side_b-claim-1"
+        ],
+        "claim_under_attack": "A narrowly scoped validation MVP is more appropriate than a full feature launch when supporting evidence is weak.",
+        "attack_type": "evidence_gap",
+        "evidence_or_reason": "This claim is presented as the central recommendation but is entirely unsupported by evidence. The artifact acknowledges evidence is weak yet never specifies what evidence exists, how weak it is, or what threshold of evidence would change the recommendation. A PRD that recommends an MVP over a full launch must show it evaluated the existing signals — however thin — and explain why they fall short. Without grounding in any actual user signal, usage data, or market observation, the recommendation to scope down is just as unfounded as a recommendation to scope up. The claim also assumes MVP validation is always the correct response to weak evidence, ignoring scenarios where the evidence gap itself is the artifact to address first (e.g., discovery interviews or competitive analysis before any build). The PRD defaults to 'build something small' without demonstrating that building anything is warranted given the evidence vacuum it describes.",
+        "severity": "high"
+      },
+      "final": {
+        "run_id": "conflict-2026-04-14-204303957Z-feature-weak-evidence",
+        "side_id": "side_a",
+        "round": "final",
+        "artifact_markdown": "# PRD: [Proposed Feature — Insufficient Evidence to Name]\n\n## Decision Frame\n\n**What decision does this PRD support?** Whether to invest discovery resources into defining and validating a new feature, given that supporting evidence is weak and unsubstantiated.\n\n**Current state:** The case packet describes \"weak supporting evidence\" but provides no concrete evidence artifacts — no user research, usage data, competitive analysis, or stakeholder input is available for review. Whether additional evidence exists elsewhere but was not supplied is unknown.\n\n**Decision options:**\n1. **Do not proceed** — Return to discovery. No feature should advance past ideation without at least one validated signal available for review.\n2. **Proceed to evidence-gathering sprint** — Time-box 2 weeks to surface, collect, and validate minimum viable evidence before re-evaluating.\n3. **Proceed to build (not recommended)** — Ship without validated evidence. High risk of waste.\n\n**Recommendation:** Option 2 — run a structured evidence-gathering sprint before any further PRD refinement.\n\n---\n\n## Unknowns & Evidence Gaps\n\n| Gap ID | Unknown | Required Evidence | Current Status | Severity |\n|--------|---------|-------------------|----------------|----------|\n| G-1 | Who is the target user? | User segment definition, persona interviews (n≥5) | **Not available for review** | Critical |\n| G-2 | What problem does this solve? | Problem statements validated by user research or support data | **Not available for review** | Critical |\n| G-3 | How large is the affected population? | Usage analytics, TAM/SAM sizing, or support ticket volume | **Not available for review** | Critical |\n| G-4 | What is the expected business impact? | Revenue model, retention impact estimate, or cost-avoidance projection | **Not available for review** | High |\n| G-5 | Are there existing workarounds? | Competitive audit, user behavior analysis | **Not available for review** | High |\n| G-6 | What is the technical feasibility? | Engineering spike or architecture review | **Not available for review** | Medium |\n| G-7 | What are the risks of building this? | Risk register, dependency map | **Not available for review** | Medium |\n\n**Evidence quality assessment:** The case packet characterizes evidence as \"weak,\" and zero evidence artifacts were provided for review. It is possible that some partial evidence exists but was not included in the packet. Regardless, no gap can be marked as addressed without reviewable evidence — a PRD must evaluate what is demonstrable, not what might exist elsewhere. Until evidence is surfaced and attached, these gaps remain unresolved for decision-making purposes.\n\n---\n\n## Pass/Fail Readiness\n\n### Readiness Gate Checklist\n\n| Gate | Criterion | Status | Verdict |\n|------|-----------|--------|---------|\n| 1 | At least one validated user need | No reviewable evidence | **FAIL** |\n| 2 | Quantified addressable population | No reviewable evidence | **FAIL** |\n| 3 | Business case with stated assumptions | No reviewable evidence | **FAIL** |\n| 4 | Technical feasibility assessed | No reviewable evidence | **FAIL** |\n| 5 | Risk/downside bounded | No reviewable evidence | **FAIL** |\n\n**Overall Readiness: FAIL — 0/5 gates passed.**\n\nThis feature is not ready for prioritization, design, or engineering investment based on the evidence available for review. If additional evidence exists but was not included in this assessment, the first action in the discovery sprint should be surfacing and attaching it.\n\n---\n\n## Recommended Next Artifact\n\n**Next artifact:** Discovery Brief (not a fuller PRD)\n\n**Why not a PRD?** A PRD presupposes enough validated evidence to define requirements. The available evidence is insufficient. The correct next step is upstream of the PRD.\n\n**Discovery Brief scope:**\n1. **Evidence audit** — Before new research, determine whether any existing evidence (support tickets, analytics, stakeholder memos) exists but was not included in this packet. Surface and evaluate it first.\n2. **Hypothesis statement** — Articulate the falsifiable hypothesis this feature rests on (\"We believe [user segment] struggles with [problem] and would [behavior change] if we built [solution]\")\n3. **Evidence collection plan** — 5 user interviews, 1 competitive scan, 1 data pull from existing analytics\n4. **Kill criteria** — Pre-commit to what evidence would cause us to abandon this feature (e.g., fewer than 2/5 interviewees report the problem unprompted)\n5. **Time box** — 2-week sprint with go/no-go checkpoint\n\n**If discovery succeeds:** Return to PRD with validated inputs for gaps G-1 through G-5 at minimum.\n\n**If discovery fails:** Archive this PRD as a record of the investigation. No further investment.\n\n---\n\n*This PRD is intentionally sparse because honesty about evidence gaps is more valuable than fabricating justifications. A PRD built on weak evidence is worse than no PRD — it creates false confidence and wastes downstream effort.*",
+        "claims": [
+          {
+            "claim_id": "side_a-claim-1",
+            "summary": "A feature with no reviewable supporting evidence must not advance past ideation; the correct response is to fail the readiness gate explicitly and redirect to a time-boxed discovery sprint with pre-committed kill criteria.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-2",
+            "summary": "All seven identified evidence gaps have no reviewable evidence attached. While the case packet's 'weak evidence' framing allows for the possibility that some partial evidence exists but was not provided, no gap can be marked as addressed without demonstrable, reviewable artifacts — and none were supplied.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-3",
+            "summary": "The recommended next artifact should be a Discovery Brief (upstream of PRD) that begins with an evidence audit to surface any existing but unsupplied evidence before commissioning new research.",
+            "evidence_refs": [],
+            "is_major": true
+          }
+        ],
+        "citations": [],
+        "conclusion_confidence": "high",
+        "open_questions": [
+          "What triggered this feature request — was there an internal stakeholder ask, a competitive observation, or user feedback that simply was not included in the case packet?",
+          "Does partial evidence exist elsewhere (support tickets, analytics dashboards, stakeholder memos) that was not attached to this case packet?",
+          "Is there an organizational norm for minimum evidence thresholds before PRD drafting, or is this the first attempt to establish one?",
+          "What discovery resources (researchers, analytics access, user panel) are available for the recommended 2-week sprint?"
+        ],
+        "critique_responses": [
+          {
+            "finding_id": "finding-2",
+            "disposition": "adopted",
+            "rationale": "The critique correctly identifies that 'zero evidence' is a stronger claim than 'no evidence was provided for review.' The case packet says 'weak supporting evidence,' which implies some evidence may exist but was not included. The revised artifact now distinguishes between 'evidence does not exist' and 'no evidence is available for review,' uses 'not available for review' instead of 'missing entirely' in the gap table, and adds an evidence audit as the first step of the Discovery Brief to surface any unsupplied evidence. However, the overall FAIL verdict is unchanged: a PRD must evaluate demonstrable evidence, and no reviewable artifacts were provided. The nuance sharpens the language without weakening the conclusion."
+          }
+        ]
+      }
+    },
+    "side_b": {
+      "provider": "openai",
+      "model": "chatgpt-pro",
+      "reasoning_effort": "medium",
+      "access_mode": "subscription_cli",
+      "role": "side_b",
+      "first_pass": {
+        "run_id": "conflict-2026-04-14-204303957Z-feature-weak-evidence",
+        "side_id": "side_b",
+        "round": "first_pass",
+        "artifact_markdown": "# PRD: Evidence-Limited Feature Validation\n\n## Overview\nThis PRD proposes a narrowly scoped feature-validation release rather than a full productized launch. Because supporting evidence is weak, the goal is to reduce uncertainty cheaply and quickly, not to maximize initial feature breadth.\n\n## Problem\nA potential user need has been identified, but current evidence is insufficient to justify a broad build. Proceeding with a full launch would create material risk of wasted engineering time, unclear adoption, and ambiguous success criteria.\n\n## Goal\nDetermine whether the proposed feature solves a real, repeated user problem strongly enough to justify full investment.\n\n## Non-Goals\n- Delivering a fully mature or highly configurable version of the feature\n- Scaling the feature to all users immediately\n- Treating early usage as proof of durable demand without follow-up validation\n\n## Proposed Approach\nShip a limited MVP to a constrained audience with explicit instrumentation, success thresholds, and a pre-committed decision gate.\n\n### MVP Scope\n- Core workflow only; exclude advanced settings and integrations\n- Exposure limited to a small, target user segment\n- In-product feedback capture at the point of use\n- Event instrumentation for discovery, activation, repeat usage, and abandonment\n\n### User Story\nAs a target user, I want to complete the core task faster or with less friction using this feature so that I get a meaningful improvement over the current workflow.\n\n## Success Metrics\n- Adoption: target users who discover and try the feature\n- Activation: users who complete the core workflow successfully\n- Repeat usage: users who return to the feature within a defined evaluation window\n- Satisfaction: qualitative feedback indicating the feature solved a real problem\n- Negative signals: abandonment, confusion, support volume, or workflow regressions\n\n## Launch Guardrails\n- Launch only to a limited cohort\n- Review metrics on a fixed cadence\n- Require both quantitative and qualitative evidence before expansion\n- Sunset quickly if the feature fails the decision gate\n\n## Risks\n- False positives from curiosity-driven usage\n- False negatives from weak onboarding or poor discoverability\n- Misreading limited-cohort behavior as generalizable demand\n- Team escalation from MVP to full investment before evidence improves\n\n## Decision Frame\nThe right decision is not whether to fully launch the feature now; it is whether to fund a constrained validation MVP. Recommendation: proceed only with a low-cost, instrumented experiment and explicitly defer broader rollout until evidence improves.\n\n## Unknowns & Evidence Gaps\n- Whether the user problem is frequent and important enough to change behavior\n- Whether the proposed feature is better than existing workarounds\n- Which user segment, if any, experiences the strongest pull\n- Whether early usage would persist beyond first exposure\n- What minimum outcome threshold should justify full investment\n\n## Pass/Fail Readiness\nPass if:\n- The team agrees this is a validation release, not a disguised full launch\n- Success and failure thresholds are defined before implementation\n- Instrumentation and feedback loops are in place before exposure\n- The MVP can be built with limited scope and reversible cost\n\nFail if:\n- The feature is framed as strategically necessary without evidence\n- Scope expands beyond the minimum needed to test demand\n- No clear cohort, metrics, or review decision date is defined\n- The team cannot commit to stopping if evidence remains weak\n\n## Recommended Next Artifact\nA feature validation plan that defines target cohort, event schema, success thresholds, review date, interview prompts, and explicit go/hold/stop criteria after the MVP trial.",
+        "claims": [
+          {
+            "claim_id": "side_b-claim-1",
+            "summary": "A narrowly scoped validation MVP is more appropriate than a full feature launch when supporting evidence is weak.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_b-claim-2",
+            "summary": "The PRD should optimize for uncertainty reduction through instrumentation, constrained rollout, and pre-committed decision gates.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_b-claim-3",
+            "summary": "Without clear success thresholds and reversal criteria, any build decision is likely to produce ambiguous and low-decision-value outcomes.",
+            "evidence_refs": [],
+            "is_major": true
+          }
+        ],
+        "citations": [],
+        "conclusion_confidence": "medium",
+        "open_questions": [
+          "What specific user signal originally motivated the feature idea?",
+          "Which user segment is most likely to experience the problem frequently enough to test?",
+          "What existing workaround or baseline behavior should the MVP be compared against?",
+          "What quantitative threshold would justify moving from validation MVP to full investment?"
+        ],
+        "critique_responses": []
+      },
+      "rebuttal": {
+        "target_side": "side_a",
+        "finding_id": "finding-2",
+        "target_claim_ids": [
+          "side_a-claim-2"
+        ],
+        "claim_under_attack": "All seven identified evidence gaps are currently at zero and no partial credit is warranted.",
+        "attack_type": "evidence_gap",
+        "evidence_or_reason": "The visible case packet says the feature has weak supporting evidence, not necessarily zero evidence across every listed dimension. The artifact infers a total absence of user, market, business, technical, and risk evidence from the fact that no evidence was included in the packet, but that is an omission in the prompt context, not proof that each gap is empty. That makes the 'all seven are zero' conclusion stronger than the visible record supports.",
+        "severity": "medium"
+      },
+      "final": {
+        "run_id": "conflict-2026-04-14-204303957Z-feature-weak-evidence",
+        "side_id": "side_b",
+        "round": "final",
+        "artifact_markdown": "# Revised artifact\n\n## PRD: Evidence-Limited Feature Validation\n\n## Overview\nThis document does not authorize a feature build yet. The case packet provides no supporting evidence beyond the existence of a feature idea, so the immediate product decision is whether to fund a short discovery phase and only then decide whether an MVP is justified.\n\n## Current Evidence Base\n- No user research is provided.\n- No usage data is provided.\n- No market or competitive evidence is provided.\n- No triggering signal is specified beyond a proposed feature concept.\n\nBecause the evidence base is effectively empty, the default recommendation is not full launch and not immediate MVP build. The correct near-term action is to establish whether any build is warranted.\n\n## Problem\nA feature concept exists without enough evidence to show that the problem is real, frequent, painful, and poorly served by current workflows. Building now would create a high risk of producing motion without decision value.\n\n## Goal\nReduce uncertainty to the point where the team can make a defensible go/hold/stop decision on whether to build a validation MVP.\n\n## Non-Goals\n- Full feature launch\n- Broad rollout\n- Treating feature conception itself as proof of user demand\n- Using low-signal prototype usage as a substitute for problem validation\n\n## Proposed Approach\nUse a two-step gate:\n1. Run a short discovery phase to confirm the problem, target segment, and baseline workaround.\n2. Approve a narrowly scoped MVP only if discovery produces enough evidence that testing the solution in-product is the next best step.\n\n## Discovery Exit Criteria\nAn MVP becomes warranted only if discovery establishes all of the following:\n- A specific target segment with a repeated problem\n- Evidence that the problem is important enough to change behavior\n- A clear current workaround or baseline for comparison\n- A concrete hypothesis for how the feature improves the workflow\n- Success thresholds that would justify further investment\n\n## Conditional MVP Scope\nIf the discovery gate passes, the MVP should include only:\n- Core workflow only\n- Limited cohort exposure\n- Event instrumentation for discovery, activation, repeat usage, and abandonment\n- In-product feedback capture\n- Pre-committed review date and go/hold/stop criteria\n\n## Success Metrics\nDiscovery-phase metrics:\n- Number of validated problem instances in the target segment\n- Strength and consistency of reported pain\n- Evidence of inadequate current workaround\n- Clarity on segment-level demand and urgency\n\nConditional MVP metrics:\n- Adoption within target cohort\n- Activation through core workflow completion\n- Repeat usage in the evaluation window\n- Qualitative confirmation that the feature solved the intended problem\n- Negative signals such as confusion, abandonment, or support load\n\n## Risks\n- Building before confirming a real problem\n- Confusing interest in a concept with demand for a solution\n- Running an MVP without a credible comparison baseline\n- Escalating from experiment to roadmap commitment before evidence improves\n\n## Decision Frame\nThe immediate decision is whether to authorize discovery, not whether to launch the feature and not yet whether to build even a small MVP. Recommendation: do not approve implementation until the team produces minimum discovery evidence. If discovery confirms a repeated, important problem and a plausible solution hypothesis, then approve a tightly scoped validation MVP.\n\n## Unknowns & Evidence Gaps\n- What concrete signal originated the feature idea\n- Which user segment experiences the problem most often\n- How users solve the problem today\n- Whether the problem is painful enough to justify behavior change\n- What evidence threshold should trigger MVP approval versus further discovery or stop\n\n## Pass/Fail Readiness\nPass if:\n- A named target segment is identified\n- The team can cite concrete discovery evidence for the problem\n- Baseline behavior or workaround is documented\n- MVP approval criteria are defined before build work starts\n- The team commits to a stop decision if discovery does not validate the need\n\nFail if:\n- The only input is a feature idea\n- No user or market signal is documented\n- The team cannot specify what would justify building\n- Scope pressure turns discovery into implementation by default\n- There is no explicit hold/stop path\n\n## Recommended Next Artifact\nA feature evidence memo containing: origin signal, target segment, interview findings, current workaround analysis, problem frequency and severity assessment, and explicit criteria for whether an MVP should be built at all.",
+        "claims": [
+          {
+            "claim_id": "side_b-claim-1",
+            "summary": "With no supporting evidence provided, the immediate recommendation should be a discovery gate before any MVP build, rather than defaulting straight to implementation.",
+            "evidence_refs": [
+              "ctx-1"
+            ],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_b-claim-2",
+            "summary": "A narrowly scoped validation MVP is appropriate only after discovery establishes a specific user problem, target segment, baseline workaround, and decision thresholds.",
+            "evidence_refs": [
+              "ctx-1"
+            ],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_b-claim-3",
+            "summary": "Without explicit pre-build evidence and go/hold/stop criteria, a feature effort will produce low decision value and high interpretation risk.",
+            "evidence_refs": [
+              "ctx-1"
+            ],
+            "is_major": true
+          }
+        ],
+        "citations": [
+          "ctx-1"
+        ],
+        "conclusion_confidence": "medium",
+        "open_questions": [],
+        "critique_responses": [
+          {
+            "finding_id": "finding-1",
+            "disposition": "adopted",
+            "rationale": "The critique correctly identified that the first-pass artifact jumped from weak evidence to an MVP recommendation without grounding that move in any actual signal. I revised the artifact to make the empty evidence base explicit and changed the recommendation from 'build a small MVP now' to 'run discovery first, then approve an MVP only if minimum evidence thresholds are met.'"
+          }
+        ]
+      }
+    }
+  },
+  "judge": {
+    "provider": "openai",
+    "model": "chatgpt-pro",
+    "reasoning_effort": "medium",
+    "access_mode": "subscription_cli",
+    "blind_labels": true,
+    "family_blind": false,
+    "selection_policy": "single_judge_cli",
+    "verdict": {
+      "winner": "side_a",
+      "margin": 0.2,
+      "rubric_scores": {
+        "side_a": {
+          "claim_quality": 4,
+          "evidence_discipline": 5,
+          "responsiveness_to_critique": 4,
+          "internal_consistency": 5,
+          "decision_usefulness": 4,
+          "weighted_total": 4.4
+        },
+        "side_b": {
+          "claim_quality": 4,
+          "evidence_discipline": 4,
+          "responsiveness_to_critique": 5,
+          "internal_consistency": 4,
+          "decision_usefulness": 4,
+          "weighted_total": 4.2
+        }
+      },
+      "dimension_rationales": {
+        "claim_quality": "Both sides made disciplined claims after revision. Side A's central claim was slightly stronger because it tied the recommendation directly to the absence of reviewable evidence and kept the decision boundary explicit.",
+        "evidence_discipline": "Side A was stronger on evidence discipline because it precisely distinguished 'no evidence exists' from 'no evidence was provided for review' and avoided overclaiming after critique. Side B improved materially, but its use of a citation token adds little beyond the packet itself.",
+        "responsiveness_to_critique": "Both sides responded well. Side B made the larger correction by reversing its initial MVP-first stance into a discovery-first gate, while Side A tightened its language and preserved its core conclusion.",
+        "internal_consistency": "Side A was more internally consistent because its recommendation, readiness gates, and next artifact all point to the same upstream action. Side B is coherent, but its document still carries some PRD/MVP framing tension while arguing that implementation should not yet be approved.",
+        "decision_usefulness": "Both artifacts are decision-useful, but Side A gives a slightly clearer immediate operating decision: fail readiness now, run a bounded discovery sprint, and require reviewable evidence before returning to PRD work."
+      },
+      "side_summaries": {
+        "side_a": {
+          "strengths": [
+            "Defines a crisp no-build-yet decision and aligns the next artifact to the evidence gap."
+          ],
+          "weaknesses": [
+            "Leans more toward a gate memo than a feature PRD, which narrows product-detail usefulness."
+          ]
+        },
+        "side_b": {
+          "strengths": [
+            "Recovered well from critique by converting the recommendation into a discovery-first decision gate with clear MVP conditions."
+          ],
+          "weaknesses": [
+            "Retains some ambiguity between drafting a PRD and arguing that the team should not yet authorize implementation."
+          ]
+        }
+      },
+      "decisive_dimension": "evidence_discipline",
+      "decisive_findings": [
+        "Side A corrected the key overreach from 'zero evidence' to 'no reviewable evidence provided' and kept that distinction consistent throughout the artifact.",
+        "Side B substantially improved, but Side A ended with the tighter calibration between what the packet actually shows and what the artifact concludes.",
+        "That calibration made Side A's no-build-yet recommendation slightly more defensible and cleaner for a blinded judging standard."
+      ],
+      "judge_confidence": "medium",
+      "needs_human_review": false,
+      "rationale": "Side A wins narrowly because both final artifacts converged on a sensible discovery-first recommendation, but Side A ended with the stronger calibration to the actual record. Its revision directly addressed the critique, preserved a consistent fail-readiness conclusion, and translated the evidence vacuum into a concrete next artifact without implying more support than the packet provides. Side B improved significantly and was arguably the better recovery in critique phase, but Side A remained slightly better grounded and therefore slightly more reliable as a decision artifact."
+    }
+  },
+  "budgets": {
+    "max_visible_rounds": 3,
+    "max_cost_usd": 1000000,
+    "max_latency_ms": 360000,
+    "min_margin_for_verdict": 0.1
+  },
+  "results": {
+    "winner": "side_a",
+    "margin": 0.2,
+    "judge_confidence": "medium",
+    "swap_stable": null,
+    "needs_human_review": false
+  },
+  "metrics": {
+    "disagreement_rate": 0.3333,
+    "declared_adoption_rate": 1,
+    "substantive_revision_rate": 1,
+    "unsupported_claim_count": 3,
+    "self_contradiction_count": 0,
+    "total_estimated_cost_usd": 0,
+    "swap_margin_delta": null,
+    "judge_margin": 0.2,
+    "cost_per_resolved_run": 0
+  },
+  "audit": {
+    "identity_leak_warnings": [],
+    "protocol_violations": []
+  }
+}

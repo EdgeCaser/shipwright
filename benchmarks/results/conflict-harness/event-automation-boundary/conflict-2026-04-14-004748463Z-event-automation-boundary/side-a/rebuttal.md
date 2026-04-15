@@ -1,0 +1,13 @@
+# Critique: finding-1
+
+- Target Side: side_b
+- Target Claim IDs: side_b-claim-1
+- Attack Type: evidence_gap
+- Severity: high
+
+## Claim Under Attack
+Phase 1 should automate WhatsApp event intake and internal draft workflows while keeping pricing, availability, and other customer commitments behind deterministic systems and human approval.
+
+## Evidence Or Reason
+The claim asserts Phase 1 can deliver operational leverage through WhatsApp intake automation, yet the artifact's own Unknowns section admits no customer research evidence exists showing WhatsApp is the preferred channel, no target event segments or volume data are provided, no coordinator workload baseline exists, and no current conversion metrics are available. The PRD recommends proceeding with a constrained build despite acknowledging these foundational gaps. A Phase 1 decision to build WhatsApp automation without evidence of channel fit, demand volume, or measurable coordinator burden is speculative — the PRD cannot substantiate the operational leverage claim it uses to justify the build decision. The Decision Frame treats the human-approval boundary as sufficient risk mitigation but does not address the risk of building for the wrong channel or solving a problem whose magnitude is unquantified.
+

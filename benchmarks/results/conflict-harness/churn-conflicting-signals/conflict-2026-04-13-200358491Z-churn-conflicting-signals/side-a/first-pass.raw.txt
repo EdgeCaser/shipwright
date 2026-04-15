@@ -1,0 +1,50 @@
+
+
+```json
+{
+  "run_id": "conflict-2026-04-13-200358491Z-churn-conflicting-signals",
+  "side_id": "side_a",
+  "round": "first_pass",
+  "artifact_markdown": "# Churn Reduction PRD: Navigating Conflicting Signals\n\n## Decision Frame\n\n**Problem statement:** Churn metrics are sending conflicting signals relative to strategic growth targets. Specifically, leading indicators (e.g., engagement frequency, feature adoption depth) suggest improving health, while lagging indicators (e.g., logo churn rate, net revenue retention) show deterioration. This divergence makes it unsafe to commit resources to either a retention-first or acquisition-first strategy without resolving which signal set reflects ground truth.\n\n**Decision to be made:** Should we invest in a retention intervention program now based on lagging churn indicators, or hold pending further investigation into why leading indicators contradict the churn trend?\n\n**Stakeholders:** Product (owns intervention design), Growth (owns acquisition targets that compete for resources), Finance (owns NRR forecasts), CS (owns at-risk account management).\n\n**Strategic context:** Current strategy targets 130% NRR and 20% logo growth. These targets were set assuming churn would hold at or below 8% annual logo churn. Observed logo churn is trending toward 11-12%, which — if sustained — makes the 130% NRR target unreachable without significant expansion revenue acceleration.\n\n**Why signals may conflict:**\n1. **Cohort composition shift** — newer cohorts may show strong engagement (lifting leading indicators) while older, higher-value cohorts churn (driving lagging indicators up). This is the most dangerous scenario because it masks revenue concentration risk.\n2. **Measurement lag** — leading indicators may genuinely predict future improvement that hasn't yet appeared in lagging metrics. If true, intervention spend now would be premature.\n3. **Engagement-without-value trap** — users may be active but not deriving business outcomes, meaning engagement metrics are decoupled from retention drivers.\n4. **Segment-level cancellation** — churn may be concentrated in a specific segment (e.g., SMB, specific vertical, specific use case) that leading indicators are not weighted to reflect.\n\n## Unknowns & Evidence Gaps\n\n| # | Unknown | Why It Matters | Evidence Needed | Effort to Resolve |\n|---|---------|---------------|-----------------|-------------------|\n| 1 | Are leading indicators predictive of retention in our product? | If engagement doesn't predict retention, our health scoring model is broken and we're flying blind. | Retrospective correlation analysis: do accounts that showed strong leading indicators 90 days ago actually retain at higher rates? | Medium — requires data team, ~1 week |\n| 2 | Is churn concentrated by cohort vintage? | Cohort-specific churn changes the intervention from product-wide to segment-specific. | Cohort-stratified churn analysis comparing pre-2025 vs. post-2025 accounts on both logo and revenue churn. | Low — data exists, needs slicing |\n| 3 | Is churn concentrated by segment, vertical, or use case? | Determines whether we need a horizontal or vertical intervention. | Segment-level churn breakdown with statistical significance testing. | Low — same data, different cut |\n| 4 | What are churned customers citing as reasons? | Qualitative signal to triangulate with quantitative conflict. | Exit survey analysis + CS win/loss notes for last 2 quarters. | Low — data exists but may not be aggregated |\n| 5 | Has our definition of \"engaged\" drifted from value-delivering behavior? | If engagement metrics track activity but not outcomes, leading indicators are unreliable. | Map current engagement scoring inputs against customer-reported value drivers from last NPS/CSAT cycle. | Medium — requires cross-referencing two data sources |\n| 6 | Are expansion revenue assumptions still valid given churn composition? | 130% NRR target depends on expansion from retained base — if high-value accounts churn, expansion pool shrinks. | Revenue-weighted churn analysis showing expansion potential of retained vs. churned cohort. | Medium |\n\n## Pass/Fail Readiness\n\n**Readiness verdict: FAIL — not ready to commit to a specific churn intervention.**\n\n**Rationale:** The core conflict between leading and lagging indicators is unresolved. Committing resources to a retention program now risks one of two failure modes:\n- **False alarm:** If leading indicators are correct and churn is a lagging artifact, we waste resources on an intervention the product is already self-correcting.\n- **Wrong intervention:** If churn is segment-concentrated but we deploy a horizontal intervention, we treat symptoms while the root cause persists in the affected segment.\n\n**What would change this to PASS:**\n1. Unknowns #1 and #2 are resolved (predictive validity of leading indicators + cohort concentration analysis). These are the minimum evidence threshold.\n2. A clear hypothesis emerges for *why* signals conflict, supported by data from at least two independent evidence sources.\n3. The proposed intervention can be scoped to a testable cohort with defined success metrics and a 90-day evaluation window.\n\n**What we can do now (low-risk, high-information actions):**\n- Commission the cohort-stratified churn analysis (Unknown #2) — this is the single highest-leverage investigation because it disambiguates most conflict hypotheses.\n- Aggregate exit survey and CS win/loss data (Unknown #4) — qualitative triangulation at near-zero cost.\n- Place a hold on any planned reduction in CS coverage for at-risk accounts until the analysis completes.\n\n## Recommended Next Artifact\n\n**Next artifact: Evidence Brief (target: 2 weeks)**\n\nA structured evidence brief that resolves Unknowns #1-4 and presents a clear hypothesis for the signal conflict. This brief should include:\n- Cohort-stratified churn data with statistical significance\n- Retrospective predictive validity test of leading indicators\n- Segment-level churn concentration analysis\n- Qualitative themes from exit surveys and CS notes\n- A recommended intervention hypothesis with testable scope\n\nUpon completion of the evidence brief, the team should reconvene to determine whether conditions now meet PASS readiness for a full churn intervention PRD with specific feature/program commitments, success metrics, and resource allocation.\n\n**Escalation trigger:** If the cohort analysis reveals that churn is concentrated in accounts representing >30% of ARR, escalate immediately to executive team without waiting for the full evidence brief — this would indicate a revenue emergency requiring faster action than the standard 2-week timeline.",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "Conflicting leading vs. lagging churn indicators make it unsafe to commit to a specific intervention without first resolving which signal set reflects ground truth.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "Cohort composition shift is the most dangerous explanation for signal conflict because it masks revenue concentration risk — newer healthy cohorts inflate leading indicators while older high-value cohorts churn.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-3",
+      "summary": "The PRD fails pass/fail readiness: committing resources now risks either a false alarm (wasted spend on self-correcting trend) or wrong intervention (horizontal fix for segment-specific problem).",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-4",
+      "summary": "Cohort-stratified churn analysis is the single highest-leverage investigation because it disambiguates most conflict hypotheses at low effort.",
+      "evidence_refs": [],
+      "is_major": false
+    },
+    {
+      "claim_id": "side_a-claim-5",
+      "summary": "An escalation trigger at >30% ARR concentration in churning accounts converts the standard 2-week evidence timeline into an immediate executive escalation.",
+      "evidence_refs": [],
+      "is_major": false
+    }
+  ],
+  "citations": [],
+  "open_questions": [
+    "No external evidence was provided in the case packet, so all claims are derived from domain reasoning about churn dynamics rather than cited data. The evidence brief recommended as the next artifact is specifically designed to fill this gap.",
+    "The strategic targets (130% NRR, 20% logo growth, 8% churn baseline) are illustrative — actual targets would need to be sourced from the company's current operating plan.",
+    "The relative weighting of leading vs. lagging indicators in the company's health scoring model is unknown and may itself be a root cause of the signal conflict."
+  ],
+  "critique_responses": []
+}
+```
+

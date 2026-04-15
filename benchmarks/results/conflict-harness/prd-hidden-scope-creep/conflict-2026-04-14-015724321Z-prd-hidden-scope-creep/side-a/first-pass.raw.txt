@@ -1,0 +1,43 @@
+
+
+```json
+{
+  "run_id": "conflict-2026-04-14-015724321Z-prd-hidden-scope-creep",
+  "side_id": "side_a",
+  "round": "first_pass",
+  "artifact_markdown": "# PRD: Team Inbox Workflow Handoff Improvement\n\n## Decision Frame\n\n**Problem:** Team inbox handoff between agents is lossy — context drops, ownership is ambiguous during transitions, and customers experience repeated questions or stalled threads. This erodes CSAT and inflates handle time.\n\n**Decision to make:** Should we invest in a structured handoff protocol within the team inbox, and if so, what is the minimum viable scope that demonstrably reduces handoff-related resolution failures?\n\n**Scope boundary:** This PRD covers handoff *between human agents* within a shared team inbox. It does NOT cover:\n- Bot-to-human escalation (separate system)\n- Cross-team routing (requires org-level workflow changes)\n- Inbox triage/assignment logic (upstream problem)\n- SLA engine or priority scoring changes\n\n**Stakeholders:** Support Operations (owner), Product Engineering (build), Support Agents (end users), CX Leadership (sponsor).\n\n**Success criteria:** Reduce handoff-related re-contacts by 30% within 8 weeks of launch, measured by tickets where a customer repeats information after agent change.\n\n## Context & Current State\n\n### How handoffs work today\n1. Agent A reassigns ticket to Agent B (or to queue) via dropdown.\n2. No structured context transfer — Agent A may leave a free-text internal note, or may not.\n3. Agent B opens ticket, reads full thread history to reconstruct context.\n4. If Agent B misses context, customer is asked to repeat information.\n\n### Observed failure modes\n- **Silent reassign:** No internal note left. Agent B starts cold.\n- **Partial note:** Agent A summarizes incompletely — key commitments or prior troubleshooting steps omitted.\n- **Queue limbo:** Ticket reassigned to queue with no specific owner. Sits unactioned.\n- **Ownership ambiguity:** During transition window, neither agent considers themselves responsible.\n\n### Quantitative signals (assumed — require validation)\n- Est. 15-25% of multi-touch tickets involve at least one handoff.\n- Handoff tickets have ~40% longer resolution time (hypothesis, needs data pull).\n- Internal NPS from agents cites \"picking up someone else's mess\" as top frustration.\n\n## Proposed Solution\n\n### Core mechanism: Structured Handoff Card\nWhen an agent initiates reassignment, the system presents a required handoff card with:\n1. **Summary** (free text, required, min 20 chars): What is the customer's issue?\n2. **Status** (structured select): What stage is this at? (New / Investigating / Waiting on customer / Waiting on internal / Solution identified)\n3. **Commitments made** (free text, optional but prompted): Anything promised to the customer?\n4. **Next action** (free text, required): What should the next agent do first?\n\nThe handoff card is displayed prominently to Agent B upon ticket open — not buried in the note stream.\n\n### Supporting changes\n- **Ownership lock:** Ticket has exactly one owner at all times. Reassign is atomic — old owner released only when new owner is assigned.\n- **Handoff indicator:** Visual badge on tickets that have been handed off, with count.\n- **Handoff quality nudge:** If Agent B re-asks a question the customer already answered (detected via simple keyword overlap), surface a prompt: \"The customer may have already provided this — check handoff card.\"\n\n### What this is NOT\n- Not an AI summarizer. The handoff card is human-authored. AI summarization is a future iteration but introduces trust/accuracy risks that would slow this initiative.\n- Not a workflow engine. We are not changing routing rules, assignment logic, or SLA handling.\n- Not a performance management tool. Handoff data is for operational improvement, not individual agent scoring.\n\n## Unknowns & Evidence Gaps\n\n| # | Unknown | Impact if wrong | How to resolve | Status |\n|---|---------|-----------------|----------------|--------|\n| U1 | Actual handoff frequency and resolution time delta | Scope may be too small to justify investment | Query ticket system for reassignment events + resolution times, segment by handoff count | **Not started** |\n| U2 | Agent compliance with required fields | If agents game it (\"asdf\" in summary), value collapses | Prototype with 5-agent pilot, measure field quality after 2 weeks | **Not started** |\n| U3 | Whether keyword-overlap nudge produces false positives at annoying rates | Agents ignore or disable nudge | Threshold tuning needed — run offline analysis on 500 historical handoff tickets | **Not started** |\n| U4 | Whether handoff card display position is noticeable enough | Agent B still reads full thread, ignoring card | A/B test card placement (top-of-ticket vs. modal on open) during pilot | **Not started** |\n| U5 | Ticket system API supports atomic reassignment with required fields | May require workaround or system upgrade | Engineering spike, 2 days | **Not started** |\n\n## Pass/Fail Readiness\n\n**Current readiness: NOT READY for build. Ready for validation sprint.**\n\n| Gate | Status | Blocker? |\n|------|--------|----------|\n| Problem validated with data | NO — handoff frequency and impact are estimated, not measured | YES |\n| Solution shaped with user input | NO — no agent interviews or prototype feedback yet | YES |\n| Technical feasibility confirmed | NO — atomic reassignment API capability unknown | YES |\n| Scope locked and bounded | PARTIAL — core scope is clear, but nudge feature may be cut depending on U3 | No |\n| Success metric is measurable | YES — re-contact rate after handoff is queryable | No |\n| Stakeholder alignment | PARTIAL — CX Leadership sponsor identified, Eng capacity not confirmed | Soft yes |\n\n**Verdict:** Three hard blockers remain. Do not proceed to engineering build until U1, U2, and U5 are resolved. Recommend a 2-week validation sprint before committing to build.\n\n## Recommended Next Artifact\n\n**Validation Sprint Plan** containing:\n1. **Data pull (U1):** Query ticket system for handoff frequency, resolution time segmentation, and re-contact rates. 3 days.\n2. **Agent interviews (U2):** 5 structured interviews with high-volume agents on current handoff pain points and reaction to proposed handoff card. 3 days.\n3. **Engineering spike (U5):** Confirm atomic reassignment feasibility and estimate build effort. 2 days.\n4. **Decision checkpoint:** If U1 confirms >15% handoff rate AND >20% resolution time increase, proceed to build. Otherwise, reconsider prioritization.\n\nDo not produce a technical spec or sprint plan until the validation sprint completes with passing results.",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "Handoff failures are driven by lack of structured context transfer at reassignment time, not by routing or triage problems upstream.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "A required handoff card with four fields (summary, status, commitments, next action) is the minimum viable intervention that addresses the context-loss failure mode without requiring AI or workflow engine changes.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-3",
+      "summary": "The PRD is explicitly not ready for build — three hard blockers (data validation, agent compliance risk, technical feasibility) must be resolved in a validation sprint before committing engineering resources.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-4",
+      "summary": "Scope is deliberately bounded to exclude bot-to-human escalation, cross-team routing, AI summarization, and performance scoring to prevent hidden scope creep.",
+      "evidence_refs": [],
+      "is_major": false
+    }
+  ],
+  "citations": [],
+  "open_questions": [
+    "No evidence was provided in the case packet — all quantitative claims in this PRD are flagged as hypotheses requiring validation before build commitment.",
+    "The nudge feature (keyword-overlap detection) may represent scope creep itself and should be evaluated as a separate fast-follow, not bundled into v1."
+  ],
+  "critique_responses": []
+}
+```
+

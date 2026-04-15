@@ -1,0 +1,15 @@
+# Verdict
+
+- Winner: side_b
+- Margin: 0.4
+- Judge Confidence: medium
+- Needs Human Review: false
+
+## Decisive Findings
+- Side B materially improved after critique by removing its unsupported cost-asymmetry claim and tightening its thesis to a narrower, packet-grounded argument about the incompatibility of full-speed execution with an active board-led compliance review.
+- Side A fixed the unsupported prior-SEC-history claim, but its final memo still leans on several weakly supported assertions about domestic/allied revenue mix, supply-constrained customer behavior, and the idea that customers lost over compliance are not strategically worth keeping.
+- Both sides reached a similar practical recommendation, but Side B presented the cleaner decision logic: selective continuity is justified not because slowdown costs are trivial, but because business-as-usual is hard to defend while controls are under investigation.
+
+## Rationale
+Side B wins because the final artifact is more evidence-disciplined and more responsive to critique while preserving decision usefulness. Both sides converge on the same strategic answer, but Side B does a better job grounding that answer in facts actually present in the packet and explicitly limits its claims where the evidence is incomplete. Side A remains strong and concrete, but its recommendation still depends in part on speculative commercial assumptions that are asserted more strongly than the record supports.
+

@@ -1,0 +1,289 @@
+You are the judge in a blinded conflict harness run.
+Provider identity is intentionally hidden. Do not infer provider family.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "winner": "tie",
+  "margin": 0,
+  "rubric_scores": {
+    "side_a": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    },
+    "side_b": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    }
+  },
+  "decisive_findings": [
+    "Replace with the actual decisive findings from this run."
+  ],
+  "judge_confidence": "low",
+  "needs_human_review": true,
+  "rationale": "One-paragraph explanation of the verdict."
+}
+
+Use min_margin_for_verdict = 0.1.
+judge_confidence rubric:
+- high: the winning side is clearly stronger on at least 3 rubric dimensions and has no major unsupported-claim problem
+- medium: the winning side leads overall but has at least 1 weak dimension or absorbed only part of the opposing critique
+- low: score margin is below min_margin_for_verdict or both sides have significant unsupported claims
+
+Judge packet:
+{
+  "case_packet": {
+    "scenario_id": "prd-hidden-scope-creep",
+    "title": "PRD with hidden scope creep",
+    "prompt": "Write a PRD for a team inbox workflow handoff improvement.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-14-130926403Z-prd-hidden-scope-creep",
+      "side_id": "side_a",
+      "round": "first_pass",
+      "artifact_markdown": "# PRD: Team Inbox Workflow Handoff Improvement\n\n## Decision Frame\n\n**Problem statement:** Team inbox handoff between agents (human or automated) suffers from context loss, ownership ambiguity, and dropped threads. When a conversation moves from one handler to another, the receiving party lacks sufficient context to continue without re-asking the customer or spending significant time reading history.\n\n**Decision to be made:** Should we invest in a structured handoff protocol within the team inbox, and if so, what is the minimum viable scope that reduces handoff friction without over-engineering the workflow?\n\n**Stakeholders:**\n- Support team leads (primary users of handoff)\n- Individual support agents (give and receive handoffs)\n- Customers (experience the quality delta)\n- Engineering (build cost and maintenance)\n- Product (prioritization against competing roadmap items)\n\n**Scope boundary:** This PRD covers the handoff mechanism only — not routing/assignment logic, not SLA enforcement, not queue management. Those are adjacent concerns that must be addressed separately.\n\n**What this PRD is NOT:**\n- A redesign of the inbox UI\n- An auto-routing or AI triage system\n- A workforce management or scheduling tool\n- A customer-facing status page\n\n## Context & Evidence\n\n**Observed problems (qualitative, not yet validated at scale):**\n1. Agents report spending ~3-5 minutes per handoff reading thread history before responding (self-reported, N=12 interviews — not statistically rigorous)\n2. Customers frequently receive \"Can you explain your issue again?\" after a handoff, driving repeat contacts\n3. No structured field exists for handoff context — agents use ad-hoc internal notes or nothing\n4. Ownership after handoff is ambiguous: original agent and new agent both see the thread, neither has clear accountability\n\n**Evidence gaps (critical):**\n- No quantitative measurement of handoff frequency, duration, or failure rate exists today\n- Customer satisfaction delta between handoff vs. single-agent resolution is assumed negative but unmeasured\n- We do not know what percentage of threads involve handoffs at all\n\n## Proposed Solution (Minimum Scope)\n\n**Core mechanism: Structured Handoff Card**\n\nWhen an agent initiates a handoff, the system requires a handoff card containing:\n- **Summary:** 1-2 sentence plain-language summary of the issue and current state\n- **Action needed:** What the next agent should do (not just \"please handle\")\n- **Customer sentiment:** Quick tag (frustrated / neutral / positive)\n- **Blockers:** Any known blockers or pending items\n\n**Ownership transfer:**\n- Handoff explicitly transfers ownership — the original agent is removed from the active owner list\n- A single owner is enforced at all times (no co-ownership ambiguity)\n- Audit trail records who handed off to whom and when\n\n**What is explicitly excluded from v1:**\n- AI-generated summaries (future iteration, requires separate evaluation)\n- Handoff rejection/negotiation flow (receiving agent cannot decline in v1)\n- Cross-team handoffs (v1 is intra-team only)\n- SLA clock adjustment on handoff\n- Bulk/batch handoff tooling\n\n## Unknowns & Evidence Gaps\n\n| Unknown | Impact if wrong | How to close | Status |\n|---|---|---|---|\n| Actual handoff frequency | Entire investment thesis collapses if handoffs are rare (<5% of threads) | Instrument current inbox to count ownership changes over 30 days | **Not started — blocking** |\n| Agent compliance with structured fields | Handoff cards become empty boilerplate if agents skip them | Prototype with 1 team for 2 weeks, measure fill rate and quality | Not started |\n| Customer impact of handoffs | If customers don't notice handoffs, ROI is lower than assumed | Compare CSAT for handoff vs. non-handoff threads (requires handoff instrumentation first) | Blocked by row 1 |\n| Whether \"action needed\" field actually reduces re-reading time | Core value prop depends on this | Time-on-task measurement in prototype | Not started |\n| Cross-team handoff prevalence | If most handoffs are cross-team, intra-team-only v1 misses the primary pain | Include cross-team flag in instrumentation | Not started |\n\n**Honest assessment:** We are proposing a solution before validating the problem's magnitude. The first investment should be instrumentation, not feature development.\n\n## Pass/Fail Readiness\n\n**Readiness verdict: NOT READY for engineering investment.**\n\n| Criterion | Status | Notes |\n|---|---|---|\n| Problem validated quantitatively | ❌ Fail | No data on handoff frequency or cost |\n| Solution scoped to validated problem | ❌ Fail | Scope based on qualitative interviews only |\n| Success metrics defined | ⚠️ Partial | We know what to measure but have no baseline |\n| Stakeholder alignment | ⚠️ Partial | Support leads enthusiastic; eng capacity not confirmed |\n| Technical feasibility assessed | ❌ Fail | No eng spike or technical design review completed |\n| Edge cases enumerated | ⚠️ Partial | Known: concurrent handoffs, offline agents, thread merges — not yet resolved |\n\n**What must be true before this PRD is actionable:**\n1. Handoff frequency data collected (minimum 30-day window)\n2. Confirmed that handoffs represent ≥10% of threads OR have measurably worse CSAT\n3. Engineering spike confirms handoff card can integrate with current inbox architecture\n4. At least one team lead commits to a 2-week prototype participation\n\n## Success Metrics (contingent on passing readiness gates)\n\n- **Primary:** Reduce median time-to-first-response after handoff by ≥30%\n- **Secondary:** Eliminate \"please re-explain\" messages post-handoff (target: <5% of handoff threads)\n- **Guardrail:** Handoff card completion time must not exceed 60 seconds (or agents will skip it)\n- **Guardrail:** No increase in total handle time per thread\n\n## Recommended Next Artifact\n\n**Immediate next step:** Instrumentation spec for handoff frequency measurement.\n\nThis is NOT a technical design doc for the handoff card feature. The next artifact should specify:\n1. What constitutes a \"handoff\" in current system logs (ownership change event definition)\n2. What data to collect (frequency, time-of-day, team, thread age at handoff, post-handoff resolution time)\n3. Dashboard for stakeholder review after 30-day collection window\n4. Go/no-go criteria: If handoff frequency is below 5% of threads, this PRD is deprioritized.\n\nOnly after the instrumentation data confirms the problem's magnitude should the team proceed to a technical design for the handoff card mechanism.\n\n## Risks & Assumptions\n\n| Assumption | Risk if wrong |\n|---|---|\n| Agents will fill out handoff cards honestly | Cards become noise; feature is abandoned |\n| The problem is context loss, not routing | We build context tools when the real issue is assignment logic |\n| Intra-team handoffs are the primary pain | V1 ships but misses the cross-team cases that matter most |\n| Structured fields beat free-text notes | We add friction without improving quality |",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "The PRD is not ready for engineering investment because no quantitative data exists on handoff frequency, cost, or customer impact — the first investment should be instrumentation, not feature development.",
+          "evidence_refs": [
+            "ctx-qual-interviews"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "Scope is deliberately constrained to intra-team structured handoff cards only, explicitly excluding AI summaries, cross-team handoffs, routing logic, and SLA adjustments to prevent hidden scope creep.",
+          "evidence_refs": [
+            "ctx-scope-boundary"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "Five critical unknowns are identified with explicit closure methods and blocking relationships — handoff frequency measurement is the gating unknown that must be resolved before any other work proceeds.",
+          "evidence_refs": [
+            "ctx-unknowns-table"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-4",
+          "summary": "The recommended next artifact is an instrumentation spec (not a technical design), with a concrete go/no-go threshold of 5% handoff frequency to prevent investing in a rare-event problem.",
+          "evidence_refs": [
+            "ctx-next-artifact"
+          ],
+          "is_major": false
+        }
+      ],
+      "citations": [
+        "ctx-qual-interviews",
+        "ctx-scope-boundary",
+        "ctx-unknowns-table",
+        "ctx-next-artifact"
+      ],
+      "open_questions": [
+        "What system currently tracks thread ownership, and does it emit events that can be instrumented without code changes?",
+        "Are there existing CSAT surveys that tag whether a handoff occurred, or would this need to be added?",
+        "Is the 'team inbox' a single product or are there multiple inbox implementations across teams?"
+      ],
+      "critique_responses": []
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-14-130926403Z-prd-hidden-scope-creep",
+      "side_id": "side_b",
+      "round": "first_pass",
+      "artifact_markdown": "# PRD: Team Inbox Workflow Handoff Improvement\n\n## Overview\nImprove team inbox handoffs so conversations move between owners without dropped context, duplicate work, or delayed responses. The product should make handoff state explicit, preserve accountability through the transition, and reduce the operational friction of transferring responsibility inside a shared inbox.\n\n## Problem\nTeams using a shared inbox need to reassign threads when ownership changes across shifts, functions, or escalation paths. Current handoffs are often informal, incomplete, or hard to track, which creates avoidable response delays and inconsistent customer experiences.\n\n## Goal\nEnable reliable, observable handoffs of inbox conversations between teammates while preserving context and ownership continuity.\n\n## Non-Goals\n- Redesign the entire team inbox information architecture.\n- Build a full workforce management or shift scheduling system.\n- Automate handoff decisioning with AI in this phase.\n- Rework SLA policy configuration beyond what is required for handoff state handling.\n\n## Users\n- Primary: support agents and operations teammates who transfer conversation ownership.\n- Secondary: team leads who monitor queue health and handoff quality.\n- Tertiary: customers indirectly affected by delayed or inconsistent replies.\n\n## User Stories\n- As an agent, I want to hand off a conversation to a specific teammate or queue with a required note so the next owner understands what to do.\n- As a receiving teammate, I want to see that a conversation was handed off, by whom, why, and what is expected next.\n- As a lead, I want visibility into pending and completed handoffs so I can detect dropped work.\n\n## Requirements\n### Functional Requirements\n1. Users can initiate a handoff from a conversation.\n2. A handoff requires a destination assignee or queue.\n3. A handoff requires a structured note with reason and next action.\n4. The system records handoff metadata: sender, recipient, timestamp, note, and status.\n5. Conversations in handoff show a visible status badge such as `Pending Handoff` or `Accepted`.\n6. The receiving owner is notified of the handoff.\n7. The receiving owner can accept the handoff, which updates conversation ownership and clears the pending state.\n8. If the handoff is not accepted within a defined window, the conversation remains visible for operational follow-up.\n9. Conversation history includes a durable audit trail of handoff events.\n10. Reporting exposes handoff volume, acceptance time, and unresolved pending handoffs.\n\n### UX Requirements\n1. Handoff can be completed in the existing conversation workflow with minimal extra steps.\n2. The required note fields should be short and constrained to improve consistency.\n3. Pending handoff state must be clearly distinguishable from fully reassigned ownership.\n\n### Operational Requirements\n1. Existing permissions for assignment must still apply.\n2. Handoff events must be exportable or queryable for operational review.\n3. The feature must not create silent ownership ambiguity.\n\n## Success Metrics\n- Decrease in conversations with multiple internal reassignments before resolution.\n- Decrease in median time from transfer initiation to next customer-facing response.\n- Increase in percentage of handoffs accepted within target SLA.\n- Reduction in manager-reported dropped or unclear ownership incidents.\n\n## Risks\n- Mandatory notes may add friction and reduce adoption if the flow is too heavy.\n- Teams may misuse handoff as a generic reassignment tool, blurring operational semantics.\n- Pending state may create confusion if ownership rules are not explicit.\n\n## Rollout Recommendation\nShip as a limited workflow improvement behind a team-level flag, measure handoff completion and response outcomes, and expand only if ownership clarity improves without meaningful throughput loss.\n\n## Decision Frame\nDecision required: approve a narrowly scoped handoff workflow focused on explicit transfer intent, required context capture, pending-state visibility, and acceptance tracking. This should be treated as an operational reliability improvement, not as a broader inbox redesign.\n\n## Unknowns & Evidence Gaps\n- No baseline data is provided on current handoff error rate, transfer volume, or response delay impact.\n- No evidence is provided on whether teams prefer direct-user acceptance versus queue-based passive takeover.\n- SLA timeout behavior and escalation rules remain unspecified.\n- Cross-functional edge cases such as handoff rejection, out-of-office recipients, and multi-queue routing need validation.\n\n## Pass/Fail Readiness\nPass if the team agrees to a narrow v1 scope: initiate handoff, require context note, surface pending state, notify recipient, record audit trail, and report unresolved handoffs. Fail if this PRD is used to smuggle in adjacent scope such as queue redesign, automation, staffing logic, or broad analytics rebuild without separate decisions.\n\n## Recommended Next Artifact\nA technical spec that defines state transitions, permission rules, notification triggers, reporting schema, and edge-case handling for acceptance, timeout, and rejection flows.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "The PRD should constrain scope to a narrow handoff workflow that improves ownership clarity without expanding into broader inbox redesign or automation.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        }
+      ],
+      "citations": [
+        "ctx-1"
+      ],
+      "open_questions": [],
+      "critique_responses": []
+    }
+  },
+  "critique_packets": {
+    "side_a": {
+      "target_side": "side_b",
+      "finding_id": "finding-1",
+      "target_claim_ids": [
+        "side_b-claim-1"
+      ],
+      "claim_under_attack": "The PRD should constrain scope to a narrow handoff workflow that improves ownership clarity without expanding into broader inbox redesign or automation.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "The claim asserts narrow scope, yet the artifact's own requirements contradict this framing. Functional Requirement 10 introduces reporting on handoff volume, acceptance time, and unresolved pending handoffs—an analytics surface that is not part of a minimal handoff mechanic. Requirement 8 introduces SLA-adjacent timeout behavior with undefined escalation rules, which the Unknowns section itself admits is unspecified. The Success Metrics section defines four outcome measures requiring baseline instrumentation that does not exist (acknowledged in Unknowns). The Pass/Fail section warns against 'smuggling in adjacent scope such as broad analytics rebuild,' yet the PRD's own requirements do exactly that. The single evidence citation 'ctx-1' references no actual evidence in the case packet, meaning the narrow-scope claim is asserted rather than grounded in any provided data about current handoff patterns, team size, or workflow constraints that would justify this particular scope boundary.",
+      "severity": "high"
+    },
+    "side_b": {
+      "target_side": "side_a",
+      "finding_id": "finding-2",
+      "target_claim_ids": [
+        "side_a-claim-4"
+      ],
+      "claim_under_attack": "The recommended next artifact is an instrumentation spec (not a technical design), with a concrete go/no-go threshold of 5% handoff frequency to prevent investing in a rare-event problem.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "The artifact presents a hard 5% go/no-go threshold as if it were decision-useful, but no visible evidence justifies that cutoff. Frequency alone is also an incomplete gate: a lower-frequency handoff problem could still merit investment if severity, revenue impact, or CSAT damage is high. Without a rationale tying 5% to cost, pain, or opportunity size, the threshold looks arbitrary rather than evidence-based.",
+      "severity": "medium"
+    }
+  },
+  "final_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-14-130926403Z-prd-hidden-scope-creep",
+      "side_id": "side_a",
+      "round": "final",
+      "artifact_markdown": "# PRD: Team Inbox Workflow Handoff Improvement\n\n## Decision Frame\n\n**Problem statement:** Team inbox handoff between agents (human or automated) suffers from context loss, ownership ambiguity, and dropped threads. When a conversation moves from one handler to another, the receiving party lacks sufficient context to continue without re-asking the customer or spending significant time reading history.\n\n**Decision to be made:** Should we invest in a structured handoff protocol within the team inbox, and if so, what is the minimum viable scope that reduces handoff friction without over-engineering the workflow?\n\n**Stakeholders:**\n- Support team leads (primary users of handoff)\n- Individual support agents (give and receive handoffs)\n- Customers (experience the quality delta)\n- Engineering (build cost and maintenance)\n- Product (prioritization against competing roadmap items)\n\n**Scope boundary:** This PRD covers the handoff mechanism only — not routing/assignment logic, not SLA enforcement, not queue management. Those are adjacent concerns that must be addressed separately.\n\n**What this PRD is NOT:**\n- A redesign of the inbox UI\n- An auto-routing or AI triage system\n- A workforce management or scheduling tool\n- A customer-facing status page\n\n## Context & Evidence\n\n**Observed problems (qualitative, not yet validated at scale):**\n1. Agents report spending ~3-5 minutes per handoff reading thread history before responding (self-reported, N=12 interviews — not statistically rigorous)\n2. Customers frequently receive \"Can you explain your issue again?\" after a handoff, driving repeat contacts\n3. No structured field exists for handoff context — agents use ad-hoc internal notes or nothing\n4. Ownership after handoff is ambiguous: original agent and new agent both see the thread, neither has clear accountability\n\n**Evidence gaps (critical):**\n- No quantitative measurement of handoff frequency, duration, or failure rate exists today\n- Customer satisfaction delta between handoff vs. single-agent resolution is assumed negative but unmeasured\n- We do not know what percentage of threads involve handoffs at all\n\n## Proposed Solution (Minimum Scope)\n\n**Core mechanism: Structured Handoff Card**\n\nWhen an agent initiates a handoff, the system requires a handoff card containing:\n- **Summary:** 1-2 sentence plain-language summary of the issue and current state\n- **Action needed:** What the next agent should do (not just \"please handle\")\n- **Customer sentiment:** Quick tag (frustrated / neutral / positive)\n- **Blockers:** Any known blockers or pending items\n\n**Ownership transfer:**\n- Handoff explicitly transfers ownership — the original agent is removed from the active owner list\n- A single owner is enforced at all times (no co-ownership ambiguity)\n- Audit trail records who handed off to whom and when\n\n**What is explicitly excluded from v1:**\n- AI-generated summaries (future iteration, requires separate evaluation)\n- Handoff rejection/negotiation flow (receiving agent cannot decline in v1)\n- Cross-team handoffs (v1 is intra-team only)\n- SLA clock adjustment on handoff\n- Bulk/batch handoff tooling\n\n## Unknowns & Evidence Gaps\n\n| Unknown | Impact if wrong | How to close | Status |\n|---|---|---|---|\n| Actual handoff frequency | Entire investment thesis collapses if handoffs are rare and low-severity | Instrument current inbox to count ownership changes over 30 days | **Not started — blocking** |\n| Handoff severity and revenue impact | Low-frequency handoffs could still justify investment if they correlate with high-value accounts, escalations, or churn events — frequency alone is not a sufficient gate | Cross-reference handoff threads with account tier, ticket escalation status, and churn signals during instrumentation window | Not started |\n| Agent compliance with structured fields | Handoff cards become empty boilerplate if agents skip them | Prototype with 1 team for 2 weeks, measure fill rate and quality | Not started |\n| Customer impact of handoffs | If customers don't notice handoffs, ROI is lower than assumed | Compare CSAT for handoff vs. non-handoff threads (requires handoff instrumentation first) | Blocked by row 1 |\n| Whether \"action needed\" field actually reduces re-reading time | Core value prop depends on this | Time-on-task measurement in prototype | Not started |\n| Cross-team handoff prevalence | If most handoffs are cross-team, intra-team-only v1 misses the primary pain | Include cross-team flag in instrumentation | Not started |\n\n**Honest assessment:** We are proposing a solution before validating the problem's magnitude. The first investment should be instrumentation, not feature development.\n\n## Pass/Fail Readiness\n\n**Readiness verdict: NOT READY for engineering investment.**\n\n| Criterion | Status | Notes |\n|---|---|---|\n| Problem validated quantitatively | ❌ Fail | No data on handoff frequency, severity, or cost |\n| Solution scoped to validated problem | ❌ Fail | Scope based on qualitative interviews only |\n| Success metrics defined | ⚠️ Partial | We know what to measure but have no baseline |\n| Stakeholder alignment | ⚠️ Partial | Support leads enthusiastic; eng capacity not confirmed |\n| Technical feasibility assessed | ❌ Fail | No eng spike or technical design review completed |\n| Edge cases enumerated | ⚠️ Partial | Known: concurrent handoffs, offline agents, thread merges — not yet resolved |\n\n**What must be true before this PRD is actionable:**\n1. Handoff frequency and severity data collected (minimum 30-day window)\n2. Confirmed that handoffs represent a material problem via composite assessment: frequency ≥10% of threads, OR measurably worse CSAT, OR disproportionate concentration in high-value accounts or churn-correlated threads\n3. Engineering spike confirms handoff card can integrate with current inbox architecture\n4. At least one team lead commits to a 2-week prototype participation\n\n## Success Metrics (contingent on passing readiness gates)\n\n- **Primary:** Reduce median time-to-first-response after handoff by ≥30%\n- **Secondary:** Eliminate \"please re-explain\" messages post-handoff (target: <5% of handoff threads)\n- **Guardrail:** Handoff card completion time must not exceed 60 seconds (or agents will skip it)\n- **Guardrail:** No increase in total handle time per thread\n\n## Recommended Next Artifact\n\n**Immediate next step:** Instrumentation spec for handoff measurement — frequency, severity, and impact.\n\nThis is NOT a technical design doc for the handoff card feature. The next artifact should specify:\n1. What constitutes a \"handoff\" in current system logs (ownership change event definition)\n2. What data to collect: frequency, time-of-day, team, thread age at handoff, post-handoff resolution time, account tier, escalation status, and revenue attribution where available\n3. Dashboard for stakeholder review after 30-day collection window\n4. Go/no-go criteria — a composite gate, not a single-metric threshold: the decision to proceed requires evidence that handoffs are both frequent enough and painful enough to justify the build. Specifically, the team should evaluate a weighted composite of (a) handoff volume as percentage of total threads, (b) CSAT differential between handoff and non-handoff threads, and (c) concentration of handoffs in high-value or churn-risk accounts. No single metric is sufficient — a low-frequency problem concentrated in top-tier accounts may merit investment, while a high-frequency problem with negligible customer impact may not.\n\nOnly after the instrumentation data confirms the problem's materiality should the team proceed to a technical design for the handoff card mechanism.\n\n## Risks & Assumptions\n\n| Assumption | Risk if wrong |\n|---|---|\n| Agents will fill out handoff cards honestly | Cards become noise; feature is abandoned |\n| The problem is context loss, not routing | We build context tools when the real issue is assignment logic |\n| Intra-team handoffs are the primary pain | V1 ships but misses the cross-team cases that matter most |\n| Structured fields beat free-text notes | We add friction without improving quality |",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "The PRD is not ready for engineering investment because no quantitative data exists on handoff frequency, severity, or customer impact — the first investment should be instrumentation, not feature development.",
+          "evidence_refs": [
+            "ctx-qual-interviews"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "Scope is deliberately constrained to intra-team structured handoff cards only, explicitly excluding AI summaries, cross-team handoffs, routing logic, and SLA adjustments to prevent hidden scope creep.",
+          "evidence_refs": [
+            "ctx-scope-boundary"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "Six critical unknowns are identified with explicit closure methods and blocking relationships — handoff frequency and severity measurement is the gating unknown that must be resolved before any other work proceeds.",
+          "evidence_refs": [
+            "ctx-unknowns-table"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-4",
+          "summary": "The recommended next artifact is an instrumentation spec (not a technical design), with a composite go/no-go gate evaluating frequency, CSAT impact, and concentration in high-value accounts — no single metric is sufficient to make the proceed/deprioritize decision.",
+          "evidence_refs": [
+            "ctx-next-artifact"
+          ],
+          "is_major": false
+        }
+      ],
+      "citations": [
+        "ctx-qual-interviews",
+        "ctx-scope-boundary",
+        "ctx-unknowns-table",
+        "ctx-next-artifact"
+      ],
+      "open_questions": [
+        "What system currently tracks thread ownership, and does it emit events that can be instrumented without code changes?",
+        "Are there existing CSAT surveys that tag whether a handoff occurred, or would this need to be added?",
+        "Is the 'team inbox' a single product or are there multiple inbox implementations across teams?",
+        "Can account tier and revenue data be joined to support thread data for the severity analysis?"
+      ],
+      "critique_responses": [
+        {
+          "finding_id": "finding-2",
+          "disposition": "adopted",
+          "rationale": "The critique correctly identifies that the hard 5% frequency threshold was arbitrary and that frequency alone is an incomplete gate. A low-frequency handoff problem concentrated in high-value accounts or correlated with churn could easily justify investment, while a high-frequency problem with negligible CSAT impact might not. The artifact has been revised in three places: (1) the Unknowns table now includes a dedicated row for handoff severity and revenue impact as a separate unknown to close, (2) the readiness gates now require a composite assessment across frequency, CSAT differential, and account-tier concentration rather than a single frequency cutoff, and (3) the Recommended Next Artifact section replaces the 5% threshold with a composite go/no-go framework that explicitly states no single metric is sufficient. The instrumentation spec scope was also expanded to collect account tier, escalation status, and revenue attribution data needed to support this multi-dimensional assessment."
+        }
+      ]
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-14-130926403Z-prd-hidden-scope-creep",
+      "side_id": "side_b",
+      "round": "final",
+      "artifact_markdown": "# Revised artifact\n\n# PRD: Team Inbox Workflow Handoff Improvement\n\n## Overview\nImprove team inbox handoffs so conversations move between owners without dropped context or unclear accountability. This PRD is intentionally limited to the handoff mechanic inside an existing shared inbox workflow.\n\n## Problem\nTeams using a shared inbox need to transfer conversations across shifts, functions, or escalation paths. Today those handoffs are often informal, which risks lost context, duplicate work, and delayed follow-up.\n\n## Goal\nEnable a reliable handoff workflow that makes transfer intent explicit, captures required context, and prevents ownership ambiguity during transition.\n\n## Non-Goals\n- Redesign the team inbox or queue model.\n- Build workforce management, staffing, or scheduling logic.\n- Add AI-based routing or handoff recommendations.\n- Add SLA escalation automation in v1.\n- Build a new analytics or reporting surface in v1.\n\n## Users\n- Primary: support agents and operations teammates who transfer conversations.\n- Secondary: receiving teammates who need clear next-step context.\n- Tertiary: team leads who need confidence that work is not dropped.\n\n## User Stories\n- As a sending agent, I want to hand off a conversation with a required note so the next owner knows the reason and next action.\n- As a receiving teammate, I want to see that a conversation is awaiting my acceptance so ownership is not ambiguous.\n- As a team lead, I want handoff events preserved in conversation history so operational issues can be reviewed when needed.\n\n## Requirements\n### Functional Requirements\n1. A user can initiate a handoff from a conversation.\n2. A handoff requires a valid destination assignee or queue allowed by existing assignment permissions.\n3. A handoff requires a structured note containing handoff reason and expected next action.\n4. The system records handoff metadata: sender, destination, timestamp, and note.\n5. A conversation in handoff displays a visible pending state until the receiver accepts it.\n6. The intended receiver is notified using the product's existing notification mechanism.\n7. The receiver can accept the handoff, at which point ownership updates and the pending state is removed.\n8. The conversation timeline stores a durable audit trail of handoff initiation and acceptance.\n\n### UX Requirements\n1. The handoff flow fits inside the existing conversation workflow.\n2. Required fields are short and constrained to reduce friction.\n3. Pending handoff state is visually distinct from completed reassignment.\n\n### Operational Requirements\n1. Existing assignment permissions continue to govern who can send or receive handoffs.\n2. The workflow must not create a state where ownership is unclear.\n3. Handoff events must remain available in conversation history for manual review.\n\n## Success Metrics\n- Qualitative validation from pilot teams that handoff ownership is clearer than the current process.\n- Reduction in manager-reported dropped or unclear handoffs during the pilot.\n- Adoption rate of the explicit handoff flow among teams included in the pilot.\n\n## Risks\n- Required notes may introduce enough friction to reduce usage.\n- Teams may use handoff when a normal reassignment would be sufficient.\n- Pending state may confuse users if acceptance semantics are not explicit.\n\n## Rollout Recommendation\nShip behind a team-level flag to a small pilot cohort. Use pilot feedback to determine whether timeout rules, rejection handling, or reporting warrant a separate follow-on decision.\n\n## Decision Frame\nDecision required: approve a narrow v1 handoff workflow limited to transfer initiation, required context capture, pending-state visibility, recipient acceptance, and conversation-level audit history. Do not treat this PRD as approval for inbox redesign, SLA automation, or analytics expansion.\n\n## Unknowns & Evidence Gaps\n- No baseline evidence is provided on current handoff volume, failure rate, or response-delay impact.\n- No evidence is provided on whether acceptance should be mandatory for both user and queue destinations.\n- Rejection, timeout, and out-of-office handling are intentionally deferred and need separate validation before scope expansion.\n- Pilot instrumentation and review method for success metrics are not yet defined.\n\n## Pass/Fail Readiness\nPass if the team agrees that v1 is limited to explicit handoff creation, required note capture, visible pending state, recipient notification, acceptance, and audit history. Fail if implementation expands into timeout escalation logic, new reporting surfaces, broader reassignment redesign, or other adjacent workflow changes without a separate decision.\n\n## Recommended Next Artifact\nA technical spec covering state transitions, permission checks, notification trigger reuse, acceptance behavior, and deferred edge cases that are explicitly out of scope for v1.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "The PRD should be narrowed to the minimum handoff mechanic: explicit transfer initiation, required context capture, pending-state visibility, recipient acceptance, and audit history, while excluding analytics expansion and SLA-style automation from v1.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        }
+      ],
+      "citations": [
+        "ctx-1"
+      ],
+      "open_questions": [],
+      "critique_responses": [
+        {
+          "finding_id": "finding-1",
+          "disposition": "adopted",
+          "rationale": "The critique was correct that the first-pass draft contradicted its own narrow-scope claim by including reporting and timeout-oriented requirements without supporting evidence. The revision removes new reporting requirements and SLA-adjacent timeout behavior from v1, reframes success criteria around pilot validation rather than unsupported baseline-dependent metrics, and makes deferred scope explicit in Non-Goals, Unknowns, and Pass/Fail boundaries."
+        }
+      ]
+    }
+  },
+  "min_margin_for_verdict": 0.1
+}

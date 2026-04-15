@@ -1,0 +1,29 @@
+{
+  "run_id": "conflict-2026-04-14-131349165Z-prd-hidden-scope-creep",
+  "side_id": "side_b",
+  "round": "first_pass",
+  "artifact_markdown": "# PRD: Team Inbox Workflow Handoff Improvement\n\n## Summary\nImprove team inbox handoffs so conversations move between owners without dropped context, duplicate work, or unclear accountability.\n\n## Problem\nTeams using a shared inbox lose time and quality when a conversation needs to move from one owner to another. Current handoffs are inconsistent, rely on manual notes, and make it hard to know who owns the next action.\n\n## Goal\nCreate a handoff workflow that preserves context, assigns a clear next owner, and makes handoff state visible to the team.\n\n## Non-Goals\n- Full redesign of the inbox information architecture\n- New SLA engine or workforce management system\n- Cross-channel routing logic beyond inbox handoff events\n- AI drafting, classification, or auto-resolution features\n\n## Users\n- Support agents handing off customer conversations\n- Specialists receiving escalated or transferred conversations\n- Team leads monitoring ownership and resolution flow\n\n## User Stories\n- As an agent, I want to hand off a conversation with required context so the next owner can act without re-reading the full thread.\n- As a receiving teammate, I want to see why the handoff happened and what action is expected.\n- As a lead, I want to see handoff status and ownership so I can catch stuck conversations.\n\n## Requirements\n### Functional Requirements\n1. A user can initiate a handoff from a conversation.\n2. The handoff flow requires a destination owner or team.\n3. The handoff flow requires a structured reason and optional note.\n4. The receiving owner sees the handoff reason, note, and prior owner.\n5. Ownership updates to the receiving owner or queue at completion of handoff.\n6. The conversation shows a visible handoff event in the activity history.\n7. Conversations in handoff show a distinct status so the team can identify pending transitions.\n8. The sender and receiver receive notifications for created and completed handoffs.\n9. Team leads can filter or view conversations by handoff status.\n\n### Guardrails Against Scope Creep\n1. V1 supports only manual handoff initiated by a human user.\n2. V1 supports one active handoff per conversation.\n3. V1 does not include approval chains, workload balancing, or skills-based routing.\n4. V1 does not add analytics beyond basic event logging needed for validation.\n\n## UX Principles\n- Handoff must take less than one minute for a trained user.\n- Required context should be minimal but sufficient.\n- Ownership state must be obvious in list and thread views.\n- Receiving users should not need to search for why the handoff occurred.\n\n## Success Metrics\n- Reduce conversations reopened internally due to incomplete handoff context.\n- Reduce median time from handoff initiation to first response by receiving owner.\n- Increase percentage of handed off conversations with clear next owner.\n- Decrease duplicate replies on handed off conversations.\n\n## Risks\n- Too many required fields may slow agents down.\n- Ambiguous ownership states may create double-handling.\n- Expanding scope into routing, permissions, or analytics could delay delivery.\n\n## Dependencies\n- Existing conversation ownership model\n- Notification infrastructure\n- Activity/event logging in conversation history\n\n## Rollout\n- Internal pilot with one team inbox\n- Review handoff completion and stuck-state rates\n- Expand to more inboxes after validation\n\n## Decision Frame\nShip a narrow V1 handoff workflow focused on explicit ownership transfer and context capture. The decision is useful only if the team holds scope at manual handoff, visible state, and basic notifications; routing, approvals, and advanced analytics should be deferred.\n\n## Unknowns & Evidence Gaps\n- Which handoff reasons are common enough to merit structured presets\n- Whether ownership should change immediately or only after acceptance\n- What list-view state best prevents duplicate handling\n- Baseline current failure rate for dropped or unclear handoffs\n\n## Pass/Fail Readiness\nPass if V1 is limited to manual handoff, required context, visible status, and ownership clarity, with measurable validation in pilot. Fail if the project absorbs adjacent asks like routing logic, approvals, workload balancing, or broad reporting before core handoff reliability is proven.\n\n## Recommended Next Artifact\nTechnical spec defining state transitions, notification triggers, permissions, and event schema for conversation handoff.",
+  "claims": [
+    {
+      "claim_id": "side_b-claim-1",
+      "summary": "The PRD should constrain scope to a narrow manual-handoff V1 to avoid hidden expansion into routing, approvals, analytics, and other adjacent workflow changes.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-2",
+      "summary": "A useful handoff improvement requires explicit ownership transfer, structured context capture, visible handoff state, and basic notifications.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1"
+  ],
+  "open_questions": [],
+  "critique_responses": []
+}

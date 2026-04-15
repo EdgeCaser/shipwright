@@ -1,0 +1,106 @@
+{
+  "case_packet": {
+    "scenario_id": "event-automation-boundary",
+    "title": "Event automation platform with human-in-the-loop boundary constraints",
+    "prompt": "Write a Phase 1 PRD for an event management automation platform with a WhatsApp assistant, an internal console, human approval for pricing commitments, and strict deterministic boundaries around LLM usage.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "opposing_first_pass": {
+    "run_id": "conflict-2026-04-14-065536297Z-event-automation-boundary",
+    "side_id": "side_b",
+    "round": "first_pass",
+    "artifact_markdown": "# Phase 1 PRD: Event Automation Platform with Human-in-the-Loop Boundaries\n\n## Decision Frame\n\n**Problem:** Event management companies spend 60-70% of coordinator time on repetitive communication (venue availability checks, vendor follow-ups, client Q&A) while pricing decisions require human judgment due to variable margins, relationship context, and contractual risk. Current tools force a binary choice: full automation (risky for pricing) or full manual (wasteful for routine tasks).\n\n**Bet:** A platform that automates deterministic communication workflows via WhatsApp while enforcing hard human-approval gates on pricing commitments will reduce coordinator workload by 40%+ without increasing pricing errors.\n\n**Phase 1 Scope:** WhatsApp assistant for client-facing communication, internal console for operator oversight, and a strict boundary architecture that separates LLM-powered tasks from deterministic+human-approved tasks.\n\n**What this PRD decides:** Whether to greenlight Phase 1 engineering. It does NOT decide pricing strategy, vendor integrations beyond WhatsApp, or multi-tenant architecture.\n\n---\n\n## Product Architecture\n\n### 1. WhatsApp Assistant (Client-Facing)\n\n**Deterministic functions (no LLM):**\n- Event date/time confirmation from calendar database\n- Venue availability lookups against inventory system\n- Standard package descriptions from content catalog\n- Booking status updates from order management system\n- Document delivery (contracts, invoices, receipts)\n- FAQ responses from curated answer bank (keyword-matched, not generated)\n\n**LLM-assisted functions (constrained):**\n- Natural language understanding of inbound client messages to classify intent (one of ~15 predefined intents)\n- Response drafting for non-pricing inquiries using approved templates + slot-filling\n- Summarization of long client threads for operator handoff\n\n**Hard boundary — LLM NEVER does:**\n- Generate, suggest, or confirm any pricing figure\n- Make availability commitments for dates not confirmed in the inventory system\n- Modify contract terms or suggest contractual language\n- Respond to complaints without human routing\n- Infer client budget or willingness-to-pay\n\n### 2. Human Approval Gates\n\n**Trigger conditions (any one triggers escalation):**\n- Client message classified as pricing-related (intent: `pricing_inquiry`, `discount_request`, `package_customization`, `quote_request`)\n- Client message contains monetary terms (currency symbols, \"cost\", \"price\", \"budget\", \"quote\")\n- LLM confidence on intent classification < 0.85 threshold\n- Client message classified as complaint or escalation\n- Conversation exceeds 3 turns without resolution\n- Any message from a flagged/VIP client account\n\n**Approval workflow:**\n1. Assistant immediately responds: \"Let me connect you with [Coordinator Name] who can help with that. They'll respond within [SLA window].\"\n2. Internal console shows escalation with full conversation context, client history, and suggested response (if non-pricing)\n3. Coordinator approves, edits, or writes custom response\n4. Response sent via WhatsApp under coordinator's name\n5. Conversation returns to automated mode only after coordinator explicitly releases it\n\n**SLA commitments:** Pricing escalations responded to within 15 minutes during business hours, 2 hours outside.\n\n### 3. Internal Console\n\n**Core views:**\n- **Queue:** Pending escalations sorted by SLA urgency, with one-click approve/edit/reject\n- **Active conversations:** All ongoing WhatsApp threads with automation status indicators (green=automated, yellow=escalated, red=SLA breach)\n- **Audit log:** Every message sent, who approved it, what the LLM suggested vs. what was sent, classification confidence scores\n- **Override controls:** Pause automation per-client, per-intent-category, or globally (kill switch)\n\n**Reporting:**\n- Automation rate (% of messages handled without human intervention)\n- Escalation reasons breakdown\n- SLA compliance\n- LLM classification accuracy (sampled weekly by coordinator review)\n\n### 4. Deterministic Boundary Architecture\n\n**Principle:** The LLM is a classification and drafting tool only. It never executes actions or commits the business to anything.\n\n**Implementation:**\n- LLM outputs are always intermediate: intent labels, draft text, confidence scores\n- All external-facing messages pass through a deterministic template engine that validates content against business rules before sending\n- Pricing data lives in a separate service the LLM has no access to; pricing responses are assembled by deterministic code after human approval\n- Message audit trail logs LLM input/output separately from final sent message\n- LLM provider can be swapped without changing business logic (abstraction layer between intent classification and action execution)\n\n**Fallback behavior:**\n- If LLM service is unavailable: all messages route to human queue, FAQ responses served from static cache\n- If classification returns low confidence on all intents: route to human\n- If template engine cannot fill all required slots: route to human rather than send incomplete message\n\n---\n\n## Success Metrics (Phase 1, 90-day window)\n\n| Metric | Target | Measurement |\n|--------|--------|-------------|\n| Automation rate | ≥40% of inbound messages handled without escalation | Console analytics |\n| Pricing containment | 0 pricing commitments made without human approval | Audit log review (weekly) |\n| Classification accuracy | ≥90% intent classification agreement with human review | Weekly sample of 50 messages |\n| Response time (automated) | <30 seconds for deterministic responses | System logs |\n| SLA compliance | ≥95% of escalations responded within SLA | Console analytics |\n| Coordinator satisfaction | ≥4/5 on \"console helps me work faster\" | Monthly survey |\n\n---\n\n## Unknowns & Evidence Gaps\n\n1. **Client acceptance of bot interaction.** No data on whether event management clients (often emotionally invested in their events) will accept WhatsApp automation. Risk: clients may feel depersonalized. **Mitigation:** Phase 1 starts with post-booking coordination only (not sales), where relationship is already established. **Evidence needed:** Client NPS comparison (automated vs. manual) after 30 days.\n\n2. **Intent classification accuracy on event-specific language.** General LLMs may misclassify domain-specific phrases (e.g., \"What's the damage?\" = pricing inquiry, not complaint). **Mitigation:** Fine-tuned classification prompt with event management examples; low-confidence threshold routes to human. **Evidence needed:** Labeled dataset of 500+ real client messages for prompt engineering and accuracy benchmarking before launch.\n\n3. **WhatsApp Business API rate limits and template approval timelines.** Meta's approval process for message templates can take days; rate limits may constrain high-volume periods. **Evidence needed:** API sandbox testing with realistic message volumes; template pre-approval for top 20 response types.\n\n4. **Coordinator adoption of console workflow.** If the approval queue adds friction compared to just replying directly in WhatsApp, coordinators will bypass the system. **Evidence needed:** Time-motion comparison of current workflow vs. console-based workflow with 3 coordinators over 2 weeks.\n\n5. **Regulatory requirements for automated messaging in target markets.** WhatsApp commerce policies, GDPR/data residency for conversation logs, opt-in requirements. **Evidence needed:** Legal review of WhatsApp Business Policy compliance for target markets before launch.\n\n6. **Edge case volume.** Unknown what percentage of messages will be genuinely ambiguous (not clearly automated or clearly escalated). High edge-case volume could negate automation benefits. **Evidence needed:** Manual classification of 2 weeks of historical WhatsApp conversations.\n\n---\n\n## Pass/Fail Readiness\n\n### Pass conditions (all required to greenlight Phase 1 engineering):\n- [ ] Labeled dataset of ≥500 historical client messages with intent classifications reviewed by 2+ coordinators (inter-rater agreement ≥80%)\n- [ ] WhatsApp Business API sandbox access confirmed; ≥10 message templates pre-approved by Meta\n- [ ] Legal sign-off on automated messaging compliance for primary operating market\n- [ ] 3 coordinators committed to 2-week pilot with defined rollback procedure\n- [ ] Kill switch and fallback-to-human architecture reviewed and approved by engineering lead\n- [ ] Pricing data isolation architecture reviewed — confirmed LLM has zero read access to pricing database\n\n### Fail conditions (any one blocks greenlight):\n- [ ] Cannot obtain ≥500 labeled messages (insufficient training data)\n- [ ] WhatsApp Business API access denied or template approval takes >30 days\n- [ ] Legal identifies blocking compliance issue with no clear remediation\n- [ ] Fewer than 2 coordinators willing to pilot\n- [ ] Engineering review identifies scenario where LLM output could reach client without template validation\n\n### Current status: **NOT READY** — labeled dataset and API access are prerequisites that have not been started.\n\n---\n\n## Recommended Next Artifact\n\n**Immediate next step:** Customer Research Brief — structured interviews with 5 event coordinators to validate:\n1. Which message types consume the most time (validates automation priority)\n2. Comfort level with automated client communication (validates client acceptance assumption)\n3. Current pricing workflow and where errors occur (validates approval gate design)\n4. WhatsApp usage patterns and volume benchmarks (validates technical assumptions)\n\nThis research directly addresses Evidence Gaps #1, #4, and #6 and produces the labeled message dataset needed for Pass Condition #1.\n\n**After research:** Technical Spike document for WhatsApp Business API integration and deterministic boundary architecture proof-of-concept (addresses Evidence Gaps #3 and Pass Condition #2).\n\n**Phase 1 engineering should not begin until both artifacts are complete and Pass conditions are met.**",
+    "claims": [
+      {
+        "claim_id": "side_b-claim-1",
+        "summary": "The LLM must function exclusively as a classification and drafting intermediary — never executing actions, accessing pricing data, or producing client-facing output without passing through a deterministic template validation layer.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-2",
+        "summary": "Human approval gates must trigger on any pricing-adjacent intent, low-confidence classifications, complaints, and VIP accounts, with explicit coordinator release required before returning to automated mode.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-3",
+        "summary": "Phase 1 is not ready to greenlight — a labeled dataset of 500+ messages and WhatsApp Business API sandbox access are unstarted prerequisites that block engineering work.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-4",
+        "summary": "The platform should start with post-booking coordination (not sales) to mitigate client acceptance risk, since the relationship is already established in that phase.",
+        "evidence_refs": [],
+        "is_major": false
+      },
+      {
+        "claim_id": "side_b-claim-5",
+        "summary": "Fallback architecture must degrade gracefully — LLM unavailability routes all messages to humans and serves FAQ from static cache, never leaves clients without a response path.",
+        "evidence_refs": [],
+        "is_major": false
+      }
+    ],
+    "citations": [],
+    "open_questions": [
+      "What is the expected message volume per coordinator per day, and does the 15-minute pricing SLA hold under peak load?",
+      "Should the kill switch be per-client, per-intent, or global — and who has authority to trigger each level?",
+      "How will the system handle multi-language WhatsApp conversations if the event company operates across markets?"
+    ],
+    "critique_responses": []
+  }
+}

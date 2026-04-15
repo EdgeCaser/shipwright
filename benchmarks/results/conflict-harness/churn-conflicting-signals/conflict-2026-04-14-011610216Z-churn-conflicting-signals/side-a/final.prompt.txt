@@ -1,0 +1,153 @@
+You are SIDE_A in the final revision phase for run conflict-2026-04-14-011610216Z-churn-conflicting-signals.
+You must either adopt the critique or reject it with reasoning.
+Do not reveal provider identity.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "run_id": "conflict-2026-04-14-011610216Z-churn-conflicting-signals",
+  "side_id": "side_a",
+  "round": "final",
+  "artifact_markdown": "# Revised artifact",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "Updated major claim",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1"
+  ],
+  "open_questions": [],
+  "critique_responses": [
+    {
+      "finding_id": "finding-2",
+      "disposition": "adopted",
+      "rationale": "Why the critique was adopted or rejected."
+    }
+  ]
+}
+
+Case packet:
+{
+  "scenario_id": "churn-conflicting-signals",
+  "title": "Churn diagnosis with conflicting signals",
+  "prompt": "Write a churn reduction PRD when signals conflict with strategy targets.",
+  "artifact_type": "prd",
+  "rubric": {
+    "dimensions": [
+      "claim quality",
+      "evidence discipline",
+      "responsiveness to critique",
+      "internal consistency",
+      "decision usefulness"
+    ],
+    "scoring_scale": "1-5",
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "constraints": {
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "expect_structured": true,
+    "context_files": [],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "evidence": [],
+  "max_rounds": 3,
+  "tool_policy": "none",
+  "sharing_policy": {
+    "share_case_packet": true,
+    "share_committed_artifacts_after_first_pass": true,
+    "share_critiques_after_open": true,
+    "share_hidden_reasoning": false,
+    "share_provider_identity": false,
+    "share_internal_coalition_drafts": false
+  },
+  "success_condition": {
+    "type": "validator_contract",
+    "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+    "validator": {
+      "artifact_type": "prd",
+      "expect_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true
+    }
+  }
+}
+
+Your first-pass artifact:
+{
+  "run_id": "conflict-2026-04-14-011610216Z-churn-conflicting-signals",
+  "side_id": "side_a",
+  "round": "first_pass",
+  "artifact_markdown": "# Churn Reduction PRD: Navigating Conflicting Signals\n\n## Decision Frame\n\n**Problem statement:** Churn metrics are sending signals that conflict with current strategic growth targets. Specifically, retention interventions that reduce churn (discounts, feature gating relaxation, dedicated CSM allocation) directly erode unit economics targets the business has committed to for this fiscal year. Meanwhile, doing nothing risks accelerating churn beyond the rate the growth engine can replace.\n\n**Decision to be made:** Should we prioritize churn reduction tactics that conflict with margin/growth targets, or hold strategy course and accept elevated churn as a cost of the current growth model?\n\n**Stakeholders:** Product (owns retention surface), Finance (owns unit economics targets), Growth (owns acquisition targets that subsidize churn), CS (owns renewal pipeline), Exec team (owns strategic trade-off authority).\n\n**Signal conflicts identified:**\n\n| Signal | Says | Conflicts With |\n|---|---|---|\n| 90-day cohort retention dropping 4pp QoQ | Urgent intervention needed | Growth strategy assumes current retention floor holds |\n| NPS among churned users: 38 (vs. 52 active) | Product-experience gap driving churn | Roadmap is allocated 70% to new-logo features |\n| Win-back discount campaigns show 22% reactivation | Price sensitivity is a lever | Finance has flagged discount programs as margin-dilutive |\n| CS-touched accounts churn at 0.5x rate | High-touch works | Scaling CSM headcount breaks current CAC:LTV model |\n| Power-user churn is flat; casual-tier churn is accelerating | Churn is segment-specific | Strategy treats all users as single cohort for planning |\n\n**Framing principle:** This PRD does not resolve the conflict. It frames the decision, identifies what we don't know, and specifies what evidence would tip the decision. Premature resolution without evidence would be worse than the current ambiguity.\n\n## Unknowns & Evidence Gaps\n\n### Critical unknowns (must resolve before committing)\n\n1. **Churn-cause segmentation is missing.** We know *who* is churning (casual tier) but not *why* at sufficient granularity. Exit surveys have 11% response rate and skew toward price complaints, which may not represent silent churners. **Evidence needed:** Instrument cancellation flow with structured reason capture (mandatory 1-click before confirmation); run 30 qualitative exit interviews within 3 weeks.\n\n2. **Revenue impact by segment is unquantified.** If casual-tier users contribute <15% of revenue, elevated churn there may be acceptable under current strategy. If they represent pipeline to power-tier conversion, the compounding loss is much larger. **Evidence needed:** Cohort revenue analysis showing (a) direct revenue contribution by tier, (b) historical upgrade rate from casual → power, (c) projected 12-month revenue delta under current churn trajectory vs. 2pp improvement.\n\n3. **Retention intervention ROI is modeled on small samples.** The 22% win-back rate and 0.5x CS-touch churn rate come from non-randomized observations. Selection bias is likely (CS is allocated to highest-value accounts; discount campaigns target recent churners). **Evidence needed:** Controlled experiments — (a) randomized CSM allocation to mid-tier accounts (n≥200, 60-day window), (b) A/B discount vs. feature-unlock win-back offers.\n\n4. **Strategy target flexibility is unknown.** We don't know whether Finance treats unit economics targets as hard constraints or aspirational guides this quarter. A 2pp margin concession to fund retention may be available but hasn't been asked for. **Evidence needed:** Direct conversation with CFO to establish negotiable vs. non-negotiable targets for Q3.\n\n### Secondary unknowns (inform tactics, not the go/no-go)\n\n5. Competitive churn contribution — are we losing users to alternatives or to non-consumption?\n6. Seasonal patterns — does the 4pp drop persist when normalized for annual cycles?\n7. Feature adoption correlation — which product surfaces predict retention?\n\n## Pass/Fail Readiness\n\n**Current readiness: NOT READY for decision.**\n\nThe conflicting signals exist precisely because we lack the evidence to resolve them. Committing to a churn reduction program now means either:\n- (a) Accepting margin dilution based on anecdotal evidence (risky if churn cause is not price-sensitive), or\n- (b) Doing nothing based on strategic-target orthodoxy (risky if compounding churn undermines the growth model within 2 quarters).\n\n**Pass criteria — what would make this ready:**\n\n| # | Criterion | Status | Estimated time to resolve |\n|---|---|---|---|\n| 1 | Churn-cause segmentation with ≥30% response rate | ❌ Not started | 3-4 weeks |\n| 2 | Revenue impact model by tier with upgrade funnel | ❌ Not started | 1-2 weeks (data exists) |\n| 3 | At least one controlled retention experiment result | ❌ Not started | 8-10 weeks |\n| 4 | CFO confirmation on target flexibility | ❌ Not started | 1 week |\n\n**Minimum viable decision point:** Criteria 1, 2, and 4 can be met within 4 weeks. This is sufficient to decide *whether* to invest in retention interventions and *which segment* to target. Criterion 3 informs *how* — the specific intervention design — and can run in parallel.\n\n**Fail criteria — signals that would kill this initiative:**\n- Casual-tier contributes <10% of revenue AND <5% upgrade rate to power tier → churn is acceptable, redirect effort\n- CFO confirms zero margin flexibility AND no budget reallocation path → intervention is unfundable regardless of evidence\n- Churn-cause analysis reveals >60% of churn is non-consumption (users leaving the category) → retention interventions won't work\n\n## Recommended Next Artifact\n\n**Immediate next step:** Evidence-gathering sprint (not a full PRD iteration)\n\n1. **This week:** Ship instrumented cancellation flow (Product + Engineering, ≤2 days of work). Schedule CFO conversation.\n2. **Week 2-3:** Run cohort revenue analysis (Analytics). Begin qualitative exit interviews (UX Research or CS).\n3. **Week 4:** Reconvene with Decision Frame updated with evidence. Produce **v2 PRD** that either:\n   - (a) Specifies a funded churn reduction program with segment targeting, success metrics, and guardrails against margin erosion, OR\n   - (b) Documents the explicit decision to accept current churn rate with monitoring tripwires that re-trigger this review.\n4. **Parallel (weeks 1-10):** Launch controlled CSM and win-back experiments so intervention data is available when the v2 PRD ships.\n\n**Artifact sequence:** Evidence Sprint → v2 PRD (decision-ready) → Experiment Design Doc (if intervention approved) → Metrics Dashboard Spec (monitoring regardless of decision).\n\n**Escalation trigger:** If 90-day cohort retention drops another 2pp before evidence sprint completes, escalate to exec team for emergency intervention authorization under explicit margin-risk acceptance.",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "The churn decision is not ready to be made because four critical evidence gaps (churn-cause segmentation, revenue impact by segment, controlled intervention ROI, and strategy target flexibility) remain unresolved, and premature commitment in either direction carries material risk.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "The core conflict is structural: retention interventions that work (discounts, CSM allocation) directly erode the unit economics targets the business has committed to, creating a decision deadlock that cannot be resolved by product alone.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-3",
+      "summary": "Churn is segment-specific (casual-tier accelerating, power-user flat), which means a single-cohort strategy is misframing the problem and any intervention must be segment-targeted to avoid wasted spend.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-4",
+      "summary": "A minimum viable decision point can be reached in 4 weeks by resolving three of four critical unknowns (churn-cause segmentation, revenue impact model, CFO target flexibility), with controlled experiments running in parallel for intervention design.",
+      "evidence_refs": [],
+      "is_major": false
+    },
+    {
+      "claim_id": "side_a-claim-5",
+      "summary": "Existing retention signal data (22% win-back rate, 0.5x CS-touch churn rate) is observational with likely selection bias and should not be used to justify investment without controlled experiments.",
+      "evidence_refs": [],
+      "is_major": false
+    }
+  ],
+  "citations": [],
+  "open_questions": [
+    "No external evidence was provided in the case packet, so all signal conflicts are constructed from plausible scenarios. A real engagement would require validating whether these specific conflicts exist in the actual data.",
+    "The appropriate churn threshold that triggers emergency intervention (the 2pp escalation trigger) is assumed, not derived from financial modeling.",
+    "Whether the organization has the analytical infrastructure to run controlled experiments at the proposed scale is unknown."
+  ],
+  "critique_responses": []
+}
+
+Visible critique packet:
+{
+  "target_side": "side_a",
+  "finding_id": "finding-2",
+  "target_claim_ids": [
+    "side_a-claim-4"
+  ],
+  "claim_under_attack": "A minimum viable decision point can be reached in 4 weeks by resolving three of four critical unknowns, with controlled experiments running in parallel for intervention design.",
+  "attack_type": "evidence_gap",
+  "evidence_or_reason": "The 4-week decision timeline is asserted without visible support from the artifact itself. The plan depends on raising cancellation-reason response rates from 11% to at least 30%, completing 30 exit interviews, producing a tiered revenue model, and securing CFO constraint clarity, yet no evidence is provided that the team has the instrumentation, sample volume, analytics bandwidth, or stakeholder access to do this inside 4 weeks. Given those operational dependencies, the claimed minimum viable decision point is speculative rather than evidence-backed.",
+  "severity": "medium"
+}

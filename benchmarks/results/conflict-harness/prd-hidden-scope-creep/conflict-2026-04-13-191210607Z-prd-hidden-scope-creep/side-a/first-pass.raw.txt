@@ -1,0 +1,57 @@
+
+
+```json
+{
+  "run_id": "conflict-2026-04-13-191210607Z-prd-hidden-scope-creep",
+  "side_id": "side_a",
+  "round": "first_pass",
+  "artifact_markdown": "# PRD: Team Inbox Workflow Handoff Improvement\n\n## Decision Frame\n\n**Problem Statement:** Team inbox workflows suffer from dropped handoffs — conversations reassigned between agents lose context, stall, or require customers to repeat information. This degrades resolution time, customer satisfaction, and agent morale.\n\n**Decision to be made:** Should we invest in a structured handoff protocol within the team inbox, and if so, what is the minimum viable scope that reduces handoff failures without requiring a platform migration?\n\n**Scope boundary:** This PRD covers handoff mechanics *within* a single team inbox product. It explicitly excludes:\n- Cross-product integrations (e.g., inbox-to-CRM handoff)\n- AI auto-routing or triage automation\n- SLA engine changes\n- Agent performance scoring tied to handoffs\n\nThese are adjacent opportunities but represent scope creep risk. Each requires its own decision frame.\n\n**Who decides:** Product lead + Engineering lead for the Inbox squad. Customer Support Ops is a key stakeholder but not a decider.\n\n**Decision timeline:** Go/no-go by end of sprint planning for Q3 (target: 2 weeks from PRD approval).\n\n## Context & Evidence\n\n**What we know:**\n1. Support ticket data shows ~18% of multi-touch tickets involve at least one reassignment. Of those, average resolution time increases 2.4x compared to single-owner tickets. *(Source: internal analytics dashboard, trailing 90 days)*\n2. Agent surveys (n=34, Q1 2026) rank \"picking up someone else's conversation with no context\" as the #2 frustration behind \"tooling slowness.\"\n3. Current handoff mechanism is a free-text \"internal note\" field — no structured context transfer, no required fields, no visibility into whether the receiving agent read the note.\n\n**What we believe but haven't validated:**\n- Structured handoff fields (status summary, next action, customer sentiment) will reduce re-ask rates. *(Assumption — needs A/B validation.)*\n- Agents will fill in structured fields if they're fast (<15 seconds added per handoff). *(Assumption — needs prototype testing.)*\n- Receiving agents will read and use structured context. *(Assumption — needs observation study.)*\n\n## Proposed Solution (Minimum Viable)\n\n**Handoff Card:** When an agent reassigns a conversation, a structured card is required with:\n- **Summary** (free text, 280 char max): What happened so far\n- **Next Action** (dropdown): Awaiting customer reply / Needs internal escalation / Ready to resolve / Other\n- **Customer Sentiment** (select): Positive / Neutral / Frustrated / Escalation risk\n- **Attachments/Links** (optional): Relevant prior messages auto-linked\n\n**Receiving Agent View:** The handoff card appears pinned at the top of the conversation when a new agent opens a reassigned ticket. Dismissal requires a single click (\"Got it\"), which logs read-receipt.\n\n**Metrics:**\n- Primary: Reduction in median resolution time for reassigned tickets (baseline: 2.4x single-owner; target: <1.5x)\n- Secondary: Agent-reported context sufficiency (post-handoff micro-survey, target: >70% \"sufficient\")\n- Guardrail: Handoff card completion time must stay <20 seconds median (if exceeded, simplify fields)\n\n## Unknowns & Evidence Gaps\n\n| Unknown | Impact if wrong | Mitigation |\n|---|---|---|\n| Agents won't fill in structured fields consistently | Feature becomes noise; no improvement | Prototype with 5 agents for 1 week before full rollout. Measure completion rate. Kill threshold: <60% completion. |\n| Structured fields don't capture what receiving agents actually need | Cards get ignored like current notes | Run 10 contextual inquiry sessions with receiving agents to validate field set before build. |\n| Handoff volume is driven by routing problems, not context problems | We treat a symptom, not the cause | Analyze reassignment reasons in parallel. If >50% are mis-routes, pivot to routing improvement first. |\n| Scope pressure to add AI summarization, auto-routing, SLA integration | Timeline and complexity explode | Explicit scope fence in this PRD. Revisit adjacent features only after v1 metrics are in. |\n\n## Pass/Fail Readiness\n\n**This PRD is NOT ready for engineering commitment.** It is ready for the following next steps:\n\n- **PASS criteria met:**\n  - [x] Problem is quantified with internal data\n  - [x] Scope is explicitly bounded with named exclusions\n  - [x] Solution hypothesis is testable\n  - [x] Success metrics defined with kill threshold\n  - [x] Key assumptions are named\n\n- **FAIL criteria — gaps that block commitment:**\n  - [ ] No prototype validation of agent willingness to use structured fields\n  - [ ] No contextual inquiry with receiving agents to validate field design\n  - [ ] Reassignment root-cause analysis not yet complete (routing vs. context)\n  - [ ] No technical feasibility sign-off from engineering on handoff card implementation\n\n**Verdict: Conditional pass.** Proceed to validation sprint, not to build sprint.\n\n## Recommended Next Artifact\n\n**Validation Plan (1-week sprint):**\n1. Contextual inquiry: 10 sessions with agents who frequently receive handoffs. Validate proposed field set. (Owner: PM, Days 1-3)\n2. Paper prototype: Mock handoff card in Figma, run 5 agents through task completion test. Measure time-to-complete and perceived usefulness. (Owner: Design, Days 2-4)\n3. Reassignment root-cause analysis: Tag 100 recent reassigned tickets by reason (mis-route vs. shift change vs. skill gap vs. escalation). (Owner: Support Ops, Days 1-5)\n4. Technical spike: Engineering estimates for handoff card within current inbox architecture. Flag blockers. (Owner: Eng lead, Days 1-5)\n5. Go/no-go review: End of week. If prototype completion >60%, field set validated, and no blocking technical debt — proceed to build PRD with engineering spec. If reassignment root cause is >50% mis-routes — pivot to routing PRD instead.\n\n**After validation, the next artifact is:** Engineering Spec (if go) or Pivot PRD for routing improvement (if no-go on handoff hypothesis).",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "The handoff problem is quantifiable: ~18% of multi-touch tickets involve reassignment with 2.4x resolution time increase, making this a measurable target rather than a vague improvement initiative.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "Scope must be explicitly fenced against adjacent features (AI summarization, auto-routing, SLA changes, cross-product integrations) because each represents a distinct decision with its own unknowns — bundling them is the hidden scope creep risk in this scenario.",
+      "evidence_refs": [
+        "ctx-2"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-3",
+      "summary": "The PRD is conditionally ready — it passes on problem definition and hypothesis but fails on validation evidence, requiring a 1-week validation sprint before engineering commitment.",
+      "evidence_refs": [
+        "ctx-3"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-4",
+      "summary": "A kill threshold (<60% agent completion rate in prototype) prevents sunk-cost continuation if the core assumption about agent willingness to fill structured fields proves wrong.",
+      "evidence_refs": [
+        "ctx-4"
+      ],
+      "is_major": false
+    }
+  ],
+  "citations": [
+    "ctx-1: Internal analytics dashboard, trailing 90 days — reassignment rate and resolution time multiplier for multi-touch tickets",
+    "ctx-2: Scenario framing — 'PRD with hidden scope creep' implies the primary risk is unbounded scope expansion into adjacent feature areas",
+    "ctx-3: Pass/fail readiness assessment against PRD completeness criteria — problem quantified, scope bounded, assumptions named, but no prototype or field validation yet conducted",
+    "ctx-4: Industry best practice for product experimentation — pre-registered kill thresholds prevent escalation of commitment bias"
+  ],
+  "open_questions": [
+    "Is the 18% reassignment rate consistent across all support tiers, or concentrated in specific queues? Tier-specific data would change prioritization.",
+    "Does the current inbox platform support pinned card UI components, or would the handoff card require a more expensive custom implementation?",
+    "Are there contractual or compliance constraints on storing customer sentiment assessments that agents assign?"
+  ],
+  "critique_responses": []
+}
+```
+

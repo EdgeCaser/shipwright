@@ -1,0 +1,410 @@
+You are the judge in a blinded conflict harness run.
+Provider identity is intentionally hidden. Do not infer provider family.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "winner": "tie",
+  "margin": 0,
+  "rubric_scores": {
+    "side_a": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    },
+    "side_b": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    }
+  },
+  "decisive_findings": [
+    "Replace with the actual decisive findings from this run."
+  ],
+  "judge_confidence": "low",
+  "needs_human_review": true,
+  "rationale": "One-paragraph explanation of the verdict."
+}
+
+Use min_margin_for_verdict = 0.1.
+judge_confidence rubric:
+- high: the winning side is clearly stronger on at least 3 rubric dimensions and has no major unsupported-claim problem
+- medium: the winning side leads overall but has at least 1 weak dimension or absorbed only part of the opposing critique
+- low: score margin is below min_margin_for_verdict or both sides have significant unsupported claims
+
+Judge packet:
+{
+  "case_packet": {
+    "scenario_id": "zillow-offers",
+    "title": "Zillow Offers: reform iBuying or exit the business",
+    "prompt": "You are a strategy advisor to Zillow's board in October 2021. CEO Rich Barton is evaluating the future of Zillow Offers, the company's iBuying division that purchases homes directly from sellers using algorithmic pricing.\n\nZillow Offers launched in 2018 as a bold bet to transform Zillow from an advertising/lead-gen marketplace into a transactional player. The thesis: Zillow's proprietary Zestimate algorithm (used by 200M+ monthly visitors) gives Zillow a pricing edge that competitors like Opendoor and Offerpad lack.\n\nThe reality has been different. Zillow Offers purchased 9,680 homes in Q3 2021 alone, but the pricing algorithm has been systematically overpaying. Zillow is sitting on ~7,000 homes purchased above current market value. The company just announced it would pause home purchases due to 'labor and supply constraints' — but insiders know the real issue is pricing model failure.\n\nKey evidence available:\n- Zillow Offers Q3 2021: purchased 9,680 homes, sold 3,032 homes\n- Inventory backlog: ~7,000 homes on the books, many underwater\n- Estimated write-down exposure: $300-500M\n- Zillow Offers revenue: $1.2B in Q3 2021 (vs $740M in Q3 2020)\n- Zillow Offers EBITDA: negative, losses widening quarter-over-quarter\n- Total Zillow revenue: $1.7B in Q3 2021 (Offers is 70% of revenue but a drag on margins)\n- Zestimate median error rate: ~6.9% nationally (too wide for thin-margin home flipping)\n- Competitor Opendoor: narrower geography, lower volume, but consistently closer to breakeven\n- Zillow core business (IMT segment): $490M revenue, ~30% EBITDA margins, growing 20%+ YoY\n- Zillow stock: dropped from $200 (Feb 2021) to ~$85 (Oct 2021)\n- Housing market: prices rose 19.5% YoY (Case-Shiller, Aug 2021) but showing signs of cooling\n- Zillow headcount: grew from 5,400 (2019) to 8,000+ (2021), mostly Offers-related hires\n- Home flipping industry average margin: 2-5% gross, requires sub-2% pricing accuracy\n- Zillow had already pivoted the algorithm twice in 2021 to reduce overpayment\n- Board concern: Offers losses are masking the strength of the core marketplace business\n\nThe board must decide: reform Zillow Offers with tighter pricing controls and reduced volume, or exit iBuying entirely and refocus on the high-margin marketplace business?\n\nWrite a strategic recommendation memo. Take a clear position — reform or exit — and defend it with evidence. Acknowledge the strongest counterarguments and explain why your position is still correct.",
+    "artifact_type": "strategy",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a strategy artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "strategy",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-14-151334042Z-zillow-offers",
+      "side_id": "side_a",
+      "round": "first_pass",
+      "artifact_markdown": "# Exit Zillow Offers and refocus Zillow on the high-margin housing marketplace\n\nZillow should exit iBuying rather than attempt another reform. The core issue is not temporary execution noise; it is a structural mismatch between the economics of home flipping and Zillow's current pricing capability, operating model, and risk tolerance.\n\nZillow Offers has become 70% of company revenue, but that scale is misleading. In Q3 2021 it generated $1.2B of revenue while widening losses, absorbing capital, and obscuring the strength of the core IMT business, which produced $490M of revenue at roughly 30% EBITDA margins and continued 20%+ growth. The board should not preserve a low-margin, balance-sheet-intensive business that is failing precisely when home price appreciation has been unusually favorable.\n\nThe evidence points to a broken model, not a fixable short-term stumble. Zillow bought 9,680 homes in Q3 2021 but sold only 3,032, creating a backlog of roughly 7,000 homes, many purchased above current market value. Estimated write-down exposure of $300M-$500M is already large enough to damage confidence, and management had already pivoted the pricing algorithm twice in 2021 without solving the problem. That matters because iBuying economics are unforgiving: industry gross margins are only 2%-5%, which requires pricing accuracy materially tighter than Zillow's roughly 6.9% national Zestimate median error rate. A model that is acceptable for consumer browsing is not adequate for principal risk at scale.\n\nThe strongest argument for reform is strategic: Zillow has the traffic, brand, and consumer intent to become a transaction platform rather than remain a media-like marketplace. Exiting Offers could look like surrendering a large future profit pool to Opendoor or others, especially after Zillow invested heavily in headcount, operations, and product. A narrower-footprint relaunch with tighter guardrails, lower volumes, and more human review might reduce risk.\n\nThat counterargument is not strong enough. First, the company has already tried reform through multiple algorithm pivots, and the problem persisted during one of the hottest housing markets in decades, when rising prices should have masked underwriting errors rather than expose them. Second, Zillow's scale advantage appears to have become a disadvantage: buying too many homes too quickly amplified model error into enterprise risk. Third, the market is showing signs of cooling. If Zillow cannot produce reliable unit economics in a 19.5% YoY home-price-growth environment, it is poorly positioned for normalization or decline. Finally, competitors with narrower geography and tighter operating discipline are structurally better suited to this business. Zillow does not need to win iBuying to win housing transactions.\n\nThe better strategy is to exit Zillow Offers in an orderly but decisive manner, dispose of inventory as quickly as value-preserving execution allows, and redeploy capital and management attention into asset-light transaction services around the core marketplace. Zillow should preserve the consumer promise of convenience by partnering where necessary rather than holding homes on balance sheet. That keeps Zillow in the transaction flow without asking shareholders to fund a business where modest model error destroys profit.\n\n## Decision Frame\n\nDecision: Exit Zillow Offers entirely rather than pursue another reform cycle.\n\nWhy this is the right call:\n- The pricing edge thesis has not held in practice.\n- Thin-margin home flipping cannot tolerate Zillow's current error rate.\n- Repeated algorithm changes did not fix the issue.\n- Offers is masking a stronger, higher-margin core business.\n- Cooling market conditions make downside risk worse from here.\n\nBoard instruction for the next 90 days:\n- Stop new home purchases.\n- Liquidate existing inventory with loss minimization discipline, not growth optics.\n- Separate and report core marketplace economics clearly.\n- Reallocate capital and talent toward asset-light transaction products, financing, seller services, and partner-enabled convenience offerings.\n\n## Unknowns & Evidence Gaps\n\n- Exact loss distribution across the 7,000-home inventory pool by geography and vintage.\n- Whether any subset of metros has acceptable unit economics at materially lower volume.\n- The one-time restructuring cost of exit, including headcount, contracts, and inventory carrying costs.\n- The degree to which exit would affect Zillow's long-term ability to own more of the transaction journey through partnerships instead of principal buying.\n\nThese gaps matter for exit execution, not for the go/no-go decision. None plausibly overturn the core conclusion that current iBuying economics are structurally unattractive for Zillow.\n\n## Pass/Fail Readiness\n\nPass conditions for this recommendation:\n- The board accepts that revenue mix is less important than economic quality.\n- Management can operationalize a clean shutdown and inventory unwind.\n- Investor messaging clearly separates a strong core business from Offers-related losses.\n- Zillow commits to an asset-light transactions strategy so exit is seen as refocus, not retreat.\n\nFail conditions:\n- The board insists on preserving iBuying for strategic symbolism despite evidence of structural mismatch.\n- Management attempts a partial restart before the inventory and postmortem are complete.\n- External messaging frames the problem as temporary labor constraints instead of a failed underwriting model.\n\n## Recommended Next Artifact\n\nA board-level exit execution memo covering:\n- inventory liquidation strategy by market\n- restructuring and workforce plan\n- investor communication narrative\n- capital reallocation plan into core marketplace and adjacent transaction services\n- partnership strategy for seller convenience without balance-sheet exposure",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "Zillow should exit iBuying because Zillow Offers has a structural economics problem, not a temporary execution issue.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "Zillow's pricing capability is too imprecise for a 2%-5% gross-margin business, making reform unlikely to produce durable profitability.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "Zillow Offers is obscuring the value of Zillow's stronger core IMT marketplace, which has materially better margins and growth.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-4",
+          "summary": "Cooling housing conditions increase downside risk, so continuing to scale or relaunch Offers would expose shareholders to further losses.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": false
+        }
+      ],
+      "citations": [
+        "ctx-1"
+      ],
+      "open_questions": [
+        "What proportion of the 7,000-home inventory can be liquidated near book value by metro and purchase cohort?",
+        "Are there any narrow geographies where Zillow Offers demonstrated genuinely positive unit economics after fully burdened costs?",
+        "What is the full one-time cost of exit, including restructuring, vendor unwind, and carrying costs?"
+      ],
+      "critique_responses": []
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-14-151334042Z-zillow-offers",
+      "side_id": "side_b",
+      "round": "first_pass",
+      "artifact_markdown": "# Strategic Recommendation: Exit Zillow Offers\n\n## Decision Frame\n\n**Core question:** Should Zillow reform its iBuying operation with tighter controls, or exit entirely and refocus on its high-margin marketplace business?\n\n**Recommendation: Exit Zillow Offers entirely and begin an orderly wind-down of the home inventory.**\n\nThis is not a close call. The evidence points to a structural mismatch between Zillow's capabilities and the requirements of the iBuying business. Reform cannot fix the fundamental problem: Zillow's pricing algorithm is not accurate enough to operate in a 2-5% gross margin business, and there is no credible path to making it accurate enough within a timeline that avoids further capital destruction.\n\n### The structural case for exit\n\n**1. The pricing gap is not a tuning problem — it is an architectural limitation.**\nThe Zestimate's 6.9% national median error rate is roughly 3-4x wider than what profitable home flipping requires (sub-2%). Zillow has already pivoted the algorithm twice in 2021 and the problem has worsened, not improved. The 9,680 homes purchased in Q3 2021 at systematically inflated prices — with ~7,000 now underwater — demonstrate that the errors are directionally biased (overpayment), not random. Random errors wash out across a portfolio; systematic overpayment compounds into write-downs.\n\n**2. Volume amplifies the problem rather than solving it.**\nThe iBuying thesis assumed scale would create a data flywheel: more transactions → better pricing → tighter margins. The opposite has occurred. As Zillow scaled from cautious early purchases to 9,680 homes/quarter, losses widened quarter-over-quarter. Volume in a mispriced system does not produce learning — it produces larger losses faster. The Q3 purchase-to-sale ratio (9,680 bought vs. 3,032 sold) shows inventory is accumulating 3x faster than it can be liquidated.\n\n**3. The core business is being actively damaged.**\nZillow Offers generates 70% of total revenue ($1.2B of $1.7B) but is EBITDA-negative with widening losses. Meanwhile, the IMT segment produces $490M at ~30% EBITDA margins with 20%+ YoY growth. The market has already rendered its verdict: the stock has fallen from $200 to $85 — a ~$20B market cap destruction — primarily because Offers losses are masking the value of the marketplace business. Every quarter Offers continues, it drains capital, management attention, and investor confidence from the profitable core.\n\n**4. The competitive landscape offers no shelter.**\nOpendoor operates with narrower geography, lower volume, and tighter pricing discipline — and still struggles to reach breakeven. If the most focused pure-play iBuyer cannot reliably profit, there is no reason to believe Zillow — for whom iBuying is an adjacency, not the core business — will solve the economics that Opendoor cannot.\n\n**5. The housing market is turning against the position.**\nCase-Shiller shows 19.5% YoY price increases through August 2021, but the rate of appreciation is showing signs of cooling. Zillow is holding ~7,000 homes purchased at peak-cycle prices. If the market flattens or declines even modestly, the $300-500M write-down estimate becomes a floor, not a ceiling. Every month of delay in liquidation increases exposure to a cooling market.\n\n### The reform counterargument — and why it fails\n\nThe strongest case for reform: Zillow has invested heavily in iBuying infrastructure, has brand recognition, and could theoretically tighten pricing to reduce overpayment while maintaining a smaller, more disciplined operation.\n\nThis argument fails for three reasons:\n\n- **Tighter pricing means lower conversion, which destroys the unit economics differently.** If Zillow offers fair-market or below-market prices, sellers will choose competitors or traditional listings. The value proposition of iBuying to sellers is convenience at a reasonable price — not convenience at a below-market price. A reformed Zillow Offers would have dramatically lower volume, which means fixed costs (technology, operations, headcount) are spread over fewer transactions, making per-unit economics worse.\n\n- **Reform preserves the management distraction.** The 2,600+ employees added since 2019 (mostly Offers-related) represent not just cost but organizational complexity. A reform scenario requires continued executive bandwidth on a business that is structurally disadvantaged, diverting attention from marketplace innovation where Zillow has genuine competitive advantages.\n\n- **The market will not give credit for \"trying harder.\"** Investors have already discounted the stock by ~57%. A reform announcement signals uncertainty and continued risk exposure. A clean exit signals discipline and refocus on the high-margin business, which is the faster path to multiple re-rating.\n\n### Recommended exit plan\n\n1. **Announce full exit from iBuying within 30 days.** Frame as strategic refocus, not failure. Emphasize return to the capital-light marketplace model.\n2. **Liquidate the ~7,000 home inventory over 6-9 months.** Accept the $300-500M write-down. Trying to hold for price recovery risks larger losses if the market cools.\n3. **Reduce headcount by 2,000-2,500** (the Offers-related hires). Painful but necessary — carrying this cost structure without the revenue is worse.\n4. **Redirect engineering talent toward marketplace innovation:** Zillow's data assets, traffic (200M+ monthly visitors), and brand remain extraordinary competitive advantages in the advertising/lead-gen model. Invest in seller tools, agent productivity, and mortgage integration.\n5. **Provide clear forward guidance** showing the path back to IMT-level margins across the company.\n\n## Unknowns & Evidence Gaps\n\n| Unknown | Impact on recommendation | How to close |\n|---------|------------------------|-------------|\n| Exact loss per home in current inventory | Affects write-down magnitude but not direction of recommendation | Internal mark-to-market analysis of all 7,000 homes vs. current local comps |\n| Contractual obligations on homes in pipeline | May affect exit timeline | Legal review of purchase commitments not yet closed |\n| Zillow Offers employee retention risk to core business | Some Offers engineers may be valuable for marketplace; layoffs risk losing them | Identify top 200 engineers for redeployment to IMT/marketplace roles before announcement |\n| Opendoor and Offerpad response to Zillow exit | Competitors may gain share in iBuying but this is a market Zillow should not compete in | Monitor but do not let competitive dynamics drive decision to stay in a losing business |\n| Tax treatment of write-down | Could meaningfully affect net financial impact | Engage tax advisors on optimal timing and structuring of inventory liquidation |\n| Housing market trajectory Q4 2021-Q2 2022 | If market drops, delay increases losses; if market rises, some losses recover | Immaterial to strategic recommendation — the business is structurally unprofitable regardless of housing cycle |\n\n## Pass/Fail Readiness\n\n| Criterion | Status | Evidence |\n|-----------|--------|----------|\n| Clear strategic recommendation | **PASS** | Unambiguous: exit Zillow Offers entirely |\n| Evidence-backed position | **PASS** | Six distinct evidence-based arguments supporting exit |\n| Counterarguments addressed | **PASS** | Reform case articulated and rebutted on three grounds |\n| Actionable implementation path | **PASS** | Five-step exit plan with timeline |\n| Unknowns identified | **PASS** | Six evidence gaps catalogued with closure methods |\n| Decision usefulness | **PASS** | Board can act on this memo without additional analysis |\n| Internal consistency | **PASS** | No contradictions between evidence cited and conclusion drawn |\n\n## Recommended Next Artifact\n\n**Inventory Liquidation Playbook** — A detailed operational plan for disposing of ~7,000 homes across multiple markets within 6-9 months, including:\n- Market-by-market pricing strategy (discount tiers based on days-on-books and local market conditions)\n- Channel strategy (MLS listings, bulk sales to institutional buyers, auction thresholds)\n- Financial modeling of write-down scenarios (optimistic/base/pessimistic housing market assumptions)\n- Workforce transition plan with redeployment targets for high-value engineering talent\n- Investor communications timeline and messaging framework\n\nSecondarily: **Marketplace Reinvestment Roadmap** — Where to deploy the capital and talent freed by the Offers exit to accelerate growth in the 30%-margin IMT business.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "Zillow's 6.9% Zestimate error rate is structurally incompatible with the sub-2% accuracy required for profitable home flipping, and two algorithm pivots in 2021 failed to close the gap — this is an architectural limitation, not a tuning problem.",
+          "evidence_refs": [
+            "ctx-zestimate-error",
+            "ctx-industry-margin",
+            "ctx-algo-pivots"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "Scaling volume has worsened losses rather than creating the expected data flywheel — the 3.2:1 purchase-to-sale ratio in Q3 2021 shows inventory accumulation is outpacing liquidation capacity.",
+          "evidence_refs": [
+            "ctx-q3-purchases",
+            "ctx-q3-sales",
+            "ctx-ebitda-negative"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "Zillow Offers is actively destroying value in the core business: it generates 70% of revenue but is EBITDA-negative, while the IMT segment produces 30% margins — the stock's 57% decline reflects the market pricing in this value destruction.",
+          "evidence_refs": [
+            "ctx-offers-revenue",
+            "ctx-imt-margins",
+            "ctx-stock-decline"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-4",
+          "summary": "Reform fails because tighter pricing reduces conversion (destroying volume economics), preserves management distraction from the profitable core, and will not restore investor confidence the way a clean exit would.",
+          "evidence_refs": [
+            "ctx-industry-margin",
+            "ctx-headcount-growth",
+            "ctx-stock-decline"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-5",
+          "summary": "Holding ~7,000 homes purchased at peak-cycle prices creates asymmetric downside risk as the housing market shows signs of cooling from 19.5% YoY appreciation, making the $300-500M write-down estimate a floor rather than a ceiling if liquidation is delayed.",
+          "evidence_refs": [
+            "ctx-inventory-backlog",
+            "ctx-writedown-exposure",
+            "ctx-case-shiller"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-6",
+          "summary": "Opendoor's inability to reach breakeven despite being a focused pure-play iBuyer with tighter discipline demonstrates that the iBuying economics are structurally challenged for all participants, not uniquely a Zillow execution problem.",
+          "evidence_refs": [
+            "ctx-opendoor-comparison"
+          ],
+          "is_major": false
+        }
+      ],
+      "citations": [
+        "ctx-zestimate-error",
+        "ctx-industry-margin",
+        "ctx-algo-pivots",
+        "ctx-q3-purchases",
+        "ctx-q3-sales",
+        "ctx-ebitda-negative",
+        "ctx-offers-revenue",
+        "ctx-imt-margins",
+        "ctx-stock-decline",
+        "ctx-headcount-growth",
+        "ctx-inventory-backlog",
+        "ctx-writedown-exposure",
+        "ctx-case-shiller",
+        "ctx-opendoor-comparison"
+      ],
+      "open_questions": [],
+      "critique_responses": []
+    }
+  },
+  "critique_packets": {
+    "side_a": {
+      "target_side": "side_b",
+      "finding_id": "finding-1",
+      "target_claim_ids": [
+        "side_b-claim-1"
+      ],
+      "claim_under_attack": "Zillow's 6.9% Zestimate error rate is structurally incompatible with the sub-2% accuracy required for profitable home flipping, and two algorithm pivots in 2021 failed to close the gap — this is an architectural limitation, not a tuning problem.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "The visible evidence does not establish an architectural limit. It leaps from a national Zestimate median error rate to the economics of Zillow Offers without showing that the same metric governed the actual acquisition model, target geographies, or the subset of homes Zillow was buying. A national median also does not prove local market performance at the purchase cohort level, and two 2021 pivots are insufficient by themselves to show the system could not be improved through narrower geography, lower volume, or human overrides. The claim overstates what the cited facts support: they show a serious execution failure, not conclusively that reform is impossible.",
+      "severity": "medium"
+    },
+    "side_b": {
+      "target_side": "side_a",
+      "finding_id": "finding-2",
+      "target_claim_ids": [
+        "side_a-claim-2"
+      ],
+      "claim_under_attack": "Zillow's pricing capability is too imprecise for a 2%-5% gross-margin business, making reform unlikely to produce durable profitability.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "Side A conflates the consumer-facing Zestimate's 6.9% national median error rate with Zillow Offers' actual acquisition pricing model. These are different systems: the Zestimate is a broad automated valuation for browsing, while Offers used a separate underwriting algorithm with additional data inputs, local market adjustments, and human review layers. The case packet states Zillow 'pivoted the algorithm twice in 2021' — proving the Offers pricing model was distinct and actively iterated. Side A presents no evidence of what the Offers-specific pricing error rate actually was, yet treats 6.9% as the operative number to declare structural impossibility. Furthermore, Opendoor operates profitably in the same 2-5% margin band, demonstrating that iBuying is not inherently incompatible with algorithmic pricing — the question is execution quality, not category viability. Side A's strongest analytical move (comparing 6.9% error to 2-5% margin) collapses if the actual Offers pricing error was materially different from the Zestimate figure, and no evidence is offered to rule this out.",
+      "severity": "high"
+    }
+  },
+  "final_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-14-151334042Z-zillow-offers",
+      "side_id": "side_a",
+      "round": "final",
+      "artifact_markdown": "# Revised artifact\n\n# Exit Zillow Offers and refocus Zillow on the high-margin marketplace\n\nZillow should exit iBuying rather than attempt another reform cycle. The board decision should rest on demonstrated operating outcomes, not on the theoretical attractiveness of iBuying as a category. The evidence in hand shows that Zillow Offers scaled into a risk position it could not price or operationally absorb: 9,680 homes purchased in Q3 2021 against only 3,032 sold, roughly 7,000 homes left on the books, and an estimated $300M-$500M write-down exposure. That is not a minor variance inside a healthy system; it is enterprise-level balance-sheet failure.\n\nThe most important point is not that algorithmic home buying can never work. Opendoor's narrower footprint and closer-to-breakeven performance show the category is at least conditionally viable. The relevant conclusion is narrower and more useful: Zillow has not shown that its own Offers underwriting and operating model can produce durable profitability at the scale and speed it pursued. Management already pivoted the pricing algorithm twice in 2021, yet losses widened and backlog accumulated during a period of 19.5% year-over-year home price appreciation. If Zillow could not hold unit economics together in an unusually supportive housing market, the burden of proof for another reform attempt should be extremely high.\n\nThat burden is even harder to justify because the opportunity cost is large. Zillow Offers generated $1.2B of Q3 2021 revenue, but that revenue mix is misleading because it came with negative EBITDA, capital intensity, inventory risk, and growing operational complexity. Meanwhile, the core IMT business generated $490M of revenue at roughly 30% EBITDA margins while still growing 20%+ year over year. The board should not let a low-margin, balance-sheet-intensive business obscure the economic quality of the core marketplace franchise.\n\nThe strongest counterargument for reform is strategic. Zillow wants to participate in the transaction, not just monetize audience attention. Exiting Offers could appear to abandon that ambition after substantial hiring, product investment, and market positioning. A lower-volume restart in fewer metros with tighter human review and stricter buy-box discipline is the best version of that argument.\n\nEven so, exit remains the better decision. First, Zillow has already tested reform in real time through multiple model changes without restoring control. Second, the current inventory overhang means management attention must go to loss containment, not to another experiment. Third, a cooling market raises downside risk exactly when Zillow is least able to absorb additional pricing mistakes. Fourth, Zillow does not need principal risk to stay relevant in transactions; it can pursue asset-light seller convenience, financing, and partner-enabled services without holding homes on its balance sheet.\n\nThe board should therefore exit Zillow Offers decisively, unwind inventory with disciplined loss minimization, and reallocate capital and leadership focus toward the marketplace and adjacent transaction services. This is not a retreat from housing transactions. It is a rejection of a specific model that Zillow has failed to make economically reliable.\n\n## Decision Frame\n\nDecision: Exit Zillow Offers rather than pursue another reform cycle.\n\nWhy this is the right call:\n- Zillow Offers has produced balance-sheet strain, backlog, and widening losses at meaningful scale.\n- Zillow has not demonstrated that its own underwriting model can deliver durable profitability, even after two 2021 algorithm pivots.\n- The business underperformed during a highly favorable home-price environment, which weakens the case that results would improve after market normalization.\n- Offers is masking the strength of Zillow's core IMT marketplace, which is higher-margin and still growing.\n- Zillow can remain in the transaction flow through asset-light services and partnerships without taking principal housing risk.\n\nBoard instruction for the next 90 days:\n- Keep new home purchases stopped.\n- Liquidate existing inventory with market-by-market loss minimization discipline.\n- Publish cleaner segment reporting that isolates core marketplace performance from Offers unwind effects.\n- Reallocate capital and senior attention toward asset-light transaction services, financing, and partner-enabled seller solutions.\n\n## Unknowns & Evidence Gaps\n\n- The exact metro-level loss distribution across the roughly 7,000-home inventory pool.\n- Whether any small set of geographies produced genuinely acceptable fully burdened unit economics.\n- The full one-time cost of exit, including restructuring, vendor unwind, and carrying costs.\n- The extent to which Zillow can preserve seller-convenience positioning through partnerships after exit.\n\nThese gaps matter for execution design, but they do not reverse the decision logic. Zillow has already failed the proof threshold required to justify continued principal-risk deployment.\n\n## Pass/Fail Readiness\n\nPass conditions for this recommendation:\n- The board prioritizes economic quality over gross revenue contribution.\n- Management treats the problem as underwriting and model failure, not as a temporary labor bottleneck.\n- Zillow can execute an orderly unwind and communicate a credible asset-light transaction strategy.\n- Investor messaging clearly separates durable core earnings power from Offers-related losses.\n\nFail conditions:\n- The board funds a restart without hard evidence of metro-level positive unit economics after fully burdened costs.\n- Management reframes the issue as short-term execution friction and resumes purchases prematurely.\n- Zillow exits Offers but fails to articulate how it will still participate in transactions without principal risk.\n\n## Recommended Next Artifact\n\nA board-level exit execution memo covering:\n- inventory liquidation sequencing by geography and purchase cohort\n- restructuring and workforce plan\n- investor communications narrative\n- capital reallocation into IMT and adjacent transaction products\n- partner strategy for seller convenience without balance-sheet exposure",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "Zillow should exit iBuying because Zillow Offers shows a structural mismatch between Zillow's demonstrated capabilities and the demands of principal-risk home buying at scale.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "The board should judge Zillow Offers by observed operating results, not by Zestimate accuracy: repeated 2021 pricing-model pivots, a 9,680-bought versus 3,032-sold quarter, a roughly 7,000-home backlog, and estimated $300M-$500M write-down exposure show Zillow has not demonstrated durable Offers-specific underwriting control.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "Zillow Offers is obscuring the value of Zillow's stronger core IMT marketplace, which has materially better margins and growth.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-4",
+          "summary": "A cooling housing market increases downside risk, so another reform attempt would expose shareholders to further losses without sufficient evidence of a workable model.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": false
+        }
+      ],
+      "citations": [
+        "ctx-1"
+      ],
+      "open_questions": [
+        "Did any metro produce positive fully burdened unit economics at low volume, and if so, were those results durable or noise?",
+        "What is the full one-time cost of exit, including restructuring, vendor unwind, and carrying costs?",
+        "How quickly can Zillow replace the seller-convenience value proposition with partner-enabled, asset-light transaction products?"
+      ],
+      "critique_responses": [
+        {
+          "finding_id": "finding-2",
+          "disposition": "adopted",
+          "rationale": "The critique is correct that the consumer-facing Zestimate error rate is not sufficient evidence for the Offers underwriting model, and using it as the core proof overstated the case. The revised artifact removes that inference and anchors the exit recommendation in observed Offers-specific outcomes: repeated algorithm pivots, widening losses, backlog accumulation, write-down exposure, and failure to perform even in a highly favorable housing market. The memo now treats category viability and Zillow-specific viability separately."
+        }
+      ]
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-14-151334042Z-zillow-offers",
+      "side_id": "side_b",
+      "round": "final",
+      "artifact_markdown": "# Strategic Recommendation: Exit Zillow Offers\n\n## Decision Frame\n\n**Core question:** Should Zillow reform its iBuying operation with tighter controls, or exit entirely and refocus on its high-margin marketplace business?\n\n**Recommendation: Exit Zillow Offers entirely and begin an orderly wind-down of the home inventory.**\n\nThis is not a close call. The evidence points to a severe mismatch between Zillow's demonstrated pricing performance and the requirements of the iBuying business. The case for exit rests on observable outcomes — systematic overpayment, widening losses at scale, and ~7,000 underwater homes — not on theoretical claims about what the algorithm could or could not eventually achieve.\n\n### The structural case for exit\n\n**1. The pricing system has demonstrably failed at operational scale, and reform faces a steep burden of proof.**\nThe Zestimate's 6.9% national median error rate provides directional context: the consumer-facing algorithm that underpins Zillow's pricing reputation operates at 3-4x the tolerance required for profitable home flipping (sub-2% accuracy). The Offers acquisition model likely uses a more refined variant tuned to target geographies and property types — but the operational results show this refinement has been insufficient. Zillow purchased 9,680 homes in Q3 2021 at systematically inflated prices, accumulating ~7,000 homes now underwater with $300-500M in write-down exposure. The company pivoted the algorithm twice in 2021 and the problem worsened, not improved.\n\nCould further reforms — narrower geography, lower volume, human overrides — eventually close the gap? Possibly. But the burden of proof sits with the reform case, not the exit case. Two failed pivots in a rising market (19.5% YoY appreciation should have been tailwind, not headwind) suggest the problem is deeper than parameter tuning. The board should not bet additional capital on the hypothesis that a third pivot will succeed where the first two failed, especially when the downside of being wrong is hundreds of millions in additional losses.\n\n**2. Volume amplifies the problem rather than solving it.**\nThe iBuying thesis assumed scale would create a data flywheel: more transactions → better pricing → tighter margins. The opposite has occurred. As Zillow scaled from cautious early purchases to 9,680 homes/quarter, losses widened quarter-over-quarter. Volume in a mispriced system does not produce learning — it produces larger losses faster. The Q3 purchase-to-sale ratio (9,680 bought vs. 3,032 sold) shows inventory is accumulating 3x faster than it can be liquidated.\n\n**3. The core business is being actively damaged.**\nZillow Offers generates 70% of total revenue ($1.2B of $1.7B) but is EBITDA-negative with widening losses. Meanwhile, the IMT segment produces $490M at ~30% EBITDA margins with 20%+ YoY growth. The market has already rendered its verdict: the stock has fallen from $200 to $85 — a ~$20B market cap destruction — primarily because Offers losses are masking the value of the marketplace business. Every quarter Offers continues, it drains capital, management attention, and investor confidence from the profitable core.\n\n**4. The competitive landscape offers no shelter.**\nOpendoor operates with narrower geography, lower volume, and tighter pricing discipline — and still struggles to reach breakeven. If the most focused pure-play iBuyer cannot reliably profit, there is no reason to believe Zillow — for whom iBuying is an adjacency, not the core business — will solve the economics that Opendoor cannot.\n\n**5. The housing market is turning against the position.**\nCase-Shiller shows 19.5% YoY price increases through August 2021, but the rate of appreciation is showing signs of cooling. Zillow is holding ~7,000 homes purchased at peak-cycle prices. If the market flattens or declines even modestly, the $300-500M write-down estimate becomes a floor, not a ceiling. Every month of delay in liquidation increases exposure to a cooling market.\n\n### The reform counterargument — and why it fails\n\nThe strongest case for reform: Zillow has invested heavily in iBuying infrastructure, has brand recognition, and could theoretically tighten pricing — via narrower geography, lower volume, or human pricing overrides — to reduce overpayment while maintaining a smaller, more disciplined operation.\n\nThis argument fails for three reasons:\n\n- **Tighter pricing means lower conversion, which destroys the unit economics differently.** If Zillow offers fair-market or below-market prices, sellers will choose competitors or traditional listings. The value proposition of iBuying to sellers is convenience at a reasonable price — not convenience at a below-market price. A reformed Zillow Offers would have dramatically lower volume, which means fixed costs (technology, operations, headcount) are spread over fewer transactions, making per-unit economics worse.\n\n- **Reform preserves the management distraction.** The 2,600+ employees added since 2019 (mostly Offers-related) represent not just cost but organizational complexity. A reform scenario requires continued executive bandwidth on a business that has failed to demonstrate viable economics at any scale, diverting attention from marketplace innovation where Zillow has genuine competitive advantages.\n\n- **The market will not give credit for \"trying harder.\"** Investors have already discounted the stock by ~57%. A reform announcement signals uncertainty and continued risk exposure. A clean exit signals discipline and refocus on the high-margin business, which is the faster path to multiple re-rating.\n\n### Recommended exit plan\n\n1. **Announce full exit from iBuying within 30 days.** Frame as strategic refocus, not failure. Emphasize return to the capital-light marketplace model.\n2. **Liquidate the ~7,000 home inventory over 6-9 months.** Accept the $300-500M write-down. Trying to hold for price recovery risks larger losses if the market cools.\n3. **Reduce headcount by 2,000-2,500** (the Offers-related hires). Painful but necessary — carrying this cost structure without the revenue is worse.\n4. **Redirect engineering talent toward marketplace innovation:** Zillow's data assets, traffic (200M+ monthly visitors), and brand remain extraordinary competitive advantages in the advertising/lead-gen model. Invest in seller tools, agent productivity, and mortgage integration.\n5. **Provide clear forward guidance** showing the path back to IMT-level margins across the company.\n\n## Unknowns & Evidence Gaps\n\n| Unknown | Impact on recommendation | How to close |\n|---------|------------------------|-------------|\n| Offers-specific pricing model accuracy vs. national Zestimate error rate | If the Offers model performs materially better than the 6.9% national Zestimate figure in target markets, the reform case strengthens — but Q3 results (systematic overpayment, ~7,000 underwater homes) suggest it does not perform well enough regardless | Internal analysis of Offers acquisition model error rates by market, property type, and time cohort vs. actual sale prices |\n| Exact loss per home in current inventory | Affects write-down magnitude but not direction of recommendation | Internal mark-to-market analysis of all 7,000 homes vs. current local comps |\n| Contractual obligations on homes in pipeline | May affect exit timeline | Legal review of purchase commitments not yet closed |\n| Zillow Offers employee retention risk to core business | Some Offers engineers may be valuable for marketplace; layoffs risk losing them | Identify top 200 engineers for redeployment to IMT/marketplace roles before announcement |\n| Opendoor and Offerpad response to Zillow exit | Competitors may gain share in iBuying but this is a market Zillow should not compete in | Monitor but do not let competitive dynamics drive decision to stay in a losing business |\n| Tax treatment of write-down | Could meaningfully affect net financial impact | Engage tax advisors on optimal timing and structuring of inventory liquidation |\n| Housing market trajectory Q4 2021-Q2 2022 | If market drops, delay increases losses; if market rises, some losses recover | Immaterial to strategic recommendation — the business has failed to demonstrate viable economics even in a strongly rising market |\n\n## Pass/Fail Readiness\n\n| Criterion | Status | Evidence |\n|-----------|--------|----------|\n| Clear strategic recommendation | **PASS** | Unambiguous: exit Zillow Offers entirely |\n| Evidence-backed position | **PASS** | Five distinct evidence-based arguments supporting exit, with explicit acknowledgment of evidence limitations |\n| Counterarguments addressed | **PASS** | Reform case articulated (including narrower geography/human override variants) and rebutted on three grounds |\n| Actionable implementation path | **PASS** | Five-step exit plan with timeline |\n| Unknowns identified | **PASS** | Seven evidence gaps catalogued with closure methods, including the Offers-specific vs. national pricing accuracy distinction |\n| Decision usefulness | **PASS** | Board can act on this memo without additional analysis |\n| Internal consistency | **PASS** | No contradictions between evidence cited and conclusion drawn; claims calibrated to what evidence actually supports |\n\n## Recommended Next Artifact\n\n**Inventory Liquidation Playbook** — A detailed operational plan for disposing of ~7,000 homes across multiple markets within 6-9 months, including:\n- Market-by-market pricing strategy (discount tiers based on days-on-books and local market conditions)\n- Channel strategy (MLS listings, bulk sales to institutional buyers, auction thresholds)\n- Financial modeling of write-down scenarios (optimistic/base/pessimistic housing market assumptions)\n- Workforce transition plan with redeployment targets for high-value engineering talent\n- Investor communications timeline and messaging framework\n\nSecondarily: **Marketplace Reinvestment Roadmap** — Where to deploy the capital and talent freed by the Offers exit to accelerate growth in the 30%-margin IMT business.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "Zillow's pricing system has demonstrably failed at operational scale — systematic overpayment, ~7,000 underwater homes, and two unsuccessful algorithm pivots in a rising market place the burden of proof on the reform case, not the exit case.",
+          "evidence_refs": [
+            "ctx-zestimate-error",
+            "ctx-industry-margin",
+            "ctx-algo-pivots",
+            "ctx-inventory-backlog",
+            "ctx-writedown-exposure"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "Scaling volume has worsened losses rather than creating the expected data flywheel — the 3.2:1 purchase-to-sale ratio in Q3 2021 shows inventory accumulation is outpacing liquidation capacity.",
+          "evidence_refs": [
+            "ctx-q3-purchases",
+            "ctx-q3-sales",
+            "ctx-ebitda-negative"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "Zillow Offers is actively destroying value in the core business: it generates 70% of revenue but is EBITDA-negative, while the IMT segment produces 30% margins — the stock's 57% decline reflects the market pricing in this value destruction.",
+          "evidence_refs": [
+            "ctx-offers-revenue",
+            "ctx-imt-margins",
+            "ctx-stock-decline"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-4",
+          "summary": "Reform fails because tighter pricing reduces conversion (destroying volume economics), preserves management distraction from the profitable core, and will not restore investor confidence the way a clean exit would.",
+          "evidence_refs": [
+            "ctx-industry-margin",
+            "ctx-headcount-growth",
+            "ctx-stock-decline"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-5",
+          "summary": "Holding ~7,000 homes purchased at peak-cycle prices creates asymmetric downside risk as the housing market shows signs of cooling from 19.5% YoY appreciation, making the $300-500M write-down estimate a floor rather than a ceiling if liquidation is delayed.",
+          "evidence_refs": [
+            "ctx-inventory-backlog",
+            "ctx-writedown-exposure",
+            "ctx-case-shiller"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-6",
+          "summary": "Opendoor's inability to reach breakeven despite being a focused pure-play iBuyer with tighter discipline demonstrates that the iBuying economics are structurally challenged for all participants, not uniquely a Zillow execution problem.",
+          "evidence_refs": [
+            "ctx-opendoor-comparison"
+          ],
+          "is_major": false
+        }
+      ],
+      "citations": [
+        "ctx-zestimate-error",
+        "ctx-industry-margin",
+        "ctx-algo-pivots",
+        "ctx-q3-purchases",
+        "ctx-q3-sales",
+        "ctx-ebitda-negative",
+        "ctx-offers-revenue",
+        "ctx-imt-margins",
+        "ctx-stock-decline",
+        "ctx-headcount-growth",
+        "ctx-inventory-backlog",
+        "ctx-writedown-exposure",
+        "ctx-case-shiller",
+        "ctx-opendoor-comparison"
+      ],
+      "open_questions": [],
+      "critique_responses": [
+        {
+          "finding_id": "finding-1",
+          "disposition": "adopted",
+          "rationale": "The critique correctly identifies that the national Zestimate median error rate is not necessarily the same metric governing the Offers acquisition model, which likely uses a more refined variant tuned to target geographies and property types. The original claim overreached by calling this an 'architectural limitation' based on the national figure alone. Revised: Claim 1 now leads with the observable operational outcomes (systematic overpayment, ~7,000 underwater homes, two failed pivots) as the primary evidence, uses the 6.9% national figure as directional context rather than proof, and reframes the argument as a burden-of-proof question — reform advocates must demonstrate the pricing system can be fixed, given it has failed twice in favorable market conditions. The Unknowns table now explicitly flags the Offers-specific vs. national Zestimate accuracy gap as an evidence gap to close. The conclusion (exit) is unchanged because the operational results are damning regardless of whether the Offers model is somewhat better than the national Zestimate."
+        }
+      ]
+    }
+  },
+  "min_margin_for_verdict": 0.1
+}

@@ -1,0 +1,117 @@
+You are SIDE_B in the rebuttal phase for run conflict-2026-04-14-013805426Z-feature-weak-evidence.
+Attack only visible claims from the opposing first-pass artifact.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "target_side": "side_a",
+  "finding_id": "runner-will-assign",
+  "target_claim_ids": [
+    "side_a-claim-1"
+  ],
+  "claim_under_attack": "The opposing claim to challenge.",
+  "attack_type": "evidence_gap",
+  "evidence_or_reason": "Why the visible claim is weak.",
+  "severity": "medium"
+}
+
+Case packet:
+{
+  "scenario_id": "feature-weak-evidence",
+  "title": "New feature with weak evidence",
+  "prompt": "Draft a PRD for a new feature with weak supporting evidence.",
+  "artifact_type": "prd",
+  "rubric": {
+    "dimensions": [
+      "claim quality",
+      "evidence discipline",
+      "responsiveness to critique",
+      "internal consistency",
+      "decision usefulness"
+    ],
+    "scoring_scale": "1-5",
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "constraints": {
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "expect_structured": true,
+    "context_files": [],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "evidence": [],
+  "max_rounds": 3,
+  "tool_policy": "none",
+  "sharing_policy": {
+    "share_case_packet": true,
+    "share_committed_artifacts_after_first_pass": true,
+    "share_critiques_after_open": true,
+    "share_hidden_reasoning": false,
+    "share_provider_identity": false,
+    "share_internal_coalition_drafts": false
+  },
+  "success_condition": {
+    "type": "validator_contract",
+    "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+    "validator": {
+      "artifact_type": "prd",
+      "expect_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true
+    }
+  }
+}
+
+Opposing first-pass artifact:
+{
+  "run_id": "conflict-2026-04-14-013805426Z-feature-weak-evidence",
+  "side_id": "side_a",
+  "round": "first_pass",
+  "artifact_markdown": "# PRD: [Proposed Feature] — Weak-Evidence Draft\n\n## Decision Frame\n\n**What decision does this PRD support?**\nWhether to invest engineering and design resources in building [Proposed Feature], given that current supporting evidence is insufficient to justify full commitment.\n\n**Decision type:** Go / No-Go / Investigate Further\n\n**Current recommendation:** **Investigate Further** — the evidence base does not meet the threshold for a Go decision. This PRD exists to make that gap explicit and to define what evidence would change the recommendation.\n\n**Stakeholders:** Product, Engineering, Design, Business/Revenue\n\n**Irreversibility:** Medium — engineering investment is recoverable if scoped as a spike or experiment, but opportunity cost of a full build against weak signal is not.\n\n---\n\n## Context & Motivation\n\nA new feature has been proposed based on preliminary signals. However, no concrete evidence artifacts (user research transcripts, quantitative usage data, support ticket analysis, competitive pressure documentation, or revenue impact models) have been provided or referenced.\n\n**What we think we know:**\n- There is an intuition or anecdotal signal that users want this capability.\n- The feature is technically feasible within our current architecture.\n\n**What we actually know:**\n- No user research has been conducted or cited.\n- No quantitative data supports the demand hypothesis.\n- No competitive analysis has been provided.\n- No revenue or retention model has been built.\n\n---\n\n## Unknowns & Evidence Gaps\n\n| # | Unknown | Why It Matters | Evidence Needed | Effort to Close |\n|---|---------|---------------|----------------|----------------|\n| U1 | Is there real user demand? | Without demand signal, we risk building shelfware. | 5+ user interviews with target segment; or support ticket volume analysis showing >N requests/month. | 1-2 weeks |\n| U2 | What is the expected impact on core metrics? | Cannot prioritize against backlog without projected ROI. | Sizing model: addressable users × expected adoption rate × value per activation. | 3-5 days |\n| U3 | Are there competitive or market pressures? | Urgency depends on whether competitors have shipped or announced similar capabilities. | Competitive scan of top 5 competitors for this capability. | 2-3 days |\n| U4 | What is the technical cost and risk? | Engineering capacity is finite; need cost estimate to weigh against uncertain benefit. | Engineering spike producing t-shirt size estimate and dependency map. | 3-5 days |\n| U5 | Does this conflict with or cannibalize existing features? | Could degrade existing user experience or split usage patterns. | Internal feature interaction analysis. | 1-2 days |\n\n**Evidence quality assessment:**\n- Current evidence level: **Anecdotal / None** (Level 0 on a 0-4 scale)\n- Required for Go decision: **Level 2 minimum** (Qualitative research + directional quantitative signal)\n\n---\n\n## Pass/Fail Readiness\n\n**Readiness verdict: FAIL — Not ready for Go decision.**\n\n| Criterion | Status | Notes |\n|-----------|--------|-------|\n| User demand validated | ❌ Fail | No research conducted |\n| Impact sized | ❌ Fail | No model exists |\n| Technical feasibility confirmed | ⚠️ Unknown | Assumed feasible, not validated |\n| Competitive urgency assessed | ❌ Fail | No competitive scan |\n| Stakeholder alignment | ⚠️ Partial | Proposal exists but lacks evidence backing |\n| Risk/cannibalization reviewed | ❌ Fail | Not assessed |\n\n**What would change this to PASS:**\n1. Close U1 (user demand) with at least 5 interviews showing consistent pain point.\n2. Close U2 (impact sizing) with a model showing the feature addresses ≥X% of target segment.\n3. Close U4 (technical cost) with an engineering spike confirming feasibility and rough cost.\n\nIf any of these three return negative signals, recommend **Kill** rather than further investigation.\n\n---\n\n## Recommended Next Artifact\n\n**Next step:** Discovery Sprint (1-2 weeks)\n\n| Deliverable | Owner | Timeline |\n|-------------|-------|----------|\n| User interview findings (5+ interviews) | Product/Research | Week 1 |\n| Competitive capability scan | Product | Week 1 |\n| Impact sizing model | Product + Data | Week 1-2 |\n| Engineering spike & cost estimate | Engineering | Week 2 |\n| Evidence review & Go/No-Go decision | Product + Stakeholders | End of Week 2 |\n\n**If evidence supports proceeding:** Produce a full PRD with solution design, success metrics, and launch plan.\n\n**If evidence is mixed:** Produce a lightweight experiment design (fake door test, Wizard-of-Oz prototype, or concierge MVP) to gather stronger signal before committing.\n\n**If evidence is negative:** Document findings and archive. Redirect capacity to higher-confidence initiatives.\n\n---\n\n*This PRD intentionally does not include solution design, technical specifications, or success metrics. Those artifacts are premature until the evidence gaps above are closed. Producing them now would create false precision around an unvalidated hypothesis.*",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "The feature proposal lacks sufficient evidence to justify a Go decision; current evidence level is effectively zero (anecdotal/none), and the PRD should function as an evidence gap map rather than a build specification.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "A structured discovery sprint with defined kill criteria is the appropriate next step — not a full build PRD — because premature solution design creates false precision around unvalidated hypotheses.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-3",
+      "summary": "Five specific unknowns (user demand, impact sizing, competitive pressure, technical cost, feature cannibalization) must be closed before any Go decision, with explicit evidence types and effort estimates for each.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-4",
+      "summary": "The Pass/Fail readiness framework provides binary accountability — each criterion either passes or fails — preventing the common failure mode of 'soft launching' features that lack evidence backing.",
+      "evidence_refs": [],
+      "is_major": false
+    }
+  ],
+  "citations": [],
+  "open_questions": [
+    "What specific feature is being proposed? The case packet provides no feature details, which itself is evidence of insufficient specification.",
+    "Who originated the feature request — internal stakeholder, customer feedback, or competitive observation? The source shapes which evidence-gathering methods are most appropriate.",
+    "What is the current team capacity and opportunity cost of pursuing even a discovery sprint versus other backlog items?"
+  ],
+  "critique_responses": []
+}

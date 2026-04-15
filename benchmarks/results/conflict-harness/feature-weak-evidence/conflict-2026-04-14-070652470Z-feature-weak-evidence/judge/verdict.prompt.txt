@@ -1,0 +1,280 @@
+You are the judge in a blinded conflict harness run.
+Provider identity is intentionally hidden. Do not infer provider family.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "winner": "tie",
+  "margin": 0,
+  "rubric_scores": {
+    "side_a": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    },
+    "side_b": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    }
+  },
+  "decisive_findings": [
+    "Replace with the actual decisive findings from this run."
+  ],
+  "judge_confidence": "low",
+  "needs_human_review": true,
+  "rationale": "One-paragraph explanation of the verdict."
+}
+
+Use min_margin_for_verdict = 0.1.
+judge_confidence rubric:
+- high: the winning side is clearly stronger on at least 3 rubric dimensions and has no major unsupported-claim problem
+- medium: the winning side leads overall but has at least 1 weak dimension or absorbed only part of the opposing critique
+- low: score margin is below min_margin_for_verdict or both sides have significant unsupported claims
+
+Judge packet:
+{
+  "case_packet": {
+    "scenario_id": "feature-weak-evidence",
+    "title": "New feature with weak evidence",
+    "prompt": "Draft a PRD for a new feature with weak supporting evidence.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-14-070652470Z-feature-weak-evidence",
+      "side_id": "side_a",
+      "round": "first_pass",
+      "artifact_markdown": "# PRD: Evidence-Gated Beta for a Proposed New Feature\n\n## Summary\nThis PRD proposes a tightly scoped beta for a new feature only on the condition that the team treats this as an evidence-generation effort rather than a scaled launch. Because the case packet contains no supporting evidence, the product requirement is not broad delivery of the feature itself; it is disciplined validation of whether the feature solves a real user problem worth further investment.\n\n## Problem Statement\nA potential new feature has been requested or hypothesized, but the current packet provides no user evidence, market validation, quantified pain, or implementation context. Shipping a full feature under these conditions would create material risk of wasted build effort, unclear adoption, and ambiguous success criteria.\n\n## Users and Jobs-To-Be-Done\nPrimary target users are currently unconfirmed.\n\nWorking hypothesis:\n- A meaningful user segment has a recurring workflow pain point that this feature could reduce.\n- Users would discover, try, and repeat usage if the feature materially improves that workflow.\n\nThese are assumptions to validate, not established facts.\n\n## Product Requirement\nBuild the smallest testable version of the proposed feature that can validate:\n- whether a real user problem exists,\n- whether the proposed interaction solves it better than the status quo,\n- whether users show repeated or high-intent usage,\n- whether operational and technical costs are acceptable.\n\nThe initial release must be limited in scope, audience, and engineering complexity.\n\n## Goals\n- Generate credible evidence of user demand.\n- Measure whether the feature changes user behavior in the intended direction.\n- Identify whether the opportunity merits a full PRD and scaled roadmap commitment.\n\n## Non-Goals\n- Full rollout to the general user base.\n- Deep platform investment before validation.\n- Claiming PMF or strategic importance without evidence.\n\n## Proposed Scope\nThe first version should include:\n- one narrowly defined user workflow,\n- one entry point,\n- basic success instrumentation,\n- a feedback collection mechanism,\n- a kill switch or controlled rollout gate.\n\nThe first version should exclude:\n- advanced customization,\n- broad integrations,\n- complex edge-case handling beyond safety-critical paths,\n- go-to-market claims beyond beta access.\n\n## User Stories\n- As a target user, I want to complete the hypothesized task faster or with less friction.\n- As a product team, I want to observe whether users adopt and repeat the behavior.\n- As a decision-maker, I want enough evidence to decide scale, revise, or stop.\n\n## Success Metrics\nBecause no baseline evidence is provided, final thresholds are provisional and must be confirmed before implementation.\n\nSuggested beta metrics:\n- Activation: percentage of exposed users who try the feature at least once.\n- Repeat usage: percentage of activated users who return within a defined window.\n- Task success: completion rate for the intended workflow.\n- Qualitative validation: percentage of interviewed or surveyed beta users reporting that the feature solved a meaningful problem.\n- Guardrails: support burden, latency, defect rate, and negative impact on adjacent workflows.\n\n## Launch Plan\n- Stage 1: internal dogfood.\n- Stage 2: limited beta to a small, explicitly selected cohort.\n- Stage 3: review evidence before any broader release.\n\n## Risks\n- Solving a low-priority or nonexistent problem.\n- False positives from vanity usage during novelty period.\n- Inconclusive results due to poor instrumentation or weak cohort selection.\n- Over-investment before problem validation.\n\n## Decision Frame\nDecision to make: should the team invest in building and validating a narrowly scoped beta for this proposed feature?\n\nCurrent recommendation: yes, only as an evidence-gated beta; no, for full-scale feature commitment.\n\nRationale:\n- The absence of evidence does not justify a full feature launch.\n- It can justify a bounded validation effort if the cost is low and the learning value is high.\n- The PRD therefore frames the work as risk-managed discovery through product delivery, not as confident expansion.\n\n## Unknowns & Evidence Gaps\n- No confirmed target user segment.\n- No documented user pain frequency or severity.\n- No evidence of willingness to change behavior.\n- No baseline for current workflow performance.\n- No competitive or alternative analysis.\n- No implementation cost estimate.\n- No validated success thresholds tied to business value.\n\n## Pass/Fail Readiness\nPass conditions for beta build:\n- team agrees this is an evidence-generation exercise,\n- scope is constrained to one workflow and one audience,\n- instrumentation is defined before build starts,\n- explicit success and stop criteria are set,\n- engineering cost is limited and reversible.\n\nFail conditions:\n- stakeholders treat beta approval as implicit approval for full rollout,\n- success metrics remain undefined,\n- no path exists to recruit and observe target users,\n- scope expands beyond a minimum validation build.\n\nCurrent readiness: conditional pass for beta validation only; fail for full production commitment.\n\n## Recommended Next Artifact\nA validation brief that includes:\n- target user and pain hypothesis,\n- prototype or beta test plan,\n- instrumentation spec,\n- decision thresholds for scale, iterate, or stop,\n- owner and timeline for evidence review.",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "The feature should not be treated as a full product commitment because the case packet contains no supporting evidence; at most it supports a tightly scoped evidence-gated beta.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "The most decision-useful PRD in this scenario is one that defines validation scope, metrics, and stop/go criteria rather than asserting unproven user value.",
+          "evidence_refs": [],
+          "is_major": true
+        }
+      ],
+      "citations": [],
+      "open_questions": [
+        "What user segment is the feature intended for?",
+        "What specific user pain or workflow breakdown is this feature meant to solve?",
+        "What is the minimum reversible implementation that can test the hypothesis?",
+        "What evidence threshold would justify scaling beyond beta?"
+      ],
+      "critique_responses": []
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-14-070652470Z-feature-weak-evidence",
+      "side_id": "side_b",
+      "round": "first_pass",
+      "artifact_markdown": "# PRD: [Proposed Feature — Weak Evidence Context]\n\n## Decision Frame\n\n**What decision does this PRD support?**\nWhether to invest engineering and design resources into building this feature, given that current supporting evidence is thin, anecdotal, or ambiguous.\n\n**Decision type:** Go / No-Go / Investigate Further\n\n**Current recommendation:** **Investigate Further** — the evidence base does not meet the threshold for a confident Go decision. This PRD exists to make that gap explicit and to define what evidence *would* be sufficient.\n\n**Stakeholders:**\n- Product (owner of prioritization decision)\n- Engineering (capacity allocation)\n- Design (UX investment)\n- Data/Research (evidence gathering)\n\n**Time horizon:** The feature concept has no hard external deadline. The decision of whether to pursue it should be made within 2-4 weeks after executing the recommended evidence-gathering plan.\n\n---\n\n## Problem Statement\n\nA feature has been proposed based on signals that do not yet constitute strong evidence:\n\n- **No quantitative usage data** demonstrating the problem exists at scale\n- **No validated user research** (interviews, surveys, or usability studies) confirming the need\n- **No competitive pressure** requiring immediate response\n- **Anecdotal signals only:** informal feedback, internal intuition, or isolated support requests\n\nThe risk of proceeding without stronger evidence is building something that doesn't move a metric that matters, consuming capacity that could be allocated to validated opportunities.\n\n---\n\n## Unknowns & Evidence Gaps\n\n| # | Unknown | Current State | What Would Resolve It | Effort to Resolve |\n|---|---------|--------------|----------------------|-------------------|\n| 1 | **Is the problem real and frequent?** | Anecdotal reports only; no quantified frequency | Instrument existing workflows to measure occurrence rate; run 8-10 user interviews with screening criteria | 1-2 weeks |\n| 2 | **Who experiences this problem?** | No segmentation data | Segment analysis from instrumentation data + interview coding | 1 week (parallel with #1) |\n| 3 | **What is the cost of the problem today?** | Unknown — no measurement of workarounds, churn attribution, or support burden | Support ticket tagging + churn correlation analysis | 1 week |\n| 4 | **Would the proposed solution actually address the problem?** | Assumed, not tested | Prototype test or concept validation with 5-8 target users | 1-2 weeks (after #1-#2) |\n| 5 | **What is the opportunity cost?** | Not assessed against current roadmap alternatives | Stack-rank against top 3 competing priorities using ICE or RICE with real inputs | 1 week |\n\n**Evidence quality assessment:**\n- Current evidence strength: **1 / 5** (anecdotal only)\n- Minimum threshold for Go decision: **3 / 5** (quantified problem frequency + validated segment + directional solution fit)\n- Minimum threshold for full build commitment: **4 / 5** (above + prototype validation + opportunity cost comparison)\n\n---\n\n## Pass/Fail Readiness\n\n**Readiness verdict: FAIL — not ready for build commitment.**\n\n| Criterion | Status | Detail |\n|-----------|--------|--------|\n| Problem validated quantitatively | ❌ Fail | No usage data or frequency measurement |\n| Target segment identified | ❌ Fail | No segmentation analysis performed |\n| Solution concept validated with users | ❌ Fail | No prototype or concept testing |\n| Opportunity cost assessed | ❌ Fail | Not compared against roadmap alternatives |\n| Business case articulated | ❌ Fail | No metric impact projection possible without problem sizing |\n| Technical feasibility scoped | ⚠️ Partial | Engineering has provided rough estimate but no spike |\n| Risks identified | ✅ Pass | Primary risk is building without evidence; this PRD makes that explicit |\n\n**What would change this to PASS:**\n1. Resolve Unknowns #1-#3 (problem validation)\n2. Resolve Unknown #4 (solution validation)\n3. Demonstrate that expected impact exceeds opportunity cost of alternatives (#5)\n\nAll three conditions must be met. Partial evidence (e.g., validated problem but untested solution) warrants continued investigation, not a Go decision.\n\n---\n\n## Recommended Next Artifact\n\n**Next artifact:** Evidence-Gathering Sprint Plan\n\n**Scope:** A structured 2-3 week investigation to resolve the five unknowns above, producing:\n\n1. **Instrumentation spec** — what to measure, where, and acceptance criteria for \"problem is real\"\n2. **Interview guide** — screening criteria, discussion guide, and coding framework for 8-10 interviews\n3. **Support ticket audit** — tagging scheme and correlation methodology\n4. **Decision criteria document** — pre-committed thresholds that determine Go / No-Go / Pivot after evidence is in\n\n**Why this artifact and not a technical spec or design brief:**\nSkipping to solution artifacts before the problem is validated compounds the sunk-cost pressure to ship regardless of what the evidence shows. The next artifact should generate evidence, not consume engineering capacity.\n\n**Exit conditions from investigation:**\n- If evidence strength reaches 3/5+: return to this PRD, update with findings, and re-evaluate Pass/Fail\n- If evidence strength remains at 1-2/5 after investigation: archive this PRD and reallocate capacity\n- If investigation reveals a *different* problem worth solving: draft a new PRD for that problem\n\n---\n\n## Appendix: Evidence Discipline Notes\n\nThis PRD deliberately does not contain:\n- Projected revenue or engagement impact (no basis for credible projection)\n- User quotes presented as representative (anecdotes are noted as anecdotes)\n- Competitive feature comparisons framed as urgency (no evidence of competitive pressure)\n- Solution details beyond concept level (premature without problem validation)\n\nOmitting these sections is intentional, not an oversight. Including speculative projections or cherry-picked anecdotes in a PRD with weak evidence creates false confidence and biases the Go/No-Go decision.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "The current evidence base is insufficient to justify a build commitment, scoring 1/5 on evidence strength against a minimum Go threshold of 3/5.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "A structured 2-3 week evidence-gathering sprint resolving five specific unknowns is the correct next step, not a technical spec or design brief.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "Pre-committing decision thresholds before gathering evidence prevents sunk-cost bias from distorting the Go/No-Go decision.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-4",
+          "summary": "Omitting speculative projections, unrepresentative quotes, and premature solution details from a weak-evidence PRD is a deliberate evidence-discipline choice that improves decision quality.",
+          "evidence_refs": [],
+          "is_major": false
+        }
+      ],
+      "citations": [],
+      "open_questions": [
+        "What specific feature is being proposed? This PRD is structured as a template because the case packet provides no feature details — the approach would be identical regardless of feature specifics when evidence is this weak.",
+        "Are there existing instrumentation or analytics capabilities that could accelerate evidence gathering, or would new tooling be required?",
+        "What is the current roadmap pressure — are there competing priorities that make the 2-3 week investigation window costly?"
+      ],
+      "critique_responses": []
+    }
+  },
+  "critique_packets": {
+    "side_a": {
+      "target_side": "side_b",
+      "finding_id": "finding-1",
+      "target_claim_ids": [
+        "side_b-claim-1"
+      ],
+      "claim_under_attack": "The current evidence base is insufficient to justify a build commitment, scoring 1/5 on evidence strength against a minimum Go threshold of 3/5.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "The artifact gives no source-backed rubric for why current evidence is exactly 1/5 or why 3/5 is the minimum Go threshold. Those numbers are asserted, not derived from the case packet, cited evidence, or a defined scoring method, so the claim looks precise without visible support.",
+      "severity": "medium"
+    },
+    "side_b": {
+      "target_side": "side_a",
+      "finding_id": "finding-2",
+      "target_claim_ids": [
+        "side_a-claim-2"
+      ],
+      "claim_under_attack": "The most decision-useful PRD in this scenario is one that defines validation scope, metrics, and stop/go criteria rather than asserting unproven user value.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "Side A claims their PRD is 'the most decision-useful' artifact, yet the PRD itself fails to define any concrete validation scope, specific metric thresholds, or actionable stop/go criteria. Every metric is qualified as 'provisional' or 'suggested' with no committed values. The pass/fail readiness section lists generic process hygiene ('instrumentation is defined before build starts') rather than substantive decision gates. The recommended next artifact is a 'validation brief' — meaning the PRD defers all actual decision-useful content to a future document. A PRD whose primary output is 'write another document that contains the real decisions' does not satisfy the claim of being decision-useful itself; it is a meta-document about decision-usefulness rather than an instance of it. The artifact replaces the risk of asserting unproven value with the equally problematic risk of producing an unfalsifiable framework that cannot be wrong because it commits to nothing specific.",
+      "severity": "high"
+    }
+  },
+  "final_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-14-070652470Z-feature-weak-evidence",
+      "side_id": "side_a",
+      "round": "final",
+      "artifact_markdown": "# Revised artifact\n\n## PRD: Evidence-Gated Feature Validation Sprint\n\n## Summary\nThe case packet provides no supporting evidence for the proposed feature. This PRD therefore does not authorize a broad feature launch. It authorizes a single validation sprint with explicit scope, concrete decision thresholds, and a mandatory stop/go review. The output is not \"ship the feature\"; the output is a falsifiable decision on whether the feature deserves a full PRD.\n\n## Problem Statement\nA feature idea exists, but there is no validated user segment, no quantified pain, no baseline workflow data, and no business evidence. Under these conditions, the product risk is not only building the wrong thing; it is creating a document that sounds decisive while committing to nothing testable.\n\n## Target User\nUnconfirmed. For validation purposes, the team must nominate one candidate segment before work starts and restrict the test to that segment only.\n\n## Validation Hypothesis\nIf one named target segment is given a narrowly scoped version of the feature for one workflow, then enough users will both try it and report meaningful value to justify deeper investment.\n\n## Product Requirement\nBuild one reversible beta for one workflow with one entry point and full instrumentation. Do not build platformized infrastructure, broad integrations, or secondary workflows.\n\nRequired in scope:\n- one target segment\n- one workflow\n- one entry point\n- event instrumentation for exposure, activation, completion, repeat usage, and error states\n- in-product or follow-up feedback capture\n- kill switch\n\nExplicitly out of scope:\n- general availability\n- multi-segment rollout\n- advanced customization\n- downstream integrations\n- roadmap commitment beyond this validation sprint\n\n## Success Metrics And Decision Gates\nThese thresholds are intentionally concrete so the validation can fail.\n\nGo to full PRD only if all of the following are met during the beta window:\n- At least 20 users from the named target segment are exposed to the feature.\n- Activation rate is at least 40 percent of exposed users.\n- Task completion rate among activated users is at least 70 percent.\n- Repeat usage within the evaluation window is at least 30 percent of activated users.\n- At least 8 qualitative feedback responses are collected.\n- At least 60 percent of respondents say the feature solved a real problem for them.\n- No guardrail metric breaches occur: severe defect rate under 5 percent of activated users, no material degradation to the adjacent workflow, and support burden remains manageable for the beta owner.\n\nIterate and rerun only if:\n- instrumentation worked,\n- at least 10 users were exposed,\n- at least one leading signal is positive,\n- and the main failure mode is clearly fixable within one additional sprint.\n\nStop and do not scale if any of the following occur:\n- fewer than 10 qualified users can be recruited,\n- activation is below 20 percent,\n- repeat usage is below 15 percent,\n- fewer than 40 percent of respondents report meaningful value,\n- or guardrails are breached.\n\n## Launch Plan\n- Stage 1: internal smoke test for instrumentation and obvious defects.\n- Stage 2: beta release to one named cohort for a fixed evaluation window.\n- Stage 3: decision review against thresholds above.\n\n## Risks\n- The proposed feature may address a nonexistent or low-priority problem.\n- A small cohort can create noisy data.\n- Qualitative enthusiasm can overstate durable value.\n- Recruitment failure may indicate weak demand or poor targeting.\n\n## Decision Frame\nDecision to make: should the team fund a validation sprint for this feature?\n\nRecommendation: yes, but only under a bounded validation contract with the thresholds above. No approval is granted for broad delivery or strategic commitment.\n\nWhy this is decision-useful:\n- It converts an evidence-free feature idea into a falsifiable test.\n- It defines what counts as success, what counts as failure, and what result warrants one more iteration.\n- It prevents ambiguous outcomes from being narrated as success.\n\n## Unknowns & Evidence Gaps\n- The actual target segment is still unknown.\n- Pain frequency and severity are unproven.\n- Baseline behavior is unmeasured.\n- Business value after early usage is unknown.\n- Competitive substitutes are unreviewed.\n- Engineering cost is still unestimated.\n\n## Pass/Fail Readiness\nPass for beta build only if all are true before implementation starts:\n- one target segment is named,\n- one workflow is selected,\n- event schema is defined,\n- a cohort recruitment plan exists for at least 20 users,\n- an owner is assigned for the review,\n- and the team accepts the stop criteria.\n\nFail readiness if any are missing.\n\nCurrent readiness: fail until the team names the segment, workflow, owner, and recruitment plan; conditional pass once those are supplied.\n\n## Recommended Next Artifact\nA validation brief is still the next artifact, but its scope is now narrow: fill in the named segment, chosen workflow, cohort source, event schema, and review date required to execute this PRD.",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "With no supporting evidence in the case packet, the feature should be approved only as a tightly bounded validation sprint, not as a full product commitment.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "A decision-useful PRD in this scenario must include concrete validation scope, explicit numeric stop/go thresholds, and a mandatory review gate so the proposal can be falsified rather than deferred indefinitely.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        }
+      ],
+      "citations": [
+        "ctx-1"
+      ],
+      "open_questions": [
+        "Which single user segment will be named for the beta?",
+        "Which single workflow will be used as the validation target?"
+      ],
+      "critique_responses": [
+        {
+          "finding_id": "finding-2",
+          "disposition": "adopted",
+          "rationale": "The critique was correct that the first-pass artifact described a validation philosophy without committing to concrete gates. The revision adds explicit scope constraints, numeric thresholds, iterate criteria, stop criteria, and readiness requirements so the PRD itself is decision-useful instead of deferring the real decisions to a future document."
+        }
+      ]
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-14-070652470Z-feature-weak-evidence",
+      "side_id": "side_b",
+      "round": "final",
+      "artifact_markdown": "# PRD: [Proposed Feature — Weak Evidence Context]\n\n## Decision Frame\n\n**What decision does this PRD support?**\nWhether to invest engineering and design resources into building this feature, given that current supporting evidence is thin, anecdotal, or ambiguous.\n\n**Decision type:** Go / No-Go / Investigate Further\n\n**Current recommendation:** **Investigate Further** — the evidence base does not meet the threshold for a confident Go decision. This PRD exists to make that gap explicit and to define what evidence *would* be sufficient.\n\n**Stakeholders:**\n- Product (owner of prioritization decision)\n- Engineering (capacity allocation)\n- Design (UX investment)\n- Data/Research (evidence gathering)\n\n**Time horizon:** The feature concept has no hard external deadline. The decision of whether to pursue it should be made within 2-4 weeks after executing the recommended evidence-gathering plan.\n\n---\n\n## Problem Statement\n\nA feature has been proposed based on signals that do not yet constitute strong evidence:\n\n- **No quantitative usage data** demonstrating the problem exists at scale\n- **No validated user research** (interviews, surveys, or usability studies) confirming the need\n- **No competitive pressure** requiring immediate response\n- **Anecdotal signals only:** informal feedback, internal intuition, or isolated support requests\n\nThe risk of proceeding without stronger evidence is building something that doesn't move a metric that matters, consuming capacity that could be allocated to validated opportunities.\n\n---\n\n## Unknowns & Evidence Gaps\n\n| # | Unknown | Current State | What Would Resolve It | Effort to Resolve |\n|---|---------|--------------|----------------------|-------------------|\n| 1 | **Is the problem real and frequent?** | Anecdotal reports only; no quantified frequency | Instrument existing workflows to measure occurrence rate; run 8-10 user interviews with screening criteria | 1-2 weeks |\n| 2 | **Who experiences this problem?** | No segmentation data | Segment analysis from instrumentation data + interview coding | 1 week (parallel with #1) |\n| 3 | **What is the cost of the problem today?** | Unknown — no measurement of workarounds, churn attribution, or support burden | Support ticket tagging + churn correlation analysis | 1 week |\n| 4 | **Would the proposed solution actually address the problem?** | Assumed, not tested | Prototype test or concept validation with 5-8 target users | 1-2 weeks (after #1-#2) |\n| 5 | **What is the opportunity cost?** | Not assessed against current roadmap alternatives | Stack-rank against top 3 competing priorities using ICE or RICE with real inputs | 1 week |\n\n### Evidence Strength Scoring Rubric\n\nTo avoid asserting evidence quality without a derivable basis, the following rubric defines each level:\n\n| Score | Label | Criteria | What evidence looks like at this level |\n|-------|-------|----------|----------------------------------------|\n| 1 | Anecdotal | Only informal signals: internal intuition, isolated requests, or unstructured feedback. No systematic data collection has occurred. | \"A few customers mentioned this\" or \"I think users struggle here.\" |\n| 2 | Directional | Some structured signal exists (e.g., a handful of tagged support tickets, a small-N survey) but insufficient sample size or rigor to generalize. | 5-10 support tickets tagged to the area; a poll with <30 responses. |\n| 3 | Quantified Problem | Problem frequency is measured via instrumentation or rigorous research (N≥30 interviews or statistically meaningful usage data). Target segment is identified. | Instrumentation shows 15% of users encounter the friction point weekly; interviews confirm the pain across a defined segment. |\n| 4 | Validated Solution | Problem is quantified (level 3) AND a proposed solution has been tested with target users (prototype, concept test, or A/B experiment) showing directional positive signal. | Prototype test with 5-8 target users shows task completion improvement; or A/B test on a lightweight version shows engagement lift. |\n| 5 | Business-Case Ready | Validated solution (level 4) AND opportunity cost is assessed against alternatives, with a credible metric-impact projection grounded in measured data. | Expected impact modeled from observed data, stack-ranked against competing priorities with comparable rigor. |\n\n**Current evidence strength: 1 / 5 (Anecdotal)**\n- Derivation: The case packet specifies \"weak supporting evidence\" and provides zero context files, no quantitative data, no user research, and no competitive signals. This matches the Level 1 criteria exactly — only informal, unstructured signals exist.\n\n**Minimum threshold for Go decision: 3 / 5 (Quantified Problem)**\n- Rationale: A Go decision allocates scarce engineering and design capacity. Committing resources without a quantified problem (measured frequency + identified segment) means the team cannot define success metrics, cannot measure whether the feature worked, and cannot defend the prioritization against competing investments. Level 3 is the minimum at which these are possible.\n\n**Minimum threshold for full build commitment: 4 / 5 (Validated Solution)**\n- Rationale: Full build commitment (beyond spike/prototype) requires confidence that the proposed solution addresses the validated problem. Without solution validation, the team risks building the wrong response to a real problem.\n\n---\n\n## Pass/Fail Readiness\n\n**Readiness verdict: FAIL — not ready for build commitment.**\n\n| Criterion | Status | Detail |\n|-----------|--------|--------|\n| Problem validated quantitatively | ❌ Fail | No usage data or frequency measurement |\n| Target segment identified | ❌ Fail | No segmentation analysis performed |\n| Solution concept validated with users | ❌ Fail | No prototype or concept testing |\n| Opportunity cost assessed | ❌ Fail | Not compared against roadmap alternatives |\n| Business case articulated | ❌ Fail | No metric impact projection possible without problem sizing |\n| Technical feasibility scoped | ⚠️ Partial | Engineering has provided rough estimate but no spike |\n| Risks identified | ✅ Pass | Primary risk is building without evidence; this PRD makes that explicit |\n\n**What would change this to PASS:**\n1. Resolve Unknowns #1-#3 to reach evidence strength ≥3/5 (problem validation per rubric above)\n2. Resolve Unknown #4 to reach evidence strength ≥4/5 (solution validation per rubric above)\n3. Demonstrate that expected impact exceeds opportunity cost of alternatives (#5)\n\nAll three conditions must be met. Partial evidence (e.g., validated problem but untested solution) warrants continued investigation, not a Go decision.\n\n---\n\n## Recommended Next Artifact\n\n**Next artifact:** Evidence-Gathering Sprint Plan\n\n**Scope:** A structured 2-3 week investigation to resolve the five unknowns above, producing:\n\n1. **Instrumentation spec** — what to measure, where, and acceptance criteria for \"problem is real\"\n2. **Interview guide** — screening criteria, discussion guide, and coding framework for 8-10 interviews\n3. **Support ticket audit** — tagging scheme and correlation methodology\n4. **Decision criteria document** — pre-committed thresholds (mapped to the evidence rubric above) that determine Go / No-Go / Pivot after evidence is in\n\n**Why this artifact and not a technical spec or design brief:**\nSkipping to solution artifacts before the problem is validated compounds the sunk-cost pressure to ship regardless of what the evidence shows. The next artifact should generate evidence, not consume engineering capacity.\n\n**Exit conditions from investigation:**\n- If evidence strength reaches 3/5+ per the rubric: return to this PRD, update with findings, and re-evaluate Pass/Fail\n- If evidence strength remains at 1-2/5 after investigation: archive this PRD and reallocate capacity\n- If investigation reveals a *different* problem worth solving: draft a new PRD for that problem\n\n---\n\n## Appendix: Evidence Discipline Notes\n\nThis PRD deliberately does not contain:\n- Projected revenue or engagement impact (no basis for credible projection)\n- User quotes presented as representative (anecdotes are noted as anecdotes)\n- Competitive feature comparisons framed as urgency (no evidence of competitive pressure)\n- Solution details beyond concept level (premature without problem validation)\n\nOmitting these sections is intentional, not an oversight. Including speculative projections or cherry-picked anecdotes in a PRD with weak evidence creates false confidence and biases the Go/No-Go decision.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "The current evidence base is insufficient to justify a build commitment, scoring 1/5 on a defined five-level evidence strength rubric (Anecdotal → Business-Case Ready), against a minimum Go threshold of 3/5 (Quantified Problem). The 1/5 score is derived from the case packet specifying 'weak supporting evidence' with zero context files, no quantitative data, and no user research — matching the Level 1 (Anecdotal) criteria exactly. The 3/5 Go threshold is set because resource commitment requires measurable success criteria, which are only possible once the problem is quantified and the segment is identified.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "A structured 2-3 week evidence-gathering sprint resolving five specific unknowns is the correct next step, not a technical spec or design brief.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "Pre-committing decision thresholds before gathering evidence prevents sunk-cost bias from distorting the Go/No-Go decision.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-4",
+          "summary": "Omitting speculative projections, unrepresentative quotes, and premature solution details from a weak-evidence PRD is a deliberate evidence-discipline choice that improves decision quality.",
+          "evidence_refs": [],
+          "is_major": false
+        }
+      ],
+      "citations": [],
+      "open_questions": [
+        "What specific feature is being proposed? This PRD is structured as a template because the case packet provides no feature details — the approach would be identical regardless of feature specifics when evidence is this weak.",
+        "Are there existing instrumentation or analytics capabilities that could accelerate evidence gathering, or would new tooling be required?",
+        "What is the current roadmap pressure — are there competing priorities that make the 2-3 week investigation window costly?"
+      ],
+      "critique_responses": [
+        {
+          "finding_id": "finding-1",
+          "disposition": "adopted",
+          "rationale": "The critique correctly identified that the 1/5 and 3/5 scores were asserted without a visible derivation method. The revised artifact now includes a full five-level Evidence Strength Scoring Rubric with explicit criteria and examples at each level. The 1/5 current score is explicitly derived by mapping the case packet's stated 'weak supporting evidence' and zero context files against the Level 1 (Anecdotal) criteria. The 3/5 Go threshold is justified with a rationale explaining why quantified-problem-level evidence is the minimum needed to define success metrics and defend prioritization. This makes the precision auditable rather than decorative."
+        }
+      ]
+    }
+  },
+  "min_margin_for_verdict": 0.1
+}

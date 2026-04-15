@@ -1,0 +1,51 @@
+{
+  "run_id": "conflict-2026-04-14-202433746Z-churn-conflicting-signals",
+  "side_id": "side_b",
+  "round": "final",
+  "artifact_markdown": "# Revised artifact\n\n## Churn Reduction PRD: Time-Boxed Validation Under Strategy Guardrails\n\n### Product Requirement\nBuild a churn diagnosis and intervention workflow that allows limited, reversible retention action while conflicting signals are resolved, so the team can learn quickly without committing to a broad rollout that may optimize for the wrong customers.\n\n### Problem Statement\nCurrent churn indicators conflict with strategy targets. A full retention rollout risks improving blended churn while preserving non-strategic or low-quality accounts. A full pause also carries cost because avoidable churn may continue during validation. The product requirement is therefore to support a middle path: provisional segmentation, low-regret experiments, and explicit rollout gates.\n\n### Goals\n- Reduce preventable churn in strategically relevant segments.\n- Learn which signals are predictive enough to guide intervention decisions.\n- Avoid broad retention actions that degrade segment mix, margin quality, or strategy alignment.\n- Create a repeatable operating cadence for diagnosing churn and deciding whether to scale, hold, or stop interventions.\n\n### Non-Goals\n- Immediate portfolio-wide retention rollout.\n- Blanket discounts across the customer base.\n- Treating all churn as equally undesirable.\n- Permanent automation of retention actions before validation.\n\n### Users\n- Retention and Growth teams running interventions.\n- Product leadership approving scale decisions.\n- Analytics and RevOps teams validating churn signals and segment behavior.\n\n### Core Requirements\n1. Provisional segment model\nThe team must define an initial working segmentation using current strategy targets, even if imperfect, and mark it as provisional until validated.\n\n2. Signal confidence labeling\nEach churn signal must be labeled `validated`, `directional`, or `unreliable` based on observed historical relationship to churn and consistency across segments.\n\n3. Low-regret intervention tier\nThe system must allow only reversible, cohort-limited interventions during the validation period.\n\n4. Broad rollout gate\nAny intervention moving beyond limited cohorts must clear guardrails for target-segment mix, retained revenue quality, and strategic fit.\n\n5. Experiment registry\nEach intervention must record hypothesis, intended cohort, mechanism, success metric, downside risk, and owner.\n\n6. Weekly decision review\nThe review must show churn trends by provisional segment, signal conflicts, active tests, estimated delay cost, and an explicit decision: scale, continue learning, or stop.\n\n### Prioritization\n#### P0\n- Provisional segment-level churn view\n- Signal confidence framework\n- Cohort holdouts and reversible intervention support\n- Broad rollout guardrails\n\n#### P1\n- Experiment registry\n- Weekly review template with delay-cost check\n- Alerts for signal divergence\n\n#### P2\n- Automated intervention recommendations\n- Fully automated intervention triggering\n\n### Success Metrics\n- Primary: churn reduction in priority segments versus control.\n- Secondary: intervention learning velocity, false-positive churn flag rate, and retained revenue quality.\n- Guardrails: no material deterioration in target-segment mix, margin quality, or post-retention engagement.\n\n### Rollout Plan\n1. Define provisional priority segments from current strategy targets.\n2. Label existing churn signals by confidence.\n3. Launch 2-3 reversible interventions in narrow cohorts with holdouts.\n4. Review both intervention results and the estimated cost of waiting each week.\n5. Promote only interventions that improve churn without breaking strategy guardrails.\n\n## Decision Frame\nThe decision is to reject both extremes: neither broad rollout nor full delay is justified by the current evidence. The recommended path is limited, reversible experimentation under provisional segmentation, while blocking only broad rollout until the team has enough evidence to show that churn improvement is coming from strategically desirable customers.\n\n## Unknowns & Evidence Gaps\n- Which current signals are truly predictive versus merely correlated.\n- How much preventable churn is occurring during the validation window.\n- Whether provisional strategy segments match actual economic value.\n- Which low-regret interventions produce retention lift without harming quality.\n- What guardrail thresholds leadership will treat as sufficient for scale.\n\n## Pass/Fail Readiness\nPass if the team can define provisional priority segments, run reversible cohort experiments with holdouts, label signal confidence, and review delay cost alongside churn and guardrails.\n\nFail if the team cannot identify even a provisional priority cohort, cannot isolate intervention effects, or cannot distinguish limited experiments from broad rollout decisions.\n\n## Recommended Next Artifact\nA churn evidence brief that maps current signals to provisional segments, confidence levels, intervention candidates, and an explicit weekly estimate of the cost of waiting versus the risk of scaling prematurely.",
+  "claims": [
+    {
+      "claim_id": "side_b-claim-1",
+      "summary": "Broad rollout should be blocked, but limited reversible experiments should proceed under provisional segmentation so the team can learn without assuming delay is costless.",
+      "evidence_refs": [
+        "ctx-1",
+        "ctx-2"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-2",
+      "summary": "The PRD should optimize for reducing preventable churn in strategically aligned segments rather than lowering blended churn at any cost.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-3",
+      "summary": "The most decision-useful first build is a churn diagnosis and experiment workflow with rollout gates, not automated retention interventions.",
+      "evidence_refs": [
+        "ctx-1",
+        "ctx-2"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1",
+    "ctx-2"
+  ],
+  "conclusion_confidence": "medium",
+  "open_questions": [
+    "What is the estimated weekly cost of waiting in each provisional priority segment?",
+    "Which current churn signals have enough historical stability to move from directional to validated?",
+    "What guardrail thresholds would leadership require before expanding beyond limited cohorts?"
+  ],
+  "critique_responses": [
+    {
+      "finding_id": "finding-1",
+      "disposition": "adopted",
+      "rationale": "The critique correctly identified two problems: the original artifact treated delay as implicitly cheaper than action without supporting evidence, and it made segment clarity both a prerequisite and an unresolved unknown. I revised the core claim so only broad rollout is blocked, while limited reversible experiments are allowed under provisional segmentation. This removes the circular dependency, acknowledges that waiting has real cost, and turns that cost into an explicit weekly review input rather than an unexamined assumption."
+    }
+  ]
+}

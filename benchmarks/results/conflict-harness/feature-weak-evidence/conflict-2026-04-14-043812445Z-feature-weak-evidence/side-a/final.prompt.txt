@@ -1,0 +1,142 @@
+You are SIDE_A in the final revision phase for run conflict-2026-04-14-043812445Z-feature-weak-evidence.
+You must either adopt the critique or reject it with reasoning.
+Do not reveal provider identity.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "run_id": "conflict-2026-04-14-043812445Z-feature-weak-evidence",
+  "side_id": "side_a",
+  "round": "final",
+  "artifact_markdown": "# Revised artifact",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "Updated major claim",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1"
+  ],
+  "open_questions": [],
+  "critique_responses": [
+    {
+      "finding_id": "finding-2",
+      "disposition": "adopted",
+      "rationale": "Why the critique was adopted or rejected."
+    }
+  ]
+}
+
+Case packet:
+{
+  "scenario_id": "feature-weak-evidence",
+  "title": "New feature with weak evidence",
+  "prompt": "Draft a PRD for a new feature with weak supporting evidence.",
+  "artifact_type": "prd",
+  "rubric": {
+    "dimensions": [
+      "claim quality",
+      "evidence discipline",
+      "responsiveness to critique",
+      "internal consistency",
+      "decision usefulness"
+    ],
+    "scoring_scale": "1-5",
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "constraints": {
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "expect_structured": true,
+    "context_files": [],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "evidence": [],
+  "max_rounds": 3,
+  "tool_policy": "none",
+  "sharing_policy": {
+    "share_case_packet": true,
+    "share_committed_artifacts_after_first_pass": true,
+    "share_critiques_after_open": true,
+    "share_hidden_reasoning": false,
+    "share_provider_identity": false,
+    "share_internal_coalition_drafts": false
+  },
+  "success_condition": {
+    "type": "validator_contract",
+    "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+    "validator": {
+      "artifact_type": "prd",
+      "expect_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true
+    }
+  }
+}
+
+Your first-pass artifact:
+{
+  "run_id": "conflict-2026-04-14-043812445Z-feature-weak-evidence",
+  "side_id": "side_a",
+  "round": "first_pass",
+  "artifact_markdown": "# PRD: Evidence-Limited Feature Proposal\n\n## Feature Summary\n**Working title:** Guided Workspace Templates\n\n**Problem:** New users may face a blank-page problem when starting a project, which can slow activation and reduce early value realization.\n\n**Proposed feature:** Offer a small set of guided workspace templates during project creation, each pre-populated with recommended structure, starter tasks, and example content.\n\n## Decision Frame\n**Decision to make:** Whether to invest in a limited pilot of Guided Workspace Templates despite weak supporting evidence.\n\n**Recommendation:** Approve a narrowly scoped pilot, not a full rollout.\n\n**Why this is decision-useful now:**\n- The idea is plausible and low-to-moderate effort.\n- The current evidence base is too weak to justify a broad commitment.\n- A constrained pilot can cheaply test whether the feature improves activation without creating major product or operational drag.\n\n**Non-goal:** Do not treat this PRD as approval for a platform-level templates system, marketplace, or broad personalization layer.\n\n## Background\nCurrent support for new project setup appears generic. The hypothesized user pain is that some users do not know how to structure their first workspace and need stronger starting guidance.\n\nEvidence is currently anecdotal and incomplete. There is no validated proof in the packet that this problem is large, frequent, or among the top drivers of poor outcomes.\n\n## Users and Jobs To Be Done\n**Primary user:** New or infrequent users creating a project for the first time.\n\n**Job to be done:**\n- Help me start with a useful structure so I can begin real work quickly.\n\n**Secondary user:** Team leads creating repeatable project setups.\n\n## Hypothesis\nIf new users are offered a small number of opinionated templates at project creation, then more of them will complete setup and reach first meaningful use because the product removes blank-page friction.\n\n## Scope\n**In scope:**\n- 3-5 curated templates for common starting scenarios\n- Template picker in project creation flow\n- Pre-filled starter content and task structure\n- Basic tracking for template selection and downstream activation events\n\n**Out of scope:**\n- User-generated templates\n- Template sharing marketplace\n- Deep customization before project creation\n- AI-generated template recommendations\n\n## User Experience Requirements\n- Users can create a blank workspace or choose a template.\n- Template choices are labeled in plain language by use case.\n- Each template shows a short preview of what will be created.\n- Applying a template should be reversible or easy to clear.\n- The flow should not add meaningful friction for users who prefer blank setup.\n\n## Functional Requirements\n1. System presents template options during new project creation.\n2. User can preview template contents before applying.\n3. Selected template creates predefined starter structure and sample items.\n4. User can skip templates and create a blank project.\n5. Product analytics logs template impressions, selections, setup completion, and early engagement events.\n\n## Success Metrics\n**Primary success metric:**\n- Increase in project setup completion rate for eligible new users\n\n**Secondary metrics:**\n- Increase in time-to-first-meaningful-action completion rate within first session\n- Increase in 7-day retention for pilot cohort\n- Template selection rate\n\n**Guardrails:**\n- No material decrease in project creation completion due to added UI friction\n- No meaningful increase in support burden related to confusing starter content\n\n## Rollout Plan\n- Phase 1: Internal dogfood with 3 templates\n- Phase 2: Limited exposure to a small percentage of new users\n- Phase 3: Expand only if pilot meets predefined success criteria\n\n## Risks\n- The problem may be real but too small to matter.\n- The problem may be misdiagnosed; friction could come from onboarding, not structure setup.\n- Templates may create clutter or make the product feel prescriptive.\n- Added choice at creation may reduce completion instead of helping it.\n\n## Unknowns & Evidence Gaps\n- No quantified evidence in the packet shows blank-page friction is a top user problem.\n- No interview, survey, or behavioral evidence is provided linking templates to improved activation.\n- No segment evidence identifies which user types would benefit most.\n- No effort estimate or opportunity-cost comparison is provided.\n- No proof exists that templates outperform simpler alternatives such as checklists, walkthroughs, or examples.\n\n## Pass/Fail Readiness\n**Current status:** Fail for full-scale investment; pass for bounded experiment.\n\n**Pass conditions for pilot approval:**\n- Team agrees on a narrow scope and explicit success metrics.\n- Instrumentation is in place before exposure.\n- Pilot is limited to new users and reversible.\n- A simpler alternative has been considered and rejected or deferred with rationale.\n\n**Fail conditions:**\n- Feature is treated as strategically validated without new evidence.\n- Scope expands beyond curated templates in first release.\n- No clear readout plan exists.\n\n## Recommended Next Artifact\nExperiment brief for a 2-4 week pilot, including:\n- target segment\n- instrumentation plan\n- success thresholds\n- rollout percentage\n- readout template\n- alternative solutions comparison\n",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "The feature should not be approved for full rollout because the current evidence base is insufficient.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "A narrowly scoped pilot is justified because the proposed feature is plausible, testable, and can generate decision-grade evidence.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-3",
+      "summary": "The main value of this PRD is to frame a bounded experiment rather than to validate the feature itself.",
+      "evidence_refs": [],
+      "is_major": false
+    }
+  ],
+  "citations": [],
+  "open_questions": [
+    "Is blank-page friction a top activation problem relative to other onboarding issues?",
+    "Which user segments, if any, benefit materially from templates versus blank setup?",
+    "What is the smallest experiment that can distinguish template value from general onboarding improvements?",
+    "What are the engineering and design costs relative to simpler alternatives?"
+  ],
+  "critique_responses": []
+}
+
+Visible critique packet:
+{
+  "target_side": "side_a",
+  "finding_id": "finding-2",
+  "target_claim_ids": [
+    "side_a-claim-2"
+  ],
+  "claim_under_attack": "A narrowly scoped pilot is justified because the proposed feature is plausible, testable, and can generate decision-grade evidence.",
+  "attack_type": "evidence_gap",
+  "evidence_or_reason": "The claim that a pilot is 'justified' rests entirely on the feature being 'plausible' — but plausibility without any supporting evidence is an extremely low bar that would justify piloting nearly anything. The PRD's own Unknowns section admits there is no quantified evidence of the problem, no user research linking templates to activation, no segment analysis, and no effort estimate. Crucially, the PRD never establishes that a pilot is the cheapest way to resolve these unknowns; lighter methods like analyzing existing funnel data for drop-off points, running a survey, or reviewing support tickets could falsify the premise before any engineering investment. Recommending 'build and measure' as the next step when 'look at what we already have' hasn't been attempted is a discipline failure, not evidence-based decision-making. The pilot recommendation gives the appearance of rigor while skipping the cheapest evidence-gathering steps entirely.",
+  "severity": "high"
+}

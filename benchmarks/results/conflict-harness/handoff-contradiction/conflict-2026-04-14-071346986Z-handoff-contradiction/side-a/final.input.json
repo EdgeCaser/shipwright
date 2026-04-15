@@ -1,0 +1,133 @@
+{
+  "case_packet": {
+    "scenario_id": "handoff-contradiction",
+    "title": "Handoff artifact with cross-document contradictions",
+    "prompt": "Write a technical handoff PRD aligned to a platform strategy and challenge review.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass": {
+    "run_id": "conflict-2026-04-14-071346986Z-handoff-contradiction",
+    "side_id": "side_a",
+    "round": "first_pass",
+    "artifact_markdown": "# Technical Handoff PRD: Platform Migration to Unified Service Layer\n\n## Decision Frame\n\n**What we are deciding:** Whether to proceed with the technical handoff of the Platform Migration initiative from the Strategy phase to the Engineering Execution phase.\n\n**Why now:** The platform strategy document (v2.3) was approved by the Architecture Review Board on 2026-03-28. The challenge review (CR-2026-041) completed on 2026-04-07 with a conditional pass. Engineering sprint capacity opens 2026-04-21. Delaying beyond this window pushes delivery past the Q3 contractual SLA deadline.\n\n**What is NOT in scope:** Runtime performance optimization (deferred to Phase 2), third-party integration rewrites (owned by Partnerships team), and data migration sequencing (owned by Data Engineering under a separate PRD).\n\n**Cross-document contradictions identified:**\n\n| Source A | Source B | Contradiction | Resolution |\n|----------|----------|---------------|------------|\n| Platform Strategy v2.3 states \"all services migrate to gRPC by Q3\" | Challenge Review CR-2026-041 flags \"gRPC adoption blocked for 3 services due to legacy client constraints\" | Scope mismatch on migration completeness | Adopt CR finding: 3 services remain on REST with gRPC adapter facade. Strategy doc to be amended. |\n| Strategy doc lists 4 microservices in critical path | Engineering capacity plan lists 5 (includes AuthZ service) | Service count discrepancy | AuthZ was added post-strategy approval per security audit SA-2026-012. Strategy doc outdated. Correct count is 5. |\n| Strategy doc projects 12-week delivery | Challenge review estimates 16 weeks citing integration test gaps | Timeline disagreement | Accept 16-week estimate. 12-week figure excluded integration hardening identified in challenge review. |\n\n**Decision criteria for handoff approval:**\n1. All contradictions between strategy and challenge review are explicitly reconciled (see table above)\n2. Engineering team confirms capacity for 16-week timeline\n3. Dependency owners (Data Eng, Partnerships) acknowledge interface contracts\n4. Risk register reflects challenge review findings, not strategy-phase assumptions\n\n## Unknowns & Evidence Gaps\n\n### High-Impact Unknowns\n\n1. **Legacy client migration willingness** — The 3 services that cannot move to gRPC depend on external client upgrade timelines we do not control. No binding commitments exist from client teams. *Evidence needed:* Written confirmation from top-3 clients on upgrade timeline or explicit acceptance of adapter facade as permanent.\n\n2. **AuthZ service integration complexity** — Added to scope post-strategy, no architecture spike completed. Estimated effort is based on analogy to prior AuthN migration, which encountered 3 weeks of unanticipated SSO edge cases. *Evidence needed:* 1-week spike before sprint 1 commitment.\n\n3. **Integration test environment availability** — Challenge review flagged that the shared staging environment has a 2-week booking backlog. Parallel workstreams risk environment contention. *Evidence needed:* Environment reservation confirmed or dedicated environment provisioned.\n\n### Medium-Impact Unknowns\n\n4. **Observability coverage for new gRPC services** — Current monitoring stack assumes REST semantics. gRPC status codes and streaming metrics require dashboard rework. No estimate exists. *Evidence needed:* SRE team assessment of monitoring migration effort.\n\n5. **Contract test coverage** — Strategy doc claims 85% contract coverage. Challenge review tested and measured 62%. Gap is material for handoff confidence. *Evidence needed:* Actual coverage report from CI pipeline, not strategy-phase estimates.\n\n## Pass/Fail Readiness\n\n### Pass Criteria Assessment\n\n| Criterion | Status | Evidence | Verdict |\n|-----------|--------|----------|---------|\n| Cross-document contradictions reconciled | DONE | See Decision Frame table; 3 contradictions identified and resolved with clear authority hierarchy (challenge review supersedes strategy where they conflict) | PASS |\n| Engineering capacity confirmed for 16-week plan | PENDING | Verbal confirmation from EM; written sprint allocation not yet submitted | CONDITIONAL |\n| Dependency interface contracts signed | PENDING | Data Eng contract drafted, not signed. Partnerships contract not yet drafted. | FAIL |\n| Risk register updated with challenge review findings | DONE | Risk register v1.4 incorporates all 7 findings from CR-2026-041 | PASS |\n| AuthZ spike completed | NOT STARTED | Spike not scheduled | FAIL |\n| Integration test environment reserved | NOT STARTED | No reservation submitted | FAIL |\n\n### Overall Readiness Verdict: CONDITIONAL FAIL\n\n**Rationale:** 2 of 6 criteria pass outright. 1 is conditional on written confirmation. 3 fail. The handoff cannot proceed as-is. However, all failing criteria are resolvable within 1-2 weeks with directed action. This is a sequencing problem, not a viability problem.\n\n**Blocking items (must resolve before handoff):**\n- [ ] Dependency interface contracts signed by Data Eng and Partnerships\n- [ ] AuthZ integration spike completed (1 week)\n- [ ] Integration test environment reserved or provisioned\n- [ ] Written sprint capacity allocation from EM\n\n## Recommended Next Artifact\n\n**Artifact:** Engineering Execution Plan (EEP) — but gated on resolving the 4 blocking items above.\n\n**Sequencing:**\n1. **This week (2026-04-14 → 2026-04-18):** Resolve blocking items in parallel:\n   - EM submits written sprint allocation\n   - Engineering lead initiates AuthZ spike\n   - TPM secures environment reservation\n   - TPM circulates interface contracts to Data Eng and Partnerships for signature\n2. **Next week (2026-04-21 → 2026-04-25):** If all blockers clear, produce EEP with:\n   - Sprint-level breakdown of 5-service migration\n   - Integration test strategy addressing the 62% → 85% coverage gap\n   - gRPC adapter facade design for 3 legacy-constrained services\n   - Monitoring migration plan from SRE assessment\n3. **Fallback:** If AuthZ spike reveals complexity beyond 2-sprint estimate, escalate to ARB for scope reduction decision before EEP finalization.\n\n**Handoff owner:** Platform TPM\n**Decision authority for scope changes:** Architecture Review Board\n**Escalation trigger:** Any blocking item unresolved by 2026-04-25",
+    "claims": [
+      {
+        "claim_id": "side_a-claim-1",
+        "summary": "Cross-document contradictions between platform strategy and challenge review must be explicitly reconciled before handoff, with challenge review findings taking precedence where they conflict with strategy-phase assumptions",
+        "evidence_refs": [
+          "ctx-strategy-v-challenge"
+        ],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_a-claim-2",
+        "summary": "The handoff is a conditional fail: 3 of 6 readiness criteria fail outright, but all are resolvable within 1-2 weeks, making this a sequencing problem not a viability problem",
+        "evidence_refs": [
+          "ctx-readiness-assessment"
+        ],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_a-claim-3",
+        "summary": "Contract test coverage is materially overstated in strategy doc (85% claimed vs 62% measured), representing a concrete evidence gap that must be closed before engineering execution begins",
+        "evidence_refs": [
+          "ctx-coverage-gap"
+        ],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_a-claim-4",
+        "summary": "The 16-week timeline from challenge review should supersede the 12-week strategy estimate, as it accounts for integration test hardening the strategy phase omitted",
+        "evidence_refs": [
+          "ctx-timeline-contradiction"
+        ],
+        "is_major": false
+      },
+      {
+        "claim_id": "side_a-claim-5",
+        "summary": "AuthZ service was added post-strategy approval and has no architecture spike, creating unquantified execution risk that blocks confident handoff",
+        "evidence_refs": [
+          "ctx-authz-unknown"
+        ],
+        "is_major": false
+      }
+    ],
+    "citations": [
+      "ctx-strategy-v-challenge",
+      "ctx-readiness-assessment",
+      "ctx-coverage-gap",
+      "ctx-timeline-contradiction",
+      "ctx-authz-unknown"
+    ],
+    "open_questions": [
+      "What is the actual integration complexity of the AuthZ service added post-strategy?",
+      "Will the 3 legacy-constrained clients accept the gRPC adapter facade as a permanent solution or only transitional?",
+      "Can a dedicated integration test environment be provisioned, or must teams share the 2-week-backlogged staging environment?"
+    ],
+    "critique_responses": []
+  },
+  "critique_packet": {
+    "target_side": "side_a",
+    "finding_id": "finding-2",
+    "target_claim_ids": [
+      "side_a-claim-2"
+    ],
+    "claim_under_attack": "The handoff is a conditional fail: 3 of 6 readiness criteria fail outright, but all are resolvable within 1-2 weeks, making this a sequencing problem not a viability problem",
+    "attack_type": "evidence_gap",
+    "evidence_or_reason": "The artifact does not provide visible evidence that all four blockers can be cleared within 1-2 weeks. Two blockers depend on external parties or constrained shared resources: unsigned interface contracts require Data Eng and Partnerships action, and the staging environment is described elsewhere in the artifact as having a 2-week booking backlog. The AuthZ spike is also explicitly not started and could expand scope rather than resolve quickly. That makes the '1-2 weeks' resolution window and the conclusion that this is only a sequencing problem unsupported by the visible record.",
+    "severity": "medium"
+  }
+}

@@ -1,0 +1,111 @@
+You are SIDE_A in the rebuttal phase for run conflict-2026-04-14-011610216Z-churn-conflicting-signals.
+Attack only visible claims from the opposing first-pass artifact.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "target_side": "side_b",
+  "finding_id": "runner-will-assign",
+  "target_claim_ids": [
+    "side_b-claim-1"
+  ],
+  "claim_under_attack": "The opposing claim to challenge.",
+  "attack_type": "evidence_gap",
+  "evidence_or_reason": "Why the visible claim is weak.",
+  "severity": "medium"
+}
+
+Case packet:
+{
+  "scenario_id": "churn-conflicting-signals",
+  "title": "Churn diagnosis with conflicting signals",
+  "prompt": "Write a churn reduction PRD when signals conflict with strategy targets.",
+  "artifact_type": "prd",
+  "rubric": {
+    "dimensions": [
+      "claim quality",
+      "evidence discipline",
+      "responsiveness to critique",
+      "internal consistency",
+      "decision usefulness"
+    ],
+    "scoring_scale": "1-5",
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "constraints": {
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "expect_structured": true,
+    "context_files": [],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "evidence": [],
+  "max_rounds": 3,
+  "tool_policy": "none",
+  "sharing_policy": {
+    "share_case_packet": true,
+    "share_committed_artifacts_after_first_pass": true,
+    "share_critiques_after_open": true,
+    "share_hidden_reasoning": false,
+    "share_provider_identity": false,
+    "share_internal_coalition_drafts": false
+  },
+  "success_condition": {
+    "type": "validator_contract",
+    "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+    "validator": {
+      "artifact_type": "prd",
+      "expect_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true
+    }
+  }
+}
+
+Opposing first-pass artifact:
+{
+  "run_id": "conflict-2026-04-14-011610216Z-churn-conflicting-signals",
+  "side_id": "side_b",
+  "round": "first_pass",
+  "artifact_markdown": "# Churn Reduction PRD\n\n## Problem\nChurn signals are conflicting and current strategy targets create pressure to act before causality is clear. The product needs a reduction plan that improves retention without overfitting to noisy indicators or undermining strategic priorities.\n\n## Goal\nReduce preventable churn through a staged intervention program that separates high-confidence fixes from unresolved diagnostic bets.\n\n## Non-Goals\n- Rewriting company strategy based on ambiguous churn data\n- Launching broad retention incentives without segment evidence\n- Treating all churn as a single problem\n\n## Users / Segments\n- Newly activated customers at risk of early-value failure\n- Established customers showing declining engagement\n- Accounts whose churn risk may be driven by non-product factors\n\n## Proposed Approach\n1. Create a churn decisioning layer that classifies accounts by confidence level, segment, and suspected driver.\n2. Ship only high-confidence interventions in the first wave: onboarding friction removal, save flows, lifecycle messaging, and human outreach for high-value accounts.\n3. Hold strategy-sensitive interventions behind explicit evidence gates when they could trade off against pricing, product focus, or ideal-customer-profile direction.\n4. Instrument churn reasons, pre-churn behaviors, and intervention outcomes so the next decision cycle is evidence-backed.\n\n## Requirements\n- Segment churn by lifecycle stage, plan type, and value cohort.\n- Distinguish observed symptoms from inferred causes in all reporting.\n- Support manual and automated interventions by risk tier.\n- Track intervention exposure, retention outcome, and downstream quality metrics.\n- Require product, success, and strategy review before scaling any intervention that conflicts with target positioning.\n\n## Success Metrics\n- Primary: reduction in preventable churn rate in targeted cohorts\n- Secondary: improved early activation, increased retained revenue, improved save rate\n- Guardrails: no material decline in margin quality, target-customer mix, or product focus metrics\n\n## Rollout\n- Phase 1: instrumentation and segmentation baseline\n- Phase 2: high-confidence interventions on limited cohorts\n- Phase 3: evaluate impact and decide whether to expand, stop, or investigate deeper\n\n## Risks\n- Misreading correlation as causation\n- Retention tactics masking poor fit\n- Short-term churn gains that weaken long-term strategy\n\n## Decision Frame\nProceed with a two-track churn program: ship low-regret retention fixes now, and defer strategy-conflicting interventions until segment-level evidence clears a predefined threshold. This balances action with discipline and avoids locking the roadmap to ambiguous signals.\n\n## Unknowns & Evidence Gaps\n- No direct churn evidence was provided in the case packet.\n- Relative contribution of product, pricing, support, and market factors is unknown.\n- It is unclear which churn signals are predictive versus merely coincident.\n- Segment-level differences are unspecified.\n\n## Pass/Fail Readiness\nPass with conditions. The PRD is decision-useful as a control framework for conflicting churn signals, but execution readiness is partial because baseline evidence, segment diagnostics, and intervention thresholds still need definition.\n\n## Recommended Next Artifact\nA churn analysis brief with segment-level evidence, confidence-ranked hypotheses, and an experiment matrix for each proposed intervention.",
+  "claims": [
+    {
+      "claim_id": "side_b-claim-1",
+      "summary": "When churn signals conflict with strategy targets, the correct PRD should separate low-regret retention actions from strategy-sensitive interventions gated on stronger evidence.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-2",
+      "summary": "A usable first-pass churn PRD must explicitly record evidence gaps and avoid presenting unobserved causes as established facts.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1"
+  ],
+  "open_questions": [
+    "What churn signals are actually observed versus inferred?",
+    "Which customer segments account for the largest preventable churn opportunity?",
+    "What strategy targets are at risk of being compromised by aggressive retention interventions?"
+  ],
+  "critique_responses": []
+}

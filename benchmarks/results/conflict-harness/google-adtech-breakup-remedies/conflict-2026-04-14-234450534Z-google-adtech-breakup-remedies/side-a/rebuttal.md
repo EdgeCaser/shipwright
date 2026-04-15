@@ -1,0 +1,13 @@
+# Critique: finding-1
+
+- Target Side: side_b
+- Target Claim IDs: side_b-claim-3
+- Attack Type: evidence_gap
+- Severity: high
+
+## Claim Under Attack
+A credible conduct package can capture some de-risking and court-credibility benefits without surrendering ownership of core ad-tech assets.
+
+## Evidence Or Reason
+Side B asserts that a robust behavioral remedy package can satisfy the court and restore competition, but provides no evidence that conduct remedies have succeeded in analogous platform-monopoly cases. The historical record in U.S. antitrust enforcement cuts against this: the Microsoft consent decree (2001) imposed behavioral remedies that were widely judged ineffective at restoring competition in browser markets, and regulators have since grown more skeptical of conduct-only settlements in digital markets. Side B's own Unknowns section concedes it cannot quantify whether behavioral remedies would materially lower compliance costs versus divestiture risk, and admits it does not know whether the court would accept a conduct package as sufficient. Asserting that a 'court-legible remedy package' can work without any precedent for such packages succeeding in comparable ad-tech or platform markets is an unsupported inference, not a demonstrated strategic option. The claim therefore rests on optimism rather than evidence.
+

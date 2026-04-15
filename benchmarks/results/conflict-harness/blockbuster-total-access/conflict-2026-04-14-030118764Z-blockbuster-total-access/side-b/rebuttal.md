@@ -1,0 +1,13 @@
+# Critique: finding-2
+
+- Target Side: side_a
+- Target Claim IDs: side_a-claim-2
+- Attack Type: evidence_gap
+- Severity: high
+
+## Claim Under Attack
+The current program economics are unsustainable, but that supports redesigning Total Access rather than killing the underlying hybrid strategy.
+
+## Evidence Or Reason
+Side A acknowledges the $400M/year burn is unsustainable, then asserts a redesigned version can preserve competitive impact at materially lower cost — but provides zero evidence this is achievable. The claim rests on an untested assumption that you can reduce the per-return subsidy (~$2/exchange) and limit free exchanges without collapsing the value proposition that drove 2M subscriber additions. Side A even lists this as an open question ('How much of the ~$400M burn can be removed without losing the competitive advantage?'), which means the entire 'continue but narrow' recommendation depends on a variable Side A admits it cannot quantify. If the answer is 'not much,' the recommendation collapses into the same unsustainable burn it claims to solve. A board memo that pivots its central recommendation on an acknowledged unknown — while Blockbuster carries $1.1B in debt and is losing $85M/quarter — is not a decision-ready artifact; it is a request for more analysis dressed as a recommendation.
+

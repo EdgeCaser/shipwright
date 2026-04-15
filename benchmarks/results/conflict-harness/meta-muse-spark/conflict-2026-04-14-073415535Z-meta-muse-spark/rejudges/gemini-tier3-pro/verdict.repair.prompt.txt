@@ -1,0 +1,101 @@
+Your previous judge output was close but rejected by schema validation.
+Rewrite it as ONLY a JSON object that preserves the same winner, margin, rubric_scores, decisive_dimension, judge_confidence, needs_human_review, decisive_findings, and rationale unless the schema absolutely requires clarification.
+Any rubric_scores.*.weighted_total value must be a normalized aggregate on the same 1-5 scale as the rubric dimensions, not a raw sum.
+You MUST include these missing required properties with substantive content:
+- dimension_rationales
+- side_summaries
+- decisive_dimension
+- rubric_scores.side_a.weighted_total
+- rubric_scores.side_b.weighted_total
+
+Required schema shape:
+{
+  "winner": "tie",
+  "margin": 0,
+  "rubric_scores": {
+    "side_a": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    },
+    "side_b": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    }
+  },
+  "dimension_rationales": {
+    "claim_quality": "Which side made the stronger claims and why.",
+    "evidence_discipline": "How each side used or overstated evidence.",
+    "responsiveness_to_critique": "How each side responded to the critique phase.",
+    "internal_consistency": "Contradictions, coherence, or missing logic.",
+    "decision_usefulness": "Which artifact better supports an actual decision."
+  },
+  "side_summaries": {
+    "side_a": {
+      "strengths": [
+        "One concise strength of Side A."
+      ],
+      "weaknesses": [
+        "One concise weakness of Side A."
+      ]
+    },
+    "side_b": {
+      "strengths": [
+        "One concise strength of Side B."
+      ],
+      "weaknesses": [
+        "One concise weakness of Side B."
+      ]
+    }
+  },
+  "decisive_dimension": "decision_usefulness",
+  "decisive_findings": [
+    "Replace with the actual decisive findings from this run."
+  ],
+  "judge_confidence": "low",
+  "needs_human_review": true,
+  "rationale": "One-paragraph explanation of the verdict."
+}
+
+Validation errors:
+Verdict packet failed validation:
+$.dimension_rationales: Missing required property.
+$.side_summaries: Missing required property.
+$.decisive_dimension: Missing required property.
+
+Previous verdict JSON:
+{
+  "winner": "side_a",
+  "margin": 0.2,
+  "rubric_scores": {
+    "side_a": {
+      "claim_quality": 5,
+      "evidence_discipline": 4,
+      "responsiveness_to_critique": 5,
+      "internal_consistency": 5,
+      "decision_usefulness": 5,
+      "weighted_total": 4.8
+    },
+    "side_b": {
+      "claim_quality": 4,
+      "evidence_discipline": 5,
+      "responsiveness_to_critique": 4,
+      "internal_consistency": 5,
+      "decision_usefulness": 5,
+      "weighted_total": 4.6
+    }
+  },
+  "decisive_findings": [
+    "The verdict hinged on responsiveness to critique. Side B lodged a high-severity attack against Side A's initial claim that it could mitigate developer goodwill loss with a vague promise of future open-weight releases of older models. Side A's final artifact fully adopted this critique, fundamentally reframing its recommendation as a hard, but necessary, trade-off where the erosion of developer trust is an accepted cost. This demonstrated deeper strategic learning and resulted in a more robust and intellectually honest final recommendation. While Side B also successfully incorporated feedback, its initial position was less flawed, and its revision was consequently less transformative."
+  ],
+  "judge_confidence": "medium",
+  "needs_human_review": false,
+  "rationale": "Side A wins by a narrow margin. Both sides produced high-quality final artifacts, but Side A's evolution in response to critique was more significant. Its final recommendation to 'stay closed' is strengthened by its candid admission that eroding developer goodwill is a real and unavoidable cost of that strategy, rather than a problem to be easily managed with future promises. This reframing, prompted by Side B's excellent critique, makes for a more credible and strategically sound argument. Side B's 'staged reopening' proposal is a well-reasoned compromise, but Side A’s final, more decisive stance on prioritizing immediate product control and monetization after a costly reset ultimately feels more grounded in the case evidence."
+}

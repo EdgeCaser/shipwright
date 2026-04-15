@@ -1,0 +1,126 @@
+You are SIDE_B in the rebuttal phase for run conflict-2026-04-14-050407398Z-pricing-partial-data.
+Attack only visible claims from the opposing first-pass artifact.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "target_side": "side_a",
+  "finding_id": "runner-will-assign",
+  "target_claim_ids": [
+    "side_a-claim-1"
+  ],
+  "claim_under_attack": "The opposing claim to challenge.",
+  "attack_type": "evidence_gap",
+  "evidence_or_reason": "Why the visible claim is weak.",
+  "severity": "medium"
+}
+
+Case packet:
+{
+  "scenario_id": "pricing-partial-data",
+  "title": "Pricing change with partial market data",
+  "prompt": "Draft a pricing strategy recommendation under partial market data.",
+  "artifact_type": "strategy",
+  "rubric": {
+    "dimensions": [
+      "claim quality",
+      "evidence discipline",
+      "responsiveness to critique",
+      "internal consistency",
+      "decision usefulness"
+    ],
+    "scoring_scale": "1-5",
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "constraints": {
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "expect_structured": true,
+    "context_files": [],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "evidence": [],
+  "max_rounds": 3,
+  "tool_policy": "none",
+  "sharing_policy": {
+    "share_case_packet": true,
+    "share_committed_artifacts_after_first_pass": true,
+    "share_critiques_after_open": true,
+    "share_hidden_reasoning": false,
+    "share_provider_identity": false,
+    "share_internal_coalition_drafts": false
+  },
+  "success_condition": {
+    "type": "validator_contract",
+    "description": "Produce a strategy artifact that satisfies the scenario validator contract.",
+    "validator": {
+      "artifact_type": "strategy",
+      "expect_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true
+    }
+  }
+}
+
+Opposing first-pass artifact:
+{
+  "run_id": "conflict-2026-04-14-050407398Z-pricing-partial-data",
+  "side_id": "side_a",
+  "round": "first_pass",
+  "artifact_markdown": "# Pricing Strategy Recommendation Under Partial Market Data\n\n## Recommendation\nAdopt a staged pricing test rather than a permanent price reset now. Use a narrow, reversible change: introduce a modest list-price increase or packaging fence for new customers only, preserve current pricing for existing customers during the test window, and pair the change with explicit guardrails on conversion, win rate, and early retention. Under partial market data, the goal is to learn willingness-to-pay without taking an irreversible revenue or demand risk.\n\n## Rationale\nThe case provides no direct market benchmarks, customer elasticity data, competitor pricing evidence, or segment-level willingness-to-pay evidence. That makes a full-market repricing weakly supported. A staged test is the highest-confidence move because it creates decision-grade evidence while limiting downside. If the business must act before richer data is available, the safer recommendation is to change exposure and packaging before changing price deeply across the base.\n\n## Recommended Approach\n1. Test on new business only for a defined period.\n2. Prefer one-variable changes first: either a modest price increase or a packaging change, not both at once unless measurement design is strong.\n3. Protect existing customers from immediate repricing to avoid avoidable churn without evidence.\n4. Track four primary metrics: conversion rate, average revenue per new account, sales cycle/win rate, and 30- to 60-day retention or refund signal.\n5. Define stop conditions in advance: if conversion drops beyond the acceptable threshold without offsetting revenue lift, roll back.\n6. If partial data suggests heterogeneous value, test by segment rather than imposing one universal price.\n\n## Decision Frame\nRecommend a controlled pricing experiment, not a full rollout. The decision this supports is whether to pursue monetization uplift now while evidence is incomplete. The appropriate bar is not certainty; it is reversibility, bounded downside, and fast learning. A staged test meets that bar better than a broad permanent change.\n\n## Unknowns & Evidence Gaps\n- No competitor pricing data is provided.\n- No customer willingness-to-pay evidence is provided.\n- No elasticity, churn sensitivity, or historical pricing-test data is provided.\n- No segment-level differentiation is provided, so uniform pricing may misprice high- and low-value cohorts.\n- No channel mix is provided, which matters because self-serve and sales-led motions react differently to price changes.\n\n## Pass/Fail Readiness\nPass for a limited experiment if the team can isolate treatment cohorts, measure conversion and retention cleanly, and roll back quickly.\nFail for a full pricing rollout today because the evidence base is insufficient for a durable market-wide recommendation.\n\n## Recommended Next Artifact\nA pricing experiment brief with test design, target segments, guardrail metrics, rollback criteria, and a 2x2 scenario model for revenue lift versus demand loss.",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "The highest-confidence recommendation under partial market data is a staged, reversible pricing test rather than a permanent full-market pricing change.",
+      "evidence_refs": [
+        "ctx-scenario-prompt",
+        "ctx-evidence-empty"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "Existing customers should be protected from immediate repricing until conversion, retention, and willingness-to-pay signals are observed from a new-customer test cohort.",
+      "evidence_refs": [
+        "ctx-evidence-empty",
+        "ctx-validator-sections"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-3",
+      "summary": "Decision usefulness is maximized by defining explicit guardrails and rollback criteria before launch because the case lacks competitor, elasticity, and segment evidence.",
+      "evidence_refs": [
+        "ctx-evidence-empty",
+        "ctx-rubric-decision-usefulness"
+      ],
+      "is_major": false
+    }
+  ],
+  "citations": [
+    "ctx-scenario-prompt",
+    "ctx-evidence-empty",
+    "ctx-validator-sections",
+    "ctx-rubric-decision-usefulness"
+  ],
+  "open_questions": [
+    "What customer segments exist, and which segments appear most value-insensitive?",
+    "Is the motion self-serve, sales-led, or hybrid, and what conversion points can be instrumented reliably?",
+    "What historical retention or churn sensitivity has followed prior packaging or pricing changes, if any?",
+    "Are there contractual, renewal, or channel constraints that would limit new-customer-only testing?"
+  ],
+  "critique_responses": []
+}

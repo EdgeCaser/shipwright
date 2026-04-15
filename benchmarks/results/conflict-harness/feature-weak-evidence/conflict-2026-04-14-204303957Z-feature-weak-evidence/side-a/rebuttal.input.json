@@ -1,0 +1,96 @@
+{
+  "case_packet": {
+    "scenario_id": "feature-weak-evidence",
+    "title": "New feature with weak evidence",
+    "prompt": "Draft a PRD for a new feature with weak supporting evidence.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "opposing_first_pass": {
+    "run_id": "conflict-2026-04-14-204303957Z-feature-weak-evidence",
+    "side_id": "side_b",
+    "round": "first_pass",
+    "artifact_markdown": "# PRD: Evidence-Limited Feature Validation\n\n## Overview\nThis PRD proposes a narrowly scoped feature-validation release rather than a full productized launch. Because supporting evidence is weak, the goal is to reduce uncertainty cheaply and quickly, not to maximize initial feature breadth.\n\n## Problem\nA potential user need has been identified, but current evidence is insufficient to justify a broad build. Proceeding with a full launch would create material risk of wasted engineering time, unclear adoption, and ambiguous success criteria.\n\n## Goal\nDetermine whether the proposed feature solves a real, repeated user problem strongly enough to justify full investment.\n\n## Non-Goals\n- Delivering a fully mature or highly configurable version of the feature\n- Scaling the feature to all users immediately\n- Treating early usage as proof of durable demand without follow-up validation\n\n## Proposed Approach\nShip a limited MVP to a constrained audience with explicit instrumentation, success thresholds, and a pre-committed decision gate.\n\n### MVP Scope\n- Core workflow only; exclude advanced settings and integrations\n- Exposure limited to a small, target user segment\n- In-product feedback capture at the point of use\n- Event instrumentation for discovery, activation, repeat usage, and abandonment\n\n### User Story\nAs a target user, I want to complete the core task faster or with less friction using this feature so that I get a meaningful improvement over the current workflow.\n\n## Success Metrics\n- Adoption: target users who discover and try the feature\n- Activation: users who complete the core workflow successfully\n- Repeat usage: users who return to the feature within a defined evaluation window\n- Satisfaction: qualitative feedback indicating the feature solved a real problem\n- Negative signals: abandonment, confusion, support volume, or workflow regressions\n\n## Launch Guardrails\n- Launch only to a limited cohort\n- Review metrics on a fixed cadence\n- Require both quantitative and qualitative evidence before expansion\n- Sunset quickly if the feature fails the decision gate\n\n## Risks\n- False positives from curiosity-driven usage\n- False negatives from weak onboarding or poor discoverability\n- Misreading limited-cohort behavior as generalizable demand\n- Team escalation from MVP to full investment before evidence improves\n\n## Decision Frame\nThe right decision is not whether to fully launch the feature now; it is whether to fund a constrained validation MVP. Recommendation: proceed only with a low-cost, instrumented experiment and explicitly defer broader rollout until evidence improves.\n\n## Unknowns & Evidence Gaps\n- Whether the user problem is frequent and important enough to change behavior\n- Whether the proposed feature is better than existing workarounds\n- Which user segment, if any, experiences the strongest pull\n- Whether early usage would persist beyond first exposure\n- What minimum outcome threshold should justify full investment\n\n## Pass/Fail Readiness\nPass if:\n- The team agrees this is a validation release, not a disguised full launch\n- Success and failure thresholds are defined before implementation\n- Instrumentation and feedback loops are in place before exposure\n- The MVP can be built with limited scope and reversible cost\n\nFail if:\n- The feature is framed as strategically necessary without evidence\n- Scope expands beyond the minimum needed to test demand\n- No clear cohort, metrics, or review decision date is defined\n- The team cannot commit to stopping if evidence remains weak\n\n## Recommended Next Artifact\nA feature validation plan that defines target cohort, event schema, success thresholds, review date, interview prompts, and explicit go/hold/stop criteria after the MVP trial.",
+    "claims": [
+      {
+        "claim_id": "side_b-claim-1",
+        "summary": "A narrowly scoped validation MVP is more appropriate than a full feature launch when supporting evidence is weak.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-2",
+        "summary": "The PRD should optimize for uncertainty reduction through instrumentation, constrained rollout, and pre-committed decision gates.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-3",
+        "summary": "Without clear success thresholds and reversal criteria, any build decision is likely to produce ambiguous and low-decision-value outcomes.",
+        "evidence_refs": [],
+        "is_major": true
+      }
+    ],
+    "citations": [],
+    "conclusion_confidence": "medium",
+    "open_questions": [
+      "What specific user signal originally motivated the feature idea?",
+      "Which user segment is most likely to experience the problem frequently enough to test?",
+      "What existing workaround or baseline behavior should the MVP be compared against?",
+      "What quantitative threshold would justify moving from validation MVP to full investment?"
+    ],
+    "critique_responses": []
+  }
+}
