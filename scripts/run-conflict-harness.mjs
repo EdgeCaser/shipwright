@@ -1310,6 +1310,13 @@ function applyVerdictToRun(run, verdict) {
   run.results.swap_stable = null;
   run.results.needs_human_review =
     Boolean(verdict.needs_human_review) || marginBelowThreshold || bothSidesUnsupported;
+
+  // Phase 2 uncertainty payload — copy when present
+  for (const field of PHASE2_UNCERTAINTY_FIELDS) {
+    if (field in verdict) {
+      run.results[field] = verdict[field];
+    }
+  }
 }
 
 function verdictRequiresUncertaintyPayload(verdict, options = {}) {

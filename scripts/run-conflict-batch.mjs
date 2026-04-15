@@ -150,6 +150,13 @@ export async function runBatch(options = {}) {
           unsupportedClaimCount: run.metrics.unsupported_claim_count,
           runId: run.run_id,
           error: null,
+          // Phase 2 uncertainty payload (present when triggered)
+          uncertaintyDrivers: run.results.uncertainty_drivers || null,
+          disambiguationQuestions: run.results.disambiguation_questions || null,
+          neededEvidence: run.results.needed_evidence || null,
+          recommendedNextAction: run.results.recommended_next_action || null,
+          escalationRecommendation: run.results.escalation_recommendation || null,
+          canResolveWithMoreEvidence: run.results.can_resolve_with_more_evidence ?? null,
         });
 
         process.stderr.write(`${label} — ${run.status}, winner: ${run.results.winner || 'none'}\n`);
@@ -211,6 +218,45 @@ export function buildSummary(results) {
       r.substantiveRevisionRate != null ? r.substantiveRevisionRate.toFixed(2) : '—',
       '',
     ].join(' | '));
+  }
+
+  // Flagged verdicts — uncertainty payload for triggered runs
+  const flagged = results.filter(
+    (r) => r.status === 'completed' && (r.needsHumanReview || r.winner === 'tie' || r.judgeConfidence === 'low') && r.recommendedNextAction
+  );
+  if (flagged.length > 0) {
+    lines.push('');
+    lines.push('## Flagged Verdicts — Uncertainty Payload');
+    lines.push('');
+    lines.push('These runs triggered the Phase 2 uncertainty payload. Each entry includes actionable routing guidance.');
+    for (const r of flagged) {
+      lines.push('');
+      lines.push(`### ${r.scenario}`);
+      lines.push(`**Winner:** ${r.winner} | **Confidence:** ${r.judgeConfidence} | **Human review:** ${r.needsHumanReview}`);
+      if (r.uncertaintyDrivers?.length) {
+        lines.push('');
+        lines.push('**Why uncertain:**');
+        for (const d of r.uncertaintyDrivers) lines.push(`- ${d}`);
+      }
+      if (r.disambiguationQuestions?.length) {
+        lines.push('');
+        lines.push('**Questions to resolve:**');
+        for (const q of r.disambiguationQuestions) lines.push(`- ${q}`);
+      }
+      if (r.neededEvidence?.length) {
+        lines.push('');
+        lines.push('**Evidence needed:**');
+        for (const e of r.neededEvidence) lines.push(`- ${e}`);
+      }
+      if (r.recommendedNextAction) {
+        lines.push('');
+        lines.push(`**Next action:** ${r.recommendedNextAction}`);
+      }
+      if (r.escalationRecommendation) {
+        lines.push('');
+        lines.push(`**Escalation:** ${r.escalationRecommendation}`);
+      }
+    }
   }
 
   // Judge agreement analysis
