@@ -39,6 +39,15 @@ const DEFAULT_BUDGETS = Object.freeze({
   judgeReservedBudgetUsd: 0,
 });
 const DEFAULT_REASONING_EFFORT = 'medium';
+const PHASE2_UNCERTAINTY_FIELDS = Object.freeze([
+  'uncertainty_drivers',
+  'disambiguation_questions',
+  'needed_evidence',
+  'recommended_next_artifact',
+  'recommended_next_action',
+  'can_resolve_with_more_evidence',
+  'escalation_recommendation',
+]);
 
 export async function runConflictHarness(options = {}) {
   const casePacket = await resolveCasePacket(options);
@@ -908,6 +917,14 @@ async function invokeJudgeTurn(options) {
     throw new Error(formatValidationErrors('Verdict packet failed validation', validation.errors));
   }
 
+  const phase2Errors = validatePhase2VerdictPayload(verdict, {
+    minMarginForVerdict: options.run.budgets.min_margin_for_verdict,
+    unsupportedBySide: computeUnsupportedClaimCounts(options.run),
+  });
+  if (phase2Errors.length > 0) {
+    throw new Error(formatValidationErrors('Verdict packet failed Phase 2 validation', phase2Errors));
+  }
+
   await writeJson(path.join(judgeDir, 'verdict.json'), verdict);
   await writeText(path.join(judgeDir, 'verdict.md'), formatVerdictMarkdown(verdict));
   return {
@@ -1238,6 +1255,19 @@ function buildJudgePrompt(judgePacket, minMarginForVerdict) {
         decisive_findings: ['Replace with the actual decisive findings from this run.'],
         judge_confidence: 'low',
         needs_human_review: true,
+        uncertainty_drivers: [
+          'List the concrete reasons this verdict is uncertain or should be escalated.',
+        ],
+        disambiguation_questions: [
+          'List the most important question that would resolve the uncertainty.',
+        ],
+        needed_evidence: [
+          'List the evidence that would most improve confidence in the verdict.',
+        ],
+        recommended_next_artifact: 'Name the next artifact that should exist before acting on this verdict.',
+        recommended_next_action: 'State the next action the orchestrator or user should take.',
+        can_resolve_with_more_evidence: true,
+        escalation_recommendation: 'State whether to gather more evidence, rejudge, or escalate to human review.',
         rationale: 'One-paragraph explanation of the verdict.',
       },
       null,
@@ -1252,6 +1282,17 @@ function buildJudgePrompt(judgePacket, minMarginForVerdict) {
     '- high: the winning side is clearly stronger on at least 3 rubric dimensions and has no major unsupported-claim problem',
     '- medium: the winning side leads overall but has at least 1 weak dimension or absorbed only part of the opposing critique',
     '- low: score margin is below min_margin_for_verdict or both sides have significant unsupported claims',
+    '',
+    'Phase 2 uncertainty payload rule:',
+    '- If winner is `tie`, or judge_confidence is `low`, or needs_human_review is `true`, you MUST also populate:',
+    '- uncertainty_drivers',
+    '- disambiguation_questions',
+    '- needed_evidence',
+    '- recommended_next_artifact',
+    '- recommended_next_action',
+    '- can_resolve_with_more_evidence',
+    '- escalation_recommendation',
+    '- If none of those trigger conditions apply, omit the uncertainty payload fields entirely.',
     '',
     'Judge packet:',
     JSON.stringify(judgePacket, null, 2),
@@ -1269,6 +1310,35 @@ function applyVerdictToRun(run, verdict) {
   run.results.swap_stable = null;
   run.results.needs_human_review =
     Boolean(verdict.needs_human_review) || marginBelowThreshold || bothSidesUnsupported;
+}
+
+function verdictRequiresUncertaintyPayload(verdict, options = {}) {
+  const minMarginForVerdict = typeof options.minMarginForVerdict === 'number'
+    ? options.minMarginForVerdict
+    : null;
+  const unsupportedBySide = options.unsupportedBySide || null;
+  const bothSidesUnsupported = unsupportedBySide
+    ? unsupportedBySide.side_a > 0 && unsupportedBySide.side_b > 0
+    : false;
+
+  return verdict.winner === 'tie' ||
+    verdict.judge_confidence === 'low' ||
+    verdict.needs_human_review === true ||
+    (minMarginForVerdict != null && typeof verdict.margin === 'number' && verdict.margin < minMarginForVerdict) ||
+    bothSidesUnsupported;
+}
+
+function validatePhase2VerdictPayload(verdict, options = {}) {
+  if (!verdictRequiresUncertaintyPayload(verdict, options)) {
+    return [];
+  }
+
+  return PHASE2_UNCERTAINTY_FIELDS
+    .filter((field) => !(field in verdict))
+    .map((field) => ({
+      path: `$.${field}`,
+      message: 'Missing required property.',
+    }));
 }
 
 function computeRunMetrics(run) {
@@ -1632,7 +1702,7 @@ function formatCritiqueMarkdown(packet) {
 }
 
 function formatVerdictMarkdown(packet) {
-  return [
+  const lines = [
     '# Verdict',
     '',
     `- Winner: ${packet.winner}`,
@@ -1665,10 +1735,32 @@ function formatVerdictMarkdown(packet) {
     '## Decisive Findings',
     ...(packet.decisive_findings || []).map((finding) => `- ${finding}`),
     '',
-    '## Rationale',
-    packet.rationale,
-    '',
-  ].join('\n');
+  ];
+
+  if (packet.uncertainty_drivers || packet.disambiguation_questions || packet.needed_evidence) {
+    lines.push('## Uncertainty Payload');
+    lines.push('');
+    lines.push(`- Can Resolve With More Evidence: ${packet.can_resolve_with_more_evidence ?? 'n/a'}`);
+    lines.push(`- Recommended Next Artifact: ${packet.recommended_next_artifact || 'n/a'}`);
+    lines.push(`- Recommended Next Action: ${packet.recommended_next_action || 'n/a'}`);
+    lines.push(`- Escalation Recommendation: ${packet.escalation_recommendation || 'n/a'}`);
+    lines.push('');
+    lines.push('### Uncertainty Drivers');
+    lines.push(...((packet.uncertainty_drivers || []).map((entry) => `- ${entry}`)));
+    lines.push('');
+    lines.push('### Disambiguation Questions');
+    lines.push(...((packet.disambiguation_questions || []).map((entry) => `- ${entry}`)));
+    lines.push('');
+    lines.push('### Needed Evidence');
+    lines.push(...((packet.needed_evidence || []).map((entry) => `- ${entry}`)));
+    lines.push('');
+  }
+
+  lines.push('## Rationale');
+  lines.push(packet.rationale);
+  lines.push('');
+
+  return lines.join('\n');
 }
 
 async function writeJson(filePath, value) {

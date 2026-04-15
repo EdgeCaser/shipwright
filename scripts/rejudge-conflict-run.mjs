@@ -11,6 +11,15 @@ const DEFAULT_REASONING_EFFORT = 'medium';
 const DEFAULT_TIMEOUT_MS = 120000;
 const VALID_FORMATS = new Set(['text', 'json']);
 const MAX_GEMINI_TURN_ATTEMPTS = 3;
+const PHASE2_UNCERTAINTY_FIELDS = Object.freeze([
+  'uncertainty_drivers',
+  'disambiguation_questions',
+  'needed_evidence',
+  'recommended_next_artifact',
+  'recommended_next_action',
+  'can_resolve_with_more_evidence',
+  'escalation_recommendation',
+]);
 
 export async function rejudgeConflictRun(options = {}) {
   const runDir = normalizeRequiredPath(options.runDir, '--run-dir');
@@ -99,6 +108,7 @@ export async function rejudgeConflictRun(options = {}) {
     promptFilePath,
     packetFilePath,
     repairTelemetry,
+    minMarginForVerdict: run?.budgets?.min_margin_for_verdict,
   });
 
   const metadata = {
@@ -310,18 +320,30 @@ async function runJudgeTurnWithRetries(options) {
 async function parseAndValidateVerdict(options) {
   const parsed = parseJsonResponse(options.output);
   const validation = validateConflictDocument(parsed, 'verdict');
-  if (validation.errors.length === 0) {
+  const phase2Errors = validatePhase2VerdictPayload(parsed, {
+    minMarginForVerdict: options.minMarginForVerdict,
+  });
+  if (validation.errors.length === 0 && phase2Errors.length === 0) {
     return parsed;
   }
 
-  if (!shouldAttemptVerdictRepair(validation.errors, options.judgeAgent)) {
-    throw new Error(formatValidationErrors('Verdict packet failed validation', validation.errors));
+  const combinedErrors = [...validation.errors, ...phase2Errors];
+  if (!shouldAttemptVerdictRepair(combinedErrors, options.judgeAgent)) {
+    throw new Error(formatValidationErrors('Verdict packet failed validation', combinedErrors));
   }
 
-  const repaired = await repairVerdict(options, parsed, validation.errors);
+  const repaired = await repairVerdict(options, parsed, combinedErrors);
   const repairedValidation = validateConflictDocument(repaired, 'verdict');
-  if (repairedValidation.errors.length > 0) {
-    throw new Error(formatValidationErrors('Verdict packet failed validation', repairedValidation.errors));
+  const repairedPhase2Errors = validatePhase2VerdictPayload(repaired, {
+    minMarginForVerdict: options.minMarginForVerdict,
+  });
+  if (repairedValidation.errors.length > 0 || repairedPhase2Errors.length > 0) {
+    throw new Error(
+      formatValidationErrors(
+        'Verdict packet failed validation',
+        [...repairedValidation.errors, ...repairedPhase2Errors],
+      ),
+    );
   }
 
   return repaired;
@@ -337,6 +359,13 @@ function isRepairableVerdictValidationPath(pathValue) {
   return pathValue === '$.dimension_rationales' ||
     pathValue === '$.side_summaries' ||
     pathValue === '$.decisive_dimension' ||
+    pathValue === '$.uncertainty_drivers' ||
+    pathValue === '$.disambiguation_questions' ||
+    pathValue === '$.needed_evidence' ||
+    pathValue === '$.recommended_next_artifact' ||
+    pathValue === '$.recommended_next_action' ||
+    pathValue === '$.can_resolve_with_more_evidence' ||
+    pathValue === '$.escalation_recommendation' ||
     pathValue === '$.rubric_scores.side_a.weighted_total' ||
     pathValue === '$.rubric_scores.side_b.weighted_total';
 }
@@ -359,12 +388,19 @@ async function repairVerdict(options, parsedVerdict, errors) {
   options.repairTelemetry.repair_attempts += 1;
   const repairPrompt = [
     'Your previous judge output was close but rejected by schema validation.',
-    'Rewrite it as ONLY a JSON object that preserves the same winner, margin, rubric_scores, decisive_dimension, judge_confidence, needs_human_review, decisive_findings, and rationale unless the schema absolutely requires clarification.',
+    'Rewrite it as ONLY a JSON object that preserves the same winner, margin, rubric_scores, decisive_dimension, judge_confidence, needs_human_review, decisive_findings, rationale, and any valid Phase 2 uncertainty payload unless the schema absolutely requires clarification.',
     'Any rubric_scores.*.weighted_total value must be a normalized aggregate on the same 1-5 scale as the rubric dimensions, not a raw sum.',
     'You MUST include these missing required properties with substantive content:',
     '- dimension_rationales',
     '- side_summaries',
     '- decisive_dimension',
+    '- uncertainty_drivers',
+    '- disambiguation_questions',
+    '- needed_evidence',
+    '- recommended_next_artifact',
+    '- recommended_next_action',
+    '- can_resolve_with_more_evidence',
+    '- escalation_recommendation',
     '- rubric_scores.side_a.weighted_total',
     '- rubric_scores.side_b.weighted_total',
     '',
@@ -442,6 +478,7 @@ function buildReplayJudgePrompt(savedPrompt) {
     '- Do not omit `dimension_rationales`.',
     '- Do not omit `side_summaries`.',
     '- `rubric_scores.side_a.weighted_total` and `rubric_scores.side_b.weighted_total` must each stay within the same 1-5 scale as the rubric dimensions.',
+    '- If the verdict is a tie, low confidence, or needs human review, do not omit the Phase 2 uncertainty payload fields.',
     '- Return ONLY the JSON object. No markdown fences, no prose before or after.',
   ].join('\n');
 }
@@ -489,12 +526,43 @@ function buildVerdictShapeExample() {
     decisive_findings: ['Replace with the actual decisive findings from this run.'],
     judge_confidence: 'low',
     needs_human_review: true,
+    uncertainty_drivers: ['List the concrete reasons this verdict is uncertain or should be escalated.'],
+    disambiguation_questions: ['List the most important question that would resolve the uncertainty.'],
+    needed_evidence: ['List the evidence that would most improve confidence in the verdict.'],
+    recommended_next_artifact: 'Name the next artifact that should exist before acting on this verdict.',
+    recommended_next_action: 'State the next action the orchestrator or user should take.',
+    can_resolve_with_more_evidence: true,
+    escalation_recommendation: 'State whether to gather more evidence, rejudge, or escalate to human review.',
     rationale: 'One-paragraph explanation of the verdict.',
   };
 }
 
+function verdictRequiresUncertaintyPayload(verdict, options = {}) {
+  const minMarginForVerdict = typeof options.minMarginForVerdict === 'number'
+    ? options.minMarginForVerdict
+    : null;
+
+  return verdict.winner === 'tie' ||
+    verdict.judge_confidence === 'low' ||
+    verdict.needs_human_review === true ||
+    (minMarginForVerdict != null && typeof verdict.margin === 'number' && verdict.margin < minMarginForVerdict);
+}
+
+function validatePhase2VerdictPayload(verdict, options = {}) {
+  if (!verdictRequiresUncertaintyPayload(verdict, options)) {
+    return [];
+  }
+
+  return PHASE2_UNCERTAINTY_FIELDS
+    .filter((field) => !(field in verdict))
+    .map((field) => ({
+      path: `$.${field}`,
+      message: 'Missing required property.',
+    }));
+}
+
 function formatVerdictMarkdown(verdict) {
-  return [
+  const lines = [
     `# Verdict: ${verdict.winner}`,
     '',
     `- Margin: ${verdict.margin}`,
@@ -535,12 +603,36 @@ function formatVerdictMarkdown(verdict) {
     '',
     ...(verdict.decisive_findings || []).map((finding) => `- ${finding}`),
     '',
+  ];
+
+  if (verdict.uncertainty_drivers || verdict.disambiguation_questions || verdict.needed_evidence) {
+    lines.push('## Uncertainty Payload');
+    lines.push('');
+    lines.push(`- Can Resolve With More Evidence: ${verdict.can_resolve_with_more_evidence ?? 'n/a'}`);
+    lines.push(`- Recommended Next Artifact: ${verdict.recommended_next_artifact || 'n/a'}`);
+    lines.push(`- Recommended Next Action: ${verdict.recommended_next_action || 'n/a'}`);
+    lines.push(`- Escalation Recommendation: ${verdict.escalation_recommendation || 'n/a'}`);
+    lines.push('');
+    lines.push('### Uncertainty Drivers');
+    lines.push(...((verdict.uncertainty_drivers || []).map((entry) => `- ${entry}`)));
+    lines.push('');
+    lines.push('### Disambiguation Questions');
+    lines.push(...((verdict.disambiguation_questions || []).map((entry) => `- ${entry}`)));
+    lines.push('');
+    lines.push('### Needed Evidence');
+    lines.push(...((verdict.needed_evidence || []).map((entry) => `- ${entry}`)));
+    lines.push('');
+  }
+
+  lines.push(
     '## Rubric Scores',
     '',
     `- Side A weighted total: ${verdict.rubric_scores?.side_a?.weighted_total ?? 'n/a'}`,
     `- Side B weighted total: ${verdict.rubric_scores?.side_b?.weighted_total ?? 'n/a'}`,
     '',
-  ].join('\n');
+  );
+
+  return lines.join('\n');
 }
 
 function formatResultSummary(result) {
