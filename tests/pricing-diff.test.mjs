@@ -258,7 +258,7 @@ test('pricing-diff --dir only loads discovered facts files', { concurrency: fals
   await writeFile(path.join(rivalDir, 'facts.json'), `${JSON.stringify(makePack('Rival', [{ name: 'Basic', price: '49', currency: 'USD' }]), null, 2)}\n`, 'utf8');
 
   const result = spawnSync(process.execPath, ['scripts/pricing-diff.mjs', '--dir', dir], {
-    cwd: '/Users/ianbrillembourg/Documents/GitHub/shipwright',
+    cwd: process.cwd(),
     encoding: 'utf8',
   });
 

@@ -15,9 +15,20 @@ import {
   runBenchmarkSuite,
 } from '../scripts/run-benchmarks.mjs';
 
+const BENCHMARK_FIXTURE_SCENARIO_IDS = [
+  'board-update-ambiguity',
+  'churn-conflicting-signals',
+  'event-automation-boundary',
+  'feature-weak-evidence',
+  'handoff-contradiction',
+  'prd-hidden-scope-creep',
+  'pricing-partial-data',
+];
+
 test('runBenchmarkSuite evaluates the default benchmark fixture suite', { concurrency: false }, async () => {
   const summary = await runBenchmarkSuite({
     scenarioDir: path.resolve('benchmarks/scenarios'),
+    scenarioIds: BENCHMARK_FIXTURE_SCENARIO_IDS,
   });
 
   assert.equal(summary.scenario_count, 7);

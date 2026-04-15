@@ -14,7 +14,13 @@ test('fallback collect-research copies stay in sync with the canonical repo coll
   const canonical = await readFile(CANONICAL_COLLECTOR, 'utf8');
 
   for (const fallbackPath of FALLBACK_COLLECTORS) {
-    const fallback = await readFile(fallbackPath, 'utf8');
+    let fallback;
+    try {
+      fallback = await readFile(fallbackPath, 'utf8');
+    } catch (error) {
+      if (error.code === 'ENOENT') continue; // not installed locally — skip, not a violation
+      throw error;
+    }
     assert.equal(
       fallback,
       canonical,

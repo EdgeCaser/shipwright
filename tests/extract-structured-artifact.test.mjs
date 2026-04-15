@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import path from 'node:path';
 import test from 'node:test';
 
 import {
@@ -118,5 +119,5 @@ test('validateStructuredArtifact rejects missing required fields', { concurrency
 
 test('getStructuredArtifactOutputPath swaps markdown extension for json', { concurrency: false }, () => {
   const output = getStructuredArtifactOutputPath('/tmp/example/prd.md');
-  assert.equal(output, '/tmp/example/prd.json');
+  assert.equal(output, path.resolve('/tmp/example/prd.json'));
 });

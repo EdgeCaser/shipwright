@@ -297,6 +297,13 @@ test('rejudgeConflictRun repairs Gemini verdicts that miss structured fields and
       },
     },
     decisive_dimension: 'decision_usefulness',
+    uncertainty_drivers: ['Close margins across most dimensions.'],
+    disambiguation_questions: ['Which dimension drove the most disagreement?'],
+    needed_evidence: ['Final revision artifacts with tracked changes.'],
+    recommended_next_artifact: 'Revised final artifact from Side B.',
+    recommended_next_action: 'Request a triple-panel review.',
+    can_resolve_with_more_evidence: true,
+    escalation_recommendation: 'Escalate to triple-panel review.',
   };
 
   let callCount = 0;
