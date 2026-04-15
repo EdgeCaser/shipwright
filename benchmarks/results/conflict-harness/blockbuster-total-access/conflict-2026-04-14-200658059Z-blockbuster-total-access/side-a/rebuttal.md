@@ -1,0 +1,13 @@
+# Critique: finding-1
+
+- Target Side: side_b
+- Target Claim IDs: side_b-claim-1, side_b-claim-2
+- Attack Type: evidence_gap
+- Severity: high
+
+## Claim Under Attack
+Blockbuster should kill Total Access at current funding levels because the program's economics are unsustainable relative to the company's leveraged balance sheet, and scale appears to deepen losses rather than improve them.
+
+## Evidence Or Reason
+Side B asserts that scale worsens unit economics but provides no evidence for this claim beyond the observation that each return costs ~$2. This ignores the standard platform-economics counterargument: each in-store return also drives incremental foot traffic that generates attach purchases (candy, games, paid rentals of new releases not in the subscription). The case packet states Blockbuster had 47 million store-visit customers — the attachment revenue per visit is never quantified or even estimated by Side B, yet it is the single largest variable determining whether the ~$2 per-return cost is a net loss or a subsidized acquisition channel. Side B treats the $400M burn as a fixed, irreducible cost of the program rather than examining whether operational adjustments (throttling heavy users, tiering the exchange benefit, limiting exchanges to catalog titles) could reduce burn while preserving most competitive pressure. The memo also fails to account for the asymmetric competitive damage: Netflix was forced to cut prices and increase marketing spend to respond to Total Access, meaning Blockbuster's $400M burn was imposing significant costs on Netflix simultaneously. Killing the program doesn't just save $400M — it also relieves Netflix of its most serious competitive constraint at precisely the moment Netflix needs breathing room to invest in streaming. Side B's financial analysis is one-sided, calculating only Blockbuster's costs without weighing the competitive cost imposed on Netflix or the revenue-generation potential of the foot traffic the program creates.
+

@@ -1,0 +1,315 @@
+You are the judge in a blinded conflict harness run.
+Provider identity is intentionally hidden. Do not infer provider family.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "winner": "tie",
+  "margin": 0,
+  "rubric_scores": {
+    "side_a": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    },
+    "side_b": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    }
+  },
+  "dimension_rationales": {
+    "claim_quality": "Brief explanation of which side made the stronger claims and why.",
+    "evidence_discipline": "Brief explanation of how the sides used or overstated evidence.",
+    "responsiveness_to_critique": "Brief explanation of how each side handled the critique phase.",
+    "internal_consistency": "Brief explanation of contradictions, coherence, or missing logic.",
+    "decision_usefulness": "Brief explanation of which artifact better supports an actual decision."
+  },
+  "side_summaries": {
+    "side_a": {
+      "strengths": [
+        "One concise strength of Side A."
+      ],
+      "weaknesses": [
+        "One concise weakness of Side A."
+      ]
+    },
+    "side_b": {
+      "strengths": [
+        "One concise strength of Side B."
+      ],
+      "weaknesses": [
+        "One concise weakness of Side B."
+      ]
+    }
+  },
+  "decisive_dimension": "decision_usefulness",
+  "decisive_findings": [
+    "Replace with the actual decisive findings from this run."
+  ],
+  "judge_confidence": "low",
+  "needs_human_review": true,
+  "rationale": "One-paragraph explanation of the verdict."
+}
+
+Use min_margin_for_verdict = 0.1.
+Set rubric_scores.*.weighted_total as a normalized aggregate on the same 1-5 scale as the rubric dimensions, not as a raw sum.
+Treat each side's reported conclusion_confidence as a calibration signal, not a vote multiplier.
+Reward confidence when it is well matched to the evidence and penalize overconfidence when the artifact overreaches.
+judge_confidence rubric:
+- high: the winning side is clearly stronger on at least 3 rubric dimensions and has no major unsupported-claim problem
+- medium: the winning side leads overall but has at least 1 weak dimension or absorbed only part of the opposing critique
+- low: score margin is below min_margin_for_verdict or both sides have significant unsupported claims
+
+Judge packet:
+{
+  "case_packet": {
+    "scenario_id": "churn-conflicting-signals",
+    "title": "Churn diagnosis with conflicting signals",
+    "prompt": "Write a churn reduction PRD when signals conflict with strategy targets.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-14-203011147Z-churn-conflicting-signals",
+      "side_id": "side_a",
+      "round": "first_pass",
+      "artifact_markdown": "# Churn Reduction PRD: Resolving Conflicting Signals\n\n## Decision Frame\n\n**Problem:** Churn metrics are sending conflicting signals relative to strategic growth targets. Specifically:\n\n- **Signal conflict 1:** Logo churn is declining (positive), but revenue churn is increasing — indicating we're retaining small accounts while losing high-value ones.\n- **Signal conflict 2:** NPS scores are stable/improving, yet churn intent surveys show rising dissatisfaction with product-market fit among power users.\n- **Signal conflict 3:** Usage frequency is up, but depth-of-use (features per session) is declining — suggesting habitual but shallow engagement that doesn't build switching costs.\n\n**Strategic tension:** The current strategy targets net revenue retention (NRR) > 110%, which requires expansion revenue from existing accounts. Churn reduction efforts focused on logo retention actively conflict with this target if they prioritize saving low-value accounts over deepening high-value relationships.\n\n**Decision to be made:** Should we optimize churn interventions for logo retention, revenue retention, or a segmented approach — and how do we resolve the conflicting signals to know which interventions will actually move NRR?\n\n**Stakeholders:** Product (owns engagement levers), CS (owns save motions), Finance (owns NRR target), Growth (owns expansion pipeline).\n\n**Scope boundary:** This PRD covers the diagnostic framework and intervention design. It does NOT cover pricing changes or new product lines, which require separate decision frames.\n\n## Unknowns & Evidence Gaps\n\n| # | Unknown | Impact if unresolved | Proposed resolution | Cost/time |\n|---|---------|---------------------|---------------------|-----------|\n| U1 | Root cause of high-value account churn — is it competitive displacement, unmet needs, or budget pressure? | Cannot design targeted save motions; interventions will be generic and low-efficacy | Exit interview analysis + win/loss study on last 2 quarters of churned accounts >$50K ARR | 2-3 weeks, CS team effort |\n| U2 | Whether rising NPS masks segment-level divergence (high NPS from small accounts inflating aggregate) | False confidence in product satisfaction; misallocated investment | Segment NPS by ARR tier and cohort vintage | 1 week, data team |\n| U3 | Causal relationship between depth-of-use decline and churn probability | Cannot prioritize feature adoption vs. frequency interventions | Survival analysis correlating feature breadth with retention curves | 2 weeks, data science |\n| U4 | Competitive landscape shifts — are churned accounts leaving for specific competitors or reducing category spend? | Determines whether intervention is product improvement vs. positioning vs. pricing | Competitive intel sweep + churned account destination tracking | 3 weeks, market research |\n| U5 | Whether current CS save motions are being triggered too late in the churn lifecycle | Early intervention may resolve conflicts without product changes | Analyze time-from-first-risk-signal to save-motion-initiation across segments | 1 week, CS ops |\n\n**Critical dependency:** U1 and U2 must be resolved before committing to any intervention design. Without these, we risk optimizing the wrong metric for the wrong segment.\n\n## Pass/Fail Readiness\n\n**Readiness verdict: NOT READY to commit to a specific intervention plan.**\n\n| Criterion | Status | Rationale |\n|-----------|--------|-----------|\n| Problem is clearly defined | ⚠️ Partial | We know signals conflict but don't yet know which signal is the leading indicator |\n| Root cause is understood | ❌ Fail | High-value churn drivers are hypothesized, not validated (U1) |\n| Metrics are trustworthy | ❌ Fail | Aggregate NPS may be masking segment-level problems (U2) |\n| Intervention has evidence basis | ❌ Fail | Cannot design interventions without resolving U1-U3 |\n| Strategic alignment is clear | ⚠️ Partial | NRR target is clear, but team is split on logo vs. revenue optimization |\n| Stakeholder alignment exists | ⚠️ Partial | CS incentives (logo saves) conflict with Finance targets (NRR); needs executive arbitration |\n\n**What would change this to READY:**\n1. Resolve U1 and U2 (4-week sprint)\n2. Executive decision on primary optimization metric (logo vs. revenue churn) with incentive realignment\n3. Segmented intervention design based on validated root causes\n\n## Recommended Next Artifact\n\n**Immediate next step:** Commission a **Churn Diagnostic Brief** (2-4 week effort) that resolves U1 and U2 before any intervention PRD is written.\n\n**Diagnostic brief should contain:**\n1. Segmented churn analysis by ARR tier, cohort, and product usage pattern\n2. Exit interview synthesis from churned accounts >$50K ARR (last 2 quarters)\n3. NPS decomposition by segment with trend analysis\n4. Survival curves correlating feature depth with retention\n5. Recommendation on primary optimization metric with supporting evidence\n\n**After diagnostic brief:** Return to this PRD with validated root causes and design a segmented intervention plan that resolves the logo-vs-revenue tension.\n\n**Parallel workstream:** Request executive alignment session on NRR vs. logo retention prioritization. This is a strategy input, not a product decision — it must be resolved top-down before CS incentives can be realigned.\n\n**Anti-pattern to avoid:** Do not launch broad-based retention campaigns (discounts, feature unlocks, CSM outreach blitzes) before the diagnostic completes. Generic interventions in the presence of conflicting signals will optimize noise, not signal, and may actively harm NRR by subsidizing accounts that were never at risk while ignoring the high-value accounts that are.",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "Aggregate churn metrics are unreliable for intervention design because they mask segment-level divergence — logo churn and revenue churn are moving in opposite directions, indicating fundamentally different dynamics for high-value vs. low-value accounts.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "The PRD is NOT ready for intervention commitment because root causes of high-value churn are hypothesized but unvalidated, and NPS data may be providing false confidence due to segment-level aggregation bias.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "CS incentive misalignment (optimizing logo saves vs. NRR target) is a structural blocker that requires executive arbitration before any intervention can be designed — this is a strategy input, not a product decision.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-4",
+          "summary": "Generic retention campaigns launched before diagnostic completion will optimize noise and may harm NRR by subsidizing low-risk accounts while ignoring high-value churn drivers.",
+          "evidence_refs": [],
+          "is_major": false
+        }
+      ],
+      "citations": [],
+      "conclusion_confidence": "medium",
+      "open_questions": [
+        "What is the primary driver of high-value account churn — competitive displacement, unmet product needs, or budget pressure?",
+        "Does aggregate NPS mask segment-level divergence that would change the intervention strategy?",
+        "Should the organization optimize for logo retention or revenue retention when these conflict, and how should CS incentives be realigned accordingly?"
+      ],
+      "critique_responses": []
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-14-203011147Z-churn-conflicting-signals",
+      "side_id": "side_b",
+      "round": "first_pass",
+      "artifact_markdown": "# Your artifact\n\n## PRD: Churn Reduction Under Conflicting Signals\n\n### Problem\nRetention signals conflict: some indicators suggest product-value churn, while strategy targets imply the business must preserve growth efficiency and avoid broad discounting or roadmap thrash. The immediate need is a churn-reduction plan that is useful despite incomplete causal certainty.\n\n### Goal\nReduce preventable churn in the next two quarters by prioritizing interventions that are reversible, segment-specific, and measurable without requiring a full strategy reset.\n\n### Non-Goals\n- Reposition the entire product strategy\n- Launch permanent pricing changes before cause validation\n- Rebuild the core onboarding or support stack in this phase\n\n### Users / Segments\n- Recently activated accounts at risk of early-value failure\n- Established accounts showing declining engagement\n- Commercially sensitive accounts where churn risk may be price or procurement driven\n\n### Product Requirement\nThe churn program must support segment-level diagnosis and action instead of a single global fix. The system should route at-risk accounts into distinct intervention paths based on observable risk patterns.\n\n### Proposed Scope\n1. Define a churn-risk decision layer with three operational buckets: value-realization risk, engagement-decline risk, and commercial-friction risk.\n2. Launch targeted interventions per bucket:\n   - Value-realization risk: onboarding assist, setup completion prompts, success outreach\n   - Engagement-decline risk: usage-triggered nudges, workflow recovery prompts, support escalation\n   - Commercial-friction risk: renewal save playbook, packaging exception review, contract-friction triage\n3. Instrument outcome tracking by segment, intervention type, and save rate.\n4. Require a holdout or baseline comparison where operationally feasible.\n\n### Success Metrics\n- Gross churn rate for targeted cohorts\n- Save rate by intervention path\n- Time-to-intervention after risk detection\n- Retained revenue from commercially at-risk accounts\n- False-positive rate for churn-risk routing\n\n### Risks\n- Misdiagnosis could shift effort into the wrong intervention path\n- Teams may over-index on commercial saves and mask product-value issues\n- Broad application of narrow signals could degrade customer experience\n\n### Decision Frame\nChoose a segmented, evidence-building churn program over a single-root-cause PRD. This is the better decision when signals conflict because it creates action now while preserving the ability to update strategy after causal patterns become clearer.\n\n### Unknowns & Evidence Gaps\n- No validated evidence packet establishes which churn driver is primary\n- Segment definitions may not yet map cleanly to actual churn causes\n- Unknown whether price friction is causal or merely correlated with weak product value\n- Unknown which intervention path has the fastest measurable impact\n\n### Pass/Fail Readiness\nPass if the team can identify target cohorts, assign owners for each intervention path, and instrument retention outcomes within the next planning cycle.\nFail if churn cannot be segmented operationally, outcomes cannot be measured by cohort, or stakeholders require a single-cause narrative before acting.\n\n### Recommended Next Artifact\nA churn driver evidence brief with cohort cuts, leading-indicator definitions, intervention ownership, and an experiment plan for validating which signal families are causal versus incidental.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "When churn signals conflict, the PRD should prioritize segmented, reversible interventions with measurement built in rather than a single global fix.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "The most decision-useful near-term structure is a three-path churn program covering value-realization, engagement-decline, and commercial-friction risk.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "The absence of validated evidence materially limits confidence, so the PRD should explicitly optimize for learning as well as churn reduction.",
+          "evidence_refs": [],
+          "is_major": true
+        }
+      ],
+      "citations": [],
+      "conclusion_confidence": "medium",
+      "open_questions": [
+        "Which churn indicators are strongest by segment: onboarding failure, usage decline, support burden, or renewal/pricing friction?",
+        "Can the team operationalize segment-level routing and measurement without major new systems work?",
+        "What baseline or holdout design is feasible for intervention evaluation?"
+      ],
+      "critique_responses": []
+    }
+  },
+  "critique_packets": {
+    "side_a": {
+      "target_side": "side_b",
+      "finding_id": "finding-1",
+      "target_claim_ids": [
+        "side_b-claim-2"
+      ],
+      "claim_under_attack": "The most decision-useful near-term structure is a three-path churn program covering value-realization, engagement-decline, and commercial-friction risk.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "The three-bucket taxonomy (value-realization, engagement-decline, commercial-friction) is presented as the 'most decision-useful' structure, yet no evidence or analytical basis is offered for why exactly three buckets, why these three, or whether they are mutually exclusive. The artifact's own Unknowns section admits 'segment definitions may not yet map cleanly to actual churn causes' and that price friction may be correlated rather than causal — directly undermining the confidence with which the taxonomy is asserted. A taxonomy chosen before causal validation risks anchoring the team on the wrong segmentation, creating organizational silos around buckets that may overlap heavily (e.g., engagement decline driven by commercial friction) or miss drivers entirely (e.g., competitive displacement, integration failures). The claim would require at minimum exploratory data showing these three categories capture the majority of churn variance, yet zero evidence refs are provided.",
+      "severity": "high"
+    },
+    "side_b": {
+      "target_side": "side_a",
+      "finding_id": "finding-2",
+      "target_claim_ids": [
+        "side_a-claim-3"
+      ],
+      "claim_under_attack": "CS incentive misalignment (optimizing logo saves vs. NRR target) is a structural blocker that requires executive arbitration before any intervention can be designed ??? this is a strategy input, not a product decision.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "The artifact provides no visible evidence that CS incentives are the binding constraint or that executive arbitration must precede intervention design. The only support offered is an asserted tension between logo retention and NRR, but that does not prove current incentives are causing bad decisions, nor that product-led or segment-specific interventions cannot be designed in parallel while incentive questions are resolved. This overstates causality and sequence from an unsubstantiated organizational hypothesis.",
+      "severity": "medium"
+    }
+  },
+  "final_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-14-203011147Z-churn-conflicting-signals",
+      "side_id": "side_a",
+      "round": "final",
+      "artifact_markdown": "# Churn Reduction PRD: Resolving Conflicting Signals\n\n## Decision Frame\n\n**Problem:** Churn metrics are sending conflicting signals relative to strategic growth targets. Specifically:\n\n- **Signal conflict 1:** Logo churn is declining (positive), but revenue churn is increasing — indicating we're retaining small accounts while losing high-value ones.\n- **Signal conflict 2:** NPS scores are stable/improving, yet churn intent surveys show rising dissatisfaction with product-market fit among power users.\n- **Signal conflict 3:** Usage frequency is up, but depth-of-use (features per session) is declining — suggesting habitual but shallow engagement that doesn't build switching costs.\n\n**Strategic tension:** The current strategy targets net revenue retention (NRR) > 110%, which requires expansion revenue from existing accounts. Churn reduction efforts focused on logo retention actively conflict with this target if they prioritize saving low-value accounts over deepening high-value relationships.\n\n**Decision to be made:** Should we optimize churn interventions for logo retention, revenue retention, or a segmented approach — and how do we resolve the conflicting signals to know which interventions will actually move NRR?\n\n**Stakeholders:** Product (owns engagement levers), CS (owns save motions), Finance (owns NRR target), Growth (owns expansion pipeline).\n\n**Scope boundary:** This PRD covers the diagnostic framework and intervention design. It does NOT cover pricing changes or new product lines, which require separate decision frames.\n\n## Unknowns & Evidence Gaps\n\n| # | Unknown | Impact if unresolved | Proposed resolution | Cost/time |\n|---|---------|---------------------|---------------------|-----------|\n| U1 | Root cause of high-value account churn — is it competitive displacement, unmet needs, or budget pressure? | Cannot design targeted save motions; interventions will be generic and low-efficacy | Exit interview analysis + win/loss study on last 2 quarters of churned accounts >$50K ARR | 2-3 weeks, CS team effort |\n| U2 | Whether rising NPS masks segment-level divergence (high NPS from small accounts inflating aggregate) | False confidence in product satisfaction; misallocated investment | Segment NPS by ARR tier and cohort vintage | 1 week, data team |\n| U3 | Causal relationship between depth-of-use decline and churn probability | Cannot prioritize feature adoption vs. frequency interventions | Survival analysis correlating feature breadth with retention curves | 2 weeks, data science |\n| U4 | Competitive landscape shifts — are churned accounts leaving for specific competitors or reducing category spend? | Determines whether intervention is product improvement vs. positioning vs. pricing | Competitive intel sweep + churned account destination tracking | 3 weeks, market research |\n| U5 | Whether current CS save motions are being triggered too late in the churn lifecycle | Early intervention may resolve conflicts without product changes | Analyze time-from-first-risk-signal to save-motion-initiation across segments | 1 week, CS ops |\n| U6 | Whether CS incentive structure is actively driving suboptimal save behavior or merely misaligned on paper | Determines urgency of incentive redesign vs. proceeding with segment-specific interventions in parallel | Audit last quarter's save motions: compare CS effort allocation across ARR tiers against churn-risk distribution | 1 week, CS ops + Finance |\n\n**Critical dependency:** U1 and U2 must be resolved before committing to any intervention design. Without these, we risk optimizing the wrong metric for the wrong segment. U6 can be investigated in parallel and need not block intervention design.\n\n## Pass/Fail Readiness\n\n**Readiness verdict: NOT READY to commit to a specific intervention plan.**\n\n| Criterion | Status | Rationale |\n|-----------|--------|-----------|\n| Problem is clearly defined | ⚠️ Partial | We know signals conflict but don't yet know which signal is the leading indicator |\n| Root cause is understood | ❌ Fail | High-value churn drivers are hypothesized, not validated (U1) |\n| Metrics are trustworthy | ❌ Fail | Aggregate NPS may be masking segment-level problems (U2) |\n| Intervention has evidence basis | ❌ Fail | Cannot design interventions without resolving U1-U3 |\n| Strategic alignment is clear | ⚠️ Partial | NRR target is clear; CS incentive alignment is a risk factor but not a proven blocker (U6 pending) |\n| Stakeholder alignment exists | ⚠️ Partial | Logo vs. revenue optimization tension exists across CS and Finance; needs resolution but can be pursued in parallel with diagnostics |\n\n**What would change this to READY:**\n1. Resolve U1 and U2 (4-week sprint)\n2. Clarity on primary optimization metric (logo vs. revenue churn) — can emerge from diagnostic findings rather than requiring upfront executive arbitration\n3. Segmented intervention design based on validated root causes\n\n## Recommended Next Artifact\n\n**Immediate next step:** Commission a **Churn Diagnostic Brief** (2-4 week effort) that resolves U1 and U2 before any intervention PRD is written.\n\n**Diagnostic brief should contain:**\n1. Segmented churn analysis by ARR tier, cohort, and product usage pattern\n2. Exit interview synthesis from churned accounts >$50K ARR (last 2 quarters)\n3. NPS decomposition by segment with trend analysis\n4. Survival curves correlating feature depth with retention\n5. Recommendation on primary optimization metric with supporting evidence\n\n**Parallel workstreams (can proceed without blocking on each other):**\n- **Diagnostic brief** (U1, U2, U3): Core analytical work.\n- **CS incentive audit** (U6): Determine whether current CS effort allocation is empirically skewed toward low-value saves. If confirmed, escalate to executive alignment session. If not, deprioritize incentive redesign.\n- **Segment-specific intervention prototyping:** For any segment where root cause is already well-understood (e.g., if exit interviews quickly reveal a dominant churn driver for enterprise accounts), begin designing targeted interventions without waiting for full diagnostic completion.\n\n**After diagnostic brief:** Return to this PRD with validated root causes and design a segmented intervention plan.\n\n**Anti-pattern to avoid:** Do not launch broad-based retention campaigns (discounts, feature unlocks, CSM outreach blitzes) before the diagnostic completes. Generic interventions in the presence of conflicting signals will optimize noise, not signal, and may actively harm NRR by subsidizing accounts that were never at risk while ignoring the high-value accounts that are.",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "Aggregate churn metrics are unreliable for intervention design because they mask segment-level divergence — logo churn and revenue churn are moving in opposite directions, indicating fundamentally different dynamics for high-value vs. low-value accounts.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "The PRD is NOT ready for intervention commitment because root causes of high-value churn are hypothesized but unvalidated, and NPS data may be providing false confidence due to segment-level aggregation bias.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "CS incentive misalignment is a risk factor warranting investigation (U6), but it is not a proven structural blocker — segment-specific interventions and incentive audits can proceed in parallel with the core diagnostic, rather than requiring sequential executive arbitration before any work begins.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-4",
+          "summary": "Generic retention campaigns launched before diagnostic completion will optimize noise and may harm NRR by subsidizing low-risk accounts while ignoring high-value churn drivers.",
+          "evidence_refs": [],
+          "is_major": false
+        }
+      ],
+      "citations": [],
+      "conclusion_confidence": "medium",
+      "open_questions": [
+        "What is the primary driver of high-value account churn — competitive displacement, unmet product needs, or budget pressure?",
+        "Does aggregate NPS mask segment-level divergence that would change the intervention strategy?",
+        "Is CS effort allocation empirically skewed toward low-value saves, or is the incentive misalignment theoretical rather than behavioral?"
+      ],
+      "critique_responses": [
+        {
+          "finding_id": "finding-2",
+          "disposition": "adopted",
+          "rationale": "The critique correctly identifies that the original claim overstated both causality and sequencing. Asserting CS incentive misalignment as a 'structural blocker requiring executive arbitration before any intervention' was unsupported — I provided no evidence that current incentives are actively driving bad save decisions, only that a theoretical tension exists between logo retention incentives and NRR targets. The revised artifact: (1) downgrades the claim from 'proven blocker' to 'risk factor warranting investigation,' (2) adds U6 as an explicit unknown to empirically test whether CS effort allocation is actually skewed, and (3) restructures the sequencing so that incentive audits, diagnostics, and early segment-specific interventions can proceed in parallel rather than requiring a sequential executive gate. This preserves the valid insight — that misaligned incentives can undermine intervention efficacy — while removing the unsubstantiated claim that they must be resolved first."
+        }
+      ]
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-14-203011147Z-churn-conflicting-signals",
+      "side_id": "side_b",
+      "round": "final",
+      "artifact_markdown": "# Revised artifact\n\n## PRD: Churn Reduction Under Conflicting Signals\n\n### Problem\nObserved churn indicators point in different directions, while strategy targets constrain the response: the business needs lower churn without broad discounting, premature roadmap resets, or a forced single-cause narrative. The PRD therefore needs to support action under uncertainty.\n\n### Goal\nReduce preventable churn over the next two quarters through interventions that are measurable, reversible, and explicitly designed to improve diagnosis as well as retention outcomes.\n\n### Non-Goals\n- Declare a single root cause of churn before validation\n- Commit to permanent pricing or packaging changes in this phase\n- Reorganize the product roadmap around an unvalidated churn theory\n\n### Users / Segments\n- Newly activated accounts showing early-value risk\n- Existing accounts with declining usage or unresolved workflow breakdowns\n- Renewal-stage accounts where commercial friction may be present\n\n### Product Requirement\nThe churn program must route at-risk accounts into provisional intervention paths based on observable signals, while preserving the ability to reclassify accounts as evidence improves.\n\n### Proposed Scope\n1. Stand up a churn-ops decision layer that uses provisional risk tags rather than fixed causal buckets.\n2. Start with an initial operating taxonomy for intervention design, not as a validated model of churn causality:\n   - Early value-realization risk\n   - Ongoing engagement or workflow breakdown risk\n   - Renewal or commercial-friction risk\n3. Require each tagged account to support multi-factor classification so overlapping drivers are visible rather than forced into a single bucket.\n4. Launch targeted interventions per provisional path:\n   - Early value-realization risk: onboarding assist, setup completion prompts, success outreach\n   - Engagement or workflow breakdown risk: usage-triggered nudges, workflow recovery prompts, support escalation\n   - Renewal or commercial-friction risk: save playbook, packaging exception review, contract-friction triage\n5. Instrument outcomes by signal pattern, intervention type, overlap rate, and retained cohort performance.\n6. Review the taxonomy after the first measurement window and merge, split, or replace categories if the evidence does not support them.\n\n### Success Metrics\n- Gross churn rate for targeted cohorts\n- Save rate by intervention type\n- Time-to-intervention after risk detection\n- Percent of at-risk accounts with multi-factor classification\n- Share of churn explained by current taxonomy versus unclassified or overlapping cases\n\n### Risks\n- The initial taxonomy may anchor teams on the wrong operating model\n- Overlap across drivers may be high enough that simple routing degrades decision quality\n- Commercial saves may temporarily suppress churn without improving product-value retention\n\n### Decision Frame\nChoose a provisional, evidence-building churn program over a fixed three-bucket diagnosis. The decision is to act now with reversible intervention paths, while treating the starting taxonomy as an operational hypothesis that must earn its way into permanence.\n\n### Unknowns & Evidence Gaps\n- No validated evidence shows which churn drivers explain the largest share of churn\n- Unknown whether the initial operating taxonomy captures most preventable churn or omits major drivers such as competitive displacement or integration failure\n- Unknown how often accounts will exhibit overlapping signals across product, engagement, and commercial factors\n- Unknown which interventions produce durable retention improvement versus temporary saves\n\n### Pass/Fail Readiness\nPass if the team can operationalize provisional tagging, allow overlapping classifications, measure cohort outcomes, and commit to a formal taxonomy review after the first learning cycle.\nFail if stakeholders require a fixed causal model before acting, or if the system cannot track overlap, reclassification, and intervention outcomes well enough to update the model.\n\n### Recommended Next Artifact\nA churn driver evidence brief that tests the provisional taxonomy against real cohort data, quantifies overlap across signal families, identifies missing driver categories, and recommends whether to keep, split, merge, or discard the initial intervention paths.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "When churn signals conflict, the PRD should prioritize reversible interventions with built-in measurement rather than a single global fix.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "The initial churn structure should be framed as a provisional operating taxonomy for intervention design, not as a validated three-bucket causal model.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "Because causal certainty is absent, the PRD should explicitly optimize for learning by tracking overlap, reclassification, and taxonomy coverage.",
+          "evidence_refs": [],
+          "is_major": true
+        }
+      ],
+      "citations": [],
+      "conclusion_confidence": "medium",
+      "open_questions": [],
+      "critique_responses": [
+        {
+          "finding_id": "finding-1",
+          "disposition": "adopted",
+          "rationale": "The critique is correct that the original artifact overstated an unvalidated three-bucket structure. The revision removes the claim that three categories are already the most decision-useful causal framing and instead treats them as a provisional operating taxonomy subject to overlap tracking, reclassification, and formal review."
+        }
+      ]
+    }
+  },
+  "min_margin_for_verdict": 0.1
+}

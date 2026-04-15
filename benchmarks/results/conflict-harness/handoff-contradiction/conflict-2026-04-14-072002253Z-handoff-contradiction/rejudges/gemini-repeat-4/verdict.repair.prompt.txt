@@ -1,0 +1,103 @@
+Your previous judge output was close but rejected by schema validation.
+Rewrite it as ONLY a JSON object that preserves the same winner, margin, rubric_scores, decisive_dimension, judge_confidence, needs_human_review, decisive_findings, and rationale unless the schema absolutely requires clarification.
+Any rubric_scores.*.weighted_total value must be a normalized aggregate on the same 1-5 scale as the rubric dimensions, not a raw sum.
+You MUST include these missing required properties with substantive content:
+- dimension_rationales
+- side_summaries
+- decisive_dimension
+- rubric_scores.side_a.weighted_total
+- rubric_scores.side_b.weighted_total
+
+Required schema shape:
+{
+  "winner": "tie",
+  "margin": 0,
+  "rubric_scores": {
+    "side_a": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    },
+    "side_b": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    }
+  },
+  "dimension_rationales": {
+    "claim_quality": "Which side made the stronger claims and why.",
+    "evidence_discipline": "How each side used or overstated evidence.",
+    "responsiveness_to_critique": "How each side responded to the critique phase.",
+    "internal_consistency": "Contradictions, coherence, or missing logic.",
+    "decision_usefulness": "Which artifact better supports an actual decision."
+  },
+  "side_summaries": {
+    "side_a": {
+      "strengths": [
+        "One concise strength of Side A."
+      ],
+      "weaknesses": [
+        "One concise weakness of Side A."
+      ]
+    },
+    "side_b": {
+      "strengths": [
+        "One concise strength of Side B."
+      ],
+      "weaknesses": [
+        "One concise weakness of Side B."
+      ]
+    }
+  },
+  "decisive_dimension": "decision_usefulness",
+  "decisive_findings": [
+    "Replace with the actual decisive findings from this run."
+  ],
+  "judge_confidence": "low",
+  "needs_human_review": true,
+  "rationale": "One-paragraph explanation of the verdict."
+}
+
+Validation errors:
+Verdict packet failed validation:
+$.dimension_rationales: Missing required property.
+$.side_summaries: Missing required property.
+$.decisive_dimension: Missing required property.
+
+Previous verdict JSON:
+{
+  "winner": "side_b",
+  "margin": 0.2,
+  "rubric_scores": {
+    "side_a": {
+      "claim_quality": 4,
+      "evidence_discipline": 4,
+      "responsiveness_to_critique": 5,
+      "internal_consistency": 5,
+      "decision_usefulness": 4,
+      "weighted_total": 4
+    },
+    "side_b": {
+      "claim_quality": 5,
+      "evidence_discipline": 5,
+      "responsiveness_to_critique": 5,
+      "internal_consistency": 5,
+      "decision_usefulness": 5,
+      "weighted_total": 5
+    }
+  },
+  "decisive_findings": [
+    "Side B's first-pass artifact was substantially more useful. By inventing a concrete scenario with specific contradictions, it produced a highly actionable PRD that framed a clear decision, whereas Side A's initial artifact was a meta-framework that deferred all decisions.",
+    "Side B's critique of Side A was more impactful, correctly identifying that the initial artifact had very low decision usefulness and prompting a complete rewrite. In contrast, Side A's critique of Side B was a valid but less critical point about an overstated causal claim, which Side B easily corrected.",
+    "While Side A's revision showed impressive improvement, Side B's final artifact remained superior in its concreteness and detail. It provided a rich, realistic example of how to handle contradictions, including a specific reconciliation plan and the recommendation to audit document history to find the root cause."
+  ],
+  "judge_confidence": "high",
+  "needs_human_review": false,
+  "rationale": "Side B wins decisively. It produced a far more useful and actionable artifact from the start by inventing a concrete, realistic scenario to illustrate the problem of cross-document contradiction. Side A's initial artifact was an abstract meta-framework that punted on all key decisions, failing the 'decision usefulness' test, as correctly identified in Side B's critique. While Side A's revision was a dramatic improvement and showed excellent responsiveness, it started from too far behind. Side B's final artifact remains a masterclass in handling this type of ambiguity, demonstrating superior claim quality, evidence discipline, and decision usefulness throughout the exercise."
+}

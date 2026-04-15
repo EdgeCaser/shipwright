@@ -1,0 +1,48 @@
+{
+  "run_id": "conflict-2026-04-14-202054918Z-churn-conflicting-signals",
+  "side_id": "side_b",
+  "round": "final",
+  "artifact_markdown": "# Revised artifact\n\n## Problem\nChurn signals conflict with strategy targets, so the team risks either overreacting to aggregate churn or ignoring avoidable losses in high-fit customers. The PRD should reduce harmful churn without reversing deliberate strategy choices.\n\n## Goal\nReduce avoidable churn in strategy-aligned segments while preserving target-customer mix, margin, and product focus.\n\n## Non-Goals\n- Lowering aggregate churn at any cost\n- Retention discounts or save tactics applied broadly without segment logic\n- Reversing deliberate pruning of low-fit customers\n- Waiting for perfect instrumentation before taking any bounded action\n\n## Users / Segments\n- High strategy-fit customers at churn or downgrade risk\n- Low strategy-fit customers whose attrition may be acceptable or intentional\n- PM, CS, Finance, and executive stakeholders who need a common decision rule\n\n## Decision Frame\nRun a dual-track churn program: improve segmentation and reason-code quality quickly, while in parallel testing a small set of bounded interventions on already high-confidence avoidable-churn cases. Scale only the interventions that improve retention in strategy-fit segments without violating guardrails. The decision is not whether to act now or instrument now; it is how to act narrowly while building enough evidence to avoid optimizing the wrong churn.\n\n## Product Requirements\n1. Define a churn taxonomy covering onboarding failure, missing capability, value-realization failure, pricing friction, competitor displacement, and strategic mismatch.\n2. Segment churn reporting by cohort, plan tier, tenure band, acquisition source, and strategy-fit score where available.\n3. Launch limited interventions immediately for high-confidence avoidable-churn cases, starting with onboarding rescue, proactive success outreach, and value-realization prompts.\n4. Restrict generic save offers for accounts tagged low strategic fit unless an override is recorded.\n5. Publish a weekly dashboard showing aggregate churn, churn in target accounts, avoidable-churn estimates, intervention exposure, and guardrail movement.\n6. Define explicit escalation rules if an intervention improves retention but worsens target mix, margin, or strategic-plan adoption.\n7. Set Phase 1 exit criteria: proceed to broader rollout when at least 80% of churned revenue is segment-classified, top reason buckets are stable for two reporting cycles, and at least one intervention shows positive movement in target-segment retention without guardrail breach.\n\n## User Stories\n- As a PM, I need churn split by strategy-fit and reason so I do not optimize the wrong population.\n- As a CS leader, I need a small approved playbook for obvious avoidable-churn cases so action does not stall behind analysis.\n- As an executive, I need guardrails that distinguish healthy pruning from harmful churn so retention work supports strategy.\n\n## Success Metrics\n- Primary: reduced avoidable churn rate in strategy-fit accounts\n- Secondary: improved onboarding completion, value-realization rate, and retained revenue in target segments\n- Guardrails: no material deterioration in target-customer mix, gross margin, or strategic-plan adoption\n\n## Rollout\n- Phase 1: stand up taxonomy, improve segmentation coverage, and start narrow tests for obvious avoidable-churn cases\n- Phase 2: expand only the interventions that show positive retention signal in strategy-fit segments and pass guardrails\n- Phase 3: operationalize reporting and playbooks for scaled use across target cohorts\n\n## Unknowns & Evidence Gaps\n- The packet does not show whether churn is concentrated in high-fit or low-fit segments.\n- Existing churn reason codes may be noisy or inconsistently applied.\n- The exact strategy conflict is underspecified: customer mix, tier mix, margin, or product focus could each be involved.\n- Some causal signal will come from intervention tests, not instrumentation alone.\n\n## Pass/Fail Readiness\nPass if the team can classify most churn into usable segments, run narrow intervention tests on high-confidence avoidable-churn cases, and monitor clear retention plus guardrail metrics.\n\nFail if churn remains fully aggregated, strategy-fit remains undefined, interventions are either blocked pending perfect data or launched broadly without segment controls, or no explicit Phase 1 exit criteria exist.\n\n## Recommended Next Artifact\nA churn diagnostic and experiment memo that includes baseline churn by strategy-fit cohort, reason-code quality assessment, 2-3 immediate intervention candidates, and the threshold table for Phase 1 exit and scale decisions.",
+  "claims": [
+    {
+      "claim_id": "side_b-claim-1",
+      "summary": "The PRD should prioritize reducing avoidable churn in strategy-aligned segments rather than optimizing aggregate churn.",
+      "evidence_refs": [
+        "ctx-1",
+        "ctx-2"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-2",
+      "summary": "A dual-track approach is stronger than a rigid stage-gate: segmentation and reason-code improvement should proceed in parallel with bounded tests on high-confidence avoidable-churn cases.",
+      "evidence_refs": [
+        "ctx-1",
+        "ctx-2"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-3",
+      "summary": "Guardrail metrics and explicit Phase 1 exit criteria are necessary so churn-reduction tactics do not undermine target-customer mix, margin, or strategic focus.",
+      "evidence_refs": [
+        "ctx-1",
+        "ctx-2"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1",
+    "ctx-2"
+  ],
+  "conclusion_confidence": "medium",
+  "open_questions": [],
+  "critique_responses": [
+    {
+      "finding_id": "finding-1",
+      "disposition": "adopted",
+      "rationale": "The critique correctly identified that the original two-stage framing was too rigid and under-specified. I revised the PRD to allow bounded intervention tests in parallel with instrumentation, added explicit Phase 1 exit criteria, and reframed instrumentation as necessary but not sufficient for resolving the signal conflict."
+    }
+  ]
+}

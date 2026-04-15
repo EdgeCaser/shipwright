@@ -1,0 +1,103 @@
+Your previous judge output was close but rejected by schema validation.
+Rewrite it as ONLY a JSON object that preserves the same winner, margin, rubric_scores, decisive_dimension, judge_confidence, needs_human_review, decisive_findings, and rationale unless the schema absolutely requires clarification.
+Any rubric_scores.*.weighted_total value must be a normalized aggregate on the same 1-5 scale as the rubric dimensions, not a raw sum.
+You MUST include these missing required properties with substantive content:
+- dimension_rationales
+- side_summaries
+- decisive_dimension
+- rubric_scores.side_a.weighted_total
+- rubric_scores.side_b.weighted_total
+
+Required schema shape:
+{
+  "winner": "tie",
+  "margin": 0,
+  "rubric_scores": {
+    "side_a": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    },
+    "side_b": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    }
+  },
+  "dimension_rationales": {
+    "claim_quality": "Which side made the stronger claims and why.",
+    "evidence_discipline": "How each side used or overstated evidence.",
+    "responsiveness_to_critique": "How each side responded to the critique phase.",
+    "internal_consistency": "Contradictions, coherence, or missing logic.",
+    "decision_usefulness": "Which artifact better supports an actual decision."
+  },
+  "side_summaries": {
+    "side_a": {
+      "strengths": [
+        "One concise strength of Side A."
+      ],
+      "weaknesses": [
+        "One concise weakness of Side A."
+      ]
+    },
+    "side_b": {
+      "strengths": [
+        "One concise strength of Side B."
+      ],
+      "weaknesses": [
+        "One concise weakness of Side B."
+      ]
+    }
+  },
+  "decisive_dimension": "decision_usefulness",
+  "decisive_findings": [
+    "Replace with the actual decisive findings from this run."
+  ],
+  "judge_confidence": "low",
+  "needs_human_review": true,
+  "rationale": "One-paragraph explanation of the verdict."
+}
+
+Validation errors:
+Verdict packet failed validation:
+$.dimension_rationales: Missing required property.
+$.side_summaries: Missing required property.
+$.decisive_dimension: Missing required property.
+
+Previous verdict JSON:
+{
+  "winner": "side_a",
+  "margin": 0.4,
+  "rubric_scores": {
+    "side_a": {
+      "claim_quality": 4,
+      "evidence_discipline": 5,
+      "responsiveness_to_critique": 5,
+      "internal_consistency": 5,
+      "decision_usefulness": 4,
+      "weighted_total": 5
+    },
+    "side_b": {
+      "claim_quality": 4,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 4,
+      "internal_consistency": 5,
+      "decision_usefulness": 5,
+      "weighted_total": 4
+    }
+  },
+  "decisive_findings": [
+    "Side A's final artifact demonstrated superior evidence discipline by building a robust, actionable PRD that directly addressed the central constraint (missing source documents) through explicit, reversible assumptions. In contrast, Side B fabricated an entire detailed context not grounded in the case packet.",
+    "Side A showed exceptional responsiveness to critique. It fundamentally transformed its initial weak, non-actionable 'meta-document' into a sophisticated and useful provisional PRD, fully absorbing the opponent's high-severity critique.",
+    "While Side B's artifact was more concretely actionable, its foundation of un-evidenced fabrication made it a less intellectually honest and less generalizable solution to the prompt's core challenge of operating under ambiguity."
+  ],
+  "judge_confidence": "high",
+  "needs_human_review": false,
+  "rationale": "Side A wins by a clear margin. While both sides produced strong final artifacts, Side A's performance was ultimately superior. Its initial artifact was weak, but it responded to a devastating critique with a transformative revision, demonstrating class-leading responsiveness. The final artifact is a masterclass in evidence discipline, creating a useful, actionable PRD that directly confronts the ambiguity of the prompt by using explicit, provisional assumptions. Side B produced a very concrete artifact, but did so by fabricating an entire scenario, showing weaker evidence discipline. Side A's final approach is more intellectually honest and provides a more robust and generalizable template for handling this common type of real-world ambiguity."
+}

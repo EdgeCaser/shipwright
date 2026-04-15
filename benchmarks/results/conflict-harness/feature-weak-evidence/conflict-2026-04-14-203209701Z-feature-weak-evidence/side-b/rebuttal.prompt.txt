@@ -1,0 +1,112 @@
+You are SIDE_B in the rebuttal phase for run conflict-2026-04-14-203209701Z-feature-weak-evidence.
+Attack only visible claims from the opposing first-pass artifact.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "target_side": "side_a",
+  "finding_id": "runner-will-assign",
+  "target_claim_ids": [
+    "side_a-claim-1"
+  ],
+  "claim_under_attack": "The opposing claim to challenge.",
+  "attack_type": "evidence_gap",
+  "evidence_or_reason": "Why the visible claim is weak.",
+  "severity": "medium"
+}
+
+Case packet:
+{
+  "scenario_id": "feature-weak-evidence",
+  "title": "New feature with weak evidence",
+  "prompt": "Draft a PRD for a new feature with weak supporting evidence.",
+  "artifact_type": "prd",
+  "rubric": {
+    "dimensions": [
+      "claim quality",
+      "evidence discipline",
+      "responsiveness to critique",
+      "internal consistency",
+      "decision usefulness"
+    ],
+    "scoring_scale": "1-5",
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "constraints": {
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "expect_structured": true,
+    "context_files": [],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "evidence": [],
+  "max_rounds": 3,
+  "tool_policy": "none",
+  "sharing_policy": {
+    "share_case_packet": true,
+    "share_committed_artifacts_after_first_pass": true,
+    "share_critiques_after_open": true,
+    "share_hidden_reasoning": false,
+    "share_provider_identity": false,
+    "share_internal_coalition_drafts": false
+  },
+  "success_condition": {
+    "type": "validator_contract",
+    "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+    "validator": {
+      "artifact_type": "prd",
+      "expect_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true
+    }
+  }
+}
+
+Opposing first-pass artifact:
+{
+  "run_id": "conflict-2026-04-14-203209701Z-feature-weak-evidence",
+  "side_id": "side_a",
+  "round": "first_pass",
+  "artifact_markdown": "# PRD: [Feature Name TBD] — Decision-Stage Document\n\n## Decision Frame\n\n**Status:** Not ready for build. This PRD exists to structure what we know, surface what we don't, and define the cheapest path to a go/no-go decision.\n\n**Trigger:** A proposed new feature has been raised for consideration. No strong quantitative or qualitative evidence currently supports the hypothesis that this feature will deliver measurable user or business value.\n\n**Decision being made:** Should we invest in a discovery sprint to gather evidence, or shelve this proposal?\n\n**Stakeholders:** Product (owner), Engineering (feasibility), Design (desirability), Data/Analytics (evidence gathering)\n\n**Key hypothesis:** The feature will [solve a specific user problem / drive a specific business metric]. This hypothesis is currently **unvalidated**.\n\n### What we think we know\n\n| Claim | Source | Strength | Notes |\n|-------|--------|----------|-------|\n| Users have expressed interest in this capability | Anecdotal (support tickets, sales calls) | Weak — no systematic count or segmentation | Could reflect vocal minority |\n| Competitors offer something similar | Surface-level competitive scan | Weak — no analysis of adoption, satisfaction, or whether it drives switching | Feature existence ≠ feature success |\n| Implementation is technically feasible | Eng gut check | Medium — no spike, no cost estimate | Feasibility ≠ desirability |\n\n### What would make this a strong PRD\n\nA strong PRD would include: validated user research (interviews, surveys with statistical significance), usage data from adjacent features, a quantified opportunity size, and at least one measurable success metric with a baseline. **None of these exist today.**\n\n---\n\n## Unknowns & Evidence Gaps\n\n### Critical unknowns (must resolve before any build commitment)\n\n1. **User demand signal:** Do users actually want this, or are we pattern-matching on noise? No systematic demand analysis has been performed.\n   - *Evidence needed:* Structured interviews (n≥10 target segment), or survey data with >100 responses from active users.\n   - *Cost to resolve:* 1-2 week discovery sprint.\n\n2. **Problem severity:** Even if users mention the problem, is it painful enough to change behavior?\n   - *Evidence needed:* Job-to-be-done analysis showing this ranks in top 3 unmet needs for a defined segment.\n   - *Cost to resolve:* Can be combined with demand signal research.\n\n3. **Opportunity size:** What is the addressable population, and what metric moves if we succeed?\n   - *Evidence needed:* Segmentation data cross-referenced with activation/retention funnels.\n   - *Cost to resolve:* 2-3 days of analytics work.\n\n4. **Competitive differentiation:** If competitors already offer this, what is our right to win?\n   - *Evidence needed:* Competitive teardown with user reaction testing.\n   - *Cost to resolve:* 1 week.\n\n### Secondary unknowns (resolve during design phase if we proceed)\n\n5. **Technical cost:** No engineering spike has been performed. Estimated effort is a guess.\n6. **Cannibalization risk:** Could this feature undermine existing workflows or metrics?\n7. **Maintenance burden:** What is the ongoing cost to support this feature post-launch?\n\n### Evidence inventory\n\n| Evidence type | Available? | Quality |\n|--------------|-----------|--------|\n| User interviews | No | N/A |\n| Survey data | No | N/A |\n| Usage analytics for adjacent features | Unknown — not yet pulled | Unknown |\n| Competitive analysis (deep) | No — only surface scan | Weak |\n| Engineering spike / cost estimate | No | N/A |\n| Business case / ROI model | No | N/A |\n\n---\n\n## Pass/Fail Readiness\n\n### Readiness verdict: FAIL — Do not proceed to build\n\n**Rationale:** This proposal fails the minimum evidence bar for a build commitment. Specifically:\n\n- **No validated demand signal.** Anecdotal mentions do not meet the threshold for committing engineering resources. The risk of building something nobody uses is high.\n- **No quantified opportunity.** Without knowing the addressable segment size or the metric we expect to move, we cannot prioritize this against other backlog items.\n- **No cost estimate.** Without an engineering spike, we cannot assess ROI even if demand were validated.\n- **No success criteria defined.** We have no baseline, no target, and no way to measure whether the feature succeeded post-launch.\n\n### What would flip this to PASS\n\n| Gate | Criteria | Current status |\n|------|----------|---------------|\n| Demand validation | ≥10 user interviews confirming problem resonance in target segment, OR survey with >30% of respondents ranking this in top 3 needs | ❌ Not started |\n| Opportunity sizing | Addressable segment identified with estimated impact on a named metric (e.g., activation rate +X%, retention +Y%) | ❌ Not started |\n| Feasibility spike | Engineering spike completed with t-shirt size estimate (S/M/L/XL) and identified risks | ❌ Not started |\n| Success metric | Primary metric defined with baseline measurement and target threshold | ❌ Not started |\n\nAll four gates must pass before this PRD should be revisited for build approval.\n\n---\n\n## Recommended Next Artifact\n\n### Recommended: Discovery Sprint Brief (1-2 weeks)\n\nRather than advancing to design or build, the correct next artifact is a **Discovery Sprint Brief** scoped to:\n\n1. **User research plan** — 10 structured interviews with target segment users, focused on the jobs-to-be-done this feature would serve. Interview guide should test problem severity, current workarounds, and willingness to adopt a new solution.\n\n2. **Analytics pull request** — Query usage data for the 2-3 features most adjacent to this proposal. Look for drop-off patterns, feature requests in support data, and segment-level behavior differences.\n\n3. **Lightweight competitive teardown** — Document what 2-3 competitors actually built, how they positioned it, and (if available) any public signal on adoption.\n\n4. **Engineering spike** — Time-boxed to 2 days. Goal: t-shirt size estimate and identification of any architectural blockers.\n\n**Decision point after sprint:** Reconvene with evidence. If demand is validated and opportunity is sized, produce a full PRD v2 with success metrics, design requirements, and prioritization recommendation. If evidence is weak or contradictory, shelve the proposal and document learnings.\n\n### What this document is NOT\n\nThis is not a feature specification. It is not a commitment to build. It is a structured acknowledgment that we have an idea without evidence, and a concrete plan to either find that evidence or kill the idea cheaply. The most valuable outcome of this document may be the decision *not* to build.",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "The feature proposal currently fails minimum evidence thresholds for a build commitment — no validated demand signal, no quantified opportunity, no cost estimate, and no success criteria exist.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "A 1-2 week discovery sprint is the correct next step because it provides the cheapest path to a go/no-go decision with four concrete evidence gates that must all pass before revisiting.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-3",
+      "summary": "Anecdotal user interest and competitor feature existence are weak evidence that should not be conflated with validated demand — feature existence in competitor products does not imply feature success or user need.",
+      "evidence_refs": [],
+      "is_major": false
+    }
+  ],
+  "citations": [],
+  "conclusion_confidence": "high",
+  "open_questions": [
+    "What specific user segment is this feature targeting? Without segment definition, even well-executed research may produce ambiguous results.",
+    "What is the opportunity cost of the discovery sprint relative to other backlog items currently competing for the same resources?",
+    "Is there existing usage telemetry from adjacent features that could serve as a proxy signal before investing in primary research?"
+  ],
+  "critique_responses": []
+}

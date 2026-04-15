@@ -1,0 +1,120 @@
+You are SIDE_A in the rebuttal phase for run conflict-2026-04-14-201741911Z-board-update-ambiguity.
+Attack only visible claims from the opposing first-pass artifact.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "target_side": "side_b",
+  "finding_id": "runner-will-assign",
+  "target_claim_ids": [
+    "side_b-claim-1"
+  ],
+  "claim_under_attack": "The opposing claim to challenge.",
+  "attack_type": "evidence_gap",
+  "evidence_or_reason": "Why the visible claim is weak.",
+  "severity": "medium"
+}
+
+Case packet:
+{
+  "scenario_id": "board-update-ambiguity",
+  "title": "Board update under ambiguity",
+  "prompt": "Write a strategy update for a board audience under ambiguity.",
+  "artifact_type": "strategy",
+  "rubric": {
+    "dimensions": [
+      "claim quality",
+      "evidence discipline",
+      "responsiveness to critique",
+      "internal consistency",
+      "decision usefulness"
+    ],
+    "scoring_scale": "1-5",
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "constraints": {
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "expect_structured": true,
+    "context_files": [],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "evidence": [],
+  "max_rounds": 3,
+  "tool_policy": "none",
+  "sharing_policy": {
+    "share_case_packet": true,
+    "share_committed_artifacts_after_first_pass": true,
+    "share_critiques_after_open": true,
+    "share_hidden_reasoning": false,
+    "share_provider_identity": false,
+    "share_internal_coalition_drafts": false
+  },
+  "success_condition": {
+    "type": "validator_contract",
+    "description": "Produce a strategy artifact that satisfies the scenario validator contract.",
+    "validator": {
+      "artifact_type": "strategy",
+      "expect_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true
+    }
+  }
+}
+
+Opposing first-pass artifact:
+{
+  "run_id": "conflict-2026-04-14-201741911Z-board-update-ambiguity",
+  "side_id": "side_b",
+  "round": "first_pass",
+  "artifact_markdown": "# Strategy Update\n\n## Current Position\nWe do not yet have enough evidence to recommend a step-change investment, market exit, or material operating reset. The operating implication is not inaction; it is controlled progression. The company should preserve strategic degrees of freedom, concentrate resources on the few assumptions that most affect enterprise value, and defer irreversible commitments until those assumptions are tested.\n\n## What Has Changed\nThe main update is not a confirmed directional signal but the persistence of ambiguity. In this environment, the highest-risk failure mode is false precision: expanding spend, headcount, or go-to-market scope on the basis of narrative confidence rather than validated learning. A second risk is passive drift, where ambiguity becomes an excuse to avoid decisions. The right posture is disciplined conditionality: continue, but only through explicit gates.\n\n## Board-Level Recommendation\nManagement should operate to a 60-90 day proof window with three objectives:\n1. Confirm whether the core demand thesis is real, repeatable, and economically attractive.\n2. Identify whether current execution constraints are primarily product, go-to-market, or market-timing related.\n3. Preserve cash and organizational flexibility while these questions are resolved.\n\nCapital allocation, hiring, and roadmap expansion should remain tied to evidence thresholds rather than calendar milestones.\n\n## Decision Frame\nThe decision is whether to treat current ambiguity as a reason to accelerate, retrench, or run a bounded validation phase. The recommendation is a bounded validation phase. This is the most decision-useful path because it keeps upside available while limiting the downside of overcommitting before the facts are clear.\n\n## Unknowns & Evidence Gaps\nThe recommendation is constrained by missing evidence. The most material gaps are:\n- Demand quality: whether observed interest converts consistently enough to justify scaling.\n- Economic viability: whether unit economics can support the intended growth model.\n- Source of friction: whether underperformance is caused by positioning, product capability, channel mix, or broader market conditions.\n- Speed of learning: whether the company can resolve the above in one operating cycle with credible instrumentation.\n\nUntil these are answered, any strong directional board narrative would be weaker than the underlying evidence base.\n\n## Pass/Fail Readiness\nProceed to the next investment phase only if the company can show, within the proof window:\n- a small set of agreed leading indicators tied to the core thesis,\n- movement in those indicators that is directionally positive and repeatable,\n- a credible explanation for what is working and what is not,\n- a resource plan that preserves downside protection if the thesis does not validate.\n\nFail the current posture and trigger a reset if management cannot produce clearer signal after the proof window, if economics deteriorate as activity increases, or if the team cannot isolate the primary bottleneck well enough to support targeted intervention.\n\n## Recommended Next Artifact\nThe next artifact should be a board-ready validation memo covering:\n- the three to five assumptions most critical to value creation,\n- the metric and threshold attached to each assumption,\n- the experiments or operating actions underway,\n- the decision gates for accelerate, hold, or reset,\n- the expected date for the next board-level commitment decision.\n\nThat memo should replace broad strategic narrative with explicit thresholds so the next board discussion can resolve a concrete choice rather than revisit generalized uncertainty.",
+  "claims": [
+    {
+      "claim_id": "side_b-claim-1",
+      "summary": "Under current ambiguity, the best board-level recommendation is a bounded validation phase rather than immediate acceleration or retrenchment.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-2",
+      "summary": "The highest-risk failure mode is making irreversible investment decisions before core demand, economics, and bottlenecks are validated.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-3",
+      "summary": "The next board interaction should be driven by an explicit validation memo with thresholds and gates, not a broader narrative update.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": false
+    }
+  ],
+  "citations": [
+    "ctx-1"
+  ],
+  "conclusion_confidence": "medium",
+  "open_questions": [
+    "What concrete operating signals, if any, currently support the core demand thesis?",
+    "What time horizon and cash constraints define how long the company can remain in a bounded validation phase?",
+    "Which single bottleneck appears most likely: product, positioning, channel execution, or market timing?"
+  ],
+  "critique_responses": []
+}

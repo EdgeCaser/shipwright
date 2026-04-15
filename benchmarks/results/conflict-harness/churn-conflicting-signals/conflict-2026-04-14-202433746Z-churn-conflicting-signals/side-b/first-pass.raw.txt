@@ -1,0 +1,46 @@
+{
+  "run_id": "conflict-2026-04-14-202433746Z-churn-conflicting-signals",
+  "side_id": "side_b",
+  "round": "first_pass",
+  "artifact_markdown": "# Churn Reduction PRD: Resolve Conflicting Signals Before Broad Retention Rollout\n\n## Product Requirement\nBuild a churn-risk decisioning and experiment layer that separates signal validation from intervention rollout, so the team can reduce churn without optimizing against misleading indicators or violating strategy targets.\n\n## Problem Statement\nCurrent churn signals conflict with strategy targets. Some indicators may suggest immediate retention actions, but acting on them without validation risks preserving low-value or strategically misaligned users, distorting roadmap priorities, and creating false confidence in churn reduction.\n\n## Goals\n- Reduce preventable churn in strategically aligned customer segments.\n- Distinguish real churn drivers from noisy or contradictory proxy signals.\n- Prevent retention actions that improve a dashboard metric while harming target-segment mix, margin, or product strategy.\n- Create a repeatable operating model for churn diagnosis, intervention testing, and decision review.\n\n## Non-Goals\n- Launching blanket discounts or broad save offers across the whole customer base.\n- Rewriting company strategy targets.\n- Treating all churn as bad churn.\n- Automating irreversible retention actions before signal reliability is proven.\n\n## Users\n- Retention/Growth team deciding what interventions to ship.\n- Product leadership evaluating whether churn action aligns with strategy.\n- Analytics/RevOps teams diagnosing segment-level churn causes.\n\n## Core Requirements\n1. Segment-aware churn view\nThe system must break churn risk and observed churn by segment, including at minimum strategic target segment, non-target segment, high-value cohort, and recent-acquisition cohort.\n\n2. Signal confidence labeling\nEach churn signal must carry a confidence state: `validated`, `directional`, or `unreliable`, based on historical correlation with realized churn and consistency across segments.\n\n3. Strategy guardrails\nNo intervention can be promoted beyond experiment stage unless it passes guardrails for target-segment mix, revenue quality, and strategic fit.\n\n4. Intervention registry\nAll churn interventions must be registered with hypothesis, target cohort, expected mechanism, downside risk, and success metrics.\n\n5. Controlled experimentation\nRetention actions must launch first as cohort-limited experiments with holdouts. Global rollout is blocked until experiment results show improvement on both churn and strategy guardrails.\n\n6. Decision review workflow\nWeekly review must show: observed churn trend, segment mix, signal conflicts, active experiments, and explicit ship/hold/stop decisions.\n\n## Prioritization\n### P0\n- Segment-level churn dashboard\n- Signal confidence framework\n- Experiment gating and holdout support\n- Strategy guardrail definition\n\n### P1\n- Intervention registry\n- Weekly decision review template\n- Alerts for signal divergence across segments\n\n### P2\n- Automated next-best retention action suggestions\n- Fully automated intervention triggering\n\n## Success Metrics\n- Primary: reduction in churn for target strategic segments versus control.\n- Secondary: retention lift by intervention, change in retained revenue quality, false-positive rate of churn flags.\n- Guardrails: no deterioration in target-segment mix, gross margin quality, or activation/engagement quality among retained users.\n\n## Risks\n- Teams may overreact to a noisy short-term churn spike.\n- Segment definitions may be weak or politically disputed.\n- Interventions may reduce logo churn while increasing low-quality retention.\n- Conflicting signals may reflect instrumentation gaps rather than customer behavior.\n\n## Rollout Plan\n1. Instrument segment-level baseline and confidence labels.\n2. Define guardrails with product and finance leadership.\n3. Register top 2-3 retention hypotheses.\n4. Run limited experiments with holdouts.\n5. Review results weekly and expand only validated interventions.\n\n## Decision Frame\nThe right product decision is not \"ship a broad churn reduction program now.\" The right decision is to ship a churn decisioning layer plus tightly scoped experiments, because conflicting signals make unguarded retention work more dangerous than delayed rollout. This PRD prioritizes validated churn reduction in target segments over top-line churn improvement alone.\n\n## Unknowns & Evidence Gaps\n- Which churn signals are leading indicators versus post-hoc correlations.\n- Whether current conflict is driven by segment mix shifts, instrumentation issues, or genuinely different churn mechanisms.\n- Which customer segments the strategy most wants to retain when churn tradeoffs exist.\n- Whether existing retention interventions improve long-term value or only delay inevitable churn.\n- What minimum effect size should justify rollout under current strategy targets.\n\n## Pass/Fail Readiness\nPass if the team can define target segments, measure churn by segment, label signal confidence, and run holdout experiments with agreed strategy guardrails.\n\nFail if churn is still tracked only as a blended metric, interventions cannot be isolated experimentally, or leadership has not agreed which retained customers count as strategic wins.\n\n## Recommended Next Artifact\nA churn evidence brief that maps each current signal to segment-level behavior, confidence rating, instrumentation source, and proposed intervention hypothesis. That brief should be the approval gate before any broad retention rollout.",
+  "claims": [
+    {
+      "claim_id": "side_b-claim-1",
+      "summary": "A broad churn reduction rollout should be blocked until signal reliability is validated at the segment level and tested against strategy guardrails.",
+      "evidence_refs": [
+        "ctx-1",
+        "ctx-2"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-2",
+      "summary": "The PRD should optimize for reducing preventable churn in strategically aligned segments rather than lowering blended churn at any cost.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-3",
+      "summary": "The most decision-useful first build is a churn decisioning and experiment layer, not automated retention interventions.",
+      "evidence_refs": [
+        "ctx-1",
+        "ctx-2"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1",
+    "ctx-2"
+  ],
+  "conclusion_confidence": "medium",
+  "open_questions": [
+    "Which customer segments are explicitly prioritized by strategy when churn tradeoffs arise?",
+    "What current signals are available, and how well do they predict realized churn by segment?",
+    "Are conflicting signals caused by instrumentation gaps, segment mix changes, or different underlying churn mechanisms?",
+    "What guardrail thresholds must an intervention pass before rollout?"
+  ],
+  "critique_responses": []
+}

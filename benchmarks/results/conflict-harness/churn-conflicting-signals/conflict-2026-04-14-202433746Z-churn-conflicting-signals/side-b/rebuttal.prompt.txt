@@ -1,0 +1,136 @@
+You are SIDE_B in the rebuttal phase for run conflict-2026-04-14-202433746Z-churn-conflicting-signals.
+Attack only visible claims from the opposing first-pass artifact.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "target_side": "side_a",
+  "finding_id": "runner-will-assign",
+  "target_claim_ids": [
+    "side_a-claim-1"
+  ],
+  "claim_under_attack": "The opposing claim to challenge.",
+  "attack_type": "evidence_gap",
+  "evidence_or_reason": "Why the visible claim is weak.",
+  "severity": "medium"
+}
+
+Case packet:
+{
+  "scenario_id": "churn-conflicting-signals",
+  "title": "Churn diagnosis with conflicting signals",
+  "prompt": "Write a churn reduction PRD when signals conflict with strategy targets.",
+  "artifact_type": "prd",
+  "rubric": {
+    "dimensions": [
+      "claim quality",
+      "evidence discipline",
+      "responsiveness to critique",
+      "internal consistency",
+      "decision usefulness"
+    ],
+    "scoring_scale": "1-5",
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "constraints": {
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "expect_structured": true,
+    "context_files": [],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "evidence": [],
+  "max_rounds": 3,
+  "tool_policy": "none",
+  "sharing_policy": {
+    "share_case_packet": true,
+    "share_committed_artifacts_after_first_pass": true,
+    "share_critiques_after_open": true,
+    "share_hidden_reasoning": false,
+    "share_provider_identity": false,
+    "share_internal_coalition_drafts": false
+  },
+  "success_condition": {
+    "type": "validator_contract",
+    "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+    "validator": {
+      "artifact_type": "prd",
+      "expect_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true
+    }
+  }
+}
+
+Opposing first-pass artifact:
+{
+  "run_id": "conflict-2026-04-14-202433746Z-churn-conflicting-signals",
+  "side_id": "side_a",
+  "round": "first_pass",
+  "artifact_markdown": "# Churn Reduction PRD: Resolving Conflicting Signals\n\n## Decision Frame\n\n**Problem statement:** Churn signals (usage decline, support ticket volume, NPS trajectory, cohort drop-off) are contradicting strategic growth targets (expansion revenue, net-new logos, upsell velocity). Leadership needs a framework to decide whether to invest in retention interventions now or continue prioritizing acquisition-led growth.\n\n**Core tension:** The business is optimizing for top-line growth metrics while leading indicators suggest the installed base is eroding. These goals conflict because:\n1. **Resource allocation** — retention engineering and CS investment competes directly with growth headcount and marketing spend.\n2. **Signal reliability** — churn indicators may reflect seasonal patterns, a specific cohort problem, or a systemic product-market fit drift. Without disambiguation, acting on either signal set risks misallocation.\n3. **Strategy coherence** — growth targets were set assuming a baseline retention rate that may no longer hold. If churn is accelerating, the growth math breaks even if acquisition targets are hit.\n\n**Decision to be made:** Should we (a) redirect 20-30% of growth investment toward retention, (b) run a time-boxed diagnostic before committing resources, or (c) maintain current allocation and monitor? This PRD recommends option (b) with a 4-week diagnostic sprint.\n\n**Stakeholders:** VP Product, VP Customer Success, CFO (unit economics owner), Growth Lead.\n\n## Unknowns & Evidence Gaps\n\n| # | Unknown | Why It Matters | Current State | What Would Resolve It |\n|---|---------|---------------|---------------|----------------------|\n| U1 | Is churn concentrated in a specific cohort or segment? | A cohort-specific problem has a scoped fix; broad churn signals a platform issue. | No segmented churn analysis available beyond top-line logo churn rate. | Cohort survival analysis by acquisition channel, plan tier, and onboarding quarter. |\n| U2 | Are usage-decline signals leading or lagging indicators? | If leading, we have intervention runway. If lagging, churn has already been decided by customers. | Usage telemetry exists but no validated correlation model between usage drop and churn event timing. | Retrospective analysis: for customers who churned in last 6 months, what did usage look like 30/60/90 days prior? |\n| U3 | What is the revenue-weighted churn rate vs. logo churn rate? | Logo churn may be high among low-value accounts while high-value accounts are stable (or vice versa). | Only logo churn is reported in current dashboards. | Revenue cohort analysis segmented by ARR band. |\n| U4 | Do conflicting signals reflect measurement artifacts? | NPS survey timing, support ticket categorization changes, or usage tracking instrumentation gaps could produce false signals. | No audit of signal reliability has been conducted. | Signal integrity audit: when were tracking methods last changed, what is survey response rate by segment, are ticket categories consistent? |\n| U5 | What is the cost-to-retain vs. cost-to-acquire ratio by segment? | If retention ROI exceeds acquisition ROI in affected segments, the resource allocation answer is clear. | CAC is tracked; cost-to-retain is not systematically measured. | CS team logs intervention effort; finance models LTV recovery per retained account. |\n\n## Pass/Fail Readiness\n\n**Readiness verdict: NOT READY to commit to a retention program.**\n\nThe conflicting signals are themselves the problem. Committing resources to a retention initiative without resolving the evidence gaps above risks:\n- **False positive response:** Investing in retention for a segment that is churning for reasons outside product control (e.g., market consolidation, budget cycles) — money spent with no impact.\n- **Opportunity cost:** Diverting growth resources based on ambiguous data while competitors capture market share.\n- **Wrong intervention:** Churn driven by onboarding failure requires different investment than churn driven by feature gaps or pricing misalignment.\n\n### Pass criteria (all must be met before committing to a retention program):\n\n| Criterion | Threshold | Status |\n|-----------|-----------|--------|\n| Segmented churn analysis completed | Cohort-level data for top 5 segments | ❌ Not started |\n| Usage-to-churn correlation validated | ≥0.6 correlation with 60-day lead time confirmed | ❌ Not started |\n| Revenue-weighted churn calculated | Dashboard live, segmented by ARR band | ❌ Not started |\n| Signal integrity audit completed | All 4 signal sources validated or flagged | ❌ Not started |\n| Retention ROI model drafted | Cost-to-retain vs. CAC comparison by segment | ❌ Not started |\n| Executive alignment on trade-off framework | VP Product + CFO sign off on resource reallocation criteria | ❌ Not started |\n\n### Recommended 4-week diagnostic sprint:\n- **Week 1-2:** Data team runs cohort survival analysis and usage-to-churn correlation (U1, U2, U3).\n- **Week 2-3:** Analytics audits signal integrity (U4). CS team begins intervention cost logging (U5).\n- **Week 3-4:** Synthesize findings into a decision brief. Present trade-off framework to leadership.\n- **Gate:** At end of Week 4, revisit this PRD with evidence. If ≥4 of 6 pass criteria are met, proceed to retention program design. If not, extend diagnostic or deprioritize.\n\n## Recommended Next Artifact\n\n**Next artifact:** Diagnostic Sprint Brief (scope, owners, and deliverables for the 4-week evidence-gathering sprint described above).\n\n**Purpose:** Convert this PRD's evidence gaps into assigned workstreams with clear owners, data requirements, and output formats so the team can execute the diagnostic sprint without ambiguity.\n\n**After the diagnostic sprint, the following artifacts become possible:**\n1. **Churn Segmentation Report** — which segments are churning, why, and at what rate.\n2. **Retention Program PRD** — scoped intervention design targeting validated churn drivers (only if pass criteria are met).\n3. **Growth vs. Retention Resource Allocation Model** — quantified trade-off framework for executive decision-making.\n\nUntil the diagnostic sprint is complete, any retention program design would be premature and likely misallocated.",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "Conflicting churn signals cannot be acted upon without first disambiguating whether churn is cohort-specific or systemic, requiring a structured diagnostic sprint before resource commitment.",
+      "evidence_refs": [
+        "ctx-scenario-prompt"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "The core tension is a resource allocation conflict: retention investment competes with growth targets, and the growth math itself depends on a baseline retention rate that may no longer hold.",
+      "evidence_refs": [
+        "ctx-scenario-prompt"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-3",
+      "summary": "A 4-week diagnostic sprint with 6 explicit pass/fail criteria is the minimum viable path to an evidence-based retention decision, avoiding premature commitment in either direction.",
+      "evidence_refs": [
+        "ctx-scenario-prompt"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-4",
+      "summary": "Signal reliability itself must be audited — measurement artifacts (NPS timing, ticket categorization changes, instrumentation gaps) could produce false conflicting signals that don't reflect actual customer behavior.",
+      "evidence_refs": [
+        "ctx-scenario-prompt"
+      ],
+      "is_major": false
+    },
+    {
+      "claim_id": "side_a-claim-5",
+      "summary": "Revenue-weighted churn may tell a fundamentally different story than logo churn; without this distinction, resource allocation decisions lack the precision needed to justify trade-offs against growth targets.",
+      "evidence_refs": [
+        "ctx-scenario-prompt"
+      ],
+      "is_major": false
+    }
+  ],
+  "citations": [
+    "ctx-scenario-prompt"
+  ],
+  "conclusion_confidence": "medium",
+  "open_questions": [
+    "What is the current baseline retention rate assumed in the growth model, and when was it last validated?",
+    "Are there contractual or seasonal churn patterns that could explain signal divergence without indicating a systemic problem?",
+    "Does the organization have the data infrastructure to execute the proposed diagnostic sprint within 4 weeks, or are there tooling prerequisites?"
+  ],
+  "critique_responses": []
+}

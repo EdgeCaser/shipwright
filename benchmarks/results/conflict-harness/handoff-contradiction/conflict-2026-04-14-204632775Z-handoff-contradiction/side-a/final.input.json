@@ -1,0 +1,130 @@
+{
+  "case_packet": {
+    "scenario_id": "handoff-contradiction",
+    "title": "Handoff artifact with cross-document contradictions",
+    "prompt": "Write a technical handoff PRD aligned to a platform strategy and challenge review.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass": {
+    "run_id": "conflict-2026-04-14-204632775Z-handoff-contradiction",
+    "side_id": "side_a",
+    "round": "first_pass",
+    "artifact_markdown": "# Technical Handoff PRD: Platform Migration & Consolidation\n\n## Decision Frame\n\n**Context:** The platform team is handing off a partially-completed migration from a monolithic service architecture to a consolidated platform layer. This PRD captures the current state, unresolved contradictions across existing documentation, and readiness criteria for the receiving team.\n\n**Decision to be made:** Should the receiving team (1) continue the migration as currently scoped, (2) re-scope based on reconciled requirements, or (3) pause migration and stabilize the current hybrid state?\n\n**Stakeholders:**\n- Platform Engineering (handing off)\n- Product Infrastructure (receiving)\n- API Consumers (affected by migration timeline)\n- SRE (operational ownership during transition)\n\n**Timeline pressure:** The existing hybrid state carries operational cost (~1.4x incident response time due to split routing). Each month of delay compounds toil but does not create acute risk.\n\n### Cross-Document Contradictions Identified\n\n| # | Document A Claim | Document B Claim | Impact |\n|---|---|---|---|\n| C-1 | Platform strategy states all API traffic routes through the new gateway by Q3 | Challenge review identifies gateway throughput ceiling at 60% of peak load | Migration completion on current timeline is infeasible without gateway capacity work |\n| C-2 | Strategy doc specifies zero-downtime cutover via blue-green deployment | Challenge review notes shared database state prevents true blue-green isolation | Cutover approach needs redesign or database decoupling must precede migration |\n| C-3 | Strategy positions consolidated auth as a prerequisite blocker | Challenge review marks auth consolidation as \"nice-to-have, post-migration\" | Sequencing is unresolved — receiving team cannot plan sprint work without resolution |\n\n## Unknowns & Evidence Gaps\n\n1. **Gateway capacity under realistic load** — The 60% ceiling figure comes from a single load test (challenge review, section 4.2). No production shadow traffic validation has been performed. *Evidence needed:* Shadow traffic test against new gateway at sustained peak for 72+ hours.\n\n2. **Database coupling depth** — The challenge review identifies shared state but does not enumerate which tables or sequences create coupling. *Evidence needed:* Schema dependency audit showing exact foreign key and sequence dependencies between legacy and new service databases.\n\n3. **Auth consolidation effort estimate** — Neither document provides a credible effort estimate. Strategy doc assumes it is done; challenge review assumes it is deferred. *Evidence needed:* Spike ticket (2-3 days) to produce a scoped estimate with option comparison.\n\n4. **Consumer migration willingness** — No evidence exists on how many API consumers have tested against the new gateway endpoints. *Evidence needed:* Consumer readiness survey or integration test telemetry from canary endpoint.\n\n5. **Incident cost of hybrid state** — The 1.4x incident response claim is sourced from a single retrospective anecdote, not measured data. *Evidence needed:* Incident response time comparison (p50, p90) for hybrid-routed vs. single-path services over the last 90 days.\n\n## Pass/Fail Readiness\n\n### Pass Criteria (all must be true for handoff acceptance)\n\n| Criterion | Status | Evidence |\n|---|---|---|\n| Cross-document contradictions C-1, C-2, C-3 are resolved with a single authoritative position | **FAIL** | No resolution document exists |\n| Gateway capacity validated at ≥100% peak load with shadow traffic | **FAIL** | Only synthetic load test at 60% ceiling |\n| Database decoupling plan exists with sequenced milestones | **FAIL** | Coupling identified but not enumerated |\n| Auth consolidation sequencing decided and communicated | **FAIL** | Contradictory positions in source docs |\n| Receiving team has reviewed and accepted scope | **PENDING** | Handoff meeting not yet scheduled |\n\n**Overall readiness: NOT READY for handoff.**\n\nThe handoff cannot proceed cleanly because the receiving team would inherit contradictory requirements and would need to perform the reconciliation work themselves — effectively re-doing strategic alignment that should have been completed before handoff.\n\n### Recommended Remediation Sequence\n\n1. **Resolve contradictions (1-2 days):** Platform and Product Infrastructure leads meet to produce a single authoritative position on C-1, C-2, C-3. Output: amended strategy doc or decision log entry.\n2. **Run gateway shadow traffic test (3-5 days):** Validate or update the capacity ceiling with production-representative load.\n3. **Complete schema dependency audit (2-3 days):** Enumerate coupling points to inform cutover approach.\n4. **Re-scope and handoff (1 day):** With reconciled requirements and evidence, conduct handoff meeting.\n\n## Recommended Next Artifact\n\n**Decision Log Entry** — A lightweight decision record that captures the resolved position on each of the three contradictions (C-1, C-2, C-3), including:\n- Which position was chosen and why\n- What evidence informed the decision (or what evidence gap was accepted as tolerable risk)\n- Who has authority to revisit if new evidence emerges\n\nThis should precede any updated PRD or migration runbook, because all downstream artifacts depend on these three sequencing decisions being settled. Without the decision log, any revised PRD would simply re-encode one of the two contradictory positions without justification.\n\n**Secondary artifact (after decision log):** Updated Migration Runbook reflecting the reconciled requirements, revised gateway capacity targets, and corrected cutover approach.",
+    "claims": [
+      {
+        "claim_id": "side_a-claim-1",
+        "summary": "The handoff is not ready because three material contradictions between the platform strategy and challenge review remain unresolved, meaning the receiving team would inherit conflicting requirements with no authoritative resolution.",
+        "evidence_refs": [
+          "ctx-contradiction-C1",
+          "ctx-contradiction-C2",
+          "ctx-contradiction-C3"
+        ],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_a-claim-2",
+        "summary": "Gateway capacity has only been validated to 60% of peak load via synthetic testing, making the Q3 full-migration timeline infeasible without additional capacity work or a shadow traffic validation.",
+        "evidence_refs": [
+          "ctx-contradiction-C1"
+        ],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_a-claim-3",
+        "summary": "The recommended next artifact is a Decision Log Entry resolving the three contradictions, not a revised PRD, because all downstream artifacts depend on these sequencing decisions being settled first.",
+        "evidence_refs": [
+          "ctx-contradiction-C1",
+          "ctx-contradiction-C2",
+          "ctx-contradiction-C3"
+        ],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_a-claim-4",
+        "summary": "The hybrid operational state carries measurable cost (~1.4x incident response time) but is not acutely dangerous, so a short remediation pause is preferable to a premature handoff.",
+        "evidence_refs": [
+          "ctx-hybrid-cost"
+        ],
+        "is_major": false
+      }
+    ],
+    "citations": [
+      "ctx-contradiction-C1",
+      "ctx-contradiction-C2",
+      "ctx-contradiction-C3",
+      "ctx-hybrid-cost"
+    ],
+    "conclusion_confidence": "medium",
+    "open_questions": [
+      "What is the true gateway throughput ceiling under production-representative shadow traffic?",
+      "Which specific database tables and sequences create coupling between legacy and new services?",
+      "Has any API consumer tested against the new gateway endpoints in a canary or staging environment?",
+      "Is the 1.4x incident response cost claim supported by measured incident data or a single anecdote?"
+    ],
+    "critique_responses": []
+  },
+  "critique_packet": {
+    "target_side": "side_a",
+    "finding_id": "finding-2",
+    "target_claim_ids": [
+      "side_a-claim-4"
+    ],
+    "claim_under_attack": "The hybrid operational state carries measurable cost (~1.4x incident response time) but is not acutely dangerous, so a short remediation pause is preferable to a premature handoff.",
+    "attack_type": "evidence_gap",
+    "evidence_or_reason": "This claim overstates the evidence. The artifact itself says the 1.4x incident-response figure comes from a single retrospective anecdote and explicitly lists measured incident-time data as missing. That means the cost is not yet shown to be measurable, and the recommendation for a remediation pause is resting on an unsupported operational-impact premise.",
+    "severity": "medium"
+  }
+}

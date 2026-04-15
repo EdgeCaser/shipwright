@@ -1,0 +1,13 @@
+# Critique: finding-1
+
+- Target Side: side_b
+- Target Claim IDs: side_b-claim-1, side_b-claim-2
+- Attack Type: evidence_gap
+- Severity: high
+
+## Claim Under Attack
+The best board-level recommendation under current ambiguity is a controlled advance posture that preserves option value while generating targeted evidence, premised on the assertion that irreversible scaling is the highest-risk mistake.
+
+## Evidence Or Reason
+The artifact asserts that premature scaling is riskier than a disciplined learning pause, but provides zero evidence for this asymmetry. No data on cost of delay (competitive window closure, talent attrition, momentum loss) is weighed against scaling risk. The claim that 'downside risk of moving too aggressively is higher than the downside risk of a short period of disciplined learning' is stated as fact but is actually the core contested judgment — and it receives no supporting evidence, scenario analysis, or even a worked example. A board receiving this artifact has no basis to evaluate whether the recommended 60-90 day pause is prudent caution or costly inaction. The entire strategic posture rests on an unsubstantiated risk asymmetry claim, making the recommendation unfalsifiable: it sounds reasonable precisely because it avoids committing to any testable position about the actual business context.
+

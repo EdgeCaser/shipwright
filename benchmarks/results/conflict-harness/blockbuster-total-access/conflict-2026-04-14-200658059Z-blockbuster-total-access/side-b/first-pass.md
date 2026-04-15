@@ -1,0 +1,50 @@
+# Strategic Recommendation Memo: Kill Total Access in its current form and replace it with a narrower transition strategy
+
+Blockbuster should kill **Total Access at current funding levels**. The program has demonstrated competitive value, but it is financially mismatched to Blockbuster's balance sheet, politically unstable inside the system, and strategically mistimed against where the market is going next. The right decision is not to abandon online entirely; it is to stop subsidizing an uneconomic hybrid offer, preserve liquidity, and redeploy into a lower-burn transition plan that protects stores while building a smaller digital option set.
+
+## Why this is the correct decision
+
+Total Access proved that Blockbuster can hurt Netflix competitively. The evidence is real: roughly **2 million subscribers were added in under a year**, Blockbuster reached about **3 million online subscribers**, and **Netflix growth stalled for the first time** during the program's peak impact. That means the concept worked in market terms. But the board is not deciding whether customers like Total Access. The board is deciding whether Blockbuster can afford to keep buying growth this way. On that question, the answer is no. The program is burning about **$400 million annually** while the company already carries **$1.1 billion of long-term debt** and just posted an **$85 million Q2 2007 net loss**. A leveraged retailer cannot fund a war of attrition on these economics for long. The hybrid design creates value for the customer by destroying value inside the operating model.
+
+The cost structure is the central problem. Each in-store return costs around **$2** in handling and foregone rental revenue because the returned disc is effectively re-rented free. That means the feature that makes Total Access distinctive is also the feature that scales losses as adoption rises. This is not a case where scale is likely to fix unit economics; scale appears to worsen them. Continuing the program at current intensity would require the board to believe Blockbuster can either outlast Netflix financially or quickly convert the customer base into a more profitable downstream model. The case packet does not support either belief.
+
+The strategic timing is also unfavorable. Netflix has already launched **Watch Instantly in January 2007**, signaling that DVD-by-mail is a bridge business rather than the end state. Broadband penetration is already around **50% of U.S. households** and projected to exceed **70% by 2010**, while the DVD-by-mail market is expected to peak around **2010-2012** and then decline. That means Blockbuster is being asked to spend hundreds of millions to win share in a format with a limited remaining growth window, just as the next format transition begins. Even if Total Access takes more share from Netflix, Blockbuster could still win the wrong battle.
+
+Blockbuster's store footprint cuts both ways, but under current conditions it is more liability than moat. About **5,700 U.S. locations** create convenience and brand visibility, yet the hybrid program turns stores into cost centers for the online offer while antagonizing franchisees whose economics depend on store traffic and paid rentals. Franchisee resistance is not a side issue; it is a structural execution risk. A strategy that requires the distribution system to work against its own economic interests is fragile. Add activist pressure from **Carl Icahn's three board seats**, and the governance reality is clear: management does not have the stable mandate required to keep absorbing large online losses for several more years.
+
+Finally, competitive pressure is coming from both ends. Netflix is moving up the curve into streaming. **Redbox** is moving down-market with a radically cheaper physical-rental model. Total Access sits in the middle as a high-service, high-cost hybrid. That is the hardest place to defend when one rival is changing technology and the other is resetting price.
+
+## Strongest counterarguments and why they do not change the recommendation
+
+The best argument for continuing is that Total Access is the first strategy that genuinely put Netflix on defense. If Blockbuster withdraws now, it risks surrendering a rare competitive advantage and confirming to customers that it cannot sustain innovation. That is a serious concern. But it still does not justify maintaining current funding because the company does not have the financial capacity to run a prolonged subsidy battle. A good strategy that bankrupts or destabilizes the company is not a good board decision.
+
+A second counterargument is that the store network is an underused asset that only Blockbuster can combine with online distribution. In theory that is true. In practice, the current version of Total Access monetizes the store base poorly. The network only becomes a true moat if returns, exchanges, and fulfillment improve customer economics without destroying store economics. The evidence presented here shows the opposite.
+
+A third counterargument is that killing the program could trap Blockbuster in a declining store business while Netflix builds the future. That risk is real, which is why the recommendation is to kill the current hybrid subsidy, not to retreat into pure store defense. Blockbuster should preserve a smaller online presence, reduce the free in-store exchange economics, and redirect capital toward a disciplined digital transition rather than trying to buy scale in an aging format.
+
+## Recommended board action
+
+End Total Access **as currently designed and funded** within the next two quarters. Replace it with a transition plan built around four moves:
+
+1. Remove or sharply limit the free in-store exchange/return subsidy that drives the worst unit economics.
+2. Retain a narrower online subscription offer for customer retention and learning, but force it to hit explicit loss ceilings.
+3. Reposition stores around cash generation, convenience pickup, and selective cross-channel support rather than unlimited subsidy of online behavior.
+4. Allocate strategic capital toward digital distribution options and partnerships so Blockbuster is not left defending only physical retail as streaming adoption rises.
+
+This approach gives up some near-term subscriber momentum, but it preserves the balance sheet, reduces channel conflict, and keeps Blockbuster alive for the more important transition ahead.
+
+## Decision Frame
+
+Kill Total Access in its current form. The decisive question is not whether the program wins customers; it does. The decisive question is whether Blockbuster can profitably and durably fund that advantage while carrying high debt and facing a format transition toward streaming. The evidence says no.
+
+## Unknowns & Evidence Gaps
+
+The board still lacks cohort-level economics for Total Access subscribers, including churn, attachment to paid in-store rentals, and customer lifetime value after acquisition. It also lacks a quantified view of how much franchisee resistance would impair execution if the program continues. The most decision-changing unknown is whether the hybrid model can be redesigned to keep its retention benefit while eliminating most of the per-return subsidy. Without proof of that, current continuation is too risky.
+
+## Pass/Fail Readiness
+
+Pass if the board is prepared to prioritize liquidity, impose hard loss caps, and accept slower online subscriber growth in exchange for financial survivability and optionality for streaming. Fail if leadership insists on maintaining current subsidy levels without evidence that unit economics can improve quickly. A continuation decision is only board-ready if management can show a credible path from current burn to acceptable economics within 12-18 months.
+
+## Recommended Next Artifact
+
+A 90-day transition plan memo with three components: revised online offer economics, store/franchise impact model, and a capital-allocation roadmap comparing reduced-burn hybrid operations versus accelerated digital partnership/infrastructure investment.

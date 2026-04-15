@@ -1,0 +1,13 @@
+# Critique: finding-1
+
+- Target Side: side_b
+- Target Claim IDs: side_b-claim-1
+- Attack Type: evidence_gap
+- Severity: high
+
+## Claim Under Attack
+A narrowly scoped validation MVP is more appropriate than a full feature launch when supporting evidence is weak.
+
+## Evidence Or Reason
+This claim is presented as the central recommendation but is entirely unsupported by evidence. The artifact acknowledges evidence is weak yet never specifies what evidence exists, how weak it is, or what threshold of evidence would change the recommendation. A PRD that recommends an MVP over a full launch must show it evaluated the existing signals — however thin — and explain why they fall short. Without grounding in any actual user signal, usage data, or market observation, the recommendation to scope down is just as unfounded as a recommendation to scope up. The claim also assumes MVP validation is always the correct response to weak evidence, ignoring scenarios where the evidence gap itself is the artifact to address first (e.g., discovery interviews or competitive analysis before any build). The PRD defaults to 'build something small' without demonstrating that building anything is warranted given the evidence vacuum it describes.
+

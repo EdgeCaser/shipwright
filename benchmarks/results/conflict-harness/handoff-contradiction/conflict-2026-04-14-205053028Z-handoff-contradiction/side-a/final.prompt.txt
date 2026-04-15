@@ -1,0 +1,152 @@
+You are SIDE_A in the final revision phase for run conflict-2026-04-14-205053028Z-handoff-contradiction.
+You must either adopt the critique or reject it with reasoning.
+Do not reveal provider identity.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "run_id": "conflict-2026-04-14-205053028Z-handoff-contradiction",
+  "side_id": "side_a",
+  "round": "final",
+  "artifact_markdown": "# Revised artifact",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "Updated major claim",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1"
+  ],
+  "conclusion_confidence": "medium",
+  "open_questions": [],
+  "critique_responses": [
+    {
+      "finding_id": "finding-2",
+      "disposition": "adopted",
+      "rationale": "Why the critique was adopted or rejected."
+    }
+  ]
+}
+
+Case packet:
+{
+  "scenario_id": "handoff-contradiction",
+  "title": "Handoff artifact with cross-document contradictions",
+  "prompt": "Write a technical handoff PRD aligned to a platform strategy and challenge review.",
+  "artifact_type": "prd",
+  "rubric": {
+    "dimensions": [
+      "claim quality",
+      "evidence discipline",
+      "responsiveness to critique",
+      "internal consistency",
+      "decision usefulness"
+    ],
+    "scoring_scale": "1-5",
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "constraints": {
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "expect_structured": true,
+    "context_files": [],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "evidence": [],
+  "max_rounds": 3,
+  "tool_policy": "none",
+  "sharing_policy": {
+    "share_case_packet": true,
+    "share_committed_artifacts_after_first_pass": true,
+    "share_critiques_after_open": true,
+    "share_hidden_reasoning": false,
+    "share_provider_identity": false,
+    "share_internal_coalition_drafts": false
+  },
+  "success_condition": {
+    "type": "validator_contract",
+    "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+    "validator": {
+      "artifact_type": "prd",
+      "expect_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true
+    }
+  }
+}
+
+Your first-pass artifact:
+{
+  "run_id": "conflict-2026-04-14-205053028Z-handoff-contradiction",
+  "side_id": "side_a",
+  "round": "first_pass",
+  "artifact_markdown": "# Technical Handoff PRD: Platform Migration & Consolidation\n\n## Decision Frame\n\n**Problem Statement:** The platform team must decide whether to proceed with the consolidated service handoff or maintain the current dual-stack architecture through Q3. Cross-document analysis reveals contradictions between the platform strategy document (which targets full migration by end of Q2) and the challenge review findings (which flag unresolved dependency risks that make Q2 completion infeasible).\n\n**Decision Owner:** Platform Engineering Lead\n\n**Decision Type:** Go / No-Go on consolidated handoff timeline\n\n**Key Tension:** The platform strategy commits to a Q2 completion date based on assumptions about API compatibility and downstream consumer readiness. The challenge review contradicts this by documenting three blocking issues: (1) authentication token format divergence between legacy and new services, (2) inconsistent rate-limiting policies across environments, and (3) unvalidated data migration scripts for the billing subsystem.\n\n**Recommendation:** Conditional Go — proceed with handoff for non-billing services on the original Q2 timeline, defer billing subsystem migration to Q3 with an explicit validation gate.\n\n## Unknowns & Evidence Gaps\n\n| ID | Unknown | Impact | Mitigation Path |\n|----|---------|--------|------------------|\n| U-1 | Auth token format compatibility under load | High — could cause cascading auth failures post-cutover | Run shadow-mode traffic replay against new auth service for 2 weeks pre-handoff |\n| U-2 | Billing data migration correctness | High — financial data integrity is non-negotiable | Commission independent audit of migration scripts; require reconciliation report before go-live |\n| U-3 | Rate-limit policy parity across staging vs. production | Medium — could cause false-positive throttling for high-volume consumers | Document current production rate-limit configs; diff against staging; resolve discrepancies before cutover |\n| U-4 | Downstream consumer readiness (3 of 7 teams have not confirmed) | Medium — unconfirmed teams may not have updated client libraries | Set hard deadline for consumer sign-off; escalate non-responses to engineering directors |\n| U-5 | Rollback time if consolidated service fails health checks | Low-Medium — current estimate is \"under 4 hours\" but untested | Run rollback drill in staging; measure actual recovery time |\n\n## Pass/Fail Readiness\n\n### Pass Criteria (all must be met for Go)\n\n- [ ] **Auth compatibility validated:** Shadow-mode traffic replay shows <0.1% auth failure rate delta vs. baseline\n- [ ] **Rate-limit parity confirmed:** Production and staging rate-limit configs match or divergences are documented and accepted\n- [ ] **Consumer sign-off:** At least 6 of 7 downstream teams have confirmed client library updates\n- [ ] **Rollback drill completed:** Measured rollback time is under 2 hours in staging\n- [ ] **Billing migration deferred:** Billing subsystem explicitly excluded from Q2 handoff scope with separate timeline established\n\n### Fail Criteria (any triggers No-Go)\n\n- Auth shadow-mode replay shows >1% failure rate delta\n- Fewer than 5 of 7 downstream teams confirm readiness\n- Rollback drill reveals recovery time exceeding 4 hours\n- Any P0 bugs discovered in integration testing within 5 business days of cutover date\n\n### Current Assessment: CONDITIONAL PASS\n\nThe non-billing services meet readiness criteria if the auth validation and rollback drill are completed successfully. The billing subsystem does not meet readiness criteria due to unvalidated migration scripts and the contradiction between the strategy document's scope (which includes billing) and the challenge review's finding (which flags billing migration as high-risk and undertested).\n\n## Recommended Next Artifact\n\n**Artifact:** Billing Migration Validation Plan (technical spike document)\n\n**Purpose:** Resolve the cross-document contradiction regarding billing subsystem readiness by producing an independent assessment with concrete validation steps, success criteria, and a revised Q3 timeline.\n\n**Contents should include:**\n1. Migration script audit scope and auditor assignment\n2. Reconciliation report template and acceptance thresholds\n3. Revised billing migration timeline with explicit gates\n4. Rollback strategy specific to billing data (distinct from service rollback)\n5. Sign-off chain for financial data integrity\n\n**Owner:** Platform Engineering Lead + Finance Systems team\n\n**Due:** 2 weeks after Q2 handoff of non-billing services",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "The platform strategy and challenge review contain a material contradiction on Q2 feasibility: the strategy assumes full migration including billing by end of Q2, while the challenge review identifies three blocking issues (auth token divergence, rate-limit inconsistency, unvalidated billing migration) that make full-scope Q2 completion infeasible.",
+      "evidence_refs": [
+        "ctx-cross-doc-contradiction"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "A phased handoff (non-billing Q2, billing Q3) resolves the contradiction without abandoning the migration entirely, preserving momentum while ring-fencing the highest-risk subsystem for independent validation.",
+      "evidence_refs": [
+        "ctx-cross-doc-contradiction"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-3",
+      "summary": "Pass/fail readiness criteria must be binary and testable — the current gap is that readiness is asserted in the strategy document without measurable thresholds, which this PRD corrects with specific numeric criteria (e.g., <0.1% auth failure delta, rollback under 2 hours).",
+      "evidence_refs": [
+        "ctx-readiness-gap"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-cross-doc-contradiction",
+    "ctx-readiness-gap"
+  ],
+  "conclusion_confidence": "medium",
+  "open_questions": [
+    "Which specific downstream consumer teams have not yet confirmed readiness, and what is blocking their confirmation?",
+    "Has the billing migration script ever been run against a production-scale dataset, even in a non-production environment?",
+    "Is the Q2 deadline externally committed (e.g., to customers or regulators) or internally set and adjustable?"
+  ],
+  "critique_responses": []
+}
+
+Visible critique packet:
+{
+  "target_side": "side_a",
+  "finding_id": "finding-2",
+  "target_claim_ids": [
+    "side_a-claim-1"
+  ],
+  "claim_under_attack": "The platform strategy and challenge review contain a material contradiction on Q2 feasibility, and the three named issues make full-scope Q2 completion infeasible.",
+  "attack_type": "evidence_gap",
+  "evidence_or_reason": "The artifact does not show any visible text from either source document proving that the strategy explicitly commits full billing migration by end of Q2 or that the challenge review classifies all three issues as blockers rather than risks. It also jumps from issue listing to 'Q2 infeasible' without evidence on severity, mitigation lead time, or whether any issue could be closed within Q2. That makes the contradiction and infeasibility judgment under-supported from the visible record.",
+  "severity": "medium"
+}

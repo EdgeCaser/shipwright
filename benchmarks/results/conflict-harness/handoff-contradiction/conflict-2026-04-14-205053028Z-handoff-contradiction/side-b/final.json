@@ -1,0 +1,48 @@
+{
+  "run_id": "conflict-2026-04-14-205053028Z-handoff-contradiction",
+  "side_id": "side_b",
+  "round": "final",
+  "artifact_markdown": "# Revised artifact\n\n## Technical Handoff PRD\n\n## Objective\nProduce a decision-useful handoff artifact aligned to platform strategy and challenge review without inventing product scope that is not present in the packet.\n\n## Context\nThe case packet asks for a technical handoff PRD, but the underlying platform strategy and challenge review are not included. Because the claimed source contradiction is also not enumerated, no substantive platform requirement can be validated from the provided materials.\n\n## Product Decision\nDo not hand off platform build scope yet. Hand off only a bounded reconciliation work package whose output is a scope-freeze addendum and a build-ready PRD revision.\n\n## Problem Statement\nA technical handoff cannot safely proceed when the governing source documents are missing and their contradictions are unspecified. Any attempt to define substantive platform requirements under these conditions would be fabricated rather than handed off.\n\n## Users\n- Product owner responsible for scope authority\n- Platform engineering lead awaiting buildable requirements\n- Review owner responsible for resolving challenge-review conflicts\n\n## Goals\n- Prevent fabricated or contradictory requirements from entering implementation\n- Convert the current blocked handoff into a concrete reconciliation workflow\n- Create explicit exit criteria for when a real build PRD can be issued\n\n## Non-Goals\n- Defining platform features, APIs, migrations, or delivery dates\n- Prioritizing roadmap items absent the governing documents\n- Authorizing engineering implementation of platform functionality\n\n## In Scope\n- Source collection and contradiction enumeration\n- Requirement-by-requirement reconciliation between strategy and challenge review\n- Authority assignment for disputed items\n- Scope-freeze addendum for a later build handoff\n\n## Out of Scope\n- Any substantive platform build requirement\n- Architecture decisions derived from absent source material\n- Execution planning beyond reconciliation work\n\n## Functional Requirements\n1. The team must collect the current platform strategy artifact and the current challenge review artifact.\n2. The owner must produce a contradiction register listing each conflicting statement, its source location, and the proposed authoritative resolution.\n3. Each disputed requirement must be marked as one of: accepted, rejected, deferred, or unresolved.\n4. No platform implementation work may start until each build-affecting contradiction is no longer unresolved.\n5. The reconciliation output must include a canonical scope statement and acceptance criteria for the next PRD revision.\n\n## Operational Requirements\n1. Product owns source-of-truth selection and final scope freeze.\n2. Engineering may review feasibility during reconciliation, but may not treat draft resolutions as approved build scope.\n3. A revised handoff PRD may be issued only after the contradiction register shows no unresolved build-affecting items.\n\n## Acceptance Criteria\n- Both governing source artifacts are attached or cited.\n- Every contradiction has an owner, disposition status, and rationale.\n- A canonical scope statement exists and supersedes prior conflicting statements.\n- The next PRD revision contains substantive platform requirements traceable to reconciled sources.\n\n## Risks\n- Stakeholders may pressure engineering to begin from unreconciled assumptions.\n- Some contradictions may reflect strategic disagreement, not wording differences.\n- Scope freeze may fail if no decision owner is empowered to resolve conflicts.\n\n## Decision Frame\nThe decision is not whether to proceed with a contradiction-bounded platform build. The decision is whether the current packet supports any real build handoff. It does not. The only defensible handoff is a reconciliation package that blocks implementation until the missing documents are compared and authoritative scope is frozen.\n\n## Unknowns & Evidence Gaps\n- The platform strategy document is not provided.\n- The challenge review document is not provided.\n- No concrete contradictory requirements are visible in the packet.\n- No authoritative owner for final scope arbitration is named.\n- No substantive platform requirement can be sourced from the available materials.\n\n## Pass/Fail Readiness\nPass if:\n- the missing source documents are available\n- contradictions are enumerated and resolved for all build-affecting items\n- a canonical scope statement is approved\n- a revised PRD contains traceable substantive requirements\n\nFail if:\n- the team attempts to start implementation from this packet alone\n- unresolved contradictions remain on build-affecting items\n- the next PRD revision still relies on assumptions instead of cited source decisions\n\n## Recommended Next Artifact\nCreate a contradiction resolution memo that compares the platform strategy and challenge review requirement by requirement, names the authoritative decision for each conflict, and produces a scope-freeze addendum that can be converted into a true build-ready handoff PRD.",
+  "claims": [
+    {
+      "claim_id": "side_b-claim-1",
+      "summary": "The current packet does not support a substantive platform build handoff; it supports only a bounded reconciliation work package that blocks implementation until source contradictions are resolved.",
+      "evidence_refs": [
+        "ctx-1",
+        "ctx-2"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-2",
+      "summary": "Because the packet omits the underlying strategy and challenge-review source documents, substantive platform requirements cannot be confirmed and must not be invented.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-3",
+      "summary": "The revised artifact remains decision-useful by preserving the required closing sections while converting the handoff into explicit pass/fail readiness criteria for a later build PRD.",
+      "evidence_refs": [
+        "ctx-2",
+        "ctx-3"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1",
+    "ctx-2",
+    "ctx-3"
+  ],
+  "conclusion_confidence": "medium",
+  "open_questions": [],
+  "critique_responses": [
+    {
+      "finding_id": "finding-1",
+      "disposition": "adopted",
+      "rationale": "The critique is correct that the first-pass artifact claimed contradiction-safe executable scope without naming any substantive requirement that actually survived the filter. I revised the artifact to remove the unsupported implication that platform build work can proceed and to state the stronger, internally consistent conclusion: the build handoff is blocked, and only reconciliation work is in scope until the missing source documents are available and resolved."
+    }
+  ]
+}

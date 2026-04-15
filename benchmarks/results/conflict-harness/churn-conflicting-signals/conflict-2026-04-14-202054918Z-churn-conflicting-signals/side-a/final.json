@@ -1,0 +1,62 @@
+{
+  "run_id": "conflict-2026-04-14-202054918Z-churn-conflicting-signals",
+  "side_id": "side_a",
+  "round": "final",
+  "artifact_markdown": "# Churn Reduction PRD: Resolving Conflicting Signals\n\n## Decision Frame\n\n**Problem:** Churn signals (usage decline, support ticket spikes, NPS drops) conflict with strategy targets (aggressive growth, new feature investment, upmarket shift). The org must decide how to allocate resources when retention data says \"fix what we have\" but strategy says \"build what's next.\"\n\n**Decision to make:** The decision is not binary. Convergent warning signals — declining cohort retention, 2.1x reliability ticket spike, consistent v4.2 NPS complaints — already justify immediate low-regret retention actions. The outstanding decision is whether to commit to a larger resource reallocation (delaying growth initiatives by 1-2 quarters), which requires segment-level evidence we do not yet have.\n\n**Who decides:** VP Product with sign-off from CEO, informed by Finance (LTV/CAC impact) and CS (capacity constraints).\n\n**Decision deadline:** End of current planning cycle for the larger reallocation question. Low-regret interventions should begin immediately — they do not require the same evidence threshold.\n\n**Irreversibility:** Mixed. Low-regret actions (reliability fixes, CS save motions) are cheap and reversible. The larger growth-vs-retention reallocation is medium-irreversibility: growth investments are partially reversible (reprioritize backlog), but churned customers are expensive to win back (3-5x acquisition cost vs. retention cost). Each month of elevated churn compounds the damage.\n\n### Signal Conflict Map\n\n| Signal | Says | Confidence | Source |\n|--------|------|------------|--------|\n| 90-day cohort retention | Declining 3pp QoQ | Medium — only 2 quarters of data | Product analytics |\n| NPS detractor verbatims | \"Core workflows broken since v4.2 migration\" | High — consistent theme across segments | CS surveys |\n| Expansion revenue | Up 18% YoY in enterprise segment | High — bookings data | Finance |\n| Strategy target | 40% ARR growth requires net-new logos | High — board-approved | Exec team |\n| Support ticket volume | 2.1x increase in \"reliability\" category | High — tagged and validated | CS ops |\n| Logo churn rate | Flat at 8% annually | Medium — lagging indicator, masks cohort-level shifts | Finance |\n\n**Core tension:** Logo churn appears stable (supporting growth-first), but cohort retention is declining and qualitative signals are deteriorating (supporting fix-first). The lag between these signals means by the time logo churn moves, the damage is 2-3 quarters deep. However, the convergence of multiple independent warning signals (cohort decline + ticket spike + NPS theme) is sufficient to act on low-regret interventions now, even without segment-level precision.\n\n### Immediate Low-Regret Actions (start now, no further evidence needed)\n\n| Action | Rationale | Cost | Reversibility |\n|--------|-----------|------|----------------|\n| v4.2 reliability hotfix sprint (2-week scope) | Three independent signals converge on v4.2 as a contributor; fixing regressions has no downside | 1 eng squad, 2 weeks | Fully reversible |\n| CS proactive outreach to top-decile accounts showing usage decline | Protects highest-value accounts; generates qualitative intel for diagnosis | CS team capacity, no headcount | Fully reversible |\n| Reliability ticket triage and tagging enrichment | Improves diagnosis quality for the evidence sprint at negligible cost | CS ops, 1 week | N/A — additive |\n\n## Unknowns & Evidence Gaps\n\n### Critical unknowns (must resolve before committing to larger reallocation)\n\n1. **Cohort segmentation by plan tier** — Is retention decline concentrated in SMB (acceptable if upmarket strategy is working) or spreading to mid-market/enterprise (existential)? *Evidence needed:* Cohort retention cuts by segment, available from product analytics within 1 week.\n\n2. **Causal link between v4.2 migration and churn signals** — NPS verbatims and ticket spikes point here, but is this the primary driver or the loudest of several? *Evidence needed:* Correlation analysis between v4.2 migration timing and usage decline per account. 2 weeks with data team support. Note: the low-regret hotfix sprint proceeds regardless; this analysis determines whether v4.2 explains enough of the variance to avoid a larger intervention.\n\n3. **Revenue impact of doing nothing** — What does the CFO's model show if current cohort trends continue for 2 more quarters? *Evidence needed:* Finance scenario model, 1 week.\n\n### Important but deferrable unknowns\n\n4. **Competitive loss rate** — Are churning customers leaving for competitors or leaving the category? Different interventions for each.\n\n5. **CS capacity for scaled intervention programs** — Can CS run a broader save program without additional headcount? (Proactive outreach to top-decile starts immediately regardless.)\n\n6. **Feature usage overlap** — Do churning accounts use different features than expanding accounts? Would inform targeted investment.\n\n### What we'll likely never know\n\n7. **True counterfactual** — We cannot run the \"what if we paused growth\" experiment. We must decide under uncertainty.\n\n## Pass/Fail Readiness\n\n**Current readiness: CONDITIONAL PASS — ready to act on low-regret interventions immediately; NOT ready to commit to larger growth-vs-retention reallocation.**\n\n| Criterion | Status | Blocker for low-regret actions? | Blocker for reallocation? |\n|-----------|--------|-------------------------------|---------------------------|\n| Convergent warning signals identified | ✅ Three independent signals | No | No |\n| Segment-level churn data available | ❌ Not yet cut | No | Yes — cannot assess if churn is strategic or systemic |\n| Revenue impact modeled | ❌ No scenario model | No | Yes — cannot size the cost of inaction |\n| Root cause validated beyond verbatims | ⚠️ Convergent but correlational | No — enough for targeted hotfix | Yes — wrong diagnosis = wrong intervention at scale |\n| CS capacity assessed | ❌ Not scoped for full program | No — top-decile outreach within capacity | Partially — needed for scaled program |\n| Exec alignment on tradeoff framing | ❌ Not yet presented | No | Yes — follows from evidence |\n\n**What would move full reallocation to PASS:**\n- Items 1-3 from Unknowns resolved (2 weeks)\n- Decision frame presented to VP Product + CEO with scenario model\n- Clear segment-level data showing WHERE churn is happening\n\n**Kill criteria (abandon larger intervention if):**\n- Cohort decline is entirely in segments we're deliberately deprioritizing (upmarket shift working as intended)\n- v4.2 hotfix resolves the reliability signal and cohort trends stabilize within one measurement period\n\n**Escalation trigger (skip analysis, act immediately if):**\n- Logo churn begins moving >12% annually before analysis completes\n\n## Recommended Next Artifact\n\n**Parallel tracks (starting now):**\n\n- **Track 1 — Immediate action (starts this week):** Execute low-regret interventions listed above. No further approval needed. Owner: Engineering lead (hotfix) + CS lead (outreach).\n- **Track 2 — Evidence sprint (2-week timebox):** Produce evidence brief resolving unknowns 1-3. Owner: Product Analytics lead + Finance partner, PM coordinating.\n\n**Sequence after evidence brief:**\n\n1. **If churn is segment-concentrated (SMB only) AND hotfix stabilizes signals:** Strategy memo confirming acceptable churn bounds + monitoring dashboard. No further PRD needed — the strategy is working.\n\n2. **If churn is spreading across segments:** Full intervention PRD with three workstreams:\n   - **Reliability fixes** beyond v4.2 hotfix (mapped to root cause analysis)\n   - **Retention program** (CS-led save motion for at-risk accounts across segments)\n   - **Sequencing proposal** (which growth initiatives can slip 1 quarter without killing ARR target)\n\n3. **If root cause is NOT v4.2 but something structural:** Discovery sprint to identify actual driver before solutioning.\n\n**Decision meeting:** Scheduled for 2 weeks from PRD approval, with evidence brief as pre-read.",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "The organization cannot yet commit to a large-scale growth-vs-retention reallocation because segment-level data is missing — but convergent warning signals (cohort decline, 2.1x ticket spike, NPS theme) are independently sufficient to justify immediate low-regret retention actions without waiting for full diagnosis.",
+      "evidence_refs": [
+        "ctx-signal-conflict",
+        "ctx-convergent-signals"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "Lagging indicators (logo churn) create dangerous false confidence — by the time they move, 2-3 quarters of compounding damage has already occurred, making the cost of delayed action significantly higher than the cost of early investigation and low-regret intervention.",
+      "evidence_refs": [
+        "ctx-lag-dynamics"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-3",
+      "summary": "The correct approach is parallel tracks: execute low-regret interventions immediately (v4.2 hotfix, CS outreach to top-decile accounts) while running a time-boxed 2-week evidence sprint to resolve segment-level unknowns before committing to larger reallocation.",
+      "evidence_refs": [
+        "ctx-decision-sequencing",
+        "ctx-convergent-signals"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-4",
+      "summary": "Kill criteria must be established upfront — if churn is concentrated in deliberately-deprioritized segments and the hotfix stabilizes reliability signals, no larger intervention PRD is needed.",
+      "evidence_refs": [
+        "ctx-kill-criteria"
+      ],
+      "is_major": false
+    }
+  ],
+  "citations": [
+    "ctx-signal-conflict",
+    "ctx-lag-dynamics",
+    "ctx-decision-sequencing",
+    "ctx-kill-criteria",
+    "ctx-convergent-signals"
+  ],
+  "conclusion_confidence": "medium-high",
+  "open_questions": [
+    "Is cohort retention decline concentrated in SMB segments being deprioritized, or is it spreading to mid-market and enterprise?",
+    "Does the v4.2 hotfix resolve enough of the reliability signal to stabilize cohort trends, or is there a deeper structural driver?",
+    "What does the financial scenario model show for 2-quarter continuation of current cohort trends?"
+  ],
+  "critique_responses": [
+    {
+      "finding_id": "finding-2",
+      "disposition": "adopted",
+      "rationale": "The critique correctly identifies that the original claim set up a false binary between perfect diagnosis and no action. Three independent, convergent signals (cohort decline, 2.1x reliability ticket spike, consistent v4.2 NPS complaints) do not require segment-level precision to justify low-regret interventions. The revised artifact now distinguishes between two decision thresholds: (1) low-regret actions that can proceed immediately based on signal convergence, and (2) larger growth-vs-retention reallocation that still requires segment-level evidence. This preserves the analytical rigor of the original while eliminating the false paralysis. The Pass/Fail assessment has been upgraded from FAIL to CONDITIONAL PASS, and a parallel-track execution model replaces the sequential wait-then-act approach."
+    }
+  ]
+}
