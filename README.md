@@ -105,6 +105,17 @@ Using a different tool? See the [cross-tool install guide](docs/installing-in-ot
 
 If you are running directly from this repo in Codex, you do not need slash commands. The project-level [AGENTS.md](AGENTS.md) tells Codex to treat plain-language PM prompts as Shipwright work and to use the local research collector before broad interactive browsing when it is available.
 
+## Cross-Model Harness Note
+
+The working conflict-harness implementation now lives on `main`.
+
+If you want to study the full research corpus behind it, including large replay/result artifacts and analysis workups, use:
+
+- the archive branch: `codex/cross-model-debate-harness-spec`
+- the archival PR: [#6](https://github.com/EdgeCaser/shipwright/pull/6)
+
+The implementation-first extraction that landed on `main` came through [PR #7](https://github.com/EdgeCaser/shipwright/pull/7).
+
 ### 2) Add product context and go
 
 ```bash

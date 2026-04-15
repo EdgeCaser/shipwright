@@ -16,6 +16,8 @@
 
 **Why (technical):** The current repo already has benchmark fixtures, scoring conventions, and adversarial-review patterns, but it does not yet define a runtime contract for multi-provider opposition, limited transcript sharing, or blind adjudication. We need a deterministic protocol before adding more models or more elaborate agent topologies.
 
+**Repository note:** The implementation-first slice of this work now lives on `main`. The larger archive of replay artifacts, benchmark outputs, and research material remains available on branch `codex/cross-model-debate-harness-spec` and in GitHub PR [#6](https://github.com/EdgeCaser/shipwright/pull/6).
+
 ## Scope
 
 **In scope:**
