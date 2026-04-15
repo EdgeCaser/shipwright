@@ -539,3 +539,177 @@ test('runConflictHarness terminates with protocol_violation after repeated unsee
     await rm(rootDir, { recursive: true, force: true });
   }
 });
+
+test('runConflictHarness repairs judge verdicts that only miss repairable structured fields', async () => {
+  const rootDir = await mkdtemp(path.join(os.tmpdir(), 'shipwright-conflict-judge-repair-'));
+  let judgeAttempts = 0;
+
+  try {
+    const { run } = await runConflictHarness({
+      casePacket: createCasePacket(),
+      outDir: rootDir,
+      runId: 'conflict-judge-repair-run',
+      judgeProvider: 'openai',
+      judgeModel: 'chatgpt-pro',
+      turnRunner: async (options) => {
+        if (options.phase === 'first_pass') {
+          return {
+            packet: {
+              run_id: 'conflict-judge-repair-run',
+              side_id: options.sideId,
+              round: 'first_pass',
+              artifact_markdown: `# ${options.sideId} first pass`,
+              claims: [
+                {
+                  claim_id: `${options.sideId}-claim-1`,
+                  summary: `${options.sideId} major claim`,
+                  evidence_refs: ['ctx-1'],
+                  is_major: true,
+                },
+              ],
+              citations: ['ctx-1'],
+              conclusion_confidence: 'medium',
+              open_questions: [],
+              critique_responses: [],
+            },
+            usage: { estimatedCostUsd: 0 },
+          };
+        }
+
+        if (options.phase === 'rebuttal') {
+          return {
+            packet: {
+              target_side: options.sideId === 'side_a' ? 'side_b' : 'side_a',
+              finding_id: 'ignored-by-runner',
+              target_claim_ids: [options.sideId === 'side_a' ? 'side_b-claim-1' : 'side_a-claim-1'],
+              claim_under_attack: 'The opposing claim is weak.',
+              attack_type: 'evidence_gap',
+              evidence_or_reason: 'The visible claim needs stronger support.',
+              severity: 'medium',
+            },
+            usage: { estimatedCostUsd: 0 },
+          };
+        }
+
+        if (options.phase === 'final') {
+          return {
+            packet: {
+              run_id: 'conflict-judge-repair-run',
+              side_id: options.sideId,
+              round: 'final',
+              artifact_markdown: `# ${options.sideId} final`,
+              claims: [
+                {
+                  claim_id: `${options.sideId}-claim-1`,
+                  summary: `${options.sideId} revised claim`,
+                  evidence_refs: ['ctx-1'],
+                  is_major: true,
+                },
+              ],
+              citations: ['ctx-1'],
+              conclusion_confidence: 'high',
+              open_questions: [],
+              critique_responses: [
+                {
+                  finding_id: options.sideId === 'side_a' ? 'finding-2' : 'finding-1',
+                  disposition: 'adopted',
+                  rationale: 'The critique improved the final answer.',
+                },
+              ],
+            },
+            usage: { estimatedCostUsd: 0 },
+          };
+        }
+
+        if (options.phase === 'judge') {
+          judgeAttempts += 1;
+          if (judgeAttempts === 1) {
+            return {
+              packet: {
+                winner: 'side_a',
+                margin: 0.2,
+                rubric_scores: {
+                  side_a: {
+                    claim_quality: 5,
+                    evidence_discipline: 4,
+                    responsiveness_to_critique: 4,
+                    internal_consistency: 5,
+                    decision_usefulness: 4,
+                  },
+                  side_b: {
+                    claim_quality: 4,
+                    evidence_discipline: 3,
+                    responsiveness_to_critique: 3,
+                    internal_consistency: 4,
+                    decision_usefulness: 3,
+                  },
+                },
+                decisive_findings: ['Side A responded more concretely to the rebuttal.'],
+                judge_confidence: 'medium',
+                needs_human_review: false,
+                rationale: 'Side A is clearer and more responsive.',
+              },
+              usage: { estimatedCostUsd: 0 },
+            };
+          }
+
+          return {
+            packet: {
+              winner: 'side_a',
+              margin: 0.2,
+              rubric_scores: {
+                side_a: {
+                  claim_quality: 5,
+                  evidence_discipline: 4,
+                  responsiveness_to_critique: 4,
+                  internal_consistency: 5,
+                  decision_usefulness: 4,
+                  weighted_total: 4.4,
+                },
+                side_b: {
+                  claim_quality: 4,
+                  evidence_discipline: 3,
+                  responsiveness_to_critique: 3,
+                  internal_consistency: 4,
+                  decision_usefulness: 3,
+                  weighted_total: 3.4,
+                },
+              },
+              dimension_rationales: {
+                claim_quality: 'Side A made the crisper top-level claim.',
+                evidence_discipline: 'Side A stayed closer to the visible evidence.',
+                responsiveness_to_critique: 'Side A addressed the rebuttal more concretely.',
+                internal_consistency: 'Side A had fewer internal gaps.',
+                decision_usefulness: 'Side A gave the board a more actionable posture.',
+              },
+              side_summaries: {
+                side_a: {
+                  strengths: ['Concrete response to critique.'],
+                  weaknesses: ['Less ambitious framing.'],
+                },
+                side_b: {
+                  strengths: ['Broader framing of the problem.'],
+                  weaknesses: ['More diffuse final recommendation.'],
+                },
+              },
+              decisive_dimension: 'responsiveness_to_critique',
+              decisive_findings: ['Side A responded more concretely to the rebuttal.'],
+              judge_confidence: 'medium',
+              needs_human_review: false,
+              rationale: 'Side A is clearer and more responsive.',
+            },
+            usage: { estimatedCostUsd: 0 },
+          };
+        }
+
+        throw new Error(`Unexpected phase: ${options.phase}`);
+      },
+    });
+
+    assert.equal(judgeAttempts, 2);
+    assert.equal(run.status, 'completed');
+    assert.equal(run.results.winner, 'side_a');
+  } finally {
+    await rm(rootDir, { recursive: true, force: true });
+  }
+});

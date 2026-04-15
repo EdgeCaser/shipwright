@@ -48,6 +48,20 @@ const PHASE2_UNCERTAINTY_FIELDS = Object.freeze([
   'can_resolve_with_more_evidence',
   'escalation_recommendation',
 ]);
+const REPAIRABLE_VERDICT_PATHS = new Set([
+  '$.dimension_rationales',
+  '$.side_summaries',
+  '$.decisive_dimension',
+  '$.uncertainty_drivers',
+  '$.disambiguation_questions',
+  '$.needed_evidence',
+  '$.recommended_next_artifact',
+  '$.recommended_next_action',
+  '$.can_resolve_with_more_evidence',
+  '$.escalation_recommendation',
+  '$.rubric_scores.side_a.weighted_total',
+  '$.rubric_scores.side_b.weighted_total',
+]);
 
 export async function runConflictHarness(options = {}) {
   const casePacket = await resolveCasePacket(options);
@@ -911,18 +925,38 @@ async function invokeJudgeTurn(options) {
     attempt: 0,
   });
 
-  const verdict = response.packet;
-  const validation = validateConflictDocument(verdict, 'verdict');
-  if (validation.errors.length > 0) {
-    throw new Error(formatValidationErrors('Verdict packet failed validation', validation.errors));
-  }
-
-  const phase2Errors = validatePhase2VerdictPayload(verdict, {
+  let verdict = response.packet;
+  let validation = validateConflictDocument(verdict, 'verdict');
+  let phase2Errors = validatePhase2VerdictPayload(verdict, {
     minMarginForVerdict: options.run.budgets.min_margin_for_verdict,
     unsupportedBySide: computeUnsupportedClaimCounts(options.run),
   });
-  if (phase2Errors.length > 0) {
-    throw new Error(formatValidationErrors('Verdict packet failed Phase 2 validation', phase2Errors));
+  const combinedErrors = [...validation.errors, ...phase2Errors];
+
+  if (combinedErrors.length > 0) {
+    if (!shouldAttemptVerdictRepair(combinedErrors)) {
+      throw new Error(formatValidationErrors('Verdict packet failed validation', combinedErrors));
+    }
+
+    verdict = await repairVerdict({
+      ...options,
+      outDir: judgeDir,
+      prompt,
+      previousVerdict: verdict,
+      errors: combinedErrors,
+    });
+
+    validation = validateConflictDocument(verdict, 'verdict');
+    phase2Errors = validatePhase2VerdictPayload(verdict, {
+      minMarginForVerdict: options.run.budgets.min_margin_for_verdict,
+      unsupportedBySide: computeUnsupportedClaimCounts(options.run),
+    });
+
+    if (validation.errors.length > 0 || phase2Errors.length > 0) {
+      throw new Error(
+        formatValidationErrors('Verdict packet failed validation', [...validation.errors, ...phase2Errors]),
+      );
+    }
   }
 
   await writeJson(path.join(judgeDir, 'verdict.json'), verdict);
@@ -1297,6 +1331,114 @@ function buildJudgePrompt(judgePacket, minMarginForVerdict) {
     'Judge packet:',
     JSON.stringify(judgePacket, null, 2),
   ].join('\n');
+}
+
+function shouldAttemptVerdictRepair(errors) {
+  return errors.every(
+    (error) => error.message === 'Missing required property.' && REPAIRABLE_VERDICT_PATHS.has(error.path),
+  );
+}
+
+async function repairVerdict(options) {
+  const repairPrompt = [
+    options.prompt,
+    '',
+    'Repair addendum:',
+    '- Your previous judge output was close but rejected by schema validation.',
+    '- Rewrite it as ONLY a JSON object.',
+    '- Preserve the same winner, margin, rubric_scores, decisive_findings, judge_confidence, needs_human_review, rationale, and any already-valid Phase 2 fields unless schema compliance requires a direct fix.',
+    '- Any rubric_scores.*.weighted_total value must be a normalized aggregate on the same 1-5 scale as the rubric dimensions, not a raw sum.',
+    '- Do not omit dimension_rationales, side_summaries, or decisive_dimension.',
+    '- If the verdict is a tie, low confidence, or needs human review, do not omit the full Phase 2 uncertainty payload.',
+    '',
+    'Required schema shape:',
+    JSON.stringify(buildVerdictShapeExample(), null, 2),
+    '',
+    `Validation errors:\n${formatValidationErrors('Verdict packet failed validation', options.errors)}`,
+    '',
+    'Previous verdict JSON:',
+    JSON.stringify(options.previousVerdict, null, 2),
+  ].join('\n');
+
+  const repairPromptPath = path.join(options.outDir, 'verdict.repair.prompt.txt');
+  const repairPacketPath = path.join(options.outDir, 'verdict.repair.input.json');
+  const repairRawOutputPath = path.join(options.outDir, 'verdict.repair.raw.txt');
+  await writeText(repairPromptPath, repairPrompt);
+  await writeJson(repairPacketPath, options.previousVerdict);
+
+  const response = await invokeTurn({
+    phase: 'judge',
+    sideId: null,
+    runId: options.run.run_id,
+    prompt: repairPrompt,
+    packet: options.previousVerdict,
+    cwd: options.cwd,
+    timeoutMs: options.timeoutMs,
+    turnRunner: options.turnRunner,
+    command: options.command,
+    reasoningEffort: options.reasoningEffort,
+    outDir: options.outDir,
+    promptFilePath: repairPromptPath,
+    packetFilePath: repairPacketPath,
+    rawOutputPath: repairRawOutputPath,
+    attempt: 1,
+  });
+
+  return response.packet;
+}
+
+function buildVerdictShapeExample() {
+  return {
+    winner: 'tie',
+    margin: 0,
+    rubric_scores: {
+      side_a: {
+        claim_quality: 3,
+        evidence_discipline: 3,
+        responsiveness_to_critique: 3,
+        internal_consistency: 3,
+        decision_usefulness: 3,
+        weighted_total: 3,
+      },
+      side_b: {
+        claim_quality: 3,
+        evidence_discipline: 3,
+        responsiveness_to_critique: 3,
+        internal_consistency: 3,
+        decision_usefulness: 3,
+        weighted_total: 3,
+      },
+    },
+    dimension_rationales: {
+      claim_quality: 'Which side made the stronger claims and why.',
+      evidence_discipline: 'How each side used or overstated evidence.',
+      responsiveness_to_critique: 'How each side responded to the critique phase.',
+      internal_consistency: 'Contradictions, coherence, or missing logic.',
+      decision_usefulness: 'Which artifact better supports an actual decision.',
+    },
+    side_summaries: {
+      side_a: {
+        strengths: ['One concise strength of Side A.'],
+        weaknesses: ['One concise weakness of Side A.'],
+      },
+      side_b: {
+        strengths: ['One concise strength of Side B.'],
+        weaknesses: ['One concise weakness of Side B.'],
+      },
+    },
+    decisive_dimension: 'decision_usefulness',
+    decisive_findings: ['Replace with the actual decisive findings from this run.'],
+    judge_confidence: 'low',
+    needs_human_review: true,
+    uncertainty_drivers: ['List the concrete reasons this verdict is uncertain or should be escalated.'],
+    disambiguation_questions: ['List the most important question that would resolve the uncertainty.'],
+    needed_evidence: ['List the evidence that would most improve confidence in the verdict.'],
+    recommended_next_artifact: 'Name the next artifact that should exist before acting on this verdict.',
+    recommended_next_action: 'State the next action the orchestrator or user should take.',
+    can_resolve_with_more_evidence: true,
+    escalation_recommendation: 'State whether to gather more evidence, rejudge, or escalate to human review.',
+    rationale: 'One-paragraph explanation of the verdict.',
+  };
 }
 
 function applyVerdictToRun(run, verdict) {

@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
 
@@ -51,12 +52,13 @@ test('validateConflictDocument reports missing required fields', () => {
 });
 
 test('parseCliArgs validates supported flags', () => {
+  const outPath = path.join(os.tmpdir(), 'case.json');
   assert.deepEqual(
     parseCliArgs([
       '--scenario',
       'prd-hidden-scope-creep',
       '--out',
-      '/tmp/case.json',
+      outPath,
       '--max-rounds',
       '4',
       '--tool-policy',
@@ -65,7 +67,7 @@ test('parseCliArgs validates supported flags', () => {
     {
       scenario: 'prd-hidden-scope-creep',
       scenarioDir: path.resolve('benchmarks', 'scenarios'),
-      outPath: '/tmp/case.json',
+      outPath,
       maxRounds: 4,
       toolPolicy: 'none',
       format: 'json',

@@ -326,6 +326,95 @@ test('rejudgeConflictRun repairs Gemini verdicts that miss structured fields and
   assert.equal(result.verdict.rubric_scores.side_b.weighted_total, 4);
 });
 
+test('rejudgeConflictRun repairs GPT verdicts that miss structured fields and weighted totals', async () => {
+  const tmpRoot = await mkdtemp(path.join(os.tmpdir(), 'shipwright-rejudge-'));
+  const runDir = path.join(tmpRoot, 'conflict-run');
+  const judgeDir = path.join(runDir, 'judge');
+  await mkdir(judgeDir, { recursive: true });
+
+  await Promise.all([
+    writeFile(path.join(runDir, 'run.json'), '{ "run_id": "repair-run-gpt" }\n'),
+    writeFile(path.join(judgeDir, 'verdict.input.json'), '{}\n'),
+    writeFile(path.join(judgeDir, 'verdict.prompt.txt'), 'prompt'),
+  ]);
+
+  const incompleteVerdict = {
+    winner: 'side_b',
+    margin: 0.3,
+    rubric_scores: {
+      side_a: {
+        claim_quality: 3,
+        evidence_discipline: 3,
+        responsiveness_to_critique: 3,
+        internal_consistency: 3,
+        decision_usefulness: 3,
+      },
+      side_b: {
+        claim_quality: 4,
+        evidence_discipline: 4,
+        responsiveness_to_critique: 4,
+        internal_consistency: 4,
+        decision_usefulness: 4,
+      },
+    },
+    decisive_findings: ['Side B is stronger overall.'],
+    judge_confidence: 'medium',
+    needs_human_review: false,
+    rationale: 'Side B wins.',
+  };
+
+  const repairedVerdict = {
+    ...incompleteVerdict,
+    rubric_scores: {
+      side_a: {
+        ...incompleteVerdict.rubric_scores.side_a,
+        weighted_total: 3,
+      },
+      side_b: {
+        ...incompleteVerdict.rubric_scores.side_b,
+        weighted_total: 4,
+      },
+    },
+    dimension_rationales: {
+      claim_quality: 'Side B has the stronger claims.',
+      evidence_discipline: 'Side B uses evidence more carefully.',
+      responsiveness_to_critique: 'Side B absorbs critique better.',
+      internal_consistency: 'Side B is more coherent.',
+      decision_usefulness: 'Side B is more useful to the decision maker.',
+    },
+    side_summaries: {
+      side_a: {
+        strengths: ['Good framing.'],
+        weaknesses: ['Less complete recommendation.'],
+      },
+      side_b: {
+        strengths: ['More decisive recommendation.'],
+        weaknesses: ['Slightly more rigid stance.'],
+      },
+    },
+    decisive_dimension: 'decision_usefulness',
+  };
+
+  let callCount = 0;
+  const result = await rejudgeConflictRun({
+    runDir,
+    judgeAgent: 'gpt',
+    label: 'gpt-repair',
+    turnRunner: async () => {
+      callCount += 1;
+      return {
+        stdout: `${JSON.stringify(callCount === 1 ? incompleteVerdict : repairedVerdict, null, 2)}\n`,
+        stderr: '',
+        exitCode: 0,
+      };
+    },
+  });
+
+  assert.equal(callCount, 2);
+  assert.equal(result.verdict.decisive_dimension, 'decision_usefulness');
+  assert.equal(result.verdict.rubric_scores.side_b.weighted_total, 4);
+});
+
 test('verdict schema rejects weighted totals outside the 1-5 scale', () => {
   const verdict = {
     winner: 'side_a',
