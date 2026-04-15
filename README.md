@@ -6,9 +6,9 @@
 
 **Write PRDs, run discovery cycles, plan launches, and facilitate strategy sessions — from your terminal.**
 
-Shipwright gives PMs a real operating system for product work: framework-backed skills, orchestrated workflows, and quality gates that produce artifacts teams can execute.
+Shipwright gives PMs a real operating system for product work: framework-backed skills, orchestrated workflows, quality gates that produce artifacts teams can execute, and a multi-model decision analysis system for high-stakes questions.
 
-Under the hood, Shipwright includes 46 skills, 7 agents (6 specialists plus the orchestrator), 17 chained workflows, and 3 Claude helper commands. The counts matter less than the contract: evidence-first outputs, explicit decisions, pass/fail gating, deterministic recovery, and optional adversarial review for high-stakes artifacts.
+Under the hood, Shipwright includes 46 skills, 7 agents (6 specialists plus the orchestrator), 17 chained workflows, 3 Claude helper commands, and a decision analysis system with Fast Mode and Rigor Mode adjudication. The counts matter less than the contract: evidence-first outputs, explicit decisions, pass/fail gating, deterministic recovery, adversarial review for high-stakes artifacts, and cross-family model adjudication when a single-model answer isn't enough.
 
 The skills are plain markdown files, so they're compatible with any AI coding tool that reads skill files (Cursor, Codex, Gemini CLI, and others). Agents, commands, and the Claude Code helper commands (`/shipwright`, `/start`, and `/shipwright-help`) are Claude Code-specific. This repo also includes a Codex-native bridge via [AGENTS.md](AGENTS.md) so plain-language prompts in Codex can still route through Shipwright's bounded research and framework selection.
 
@@ -105,16 +105,77 @@ Using a different tool? See the [cross-tool install guide](docs/installing-in-ot
 
 If you are running directly from this repo in Codex, you do not need slash commands. The project-level [AGENTS.md](AGENTS.md) tells Codex to treat plain-language PM prompts as Shipwright work and to use the local research collector before broad interactive browsing when it is available.
 
-## Cross-Model Harness Note
+## Decision Analysis
 
-The working conflict-harness implementation now lives on `main`.
+For high-stakes decisions — governance, board-level, restructuring, pricing — Shipwright includes a decision analysis system that routes questions through Fast Mode or Rigor Mode based on scenario class and provider availability.
 
-If you want to study the full research corpus behind it, including large replay/result artifacts and analysis workups, use:
+**Fast Mode** runs a single structured analysis pass and returns a recommendation, confidence band, and uncertainty payload. It takes roughly 1-2 minutes.
 
-- the archive branch: `codex/cross-model-debate-harness-spec`
-- the archival PR: [#6](https://github.com/EdgeCaser/shipwright/pull/6)
+**Rigor Mode** runs a full cross-model conflict harness: two models argue opposite sides, critique each other, and a third model adjudicates. It takes 5-15 minutes and is the recommended path for governance-class questions.
 
-The implementation-first extraction that landed on `main` came through [PR #7](https://github.com/EdgeCaser/shipwright/pull/7).
+The orchestrator decides the routing. You declare the scenario class; the system applies the corresponding policy. Governance and publication-claim work require cross-family confirmation by default. Everything else starts with a single fast pass and only escalates with your confirmation.
+
+### Usage
+
+```bash
+# Fast pass on a pricing question (single provider)
+node scripts/shipwright.mjs \
+  --question "Should we raise prices by 15% in Q3 given softening retention?" \
+  --class pricing \
+  --provider claude
+
+# Governance question — escalates to Rigor Mode after Fast pass (with confirmation gate)
+node scripts/shipwright.mjs \
+  --question "Should we restructure the board now or wait for Q4 results?" \
+  --class governance \
+  --provider claude --provider gpt
+
+# Auto-confirm escalation gate
+node scripts/shipwright.mjs \
+  --question "Should we break up the company now?" \
+  --class governance \
+  --provider claude --provider gpt \
+  --yes
+
+# Preview routing plan without running
+node scripts/shipwright.mjs \
+  --question "Is this feature worth building?" \
+  --dry-run
+```
+
+### Scenario classes
+
+| Class | Default path | Cross-family required |
+|---|---|---|
+| `governance` | double panel | yes |
+| `publication` | double panel | yes |
+| `pricing` | single analysis | no |
+| `product_strategy` | single analysis | no |
+| `unclassified` | single analysis | no |
+
+### Providers
+
+Pass `--provider` once per available model family: `claude`, `gpt`, `gemini`. With one provider, analysis is single-pass and marked provisional. With two, escalation to the full harness is available. With three, a third-family judge is available for publication-grade rigor.
+
+### Output
+
+Each run writes to `benchmarks/results/orchestrated/<scenario>/<run-id>/`:
+- `orchestration.json` — routing decisions and terminal state for every stage
+- `stage-1-fast/` — Fast Mode analysis with recommendation, confidence, and uncertainty payload
+- `stage-2-rigor/` (if escalated) — Full harness transcript and verdict
+
+### Telemetry
+
+Run `node scripts/telemetry.mjs` to see a summary of confidence distributions, escalation funnel, and terminal states across all runs. The log lives at `benchmarks/telemetry/events.jsonl`.
+
+### Research background
+
+The calibration data, cross-model comparison results, and research memos behind the routing policy live in `docs/review/`. The key finding: judge family dominates outcome more than anything else. GPT defaults to `decision_usefulness`; Claude defaults to `evidence_discipline`. Single-judge outputs cannot be treated as reliable findings on contested governance questions.
+
+For the full research corpus, including replay artifacts and analysis workups:
+
+- archive branch: `codex/cross-model-debate-harness-spec`
+- archival PR: [#6](https://github.com/EdgeCaser/shipwright/pull/6)
 
 ### 2) Add product context and go
 
