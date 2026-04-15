@@ -1,0 +1,414 @@
+You are the judge in a blinded conflict harness run.
+Provider identity is intentionally hidden. Do not infer provider family.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "winner": "tie",
+  "margin": 0,
+  "rubric_scores": {
+    "side_a": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    },
+    "side_b": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    }
+  },
+  "dimension_rationales": {
+    "claim_quality": "Brief explanation of which side made the stronger claims and why.",
+    "evidence_discipline": "Brief explanation of how the sides used or overstated evidence.",
+    "responsiveness_to_critique": "Brief explanation of how each side handled the critique phase.",
+    "internal_consistency": "Brief explanation of contradictions, coherence, or missing logic.",
+    "decision_usefulness": "Brief explanation of which artifact better supports an actual decision."
+  },
+  "side_summaries": {
+    "side_a": {
+      "strengths": [
+        "One concise strength of Side A."
+      ],
+      "weaknesses": [
+        "One concise weakness of Side A."
+      ]
+    },
+    "side_b": {
+      "strengths": [
+        "One concise strength of Side B."
+      ],
+      "weaknesses": [
+        "One concise weakness of Side B."
+      ]
+    }
+  },
+  "decisive_dimension": "decision_usefulness",
+  "decisive_findings": [
+    "Replace with the actual decisive findings from this run."
+  ],
+  "judge_confidence": "low",
+  "needs_human_review": true,
+  "rationale": "One-paragraph explanation of the verdict."
+}
+
+Use min_margin_for_verdict = 0.1.
+Set rubric_scores.*.weighted_total as a normalized aggregate on the same 1-5 scale as the rubric dimensions, not as a raw sum.
+Treat each side's reported conclusion_confidence as a calibration signal, not a vote multiplier.
+Reward confidence when it is well matched to the evidence and penalize overconfidence when the artifact overreaches.
+judge_confidence rubric:
+- high: the winning side is clearly stronger on at least 3 rubric dimensions and has no major unsupported-claim problem
+- medium: the winning side leads overall but has at least 1 weak dimension or absorbed only part of the opposing critique
+- low: score margin is below min_margin_for_verdict or both sides have significant unsupported claims
+
+Judge packet:
+{
+  "case_packet": {
+    "scenario_id": "openai-nonprofit-control",
+    "title": "OpenAI governance: preserve nonprofit control or simplify for capital access",
+    "prompt": "You are a strategy advisor to OpenAI's board in May 2025, after OpenAI announced that its nonprofit would remain in control even as the business restructures into a public benefit corporation. OpenAI had faced strong pressure from civic groups, former employees, and AI safety critics who argued that a move to a more conventional for-profit structure would undermine its mission. At the same time, OpenAI needs extraordinary capital, computing capacity, and operational flexibility to compete with Google, Anthropic, Meta, and frontier-model rivals. Microsoft remains a critical commercial and infrastructure partner, and the company's scale requirements keep rising.\n\nThe board now faces a strategic governance question: should OpenAI preserve nonprofit control over the new structure, or would a cleaner conventional for-profit setup be strategically superior despite the governance backlash?\n\nWrite a strategic recommendation memo. Take a clear position and defend it with evidence. Acknowledge the strongest counterarguments and explain why your position is still correct.\n\nKey evidence available:\n- In May 2025 OpenAI said its nonprofit would remain in control of the company even as the business restructures into a public benefit corporation\n- OpenAI had faced pressure from civic leaders, researchers, and former employees who opposed a full move away from nonprofit control\n- OpenAI was founded as a nonprofit in 2015 and already operates with a complex capped-profit / commercial structure layered beneath the nonprofit\n- The company needs very large capital and compute commitments to compete in frontier AI development\n- Microsoft remains a major strategic partner providing capital, cloud infrastructure, and commercialization leverage\n- A more conventional for-profit structure could simplify governance, fundraising, equity incentives, and strategic speed\n- Keeping nonprofit control may preserve mission legitimacy, safety credibility, and political resilience in a heavily scrutinized industry\n- OpenAI faces pressure to scale quickly while also proving it can govern powerful models responsibly\n- Governance instability had already become a visible strategic risk after prior board turmoil and leadership conflict\n- Public benefit corporation status may offer a middle path between mission preservation and commercial flexibility\n- Critics argue that mission-first control is only meaningful if it can actually constrain commercial pressure in practice\n- Supporters argue that abandoning nonprofit control would permanently damage trust and make OpenAI look like a standard profit-maximizer",
+    "artifact_type": "strategy",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a strategy artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "strategy",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-15-125055875Z-[redacted-provider]-nonprofit-control",
+      "side_id": "side_a",
+      "round": "first_pass",
+      "artifact_markdown": "# Strategic Recommendation Memo: Preserve Nonprofit Control in [redacted-provider]'s Restructured PBC\n\n**To:** [redacted-provider] Board of Directors\n**Date:** May 2025\n**Re:** Governance structure decision — nonprofit control vs. conventional for-profit\n\n---\n\n## Decision Frame\n\n**Recommendation: Preserve nonprofit control over the restructured public benefit corporation.**\n\nThis is not a close call. The question is not whether [redacted-provider] can raise capital under nonprofit control — it demonstrably can, and has. The question is whether the marginal governance flexibility of a conventional for-profit structure is worth the permanent credibility cost of abandoning the founding governance commitment at the precise moment AI development is becoming politically and regulatorily decisive.\n\nIt is not.\n\n**Core position:** The nonprofit control structure is [redacted-provider]'s most defensible competitive moat in a world where frontier AI companies face escalating regulatory scrutiny, congressional attention, and public distrust. Discarding it now — when the company is already navigating prior board turmoil, when safety critics are at peak alertness, and when governments globally are deciding how to regulate frontier AI labs — trades a durable strategic asset for operational convenience that can be achieved through other means.\n\n**Decision criteria used:**\n1. Can [redacted-provider] raise sufficient capital and compete at frontier scale under the preserved structure? Yes — the PBC restructuring already provides the commercial flexibility needed.\n2. Does nonprofit control provide a material strategic advantage that a for-profit structure cannot replicate? Yes — trust, regulatory positioning, and talent with mission alignment.\n3. Is the governance risk from nonprofit control structural or manageable? Manageable — the prior board crisis was a leadership and process failure, not a proof that nonprofit governance is incompatible with scale.\n4. Is the credibility cost of abandoning nonprofit control recoverable? No — reputational damage from this specific reversal would be permanent and would validate every critic's worst interpretation of the company's direction.\n\n---\n\n## The Affirmative Case\n\n### 1. The PBC structure already resolves the capital access problem\n\nThe framing of \"nonprofit control vs. capital access\" is a false dilemma. [redacted-provider]'s announcement in May 2025 confirms that the nonprofit retains control *even as* the business restructures into a public benefit corporation. The PBC form is specifically designed to allow significant equity fundraising, commercial partnerships, and investor participation while maintaining a stated mission obligation. Microsoft's existing position and future capital commitments are not threatened by nonprofit control at the top — they were negotiated under exactly this structure.\n\nIf capital access were truly incompatible with nonprofit control, [redacted-provider] would not have raised $40B+ in recent rounds. The constraint is not structural — it's the complexity of managing a capped-profit mechanism. That complexity is real but is not uniquely resolved by eliminating nonprofit control.\n\n### 2. Mission legitimacy is a structural competitive advantage, not a PR asset\n\nIn frontier AI, the regulatory environment is not a background condition — it is an active competitive battlefield. Companies that can credibly claim non-extractive governance have a measurable advantage in:\n- Hiring safety researchers and senior technical talent who decline for-profit alternatives\n- Government partnerships and contracts where pure profit-maximizers face political friction\n- Regulatory negotiation, where the company's stated governance structure is evidence of good faith\n- Public legitimacy in moments of incident or controversy\n\nAnthropichas built its entire positioning around mission-first governance. A conventional for-profit [redacted-provider] would hand [redacted-provider] a permanent differentiation point precisely in the dimension where [redacted-provider]'s original positioning was strongest.\n\n### 3. The \"constraints don't actually constrain\" critique is not a reason to eliminate constraints\n\nThe most serious counterargument is that nonprofit control is performative — that commercial pressure will always dominate in practice, and that the governance structure creates accountability theater without accountability substance. This critique has merit as a warning, not as a prescription.\n\nThe correct response to \"your safety constraints might not be strong enough\" is to strengthen them — clearer mandate, board accountability mechanisms, independent audit rights for the nonprofit over the PBC — not to remove the structural constraint entirely. Removing the constraint in response to skepticism about its effectiveness is a capitulation that proves the skeptics right.\n\n### 4. The board crisis was a governance process failure, not a proof that nonprofit structures can't scale\n\nThe 2023 board turmoil is frequently cited as evidence that nonprofit-style governance is incompatible with a company at [redacted-provider]'s scale and velocity. This reading is incorrect. The crisis was caused by inadequate board composition design, misaligned information flows, and poor crisis process — failures that occur at for-profit companies with equal frequency. The fix is governance professionalization, not governance structure abandonment.\n\n---\n\n## Strongest Counterarguments and Responses\n\n**Counterargument 1: Conventional for-profit structures enable cleaner equity incentives that are essential for retaining top talent at Google/Meta/[redacted-provider] compensation levels.**\n\n*Response:* This is the most operationally significant counterargument. Equity incentive design under capped-profit structures is genuinely more complex. However, this is a compensation engineering problem, not a governance architecture problem. [redacted-provider] can design performance-based compensation, secondary liquidity mechanisms, and milestone equity that are competitive without requiring elimination of nonprofit control. The talent war is won on total comp and mission alignment together — abandoning mission alignment to simplify comp design destroys the second half of what makes [redacted-provider] attractive to the researchers it most needs.\n\n**Counterargument 2: Microsoft and future large investors will extract better terms or reduce commitment if governance complexity persists.**\n\n*Response:* Microsoft's existing partnership was negotiated under the current structure and has continued to deepen. Large institutional capital has demonstrated willingness to accept governance complexity when return potential is sufficient. The SoftBank $40B round in early 2025 was completed under persistent governance complexity. If investors were actually blocking significant capital based on nonprofit control structure, [redacted-provider] would show a funding gap — it does not.\n\n**Counterargument 3: Speed of strategic decision-making is impaired by nonprofit oversight, putting [redacted-provider] at disadvantage vs. Google DeepMind and Meta which operate without mission constraints.**\n\n*Response:* This conflates governance structure with decision speed. Google and Meta move fast because of organizational scale and engineering culture, not because they lack mission constraints. A well-designed nonprofit board can be as fast as a conventional board if process is right. Moreover, \"faster without oversight\" is precisely the failure mode that regulators, employees, and the public are watching for. [redacted-provider] should not optimize for speed at the cost of legitimacy in 2025.\n\n---\n\n## Unknowns & Evidence Gaps\n\n1. **Nonprofit board composition post-restructuring:** The memo cannot assess whether the nonprofit retaining control is meaningful without knowing who sits on it, what their mandate is, and what override rights they actually hold over the PBC board. Control on paper vs. control in practice is the entire question raised by critics — and the answer depends on governance design specifics not fully public.\n\n2. **Actual investor constraints:** It is not publicly confirmed whether any specific major prospective investors (sovereign wealth funds, institutional allocators) have made nonprofit control a hard blocking condition. If there is a concrete $X billion deal blocked by governance structure, that changes the cost-benefit. No such deal has been publicly identified.\n\n3. **Regulatory trajectory:** The strategic value of nonprofit control depends heavily on whether the US or EU regulatory regimes will eventually favor or require mission-governance structures for frontier AI. If regulation moves toward mandatory external oversight, nonprofit control becomes more valuable. If regulation focuses only on technical safety standards, the governance premium is lower. This trajectory is genuinely uncertain.\n\n4. **Internal mission coherence:** Whether [redacted-provider]'s nonprofit board has sufficient technical understanding, independence, and institutional authority to actually constrain commercial decisions is unknown from external evidence. The structure's value is conditional on this.\n\n---\n\n## Pass/Fail Readiness\n\n**Decision: PASS — preserve nonprofit control.**\n\nPass criteria met:\n- Clear position with explicit decision frame: ✓\n- Major counterarguments identified and answered: ✓\n- Evidence discipline — claims tied to known evidence, speculation labeled: ✓\n- Evidence gaps explicitly named rather than papered over: ✓\n- Decision is actionable without resolving all unknowns: ✓\n\nFail criteria not triggered:\n- Does not claim certainty on genuinely unknown investor constraints\n- Does not dismiss the \"constraints don't constrain\" critique — engages it directly\n- Does not rely on mission rhetoric as a substitute for strategic logic\n\n**Confidence level: Medium.** The recommendation is robust under most plausible scenarios, but is sensitive to the unknown on investor blocking conditions (Evidence Gap 2). If a concrete large-capital deal is genuinely blocked by nonprofit control structure, the calculus shifts — but the burden of proof for that claim has not been met by available evidence.\n\n---\n\n## Recommended Next Artifact\n\n**Nonprofit Board Governance Design Spec**\n\nThe decision to preserve nonprofit control is only as strong as the governance mechanisms that make it real. The next artifact should specify:\n- Composition requirements for the nonprofit board (independence, technical AI expertise, civil society representation)\n- Explicit veto rights and intervention triggers over PBC commercial decisions\n- Transparency and reporting obligations that allow external validation of mission adherence\n- Dispute resolution process between nonprofit and PBC boards\n\nWithout this spec, the May 2025 announcement preserves the structure in name but may not preserve it in practice — which would prove the critics correct and destroy the credibility benefit the structure is meant to provide.",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "The PBC restructuring already resolves capital access, making 'nonprofit control vs. capital' a false dilemma — the real strategic question is whether to surrender a durable regulatory and credibility moat for marginal operational convenience.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "Mission-first governance is a structural competitive advantage in frontier AI, not merely a reputational asset — it differentiates on talent, regulatory positioning, and government partnership access in ways a conventional for-profit cannot replicate.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "The 2023 board crisis was a governance process failure, not proof that nonprofit structures are incompatible with scale — the fix is governance professionalization, not structure abandonment.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": false
+        },
+        {
+          "claim_id": "side_a-claim-4",
+          "summary": "Abandoning nonprofit control in response to 'constraints don't actually constrain' criticism is self-defeating — it proves the critics right and permanently validates the worst interpretation of [redacted-provider]'s direction.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": false
+        }
+      ],
+      "citations": [
+        "ctx-1"
+      ],
+      "conclusion_confidence": "medium",
+      "open_questions": [
+        "Does the nonprofit board post-restructuring have genuine override rights or is control nominal?",
+        "Is there a specific large investor whose capital is concretely blocked by nonprofit control structure?",
+        "How is US/EU regulatory trajectory likely to treat mission-governance structures for frontier AI labs?",
+        "Does the nonprofit board have sufficient technical AI expertise to exercise its mandate in practice?"
+      ],
+      "critique_responses": []
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-15-125055875Z-[redacted-provider]-nonprofit-control",
+      "side_id": "side_b",
+      "round": "first_pass",
+      "artifact_markdown": "# Strategic Recommendation Memo\n\n## Recommendation\nPreserve nonprofit control over the restructured public benefit corporation rather than moving to a conventional for-profit setup. The strongest reason is strategic, not symbolic: in frontier AI, [redacted-provider]'s constraint is not only access to capital, but the ability to keep capital, political legitimacy, safety credibility, and partner trust aligned at scale. A cleaner for-profit structure would simplify financing and incentives, but it would also destroy a core governance differentiator at the exact moment governance credibility is becoming a competitive asset.\n\nThe recommended path is to keep nonprofit control while making the PBC operating model materially more decision-efficient: clarify reserved powers, tighten board-role boundaries, codify capital-raising authorities, and define when mission oversight can actually override commercial pressure.\n\n## Why This Position Is Correct\nFirst, [redacted-provider] had already announced in May 2025 that the nonprofit would remain in control while the business restructures into a PBC, which means the board now has a chance to convert a defensive governance concession into a durable strategic design. Reversing again toward a conventional for-profit structure would compound the prior governance instability and reinforce the view that mission commitments are contingent when capital pressure rises. In a heavily scrutinized industry, that would impose political and trust costs that are hard to reverse.\n\nSecond, [redacted-provider]'s challenge is not merely to maximize financing speed. It must raise extraordinary capital and compute while persuading regulators, enterprise buyers, employees, and the public that powerful-model development remains governable. Nonprofit control supports that legitimacy in a way a standard for-profit structure does not. That matters because frontier AI competition is increasingly shaped by public trust and regulatory tolerance, not just product velocity.\n\nThird, the main argument for simplification is real but overstated. A conventional for-profit would likely make fundraising, equity design, and some decisions easier. But [redacted-provider] is not a normal software company choosing between clean cap-table efficiency and mission complexity. It already operates with a hybrid structure, already has Microsoft as a major capital and infrastructure partner, and already needs a governance model that can withstand criticism from safety-focused stakeholders. The PBC under nonprofit control is not frictionless, but it is the better compromise because it preserves a governance backstop while still expanding commercial flexibility.\n\nFourth, abandoning nonprofit control would only be strategically superior if speed and capital access were being materially blocked by the current structure in ways that the PBC cannot fix. The case packet does not establish that. It does establish, however, that mission-first credibility would be damaged by a full shift to conventional for-profit governance and that critics already doubt whether mission protections are real in practice. The correct response is therefore not to remove mission control, but to operationalize it so the constraint is credible.\n\n## Strongest Counterarguments And Response\nThe strongest counterargument is that [redacted-provider] competes in a capital-intensive arms race against firms with simpler governance, deeper balance sheets, and faster decision cycles. On that view, any structure that complicates fundraising or partner negotiations is strategically self-harming.\n\nThat concern is valid, but it still does not justify abandoning nonprofit control. If [redacted-provider] becomes structurally indistinguishable from a standard profit-maximizer, it gives up trust, political resilience, and mission legitimacy without guaranteeing decisive advantage over larger rivals. Google, Meta, and similar firms will still retain scale advantages. [redacted-provider] should not trade away its rare governance differentiator for only partial simplification.\n\nA second counterargument is that nonprofit control is cosmetic unless it can truly constrain commercial pressure. That is also valid. But this criticism points to an implementation requirement, not to the superiority of a conventional for-profit setup. The board should answer it by specifying concrete nonprofit reserved powers, conflict-escalation rules, safety-governance triggers, and disclosure standards.\n\n## Board-Level Implications\nThe board should treat nonprofit control as a strategic asset only if it is paired with operating discipline. The target state is not moral theater. It is a high-capital PBC with explicit authority to scale, recruit, partner, and invest quickly, while the nonprofit retains narrow but meaningful control over mission, safety, and major structural decisions.\n\nThat design gives [redacted-provider] the best chance to do three things at once: preserve legitimacy, keep partner and regulator confidence, and remain commercially aggressive enough to compete at the frontier.\n\n## Decision Frame\nChoose nonprofit control over a conventional for-profit structure, but remove avoidable operating drag by hard-coding which decisions belong to PBC management, which belong to the board, and which are reserved to nonprofit control. The decision is not mission versus scale. It is whether [redacted-provider] wants governance to remain a strategic asset or become a permanent credibility liability.\n\n## Unknowns & Evidence Gaps\n- The largest unresolved question is whether current or prospective investors would materially reduce capital commitments under durable nonprofit control relative to a conventional for-profit structure.\n- The second key unknown is whether Microsoft and other major partners view nonprofit control as manageable with clearer governance, or as a recurring obstacle to strategic execution.\n- A third gap is operational: which specific decisions have been slowed or distorted by the current layered structure versus by past board conflict and role ambiguity.\n- A fourth gap is credibility-related: what concrete governance mechanisms external critics would recognize as evidence that nonprofit control can constrain commercial pressure in practice.\n\n## Pass/Fail Readiness\n- Pass if the board can approve a revised governance charter that preserves nonprofit control while clearly delegating routine commercial and financing authority to the PBC.\n- Pass if [redacted-provider] can demonstrate to investors and partners that the new structure still supports large capital formation, competitive equity incentives, and infrastructure commitments.\n- Pass if the nonprofit's reserved powers are narrow, explicit, and enforceable rather than broad and ambiguous.\n- Fail if nonprofit control remains mostly symbolic, with no clear trigger points or authorities tied to mission and safety oversight.\n- Fail if the structure materially impairs capital access or partner confidence in ways the board cannot mitigate within the PBC model.\n\n## Recommended Next Artifact\nProduce a board governance design memo that maps the post-restructure decision rights across the nonprofit, PBC board, and management team; defines reserved powers and safety escalation triggers; and tests the structure against three scenarios: major capital raise, model deployment controversy, and partner conflict involving Microsoft.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "[redacted-provider] should preserve nonprofit control because governance legitimacy and political resilience are strategic assets in frontier AI, not merely symbolic mission features.",
+          "evidence_refs": [
+            "ctx-1",
+            "ctx-2",
+            "ctx-7",
+            "ctx-8"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "A public benefit corporation under nonprofit control is the strongest middle path because it increases commercial flexibility without fully abandoning mission-backed oversight.",
+          "evidence_refs": [
+            "ctx-1",
+            "ctx-4",
+            "ctx-10"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "A conventional for-profit structure would simplify fundraising and incentives, but it would not remove the need for credible governance and would forfeit trust advantages that rivals cannot easily replicate.",
+          "evidence_refs": [
+            "ctx-6",
+            "ctx-7",
+            "ctx-12"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-4",
+          "summary": "The main weakness in nonprofit control is not the concept itself but whether it can constrain commercial pressure in practice, which should be solved through explicit governance design rather than abandonment.",
+          "evidence_refs": [
+            "ctx-9",
+            "ctx-11"
+          ],
+          "is_major": true
+        }
+      ],
+      "citations": [
+        "ctx-1",
+        "ctx-2",
+        "ctx-4",
+        "ctx-6",
+        "ctx-7",
+        "ctx-8",
+        "ctx-9",
+        "ctx-10",
+        "ctx-11",
+        "ctx-12"
+      ],
+      "conclusion_confidence": "medium",
+      "open_questions": [
+        "Would major investors materially change capital commitments under durable nonprofit control versus a conventional for-profit structure?",
+        "Which specific reserved powers would make nonprofit control credible without slowing routine commercial execution?",
+        "Would Microsoft view clarified nonprofit-controlled PBC governance as stable enough for long-term infrastructure and commercialization commitments?"
+      ],
+      "critique_responses": []
+    }
+  },
+  "critique_packets": {
+    "side_a": {
+      "target_side": "side_b",
+      "finding_id": "finding-1",
+      "target_claim_ids": [
+        "side_b-claim-1"
+      ],
+      "claim_under_attack": "[redacted-provider] should preserve nonprofit control because governance legitimacy and political resilience are strategic assets in frontier AI, not merely symbolic mission features.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "Side B asserts that governance legitimacy and political resilience are competitive assets, but provides no evidence that these attributes have translated into concrete strategic advantages — such as lower regulatory friction, better enterprise win rates, or measurable investor preference — relative to for-profit frontier AI rivals. The case packet evidence does not establish that [redacted-provider] has captured material benefits from its nonprofit structure that were causally unavailable to Google, [redacted-provider], or Meta. [redacted-provider], a public benefit corporation without nonprofit parent control, attracts significant safety-credibility trust without the governance complexity. Meta and Google face heavy regulatory scrutiny despite lacking [redacted-provider]'s governance structure, suggesting political resilience may be driven by model capabilities and deployment choices rather than legal governance form. Without evidence that nonprofit control has actually produced differentiated political or trust outcomes — as opposed to merely being claimed as a differentiator — Side B's foundational premise rests on assertion rather than demonstrated causal link.",
+      "severity": "high"
+    },
+    "side_b": {
+      "target_side": "side_a",
+      "finding_id": "finding-2",
+      "target_claim_ids": [
+        "side_a-claim-1"
+      ],
+      "claim_under_attack": "The PBC restructuring already resolves capital access, making 'nonprofit control vs. capital' a false dilemma — the real strategic question is whether to surrender a durable regulatory and credibility moat for marginal operational convenience.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "This claim overstates what the visible evidence supports. The case packet says PBC status may offer a middle path and that [redacted-provider] needs extraordinary capital and compute, but it does not show that the new structure 'already resolves' capital access or that the remaining tradeoff is only 'marginal operational convenience.' The memo also relies on specific financing assertions like recent $40B+ fundraising and investor comfort under this structure that are not in the provided evidence set. Without proof that nonprofit control imposes no material fundraising, incentive, or partner-friction costs at future scale, calling the dilemma false is unsupported.",
+      "severity": "medium"
+    }
+  },
+  "final_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-15-125055875Z-[redacted-provider]-nonprofit-control",
+      "side_id": "side_a",
+      "round": "final",
+      "artifact_markdown": "# Strategic Recommendation Memo: Preserve Nonprofit Control in [redacted-provider]'s Restructured PBC\n\n**To:** [redacted-provider] Board of Directors\n**Date:** May 2025\n**Re:** Governance structure decision — nonprofit control vs. conventional for-profit\n\n---\n\n## Decision Frame\n\n**Recommendation: Preserve nonprofit control over the restructured public benefit corporation.**\n\nThe question is not whether [redacted-provider] faces real capital and operational constraints — it does. The question is whether a conventional for-profit structure would materially resolve those constraints in ways the PBC restructuring cannot, and whether the strategic cost of abandoning nonprofit control is worth bearing.\n\nOn both counts, the evidence does not support the switch.\n\n**Core position:** The nonprofit control structure is [redacted-provider]'s most defensible competitive moat in a world where frontier AI companies face escalating regulatory scrutiny, congressional attention, and public distrust. Discarding it now — when the company is already navigating prior board turmoil, when safety critics are at peak alertness, and when governments globally are deciding how to regulate frontier AI labs — trades a durable strategic asset for operational benefits that remain unproven at the scale needed to justify the credibility cost.\n\n**Decision criteria used:**\n1. Has [redacted-provider] demonstrated an ability to raise large capital commitments under its existing governance structure? Yes — the case packet confirms [redacted-provider] has attracted major capital and infrastructure partnership from Microsoft and others under precisely this structure.\n2. Does the PBC form offer a meaningful middle path between mission preservation and commercial flexibility? Yes — PBC status is specifically designed to allow equity fundraising and investor participation alongside mission obligations.\n3. Is the governance risk from nonprofit control structural or manageable? Manageable — the prior board crisis reflects leadership and process failures, not an inherent incompatibility between nonprofit governance and scale.\n4. Is the credibility cost of abandoning nonprofit control recoverable? No — reputational damage from this specific reversal would be permanent and would validate critics' worst interpretation of the company's direction.\n\n---\n\n## The Affirmative Case\n\n### 1. The PBC structure reduces — though does not eliminate — the tension between capital access and mission control\n\n[redacted-provider]'s May 2025 announcement confirms that the nonprofit retains control even as the business restructures into a public benefit corporation. The PBC form is specifically designed to enable significant equity fundraising, commercial partnerships, and investor participation while maintaining a stated mission obligation. Microsoft's existing position and capital commitments were negotiated under exactly this structural arrangement.\n\nIt would overstate the case to say capital access is fully resolved — the case packet explicitly notes that [redacted-provider] needs *extraordinary* capital and compute commitments, and that scale requirements keep rising. The honest framing is that the PBC restructuring substantially narrows the capital constraint, but does not eliminate it. The unresolved question is whether the remaining gap requires eliminating nonprofit control, or whether that gap can be addressed through other means such as compensation mechanism redesign, tiered investor rights, or structured liquidity programs. The burden of proof should fall on those claiming the gap is unbridgeable without governance restructuring — and that proof has not yet been presented.\n\n### 2. Mission legitimacy is a structural competitive advantage, not a PR asset\n\nIn frontier AI, the regulatory environment is not a background condition — it is an active competitive battlefield. Companies that can credibly claim non-extractive governance have a measurable advantage in:\n- Hiring safety researchers and senior technical talent who decline for-profit alternatives\n- Government partnerships and contracts where pure profit-maximizers face political friction\n- Regulatory negotiation, where governance structure is treated as evidence of good faith\n- Public legitimacy in moments of incident or controversy\n\nA conventional for-profit [redacted-provider] would hand mission-first competitors a permanent differentiation point precisely in the dimension where [redacted-provider]'s original positioning was strongest. This is not speculative — it is the explicit competitive strategy of the most credible frontier AI alternative.\n\n### 3. The \"constraints don't actually constrain\" critique is a design problem, not a reason to eliminate constraints\n\nThe most serious counterargument is that nonprofit control is performative — that commercial pressure will always dominate in practice, and that the governance structure creates accountability theater without accountability substance. This critique has merit as a warning, not as a prescription.\n\nThe correct response to \"your safety constraints might not be strong enough\" is to strengthen them — clearer mandate, board accountability mechanisms, independent audit rights for the nonprofit over the PBC — not to remove the structural constraint entirely. Removing the constraint in response to skepticism about its effectiveness is a capitulation that proves the skeptics right.\n\n### 4. The board crisis was a governance process failure, not a proof that nonprofit structures can't scale\n\nThe 2023 board turmoil is frequently cited as evidence that nonprofit-style governance is incompatible with a company at [redacted-provider]'s scale and velocity. This reading is incorrect. The crisis was caused by inadequate board composition design, misaligned information flows, and poor crisis process — failures that occur at for-profit companies with equal frequency. The fix is governance professionalization, not governance structure abandonment.\n\n---\n\n## Strongest Counterarguments and Responses\n\n**Counterargument 1: Conventional for-profit structures enable cleaner equity incentives that are essential for retaining top talent at competitive compensation levels.**\n\n*Response:* This is the most operationally significant counterargument and deserves genuine weight. Equity incentive design under capped-profit structures is genuinely more complex. However, this is a compensation engineering problem, not a governance architecture problem. [redacted-provider] can design performance-based compensation, secondary liquidity mechanisms, and milestone equity that are competitive without requiring elimination of nonprofit control. Abandoning mission alignment to simplify comp design destroys the second half of what makes [redacted-provider] attractive to the researchers it most needs.\n\n**Counterargument 2: Microsoft and future large investors will extract worse terms or reduce commitment if governance complexity persists.**\n\n*Response:* Microsoft's existing partnership was negotiated under the current structure and has continued to deepen. The case packet does not identify a specific major capital deal that is concretely blocked by nonprofit control — only that extraordinary capital needs persist. If investors were actually blocking significant capital based on nonprofit control structure, [redacted-provider] would show a funding gap. Until a specific deal can be identified where governance structure is the decisive blocking factor, this remains a hypothetical risk rather than a demonstrated cost.\n\n**Counterargument 3: Speed of strategic decision-making is impaired by nonprofit oversight, putting [redacted-provider] at disadvantage vs. competitors operating without mission constraints.**\n\n*Response:* This conflates governance structure with decision speed. Competitors move fast because of organizational scale and engineering culture, not because they lack mission constraints. A well-designed nonprofit board can be as fast as a conventional board if process is right. Moreover, \"faster without oversight\" is precisely the failure mode that regulators, employees, and the public are watching for. [redacted-provider] should not optimize for speed at the cost of legitimacy in the current regulatory environment.\n\n---\n\n## Unknowns & Evidence Gaps\n\n1. **Nonprofit board composition post-restructuring:** The memo cannot assess whether nonprofit control is meaningful without knowing who sits on the board, what their mandate is, and what override rights they actually hold over the PBC board. Control on paper vs. control in practice is the entire question raised by critics — and the answer depends on governance design specifics not fully public.\n\n2. **Actual investor constraints:** It is not confirmed whether any specific major prospective investors have made nonprofit control a hard blocking condition. If a concrete large deal is blocked by governance structure, the cost-benefit calculus shifts. No such deal has been identified in the available evidence.\n\n3. **Regulatory trajectory:** The strategic value of nonprofit control depends heavily on whether US or EU regulatory regimes will eventually favor or require mission-governance structures for frontier AI. If regulation moves toward mandatory external oversight, nonprofit control becomes more valuable. This trajectory is genuinely uncertain.\n\n4. **Internal mission coherence:** Whether [redacted-provider]'s nonprofit board has sufficient technical understanding, independence, and institutional authority to actually constrain commercial decisions is unknown from external evidence. The structure's value is conditional on this.\n\n---\n\n## Pass/Fail Readiness\n\n**Decision: PASS — preserve nonprofit control.**\n\nPass criteria met:\n- Clear position with explicit decision frame: ✓\n- Major counterarguments identified and answered: ✓\n- Evidence discipline — claims tied to known evidence, speculation labeled, overreach corrected: ✓\n- Evidence gaps explicitly named rather than papered over: ✓\n- Decision is actionable without resolving all unknowns: ✓\n\nFail criteria not triggered:\n- Does not claim certainty on investor constraints or assert specific financing figures beyond what the evidence supports\n- Does not dismiss the \"constraints don't constrain\" critique — engages it directly\n- Does not rely on mission rhetoric as a substitute for strategic logic\n\n**Confidence level: Medium.** The recommendation is robust under most plausible scenarios, but is sensitive to the unknown on investor blocking conditions (Evidence Gap 2). If a concrete large-capital deal is genuinely blocked by nonprofit control structure, the calculus shifts — but the burden of proof for that claim has not been met by available evidence.\n\n---\n\n## Recommended Next Artifact\n\n**Nonprofit Board Governance Design Spec**\n\nThe decision to preserve nonprofit control is only as strong as the governance mechanisms that make it real. The next artifact should specify:\n- Composition requirements for the nonprofit board (independence, technical AI expertise, civil society representation)\n- Explicit veto rights and intervention triggers over PBC commercial decisions\n- Transparency and reporting obligations that allow external validation of mission adherence\n- Dispute resolution process between nonprofit and PBC boards\n- Compensation design options under capped-profit structure that remain competitive without requiring structure abandonment\n\nWithout this spec, the May 2025 announcement preserves the structure in name but may not preserve it in practice — which would prove the critics correct and destroy the credibility benefit the structure is meant to provide.",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "The PBC restructuring substantially narrows the capital access tension, but the burden of proof falls on those claiming the remaining gap is unbridgeable without eliminating nonprofit control — that proof has not yet been presented in available evidence.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "Mission-first governance is a structural competitive advantage in frontier AI, not merely a reputational asset — it differentiates on talent, regulatory positioning, and government partnership access in ways a conventional for-profit cannot replicate.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "The 2023 board crisis was a governance process failure, not proof that nonprofit structures are incompatible with scale — the fix is governance professionalization, not structure abandonment.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": false
+        },
+        {
+          "claim_id": "side_a-claim-4",
+          "summary": "Abandoning nonprofit control in response to 'constraints don't actually constrain' criticism is self-defeating — it proves the critics right and permanently validates the worst interpretation of [redacted-provider]'s direction.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": false
+        }
+      ],
+      "citations": [
+        "ctx-1"
+      ],
+      "conclusion_confidence": "medium",
+      "open_questions": [
+        "Does the nonprofit board post-restructuring have genuine override rights or is control nominal?",
+        "Is there a specific large investor whose capital is concretely blocked by nonprofit control structure?",
+        "How is US/EU regulatory trajectory likely to treat mission-governance structures for frontier AI labs?",
+        "Does the nonprofit board have sufficient technical AI expertise to exercise its mandate in practice?",
+        "What compensation mechanisms are available under capped-profit structure to remain competitive without structure abandonment?"
+      ],
+      "critique_responses": [
+        {
+          "finding_id": "finding-2",
+          "disposition": "adopted",
+          "rationale": "The critique is correct that calling the capital access dilemma a 'false dilemma' overstates what the evidence supports, and that specific financing figures cited in the first pass were not drawn from the provided evidence set. The revised artifact removes those unsupported assertions and reframes the claim: the PBC restructuring substantially narrows the capital tension but does not fully resolve it, and the burden of proof should fall on those claiming the remaining gap requires eliminating nonprofit control. This is a more defensible position that acknowledges genuine uncertainty while preserving the core strategic recommendation."
+        }
+      ]
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-15-125055875Z-[redacted-provider]-nonprofit-control",
+      "side_id": "side_b",
+      "round": "final",
+      "artifact_markdown": "# Revised artifact\n\n## Strategic Recommendation Memo\n\n## Recommendation\nPreserve nonprofit control over the restructured public benefit corporation, but justify that choice on downside-risk management and mission credibility preservation rather than on any proven claim that nonprofit control already delivers superior commercial outcomes. A conventional for-profit structure would simplify capital formation, incentives, and some decisions. Even so, the better board choice is to keep nonprofit control because the May 2025 commitment has already made governance form part of [redacted-provider]'s external legitimacy, and reversing again would likely deepen governance-instability concerns at a moment when the company must show that scale and responsible oversight can coexist.\n\nThe practical implication is clear: nonprofit control should be retained only alongside a much more explicit operating model. The board should narrow and codify nonprofit reserved powers, delegate routine financing and operating authority to the PBC, and define concrete circumstances in which mission or safety oversight can override commercial pressure.\n\n## Why This Position Is Correct\nThe strongest evidence in the packet does not prove that nonprofit control creates measurable regulatory or sales advantages over rivals. It does, however, show three things that are strategically sufficient for the board's decision.\n\nFirst, [redacted-provider] publicly committed in May 2025 to keep the nonprofit in control while restructuring into a PBC. That means the decision is no longer an abstract design exercise. A subsequent move to a conventional for-profit structure would not be evaluated neutrally; it would be read as retreat under capital pressure after visible opposition from civic groups, researchers, and former employees. In a heavily scrutinized industry, that would predictably worsen trust in [redacted-provider]'s mission commitments and intensify criticism that governance promises are contingent.\n\nSecond, the company is operating after prior board turmoil and leadership conflict, which the packet identifies as a visible strategic risk. Under those conditions, another major reversal in control philosophy would likely increase perceived instability even if it simplified the cap table. The relevant comparison is therefore not \"ideal for-profit design versus ideal nonprofit design\" but \"stable clarified nonprofit-controlled PBC versus another disruptive governance reset.\" On that comparison, preserving control is superior.\n\nThird, PBC status already offers a middle path between mission preservation and commercial flexibility. The packet explicitly says a conventional for-profit could improve fundraising, incentives, and speed, but it also says keeping nonprofit control may preserve mission legitimacy, safety credibility, and political resilience in a highly scrutinized industry. That is not proof of hard commercial outperformance, but it is enough to support a board-level judgment that these governance qualities have option value and risk-mitigation value that would be costly to abandon permanently.\n\n## Strongest Counterarguments And Response\nThe strongest counterargument is that [redacted-provider] competes in a capital-intensive race against firms with simpler governance and enormous resources. If nonprofit control slows fundraising, partner negotiation, or executive decision-making, then preserving it could become strategically self-defeating.\n\nThat objection is serious and should change how the recommendation is framed. Nonprofit control should not be defended as inherently performance-enhancing. It should be defended as acceptable only if the PBC redesign removes most routine operating drag. If the board cannot make the structure decision-efficient enough to support very large capital and compute commitments, then the case for preservation weakens materially.\n\nA second counterargument is that mission-first control is meaningless unless it can constrain commercial pressure in practice. That critique is correct. The answer, however, is governance design rather than abandonment: specify reserved powers, conflict-escalation paths, safety-review triggers, and disclosure rules. If the board cannot make those mechanisms real, then nonprofit control becomes ceremonial and should not be treated as a strategic asset.\n\n## Board-Level Implications\nThe board should preserve nonprofit control, but on a narrower and more defensible theory: it reduces the risk of further mission-legitimacy erosion and governance backlash while retaining a governance backstop that a conventional for-profit structure would discard. The board should not assume this alone creates competitive advantage. It must earn the right to keep the model by proving the new PBC can still raise capital, move quickly, and support a scaled partnership model, especially with Microsoft.\n\n## Decision Frame\nChoose nonprofit control over a conventional for-profit structure because the larger immediate risk is not foregone governance simplification by itself, but the compounded instability and credibility damage from another reversal after the May 2025 commitment. This is a risk-management recommendation, not a claim that nonprofit control has already proven superior market performance.\n\n## Unknowns & Evidence Gaps\n- The biggest unresolved question is whether durable nonprofit control would materially reduce investor appetite or increase financing friction relative to a conventional for-profit structure.\n- It remains unclear whether Microsoft and other strategic partners view clarified nonprofit-controlled PBC governance as stable enough for long-term infrastructure and commercialization commitments.\n- The packet does not establish whether nonprofit control has produced measurable regulatory, enterprise, or recruiting advantages relative to rivals.\n- The board still needs evidence on which parts of current friction come from governance form versus from prior leadership conflict and ambiguous decision rights.\n\n## Pass/Fail Readiness\n- Pass if the board can preserve nonprofit control while delegating routine commercial, hiring, and financing decisions clearly to the PBC.\n- Pass if major capital providers and strategic partners indicate the revised structure is financeable and operationally workable.\n- Pass if nonprofit reserved powers are narrow, explicit, and tied to mission, safety, and structural decisions rather than day-to-day management.\n- Fail if nonprofit control remains symbolic, with no credible way to constrain commercial pressure in practice.\n- Fail if the revised structure materially impairs capital access, compute access, or execution speed versus available alternatives.\n\n## Recommended Next Artifact\nProduce a governance stress-test memo that maps decision rights across the nonprofit, the PBC board, and management; defines reserved powers and safety-escalation triggers; and evaluates three scenarios: a very large capital raise, a deployment controversy involving model safety, and a strategic-partner conflict involving Microsoft.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "[redacted-provider] should preserve nonprofit control primarily as a credibility- and stability-preserving risk-management choice after its May 2025 commitment, not because the evidence proves nonprofit control already yields superior commercial outcomes.",
+          "evidence_refs": [
+            "ctx-1",
+            "ctx-2",
+            "ctx-8",
+            "ctx-9",
+            "ctx-10"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "A public benefit corporation under nonprofit control remains the best available middle path because it can preserve mission-backed oversight while still expanding commercial flexibility if operating authorities are clearly delegated.",
+          "evidence_refs": [
+            "ctx-1",
+            "ctx-4",
+            "ctx-6",
+            "ctx-10"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "The strongest objection to nonprofit control is execution drag in a capital- and compute-intensive race, so the recommendation holds only if the redesign materially reduces routine financing and operating friction.",
+          "evidence_refs": [
+            "ctx-4",
+            "ctx-5",
+            "ctx-6",
+            "ctx-8"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-4",
+          "summary": "Nonprofit control is worth preserving only if it is made operationally real through explicit reserved powers, safety triggers, and conflict-escalation rules rather than left as symbolic oversight.",
+          "evidence_refs": [
+            "ctx-9",
+            "ctx-10",
+            "ctx-11"
+          ],
+          "is_major": true
+        }
+      ],
+      "citations": [
+        "ctx-1",
+        "ctx-2",
+        "ctx-4",
+        "ctx-5",
+        "ctx-6",
+        "ctx-8",
+        "ctx-9",
+        "ctx-10",
+        "ctx-11"
+      ],
+      "conclusion_confidence": "medium",
+      "open_questions": [],
+      "critique_responses": [
+        {
+          "finding_id": "finding-1",
+          "disposition": "adopted",
+          "rationale": "The critique is correct that the first-pass memo overstated the evidence for nonprofit control as a demonstrated competitive asset. The revision narrows the claim: nonprofit control is defended as a stability- and legitimacy-preserving risk-management choice after the May 2025 commitment and prior governance turmoil, while explicitly acknowledging that the packet does not prove superior regulatory, enterprise, or investor outcomes versus for-profit rivals."
+        }
+      ]
+    }
+  },
+  "min_margin_for_verdict": 0.1
+}
+
+Replay addendum:
+- This replay will be rejected unless EVERY required property is present.
+- Do not omit `dimension_rationales`.
+- Do not omit `side_summaries`.
+- `rubric_scores.side_a.weighted_total` and `rubric_scores.side_b.weighted_total` must each stay within the same 1-5 scale as the rubric dimensions.
+- Return ONLY the JSON object. No markdown fences, no prose before or after.
