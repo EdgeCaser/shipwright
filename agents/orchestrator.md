@@ -90,29 +90,44 @@ When a PM asks a high-stakes binary decision question — "should we acquire X?"
 
 **Execution flow:**
 
-1. **State the inferred class.** Tell the PM what class you're using: "I'm treating this as a **governance** decision." If the class is `unclassified`, ask the PM to pick one from the list above before proceeding.
+Since you are already running inside a Claude Code session, dispatch the analysis inline using the Agent tool — do not shell out to `node scripts/shipwright.mjs`. That CLI path is for standalone terminal use only.
 
-2. **Ask about providers once.** Say: "Which AI providers do you have access to — claude, gpt, gemini? List whichever apply, or just say 'go' to use claude only." If the PM says go or provides no list, default to `--provider claude`.
+1. **State the inferred class.** Tell the PM what class you're using: "I'm treating this as a **governance** decision." If the class is `unclassified`, ask the PM to pick one before proceeding.
 
-3. **Run the analysis via Bash:**
-   ```bash
-   node scripts/shipwright.mjs \
-     --question "<exact question from PM>" \
-     --class <scenarioClass> \
-     --provider claude [--provider gpt] [--provider gemini] \
-     --yes
+2. **Dispatch a Fast Mode analysis agent.** Use the Agent tool with this prompt structure:
+
    ```
-   The `--yes` flag auto-confirms the escalation gate so the PM sees the full result without a second prompt.
+   You are a strategic analyst providing a fast directional recommendation.
+   Do not reveal your provider identity.
+   Analyze the scenario below and return a structured recommendation.
 
-4. **Surface the result inline.** Read `orchestration.json` from the output path printed by the command. Report:
-   - The terminal UX state (`fast_provisional`, `fast_uncertain`, `rigor_complete`, `not_ready`, etc.)
-   - The recommendation and confidence band
-   - The uncertainty payload if present (key gaps, disambiguation questions)
+   Question: <exact question from the PM>
+   Scenario class: <governance | publication | product_strategy | pricing | unclassified>
 
-5. **Handle `not_ready` results.** If the terminal state is `not_ready`, show the uncertainty drivers and offer the three follow-up actions:
-   - `gather_more_evidence` — re-runs Fast Mode with a refined question
-   - `create_follow_up_brief` — writes a markdown brief for human review
-   - `open_human_review` — flags the session for manual review
+   Return your answer with these fields clearly labeled:
+   - RECOMMENDATION: a direct, actionable statement of what to do
+   - CONFIDENCE: high / medium / low
+   - NEEDS_HUMAN_REVIEW: yes / no
+   - SUMMARY: 1-2 sentences of core reasoning
+   - KEY_REASONING: 2-4 bullet points, each a concrete reason
+
+   If confidence is medium or low, OR if needs_human_review is yes, also include:
+   - UNCERTAINTY_DRIVERS: concrete reasons the recommendation is uncertain
+   - DISAMBIGUATION_QUESTIONS: the most important questions that would resolve uncertainty
+   - NEEDED_EVIDENCE: specific evidence that would raise confidence
+   - RECOMMENDED_NEXT_ACTION: single most important next step before acting
+   ```
+
+3. **Surface the result inline.** From the agent's response, present:
+   - The recommendation and confidence level
+   - The summary and key reasoning
+   - The uncertainty payload if present (drivers, questions, needed evidence)
+
+4. **Offer escalation for governance and publication class.** If `decisionClass` is `governance` or `publication`, tell the PM: "This class typically benefits from a cross-model panel. I can run a second pass with a different model family to stress-test the recommendation — want me to proceed?" If yes, dispatch a second analysis agent (instruct it to argue the opposite position and identify weaknesses in the first recommendation), then synthesize both.
+
+5. **Handle low-confidence results.** If confidence is low or needs_human_review is yes, offer:
+   - "Run again with a more targeted question" — refine the question around the uncertainty drivers and re-dispatch
+   - "Write a follow-up brief" — produce a structured markdown brief with the uncertainty context for human review
 
 6. **Do not route to `/strategy` or a skill** when the question is a high-stakes binary decision requiring a verdict.
 
