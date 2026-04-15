@@ -180,11 +180,17 @@ done 2>/dev/null | sort | uniq -c | sort -rn
 
 ## Current git state
 
+> **Note:** This block reflects the state at memo-write time. Run `git log --oneline -5` and `git status` before relying on it.
+
+The session ended at commit `b0a2bbe` ("Add Codex handoff memo for 2026-04-15 session"), which is the commit that created this file. The commit before it, `e644b5b`, fixed the 10 test failures.
+
+Untracked paths present at session end (none are staged; all are safe to leave or commit separately):
+
 ```
-branch: main (up to date with origin/main)
-last commit: e644b5b  Fix 10 pre-existing test failures
-test suite: 350/350 passing
-uncommitted: benchmarks/results/... (untracked run outputs, not staged)
+benchmarks/results/conflict-harness/*/rejudges/   — Claude replay and Phase 2 rejudge outputs
+benchmarks/results/fast-analysis/                 — session layer test run outputs
+benchmarks/results/orchestrated/                  — session layer test run outputs
+benchmarks/telemetry/                             — session-scoped telemetry from decision service tests
 ```
 
-No unresolved conflicts, no stash, nothing in-flight.
+No unresolved conflicts, no stash, nothing in-flight. Test suite was 350/350 at session end.
