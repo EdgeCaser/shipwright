@@ -7,7 +7,7 @@
 
 The strongest current conclusion is unchanged in direction but stronger in wording support: the earlier 6/6 GPT `side_b` governance pattern should not be treated as a scenario-level finding. The available evidence is now best explained by a mix led by judge-family effects, with some scenario-specific robustness on a smaller subset of cases.
 
-The most important new data point is a successful live rerun of `openai-nonprofit-control` under the Phase 2 codepath. GPT again selected `side_b`, but this time at **margin 0.6, medium confidence, and no human-review flag**. That materially strengthens the case that `openai-nonprofit-control` is one of the few governance scenarios that may be robustly `side_b` across families and across reruns, not just an artifact of the earlier low-confidence screen.
+The most important new data point is a successful live rerun of `openai-nonprofit-control` under the Phase 2 codepath. GPT again selected `side_b`, but this time at **margin 0.6, medium confidence, and no human-review flag**. That materially strengthens the case that `openai-nonprofit-control` is one of the few governance scenarios that may be more stable than the rest of the set, but the confirmation is still weaker than a fresh cross-family rerun because GPT was both the judge and Side B in the default harness configuration.
 
 Separately, the Phase 2 implementation is now validated in live harness execution. The run completed end to end under the updated schema. The new uncertainty payload did not appear in this particular verdict because the trigger conditions did not fire, which is the correct behavior.
 
@@ -45,7 +45,7 @@ This matters because the earlier governance screen had already shown `openai-non
 - on regenerated artifacts, not just frozen-artifact replay
 - with stronger decisiveness than the earlier low-confidence result
 
-That does **not** prove the scenario is universally `side_b`, but it does move `openai-nonprofit-control` out of the "possibly fragile agreement" bucket and into the stronger "candidate robust finding" bucket.
+That does **not** prove the scenario is universally `side_b`, and it should not be read as independent cross-family confirmation. What it does show is stronger **within-family support** for `openai-nonprofit-control`: the scenario again resolved to `side_b` under GPT on regenerated artifacts, and with higher decisiveness than before. That moves it out of the "possibly fragile agreement" bucket, but not all the way to a robust-finding claim.
 
 ### Phase 2 smoke result
 
@@ -67,7 +67,7 @@ So the current validation result is:
 
 Do not treat the governance set as supporting a substantive "Side B is generally stronger on governance" claim. The 4/6 GPT-Claude disagreement rate still dominates the interpretation of the six-scenario batch.
 
-### 2. `openai-nonprofit-control` is now the strongest governance scenario in the set
+### 2. `openai-nonprofit-control` is now the strongest governance scenario in the set, but still not fully confirmed
 
 Among the governance cases, `openai-nonprofit-control` now has the best claim to robustness:
 
@@ -75,7 +75,7 @@ Among the governance cases, `openai-nonprofit-control` now has the best claim to
 - it now held `side_b` again in a fresh completed live rerun
 - the latest GPT result was stronger than before: `0.6` margin, `medium` confidence, no review flag
 
-That does not make it publication-ready on its own, but it is now the clearest candidate for a cross-family substantive example.
+That does not make it publication-ready on its own. The fresh rerun is still a GPT-judge / GPT-Side-B confirmation in the default harness configuration, so the right reading is: `openai-nonprofit-control` is now the clearest **lead candidate** for a cross-family substantive example, pending Gemini.
 
 ### 3. `bayer-breakup-not-now` remains the other serious candidate, but with less new support
 
@@ -99,19 +99,19 @@ The uncertainty-payload implementation is no longer just code-complete; it has p
 
 ## Recommended Next Moves
 
-1. Run **Gemini rejudge on `openai-nonprofit-control` first**. This is now the single highest-value calibration step if the goal is one defensible governance example.
+1. Run **Gemini rejudge on `openai-nonprofit-control` first**. This is now the single highest-value calibration step if the goal is one defensible governance example, because the latest strengthening evidence is still within-family rather than fresh cross-family confirmation.
 2. Run **Gemini rejudge on `bayer-breakup-not-now` second**. That will tell us whether there are one or two governance scenarios with genuine cross-family durability.
 3. Find one intentionally uncertain scenario to validate the **Phase 2 triggering branch** in a live run. The goal is not another governance claim; it is confirming the new payload appears under `tie`, low-confidence, or review-triggered conditions.
 4. Do not expand the governance publication claim beyond the stable subset until Gemini data is in.
 
 ## Decision Frame
 
-The project should now treat the governance work as having produced a **narrower but stronger** conclusion: the six-scenario batch does not support a general `side_b` thesis, but `openai-nonprofit-control` in particular is emerging as a potentially robust cross-family `side_b` case.
+The project should now treat the governance work as having produced a **narrower but stronger** conclusion: the six-scenario batch does not support a general `side_b` thesis, and `openai-nonprofit-control` is the leading candidate for a robust `side_b` case, but it still needs Gemini before that claim should harden.
 
 ## Unknowns & Evidence Gaps
 
 - Gemini has not yet been run on the two held governance scenarios.
-- We still do not know whether `openai-nonprofit-control` remains stable under additional GPT reruns or under Gemini.
+- We still do not know whether `openai-nonprofit-control` remains stable under Gemini, which matters more than another GPT rerun because the latest confirming run used GPT as both judge and Side B.
 - The Phase 2 uncertainty payload has not yet been observed in a live triggered verdict.
 
 ## Pass/Fail Readiness
