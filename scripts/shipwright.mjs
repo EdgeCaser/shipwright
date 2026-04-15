@@ -95,6 +95,8 @@ async function writeTempScenario(scenarioId, question) {
     title: question.length > 80 ? question.slice(0, 77) + '...' : question,
     inputs: {
       prompt: question,
+      // Required by the conflict harness case packet schema.
+      expected_artifact_type: 'recommendation',
     },
   };
 

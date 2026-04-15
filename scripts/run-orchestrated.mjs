@@ -41,7 +41,7 @@
  *     --yes
  */
 
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { createInterface } from 'node:readline';
 import path from 'node:path';
 import {
@@ -51,6 +51,8 @@ import {
 } from './orchestrate.mjs';
 import { runFastAnalysis, AGENT_PROFILES } from './run-fast-analysis.mjs';
 import { runConflictHarness } from './run-conflict-harness.mjs';
+import { buildCasePacketFromScenario } from './build-case-packet.mjs';
+import { emit } from './telemetry.mjs';
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -147,6 +149,14 @@ export async function runOrchestrated(options = {}) {
     return { dryRun: true, preRunResult, orchestrationLog };
   }
 
+  emit('run_started', {
+    run_id: runId,
+    scenario_id: scenarioId,
+    scenario_class: scenarioClass,
+    available_providers: availableProviders,
+    can_run_double_panel: providerAvailability.can_run_double_panel,
+  });
+
   // -------------------------------------------------------------------------
   // Stage 1: Fast Mode
   // -------------------------------------------------------------------------
@@ -182,6 +192,18 @@ export async function runOrchestrated(options = {}) {
 
   printFastResult(fastRun, fastAnalysis);
 
+  emit('fast_completed', {
+    run_id: runId,
+    fast_run_id: fastRun.run_id,
+    scenario_id: scenarioId,
+    scenario_class: scenarioClass,
+    agent: fastProvider,
+    confidence_band: fastRun.confidence_band,
+    ux_state: fastRun.ux_state,
+    needs_human_review: fastRun.needs_human_review,
+    has_uncertainty_payload: fastRun.has_uncertainty_payload,
+  });
+
   // -------------------------------------------------------------------------
   // Post-single routing
   // -------------------------------------------------------------------------
@@ -215,6 +237,16 @@ export async function runOrchestrated(options = {}) {
       fastRunId: fastRun.run_id,
     });
 
+    emit('run_completed', {
+      run_id: runId,
+      scenario_id: scenarioId,
+      scenario_class: scenarioClass,
+      terminal_stage: 'post_single',
+      terminal_ux_state: postSingleResult.ux_state,
+      terminal_ux_substate: postSingleResult.ux_substate,
+      stages_run: ['fast'],
+    });
+
     printStage('RESULT', postSingleResult.explanation);
     printTerminalState(postSingleResult);
     return {
@@ -245,6 +277,16 @@ export async function runOrchestrated(options = {}) {
       fastRunId: fastRun.run_id,
     });
 
+    emit('run_completed', {
+      run_id: runId,
+      scenario_id: scenarioId,
+      scenario_class: scenarioClass,
+      terminal_stage: 'post_single',
+      terminal_ux_state: postSingleResult.ux_state,
+      terminal_ux_substate: postSingleResult.ux_substate,
+      stages_run: ['fast'],
+    });
+
     printStage('RESULT', postSingleResult.explanation);
     if (postSingleResult.follow_up_action) {
       process.stdout.write(`Next action: ${postSingleResult.follow_up_action}\n`);
@@ -266,6 +308,15 @@ export async function runOrchestrated(options = {}) {
   printStage('ESCALATION GATE', postSingleResult.explanation);
   process.stdout.write(`\nRecommendation: ${postSingleResult.follow_up_action}\n`);
   process.stdout.write('This will run a full conflict harness (debate + judge) across two model families.\n');
+
+  emit('escalation_offered', {
+    run_id: runId,
+    scenario_id: scenarioId,
+    scenario_class: scenarioClass,
+    fast_ux_state: fastRun.ux_state,
+    fast_confidence: fastRun.confidence_band,
+    recommended_next_mode: postSingleResult.recommended_next_mode,
+  });
 
   const confirmed = autoConfirm
     ? (process.stdout.write('Auto-confirming escalation (--yes)\n'), true)
@@ -294,6 +345,22 @@ export async function runOrchestrated(options = {}) {
       fastRunId: fastRun.run_id,
     });
 
+    emit('escalation_declined', {
+      run_id: runId,
+      scenario_id: scenarioId,
+      scenario_class: scenarioClass,
+    });
+
+    emit('run_completed', {
+      run_id: runId,
+      scenario_id: scenarioId,
+      scenario_class: scenarioClass,
+      terminal_stage: 'post_single_declined',
+      terminal_ux_state: userDeclinedResult.ux_state,
+      terminal_ux_substate: userDeclinedResult.ux_substate,
+      stages_run: ['fast'],
+    });
+
     printStage('RESULT', userDeclinedResult.explanation);
     printTerminalState(userDeclinedResult);
     return {
@@ -304,6 +371,12 @@ export async function runOrchestrated(options = {}) {
       orchestrationLog,
     };
   }
+
+  emit('escalation_accepted', {
+    run_id: runId,
+    scenario_id: scenarioId,
+    scenario_class: scenarioClass,
+  });
 
   // -------------------------------------------------------------------------
   // Stage 2: Rigor Mode (conflict harness)
@@ -319,9 +392,16 @@ export async function runOrchestrated(options = {}) {
   let rigorRun;
 
   try {
+    // Build the case packet directly to avoid the benchmark fixture validation
+    // in loadBenchmarkScenario — orchestrated runs don't need pre-authored artifacts.
+    const scenarioFilePath = scenarioArg.endsWith('.json')
+      ? path.resolve(scenarioArg)
+      : path.join(scenarioDir, `${scenarioArg}.json`);
+    const scenarioJson = JSON.parse(await readFile(scenarioFilePath, 'utf8'));
+    const casePacket = buildCasePacketFromScenario(scenarioJson);
+
     const result = await runConflictHarness({
-      scenario: scenarioArg,
-      scenarioDir,
+      casePacket,
       outDir: path.join(outDir, 'stage-2-rigor'),
       runId: `${runId}-rigor`,
       sideACommand: PROVIDER_COMMANDS[sideA] || PROVIDER_COMMANDS.gpt,
@@ -342,14 +422,29 @@ export async function runOrchestrated(options = {}) {
 
   printRigorResult(rigorRun);
 
+  const rigorResultRaw = rigorRun.results || rigorRun.verdict || {};
+
+  emit('rigor_completed', {
+    run_id: runId,
+    rigor_run_id: rigorRun.run_id,
+    scenario_id: scenarioId,
+    scenario_class: scenarioClass,
+    side_a: sideA,
+    side_b: sideB,
+    judge,
+    winner: rigorResultRaw.winner || null,
+    judge_confidence: rigorResultRaw.judge_confidence || null,
+    needs_human_review: rigorResultRaw.needs_human_review || false,
+    has_uncertainty_payload: rigorResultRaw.uncertainty_payload != null,
+  });
+
   // -------------------------------------------------------------------------
   // Post-judge routing
   // -------------------------------------------------------------------------
 
-  const rigorResult = rigorRun.results || rigorRun.verdict || {};
-  const rigorConfidence = rigorResult.judge_confidence || null;
-  const rigorNeedsReview = rigorResult.needs_human_review || false;
-  const rigorHasPayload = rigorResult.uncertainty_payload != null;
+  const rigorConfidence = rigorResultRaw.judge_confidence || null;
+  const rigorNeedsReview = rigorResultRaw.needs_human_review || false;
+  const rigorHasPayload = rigorResultRaw.uncertainty_payload != null;
 
   const postJudgeResult = route({
     scenario_class: scenarioClass,
@@ -372,6 +467,16 @@ export async function runOrchestrated(options = {}) {
     terminalResult: postJudgeResult,
     fastRunId: fastRun.run_id,
     rigorRunId: rigorRun.run_id,
+  });
+
+  emit('run_completed', {
+    run_id: runId,
+    scenario_id: scenarioId,
+    scenario_class: scenarioClass,
+    terminal_stage: 'post_judge',
+    terminal_ux_state: postJudgeResult.ux_state,
+    terminal_ux_substate: postJudgeResult.ux_substate,
+    stages_run: ['fast', 'rigor'],
   });
 
   printStage('RESULT', postJudgeResult.explanation);
