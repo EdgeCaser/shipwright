@@ -1,0 +1,143 @@
+You are SIDE_A in the final revision phase for run conflict-2026-04-15-053013083Z-event-automation-boundary.
+You must either adopt the critique or reject it with reasoning.
+Do not reveal provider identity.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "run_id": "conflict-2026-04-15-053013083Z-event-automation-boundary",
+  "side_id": "side_a",
+  "round": "final",
+  "artifact_markdown": "# Revised artifact",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "Updated major claim",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1"
+  ],
+  "conclusion_confidence": "medium",
+  "open_questions": [],
+  "critique_responses": [
+    {
+      "finding_id": "finding-2",
+      "disposition": "adopted",
+      "rationale": "Why the critique was adopted or rejected."
+    }
+  ]
+}
+
+Case packet:
+{
+  "scenario_id": "event-automation-boundary",
+  "title": "Event automation platform with human-in-the-loop boundary constraints",
+  "prompt": "Write a Phase 1 PRD for an event management automation platform with a WhatsApp assistant, an internal console, human approval for pricing commitments, and strict deterministic boundaries around LLM usage.",
+  "artifact_type": "prd",
+  "rubric": {
+    "dimensions": [
+      "claim quality",
+      "evidence discipline",
+      "responsiveness to critique",
+      "internal consistency",
+      "decision usefulness"
+    ],
+    "scoring_scale": "1-5",
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "constraints": {
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "expect_structured": true,
+    "context_files": [],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "evidence": [],
+  "max_rounds": 3,
+  "tool_policy": "none",
+  "sharing_policy": {
+    "share_case_packet": true,
+    "share_committed_artifacts_after_first_pass": true,
+    "share_critiques_after_open": true,
+    "share_hidden_reasoning": false,
+    "share_provider_identity": false,
+    "share_internal_coalition_drafts": false
+  },
+  "success_condition": {
+    "type": "validator_contract",
+    "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+    "validator": {
+      "artifact_type": "prd",
+      "expect_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true
+    }
+  }
+}
+
+Your first-pass artifact:
+{
+  "run_id": "conflict-2026-04-15-053013083Z-event-automation-boundary",
+  "side_id": "side_a",
+  "round": "first_pass",
+  "artifact_markdown": "# Phase 1 PRD: Event Automation Platform\n\n## Decision Frame\n\n**What decision does this PRD gate?**\nWhether to staff and fund a Phase 1 build (est. 8–12 weeks) that ships a WhatsApp intake assistant, an internal ops console, and a human-approval layer for pricing commitments — before any autonomous execution capability is introduced.\n\n**Core bet:** The primary friction in event management operations is not a shortage of staff — it is latency and consistency in qualification, scoping, and commitment. An LLM-assisted intake loop (WhatsApp) paired with a deterministic approval gate can cut quote turnaround from 48–72 hrs to under 4 hrs without increasing error rate on pricing.\n\n**Scope boundary (Phase 1):**\n- IN: WhatsApp assistant for intake and FAQ; internal console for ops team; human-in-the-loop approval for any commitment ≥ pricing threshold; deterministic rules engine for all downstream actions post-approval.\n- OUT: Autonomous booking, payment processing, vendor negotiation, or any LLM-generated commitment flowing to a client without human review.\n\n**LLM usage policy (non-negotiable):**\n| Function | LLM Allowed? | Rationale |\n|---|---|---|\n| Client intake classification | Yes | Low-stakes, reversible |\n| FAQ / info responses | Yes | Factual, bounded |\n| Draft quote generation | Yes (draft only) | Human reviews before send |\n| Pricing commitment to client | No | Deterministic rule + human sign-off |\n| Vendor availability lookup | No | API call, not inference |\n| Contract generation | No | Template engine only |\n| Any action with financial consequence | No | Hard boundary |\n\nThis table is the authoritative LLM boundary document for Phase 1. Any deviation requires an ADR.\n\n---\n\n## Target Users\n\n**Primary:** Internal ops team (2–6 coordinators) managing inbound event requests across WhatsApp, email, and phone.\n**Secondary:** Clients initiating event inquiries via WhatsApp.\n**Out of scope for Phase 1:** Vendors, venues, finance team.\n\n---\n\n## Functional Requirements\n\n### F1 — WhatsApp Intake Assistant\n- Receives inbound WhatsApp messages via WhatsApp Business API.\n- Classifies intent: new inquiry, existing booking question, vendor coordination, or out-of-scope.\n- Collects structured intake fields: event type, date range, headcount, venue preference, budget signal.\n- Responds with FAQ answers or confirms handoff to ops console.\n- Does NOT confirm pricing, availability, or commit to any service.\n- Fallback: if confidence < threshold OR intent = pricing/commitment, route to human immediately with full context.\n\n### F2 — Internal Ops Console\n- Displays all active conversations with intake summary and extracted fields.\n- Allows ops team to assign, respond, escalate.\n- Shows pending approval queue for pricing commitments.\n- Audit log: every LLM-generated draft is marked as draft; every human action is timestamped and attributed.\n\n### F3 — Human Approval Gate (Pricing)\n- When a quote draft is generated, it enters PENDING state.\n- Ops team member reviews draft in console, edits if needed, approves or rejects.\n- Only upon explicit approval does any pricing information reach the client.\n- Approval is a named, timestamped action — non-repudiable.\n- No auto-approval path exists in Phase 1, regardless of quote size.\n\n### F4 — Deterministic Rules Engine\n- Post-approval actions (send quote, schedule follow-up, log to CRM) are executed by rule, not LLM.\n- Rules are version-controlled and operator-editable without code deployment.\n\n---\n\n## Non-Functional Requirements\n\n- **Latency:** WhatsApp response within 10 seconds for automated replies.\n- **Audit:** 100% of LLM-generated content logged with prompt, completion, model version, and timestamp.\n- **Explainability:** Ops team can see why any message was classified as it was (top-reason display).\n- **Failsafe:** Any LLM service outage falls back to human-only queue; no client-facing degradation.\n- **Data residency:** Client PII must not be sent to LLM providers without consent; intake fields are structured and separated from free-text before LLM call.\n\n---\n\n## Unknowns & Evidence Gaps\n\n| # | Unknown | Why It Matters | How to Resolve | Blocking? |\n|---|---|---|---|---|\n| U1 | Actual intake volume and peak load | Determines whether WhatsApp throughput and console queue design are sufficient | Ops team audit of last 90 days of inbound inquiries | Yes — before infra sizing |\n| U2 | Ops team approval latency in practice | If team approves in <15 min, the gate adds minimal friction; if >4 hrs, client experience degrades | Shadow study: time ops team on current quote approval flow | Yes — affects UX promise |\n| U3 | WhatsApp Business API availability in target market | WABA has geo/tier restrictions; some markets require BSP intermediary | Confirm with ops which countries clients are in; check WABA terms | Yes — before committing to WhatsApp channel |\n| U4 | Acceptable LLM provider for PII handling | Ops and legal may have constraints on which LLM APIs can receive client data | Legal/compliance review before vendor selection | Yes — before architecture commit |\n| U5 | Threshold for \"pricing commitment\" | $0? Any number? Only confirmed bookings? | Product + ops alignment session | Yes — defines the gate trigger |\n| U6 | CRM / calendar integration requirements | Console must read/write existing ops data; unknown system | Ops team systems audit | No — can be deferred to Phase 1b |\n\n**Gap summary:** 5 of 6 unknowns are Phase 1 blockers. None can be resolved without direct ops team access. This PRD should not gate a build until U1–U5 are resolved.\n\n---\n\n## Pass/Fail Readiness\n\n**This PRD is READY TO PROCEED to discovery sprint if and only if:**\n\n| Criterion | Status | Owner |\n|---|---|---|\n| Ops team sponsor identified and committed to 3 discovery sessions | ⬜ Not confirmed | Product lead |\n| WhatsApp Business API feasibility confirmed for target geo | ⬜ Not confirmed | Engineering lead |\n| LLM provider shortlist with PII handling confirmed | ⬜ Not confirmed | Engineering + Legal |\n| \"Pricing commitment\" threshold defined and agreed | ⬜ Not confirmed | Product + Ops |\n| Ops team approval latency baseline measured | ⬜ Not confirmed | Product lead |\n\n**Current readiness verdict: NOT READY FOR BUILD.** Ready for a 1-week discovery sprint to resolve U1–U5.\n\n**Hard stops that would kill Phase 1:**\n- WABA unavailable in primary market → pivot to SMS or web chat before committing to WhatsApp architecture.\n- Legal blocks LLM providers from receiving PII → scope drops to rule-based intake only; LLM value drops sharply.\n- Ops approval latency > 4 hrs structurally → human gate becomes a bottleneck; re-evaluate whether automation actually helps.\n\n---\n\n## Recommended Next Artifact\n\n**Immediate (this week):** Discovery sprint kickoff doc — a one-pager scoping 5 ops team interviews and a systems audit to close U1–U5.\n\n**After discovery closes U1–U5:**\n- If green: Technical Architecture Decision Record (ADR) covering LLM provider, WABA integration pattern, and approval gate data model.\n- If yellow (1–2 unknowns soft): Proceed to ADR with explicit assumptions logged and a 2-week checkpoint.\n- If red (hard stop triggered): Scope pivot memo recommending either channel swap or rules-only Phase 1.\n\n**Do not proceed to:**\n- Engineering spec\n- Vendor contracts\n- UI wireframes\n\n...until the ADR is approved. Wireframes built before the LLM boundary and approval gate data model are locked will be thrown away.\n",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "The PRD correctly identifies 5 blocking unknowns (intake volume, approval latency, WABA geo availability, LLM PII policy, pricing threshold definition) that prevent a build decision and recommends a discovery sprint rather than premature engineering commitment.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "The LLM boundary table (F1–F4 + NFR) is the structural core of the PRD: it explicitly prohibits LLM-generated pricing commitments from reaching clients without a named human approval action, satisfying the 'strict deterministic boundaries' constraint.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-3",
+      "summary": "Pass/Fail Readiness section renders a clear NOT READY FOR BUILD verdict with named criteria, owners, and hard-stop conditions — making the PRD decision-useful rather than aspirational.",
+      "evidence_refs": [],
+      "is_major": false
+    }
+  ],
+  "citations": [],
+  "conclusion_confidence": "medium",
+  "open_questions": [
+    "What is the client's current quote approval SLA and how often is it missed? This determines whether the human gate is an improvement or a bottleneck.",
+    "Is WhatsApp the channel clients actually use, or is it the channel ops wants to build? These can diverge significantly in B2B event contexts.",
+    "What constitutes a 'pricing commitment' — is a ballpark figure in a WhatsApp message already a commitment under client expectations or contract law in this market?"
+  ],
+  "critique_responses": []
+}
+
+Visible critique packet:
+{
+  "target_side": "side_a",
+  "finding_id": "finding-2",
+  "target_claim_ids": [
+    "side_a-claim-1"
+  ],
+  "claim_under_attack": "The PRD correctly identifies 5 blocking unknowns that prevent a build decision and recommends a discovery sprint rather than premature engineering commitment.",
+  "attack_type": "evidence_gap",
+  "evidence_or_reason": "The visible artifact does not justify why these five are the blocking set or why they are sufficient to defer build. It labels U1-U5 as blockers, but provides no evidence that other unresolved items implied by the prompt are non-blocking, such as approval-role design, deterministic fallback behavior for ambiguous messages, consent and retention handling for WhatsApp conversations, or integration constraints for the internal console. Calling the blocker list 'correct' overclaims beyond what the artifact substantiates.",
+  "severity": "medium"
+}

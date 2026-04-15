@@ -1,0 +1,106 @@
+{
+  "case_packet": {
+    "scenario_id": "feature-weak-evidence",
+    "title": "New feature with weak evidence",
+    "prompt": "Draft a PRD for a new feature with weak supporting evidence.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass": {
+    "run_id": "conflict-2026-04-15-053503038Z-feature-weak-evidence",
+    "side_id": "side_a",
+    "round": "first_pass",
+    "artifact_markdown": "# PRD: Smart Notification Digest\n\n> **Evidence Status:** WEAK — this PRD is written under low-confidence conditions. Sections are structured to surface gaps, not paper over them.\n\n---\n\n## Decision Frame\n\n**Feature:** Smart Notification Digest — batch and summarize incoming notifications into a periodic digest rather than delivering each in real time.\n\n**Decision required:** Approve a discovery spike (2-week, 1 engineer + 1 designer) to validate core assumptions before committing to build.\n\n**Why this is on the table now:** Anecdotal signals from 3 support tickets and 1 NPS comment cite \"notification overload\" as a friction point. No structured data collection has occurred. This is not sufficient to spec a full feature — it is sufficient to ask whether the feature is worth investigating.\n\n**What this PRD is NOT:** A build authorization. This document exists to expose what we do not know and propose the minimum work needed to find out.\n\n**Strategic fit (asserted, not proven):** Reducing notification fatigue could improve DAU retention in the 8–30 day cohort where churn is highest. This is a hypothesis, not a finding.\n\n---\n\n## Problem Statement\n\nUsers may be experiencing notification fatigue that degrades engagement. We have no quantified baseline. We do not know whether the problem is notification volume, notification relevance, notification timing, or some combination. We do not know whether a digest format is the right solution class or whether suppression, relevance filtering, or preference controls would be higher-leverage.\n\n---\n\n## Proposed Feature (Sketch-Level)\n\nA user-controlled digest mode that:\n- Batches notifications into configurable windows (e.g., morning / afternoon / evening)\n- Surfaces a ranked summary rather than individual alerts\n- Allows per-category opt-out from digest (e.g., direct messages always real-time)\n\nThis sketch exists to give the discovery spike a concrete hypothesis to test against — not to pre-commit the implementation shape.\n\n---\n\n## Unknowns & Evidence Gaps\n\n| # | Unknown | Why It Matters | How to Resolve |\n|---|---------|---------------|----------------|\n| U-1 | What % of active users receive >N notifications/day? | Determines whether \"overload\" is a tail problem or mainstream | Query event logs |\n| U-2 | Is notification volume correlated with churn in the 8–30d cohort? | Core causal assumption — if not correlated, feature motivation collapses | Retention cohort analysis |\n| U-3 | Do users want batching, or do they want filtering/relevance? | Wrong solution class = wasted build | 6–8 user interviews |\n| U-4 | What is the notification delivery architecture? Can digest be implemented without real-time infrastructure changes? | Determines spike vs. quarter-length effort | Engineering spike (0.5 days) |\n| U-5 | Are there regulatory or contractual SLAs on notification delivery timing? | Could block the feature entirely | Legal/compliance check |\n| U-6 | What do comparable products do, and what outcomes have they reported? | Informs solution shape and expected lift | Desk research |\n\n**Evidence currently in hand:** 3 support tickets (anecdotal, N=3, non-representative), 1 NPS verbatim (single data point). No quantitative data. No user research. No competitive benchmarks.\n\n**Confidence in problem existence:** Low (2/5)\n**Confidence in proposed solution fit:** Very low (1/5)\n\n---\n\n## Pass/Fail Readiness\n\nThis PRD is **NOT ready to advance to build** until the following criteria are met:\n\n### Hard Gates (all required)\n- [ ] **G-1 — Problem validated:** Cohort analysis confirms notification volume correlates with churn at statistically meaningful level (p < 0.05, effect size ≥ 5% churn delta)\n- [ ] **G-2 — Solution class confirmed:** User interviews (n ≥ 6) indicate digest/batching is preferred over filtering or preference controls as the primary intervention\n- [ ] **G-3 — Technical feasibility:** Engineering confirms digest can be delivered without real-time infrastructure rebuild (i.e., within a 4–6 week build window)\n- [ ] **G-4 — No blocking constraints:** Legal/compliance confirms no delivery-timing SLAs that would prohibit batching\n\n### Soft Signals (inform prioritization, not gates)\n- Support ticket volume trending upward (currently flat/unknown)\n- Competitor digest adoption linked to measurable retention improvement\n- Product leadership alignment that retention in 8–30d cohort is a current quarter priority\n\n### Kill Conditions (stop if any are true)\n- Cohort analysis shows no correlation between notification volume and churn\n- Majority of interviewees prefer relevance filtering over batching\n- Engineering estimates >8 weeks for MVP implementation\n\n---\n\n## Recommended Next Artifact\n\n**Immediate:** Commission a 2-week discovery spike with two parallel workstreams:\n\n1. **Data workstream (analyst, 3 days):** Run retention cohort analysis against notification volume; produce a single finding memo against G-1.\n2. **Research workstream (designer/researcher, 5 days):** Conduct 6–8 user interviews focused on notification behavior and preferences; produce a synthesis memo against G-2.\n\n**Gate review:** Reconvene after spike. If G-1 and G-2 both pass, produce a full PRD with quantified success metrics, defined MVP scope, and build estimate. If either fails, close this initiative or redirect to validated problem.\n\n**Artifact produced at gate review (if passing):** Full PRD with:\n- Quantified baseline metrics\n- Defined MVP scope\n- Success metrics with targets\n- Engineering estimate\n- Rollout plan\n\n---\n\n## What Good Looks Like (for gate review PRD)\n\n- Problem statement backed by cohort data, not anecdote\n- Solution shape backed by research, not assumption\n- Success metric is a leading indicator measurable within 4 weeks of launch\n- Scope is the smallest thing that tests the core hypothesis\n\n---\n\n*This PRD was written under weak-evidence conditions. Its primary purpose is to name what we don't know and define the minimum work to find out — not to justify a build decision.*",
+    "claims": [
+      {
+        "claim_id": "side_a-claim-1",
+        "summary": "A PRD written under weak-evidence conditions should surface gaps and gate on discovery, not authorize a build — the document's primary value is structuring what must be learned before commitment.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_a-claim-2",
+        "summary": "The current evidence base (3 support tickets, 1 NPS comment) is insufficient to establish problem existence at a statistically meaningful level, making a discovery spike the appropriate next artifact rather than a full build spec.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_a-claim-3",
+        "summary": "Hard gate criteria (cohort correlation, user research confirming solution class, technical feasibility, legal clearance) prevent premature build commitment regardless of stakeholder enthusiasm for the feature concept.",
+        "evidence_refs": [],
+        "is_major": false
+      }
+    ],
+    "citations": [],
+    "conclusion_confidence": "medium",
+    "open_questions": [
+      "Does the scenario expect a PRD that argues for building the feature despite weak evidence, or one that honestly gates on evidence quality? This artifact takes the latter position.",
+      "What is the intended product domain and user base? The sketch uses a notification digest as a concrete but arbitrary example — a real weak-evidence PRD would be domain-specific.",
+      "Are there additional constraints (time box, team size, stakeholder context) that would change the scope of the recommended discovery spike?"
+    ],
+    "critique_responses": []
+  },
+  "critique_packet": {
+    "target_side": "side_a",
+    "finding_id": "finding-2",
+    "target_claim_ids": [
+      "side_a-claim-1"
+    ],
+    "claim_under_attack": "A PRD written under weak-evidence conditions should surface gaps and gate on discovery, not authorize a build — the document's primary value is structuring what must be learned before commitment.",
+    "attack_type": "evidence_gap",
+    "evidence_or_reason": "This claim is presented as the correct handling of the scenario, but the artifact provides no evidence that a weak-evidence PRD must be converted into a discovery-gate document rather than still specifying a tentative feature, scope, assumptions, and decision criteria. The case packet only asks for a PRD under weak supporting evidence; it does not establish that refusing product specification is the appropriate or superior response. Without support from the rubric, validator, or external standard, this is a normative leap rather than an evidence-backed conclusion.",
+    "severity": "medium"
+  }
+}

@@ -1,0 +1,13 @@
+# Critique: finding-1
+
+- Target Side: side_b
+- Target Claim IDs: side_b-claim-1
+- Attack Type: evidence_gap
+- Severity: high
+
+## Claim Under Attack
+OpenAI should preserve nonprofit control because governance legitimacy and political resilience are strategic assets in frontier AI, not merely symbolic mission features.
+
+## Evidence Or Reason
+Side B asserts that governance legitimacy and political resilience are competitive assets, but provides no evidence that these attributes have translated into concrete strategic advantages — such as lower regulatory friction, better enterprise win rates, or measurable investor preference — relative to for-profit frontier AI rivals. The case packet evidence does not establish that OpenAI has captured material benefits from its nonprofit structure that were causally unavailable to Google, Anthropic, or Meta. Anthropic, a public benefit corporation without nonprofit parent control, attracts significant safety-credibility trust without the governance complexity. Meta and Google face heavy regulatory scrutiny despite lacking OpenAI's governance structure, suggesting political resilience may be driven by model capabilities and deployment choices rather than legal governance form. Without evidence that nonprofit control has actually produced differentiated political or trust outcomes — as opposed to merely being claimed as a differentiator — Side B's foundational premise rests on assertion rather than demonstrated causal link.
+

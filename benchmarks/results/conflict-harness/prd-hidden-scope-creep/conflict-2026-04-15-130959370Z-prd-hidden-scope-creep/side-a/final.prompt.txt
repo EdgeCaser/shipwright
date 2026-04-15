@@ -1,0 +1,150 @@
+You are SIDE_A in the final revision phase for run conflict-2026-04-15-130959370Z-prd-hidden-scope-creep.
+You must either adopt the critique or reject it with reasoning.
+Do not reveal provider identity.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "run_id": "conflict-2026-04-15-130959370Z-prd-hidden-scope-creep",
+  "side_id": "side_a",
+  "round": "final",
+  "artifact_markdown": "# Revised artifact",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "Updated major claim",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1"
+  ],
+  "conclusion_confidence": "medium",
+  "open_questions": [],
+  "critique_responses": [
+    {
+      "finding_id": "finding-2",
+      "disposition": "adopted",
+      "rationale": "Why the critique was adopted or rejected."
+    }
+  ]
+}
+
+Case packet:
+{
+  "scenario_id": "prd-hidden-scope-creep",
+  "title": "PRD with hidden scope creep",
+  "prompt": "Write a PRD for a team inbox workflow handoff improvement.",
+  "artifact_type": "prd",
+  "rubric": {
+    "dimensions": [
+      "claim quality",
+      "evidence discipline",
+      "responsiveness to critique",
+      "internal consistency",
+      "decision usefulness"
+    ],
+    "scoring_scale": "1-5",
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "constraints": {
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "expect_structured": true,
+    "context_files": [],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "evidence": [],
+  "max_rounds": 3,
+  "tool_policy": "none",
+  "sharing_policy": {
+    "share_case_packet": true,
+    "share_committed_artifacts_after_first_pass": true,
+    "share_critiques_after_open": true,
+    "share_hidden_reasoning": false,
+    "share_provider_identity": false,
+    "share_internal_coalition_drafts": false
+  },
+  "success_condition": {
+    "type": "validator_contract",
+    "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+    "validator": {
+      "artifact_type": "prd",
+      "expect_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true
+    }
+  }
+}
+
+Your first-pass artifact:
+{
+  "run_id": "conflict-2026-04-15-130959370Z-prd-hidden-scope-creep",
+  "side_id": "side_a",
+  "round": "first_pass",
+  "artifact_markdown": "# PRD: Team Inbox Workflow Handoff Improvement\n\n**Status:** Draft — First Pass  \n**Author:** PM Agent  \n**Date:** 2026-04-15  \n**Artifact Type:** PRD (Decision-Gate Format)\n\n---\n\n## Decision Frame\n\n### Problem Statement\nWhen work items in a shared team inbox change hands — between agents, shifts, or sub-teams — context is lost, work is duplicated, or items fall into limbo. The handoff moment is the highest-risk point in the workflow: the receiving party doesn't know what was tried, what's still open, or what the requester actually needs.\n\n### Scope Boundary (What This PRD Covers)\nThis PRD covers **handoff mechanics** within an existing team inbox system:\n- How a departing handler packages context for the next handler\n- How the receiving handler picks up without re-interviewing the requester\n- How in-flight state is preserved across role or shift transitions\n\n**Explicitly out of scope for this decision:**\n- Inbox routing rules (who gets assigned what)\n- SLA and escalation logic\n- Notification / alerting infrastructure\n- The underlying inbox platform (assumed to already exist)\n\n### Why This Decision Now\nHandoff failures are often invisible — they manifest as requester frustration, duplicate effort, or dropped items rather than explicit errors. Without a deliberate handoff standard, each team member improvises, producing inconsistent quality and compounding risk as team size grows.\n\n### Decision Required\nShould we invest in a structured handoff protocol — including a required context summary, a defined acceptance checkpoint, and lightweight tooling support — before the next headcount addition to the inbox team?\n\n**Options considered:**\n| Option | Description | Risk |\n|---|---|---|\n| A: Structured protocol + tooling | Mandatory summary template + acknowledgement step | Adoption friction up front |\n| B: Structured protocol only | Template without tooling enforcement | Inconsistent compliance |\n| C: Status quo | No standard; rely on individual judgment | Scales poorly, current pain continues |\n\n**Recommended option:** A — enforce the habit while the team is small enough to shape.\n\n---\n\n## Unknowns & Evidence Gaps\n\nThe following gaps must be resolved before this PRD graduates to implementation-ready:\n\n| ID | Unknown | Why It Matters | Proposed Resolution |\n|---|---|---|---|\n| U-1 | Actual handoff failure rate | Without a baseline, we can't measure improvement | Audit 2 weeks of inbox logs; tag items that required re-explanation or were re-opened after close |\n| U-2 | What context is most often missing | Template design depends on what's actually lost, not what we guess | 5 structured interviews with handlers (both giving and receiving handoffs) |\n| U-3 | Compliance behavior under load | Teams shortcut process when volume spikes | Shadow study during a high-volume period |\n| U-4 | Platform constraints | Some tooling options may not be buildable in the existing inbox system | 1-hour technical spike with the platform owner |\n| U-5 | Whether \"handoff\" is the right frame | Some failures may be routing problems (wrong person picked up) not context problems | Review failure taxonomy before committing to handoff-only scope |\n\n**Scope creep watch:** This PRD has already attracted requests to include routing logic (U-5 above) and SLA enforcement. Those are legitimate problems but would double the decision surface and delay the handoff improvement. They are logged as follow-on candidates, not absorbed here.\n\n---\n\n## Pass/Fail Readiness\n\nThis PRD is ready to advance to solution design **if and only if** the following conditions are met:\n\n| Criterion | Pass Condition | Current Status |\n|---|---|---|\n| Baseline data | Handoff failure rate quantified (U-1) | Not yet — pending log audit |\n| Context taxonomy | Top 3 missing-context categories identified (U-2) | Not yet — pending interviews |\n| Scope confirmed | Routing and SLA problems formally deferred to separate workstreams | Not yet — needs stakeholder sign-off |\n| Platform feasibility | At least one technically viable tooling path confirmed (U-4) | Not yet — pending spike |\n| Requester alignment | Inbox team lead has reviewed problem framing and agrees | Not yet |\n\n**Current readiness verdict: NOT READY TO ADVANCE**  \nFour of five criteria are unmet. This PRD should not proceed to solution design until U-1, U-2, and U-4 are resolved at minimum. Advancing now would produce a solution designed against assumptions rather than evidence.\n\n---\n\n## Recommended Next Artifact\n\n**Next artifact:** Discovery Brief  \n**Owner:** PM (this workstream)  \n**Target completion:** 2 weeks from PRD sign-off\n\n**The discovery brief should contain:**\n1. Results of the 2-week inbox log audit (U-1)\n2. Synthesis of the 5 handler interviews (U-2)\n3. Technical spike findings on platform constraints (U-4)\n4. A revised scope statement — either confirming handoff-only framing or splitting into two workstreams\n5. An updated readiness checklist with pass/fail against each criterion above\n\n**If discovery confirms the handoff framing:** the next artifact after the discovery brief is a **solution design doc** with a proposed template, acceptance flow, and tooling mockup.  \n**If discovery reveals a routing root cause:** the next artifact is a **problem reframe memo** before any solution design begins.\n\n---\n\n## Appendix: Deferred Items Log\n\nThe following items were raised during scoping and explicitly deferred:\n\n- **Inbox routing rules** — separate PRD candidate; not a handoff problem\n- **SLA / escalation logic** — requires its own decision frame; depends on business SLA commitments not yet defined\n- **Notification infrastructure** — downstream of routing and handoff; premature to design now\n- **Cross-team handoffs** (vs. intra-team) — additional complexity; phase 2 if intra-team protocol succeeds\n",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "The handoff moment is the highest-risk point in the shared inbox workflow because it is where context loss, duplication, and item abandonment concentrate — and this risk compounds with team growth.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "This PRD is not ready to advance to solution design: four of five readiness criteria are unmet, and proceeding now would produce a solution designed against assumptions rather than evidence.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-3",
+      "summary": "Routing logic and SLA enforcement are related but distinct problems that should be formally deferred rather than absorbed into this PRD — absorbing them would double the decision surface and delay the handoff improvement.",
+      "evidence_refs": [],
+      "is_major": false
+    },
+    {
+      "claim_id": "side_a-claim-4",
+      "summary": "A structured handoff protocol with tooling enforcement (Option A) is preferable to protocol-only (Option B) because compliance without enforcement degrades under load — the team is currently small enough to shape the habit.",
+      "evidence_refs": [],
+      "is_major": false
+    }
+  ],
+  "citations": [],
+  "conclusion_confidence": "medium",
+  "open_questions": [
+    "What is the actual handoff failure rate in the current inbox? (U-1 — no baseline data yet)",
+    "Is 'handoff' the correct root-cause frame, or are most failures actually routing failures? (U-5)",
+    "What does the inbox platform technically support for enforcement? (U-4 — no spike done yet)",
+    "Has the inbox team lead reviewed and agreed with this problem framing?"
+  ],
+  "critique_responses": []
+}
+
+Visible critique packet:
+{
+  "target_side": "side_a",
+  "finding_id": "finding-2",
+  "target_claim_ids": [
+    "side_a-claim-4"
+  ],
+  "claim_under_attack": "A structured handoff protocol with tooling enforcement (Option A) is preferable to protocol-only (Option B) because compliance without enforcement degrades under load and the team is small enough to shape the habit.",
+  "attack_type": "evidence_gap",
+  "evidence_or_reason": "The artifact explicitly states that compliance behavior under load is unknown (U-3) and that platform feasibility for tooling enforcement is still unvalidated (U-4). Those open gaps undercut the visible recommendation for Option A: it asserts both the need for enforcement and the practicality of tooling before any baseline evidence, load-behavior evidence, or technical feasibility evidence is presented.",
+  "severity": "medium"
+}

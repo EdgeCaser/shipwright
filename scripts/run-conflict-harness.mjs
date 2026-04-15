@@ -1050,6 +1050,7 @@ function buildFirstPassPrompt(casePacket, runId, sideId) {
     `You are ${sideId.toUpperCase()} in a sealed first-pass conflict harness run.`,
     'Do not reveal provider identity.',
     'Do not mention or speculate about the opponent.',
+    'Do not write the literal strings "Side A", "Side B", "side_a", or "side_b" anywhere in your output, including inside artifact_markdown. Refer to roles, teams, or parties with scenario-native language (e.g., "the requesting team", "the receiving team") instead.',
     'Return ONLY a JSON object with this exact shape:',
     '',
     JSON.stringify(
@@ -1116,7 +1117,7 @@ function buildRepairPrompt(basePrompt, issue, attempt) {
     identity_leak:
       'Repair instruction: remove any provider self-identification or family naming from the JSON output. Keep the same packet shape.',
     unseen_opponent:
-      'Repair instruction: remove any mention of unseen opponent content or speculation about the other side. Keep the same packet shape.',
+      'Repair instruction: remove any mention of unseen opponent content or speculation about the other side, AND remove any literal occurrence of the strings "Side A", "Side B", "side_a", or "side_b" from artifact_markdown and every other field. Use scenario-native role names instead. Keep the same packet shape.',
   };
 
   return `${basePrompt}\n\n${messages[issue.issueType] || 'Repair instruction: keep the exact packet shape.'}`;

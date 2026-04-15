@@ -1,0 +1,13 @@
+# Critique: finding-2
+
+- Target Side: side_a
+- Target Claim IDs: side_a-claim-4
+- Attack Type: evidence_gap
+- Severity: medium
+
+## Claim Under Attack
+The three contradiction resolutions can be pursued in parallel by different owners, making the estimated 5-7 business day resolution window achievable without serial dependency.
+
+## Evidence Or Reason
+The artifact provides no dependency analysis showing these tracks are actually independent. Its own proposed outputs imply sequencing: C2 may require strategy-deck revision before spec finalization, and the recommended next artifact says the integration spec is revised only once contradiction resolutions are signed off. That weakens the assertion that all work can proceed in parallel and makes the 5-7 business day estimate unsupported.
+

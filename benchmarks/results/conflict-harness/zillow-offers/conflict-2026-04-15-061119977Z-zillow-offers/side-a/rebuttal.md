@@ -1,0 +1,13 @@
+# Critique: finding-1
+
+- Target Side: side_b
+- Target Claim IDs: side_b-claim-1
+- Attack Type: evidence_gap
+- Severity: high
+
+## Claim Under Attack
+Zillow should exit iBuying because Zillow Offers has a structural pricing-model problem, not a temporary execution problem.
+
+## Evidence Or Reason
+Side B asserts the 6.9% Zestimate median error rate proves a structural model ceiling, but this is a national aggregate figure applied to a business that operates in targeted metro markets. Opendoor's own approach — narrower geography, lower volume — demonstrates that pricing accuracy can be improved by tightening market selection, not by exiting the category. Side B never quantifies what error rate Zillow achieved in its best-performing markets, nor does it establish that the 6.9% figure is immutable given concentrated market focus. The two in-year algorithm pivots could reflect early-stage calibration rather than structural failure: the case packet covers only Q3 2021, a single quarter of peak over-acquisition during an unprecedented 19.5% YoY price run-up. No evidence is presented that the model performed equally poorly in prior, more stable market conditions or that a tighter buy-box in 3–5 markets could not close the accuracy gap. The 'structural vs. temporary' framing is the load-bearing distinction for the entire exit recommendation, yet it rests on a single national error metric without market-level disaggregation or counterfactual modeling of reduced-volume operations.
+

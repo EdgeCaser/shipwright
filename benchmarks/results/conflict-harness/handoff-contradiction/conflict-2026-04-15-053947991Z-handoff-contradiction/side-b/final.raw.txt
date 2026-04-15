@@ -1,0 +1,44 @@
+{
+  "run_id": "conflict-2026-04-15-053947991Z-handoff-contradiction",
+  "side_id": "side_b",
+  "round": "final",
+  "artifact_markdown": "# Revised artifact\n\n## Technical Handoff PRD\n\n## Context\nThis artifact is a handoff PRD scaffold for a platform initiative where the platform strategy and challenge review are known to conflict, but the underlying source materials are not present in the case packet. Because those contradictions are not instantiated here, this document does not serve as the final execution source of truth. Its role is narrower: define the minimum structure, gating rules, and completion criteria required before a contradiction-bearing PRD can become executable.\n\n## Problem Statement\nEngineering cannot execute safely when strategy guidance, review objections, and handoff requirements disagree across documents. In the current state, the missing source materials prevent this artifact from naming specific conflicts, approved workstreams, or system-level acceptance criteria.\n\n## Goal\nCreate a decision-useful PRD scaffold that:\n- specifies how contradictions must be recorded,\n- defines what information is required for execution readiness,\n- prevents unresolved conflicts from being hidden in prose,\n- makes clear that implementation should not begin on contradiction-dependent scope until the contradiction register is populated.\n\n## Non-Goals\n- Pretending unresolved source contradictions have already been reconciled.\n- Authorizing implementation for workstreams not named in source materials.\n- Replacing the platform strategy or challenge review.\n\n## Users and Consumers\n- Product owner preparing the executable handoff.\n- Engineering lead validating whether scope is ready to build.\n- Reviewer checking whether objections were dispositioned explicitly.\n\n## Decision Frame\nUse this document as a pre-execution PRD scaffold, not as the final source of truth. Promote it to execution status only after each contradiction is instantiated in a contradiction register, each impacted workstream is named, each disposition is assigned by a decision-maker, and each in-scope requirement has testable acceptance criteria.\n\n## Required Structure For The Executable Version\nEach major workstream must include:\n- workstream ID,\n- objective,\n- strategy linkage,\n- contradictory source statements,\n- challenged assumption,\n- disposition,\n- decision owner,\n- implementation scope,\n- out-of-scope,\n- dependencies,\n- acceptance criteria,\n- open risk.\n\n## Functional Requirements\n1. The final executable PRD must map each in-scope workstream to a specific platform objective.\n2. The final executable PRD must record each substantive challenge-review objection and its disposition.\n3. The final executable PRD must enumerate contradictions at the requirement or assumption level.\n4. Work blocked by unresolved contradictions must be marked `blocked pending decision`.\n5. No requirement may be considered implementation-ready without testable acceptance criteria.\n6. Cross-team dependencies must have named owners.\n\n## Execution Gating Rules\n- Work may proceed only on requirements that are both named and dispositioned.\n- Any requirement lacking strategy linkage is out of scope.\n- Any contradiction lacking a decision owner remains blocked.\n- Any requirement lacking observable acceptance criteria remains draft-only.\n\n## Example Contradiction Register Template\n| Field | Description |\n|---|---|\n| Conflict ID | Stable identifier |\n| Workstream ID | Impacted workstream |\n| Source A Claim | Statement from strategy |\n| Source B Claim | Statement from challenge review |\n| Contradiction Type | Scope / sequencing / KPI / architecture / ownership |\n| Disposition | Accepted / Deferred / Blocked |\n| Decision Owner | Named approver |\n| Resolution Date | Deadline or completed date |\n| Implementation Impact | What changes in delivery |\n| Residual Risk | Remaining exposure |\n\n## Unknowns & Evidence Gaps\n- The source strategy and challenge-review documents are not provided, so contradictions cannot yet be enumerated.\n- No workstreams are named, so scope cannot be instantiated.\n- No system behaviors or interfaces are described, so acceptance criteria cannot yet be made testable.\n- No dependency owners or decision-makers are identified in the packet.\n\n## Pass/Fail Readiness\nPass if:\n- each contradiction is explicitly logged,\n- each impacted workstream is named,\n- each challenge item has a disposition and owner,\n- each in-scope requirement has testable acceptance criteria,\n- blocked items are clearly separated from executable scope.\n\nFail if:\n- the document claims execution readiness without a populated contradiction register,\n- scope is implied rather than named,\n- review objections are summarized without disposition,\n- acceptance criteria remain abstract or non-testable,\n- engineering must infer expected behavior from conflicting upstream documents.\n\n## Recommended Next Artifact\nProduce a populated contradiction register paired with a workstream-indexed executable PRD. That next artifact should convert this scaffold into an actual build contract by naming the conflicts, owners, decisions, interfaces, and acceptance tests required for implementation.",
+  "claims": [
+    {
+      "claim_id": "side_b-claim-1",
+      "summary": "Given the missing source documents, the artifact should be framed as a pre-execution PRD scaffold with explicit promotion criteria, not as an already-usable execution source of truth.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-2",
+      "summary": "An executable handoff must explicitly log contradictions, dispositions, owners, and impacted workstreams before implementation can begin on contradiction-dependent scope.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-3",
+      "summary": "Decision usefulness depends on gating execution on named scope and testable acceptance criteria rather than abstract alignment language.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1"
+  ],
+  "conclusion_confidence": "medium",
+  "open_questions": [],
+  "critique_responses": [
+    {
+      "finding_id": "finding-1",
+      "disposition": "adopted",
+      "rationale": "The critique is correct that the first-pass artifact overstated its status. Without instantiated contradictions, named workstreams, owners, or testable acceptance criteria, the document is a scaffold for an execution-ready PRD rather than the execution source of truth itself. The revision narrows the central claim, adds explicit promotion criteria, and aligns the artifact's role with the evidence actually available."
+    }
+  ]
+}

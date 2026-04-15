@@ -1,0 +1,145 @@
+You are SIDE_A in the rebuttal phase for run conflict-2026-04-15-051547742Z-blockbuster-total-access.
+Attack only visible claims from the opposing first-pass artifact.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "target_side": "side_b",
+  "finding_id": "runner-will-assign",
+  "target_claim_ids": [
+    "side_b-claim-1"
+  ],
+  "claim_under_attack": "The opposing claim to challenge.",
+  "attack_type": "evidence_gap",
+  "evidence_or_reason": "Why the visible claim is weak.",
+  "severity": "medium"
+}
+
+Case packet:
+{
+  "scenario_id": "blockbuster-total-access",
+  "title": "Blockbuster Total Access: continue or kill the hybrid strategy",
+  "prompt": "You are a strategy advisor to Blockbuster's board in Q3 2007. CEO Jim Keyes has just replaced John Antioco and is reviewing the Total Access program — a hybrid online-rental + in-store-return strategy launched in late 2006.\n\nTotal Access is working competitively: Blockbuster added 2 million online subscribers in under a year, Netflix growth stalled for the first time, and Netflix CEO Reed Hastings privately told colleagues he was 'ichiban scared' of the program. Blockbuster's online subscriber count reached ~3 million.\n\nHowever, Total Access is expensive. Each in-store return costs Blockbuster ~$2 in handling and lost rental revenue from the returned disc being re-rented free. The program is burning roughly $400M/year against Blockbuster's already-leveraged balance sheet ($1.1B long-term debt). Blockbuster lost $85M in Q2 2007. Franchisees are hostile — the program cannibalizes their store traffic economics. Activist investor Carl Icahn, who controls 3 board seats, views the online losses as unsustainable.\n\nMeanwhile, Netflix is investing aggressively in streaming infrastructure (launched Watch Instantly in January 2007), betting that physical disc rental is a transitional business. Netflix has 7.5M subscribers to Blockbuster's 3M online + 47M store-visit customers.\n\nThe board must decide: should Blockbuster continue funding Total Access at current levels to press the competitive advantage, or scale it back to reduce losses and refocus on store profitability?\n\nWrite a strategic recommendation memo for the board. Your memo must take a clear position — continue or kill — and defend it with evidence. Acknowledge the strongest counterarguments and explain why your position is still correct.\n\nKey evidence available:\n- Total Access added 2M subscribers in <12 months (late 2006 to mid-2007)\n- Netflix growth stalled for the first time during Total Access's peak\n- Program cost: ~$400M/year incremental burn\n- Blockbuster long-term debt: $1.1B; Q2 2007 net loss: $85M\n- Netflix streaming launched January 2007 with 1,000 titles\n- Netflix total subscribers: 7.5M; Blockbuster online: ~3M\n- Blockbuster store footprint: ~5,700 US locations (asset or liability?)\n- Franchisee resistance: independent operators threatened by cannibalization\n- Carl Icahn controls 3 board seats; views online investment as value-destroying\n- DVD-by-mail market projected to peak 2010-2012 then decline\n- Broadband penetration in US: ~50% of households (2007), projected 70%+ by 2010\n- Blockbuster had attempted a streaming deal with Enron Broadband in 2000 (failed)\n- Redbox kiosk expansion accelerating in grocery/convenience stores ($1/night rentals)",
+  "artifact_type": "strategy",
+  "rubric": {
+    "dimensions": [
+      "claim quality",
+      "evidence discipline",
+      "responsiveness to critique",
+      "internal consistency",
+      "decision usefulness"
+    ],
+    "scoring_scale": "1-5",
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "constraints": {
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "expect_structured": true,
+    "context_files": [],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "evidence": [],
+  "max_rounds": 3,
+  "tool_policy": "none",
+  "sharing_policy": {
+    "share_case_packet": true,
+    "share_committed_artifacts_after_first_pass": true,
+    "share_critiques_after_open": true,
+    "share_hidden_reasoning": false,
+    "share_provider_identity": false,
+    "share_internal_coalition_drafts": false
+  },
+  "success_condition": {
+    "type": "validator_contract",
+    "description": "Produce a strategy artifact that satisfies the scenario validator contract.",
+    "validator": {
+      "artifact_type": "strategy",
+      "expect_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true
+    }
+  }
+}
+
+Opposing first-pass artifact:
+{
+  "run_id": "conflict-2026-04-15-051547742Z-blockbuster-total-access",
+  "side_id": "side_b",
+  "round": "first_pass",
+  "artifact_markdown": "# Recommendation: Kill the current Total Access hybrid strategy in its present form and pivot to a lower-burn transition plan\n\nBlockbuster should not continue funding Total Access at current levels. The program has proven that a hybrid online plus store offer can win customers and pressure Netflix, but the current version is financially incompatible with Blockbuster's capital structure and with the industry's likely shift toward streaming. The right board decision in Q3 2007 is to kill the current subsidy-heavy form of Total Access, preserve the customer insights and selective hybrid elements that work, and reallocate capital toward a controlled digital transition and store cash-flow defense. [Citations: ctx-1, ctx-2, ctx-3, ctx-4, ctx-5, ctx-6]\n\n## Why this is the right decision\n\nFirst, the program is strategically effective but economically broken. Total Access added roughly 2 million subscribers in under a year and helped stall Netflix's growth for the first time, which proves the offer is competitively potent. But it is burning about $400 million annually while Blockbuster already carries $1.1 billion of long-term debt and just posted an $85 million quarterly loss. A company in Blockbuster's financial condition cannot fund a loss leader of this size without high confidence that the spending buys a durable advantage. That confidence is absent here. [Citations: ctx-1, ctx-2, ctx-3, ctx-4]\n\nSecond, the advantage Total Access creates is unlikely to be durable enough to justify the burn. Its core differentiator depends on the store network: customers return discs in-store and receive immediate rental value. But each in-store return costs about $2 in handling and lost rental economics, and the more customers use the feature, the more value leaks out of the system. This is not a scale economy. It is the opposite: growth deepens the subsidy burden. A strategy whose unit economics worsen as adoption rises is dangerous for a leveraged incumbent. [Citations: ctx-1, ctx-3, ctx-4]\n\nThird, the market is already beginning to move beyond the basis of competition on which Total Access wins. Netflix launched Watch Instantly in January 2007 and is investing aggressively in streaming infrastructure. Broadband penetration is around 50% of U.S. households in 2007 and expected to exceed 70% by 2010, while DVD-by-mail is projected to peak around 2010-2012 and then decline. That does not mean discs are irrelevant today; it means the board should be wary of doubling down on an expensive hybrid built to maximize a format that is approaching maturity while a better-capitalized rival invests in the next format. [Citations: ctx-5, ctx-6, ctx-7]\n\nFourth, the store base is not a clean strategic asset in this fight. Blockbuster's roughly 5,700 U.S. stores create reach and brand presence, but Total Access turns that footprint into an internal conflict: franchisees see cannibalization, store economics are disrupted, and management attention is split between preserving store profitability and subsidizing online growth. At the same time, Redbox is attacking the low-end physical rental occasion with a cheaper, more convenient kiosk model. That means Blockbuster is being squeezed from both directions: Netflix in the digital future and Redbox in commodity physical rental. [Citations: ctx-6, ctx-8, ctx-9, ctx-10]\n\n## Strongest counterargument and why it still loses\n\nThe strongest case for continuing Total Access is that it is the first credible move Blockbuster has made that visibly scared Netflix. The program added subscribers quickly, took advantage of a unique physical footprint Netflix does not have, and may represent the company's last chance to convert 47 million store visitors into a multi-channel subscription base. Killing it risks surrendering the field just as the company found a winning offer. [Citations: ctx-1, ctx-2, ctx-6, ctx-11]\n\nThat argument is serious, but it still fails on board-level capital allocation logic. A winning customer proposition is not enough if the company cannot finance the path to payoff. Blockbuster is not choosing between a profitable strategy and a timid one. It is choosing between a cash-burning hybrid with structurally weak economics and a controlled retreat that preserves solvency and optionality. Even if Total Access continued slowing Netflix for another 12-24 months, Netflix still has a much larger subscriber base, fewer internal channel conflicts, and a more coherent path into streaming. Blockbuster would be spending heavily to defend a transitional advantage while its rival builds the next platform. [Citations: ctx-2, ctx-3, ctx-4, ctx-5, ctx-6, ctx-7]\n\n## What the board should do instead\n\nKill the current all-in version of Total Access, specifically the broad free in-store return subsidy that drives the worst economics. Replace it with a narrower transition plan:\n\n1. Retain online DVD service, but remove or sharply limit the free in-store exchange benefit.\n2. Use stores primarily as low-cost fulfillment, marketing, and customer-acquisition nodes where economics are positive, not as open-ended subsidy points.\n3. Protect near-term liquidity and stabilize franchise relations by stopping the most destructive cannibalization.\n4. Redirect a defined portion of saved capital toward digital partnerships, streaming capability exploration, and a smaller set of pilots tied to broadband adoption and content rights feasibility.\n5. Treat the store network as a declining cash-flow asset to harvest and selectively repurpose, not as the foundation of a long-term moat.\n\nThis is not a recommendation to abandon online or digital. It is a recommendation to abandon an unsound cost structure before it compounds strategic and financial decline. [Citations: ctx-3, ctx-4, ctx-5, ctx-8]\n\n## Decision Frame\n\nDecision: Kill Total Access at current funding levels and end the broad subsidy-heavy hybrid model.\n\nRationale: The program demonstrates demand but not sustainable economics; Blockbuster's debt load and current losses materially reduce tolerance for a $400 million annual burn; and the likely industry shift toward streaming lowers the probability that continued spending on this version of the hybrid model creates durable shareholder value. [Citations: ctx-1, ctx-3, ctx-4, ctx-5, ctx-7]\n\n## Unknowns & Evidence Gaps\n\nThe board still lacks clean cohort-level evidence on whether Total Access customers would remain profitable after subsidy removal, how many store customers can be converted to lower-cost subscription forms, and whether Blockbuster can secure any credible streaming path fast enough to matter. The most decision-relevant unknown is not whether customers like Total Access; that is already clear. The key unknown is whether any modified version can produce acceptable unit economics before streaming reshapes the category. [Citations: ctx-1, ctx-5, ctx-7, ctx-11]\n\n## Pass/Fail Readiness\n\nPass if the board's objective is preserving solvency, protecting optionality, and avoiding value destruction from scaling a strategically interesting but financially unsound program.\n\nFail if management can prove within a near-term operating review that a redesigned Total Access offer materially improves unit economics without collapsing subscriber retention, and that the resulting economics are strong enough to fund a digital transition. On the evidence provided, that proof is not yet available. [Citations: ctx-3, ctx-4]\n\n## Recommended Next Artifact\n\nA 90-day transition memo with three outputs: a revised offer architecture for post-subsidy online membership, a store-network cash-flow and franchise impact model, and a digital options paper covering build-versus-partner paths for streaming and digital delivery. That is the minimum artifact set needed to replace an unsustainable competitive tactic with a credible transition strategy. [Citations: ctx-5, ctx-8]",
+  "claims": [
+    {
+      "claim_id": "side_b-claim-1",
+      "summary": "Blockbuster should kill Total Access at current funding levels because its economics are incompatible with the company's leverage and loss position.",
+      "evidence_refs": [
+        "ctx-3",
+        "ctx-4"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-2",
+      "summary": "Total Access created real competitive pressure on Netflix, but that advantage is not durable enough to justify the burn because it relies on subsidy-heavy store interactions.",
+      "evidence_refs": [
+        "ctx-1",
+        "ctx-2",
+        "ctx-3",
+        "ctx-6"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-3",
+      "summary": "Industry direction toward streaming and rising broadband penetration reduce the strategic payoff from doubling down on a hybrid DVD-centric model in 2007.",
+      "evidence_refs": [
+        "ctx-5",
+        "ctx-7"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-4",
+      "summary": "Blockbuster's store footprint is becoming more of a conflict-laden cost structure than a moat, given franchisee resistance and Redbox's expansion.",
+      "evidence_refs": [
+        "ctx-6",
+        "ctx-8",
+        "ctx-10"
+      ],
+      "is_major": false
+    }
+  ],
+  "citations": [
+    "ctx-1",
+    "ctx-2",
+    "ctx-3",
+    "ctx-4",
+    "ctx-5",
+    "ctx-6",
+    "ctx-7",
+    "ctx-8",
+    "ctx-9",
+    "ctx-10",
+    "ctx-11"
+  ],
+  "conclusion_confidence": "medium",
+  "open_questions": [
+    "Can a redesigned, less-subsidized version of Total Access retain enough subscribers to produce acceptable unit economics?",
+    "How quickly can Blockbuster secure a credible streaming capability through build, partnership, or acquisition?",
+    "What portion of the 47 million store-visit customer base can be migrated into profitable subscription or digital relationships?"
+  ],
+  "critique_responses": []
+}

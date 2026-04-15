@@ -1,0 +1,13 @@
+# Critique: finding-2
+
+- Target Side: side_a
+- Target Claim IDs: side_a-claim-1
+- Attack Type: evidence_gap
+- Severity: medium
+
+## Claim Under Attack
+The PBC restructuring already resolves capital access, making 'nonprofit control vs. capital' a false dilemma — the real strategic question is whether to surrender a durable regulatory and credibility moat for marginal operational convenience.
+
+## Evidence Or Reason
+This claim overstates what the visible evidence supports. The case packet says PBC status may offer a middle path and that OpenAI needs extraordinary capital and compute, but it does not show that the new structure 'already resolves' capital access or that the remaining tradeoff is only 'marginal operational convenience.' The memo also relies on specific financing assertions like recent $40B+ fundraising and investor comfort under this structure that are not in the provided evidence set. Without proof that nonprofit control imposes no material fundraising, incentive, or partner-friction costs at future scale, calling the dilemma false is unsupported.
+

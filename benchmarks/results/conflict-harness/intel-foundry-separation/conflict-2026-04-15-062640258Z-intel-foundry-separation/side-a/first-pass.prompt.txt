@@ -1,0 +1,88 @@
+You are SIDE_A in a sealed first-pass conflict harness run.
+Do not reveal provider identity.
+Do not mention or speculate about the opponent.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "run_id": "conflict-2026-04-15-062640258Z-intel-foundry-separation",
+  "side_id": "side_a",
+  "round": "first_pass",
+  "artifact_markdown": "# Your artifact",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "One major claim",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1"
+  ],
+  "conclusion_confidence": "medium",
+  "open_questions": [],
+  "critique_responses": []
+}
+
+Case packet:
+{
+  "scenario_id": "intel-foundry-separation",
+  "title": "Intel foundry separation: split for capital access or stay integrated",
+  "prompt": "You are a strategy advisor to Intel's board in September 2024 after Intel announced that it would turn its foundry business into a standalone subsidiary with its own operating board and the potential to raise outside capital. Intel is trying to execute an expensive turnaround while losing share in key markets and trailing Nvidia in AI acceleration. The foundry strategy is central to CEO Pat Gelsinger's revival plan, but it is also a major drag on profitability and investor confidence.\n\nThe board must decide whether Intel should keep pushing toward structural separation and outside funding for the foundry business, or preserve tighter integration and avoid further complexity while the turnaround is still fragile.\n\nWrite a strategic recommendation memo. Take a clear position and defend it with evidence. Acknowledge the strongest counterarguments and explain why your position is still correct.\n\nKey evidence available:\n- In September 2024 Intel said it would create a separate entity for its foundry business with its own operating board and the ability to evaluate outside funding\n- Intel had spent roughly $25 billion per year on the foundry business in each of the previous two years\n- Intel's stock had lost nearly 60% of its value during 2024 before the announcement\n- Intel disclosed in April 2024 that the foundry business lost about $7 billion in operating income in 2023 on roughly $18.9 billion in sales\n- Intel had said foundry losses would likely peak in 2024 and not break even until sometime before 2030\n- Intel was also pursuing layoffs and a roughly $10 billion cost-reduction plan\n- Intel paused or delayed parts of its fabrication expansion in Poland and Germany while keeping key U.S. projects moving\n- Intel received major U.S. government support under the CHIPS Act and additional Secure Enclave funding, making the foundry strategy geopolitically important\n- Intel also announced an expanded custom-chip relationship with Amazon Web Services, supporting the foundry narrative\n- A more independent foundry structure could unlock outside capital, cleaner economics, and strategic optionality for a spin or carve-out\n- But further separation could also add governance complexity, weaken execution focus, and raise questions about whether Intel can still integrate design and manufacturing as a differentiated model",
+  "artifact_type": "strategy",
+  "rubric": {
+    "dimensions": [
+      "claim quality",
+      "evidence discipline",
+      "responsiveness to critique",
+      "internal consistency",
+      "decision usefulness"
+    ],
+    "scoring_scale": "1-5",
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "constraints": {
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "expect_structured": true,
+    "context_files": [],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "evidence": [],
+  "max_rounds": 3,
+  "tool_policy": "none",
+  "sharing_policy": {
+    "share_case_packet": true,
+    "share_committed_artifacts_after_first_pass": true,
+    "share_critiques_after_open": true,
+    "share_hidden_reasoning": false,
+    "share_provider_identity": false,
+    "share_internal_coalition_drafts": false
+  },
+  "success_condition": {
+    "type": "validator_contract",
+    "description": "Produce a strategy artifact that satisfies the scenario validator contract.",
+    "validator": {
+      "artifact_type": "strategy",
+      "expect_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true
+    }
+  }
+}

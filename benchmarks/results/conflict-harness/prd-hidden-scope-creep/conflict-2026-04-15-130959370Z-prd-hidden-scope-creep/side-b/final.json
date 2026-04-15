@@ -1,0 +1,43 @@
+{
+  "run_id": "conflict-2026-04-15-130959370Z-prd-hidden-scope-creep",
+  "side_id": "side_b",
+  "round": "final",
+  "artifact_markdown": "# Revised artifact\n\n# PRD: Team Inbox Workflow Handoff Improvement\n\n## Problem\nTeams using a shared inbox lose context during handoff between shifts, functions, or owners. This causes slower response times, duplicate work, missed follow-ups, and inconsistent accountability.\n\n## Product Decision This PRD Supports\nApprove or defer a narrowly scoped v1 handoff feature for one pilot inbox team in the next planning cycle.\n\nDecision owner: Product manager for the inbox workflow surface, with sign-off from the support/team operations lead.\n\nForcing event: The next quarterly planning commit for the inbox roadmap.\n\nDecision threshold: Approve build only if the team can run a pilot with baseline measurement, named owners, and instrumentation for adoption and post-handoff outcomes. Defer if the request depends on broader workflow automation, routing-policy redesign, or AI summarization to be considered successful.\n\n## Objective\nImprove handoff quality in the team inbox so work transfers between owners with clear status, next action, and decision context.\n\n## Users\n- Current owner handing work off\n- Next owner receiving work\n- Team lead monitoring queue health\n\n## Jobs To Be Done\n- As a current owner, I need to transfer a conversation with enough context that the next owner can act without rereading the full thread.\n- As a receiving owner, I need to know what has happened, what is pending, and what I am expected to do next.\n- As a team lead, I need handoffs to be consistent and measurable.\n\n## Scope\n### In Scope\n- Structured handoff state for inbox conversations\n- Required handoff fields: summary, current status, next action, due timing, and destination owner or queue\n- Inbox UI support for creating, viewing, and accepting a handoff\n- Event instrumentation for handoff creation, acceptance, lag, and reopen-after-handoff outcomes\n- Basic pilot reporting for handoff volume, acceptance lag, and reopened work\n\n### Out of Scope\n- Full workflow automation across external systems\n- SLA policy redesign\n- Org-wide role or permission redesign\n- AI-generated summaries as a launch requirement\n- Priority scoring or reassignment logic beyond the explicit handoff destination\n\n## Requirements\n### Functional Requirements\n1. A user can mark a conversation as pending handoff.\n2. A handoff requires entry of summary, current status, next action, and receiving owner or queue.\n3. A receiving owner can view the handoff context from the conversation view.\n4. A receiving owner can acknowledge or accept the handoff.\n5. The system records handoff timestamps, initiating owner, receiving owner or queue, and acceptance state.\n6. Team leads can view pilot-level metrics for handoff volume, acceptance lag, and reopened conversations after handoff.\n\n### Non-Functional Requirements\n- Handoff creation should add minimal operational overhead.\n- The workflow should be understandable without training-heavy process changes.\n- Audit history must be preserved for accountability.\n\n## Success Metrics\n- Reduction in conversations reopened because of incomplete transfer\n- Reduction in median time from handoff to next meaningful action\n- Increase in percentage of handoffs with explicit next action and owner\n- Improvement in team-reported clarity of transferred work\n\n## Risks\n- Required fields may create friction and reduce adoption.\n- Teams may use the feature for general note-taking instead of real handoffs.\n- Queue-based ownership may be less clear than named-owner transfers.\n- The team may attempt to fold adjacent workflow problems into the same release.\n\n## Rollout\n- Pilot with one inbox team using frequent shift or function handoffs\n- Measure baseline before launch and compare after pilot start\n- Hold a go/no-go review at the end of the pilot for broader rollout\n\n## Decision Frame\nThe decision is whether to fund and schedule a narrow v1 handoff workflow for a pilot team in the next planning cycle. Recommendation: approve only the scoped handoff capability described here. Reject expansion of v1 into automation, AI summarization, or broader workflow redesign. This keeps the feature tied to a concrete build-vs-defer decision instead of a general process-improvement aspiration.\n\n## Unknowns & Evidence Gaps\n- Baseline rate of failed handoffs is not quantified.\n- It is unclear whether named-owner routing or queue routing is the more common receiving pattern.\n- The acceptable amount of extra data entry per handoff is not yet validated.\n- No current evidence identifies the top handoff failure modes by frequency or severity.\n- The pilot owner, review date, and approval forum are not yet named.\n\n## Pass/Fail Readiness\nPass if, before the next quarterly planning decision, the PM and operations lead can name the pilot team, document baseline metrics, confirm event instrumentation, and agree that v1 success will be judged on handoff clarity and follow-through rather than automation coverage.\n\nFail if, by planning cutoff, the proposal still depends on undefined cross-system workflow changes, unclear ownership of the pilot, or missing baseline measurement. In that case, defer build approval and request a narrower pilot brief.\n\n## Recommended Next Artifact\nA pilot decision memo that names the decision owner, pilot team, planning date, baseline metrics, success thresholds, instrumentation events, and the exact reasons to approve, defer, or reject v1 scope.",
+  "claims": [
+    {
+      "claim_id": "side_b-claim-1",
+      "summary": "The PRD is more decision-useful when it explicitly supports a build-vs-defer decision for a narrowly scoped pilot, with a named decision owner, forcing event, and approval threshold.",
+      "evidence_refs": [
+        "ctx-prompt",
+        "ctx-rubric",
+        "ctx-constraints",
+        "ctx-scenario"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-2",
+      "summary": "Because the scenario centers hidden scope creep, the artifact should make out-of-scope boundaries and defer conditions part of the core product requirement rather than a secondary note.",
+      "evidence_refs": [
+        "ctx-scenario",
+        "ctx-prompt"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-scenario",
+    "ctx-prompt",
+    "ctx-rubric",
+    "ctx-constraints"
+  ],
+  "conclusion_confidence": "medium",
+  "open_questions": [],
+  "critique_responses": [
+    {
+      "finding_id": "finding-1",
+      "disposition": "adopted",
+      "rationale": "The critique is correct that the first-pass artifact implied decision usefulness without naming the actual decision, owner, forcing event, or threshold. The revision adds a concrete build-vs-defer decision, assigns ownership to the PM and operations lead, ties the decision to the next planning cycle, and makes pass/fail conditions actionable."
+    }
+  ]
+}

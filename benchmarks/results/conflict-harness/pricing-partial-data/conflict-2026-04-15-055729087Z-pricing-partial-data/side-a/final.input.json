@@ -1,0 +1,114 @@
+{
+  "case_packet": {
+    "scenario_id": "pricing-partial-data",
+    "title": "Pricing change with partial market data",
+    "prompt": "Draft a pricing strategy recommendation under partial market data.",
+    "artifact_type": "strategy",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a strategy artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "strategy",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass": {
+    "run_id": "conflict-2026-04-15-055729087Z-pricing-partial-data",
+    "side_id": "side_a",
+    "round": "first_pass",
+    "artifact_markdown": "# Pricing Strategy Recommendation Under Partial Market Data\n\n## Decision Frame\n\nThis recommendation addresses how to set or adjust pricing when market data is materially incomplete. The core tension: waiting for complete data delays revenue impact and competitive positioning; acting on incomplete data risks mispricing that erodes margin or volume.\n\n**Decision owner:** Product / Revenue leadership\n**Decision horizon:** Near-term pricing action (30–90 days)\n**Stakes:** Meaningful — mispricing by >15% in either direction typically produces measurable harm (margin compression or demand destruction)\n\nThe recommended frame is **bounded commitment**: make the smallest pricing move that is defensible under current evidence, with pre-defined triggers that escalate to a full adjustment once evidence gaps close. This is not \"wait and see\" — it is a structured commitment with an explicit revision schedule.\n\n---\n\n## Unknowns & Evidence Gaps\n\nPricing decisions require three evidence classes. Below is the gap assessment under the stated partial-data condition:\n\n| Evidence Class | Required Signal | Current Status | Gap Severity |\n|---|---|---|---|\n| **Demand elasticity** | Price sensitivity curve (own-price elasticity) | Unknown / assumed | High |\n| **Competitive benchmarks** | Competitor price points and recent moves | Partial or stale | Medium |\n| **Willingness to pay (WTP)** | Segment-level WTP distribution | Unknown | High |\n| **Cost floor** | Fully-loaded unit economics | Assumed available | Low |\n| **Churn / retention signal** | Price-driven churn rate at current price | Unknown | Medium |\n\n**Critical gap:** Without own-price elasticity or segment WTP, any price increase above ~5% is a hypothesis, not a forecast. Confidence intervals on volume impact are wide enough to make the P&L projection unreliable.\n\n**Acceptable partial data:** Cost floor + rough competitive band is sufficient to bound the downside (don't price below cost, don't price wildly above market). It is not sufficient to optimize.\n\n---\n\n## Pass/Fail Readiness\n\n**Readiness test:** Should we execute a pricing change now, or is the evidence gap too large?\n\n### Pass criteria (all must be true to proceed with change >5%)\n- [ ] Cost floor confirmed — fully-loaded unit economics documented\n- [ ] At least one competitive anchor — one comparable product's price is known and recent (<6 months)\n- [ ] A rollback mechanism exists — pricing can be reversed or grandfathered within 30 days if demand signal turns negative\n- [ ] A measurement plan is in place — volume, conversion rate, and churn will be tracked weekly post-change\n\n### Fail criteria (any one blocks a large move)\n- No demand elasticity signal whatsoever (no A/B history, no survey, no cohort data)\n- Competitive landscape is actively shifting (announced moves pending)\n- No rollback path (contractual or technical lock-in prevents reversal)\n\n### Current readiness verdict (under zero provided evidence)\n**Conditional pass for a small, bounded move (≤5% adjustment).** Fail for any aggressive repositioning (>10% change) until at least one elasticity proxy is obtained.\n\n**Rationale:** A ≤5% move is within typical noise tolerance for most pricing models, is unlikely to trigger significant demand destruction, and generates the observational data needed to inform the larger decision. It is a learning investment, not a bet.\n\n---\n\n## Recommended Next Artifact\n\n**Artifact:** Pricing Sensitivity Test Plan\n\n**Why this next:** The strategy recommendation above is blocked on elasticity data. The fastest path to that data is a structured test, not additional research. A test plan defines the cohort, the price delta, the duration, and the success metric — it converts the evidence gap into a 2–4 week sprint rather than an open-ended research project.\n\n**Minimum test plan contents:**\n- Hypothesis: \"A X% price increase will reduce conversion by no more than Y%\"\n- Test group definition (segment, channel, geography)\n- Control condition\n- Primary metric + threshold for \"acceptable\" outcome\n- Duration and sample size (back-calculate from expected volume)\n- Decision rule: if primary metric stays above threshold → proceed with full rollout; if not → hold at current price and investigate\n\n**Alternative next artifact (if test is not feasible):** Competitive Pricing Audit — structured sweep of 3–5 comparable products to establish a defensible market anchor, which at minimum enables the cost-floor + market-band bounded move described above.\n\n---\n\n*Confidence note: This recommendation is calibrated for a generic pricing decision. Confidence is medium — the framework is sound, but the specific pass/fail thresholds and test parameters require calibration against actual product economics and segment data not provided in this case packet.*",
+    "claims": [
+      {
+        "claim_id": "side_a-claim-1",
+        "summary": "Under partial market data, the correct posture is bounded commitment — the smallest defensible pricing move with pre-defined revision triggers — not full action or full delay.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_a-claim-2",
+        "summary": "A price move of ≤5% is within typical demand noise tolerance and functions as a learning investment that generates elasticity signal without high risk of demand destruction.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_a-claim-3",
+        "summary": "Own-price elasticity and segment WTP are the two highest-severity evidence gaps; cost floor and rough competitive band are sufficient only to bound downside, not to optimize.",
+        "evidence_refs": [],
+        "is_major": false
+      },
+      {
+        "claim_id": "side_a-claim-4",
+        "summary": "The recommended next artifact is a Pricing Sensitivity Test Plan, which converts the evidence gap into a 2–4 week sprint rather than an open-ended research project.",
+        "evidence_refs": [],
+        "is_major": false
+      }
+    ],
+    "citations": [],
+    "conclusion_confidence": "medium",
+    "open_questions": [
+      "What is the product category and typical customer contract structure? (Determines rollback feasibility and lock-in risk.)",
+      "Is there any historical A/B pricing data, even from a different period or segment?",
+      "What is the direction of the contemplated change — increase or decrease? (Asymmetric risk profile.)",
+      "Are there contractual MFN or price-parity obligations that constrain the test design?",
+      "What competitive moves, if any, are known or anticipated in the next 90 days?"
+    ],
+    "critique_responses": []
+  },
+  "critique_packet": {
+    "target_side": "side_a",
+    "finding_id": "finding-2",
+    "target_claim_ids": [
+      "side_a-claim-2"
+    ],
+    "claim_under_attack": "A price move of ≤5% is within typical demand noise tolerance and functions as a learning investment that generates elasticity signal without high risk of demand destruction.",
+    "attack_type": "evidence_gap",
+    "evidence_or_reason": "The artifact provides no evidence, citations, or product-context qualifiers for the specific ≤5% threshold, yet treats it as generally safe. That threshold can fail badly in categories with annual contracts, high price salience, procurement review, or psychologically important price points, where even small changes can materially affect conversion or churn. Under this case's explicitly partial data conditions, presenting ≤5% as 'typical noise tolerance' is an unsupported generalization rather than a defensible inference.",
+    "severity": "medium"
+  }
+}

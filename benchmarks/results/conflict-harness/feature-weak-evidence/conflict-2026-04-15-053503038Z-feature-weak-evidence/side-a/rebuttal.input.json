@@ -1,0 +1,104 @@
+{
+  "case_packet": {
+    "scenario_id": "feature-weak-evidence",
+    "title": "New feature with weak evidence",
+    "prompt": "Draft a PRD for a new feature with weak supporting evidence.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "opposing_first_pass": {
+    "run_id": "conflict-2026-04-15-053503038Z-feature-weak-evidence",
+    "side_id": "side_b",
+    "round": "first_pass",
+    "artifact_markdown": "# PRD: Evidence-Gated Pilot for Proposed New Feature\n\n## Summary\nThis PRD defines a limited pilot for a proposed feature where supporting evidence is currently weak. The recommendation is not full-scale delivery. The recommendation is to approve a discovery-backed MVP only if the team accepts explicit learning goals, narrow scope, and pre-defined stop/go criteria.\n\n## Problem Statement\nA new feature has been proposed, but the current packet provides no user research, usage data, competitive evidence, or validated demand signals. Building a broad release under these conditions would create material risk of shipping low-value complexity.\n\n## Decision Frame\nApprove only an evidence-gated MVP whose primary purpose is to test demand, usability, and outcome lift. Do not approve a full production investment until the pilot generates enough evidence to justify broader rollout.\n\n## Users and Need\nPrimary user: target end users affected by the proposed workflow gap.\n\nCurrent need statement: users may have a friction, unmet need, or conversion barrier that this feature could address, but that need is not yet demonstrated by evidence in the packet.\n\n## Goals\n- Determine whether the feature solves a real and frequent user problem.\n- Measure whether exposed users engage with the feature at a rate high enough to justify continued investment.\n- Learn the minimum viable workflow, UX, and instrumentation needed for a production decision.\n\n## Non-Goals\n- Full rollout to the entire user base.\n- Deep platform integration beyond what is needed for the test.\n- Long-tail edge case coverage.\n- Pricing, packaging, or monetization commitments.\n\n## Working Hypotheses\n- H1: A meaningful subset of target users will discover and try the feature when presented in context.\n- H2: Users who try the feature will complete the core workflow at an acceptable rate.\n- H3: The feature will improve at least one target outcome metric versus the current experience.\n\nThese are hypotheses, not established facts.\n\n## Proposed Scope\nBuild the smallest release that can test value.\n\nIn scope:\n- Single core user flow.\n- Eligibility limited to a narrow pilot cohort.\n- Event instrumentation for discovery, activation, completion, and downstream outcome.\n- Simple feedback capture after use.\n- Feature flag and rollback controls.\n\nOut of scope:\n- Advanced customization.\n- Cross-platform parity unless required for test validity.\n- Admin tooling beyond basic support needs.\n\n## User Experience Requirements\n- Entry point must appear only where user intent is plausible.\n- First-run flow must explain value in one sentence or less.\n- Core task must be completable without training.\n- Users must be able to exit safely without breaking their current workflow.\n\n## Functional Requirements\n- System exposes feature to pilot cohort behind a flag.\n- System records impressions, clicks, starts, completions, and abandonment.\n- System records one downstream success metric tied to the intended user outcome.\n- System supports quick disable if error rate, confusion, or support burden exceeds threshold.\n- System provides lightweight in-product feedback collection.\n\n## Success Metrics\nPilot success requires all of the following:\n- Sufficient discovery: target cohort finds the feature at a non-trivial rate.\n- Sufficient activation: a meaningful share of exposed users start the flow.\n- Sufficient completion: most starters can finish the core flow.\n- Positive signal on intended outcome metric versus baseline or control.\n- No severe usability or operational regressions.\n\nExact numeric thresholds should be set before build approval because none are provided in the packet.\n\n## Launch Plan\n- Phase 1: internal dogfood.\n- Phase 2: limited external pilot cohort.\n- Phase 3: decision review based on pilot data.\n- Phase 4: either expand scope or stop development.\n\n## Risks\n- No validated demand; feature may solve a low-priority problem.\n- Usage may reflect novelty rather than durable value.\n- Weak instrumentation could produce ambiguous results.\n- A broad MVP could create maintenance burden before value is proven.\n\n## Dependencies\n- Analytics instrumentation.\n- Feature flag support.\n- PM and design alignment on the single testable workflow.\n- Access to a pilot cohort.\n\n## Unknowns & Evidence Gaps\n- Whether the underlying user problem is real, frequent, and important.\n- Which user segment has the strongest need.\n- Whether the proposed workflow is better than the status quo.\n- What numeric thresholds define a pass.\n- What opportunity cost this feature imposes on the roadmap.\n\n## Pass/Fail Readiness\nPass for pilot build:\n- Team agrees this is a learning investment, not a committed product bet.\n- Numeric success thresholds are defined before implementation starts.\n- Scope is constrained to one core workflow.\n- Instrumentation and flagging are included in the initial build.\n\nFail for pilot build:\n- Stakeholders expect broad rollout without validation.\n- No pilot cohort or measurement plan exists.\n- Scope expands beyond what is needed to answer the core hypotheses.\n\n## Recommended Next Artifact\nA validation plan that includes:\n- target segment definition\n- baseline metrics\n- explicit pilot success thresholds\n- interview or survey plan\n- experiment design and decision rule for expand, iterate, or stop",
+    "claims": [
+      {
+        "claim_id": "side_b-claim-1",
+        "summary": "Given the absence of supporting evidence in the packet, the decision-useful PRD is an evidence-gated MVP/pilot rather than a full-scale feature commitment.",
+        "evidence_refs": [
+          "ctx-case-packet"
+        ],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-2",
+        "summary": "The PRD should treat user value, adoption, and outcome improvement as hypotheses to be tested because no validating research or performance data is provided.",
+        "evidence_refs": [
+          "ctx-case-packet"
+        ],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-3",
+        "summary": "Predefined success thresholds, instrumentation, and stop/go criteria are required for this feature to be actionable under weak-evidence conditions.",
+        "evidence_refs": [
+          "ctx-case-packet"
+        ],
+        "is_major": true
+      }
+    ],
+    "citations": [
+      "ctx-case-packet"
+    ],
+    "conclusion_confidence": "medium",
+    "open_questions": [
+      "Who is the primary target segment for the proposed feature?",
+      "What baseline metric or user pain point is the feature intended to improve?",
+      "What quantitative thresholds should define pilot success or failure?",
+      "What is the acceptable opportunity cost relative to other roadmap work?"
+    ],
+    "critique_responses": []
+  }
+}

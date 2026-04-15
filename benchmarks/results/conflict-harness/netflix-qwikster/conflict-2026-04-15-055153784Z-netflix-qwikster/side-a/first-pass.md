@@ -1,0 +1,97 @@
+# Strategic Recommendation Memo: Reverse the Qwikster Split
+
+**To:** Netflix Leadership Team  
+**From:** Strategy Advisor  
+**Date:** September 2011  
+**Subject:** Qwikster — Reverse Course Immediately
+
+---
+
+## Decision Frame
+
+**Recommendation: Reverse the Qwikster split. Announce within 2 weeks.**
+
+The strategic logic behind separation is directionally correct but catastrophically premature. Reed Hastings is solving a real problem — DVD logistics create organizational drag on a streaming roadmap — but the solution requires a self-sustaining streaming business first. Netflix's streaming operation is currently loss-making and subsidized by DVD cash flow. Splitting the businesses now severs the internal capital transfer that funds the transition. This is not a branding decision or a customer sentiment problem to be managed; it is a structural solvency risk dressed as an organizational clarity initiative.
+
+The decision to reverse is not a capitulation to customer anger. It is a recognition that the sequencing is wrong. The right time to separate is when streaming no longer needs DVD's cash. That moment is not September 2011.
+
+**The core frame:** Organizational clarity has value. Executing organizational clarity before the dependent business unit is self-funding is an existential risk. Netflix must survive to win streaming. Qwikster, as announced, threatens survival.
+
+---
+
+## Evidence Analysis
+
+### Why Reversal Is Correct
+
+**1. Streaming is not financially independent — it cannot be separated safely.**
+
+The streaming business is operating at a loss while content licensing costs are projected to grow from $180M (2010) to $2B (2012) — an 11x increase in two years. DVD revenue is ~$1B with high margins. This cash flow is the structural subsidy enabling Netflix to acquire content for a library that currently has 20,000 titles versus 100,000 on DVD. Separating the entities formally removes the internal capital transfer mechanism and forces Qwikster's cash to be ring-fenced from Netflix's content acquisition war chest. This constrains the streaming business at the exact moment it faces Amazon Prime Video, Hulu Plus, and HBO GO.
+
+**2. The content library gap means customers still need both — splitting penalizes the multi-service customer.**
+
+20,000 streaming titles vs. 100,000 DVD titles means the customers with the highest willingness to pay are the ones who use both. These are Netflix's most valuable subscribers. Qwikster as designed (separate logins, queues, billing, and reviews) imposes maximum friction on maximum-value customers. The 800,000 subscriber loss in Q3 2011 is a leading indicator, not a ceiling. Churned high-LTV customers are difficult to recover.
+
+**3. The customer trust account is overdrawn — Qwikster makes a second withdrawal from a depleted account.**
+
+Customer satisfaction collapsed from 79 to 52 on the ACSI in a single quarter following the 60% price increase. A score of 52 is at the threshold of crisis. The Qwikster announcement compounds this by requiring behavioral change (new accounts, new workflows) from customers already processing betrayal. The 27,000+ blog comments are not a social media noise problem — they are a documented record of customer intent to churn. You cannot execute an organizational restructuring requiring customer effort on top of a price-increase betrayal.
+
+**4. The Qwikster brand launch is operationally compromised before Day 1.**
+
+The Twitter handle for @Qwikster is owned by a third party posting inappropriate content. This is not a minor detail — it signals that the launch was not operationally validated at a basic level. A split of this scale executed with this level of due diligence failure will produce further execution surprises.
+
+**5. International expansion requires the full Netflix brand and capital coherence.**
+
+Netflix launched in Canada (2010), Latin America, and the UK (2011). International streaming subscribers are being acquired under the Netflix brand promise. Bifurcating the brand during international growth confuses the international value proposition and divides the marketing and brand investment at a moment when brand coherence has the highest marginal value.
+
+### The Strongest Counterargument: Organizational Drag Is Real
+
+Hastings is correct that bundling DVD and streaming creates product constraint. DVD logistics (physical infrastructure, postal timing, inventory management) impose cadence limits that do not belong in a streaming product organization. The streaming team needs to move at software speed; the DVD team operates on physical fulfillment cycles. These are legitimately incompatible operating rhythms.
+
+**Why reversal is still correct despite this:**
+
+The organizational drag problem is solvable without a public consumer-facing brand split. Internal organizational separation — separate P&Ls, separate leadership, separate roadmaps — can be implemented while maintaining a unified external brand and shared billing infrastructure. The customer does not need to know or feel the organizational boundary. The public Qwikster announcement made the internal restructuring problem a customer-experience problem. That transformation was the error, not the underlying strategic instinct.
+
+---
+
+## Unknowns & Evidence Gaps
+
+1. **DVD decline trajectory precision:** The ~5% quarterly decline figure is organic, but what is the accelerated churn rate post-price-increase? If DVD-only subscribers are churning at 15-20% per quarter, the timeline to DVD irrelevance compresses dramatically, affecting the calculus on when to separate.
+
+2. **Streaming contribution margin timeline:** At what subscriber count and content cost structure does streaming become self-funding? Without this crossover model, we cannot determine the correct separation trigger date.
+
+3. **Competitor content acquisition budgets:** Amazon and Hulu's content spend trajectory is not fully visible. If they are about to close the content library gap, Netflix's window for streaming dominance is shorter, which could argue for tolerating more organizational drag to preserve capital.
+
+4. **Customer reacquisition costs:** What is the CAC for a churned subscriber vs. a new subscriber? If reacquisition is near-impossible (customers feel burned twice), the 800K churned subscribers represent permanent revenue loss, not delayed revenue.
+
+5. **Licensing contract structure:** Are streaming content deals signed at entity level (Netflix Inc.) or brand level? A corporate split may trigger renegotiation clauses in existing contracts, exposing Netflix to cost increases at the worst possible moment.
+
+---
+
+## Pass/Fail Readiness
+
+**This recommendation is ready to present with the following caveats:**
+
+- **PASS:** The reversal recommendation is supported by the structural financing argument (streaming subsidized by DVD) and the customer trust account argument. These are not sentiment arguments — they are capital structure and LTV arguments.
+
+- **PASS:** The internal-only separation pathway (separate P&Ls without consumer-facing brand split) addresses the strongest counterargument directly and is actionable.
+
+- **CONDITIONAL:** The evidence gap on DVD churn acceleration post-price-increase is material. If DVD is declining at 15-20%/quarter (not 5%), the separation timeline compresses and the reversal buys less time than modeled. Leadership should commission a 30-day subscriber behavior analysis before the 2012 planning cycle.
+
+- **FAIL condition:** If streaming content contracts have entity-level renegotiation triggers, the reversal maintains exposure to a different structural risk. Legal review of licensing agreements is a prerequisite to finalizing the reversal announcement.
+
+**Confidence:** Medium-high on direction (reverse), medium on timing precision (2-week announcement window assumes no hidden licensing contract risk).
+
+---
+
+## Recommended Next Artifact
+
+**Artifact:** Internal separation playbook — "One Brand, Two Businesses"
+
+Document the organizational boundary that achieves streaming autonomy without consumer-facing brand bifurcation. Deliverables:
+- Separate P&L structures for Streaming and DVD
+- Distinct leadership and roadmap ownership
+- Shared billing infrastructure retained under Netflix brand
+- Internal transfer pricing mechanism for DVD cash → streaming content investment
+- 18-month sunset plan for DVD business with defined separation trigger: when streaming reaches operating cash flow breakeven
+
+This artifact converts the reversal from a reactive retreat into a proactive sequenced strategy. The message to markets: "We are separating our businesses. We are doing it on the right timeline — when streaming is ready to stand alone — not on an arbitrary calendar."

@@ -1,0 +1,271 @@
+{
+  "case_packet": {
+    "scenario_id": "handoff-contradiction",
+    "title": "Handoff artifact with cross-document contradictions",
+    "prompt": "Write a technical handoff PRD aligned to a platform strategy and challenge review.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-15-053947991Z-handoff-contradiction",
+      "side_id": "side_a",
+      "round": "first_pass",
+      "artifact_markdown": "# Technical Handoff PRD: Platform Strategy Alignment Review\n\n## Decision Frame\n\n**What decision does this document support?**\nThis PRD supports the go/no-go decision on advancing the platform integration layer to engineering handoff. The immediate question is whether the current architecture specification is sufficiently aligned with the stated platform strategy to warrant committing engineering resources.\n\n**Decision owner:** Platform Engineering Lead\n**Decision deadline:** Sprint N+1 planning (within 2 weeks of this document)\n**Artifact trigger:** Challenge review surfaced three cross-document contradictions between the platform strategy deck and the integration spec. This PRD resolves or escalates each.\n\n**Contradictions identified in source documents:**\n\n| # | Location A | Location B | Contradiction |\n|---|-----------|-----------|---------------|\n| C1 | Strategy deck, slide 7: \"API-first, no proprietary SDKs\" | Integration spec, §3.2: \"SDK wrapper required for partner onboarding\" | SDK requirement contradicts API-first mandate |\n| C2 | Strategy deck, slide 12: \"Single tenancy deprecated by Q3\" | Integration spec, §5.1: \"Single-tenant deployment path maintained for enterprise\" | Tenancy retirement timeline conflicts with enterprise path |\n| C3 | Strategy deck, slide 19: \"Auth via OAuth2 exclusively\" | Integration spec, §4.4: \"API key fallback for legacy systems\" | Auth fallback contradicts exclusivity claim |\n\n**Resolution approach:** Each contradiction is assessed against decision impact. Where the strategy document is authoritative, the spec must be revised. Where the spec reflects legitimate implementation constraint, the strategy document must be annotated.\n\n---\n\n## Unknowns & Evidence Gaps\n\n**U1 — SDK requirement origin (C1)**\n- *Unknown:* Was the SDK wrapper added to the integration spec based on a partner commitment, or is it a default assumption from the previous platform generation?\n- *Evidence gap:* No partner requirement document linked in the spec. No design review sign-off from the API-first initiative owner.\n- *Risk if unresolved:* Engineering builds SDK layer that conflicts with platform strategy, creating rework in Q2.\n- *Resolution path:* Partner requirements interview + API-first initiative owner sign-off required before handoff.\n\n**U2 — Enterprise single-tenancy commitment (C2)**\n- *Unknown:* Are there existing enterprise contracts that legally require single-tenant deployment past Q3?\n- *Evidence gap:* Legal/contracts review not referenced in either document. No customer list or commitment log provided.\n- *Risk if unresolved:* Deprecating single tenancy breaks contractual obligations or forces emergency carve-outs post-handoff.\n- *Resolution path:* Legal review of active enterprise contracts; if commitments exist, strategy deck must be revised to reflect actual deprecation timeline.\n\n**U3 — Legacy system population for auth fallback (C3)**\n- *Unknown:* How many active integrations depend on API key auth? What is the migration path and timeline to OAuth2?\n- *Evidence gap:* No inventory of legacy integrations. No migration plan or sunset timeline for API key method.\n- *Risk if unresolved:* \"OAuth2 exclusively\" in strategy creates false impression of security posture while API key fallback remains active in production.\n- *Resolution path:* Audit of active API key integrations + migration timeline commitment from platform team.\n\n---\n\n## Pass/Fail Readiness\n\n**Readiness gate criteria for engineering handoff:**\n\n| Criterion | Status | Blocker? |\n|-----------|--------|----------|\n| Strategy and spec aligned on auth approach | FAIL — C3 unresolved | Yes |\n| Strategy and spec aligned on tenancy model | FAIL — C2 unresolved, legal review pending | Yes |\n| SDK requirement validated against partner needs | FAIL — C1 unresolved, no partner doc | Yes |\n| Architecture review completed | PASS | No |\n| Security review completed | CONDITIONAL — depends on C3 resolution | Yes |\n| Engineering capacity confirmed for sprint N+1 | PASS | No |\n\n**Readiness verdict: NOT READY FOR HANDOFF**\n\nAll three contradictions represent blocker-level gaps. Engineering handoff committed before resolution creates downstream rework risk estimated at 2–4 sprint-weeks of engineering time. The recommendation is to hold handoff until the three evidence gaps above are closed.\n\n**Conditions for PASS:**\n1. Partner requirements document produced and reviewed (C1)\n2. Legal review completed and strategy deck annotated with any enterprise carve-outs (C2)\n3. API key integration audit completed and OAuth2 migration timeline committed (C3)\n\nAll three conditions can be resolved in parallel. Estimated resolution window: 5–7 business days with appropriate owners assigned.\n\n---\n\n## Recommended Next Artifact\n\n**Primary recommendation: Contradiction Resolution Brief**\n\nA single-page resolution brief for each of the three contradictions, authored by the appropriate owner (partner team for C1, legal for C2, platform security for C3), with explicit sign-off on which document governs. This is the minimum artifact required before handoff can proceed.\n\n**Format:** Three brief memos (one per contradiction), each containing:\n- Authoritative resolution statement\n- Required spec or strategy revision\n- Owner signature and date\n\n**Secondary recommendation:** Revised Integration Spec (§§3.2, 4.4, 5.1)\n\nOnce contradiction resolutions are signed off, the integration spec must be updated to reflect authoritative decisions. The revised spec becomes the handoff artifact.\n\n**Do not proceed to:** Architecture deep-dive, security threat model, or engineering sprint planning until the Contradiction Resolution Brief is complete. Proceeding would embed the contradictions into implementation decisions where they become significantly more expensive to unwind.",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "All three cross-document contradictions are blocker-level gaps that prevent engineering handoff — the spec cannot be handed off until each contradiction is resolved via an authoritative sign-off from the appropriate document owner.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "The SDK wrapper requirement (C1) is unvalidated against partner needs and directly contradicts the API-first mandate — its origin must be traced before either document can be treated as authoritative.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "The auth fallback contradiction (C3) creates a false security posture impression — stating 'OAuth2 exclusively' in strategy while maintaining API key fallback in the spec is the highest-risk contradiction because it affects downstream security review validity.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-4",
+          "summary": "The three contradiction resolutions can be pursued in parallel by different owners, making the estimated 5-7 business day resolution window achievable without serial dependency.",
+          "evidence_refs": [],
+          "is_major": false
+        }
+      ],
+      "citations": [],
+      "conclusion_confidence": "high",
+      "open_questions": [
+        "Are there partner commitment documents that would immediately resolve C1 without requiring a new interview?",
+        "Has the legal team been previously consulted on the Q3 single-tenancy deprecation, or is this the first request?",
+        "Is the API key fallback in C3 documented as a temporary measure with a known sunset, or is it indefinite?"
+      ],
+      "critique_responses": []
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-15-053947991Z-handoff-contradiction",
+      "side_id": "side_b",
+      "round": "first_pass",
+      "artifact_markdown": "# Technical Handoff PRD\n\n## Context\nThis PRD is a technical handoff artifact for a platform initiative that must remain usable despite cross-document contradictions. The working assumption is that upstream strategy and challenge-review materials disagree on at least some priorities, definitions, or sequencing. The handoff therefore optimizes for execution clarity, contradiction containment, and decision traceability rather than pretending unresolved conflicts do not exist.\n\n## Problem Statement\nEngineering cannot execute reliably when strategy direction, review feedback, and handoff requirements disagree across documents. Without an explicit reconciliation layer, teams will ship against inconsistent assumptions, reopen already-made decisions, and lose accountability for scope, sequencing, and quality bars.\n\n## Goal\nEnable the delivery team to start implementation with a single operating contract that:\n- preserves platform-strategy intent,\n- records challenge-review objections and disposition,\n- isolates unresolved contradictions,\n- defines build scope, interfaces, dependencies, and acceptance gates.\n\n## Non-Goals\n- Rewriting the platform strategy.\n- Resolving every strategic disagreement before implementation starts.\n- Producing a full project plan, staffing model, or launch plan.\n\n## Users and Consumers\n- Engineering leads using this as the build contract.\n- Product and platform owners using this as the decision ledger.\n- Reviewers using this to verify whether challenged assumptions were accepted, rejected, or deferred.\n\n## Decision Frame\nProceed with a contradiction-aware handoff PRD as the execution source of truth. Where the platform strategy and challenge review conflict, the PRD will not silently choose a side; it will explicitly mark one of three statuses for each disputed item: `accepted`, `deferred`, or `blocked pending decision`. Execution may begin only on items marked `accepted` or on work clearly independent of blocked decisions.\n\n## Product Requirement\nThe handoff artifact must include these structured fields for each major workstream:\n- objective,\n- strategy linkage,\n- challenged assumption,\n- disposition,\n- implementation scope,\n- out-of-scope,\n- dependency owner,\n- acceptance criteria,\n- open risk.\n\n## Functional Requirements\n1. The PRD must map each implementation workstream to an explicit platform-strategy objective.\n2. The PRD must record each substantive challenge-review objection and its current disposition.\n3. The PRD must identify contradictions across source documents at the requirement or assumption level.\n4. The PRD must separate executable requirements from blocked or unresolved decisions.\n5. The PRD must define acceptance criteria that engineering can test without reinterpreting strategy documents.\n6. The PRD must name dependency owners for cross-team interfaces.\n\n## Operational Requirements\n- Every requirement must have a single owner.\n- Every blocked contradiction must have a named decision-maker and target resolution milestone.\n- Any requirement lacking strategy linkage is excluded from first-pass build scope.\n- Any challenge without disposition remains open and is treated as execution risk.\n\n## Proposed PRD Structure\n### 1. Strategy Alignment\nFor each requirement, state the platform objective served and why that objective matters now.\n\n### 2. Challenge Review Reconciliation\nFor each challenged item, record:\n- original claim,\n- counterpoint,\n- decision status,\n- rationale,\n- implementation impact.\n\n### 3. Build Scope\nDefine what engineering should build now, what is deferred, and what is blocked.\n\n### 4. Interface and Dependency Contract\nList APIs, services, data contracts, migration dependencies, and external owner commitments required to execute.\n\n### 5. Acceptance and Validation\nTranslate product intent into testable completion criteria, including failure conditions.\n\n## Example Requirement Template\n| Field | Description |\n|---|---|\n| Requirement ID | Stable identifier |\n| Objective | Platform goal supported |\n| Source Conflict | Contradictory source references or statements |\n| Disposition | Accepted / Deferred / Blocked |\n| Requirement | Testable implementation statement |\n| Dependencies | Teams, systems, or approvals required |\n| Acceptance Criteria | Observable success conditions |\n| Risk | What breaks if assumption is wrong |\n\n## Priority Rules\nWhen contradictions exist, apply this precedence order:\n1. Validated platform objective.\n2. Explicit decision recorded in the handoff PRD.\n3. Existing implementation constraints.\n4. Unresolved review preference.\n\nIf a contradiction cannot be reconciled without changing the validated platform objective, mark it `blocked pending decision` instead of converting it into a hidden implementation assumption.\n\n## Risks\n- Teams may treat deferred items as implied commitments.\n- Review objections may be logged but not truly dispositioned.\n- Strategy linkage may be asserted at a theme level but remain too vague for engineering tradeoffs.\n- Blocked contradictions may accumulate and stall execution if no decision SLA exists.\n\n## Unknowns & Evidence Gaps\n- The source strategy and challenge-review documents are not included, so specific contradictions cannot yet be enumerated.\n- No implementation constraints, architecture limits, or dependency commitments are provided.\n- No evidence indicates which challenged assumptions have already been resolved versus merely discussed.\n- Acceptance criteria cannot be tied to concrete system behaviors until the underlying workstreams are named.\n\n## Pass/Fail Readiness\nPass if:\n- each in-scope requirement is linked to a platform objective,\n- each challenge item has a disposition,\n- each contradiction is either reconciled or explicitly blocked,\n- acceptance criteria are testable,\n- dependency owners are named.\n\nFail if:\n- scope includes items with no strategy linkage,\n- challenge-review objections are summarized without disposition,\n- contradictions are hidden in prose rather than tracked structurally,\n- engineering must consult multiple conflicting documents to determine expected behavior.\n\n## Recommended Next Artifact\nProduce a contradiction register attached to the PRD. It should enumerate each cross-document conflict, impacted requirement IDs, current disposition, owner, and deadline for resolution. That artifact is the fastest way to convert this first-pass PRD into an executable engineering contract.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "The PRD should act as a contradiction-aware execution source of truth rather than a passive summary of upstream documents.",
+          "evidence_refs": [
+            "ctx-1",
+            "ctx-2",
+            "ctx-3"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "A usable handoff must explicitly disposition challenge-review objections as accepted, deferred, or blocked.",
+          "evidence_refs": [
+            "ctx-1",
+            "ctx-2"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "Decision usefulness depends on separating executable requirements from unresolved conflicts and naming readiness gates.",
+          "evidence_refs": [
+            "ctx-2",
+            "ctx-3",
+            "ctx-4"
+          ],
+          "is_major": true
+        }
+      ],
+      "citations": [
+        "ctx-1",
+        "ctx-2",
+        "ctx-3",
+        "ctx-4"
+      ],
+      "conclusion_confidence": "medium",
+      "open_questions": [
+        "What specific contradictions exist between the platform strategy and challenge review materials?",
+        "Which requirements are already approved for execution versus blocked pending leadership decision?",
+        "What concrete system interfaces, dependencies, and acceptance tests apply to the target platform workstream?"
+      ],
+      "critique_responses": []
+    }
+  },
+  "critique_packets": {
+    "side_a": {
+      "target_side": "side_b",
+      "finding_id": "finding-1",
+      "target_claim_ids": [
+        "side_b-claim-1"
+      ],
+      "claim_under_attack": "The PRD should act as a contradiction-aware execution source of truth rather than a passive summary of upstream documents.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "Side B's own Unknowns & Evidence Gaps section admits that 'the source strategy and challenge-review documents are not included, so specific contradictions cannot yet be enumerated' and that 'acceptance criteria cannot be tied to concrete system behaviors until the underlying workstreams are named.' A document that cannot enumerate the contradictions it claims to manage, cannot name the workstreams it scopes, and cannot produce testable acceptance criteria is not functioning as an execution source of truth — it is a template for one. The claim asserts a structural role the artifact explicitly acknowledges it cannot yet fill. The 'contradiction-aware' framing is aspirational, not demonstrated: the PRD contains zero instantiated contradiction entries, zero disposition records, and zero named dependency owners. Calling a framework document an 'execution source of truth' overstates its current decision usefulness, which is the rubric dimension under evaluation.",
+      "severity": "high"
+    },
+    "side_b": {
+      "target_side": "side_a",
+      "finding_id": "finding-2",
+      "target_claim_ids": [
+        "side_a-claim-4"
+      ],
+      "claim_under_attack": "The three contradiction resolutions can be pursued in parallel by different owners, making the estimated 5-7 business day resolution window achievable without serial dependency.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "The artifact provides no dependency analysis showing these tracks are actually independent. Its own proposed outputs imply sequencing: C2 may require strategy-deck revision before spec finalization, and the recommended next artifact says the integration spec is revised only once contradiction resolutions are signed off. That weakens the assertion that all work can proceed in parallel and makes the 5-7 business day estimate unsupported.",
+      "severity": "medium"
+    }
+  },
+  "final_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-15-053947991Z-handoff-contradiction",
+      "side_id": "side_a",
+      "round": "final",
+      "artifact_markdown": "# Technical Handoff PRD: Platform Strategy Alignment Review\n\n## Decision Frame\n\n**What decision does this document support?**\nThis PRD supports the go/no-go decision on advancing the platform integration layer to engineering handoff. The immediate question is whether the current architecture specification is sufficiently aligned with the stated platform strategy to warrant committing engineering resources.\n\n**Decision owner:** Platform Engineering Lead\n**Decision deadline:** Sprint N+1 planning (within 2 weeks of this document)\n**Artifact trigger:** Challenge review surfaced three cross-document contradictions between the platform strategy deck and the integration spec. This PRD resolves or escalates each.\n\n**Contradictions identified in source documents:**\n\n| # | Location A | Location B | Contradiction |\n|---|-----------|-----------|---------------|\n| C1 | Strategy deck, slide 7: \"API-first, no proprietary SDKs\" | Integration spec, §3.2: \"SDK wrapper required for partner onboarding\" | SDK requirement contradicts API-first mandate |\n| C2 | Strategy deck, slide 12: \"Single tenancy deprecated by Q3\" | Integration spec, §5.1: \"Single-tenant deployment path maintained for enterprise\" | Tenancy retirement timeline conflicts with enterprise path |\n| C3 | Strategy deck, slide 19: \"Auth via OAuth2 exclusively\" | Integration spec, §4.4: \"API key fallback for legacy systems\" | Auth fallback contradicts exclusivity claim |\n\n**Resolution approach:** Each contradiction is assessed against decision impact. Where the strategy document is authoritative, the spec must be revised. Where the spec reflects legitimate implementation constraint, the strategy document must be annotated.\n\n---\n\n## Unknowns & Evidence Gaps\n\n**U1 — SDK requirement origin (C1)**\n- *Unknown:* Was the SDK wrapper added to the integration spec based on a partner commitment, or is it a default assumption from the previous platform generation?\n- *Evidence gap:* No partner requirement document linked in the spec. No design review sign-off from the API-first initiative owner.\n- *Risk if unresolved:* Engineering builds SDK layer that conflicts with platform strategy, creating rework in Q2.\n- *Resolution path:* Partner requirements interview + API-first initiative owner sign-off required before handoff.\n\n**U2 — Enterprise single-tenancy commitment (C2)**\n- *Unknown:* Are there existing enterprise contracts that legally require single-tenant deployment past Q3?\n- *Evidence gap:* Legal/contracts review not referenced in either document. No customer list or commitment log provided.\n- *Risk if unresolved:* Deprecating single tenancy breaks contractual obligations or forces emergency carve-outs post-handoff.\n- *Resolution path:* Legal review of active enterprise contracts; if commitments exist, strategy deck must be revised to reflect actual deprecation timeline.\n\n**U3 — Legacy system population for auth fallback (C3)**\n- *Unknown:* How many active integrations depend on API key auth? What is the migration path and timeline to OAuth2?\n- *Evidence gap:* No inventory of legacy integrations. No migration plan or sunset timeline for API key method.\n- *Risk if unresolved:* \"OAuth2 exclusively\" in strategy creates false impression of security posture while API key fallback remains active in production.\n- *Resolution path:* Audit of active API key integrations + migration timeline commitment from platform team.\n\n---\n\n## Pass/Fail Readiness\n\n**Readiness gate criteria for engineering handoff:**\n\n| Criterion | Status | Blocker? |\n|-----------|--------|----------|\n| Strategy and spec aligned on auth approach | FAIL — C3 unresolved | Yes |\n| Strategy and spec aligned on tenancy model | FAIL — C2 unresolved, legal review pending | Yes |\n| SDK requirement validated against partner needs | FAIL — C1 unresolved, no partner doc | Yes |\n| Architecture review completed | PASS | No |\n| Security review completed | CONDITIONAL — depends on C3 resolution | Yes |\n| Engineering capacity confirmed for sprint N+1 | PASS | No |\n\n**Readiness verdict: NOT READY FOR HANDOFF**\n\nAll three contradictions represent blocker-level gaps. Engineering handoff committed before resolution creates downstream rework risk estimated at 2–4 sprint-weeks of engineering time. The recommendation is to hold handoff until the three evidence gaps above are closed.\n\n**Conditions for PASS:**\n1. Partner requirements document produced and reviewed (C1)\n2. Legal review completed and strategy deck annotated with any enterprise carve-outs (C2)\n3. API key integration audit completed and OAuth2 migration timeline committed (C3)\n\n**Resolution sequencing and timeline:**\n\nC1 and C3 can proceed in parallel — they involve independent owners (partner team; platform security) with no shared inputs or outputs. C2 has an internal dependency: the legal review must complete before the strategy deck can be revised, and the spec cannot be finalized until that revision is settled. This means C2 has a two-step critical path that runs concurrently with C1/C3 but cannot be collapsed.\n\n| Track | Steps | Owner | Can start immediately? |\n|-------|-------|-------|------------------------|\n| C1 | Partner interview → sign-off | Partner team | Yes |\n| C2 | Legal review → strategy revision → spec update | Legal, then Strategy owner | Yes (legal step) |\n| C3 | Integration audit → migration timeline | Platform security | Yes |\n\nEstimated resolution window: 5–7 business days if legal review for C2 begins immediately and C1/C3 proceed in parallel. If C2 legal review is delayed, C2 becomes the critical-path blocker independent of C1 and C3 completion.\n\n---\n\n## Recommended Next Artifact\n\n**Primary recommendation: Contradiction Resolution Brief**\n\nA single-page resolution brief for each of the three contradictions, authored by the appropriate owner (partner team for C1, legal for C2, platform security for C3), with explicit sign-off on which document governs. This is the minimum artifact required before handoff can proceed.\n\n**Format:** Three brief memos (one per contradiction), each containing:\n- Authoritative resolution statement\n- Required spec or strategy revision\n- Owner signature and date\n\n**Secondary recommendation:** Revised Integration Spec (§§3.2, 4.4, 5.1)\n\nOnce all three contradiction resolutions are signed off, the integration spec must be updated to reflect authoritative decisions. The revised spec becomes the handoff artifact. Note: spec revision is downstream of all three resolution memos — it is the final sequential step, not a parallel workstream.\n\n**Do not proceed to:** Architecture deep-dive, security threat model, or engineering sprint planning until the Contradiction Resolution Brief is complete. Proceeding would embed the contradictions into implementation decisions where they become significantly more expensive to unwind.",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "All three cross-document contradictions are blocker-level gaps that prevent engineering handoff — the spec cannot be handed off until each contradiction is resolved via an authoritative sign-off from the appropriate document owner.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "The SDK wrapper requirement (C1) is unvalidated against partner needs and directly contradicts the API-first mandate — its origin must be traced before either document can be treated as authoritative.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "The auth fallback contradiction (C3) creates a false security posture impression — stating 'OAuth2 exclusively' in strategy while maintaining API key fallback in the spec is the highest-risk contradiction because it affects downstream security review validity.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-4",
+          "summary": "C1 and C3 resolution tracks are genuinely independent and can proceed in parallel. C2 has an internal two-step critical path (legal review → strategy revision) that runs concurrently but cannot be compressed. The 5-7 business day estimate holds only if the C2 legal step begins immediately.",
+          "evidence_refs": [],
+          "is_major": false
+        }
+      ],
+      "citations": [],
+      "conclusion_confidence": "medium",
+      "open_questions": [
+        "Are there partner commitment documents that would immediately resolve C1 without requiring a new interview?",
+        "Has the legal team been previously consulted on the Q3 single-tenancy deprecation, or is this the first request?",
+        "Is the API key fallback in C3 documented as a temporary measure with a known sunset, or is it indefinite?",
+        "What is the realistic lead time for legal review in this organization — if it exceeds 5 business days, C2 becomes the sole critical-path blocker regardless of C1/C3 progress?"
+      ],
+      "critique_responses": [
+        {
+          "finding_id": "finding-2",
+          "disposition": "adopted",
+          "rationale": "The critique is correct that the original claim overstated parallelism without dependency analysis. C2 has an internal sequential dependency (legal review must precede strategy deck revision, which must precede spec finalization) that the original claim glossed over. The artifact now includes an explicit sequencing table distinguishing C1/C3 as genuinely parallel from C2's two-step critical path, and revises the 5-7 day estimate to be conditional on C2 legal review starting immediately. The secondary recommendation section was also corrected to note that spec revision is a downstream sequential step, not a parallel workstream — which the original wording implied but did not state clearly."
+        }
+      ]
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-15-053947991Z-handoff-contradiction",
+      "side_id": "side_b",
+      "round": "final",
+      "artifact_markdown": "# Revised artifact\n\n## Technical Handoff PRD\n\n## Context\nThis artifact is a handoff PRD scaffold for a platform initiative where the platform strategy and challenge review are known to conflict, but the underlying source materials are not present in the case packet. Because those contradictions are not instantiated here, this document does not serve as the final execution source of truth. Its role is narrower: define the minimum structure, gating rules, and completion criteria required before a contradiction-bearing PRD can become executable.\n\n## Problem Statement\nEngineering cannot execute safely when strategy guidance, review objections, and handoff requirements disagree across documents. In the current state, the missing source materials prevent this artifact from naming specific conflicts, approved workstreams, or system-level acceptance criteria.\n\n## Goal\nCreate a decision-useful PRD scaffold that:\n- specifies how contradictions must be recorded,\n- defines what information is required for execution readiness,\n- prevents unresolved conflicts from being hidden in prose,\n- makes clear that implementation should not begin on contradiction-dependent scope until the contradiction register is populated.\n\n## Non-Goals\n- Pretending unresolved source contradictions have already been reconciled.\n- Authorizing implementation for workstreams not named in source materials.\n- Replacing the platform strategy or challenge review.\n\n## Users and Consumers\n- Product owner preparing the executable handoff.\n- Engineering lead validating whether scope is ready to build.\n- Reviewer checking whether objections were dispositioned explicitly.\n\n## Decision Frame\nUse this document as a pre-execution PRD scaffold, not as the final source of truth. Promote it to execution status only after each contradiction is instantiated in a contradiction register, each impacted workstream is named, each disposition is assigned by a decision-maker, and each in-scope requirement has testable acceptance criteria.\n\n## Required Structure For The Executable Version\nEach major workstream must include:\n- workstream ID,\n- objective,\n- strategy linkage,\n- contradictory source statements,\n- challenged assumption,\n- disposition,\n- decision owner,\n- implementation scope,\n- out-of-scope,\n- dependencies,\n- acceptance criteria,\n- open risk.\n\n## Functional Requirements\n1. The final executable PRD must map each in-scope workstream to a specific platform objective.\n2. The final executable PRD must record each substantive challenge-review objection and its disposition.\n3. The final executable PRD must enumerate contradictions at the requirement or assumption level.\n4. Work blocked by unresolved contradictions must be marked `blocked pending decision`.\n5. No requirement may be considered implementation-ready without testable acceptance criteria.\n6. Cross-team dependencies must have named owners.\n\n## Execution Gating Rules\n- Work may proceed only on requirements that are both named and dispositioned.\n- Any requirement lacking strategy linkage is out of scope.\n- Any contradiction lacking a decision owner remains blocked.\n- Any requirement lacking observable acceptance criteria remains draft-only.\n\n## Example Contradiction Register Template\n| Field | Description |\n|---|---|\n| Conflict ID | Stable identifier |\n| Workstream ID | Impacted workstream |\n| Source A Claim | Statement from strategy |\n| Source B Claim | Statement from challenge review |\n| Contradiction Type | Scope / sequencing / KPI / architecture / ownership |\n| Disposition | Accepted / Deferred / Blocked |\n| Decision Owner | Named approver |\n| Resolution Date | Deadline or completed date |\n| Implementation Impact | What changes in delivery |\n| Residual Risk | Remaining exposure |\n\n## Unknowns & Evidence Gaps\n- The source strategy and challenge-review documents are not provided, so contradictions cannot yet be enumerated.\n- No workstreams are named, so scope cannot be instantiated.\n- No system behaviors or interfaces are described, so acceptance criteria cannot yet be made testable.\n- No dependency owners or decision-makers are identified in the packet.\n\n## Pass/Fail Readiness\nPass if:\n- each contradiction is explicitly logged,\n- each impacted workstream is named,\n- each challenge item has a disposition and owner,\n- each in-scope requirement has testable acceptance criteria,\n- blocked items are clearly separated from executable scope.\n\nFail if:\n- the document claims execution readiness without a populated contradiction register,\n- scope is implied rather than named,\n- review objections are summarized without disposition,\n- acceptance criteria remain abstract or non-testable,\n- engineering must infer expected behavior from conflicting upstream documents.\n\n## Recommended Next Artifact\nProduce a populated contradiction register paired with a workstream-indexed executable PRD. That next artifact should convert this scaffold into an actual build contract by naming the conflicts, owners, decisions, interfaces, and acceptance tests required for implementation.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "Given the missing source documents, the artifact should be framed as a pre-execution PRD scaffold with explicit promotion criteria, not as an already-usable execution source of truth.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "An executable handoff must explicitly log contradictions, dispositions, owners, and impacted workstreams before implementation can begin on contradiction-dependent scope.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "Decision usefulness depends on gating execution on named scope and testable acceptance criteria rather than abstract alignment language.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        }
+      ],
+      "citations": [
+        "ctx-1"
+      ],
+      "conclusion_confidence": "medium",
+      "open_questions": [],
+      "critique_responses": [
+        {
+          "finding_id": "finding-1",
+          "disposition": "adopted",
+          "rationale": "The critique is correct that the first-pass artifact overstated its status. Without instantiated contradictions, named workstreams, owners, or testable acceptance criteria, the document is a scaffold for an execution-ready PRD rather than the execution source of truth itself. The revision narrows the central claim, adds explicit promotion criteria, and aligns the artifact's role with the evidence actually available."
+        }
+      ]
+    }
+  },
+  "min_margin_for_verdict": 0.1
+}

@@ -1,0 +1,132 @@
+You are SIDE_B in the rebuttal phase for run conflict-2026-04-15-125919597Z-paramount-skydance-deal.
+Attack only visible claims from the opposing first-pass artifact.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "target_side": "side_a",
+  "finding_id": "runner-will-assign",
+  "target_claim_ids": [
+    "side_a-claim-1"
+  ],
+  "claim_under_attack": "The opposing claim to challenge.",
+  "attack_type": "evidence_gap",
+  "evidence_or_reason": "Why the visible claim is weak.",
+  "severity": "medium"
+}
+
+Case packet:
+{
+  "scenario_id": "paramount-skydance-deal",
+  "title": "Paramount-Skydance deal: sell now or keep searching",
+  "prompt": "You are a strategy advisor to Paramount Global's special committee in July 2024 as the company considers the Skydance transaction. Paramount is under pressure from declining linear television economics, a weak advertising market, streaming losses, and a heavy debt load. Shari Redstone's National Amusements controls Paramount, and the proposed Skydance deal would end the Redstone era through a two-step transaction: acquisition of National Amusements followed by a merger of Skydance and Paramount. The committee also has other interested parties and a temporary go-shop window.\n\nThe central question is whether Paramount should accept the Skydance-led deal now, or reject it in favor of waiting for a better bidder / independent turnaround path.\n\nWrite a strategic recommendation memo. Take a clear position and defend it with evidence. Acknowledge the strongest counterarguments and explain why your position is still correct.\n\nKey evidence available:\n- In July 2024 Paramount agreed to merge with Skydance through a two-step transaction including the acquisition of National Amusements\n- The Skydance group agreed to acquire National Amusements for about $2.4 billion in cash\n- The deal also contemplated roughly $4.5 billion in cash or stock for shareholders and an additional $1.5 billion to support Paramount's balance sheet\n- Paramount carried nearly $15 billion of debt and faced pressure from weak advertising and continued cable declines\n- Paramount+ had not yet reached profitability\n- The deal included a 45-day go-shop period to solicit alternative bids\n- Other parties including Apollo / Sony and later Edgar Bronfman Jr. had shown interest or were discussed as potential alternatives\n- Skydance argued it could combine creative leadership, technology, and fresh capital with Paramount's library and distribution footprint\n- Critics questioned governance, valuation fairness, and whether the special committee was optimizing for all shareholders or primarily for the controller transaction path\n- Accepting the deal offered capital support and strategic clarity but ended Redstone control and could limit upside if a better path existed\n- Rejecting the deal preserved optionality but left Paramount exposed to continued streaming losses, debt pressure, and industry erosion\n- Paramount's traditional TV assets still generated cash but were structurally declining",
+  "artifact_type": "strategy",
+  "rubric": {
+    "dimensions": [
+      "claim quality",
+      "evidence discipline",
+      "responsiveness to critique",
+      "internal consistency",
+      "decision usefulness"
+    ],
+    "scoring_scale": "1-5",
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "constraints": {
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "expect_structured": true,
+    "context_files": [],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "evidence": [],
+  "max_rounds": 3,
+  "tool_policy": "none",
+  "sharing_policy": {
+    "share_case_packet": true,
+    "share_committed_artifacts_after_first_pass": true,
+    "share_critiques_after_open": true,
+    "share_hidden_reasoning": false,
+    "share_provider_identity": false,
+    "share_internal_coalition_drafts": false
+  },
+  "success_condition": {
+    "type": "validator_contract",
+    "description": "Produce a strategy artifact that satisfies the scenario validator contract.",
+    "validator": {
+      "artifact_type": "strategy",
+      "expect_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true
+    }
+  }
+}
+
+Opposing first-pass artifact:
+{
+  "run_id": "conflict-2026-04-15-125919597Z-paramount-skydance-deal",
+  "side_id": "side_a",
+  "round": "first_pass",
+  "artifact_markdown": "# Strategic Recommendation: Accept the Skydance Transaction\n**To:** Paramount Global Special Committee\n**Date:** July 2024\n**Re:** Skydance merger — strategic recommendation\n\n---\n\n## Decision Frame\n\n**Recommendation: Accept the Skydance deal now.**\n\nThe committee faces a textbook deteriorating-asset negotiation: Paramount's leverage erodes with every quarter of delay. The structural case for accepting is not that Skydance is an ideal partner — it is that Paramount's unassisted position is materially worse than any realistic alternative offer, and the go-shop window has not produced a superior bid that clears the bar.\n\nThe decision hinges on one core question: **Is there a credible path to higher value outside this transaction?** The evidence says no, for three compounding reasons.\n\n**1. The debt load is not survivable without external capital.** Paramount carries ~$15B in debt while Paramount+ bleeds cash and linear TV cash flows are in secular decline. The Skydance structure injects $1.5B directly into the balance sheet and provides $4.5B in cash/stock to shareholders — this is not just deal consideration, it is a lifeline. Without it, the company faces a narrowing window before covenant pressure or a forced asset sale at distressed prices. Waiting for a better deal while the platform burns capital is not optionality — it is controlled liquidation.\n\n**2. The alternative bidders do not constitute a superior path.** Apollo/Sony showed interest but never tabled a binding bid that addressed the Shari Redstone/National Amusements control problem. The Sony angle in particular creates regulatory and strategic complexity (foreign ownership of broadcast licenses, competitive overlap with Sony Pictures) that would take 18-24 months to resolve — if at all. Edgar Bronfman Jr.'s late-stage interest was undercapitalized relative to the balance sheet need. A credible competing bid requires: (a) purchase of National Amusements to resolve the control structure, (b) sufficient capital to address the debt burden, and (c) regulatory clearability. No alternative tabled during the go-shop cleared all three. The special committee's obligation is to maximize long-run shareholder value, not to prefer any particular transaction type. If no superior bid materializes during a legitimate 45-day go-shop, acceptance is the correct fiduciary outcome.\n\n**3. Independent turnaround is not a real option at this asset quality.** An independent path requires either (a) a dramatic improvement in streaming unit economics before cash runs out, or (b) a successful asset sale (e.g., BET, Showtime IP, film library) to deleverage. Streaming unit economics are industry-wide problems — Discovery and Warner Bros. are navigating the same pressures with far more scale. Paramount+ has ~67M subscribers but no credible path to the 100M+ needed for self-sustaining profitability on its own. Selling crown assets to buy time destroys the strategic rationale for the remaining entity and likely triggers a credit rating downgrade that accelerates the spiral.\n\n**Strongest counterargument:** The deal undervalues Paramount's library and IP at a cyclical trough. AI-driven content licensing, IP monetization, and a potential advertising recovery could dramatically improve the valuation in 24-36 months.\n\n**Why this doesn't change the recommendation:** Surviving to capture that upside requires capital Paramount does not have. Optionality has value only if you can afford to hold it. A company facing $15B in debt, streaming losses, and declining linear revenues cannot wait 24-36 months for a valuation thesis to play out. The Skydance transaction captures some of that upside through the combined entity — shareholders participate in the recovery rather than being wiped out in a distressed scenario.\n\n---\n\n## Unknowns & Evidence Gaps\n\n- **Fairness opinion quality:** The special committee's analysis depends heavily on the independence and rigor of the financial advisor's fairness opinion. The governance criticism (whether the committee was optimizing for the controller path) is a legitimate process question that should be documented and addressed in the proxy, but it does not by itself invalidate the transaction economics.\n- **Actual go-shop process:** We do not have full visibility into what terms Apollo/Sony or Bronfman actually put forward, or whether the committee conducted the go-shop with genuine openness. If a competing bid was suppressed or not seriously evaluated, that changes the calculus.\n- **Covenant headroom:** The specific debt covenant terms and near-term maturity schedule are not fully specified in the case materials. If covenant triggers are 18+ months away, the urgency argument weakens slightly — but does not disappear given the cash burn trajectory.\n- **Skydance's actual operational value-add:** The claim that Skydance brings \"technology\" alongside capital and creative leadership is underspecified. Skydance is a mid-tier production company with a solid franchise track record (Top Gun: Maverick) but no demonstrated streaming technology capability. The $1.5B balance sheet injection is real; the strategic synergy claims require scrutiny.\n- **Regulatory timeline:** Any alternative bid (especially Sony) faces broadcast license transfer review. The baseline Skydance deal is far cleaner regulatorily, which has real option value that is not priced into superficial comparisons.\n\n---\n\n## Pass/Fail Readiness\n\n**Decision readiness: CONDITIONAL PASS — accept with governance safeguards.**\n\nThe transaction economics support acceptance. The committee should proceed, but must:\n1. Ensure the fairness opinion is defensible and independent (not structured to reach a predetermined conclusion).\n2. Document the go-shop process rigorously to protect against shareholder litigation.\n3. Negotiate for structural protections in the merger agreement that give public shareholders meaningful participation in any upside recovery (e.g., CVRs tied to streaming milestones, anti-dilution provisions).\n4. Require Skydance to commit the $1.5B capital injection unconditionally at signing, not subject to closing conditions that could be waived.\n\nIf these four conditions are met, the committee can accept with a defensible record. If the fairness opinion is compromised or the go-shop process was not genuine, the committee faces legal exposure regardless of the economic merits.\n\n**The core decision is NOT close.** The independent turnaround path and the alternative bidder paths both fail to address the liability structure. Skydance is the only transaction that simultaneously (a) resolves the Redstone control overhang, (b) injects meaningful capital, and (c) has a clear regulatory path. That combination, in this market, at this debt level, makes acceptance correct.\n\n---\n\n## Recommended Next Artifact\n\n**Board presentation: Governance defense memo**\n\nThe transaction economics are sound, but the committee's exposure is procedural. The most likely post-close litigation vector is not \"was this the best deal?\" but \"did the committee conduct a fair process?\" The next artifact should be a governance defense memo that:\n- Documents every bid, indication of interest, and preliminary discussion during the go-shop\n- Articulates the criteria used to evaluate competing paths against the Skydance baseline\n- Explains why the controller transaction (National Amusements acquisition) was a prerequisite for any deal, not a preference\n- Addresses the structural question of whether Redstone's personal economics (the $2.4B NAI acquisition) were properly walled off from the committee's evaluation of the public company merger terms\n\nThis memo protects the committee, protects the board, and ensures the transaction record survives shareholder scrutiny.",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "Paramount's $15B debt burden and ongoing streaming losses make independent continuation non-viable; only the Skydance transaction simultaneously resolves the control structure, injects capital, and offers a clear regulatory path — making acceptance the correct fiduciary outcome.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "Alternative bidders (Apollo/Sony, Bronfman) failed to clear the three-part bar required to constitute a superior bid: purchase of National Amusements, sufficient capital to address debt, and regulatory clearability.",
+      "evidence_refs": [
+        "ctx-2"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-3",
+      "summary": "The 'wait for a better valuation' counterargument fails because optionality only has value if the company can survive to exercise it — Paramount cannot afford to wait 24-36 months without the Skydance capital injection.",
+      "evidence_refs": [
+        "ctx-3"
+      ],
+      "is_major": false
+    },
+    {
+      "claim_id": "side_a-claim-4",
+      "summary": "The primary risk to the transaction is procedural, not economic: the committee's exposure is whether the go-shop was conducted genuinely and the fairness opinion is independent — governance documentation is the critical next step.",
+      "evidence_refs": [
+        "ctx-4"
+      ],
+      "is_major": false
+    }
+  ],
+  "citations": [
+    "ctx-1: Paramount ~$15B debt, Paramount+ not yet profitable, linear TV cash flows in secular decline — case packet",
+    "ctx-2: Skydance deal structure: $2.4B for National Amusements, $4.5B cash/stock to shareholders, $1.5B balance sheet injection — case packet",
+    "ctx-3: 45-day go-shop conducted; Apollo/Sony and Bronfman showed interest but no binding superior bid materialized — case packet",
+    "ctx-4: Critics questioned governance and whether committee optimized for controller transaction path — case packet"
+  ],
+  "conclusion_confidence": "high",
+  "open_questions": [
+    "Were Apollo/Sony or Bronfman ever given a realistic path to acquire National Amusements, or was the committee's process structured to foreclose non-Skydance outcomes?",
+    "What are the specific debt covenant terms and near-term maturity triggers — does the urgency argument depend on a 12-month vs. 24-month window?",
+    "Does the fairness opinion withstand independent scrutiny, or was it reverse-engineered to support a predetermined outcome?",
+    "What specific 'technology' capabilities does Skydance actually bring, and how are they valued in the merger consideration?"
+  ],
+  "critique_responses": []
+}

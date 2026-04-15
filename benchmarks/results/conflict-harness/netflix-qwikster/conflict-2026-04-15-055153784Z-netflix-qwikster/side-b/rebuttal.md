@@ -1,0 +1,13 @@
+# Critique: finding-2
+
+- Target Side: side_a
+- Target Claim IDs: side_a-claim-1
+- Attack Type: evidence_gap
+- Severity: medium
+
+## Claim Under Attack
+Streaming is loss-making and subsidized by DVD cash flow; formal corporate separation severs this internal capital transfer before streaming can sustain itself, creating solvency risk at a moment of 11x content cost growth.
+
+## Evidence Or Reason
+The visible evidence supports that DVD profits subsidize streaming and that streaming costs are rising, but it does not establish the stronger causal step that a Qwikster split would necessarily or immediately 'sever' capital support and create a solvency risk. The case packet says separate companies/websites/billing, not the financing structure, intercompany agreements, balance-sheet allocations, or whether Netflix could still fund streaming via retained cash, debt, equity, or planned transfer arrangements. This claim therefore overreaches from 'subsidy matters' to 'split threatens survival' without visible evidence on capitalization or post-split funding mechanics.
+

@@ -1,0 +1,13 @@
+# Critique: finding-2
+
+- Target Side: side_a
+- Target Claim IDs: side_a-claim-2
+- Attack Type: evidence_gap
+- Severity: medium
+
+## Claim Under Attack
+Proactively conceding structural separation accelerates contagion risk to the Search and Play Store antitrust proceedings by confirming that breakup remedies are appropriate for Google's market positions — reducing overhang in ad-tech while expanding it everywhere else.
+
+## Evidence Or Reason
+This claim overstates cross-case spillover without visible support. The artifact asserts that a voluntary ad-tech separation would function as meaningful precedent in the Search and Play matters, but those cases involve different markets, records, legal theories, and remedy standards. A strategic concession in one matter is not itself proof that breakup is appropriate elsewhere, and the memo offers no case-specific evidence showing courts or regulators would treat it that way. The assertion that overhang would 'spread' rather than decline is therefore speculative and not adequately grounded in the visible record.
+

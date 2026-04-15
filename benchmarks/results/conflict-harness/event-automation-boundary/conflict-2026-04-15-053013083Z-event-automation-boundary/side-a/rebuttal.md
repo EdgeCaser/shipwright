@@ -1,0 +1,13 @@
+# Critique: finding-1
+
+- Target Side: side_b
+- Target Claim IDs: side_b-claim-1
+- Attack Type: evidence_gap
+- Severity: high
+
+## Claim Under Attack
+Phase 1 should use LLMs only for bounded assistive tasks and keep pricing commitments and workflow mutations deterministic with explicit human approval.
+
+## Evidence Or Reason
+The artifact asserts deterministic pricing controls as the correct boundary without establishing that a deterministic pricing rules engine is actually achievable for the target event categories in Phase 1. Event pricing is often highly contextual—venue availability, vendor fluctuations, customer exceptions—making a 'configurable rate card' abstraction a placeholder, not a solution. The PRD lists 'deterministic pricing rules engine or rate-card service' as a dependency but never interrogates whether this dependency can be met before launch. If it cannot, the core safety claim collapses: the human approval gate protects against LLM commitment errors, but if coordinators are manually composing prices outside any structured engine, the audit trail and policy checks described have nothing deterministic to enforce. The artifact's own Unknowns section acknowledges 'which event categories have sufficiently standardized pricing' as unresolved, which directly undermines the claim that a deterministic pricing boundary can be designed and enforced in Phase 1. The claim is structurally sound as a design principle but unsupported as a Phase 1 readiness assertion.
+

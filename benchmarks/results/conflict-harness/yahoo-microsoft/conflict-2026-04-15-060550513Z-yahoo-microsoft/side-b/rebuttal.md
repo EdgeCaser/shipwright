@@ -1,0 +1,13 @@
+# Critique: finding-2
+
+- Target Side: side_a
+- Target Claim IDs: side_a-claim-1
+- Attack Type: evidence_gap
+- Severity: medium
+
+## Claim Under Attack
+Yahoo should reopen negotiations with Microsoft at $34–36/share because the Google partnership is near-certain to be blocked by DOJ antitrust review, removing Yahoo's primary independent defensive strategy and leaving the board with no credible bridge to search competitiveness.
+
+## Evidence Or Reason
+The artifact overstates both the certainty and the strategic centrality of the DOJ outcome. The case packet only says the DOJ is 'reviewing' the Google deal and that it is 'likely to block or severely limit scope'—not that blockage is near-certain. The memo then builds a strong recommendation on that upgraded assumption without supplying any concrete DOJ signal, precedent, timeline, or probability estimate beyond inference from combined market share. It also treats the Google partnership as Yahoo's only credible bridge, ignoring other visible independent assets in the packet—Panama's 15-20% monetization improvement, #1 US display position, and valuable Yahoo Japan/Alibaba stakes—that could support an independence path even if the partnership is narrowed rather than fully blocked.
+
