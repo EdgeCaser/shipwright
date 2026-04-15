@@ -89,6 +89,31 @@ Success criteria:
 
 If results diverge materially from prior runs on the same scenario, pause and diagnose before running new scenarios — the divergence itself is a finding that needs explanation before new data is interpretable.
 
+**Status (2026-04-15): divergence confirmed and diagnosed.** GPT on `handoff-contradiction` flipped `side_a → side_b` between the original 2026-04-13 run and a 2026-04-14 rerun. GPT-replay over the *same frozen artifacts* reproduced the flip (`side_a 0.2 → side_b 0.6`, both medium confidence), isolating this as **judge-side behavior change, not generation variance**. Root cause: the judge prompt/schema was expanded between those dates to require `dimension_rationales`, `decisive_dimension`, `side_summaries`, and tightened `weighted_total` validation (commits `30ce4ee`, `c97de44`, `4758f46`). Forcing the judge to enumerate per-dimension rationale amplifies whichever dimension carries the most salient defect — on `handoff-contradiction` that is Side A's fabricated document references, which the original prompt acknowledged as a "real concern" but scored 3/5, and the current prompt scores 1/5 and calls "the central error."
+
+**Implication:** the v1 13-scenario results are **not apples-to-apples comparable** with anything produced under the current schema. Verdicts quoted from the v1 corpus (e.g., "GPT said `side_a` on handoff-contradiction") should be caveated or removed from outreach/memos until re-baselined. Add a `schema_version` or `prompt_revision` field to every verdict going forward so future comparisons can filter by version.
+
+### Phase 1.7: Re-Baseline the 13-Scenario Set Under Current Schema (new)
+
+Before running any new scenarios or mixing v1 and v2 numbers, re-screen the original 13 scenarios under the current judge prompt/schema with a single judge (GPT). Output: a fresh v2 baseline comparable to anything produced from Phase 3 onward.
+
+```bash
+node scripts/run-conflict-batch.mjs \
+  --scenario <each of the 13 original> \
+  --judge-agent gpt \
+  --out benchmarks/results/conflict-harness/batch-summary-v2-rebaseline-gpt.md
+```
+
+Success criteria:
+
+- all 13 complete without manual intervention
+- per-scenario verdicts emit `dimension_rationales`, `decisive_dimension`, `side_summaries`
+- batch summary captures winner distribution, `judge_confidence` distribution, `needs_human_review` rate, and `decisive_dimension` distribution
+
+Then write a **short reconciliation note** comparing v1 vs v2 verdicts per scenario. Any scenario that flipped winner is itself a finding. Do not treat flips as errors — treat them as evidence that the prompt change materially sharpens evidence-discipline and the other dimensions that now carry explicit rationale requirements.
+
+Only after the reconciliation note is written, proceed to Phase 2.
+
 ### Phase 2: Ship Uncertainty Payload (was Phase 5)
 
 **Moved up.** This is the highest-value product improvement and every batch run without it produces verdicts that can't carry the orchestrator routing signal. Running Phase 3 on the old schema means triple-panel data becomes second-class the moment Phase 5 lands. Ship the schema change first.
@@ -237,12 +262,13 @@ Why:
 
 In order:
 
-1. Phase 1 smoke test on `main` (single-scenario + single replay)
-2. Phase 1.5 freshness check on `handoff-contradiction`
-3. Phase 2 uncertainty payload schema change, re-run smoke
-4. Phase 3 GPT screen on the remaining three real-world scenarios, with explicit GPT-default sanity check
-5. Phase 4 triple-panel escalation based on screen signals only
-6. Write the post-batch memo (see below)
+1. Phase 1 smoke test on `main` (single-scenario + single replay) — **done 2026-04-15, PASS**
+2. Phase 1.5 freshness check on `handoff-contradiction` — **done 2026-04-15, FLIPPED; diagnosed as prompt-schema change, not drift or generation variance**
+3. Phase 1.7 v2 re-baseline of the original 13 scenarios under current schema, plus reconciliation note
+4. Phase 2 uncertainty payload schema change, re-run smoke
+5. Phase 3 GPT screen on the remaining three real-world scenarios, with explicit GPT-default sanity check
+6. Phase 4 triple-panel escalation based on screen signals only
+7. Write the post-batch memo (see below)
 
 ## Suggested Memo After The Next Batch
 
