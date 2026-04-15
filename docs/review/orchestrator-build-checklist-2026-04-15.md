@@ -3,6 +3,8 @@
 **Date:** 2026-04-15  
 **Purpose:** Break the orchestrator implementation plan into concrete build tasks so Shipwright can move from policy to code.
 
+**Scope note:** This checklist covers Rigor Mode build tasks only. Fast Mode build tasks are defined in `two-mode-spec-2026-04-15.md`.
+
 ## Summary
 
 This checklist is the implementation bridge between the orchestration policy and actual product behavior. It is intentionally V1-scoped: build only what is needed to make Shipwright recommend the right level of rigor, ask before spending more, and route unresolved cases correctly.

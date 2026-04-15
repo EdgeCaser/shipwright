@@ -3,6 +3,8 @@
 **Date:** 2026-04-15  
 **Purpose:** Define how Shipwright should act as a user decision aid: choosing a judging mode, recommending when to add rigor, and routing results back in a way that helps the user decide what to do next.
 
+**Scope note:** This spec covers Rigor Mode only. For mode selection and Fast Mode definition, see `two-mode-spec-2026-04-15.md`.
+
 ## Summary
 
 Shipwright should actively advise the user on:

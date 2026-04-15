@@ -3,6 +3,8 @@
 **Date:** 2026-04-15  
 **Purpose:** Translate the orchestrator decision spec into an implementable V1 plan for a user decision aid covering backend routing, UI behavior, provider availability handling, and telemetry.
 
+**Scope note:** This plan covers Rigor Mode implementation only. For Fast Mode implementation, see `two-mode-spec-2026-04-15.md`.
+
 ## Summary
 
 Shipwright's next reliability win should come from orchestration. The right V1 is a staged adjudication flow that:
