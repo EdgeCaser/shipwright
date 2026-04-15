@@ -215,7 +215,11 @@ export async function retrySessionStep(sessionId, options = {}) {
   }
 
   if (session.latest_execution_mode === 'rigor') {
-    return confirmNextStep(session.session_id, options);
+    // Re-open the awaiting gate so confirmNextStep can run rigor again.
+    await updateSession(sessionId, {
+      status: 'awaiting_user_action',
+    }, options.sessions_root);
+    return confirmNextStep(sessionId, options);
   }
 
   return startDecisionSession({
