@@ -8,7 +8,26 @@ const AUDIENCE_OUTSIDE_PRODUCT_RE = /\b(board|leadership|executive|exec|ceo|vp|s
 const BUDGET_OR_ROADMAP_RE = /\b(budget|headcount|roadmap|approve|approval|funding)\b/i;
 const ENGINEERING_HANDOFF_RE = /\b(tech handoff|technical spec|hand off to engineering|engineering handoff)\b/i;
 
+// Decision analysis detection — high-stakes binary decision questions
+const HIGH_STAKES_DECISION_RE = /\bshould\s+(?:we|i|the\s+(?:company|team|board))\b/i;
+const SCENARIO_CLASS_PATTERNS = [
+  { scenarioClass: 'governance', pattern: /\b(restructur|acqui(?:re|sition)|merger|divest|spin[- ]off|dissolv|reorgani[sz]|board\s+(?:vote|decision|approval))\b/i },
+  { scenarioClass: 'publication', pattern: /\b(go\s+public|ipo|press\s+release|public\s+(?:statement|announcement)|publish\s+(?:the|our|a))\b/i },
+  { scenarioClass: 'product_strategy', pattern: /\b(kill|sunset|shut\s+down|pivot|build\s+vs\.?\s+buy|make\s+vs\.?\s+buy|bet\s+(?:the|our)\s+company)\b/i },
+  { scenarioClass: 'pricing', pattern: /\b(raise\s+(?:our\s+)?prices|lower\s+(?:our\s+)?prices|change\s+(?:our\s+)?pricing|reprice|price\s+increase|price\s+decrease)\b/i },
+];
+
 const ROUTE_RULES = [
+  {
+    route: 'decision-analysis',
+    kind: 'analysis',
+    exactPatterns: [
+      /\bdecision[- ]analysis\b/i,
+      /\brun[- ](?:a[- ])?(?:fast|rigorous?)[- ](?:mode[- ])?analysis\b/i,
+      /\bshipwright[- ]analysis\b/i,
+    ],
+    keywords: ['restructure', 'acquisition', 'divestiture', 'merger', 'governance decision'],
+  },
   {
     route: 'write-prd',
     kind: 'workflow',
@@ -150,6 +169,14 @@ export function routeRequest(input, options = {}) {
     }
   }
 
+  // Infer scenario class for high-stakes binary decision questions
+  const isDecisionQuestion = HIGH_STAKES_DECISION_RE.test(normalized);
+  const scenarioClassMatch = isDecisionQuestion
+    ? SCENARIO_CLASS_PATTERNS.find(({ pattern }) => pattern.test(normalized))
+    : null;
+  const decisionClass = scenarioClassMatch?.scenarioClass
+    || (winner?.route === 'decision-analysis' ? 'unclassified' : null);
+
   return {
     input: text,
     topRoute: winner ? { route: winner.route, kind: winner.kind } : null,
@@ -157,6 +184,7 @@ export function routeRequest(input, options = {}) {
     blockers,
     autoEscalate: escalateReasons.length > 0,
     escalateReasons,
+    decisionClass,
     matchedRoutes: matches.map((match) => ({
       route: match.route,
       kind: match.kind,
@@ -175,6 +203,7 @@ function buildEmptyResult(input) {
     blockers: [],
     autoEscalate: false,
     escalateReasons: [],
+    decisionClass: null,
     matchedRoutes: [],
   };
 }

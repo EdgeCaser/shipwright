@@ -75,6 +75,47 @@ Expected canonical helper path: repo-root `scripts/route-request.mjs`. If it is 
 
 Treat the helper's `routeConfidence`, `blockers`, and `autoEscalate` fields as the default routing policy when it returns a usable result.
 
+## Decision Analysis Routing
+
+When a PM asks a high-stakes binary decision question — "should we acquire X?", "should we restructure the board?", "should we kill this product line?" — route to the decision analysis system instead of a skill or workflow. Decision analysis produces a verdict with confidence and evidence. A strategy workflow produces positioning and roadmap artifacts. They are different tools for different questions.
+
+**Detection:** `route-request.mjs` returns `topRoute.route === 'decision-analysis'` OR `decisionClass` is non-null. Either signal triggers this path.
+
+**Scenario class inference from `decisionClass`:**
+- `governance` — restructure, acquisition, merger, divestiture, spin-off, board vote
+- `publication` — IPO, go public, press release, public announcement
+- `product_strategy` — kill, sunset, shut down, pivot, build vs. buy
+- `pricing` — raise/lower prices, reprice, price change
+- `unclassified` — high-stakes decision framing without a detected class
+
+**Execution flow:**
+
+1. **State the inferred class.** Tell the PM what class you're using: "I'm treating this as a **governance** decision." If the class is `unclassified`, ask the PM to pick one from the list above before proceeding.
+
+2. **Ask about providers once.** Say: "Which AI providers do you have access to — claude, gpt, gemini? List whichever apply, or just say 'go' to use claude only." If the PM says go or provides no list, default to `--provider claude`.
+
+3. **Run the analysis via Bash:**
+   ```bash
+   node scripts/shipwright.mjs \
+     --question "<exact question from PM>" \
+     --class <scenarioClass> \
+     --provider claude [--provider gpt] [--provider gemini] \
+     --yes
+   ```
+   The `--yes` flag auto-confirms the escalation gate so the PM sees the full result without a second prompt.
+
+4. **Surface the result inline.** Read `orchestration.json` from the output path printed by the command. Report:
+   - The terminal UX state (`fast_provisional`, `fast_uncertain`, `rigor_complete`, `not_ready`, etc.)
+   - The recommendation and confidence band
+   - The uncertainty payload if present (key gaps, disambiguation questions)
+
+5. **Handle `not_ready` results.** If the terminal state is `not_ready`, show the uncertainty drivers and offer the three follow-up actions:
+   - `gather_more_evidence` — re-runs Fast Mode with a refined question
+   - `create_follow_up_brief` — writes a markdown brief for human review
+   - `open_human_review` — flags the session for manual review
+
+6. **Do not route to `/strategy` or a skill** when the question is a high-stakes binary decision requiring a verdict.
+
 ## Latency & Timeout Guardrails
 
 - Default to the lightest path that can answer the question. If a known workflow or one specialist agent fits, prefer that over multi-agent orchestration.
@@ -140,8 +181,9 @@ Ask the user what they're trying to accomplish. Then ask targeted follow-up ques
 Use the following policy:
 
 1. If `scripts/route-request.mjs` exists, run it.
-2. If `routeConfidence = HIGH` and `autoEscalate = false`, use **Fast** mode.
-3. Otherwise use **Rigorous** mode.
+2. If `topRoute.route === 'decision-analysis'` OR `decisionClass` is non-null, use **Decision Analysis** routing (see Decision Analysis Routing section above). Do not continue to Fast or Rigorous mode.
+3. If `routeConfidence = HIGH` and `autoEscalate = false`, use **Fast** mode.
+4. Otherwise use **Rigorous** mode.
 
 Always use Rigorous mode when:
 
