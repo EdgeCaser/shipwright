@@ -7,6 +7,8 @@
 
 This checklist is the implementation bridge between the orchestration policy and actual product behavior. It is intentionally V1-scoped: build only what is needed to make Shipwright recommend the right level of rigor, ask before spending more, and route unresolved cases correctly.
 
+The implementation target is a user decision aid, not just a verdict classifier.
+
 ## Phase 1: Policy Plumbing
 
 ### Scenario Class Policy
@@ -14,16 +16,17 @@ This checklist is the implementation bridge between the orchestration policy and
 - Add a config source for scenario classes and defaults.
 - Define V1 classes:
   - governance / board / restructuring
-  - pricing / packaging
-  - product strategy / prioritization
-  - customer-evidence synthesis / discovery
+  - non-governance provisional classes
   - publication-sensitive work
 - For each class, encode:
+  - `provisional`
   - `single_judge_allowed`
   - `cross_family_required`
   - `default_mode`
-  - `winner_vs_uncertainty_priority`
 - Add a manual override path for ambiguous tasks.
+- Ensure governance is the only policy-backed class in V1.
+- Mark non-governance entries `provisional: true`.
+- Either collapse customer-evidence synthesis into product strategy for V1 or add explicit routing criteria before shipping.
 
 ### Provider Availability
 
@@ -44,30 +47,23 @@ This checklist is the implementation bridge between the orchestration policy and
 
 - Add a normalization helper for verdict confidence.
 - Map V1 bands:
-  - `high` -> `>= 80% equivalent`
-  - `medium` -> `60-79% equivalent`
-  - `low` -> `< 60% equivalent`
+  - `high` -> above routing threshold
+  - `medium` -> below routing threshold
+  - `low` -> well below routing threshold
 - Expose:
   - `normalized_confidence_band`
   - `below_double_panel_threshold`
 - Keep this mapping in orchestration logic, not the core schema contract.
+- Do not expose numeric percentages to users in V1.
 
 ### Routing Engine
 
 - Add an orchestrator routing module.
-- Input:
-  - scenario class
-  - intended use, if available
-  - provider availability
-  - current adjudication stage
-  - verdict confidence
-  - `needs_human_review`
-  - uncertainty payload presence
-  - panel agreement status
 - Output:
   - `recommended_next_mode`
   - `requires_user_confirmation`
   - `ux_state`
+  - `ux_substate`
   - `recommended_provider_roles`
   - `explanation`
   - `follow_up_artifact`
@@ -75,39 +71,34 @@ This checklist is the implementation bridge between the orchestration policy and
 
 ## Phase 2: UX Wiring
 
-### Initial Recommendation State
-
-- Show the recommended initial mode before the run when appropriate.
-- Include:
-  - why this mode is recommended
-  - whether it is the fastest path or safer path
-  - whether the class is cross-family required
-
 ### Post-Result States
 
-- Implement these V1 states:
-  - `provisional_recommendation`
-  - `recommend_double_panel`
+- Implement these V1 top-level states:
+  - `provisional`
+  - `more_rigor_recommended`
+  - `not_ready`
+- Preserve these V1 substates as visible diagnostic metadata:
+  - `single_run_acceptable`
   - `panel_converged`
-  - `escalate_to_judge`
-  - `not_ready_gather_more_evidence`
+  - `double_panel_recommended`
+  - `judge_recommended`
   - `limited_provider_availability`
+  - `user_declined_escalation`
+  - `needs_more_evidence`
+  - `directionally_incoherent`
 
 ### Confirmation Prompts
 
 - Add confirmation UX before:
   - running a second model
   - escalating to a judge
-- Confirmation copy should say:
-  - what will run
-  - why Shipwright recommends it
-  - what confidence or resolution gain it may provide
-  - that it will incur more tokens / latency
 
 ### Uncertainty-First Output
 
 - When `needs_human_review` is true or the final verdict is low confidence:
   - prioritize uncertainty drivers
+  - prioritize disambiguation questions
+  - prioritize needed evidence
   - surface recommended next artifact
   - surface recommended next action
   - demote the winner label to a lean or secondary detail
@@ -118,17 +109,21 @@ This checklist is the implementation bridge between the orchestration policy and
   - explain the limitation
   - distinguish unavailable-by-plan from temporary outage
   - show the best available fallback
+- If two providers disagree and no judge is available:
+  - explain why this is unresolved
+  - explain why more paneling is not currently possible
+  - route to evidence gathering or human review
+- If the user declines escalation:
+  - preserve the stronger recommendation visibly
+  - keep the current result marked with `user_declined_escalation`
 
 ## Phase 3: Data And Persistence
 
 ### Orchestrator Metadata
 
-- Decide where orchestration metadata lives:
-  - alongside verdicts
-  - in a run-level metadata object
-  - in a UI/session state layer
 - Add fields for:
   - `scenario_class`
+  - `provisional`
   - `adjudication_mode`
   - `recommended_next_mode`
   - `requires_user_confirmation`
@@ -137,6 +132,7 @@ This checklist is the implementation bridge between the orchestration policy and
   - `provider_availability`
   - `panel_agreement_status`
   - `ux_state`
+  - `ux_substate`
   - `follow_up_artifact`
   - `follow_up_action`
 
@@ -147,6 +143,7 @@ This checklist is the implementation bridge between the orchestration policy and
   - disagreement on winner
   - materially divergent rationale
   - review-flag disagreement
+  - directional incoherence between panel and judge
 
 ## Phase 4: Telemetry
 
@@ -156,38 +153,20 @@ This checklist is the implementation bridge between the orchestration policy and
   - provider availability at decision time
   - user acceptance or decline of escalations
   - normalized confidence band
+  - top-level state
+  - substate
   - number of double-panel recommendations
   - number of converged panels
   - number of panel disagreements
   - number of judge escalations
   - number of unresolved final outcomes
-- Add a basic reporting view or export for:
-  - threshold tuning
-  - escalation funnel analysis
-  - class-level disagreement rates
 
 ## Phase 5: Calibration Follow-Ons
 
 - After the UX is live, run targeted calibration on:
   - pricing / packaging
   - product strategy / prioritization
-  - customer-evidence synthesis / discovery
-- Measure:
-  - single-run panel-trigger rate
-  - double-panel convergence rate
-  - judge-escalation rate
-  - uncertainty-payload usefulness
-
-## Suggested File / Subsystem Targets
-
-These are placeholders and should be mapped to the actual code layout before implementation starts:
-
-- orchestrator policy/config module
-- provider capability / availability module
-- verdict normalization helper
-- run routing / controller logic
-- result rendering / UX state mapper
-- telemetry event emitter
+  - discovery-like scenarios only after routing criteria are explicit
 
 ## V1 Acceptance Criteria
 
@@ -197,43 +176,10 @@ These are placeholders and should be mapped to the actual code layout before imp
 - Extra panel stages never auto-run without confirmation.
 - If only one or two providers are available, Shipwright degrades gracefully.
 - Review-flagged or low-confidence final outcomes route to uncertainty-first follow-up.
+- Directionally incoherent final outcomes route to `not_ready`.
+- User-declined escalation remains visible in the resulting state.
 - Telemetry is emitted for threshold and escalation analysis.
-
-## Out Of Scope For V1
-
-- hard statistical calibration of confidence percentages
-- automatic provider switching without user awareness
-- learned scenario classification
-- fully automated multi-stage orchestration without confirmation
-- polished domain-specific UX for every scenario class
 
 ## Decision Frame
 
 The implementation goal is not a perfect orchestration system. It is a safe, legible V1 that makes Shipwright's rigor policy visible and actionable.
-
-## Unknowns & Evidence Gaps
-
-- which exact files and modules should own the routing logic
-- whether orchestration metadata belongs in persisted run records or only in session/UI state
-- how lightweight the first confirmation UX can be without becoming confusing
-
-## Pass/Fail Readiness
-
-Pass:
-
-- enough policy work exists to start implementation immediately
-- enough clarity exists to build V1 in phases without waiting for more governance analysis
-
-Fail:
-
-- not enough codebase mapping has been done yet to assign exact file ownership
-- not enough evidence exists yet to make V1 thresholds permanent
-
-## Recommended Next Artifact
-
-Produce a short **Claude handoff note** summarizing:
-
-- what we learned from governance and Phase 2
-- why orchestration is the highest-leverage next move
-- what V1 policy we now want to build
-- where Claude should pressure-test the plan
