@@ -95,10 +95,16 @@ const PROVIDER_META = {
  * @param {function} [options.confirmFn]             - Injectable confirmation function for testing
  */
 export async function runOrchestrated(options = {}) {
-  const scenarioId = options.scenario;
-  if (!scenarioId || typeof scenarioId !== 'string' || scenarioId.trim().length === 0) {
+  const scenarioArg = options.scenario;
+  if (!scenarioArg || typeof scenarioArg !== 'string' || scenarioArg.trim().length === 0) {
     throw new Error('--scenario is required.');
   }
+
+  // When a full file path is passed (e.g. from shipwright.mjs), derive the ID
+  // from the basename so it doesn't bleed into output directory names.
+  const scenarioId = scenarioArg.endsWith('.json')
+    ? path.basename(scenarioArg, '.json')
+    : scenarioArg;
 
   const scenarioClass = options.scenarioClass || 'unclassified';
   const availableProviders = options.availableProviders || ['claude'];
@@ -159,7 +165,7 @@ export async function runOrchestrated(options = {}) {
 
   try {
     const result = await runFastAnalysis({
-      scenario: scenarioId,
+      scenario: scenarioArg,
       scenarioDir,
       agentId: fastProvider,
       outDir: path.join(outDir, 'stage-1-fast'),
@@ -314,7 +320,7 @@ export async function runOrchestrated(options = {}) {
 
   try {
     const result = await runConflictHarness({
-      scenario: scenarioId,
+      scenario: scenarioArg,
       scenarioDir,
       outDir: path.join(outDir, 'stage-2-rigor'),
       runId: `${runId}-rigor`,
