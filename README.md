@@ -164,6 +164,28 @@ Each run writes to `benchmarks/results/orchestrated/<scenario>/<run-id>/`:
 - `stage-1-fast/` — Fast Mode analysis with recommendation, confidence, and uncertainty payload
 - `stage-2-rigor/` (if escalated) — Full harness transcript and verdict
 
+### Session API
+
+The decision analysis system exposes a session-based API for building product surfaces that aren't tied to a single terminal run. Sessions persist to `benchmarks/sessions/` and track the full state machine: `running → awaiting_user_action → completed / failed`.
+
+```javascript
+import { handleDecisionSessionRequest } from './scripts/decision-session-service.mjs';
+
+// Create a session
+const { body } = await handleDecisionSessionRequest({
+  method: 'POST', path: '/decision-sessions',
+  body: { question: '...', scenario_class: 'governance', providers: ['claude', 'gpt', 'gemini'] }
+}, options);
+
+// Confirm escalation to Rigor Mode
+await handleDecisionSessionRequest({
+  method: 'POST', path: `/decision-sessions/${body.session_id}/next-step`,
+  body: { confirm: true }
+}, options);
+```
+
+Follow-up actions for `not_ready` sessions: `gather_more_evidence` (re-runs Fast Mode with a refined question), `create_follow_up_brief` (writes a markdown brief for human review), `open_human_review` (flags the session and returns a review request payload).
+
 ### Telemetry
 
 Run `node scripts/telemetry.mjs` to see a summary of confidence distributions, escalation funnel, and terminal states across all runs. The log lives at `benchmarks/telemetry/events.jsonl`.

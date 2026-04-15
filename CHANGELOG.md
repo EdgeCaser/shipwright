@@ -1,5 +1,35 @@
 # Changelog
 
+## v2.2.0 - 2026-04-15
+
+### Added
+
+- **Session store**: `scripts/session-store.mjs` — persistent JSON sessions at `benchmarks/sessions/<session_id>/session.json`. Handles create, read, update (patch-merge with deep-merge for artifacts), event append, artifact linking, and session directory resolution.
+
+- **Decision execution**: `scripts/decision-execution.mjs` — thin execution layer over the analysis CLIs. `executeFastAnalysisForSession` and `executeRigorModeForSession` accept a session and options, run the appropriate analysis, and return structured results with routing inputs.
+
+- **Decision session controller**: `scripts/decision-session-controller.mjs` — full session state machine. Exposes `createDecisionSession`, `getDecisionSession`, `confirmNextStep`, `runFollowUpAction`, and `retrySessionStep`. Manages state transitions (`running → awaiting_user_action → completed / failed`), orchestrator routing via `applyFastResult`, rigor execution, and escalation gates.
+
+- **Session presenter**: `scripts/session-presenter.mjs` — view model adapter for the session API. Builds structured presentation payloads with headline text, available actions, artifact references, and extracted uncertainty payload. `buildHeadline` maps all UX states to human-readable copy.
+
+- **Decision session service**: `scripts/decision-session-service.mjs` — HTTP-style request/response adapter over the controller. Routes `POST /decision-sessions`, `GET /decision-sessions/:id`, `POST /decision-sessions/:id/next-step`, `POST /decision-sessions/:id/follow-up`, and `POST /decision-sessions/:id/retry`. Returns structured responses with `SESSION_SERVICE_ERROR_CODES`. Enables non-terminal product surfaces (web API, CLI daemon) without re-implementing session logic.
+
+- **Follow-up action adapter**: `scripts/follow-up-actions.mjs` — three actions for `not_ready` sessions:
+  - `gather_more_evidence` — builds a refined question from the uncertainty payload and re-runs Fast Mode analysis
+  - `create_follow_up_brief` — writes a structured markdown brief from the uncertainty payload to `{sessionDir}/follow-up-brief.md`
+  - `open_human_review` — returns a structured review request payload and flags the session with `human_review_requested: true`
+  - `buildRefinedQuestion` is exported as a pure function for composability
+
+- **Telemetry (session-centric)**: telemetry now tracks session-layer events separately from legacy CLI events: `session_started`, `fast_completed`, `escalation_offered`, `next_step_confirmed`, `next_step_declined`, `rigor_completed`, `session_completed`, `session_failed`, `session_presented`, `follow_up_action_executed`. Summary output leads with Session Funnel and includes follow-up action distribution.
+
+- **Full test suite (session layer)**: 163 new tests across 5 files — `session-store.test.mjs` (20), `session-presenter.test.mjs` (22), `decision-session-service.test.mjs` (15), `decision-session-controller.test.mjs` (25), `follow-up-actions.test.mjs` (21), `telemetry.test.mjs` (17), plus prior test files.
+
+### Fixed
+
+- `retrySessionStep` in the controller now correctly resets a failed rigor session to `awaiting_user_action` before calling `confirmNextStep`, preventing a status mismatch error on retry.
+
+---
+
 ## v2.1.0 - 2026-04-15
 
 ### Added
