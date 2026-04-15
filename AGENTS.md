@@ -53,6 +53,41 @@ Use the repo structure to ground the work before inventing a new approach:
 
 If a relevant Shipwright framework already exists in this repo, prefer it over inventing a new structure from scratch.
 
+## Decision Analysis Routing
+
+When a user asks a high-stakes binary decision question — "should we acquire X?", "should we restructure the board?", "should we kill this product line?" — treat it as a decision analysis request, not a strategy workflow. Decision analysis produces a verdict with confidence and evidence. A strategy workflow produces positioning and roadmap artifacts. They are different tools for different questions.
+
+**Detection signals:** question contains "should we / should I" + any of: restructure, acquisition, merger, divestiture, spin-off, kill, sunset, shut down, pivot, raise/lower prices, go public, IPO.
+
+**Scenario class inference:**
+- `governance` — restructure, acquisition, merger, divestiture, spin-off, board vote
+- `publication` — IPO, go public, press release, public announcement
+- `product_strategy` — kill, sunset, shut down, pivot, build vs. buy
+- `pricing` — raise/lower prices, reprice, price change
+- `unclassified` — high-stakes framing without a clear class
+
+**Execution (inline — do not shell out):**
+
+Since you are already running inside a Codex session, you are the analysis model. Run the analysis directly using this structure:
+
+1. State the inferred scenario class to the user.
+2. Analyze the question and return a structured recommendation with these labeled sections:
+   - **RECOMMENDATION** — a direct, actionable statement of what to do
+   - **CONFIDENCE** — high / medium / low
+   - **NEEDS_HUMAN_REVIEW** — yes / no, with reason if yes
+   - **SUMMARY** — 1-2 sentences of core reasoning
+   - **KEY_REASONING** — 2-4 bullet points, each a concrete reason
+
+   If confidence is medium or low, or NEEDS_HUMAN_REVIEW is yes, also include:
+   - **UNCERTAINTY_DRIVERS** — concrete reasons the recommendation is uncertain
+   - **DISAMBIGUATION_QUESTIONS** — the most important questions that would resolve uncertainty
+   - **NEEDED_EVIDENCE** — specific evidence that would raise confidence
+   - **RECOMMENDED_NEXT_ACTION** — single most important next step before acting
+
+3. For `governance` or `publication` class, after delivering the Fast pass, offer: "This class benefits from a stress-test. Want me to argue the opposing position and identify weaknesses in this recommendation?" If yes, run a second pass taking the opposing view, then synthesize.
+
+4. Do not route to a strategy framework or skill when the question is a high-stakes binary decision requiring a verdict. The output standard closing blocks (`Decision Frame`, `Unknowns & Evidence Gaps`, etc.) still apply.
+
 ## Conversational Routing
 
 - Do not require slash commands. Plain English should work.
