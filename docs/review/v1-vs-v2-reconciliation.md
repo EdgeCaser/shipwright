@@ -108,3 +108,39 @@ All three failing scenarios were rerun under v2 GPT:
 - Should the three errored scenarios be retried manually before moving to Phase 2, or is the reconciliation memo sufficient as-is?
 - Should a Claude-replay-on-v2-artifacts pass be scheduled for the 4 completed new-realworld scenarios now, or held for Phase 4?
 - Is the "GPT-default sanity check" considered passed, failed, or inconclusive? My read: inconclusive — zero human-review flags on governance cases is a warning sign, but margins held in the 0.2-0.3 range rather than collapsing to high-confidence wins, which is the better-calibrated failure mode.
+
+---
+
+## Addendum: Claude replay on 6 new-world governance scenarios
+
+**Date:** 2026-04-15
+
+All 6 new-world governance scenarios were replayed under Claude as judge, using frozen artifacts from the GPT v2 runs. Results compared against the GPT verdict:
+
+| Scenario | GPT | Claude | Agreement |
+|---|---|---|---|
+| bayer-breakup-not-now | side_b, medium | **side_a, high** | disagree |
+| google-adtech-breakup-remedies | side_b, medium | side_b, medium | agree |
+| intel-foundry-separation | side_b, medium | **side_a, medium** | disagree |
+| nissan-honda-merger-collapse | side_b, medium | side_b, medium | agree |
+| openai-nonprofit-control | side_b, low | side_b, medium | agree |
+| paramount-skydance-deal | side_b, medium | **side_a, medium** | disagree |
+
+### Findings
+
+**3/6 disagreements.** The uniform `side_b` sweep from GPT was partially judge-family bias, not purely scenario-driven.
+
+- **Scenarios where the result appears genuine** (both judges agree): `google-adtech-breakup-remedies`, `nissan-honda-merger-collapse`, `openai-nonprofit-control`. These can be treated as reasonably settled at medium confidence.
+- **Scenarios where result is contested** (judges disagree): `bayer-breakup-not-now`, `intel-foundry-separation`, `paramount-skydance-deal`. These are candidates for triple-panel escalation in Phase 4.
+
+**Zero human-review flags from Claude** across all 6, vs. 1 from GPT (openai-nonprofit-control). Claude is more decisive on governance cases. GPT flags uncertainty more readily. This is consistent with the documented `decision_usefulness` vs. `evidence_discipline` lean difference between the two families: GPT's review flag on openai-nonprofit-control was substantive (low confidence, margin 0.40) and survived the Claude replay (Claude also returned medium confidence on that scenario).
+
+**Notable:** `bayer-breakup-not-now` is the sharpest disagreement — Claude returned `side_a` at high confidence, GPT returned `side_b` at medium. The decisive dimension under Claude was `decision_usefulness`: Side A's pass/fail gate table with five concrete metrics and deadlines vs. Side B's qualitative pass/fail section. This is the strongest cross-family disagreement in the dataset and the clearest escalation candidate.
+
+### Resolution of open questions
+
+- **GPT-default sanity check:** **inconclusive → partially failed.** 3/6 governance scenarios flipped under Claude replay, which is a stronger signal than "margins held." GPT remains a viable screen judge, but governance-class results should not be treated as settled until at least one Claude replay is run. The cost is low enough (one rejudge call) that this should be standard practice for governance scenarios.
+
+- **Escalation candidates for Phase 4:** `bayer-breakup-not-now`, `intel-foundry-separation`, `paramount-skydance-deal`. Selected by disagreement signal, not curation.
+
+- **Next step:** Phase 2 — uncertainty payload schema. The 3 agreed scenarios (google-adtech, nissan-honda, openai-nonprofit) already carry useful routing signals. The 3 contested scenarios need a third-family judge to resolve, which Phase 4 will provide. Phase 2 makes the review-flagged verdicts actionable before we get there.
