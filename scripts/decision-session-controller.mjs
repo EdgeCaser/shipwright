@@ -122,6 +122,16 @@ export async function getDecisionSession(sessionId, sessionsRoot) {
   const session = await getSession(sessionId, sessionsRoot);
   const events = await getSessionEvents(sessionId, sessionsRoot);
   const presented = await presentSession({ session, events });
+
+  await emit('session_presented', {
+    session_id: session.session_id,
+    scenario_id: session.scenario_id,
+    scenario_class: session.scenario_class,
+    status: session.status,
+    ux_state: session.ux_state,
+    ux_substate: session.ux_substate,
+  });
+
   return { session, events, presented };
 }
 
@@ -319,6 +329,13 @@ async function applyFastResult(session, fastResult, sessionsRoot) {
       type: 'escalation_offered',
       recommended_next_mode: updated.recommended_next_mode,
     }, sessionsRoot);
+
+    await emit('escalation_offered', {
+      session_id: updated.session_id,
+      scenario_id: updated.scenario_id,
+      scenario_class: updated.scenario_class,
+      recommended_next_mode: updated.recommended_next_mode,
+    });
   }
 
   if (updated.status === 'completed') {

@@ -9,13 +9,21 @@
  * emit() is fire-and-forget — telemetry failures never surface to callers.
  * summary() reads the log and prints aggregate stats.
  *
- * Event types:
- *   run_started              — a new orchestrated run began
+ * Event types (session-centric — emitted by decision-session-controller):
+ *   session_started          — a decision session was created and Fast Mode began
  *   fast_completed           — Fast Mode analysis finished
  *   escalation_offered       — user was shown an escalation recommendation
- *   escalation_accepted      — user confirmed escalation to Rigor Mode
- *   escalation_declined      — user declined escalation
+ *   next_step_confirmed      — user confirmed escalation to Rigor Mode
+ *   next_step_declined       — user declined escalation
  *   rigor_completed          — Rigor Mode (conflict harness) finished
+ *   session_completed        — session reached a terminal state
+ *   session_failed           — session execution step failed
+ *   session_presented        — session state was fetched and presented
+ *
+ * Legacy event types (emitted by older CLI scripts):
+ *   run_started              — a new orchestrated run began
+ *   escalation_accepted      — user confirmed escalation (old CLI)
+ *   escalation_declined      — user declined escalation (old CLI)
  *   run_completed            — orchestrated run reached a terminal state
  *
  * Usage (as a module):
@@ -114,15 +122,44 @@ export async function summary(options = {}) {
 function computeStats(events) {
   const byType = groupBy(events, 'event');
 
-  // Run funnel
+  // ---------------------------------------------------------------------------
+  // Session funnel (session-centric events from decision-session-controller)
+  // ---------------------------------------------------------------------------
+
+  const sessionStartedEvents = byType['session_started'] || [];
+  const sessionCompletedEvents = byType['session_completed'] || [];
+  const sessionFailedEvents = byType['session_failed'] || [];
+  const sessionPresentedEvents = byType['session_presented'] || [];
+
+  const sessionCompletedUxDist = countBy(sessionCompletedEvents, 'ux_state');
+  const sessionCompletedSubstateDist = countBy(sessionCompletedEvents, 'ux_substate');
+  const sessionClassDist = countBy(sessionStartedEvents, 'scenario_class');
+
+  // Escalation gate (session-centric)
+  const escalationsOffered = (byType['escalation_offered'] || []).length;
+  const nextStepConfirmed = (byType['next_step_confirmed'] || []).length;
+  const nextStepDeclined = (byType['next_step_declined'] || []).length;
+  // Legacy CLI escalation events
+  const escalationsAccepted = (byType['escalation_accepted'] || []).length;
+  const escalationsDeclined = (byType['escalation_declined'] || []).length;
+  const totalConfirmed = nextStepConfirmed + escalationsAccepted;
+  const totalDeclined = nextStepDeclined + escalationsDeclined;
+
+  // ---------------------------------------------------------------------------
+  // Legacy run funnel (run_started / run_completed from CLI scripts)
+  // ---------------------------------------------------------------------------
+
   const runsStarted = (byType['run_started'] || []).length;
   const runsCompleted = (byType['run_completed'] || []).length;
 
+  // ---------------------------------------------------------------------------
   // Fast Mode outcomes
+  // ---------------------------------------------------------------------------
+
   const fastEvents = byType['fast_completed'] || [];
   const confidenceDist = countBy(fastEvents, 'confidence_band');
   const uxStateDist = countBy(fastEvents, 'ux_state');
-  const classDist = countBy(fastEvents, 'scenario_class');
+  const fastClassDist = countBy(fastEvents, 'scenario_class');
   const needsReviewCount = fastEvents.filter((e) => e.needs_human_review).length;
   const hasPayloadCount = fastEvents.filter((e) => e.has_uncertainty_payload).length;
 
@@ -134,50 +171,62 @@ function computeStats(events) {
     confidenceByClass[cls][e.confidence_band] = (confidenceByClass[cls][e.confidence_band] || 0) + 1;
   }
 
-  // Escalation funnel
-  const escalationsOffered = (byType['escalation_offered'] || []).length;
-  const escalationsAccepted = (byType['escalation_accepted'] || []).length;
-  const escalationsDeclined = (byType['escalation_declined'] || []).length;
-
+  // ---------------------------------------------------------------------------
   // Rigor Mode outcomes
+  // ---------------------------------------------------------------------------
+
   const rigorEvents = byType['rigor_completed'] || [];
   const rigorConfDist = countBy(rigorEvents, 'judge_confidence');
   const rigorWinnerDist = countBy(rigorEvents, 'winner');
 
-  // Terminal states
+  // ---------------------------------------------------------------------------
+  // Legacy terminal states
+  // ---------------------------------------------------------------------------
+
   const terminalEvents = byType['run_completed'] || [];
   const terminalDist = countBy(terminalEvents, 'terminal_ux_state');
   const terminalSubstateDist = countBy(terminalEvents, 'terminal_ux_substate');
 
   return {
     total_events: events.length,
-    runs: { started: runsStarted, completed: runsCompleted },
+    sessions: {
+      started: sessionStartedEvents.length,
+      completed: sessionCompletedEvents.length,
+      failed: sessionFailedEvents.length,
+      presented: sessionPresentedEvents.length,
+      scenario_class: sessionClassDist,
+      completed_ux_state: sessionCompletedUxDist,
+      completed_ux_substate: sessionCompletedSubstateDist,
+    },
+    escalation: {
+      offered: escalationsOffered,
+      confirmed: totalConfirmed,
+      declined: totalDeclined,
+      confirmation_rate: escalationsOffered > 0
+        ? ((totalConfirmed / escalationsOffered) * 100).toFixed(0) + '%'
+        : 'n/a',
+    },
     fast: {
       total: fastEvents.length,
       confidence: confidenceDist,
       ux_state: uxStateDist,
-      scenario_class: classDist,
+      scenario_class: fastClassDist,
       needs_human_review: needsReviewCount,
       has_uncertainty_payload: hasPayloadCount,
       confidence_by_class: confidenceByClass,
-    },
-    escalation: {
-      offered: escalationsOffered,
-      accepted: escalationsAccepted,
-      declined: escalationsDeclined,
-      acceptance_rate: escalationsOffered > 0
-        ? ((escalationsAccepted / escalationsOffered) * 100).toFixed(0) + '%'
-        : 'n/a',
     },
     rigor: {
       total: rigorEvents.length,
       judge_confidence: rigorConfDist,
       winner: rigorWinnerDist,
     },
-    terminal: {
-      ux_state: terminalDist,
-      ux_substate: terminalSubstateDist,
-    },
+    // Legacy CLI stats — present when run_started / run_completed events exist
+    runs: runsStarted + runsCompleted > 0
+      ? { started: runsStarted, completed: runsCompleted }
+      : null,
+    terminal: Object.keys(terminalDist).length > 0
+      ? { ux_state: terminalDist, ux_substate: terminalSubstateDist }
+      : null,
   };
 }
 
@@ -191,8 +240,43 @@ function printStats(stats, totalEvents) {
   lines.push('# Shipwright Telemetry Summary');
   lines.push('');
   lines.push(`Total events logged: ${totalEvents}`);
-  lines.push(`Runs started:        ${stats.runs.started}`);
-  lines.push(`Runs completed:      ${stats.runs.completed}`);
+
+  // Session funnel
+  if (stats.sessions.started > 0 || stats.sessions.completed > 0) {
+    lines.push('');
+    lines.push('## Session Funnel');
+    lines.push('');
+    lines.push(`Started:   ${stats.sessions.started}`);
+    lines.push(`Completed: ${stats.sessions.completed} (${pct(stats.sessions.completed, stats.sessions.started)})`);
+    lines.push(`Failed:    ${stats.sessions.failed} (${pct(stats.sessions.failed, stats.sessions.started)})`);
+    lines.push(`Presented: ${stats.sessions.presented}`);
+
+    if (Object.keys(stats.sessions.scenario_class).length > 0) {
+      lines.push('');
+      lines.push('Sessions by scenario class:');
+      for (const [cls, count] of sortedEntries(stats.sessions.scenario_class)) {
+        lines.push(`  ${cls}: ${count} (${pct(count, stats.sessions.started)})`);
+      }
+    }
+
+    if (Object.keys(stats.sessions.completed_ux_state).length > 0) {
+      const totalCompleted = stats.sessions.completed;
+      lines.push('');
+      lines.push('Completed session states:');
+      for (const [state, count] of sortedEntries(stats.sessions.completed_ux_state)) {
+        lines.push(`  ${state}: ${count} (${pct(count, totalCompleted)})`);
+      }
+    }
+  }
+
+  // Escalation gate
+  lines.push('');
+  lines.push('## Escalation Gate');
+  lines.push('');
+  lines.push(`Offered:           ${stats.escalation.offered}`);
+  lines.push(`Confirmed (rigor): ${stats.escalation.confirmed}`);
+  lines.push(`Declined:          ${stats.escalation.declined}`);
+  lines.push(`Confirmation rate: ${stats.escalation.confirmation_rate}`);
 
   // Fast Mode
   if (stats.fast.total > 0) {
@@ -224,15 +308,6 @@ function printStats(stats, totalEvents) {
     }
   }
 
-  // Escalation funnel
-  lines.push('');
-  lines.push('## Escalation Funnel');
-  lines.push('');
-  lines.push(`Offered:  ${stats.escalation.offered}`);
-  lines.push(`Accepted: ${stats.escalation.accepted}`);
-  lines.push(`Declined: ${stats.escalation.declined}`);
-  lines.push(`Acceptance rate: ${stats.escalation.acceptance_rate}`);
-
   // Rigor Mode
   if (stats.rigor.total > 0) {
     lines.push('');
@@ -253,15 +328,21 @@ function printStats(stats, totalEvents) {
     }
   }
 
-  // Terminal states
-  if (Object.keys(stats.terminal.ux_state).length > 0) {
+  // Legacy terminal states (CLI runs)
+  if (stats.terminal && Object.keys(stats.terminal.ux_state).length > 0) {
     const totalTerminal = Object.values(stats.terminal.ux_state).reduce((a, b) => a + b, 0);
     lines.push('');
-    lines.push('## Terminal States');
+    lines.push('## Terminal States (legacy CLI)');
     lines.push('');
     for (const [state, count] of sortedEntries(stats.terminal.ux_state)) {
       lines.push(`  ${state}: ${count} (${pct(count, totalTerminal)})`);
     }
+  }
+
+  // Legacy run funnel
+  if (stats.runs) {
+    lines.push('');
+    lines.push(`Legacy runs started: ${stats.runs.started}  completed: ${stats.runs.completed}`);
   }
 
   process.stdout.write(lines.join('\n') + '\n');
