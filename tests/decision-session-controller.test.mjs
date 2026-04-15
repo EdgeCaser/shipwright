@@ -659,15 +659,16 @@ test('runFollowUpAction records the action and returns session bundle', async ()
   try {
     const session = await createNotReadySession(root);
 
+    // Use open_human_review — no LLM call required
     const result = await runFollowUpAction(
       session.session_id,
-      'gather_more_evidence',
+      'open_human_review',
       { sessions_root: root },
     );
 
-    assert.equal(result.session.last_follow_up_action, 'gather_more_evidence');
+    assert.equal(result.session.last_follow_up_action, 'open_human_review');
     const types = result.events.map((e) => e.type);
-    assert.ok(types.includes('follow_up_action_requested'));
+    assert.ok(types.includes('follow_up_action_executed'));
     assert.ok(result.presented);
   } finally {
     await rm(root, { recursive: true, force: true });

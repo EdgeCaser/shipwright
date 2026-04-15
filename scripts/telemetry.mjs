@@ -130,6 +130,8 @@ function computeStats(events) {
   const sessionCompletedEvents = byType['session_completed'] || [];
   const sessionFailedEvents = byType['session_failed'] || [];
   const sessionPresentedEvents = byType['session_presented'] || [];
+  const followUpEvents = byType['follow_up_action_executed'] || [];
+  const followUpActionDist = countBy(followUpEvents, 'action');
 
   const sessionCompletedUxDist = countBy(sessionCompletedEvents, 'ux_state');
   const sessionCompletedSubstateDist = countBy(sessionCompletedEvents, 'ux_substate');
@@ -197,6 +199,7 @@ function computeStats(events) {
       scenario_class: sessionClassDist,
       completed_ux_state: sessionCompletedUxDist,
       completed_ux_substate: sessionCompletedSubstateDist,
+      follow_up_actions: followUpActionDist,
     },
     escalation: {
       offered: escalationsOffered,
@@ -265,6 +268,15 @@ function printStats(stats, totalEvents) {
       lines.push('Completed session states:');
       for (const [state, count] of sortedEntries(stats.sessions.completed_ux_state)) {
         lines.push(`  ${state}: ${count} (${pct(count, totalCompleted)})`);
+      }
+    }
+
+    if (Object.keys(stats.sessions.follow_up_actions).length > 0) {
+      const totalFollowUps = Object.values(stats.sessions.follow_up_actions).reduce((a, b) => a + b, 0);
+      lines.push('');
+      lines.push(`Follow-up actions executed: ${totalFollowUps}`);
+      for (const [action, count] of sortedEntries(stats.sessions.follow_up_actions)) {
+        lines.push(`  ${action}: ${count}`);
       }
     }
   }

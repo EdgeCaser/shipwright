@@ -32,6 +32,7 @@ import {
 } from './orchestrate.mjs';
 import { presentSession } from './session-presenter.mjs';
 import { emit } from './telemetry.mjs';
+import { executeFollowUpAction, SUPPORTED_FOLLOW_UP_ACTIONS } from './follow-up-actions.mjs';
 
 // ---------------------------------------------------------------------------
 // Public API
@@ -256,18 +257,55 @@ export async function runFollowUpAction(sessionId, action, options = {}) {
     throw new Error('Follow-up actions are only valid for not_ready sessions.');
   }
 
-  const updated = await updateSession(session.session_id, {
-    last_follow_up_action: action,
-    follow_up_action: action,
-    status: 'completed',
-  }, options.sessions_root);
+  if (!SUPPORTED_FOLLOW_UP_ACTIONS.includes(action)) {
+    throw new Error(
+      `Unknown follow-up action: "${action}". Supported: ${SUPPORTED_FOLLOW_UP_ACTIONS.join(', ')}`,
+    );
+  }
 
-  await appendSessionEvent(updated.session_id, {
-    type: 'follow_up_action_requested',
-    action,
-  }, options.sessions_root);
+  try {
+    // Record intent before executing so the session reflects the action even
+    // if execution succeeds but a subsequent step fails.
+    let updatedSession = await updateSession(session.session_id, {
+      last_follow_up_action: action,
+      follow_up_action: action,
+    }, options.sessions_root);
 
-  return getDecisionSession(updated.session_id, options.sessions_root);
+    const actionResult = await executeFollowUpAction(updatedSession, action, options);
+
+    if (actionResult.mode === 'fast_reanalysis') {
+      // Re-route through the full fast pipeline so ux_state and status reflect
+      // the new confidence band rather than the stale not_ready state.
+      updatedSession = await applyFastResult(updatedSession, actionResult.fast_result, options.sessions_root);
+    } else {
+      // For brief_generated and review_requested, apply the action patch and
+      // mark completed — the session stays not_ready until human resolves it.
+      updatedSession = await updateSession(updatedSession.session_id, {
+        status: 'completed',
+        ...(actionResult.session_patch || {}),
+      }, options.sessions_root);
+    }
+
+    await appendSessionEvent(updatedSession.session_id, {
+      type: 'follow_up_action_executed',
+      action,
+      mode: actionResult.mode,
+      ...actionResult.event_fields,
+    }, options.sessions_root);
+
+    await emit('follow_up_action_executed', {
+      session_id: updatedSession.session_id,
+      scenario_id: updatedSession.scenario_id,
+      scenario_class: updatedSession.scenario_class,
+      action,
+      mode: actionResult.mode,
+      ...actionResult.telemetry_fields,
+    });
+
+    return getDecisionSession(updatedSession.session_id, options.sessions_root);
+  } catch (error) {
+    return markSessionFailed(session, error, 'follow_up', options.sessions_root);
+  }
 }
 
 // ---------------------------------------------------------------------------
