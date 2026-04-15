@@ -39,6 +39,12 @@ OVERLAY_MAPPINGS=(
   ".codex/skills:.codex/skills"
 )
 
+# Root-level files copied directly to the destination root (not inside a subdir).
+# Add entries here for any file that must live at the project root in every install.
+ROOT_FILES=(
+  "AGENTS.md"
+)
+
 CONFIG_FILE=".shipwright-source"
 IGNORE_FILE=".shipwright-ignore"
 SELF_NAME="shipwright-sync.sh"
@@ -123,6 +129,14 @@ do_install() {
   # Copy the sync script itself
   cp "$src/scripts/sync.sh" "$dest/$SELF_NAME"
   ok "Copied $SELF_NAME"
+
+  # Copy root-level files
+  for f in "${ROOT_FILES[@]}"; do
+    if [ -f "$src/$f" ]; then
+      cp "$src/$f" "$dest/$f"
+      ok "Copied $f"
+    fi
+  done
 
   # Copy all mapped directories
   while IFS= read -r mapping; do
@@ -229,6 +243,25 @@ do_sync() {
       stale_files+=("$src/scripts/sync.sh|$dest/$SELF_NAME")
     fi
   fi
+
+  # Check root-level files
+  for f in "${ROOT_FILES[@]}"; do
+    if [ ! -f "$src/$f" ]; then
+      continue
+    fi
+    if is_ignored "$f" "$dest"; then
+      custom "$f (locally customized, skipping)"
+      custom_count=$((custom_count + 1))
+    elif [ ! -f "$dest/$f" ]; then
+      new "$f (exists in source, missing in target)"
+      new_files+=("$src/$f|$dest/$f")
+    elif ! diff -q "$src/$f" "$dest/$f" > /dev/null 2>&1; then
+      stale "$f"
+      stale_files+=("$src/$f|$dest/$f")
+    else
+      ok_count=$((ok_count + 1))
+    fi
+  done
 
   # ─── Summary ──────────────────────────────────────────────────────────────
 
