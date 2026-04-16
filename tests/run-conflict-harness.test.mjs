@@ -713,3 +713,128 @@ test('runConflictHarness repairs judge verdicts that only miss repairable struct
     await rm(rootDir, { recursive: true, force: true });
   }
 });
+
+test('runConflictHarness persists Phase 2 uncertainty fields in run results when judge flags human review', async () => {
+  const rootDir = await mkdtemp(path.join(os.tmpdir(), 'shipwright-conflict-phase2-run-results-'));
+
+  try {
+    const { run } = await runConflictHarness({
+      casePacket: createCasePacket(),
+      outDir: rootDir,
+      runId: 'conflict-phase2-run-results',
+      judgeProvider: 'openai',
+      judgeModel: 'chatgpt-pro',
+      turnRunner: async (options) => {
+        if (options.phase === 'first_pass' || options.phase === 'final') {
+          return {
+            packet: {
+              run_id: 'conflict-phase2-run-results',
+              side_id: options.sideId,
+              round: options.phase,
+              artifact_markdown: `# ${options.sideId} ${options.phase}`,
+              claims: [
+                {
+                  claim_id: `${options.sideId}-claim-1`,
+                  summary: `${options.sideId} major claim`,
+                  evidence_refs: ['ctx-1'],
+                  is_major: true,
+                },
+              ],
+              citations: ['ctx-1'],
+              conclusion_confidence: 'medium',
+              open_questions: ['Need fresh diligence data.'],
+              critique_responses: [],
+            },
+            usage: { estimatedCostUsd: 0 },
+          };
+        }
+
+        if (options.phase === 'rebuttal') {
+          return {
+            packet: {
+              target_side: options.sideId === 'side_a' ? 'side_b' : 'side_a',
+              finding_id: `${options.sideId}-finding-1`,
+              target_claim_ids: [options.sideId === 'side_a' ? 'side_b-claim-1' : 'side_a-claim-1'],
+              claim_under_attack: 'The support is incomplete.',
+              attack_type: 'missing_evidence',
+              evidence_or_reason: 'The argument needs fresher evidence.',
+              severity: 'high',
+            },
+            usage: { estimatedCostUsd: 0 },
+          };
+        }
+
+        if (options.phase === 'judge') {
+          return {
+            packet: {
+              winner: 'tie',
+              margin: 0,
+              rubric_scores: {
+                side_a: {
+                  claim_quality: 4,
+                  evidence_discipline: 4,
+                  responsiveness_to_critique: 3,
+                  internal_consistency: 4,
+                  decision_usefulness: 3,
+                  weighted_total: 3.6,
+                },
+                side_b: {
+                  claim_quality: 4,
+                  evidence_discipline: 4,
+                  responsiveness_to_critique: 3,
+                  internal_consistency: 4,
+                  decision_usefulness: 3,
+                  weighted_total: 3.6,
+                },
+              },
+              dimension_rationales: {
+                claim_quality: 'Both sides made similarly credible claims.',
+                evidence_discipline: 'Both sides rely on incomplete diligence.',
+                responsiveness_to_critique: 'Neither side fully resolved the core rebuttal.',
+                internal_consistency: 'Both sides remained internally coherent.',
+                decision_usefulness: 'Neither side reduces decision risk enough yet.',
+              },
+              side_summaries: {
+                side_a: {
+                  strengths: ['Clear structure.'],
+                  weaknesses: ['Needs stronger supporting evidence.'],
+                },
+                side_b: {
+                  strengths: ['Balanced framing.'],
+                  weaknesses: ['Still relies on missing diligence.'],
+                },
+              },
+              decisive_dimension: 'evidence_discipline',
+              decisive_findings: ['Both sides remain too evidence-thin to break the tie.'],
+              judge_confidence: 'low',
+              needs_human_review: true,
+              uncertainty_drivers: ['Fresh diligence evidence is missing.', 'Both sides remain close on the rubric.'],
+              disambiguation_questions: ['What new evidence would distinguish the downside risks?', 'Which assumption is most likely to fail?'],
+              needed_evidence: ['Updated diligence packet.', 'Scenario-specific downside estimates.'],
+              recommended_next_artifact: 'Follow-up diligence memo',
+              recommended_next_action: 'Gather more evidence before acting.',
+              can_resolve_with_more_evidence: true,
+              escalation_recommendation: 'gather_more_evidence',
+              rationale: 'The current record is too thin to support a stable winner.',
+            },
+            usage: { estimatedCostUsd: 0 },
+          };
+        }
+
+        throw new Error(`Unexpected phase: ${options.phase}`);
+      },
+    });
+
+    assert.equal(run.status, 'completed');
+    assert.equal(run.results.winner, 'tie');
+    assert.equal(run.results.judge_confidence, 'low');
+    assert.equal(run.results.needs_human_review, true);
+    assert.deepEqual(run.results.uncertainty_drivers, ['Fresh diligence evidence is missing.', 'Both sides remain close on the rubric.']);
+    assert.equal(run.results.recommended_next_artifact, 'Follow-up diligence memo');
+    assert.equal(run.results.recommended_next_action, 'Gather more evidence before acting.');
+    assert.equal(run.results.can_resolve_with_more_evidence, true);
+    assert.equal(run.results.escalation_recommendation, 'gather_more_evidence');
+  } finally {
+    await rm(rootDir, { recursive: true, force: true });
+  }
+});

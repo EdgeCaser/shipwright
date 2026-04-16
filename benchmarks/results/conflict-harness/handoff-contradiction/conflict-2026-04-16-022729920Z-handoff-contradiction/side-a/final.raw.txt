@@ -1,0 +1,57 @@
+{
+  "run_id": "conflict-2026-04-16-022729920Z-handoff-contradiction",
+  "side_id": "side_a",
+  "round": "final",
+  "artifact_markdown": "# Revised artifact\n\n# Technical Handoff PRD: Contradiction-Controlled Platform Handoff\n\n## Overview\nThis PRD defines a technical handoff format for a request that explicitly combines platform strategy alignment and challenge review, while the case packet does not provide the underlying source documents needed to reconcile concrete contradictions directly. The artifact therefore standardizes how contradictions must be surfaced, owned, and dispositioned before build commitment rather than inventing unsupported source precedence.\n\n## Problem Statement\nThe handoff must be decision-useful despite missing source evidence. The scenario title states that cross-document contradictions exist, and the prompt requires alignment to platform strategy and challenge review, but no strategy text, review notes, or evidence pack is provided. Without an explicit contradiction-handling method, the team risks converting ambiguity into hidden requirements.\n\n## Goals\n- Produce an execution-oriented handoff artifact that remains usable under incomplete evidence.\n- Preserve traceability between requested platform alignment, technical scope, and challenge-review concerns.\n- Force unresolved contradictions into visible disposition states before implementation commitment.\n- Make readiness contingent on named ownership and closure criteria.\n\n## Non-Goals\n- Infer specific platform commitments that are not present in the case packet.\n- Resolve undocumented reviewer objections as if they were validated requirements.\n- Claim final strategic consistency where the underlying documents are unavailable.\n\n## Product Requirement\nThe handoff artifact must define:\n- the implementation scope being handed off,\n- the assumptions currently being made,\n- the contradiction register for any conflicting inputs,\n- the disposition status of each contradiction,\n- the owner required to resolve each unresolved item,\n- the pass/fail conditions for engineering commitment.\n\n## Functional Requirements\n- Every major requirement must be labeled as one of: confirmed input, execution assumption, open contradiction, or deferred item.\n- The artifact must not merge strategy intent and challenge-review concern into a single requirement unless the disposition is explicit.\n- Each unresolved contradiction must include an owner, a closure condition, and a blocking/non-blocking status.\n- If a contradiction changes scope, dependency, acceptance criteria, or sequencing, it must appear in the contradiction register.\n- Readiness must be expressed as pass/fail conditions tied to contradiction closure, not narrative confidence alone.\n\n## Contradiction Handling Rules\n- Treat the existence of contradictions as established by the scenario title, but do not claim any specific contradiction is resolved unless it is named.\n- Treat platform-strategy alignment and challenge-review input as separate input classes until an owner explicitly reconciles them.\n- Treat undocumented or weakly supported statements as assumptions, not binding requirements.\n- Block final handoff readiness when an unresolved contradiction materially affects build scope, architecture, dependency order, or acceptance criteria.\n\n## Acceptance Criteria\n- A delivery team can distinguish confirmed requirements from assumptions and open contradictions.\n- A reviewer can identify which items are unresolved and who owns closure.\n- The artifact contains the required closing sections and structured readiness logic.\n- No contradiction is implied to be resolved without an explicit recorded disposition.\n\n## Decision Frame\nUse this PRD as a conditional handoff artifact, not a final reconciled source of truth. Engineering may proceed only on confirmed requirements and explicitly accepted assumptions; any contradiction that materially affects scope or acceptance must remain visible and owner-assigned until resolved.\n\n## Unknowns & Evidence Gaps\n- The actual platform strategy commitments are not provided.\n- The actual challenge-review findings are not provided.\n- The specific cross-document contradictions are not enumerated in the case packet.\n- No evidence pack is available to determine which inputs are authoritative.\n\n## Pass/Fail Readiness\nPass if:\n- confirmed requirements are separated from assumptions,\n- a contradiction register exists,\n- each material contradiction has an owner and closure rule,\n- no unresolved contradiction is hidden inside requirements language,\n- engineering can identify what is safe to execute now versus what is blocked.\n\nFail if:\n- undocumented inputs are treated as binding facts,\n- platform alignment is asserted without traceable basis,\n- challenge-review concerns are silently converted into scope,\n- material contradictions remain unnamed,\n- implementation begins without ownership for blocking inconsistencies.\n\n## Recommended Next Artifact\nCreate a contradiction resolution annex. It should list each conflicting statement from the strategy document, review artifact, or handoff draft; classify impact on scope or acceptance; assign a decision owner; and record the final disposition before build commitment.",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "The revised handoff should avoid inventing a source-precedence hierarchy and instead require explicit contradiction registration, ownership, and disposition because the case packet does not provide the underlying documents needed to justify ranked authority.",
+      "evidence_refs": [
+        "case-title",
+        "case-prompt",
+        "finding-2"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "A decision-useful PRD in this scenario must separate confirmed requirements, assumptions, and open contradictions so teams do not treat undocumented strategy or review inputs as binding scope.",
+      "evidence_refs": [
+        "case-prompt",
+        "case-rubric",
+        "case-validator"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-3",
+      "summary": "Readiness should be gated by whether material contradictions are named, owner-assigned, and dispositioned, since the validator expects a structured artifact with explicit decision usefulness and internal consistency.",
+      "evidence_refs": [
+        "case-rubric",
+        "case-validator"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "case-title",
+    "case-prompt",
+    "case-rubric",
+    "case-validator",
+    "finding-2"
+  ],
+  "conclusion_confidence": "medium",
+  "open_questions": [
+    "What are the actual platform strategy statements that the PRD is meant to align to?",
+    "What concrete challenge-review findings exist, and which are evidence-backed versus advisory?",
+    "Which contradictions are materially blocking scope, architecture, sequencing, or acceptance criteria?"
+  ],
+  "critique_responses": [
+    {
+      "finding_id": "finding-2",
+      "disposition": "adopted",
+      "rationale": "The critique is correct that the original precedence model was unsupported by the case packet because no source documents or enumerated contradictions were provided. The revision removes the invented ranking and replaces it with a narrower, evidence-disciplined claim: the artifact is useful only if it forces contradictions into an explicit register with ownership and disposition, while leaving unresolved inputs visibly unresolved."
+    }
+  ]
+}

@@ -1,0 +1,160 @@
+You are SIDE_B in the final revision phase for run conflict-2026-04-16-013034988Z-handoff-contradiction.
+You must either adopt the critique or reject it with reasoning.
+Do not reveal provider identity.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "run_id": "conflict-2026-04-16-013034988Z-handoff-contradiction",
+  "side_id": "side_b",
+  "round": "final",
+  "artifact_markdown": "# Revised artifact",
+  "claims": [
+    {
+      "claim_id": "side_b-claim-1",
+      "summary": "Updated major claim",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1"
+  ],
+  "conclusion_confidence": "medium",
+  "open_questions": [],
+  "critique_responses": [
+    {
+      "finding_id": "finding-1",
+      "disposition": "adopted",
+      "rationale": "Why the critique was adopted or rejected."
+    }
+  ]
+}
+
+Case packet:
+{
+  "scenario_id": "handoff-contradiction",
+  "title": "Handoff artifact with cross-document contradictions",
+  "prompt": "Write a technical handoff PRD aligned to a platform strategy and challenge review.",
+  "artifact_type": "prd",
+  "rubric": {
+    "dimensions": [
+      "claim quality",
+      "evidence discipline",
+      "responsiveness to critique",
+      "internal consistency",
+      "decision usefulness"
+    ],
+    "scoring_scale": "1-5",
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "constraints": {
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "expect_structured": true,
+    "context_files": [],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "evidence": [],
+  "max_rounds": 3,
+  "tool_policy": "none",
+  "sharing_policy": {
+    "share_case_packet": true,
+    "share_committed_artifacts_after_first_pass": true,
+    "share_critiques_after_open": true,
+    "share_hidden_reasoning": false,
+    "share_provider_identity": false,
+    "share_internal_coalition_drafts": false
+  },
+  "success_condition": {
+    "type": "validator_contract",
+    "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+    "validator": {
+      "artifact_type": "prd",
+      "expect_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true
+    }
+  }
+}
+
+Your first-pass artifact:
+{
+  "run_id": "conflict-2026-04-16-013034988Z-handoff-contradiction",
+  "side_id": "side_b",
+  "round": "first_pass",
+  "artifact_markdown": "# Technical Handoff PRD\n\n## Purpose\nProvide a handoff-ready PRD that is explicitly aligned to the platform strategy requirement and the challenge-review requirement in the case packet. Because no source handoff artifacts or evidence files were provided, this document is a decision-ready scaffold with locked assumptions, contradiction controls, and implementation gates rather than a fully evidenced delivery spec.\n\n## Problem Statement\nThe requesting team needs a PRD that can transfer work to an implementation team without ambiguity. The packet indicates that the deliverable must serve two functions at once:\n1. align to platform strategy\n2. withstand challenge review\n\nThe primary risk is cross-document contradiction: if strategy intent, product requirements, and review objections are expressed differently across handoff materials, the receiving team will implement the wrong scope or pause for clarification.\n\n## Users And Stakeholders\n- Requesting team: owns strategy intent and business outcome\n- Receiving team: implements the scoped work\n- Review stakeholders: challenge assumptions, constraints, risks, and readiness\n- Platform owners: ensure consistency with platform direction and standards\n\n## Goal\nCreate a single PRD that becomes the source of truth for scope, rationale, constraints, and acceptance criteria during handoff.\n\n## Non-Goals\n- Final technical design\n- Delivery schedule with exact dates\n- Detailed staffing plan\n- Claims about market, customer, or platform facts not present in the packet\n\n## Requirements\n### Functional Requirements\n- The PRD must define the problem, goals, scope, non-goals, stakeholders, dependencies, assumptions, and acceptance criteria.\n- The PRD must include an explicit strategy-alignment section.\n- The PRD must include a challenge-review section that records key objections, responses, and unresolved issues.\n- The PRD must identify contradiction risks across documents and define a tie-break rule for conflicts.\n\n### Operational Requirements\n- One document must be designated as the source of truth for current scope.\n- Any conflicting statement from adjacent materials must be logged in a contradiction register before implementation starts.\n- Open questions must be assigned an owner and closure condition.\n\n### Quality Requirements\n- Terms must be normalized so the same capability is not described with different names.\n- Acceptance criteria must be testable.\n- Assumptions must be separated from confirmed facts.\n\n## Strategy Alignment\nThis PRD supports platform strategy by requiring:\n- a single source of truth for implementation scope\n- explicit dependency mapping to platform-owned systems or standards\n- a contradiction-resolution path so downstream teams do not infer strategy from inconsistent artifacts\n\nIf a future strategy memo conflicts with this PRD, implementation pauses until the requesting team republishes a reconciled version.\n\n## Challenge Review Record\n### Expected Challenge Areas\n- unclear ownership between requesting and receiving teams\n- unstated dependencies on platform capabilities\n- hidden scope expansion during handoff\n- acceptance criteria that validate outputs but not outcomes\n- contradictory statements across PRD, review notes, and strategy materials\n\n### Response Standard\n- confirm whether the challenged statement is fact, assumption, or proposal\n- identify the canonical source\n- update the contradiction register\n- revise the PRD before execution if the challenge changes scope or acceptance criteria\n\n## Contradiction Control\n### Canonical Precedence\n1. Current approved PRD\n2. Explicit decision log attached to the PRD\n3. Strategy reference named in the PRD\n4. Review commentary not yet incorporated\n\n### Contradiction Register Fields\n- conflicting statements\n- source documents\n- impact on scope or acceptance criteria\n- owner\n- resolution status\n- final decision reference\n\n## Acceptance Criteria\n- A receiving team can identify scope, non-goals, dependencies, and acceptance criteria without consulting informal notes.\n- Strategy alignment is stated in one section and does not conflict with scope.\n- Review objections are either resolved in the document or logged as open questions.\n- A contradiction register exists for any mismatch discovered during handoff.\n- The document names the canonical source and conflict precedence order.\n\n## Risks\n- No primary evidence or source documents were provided.\n- Strategy alignment cannot be verified against a real platform strategy artifact.\n- Challenge review cannot be fully answered without actual critique inputs.\n- Implementation teams may treat placeholders as decisions unless unresolved items are clearly gated.\n\n## Decision Frame\nApprove this PRD structure as the handoff baseline only if the requesting team uses it as the canonical source and reconciles any conflicting source materials before execution. Do not treat it as implementation-ready evidence of scope correctness because the packet contains no underlying handoff documents, review notes, or platform strategy text.\n\n## Unknowns & Evidence Gaps\n- The referenced platform strategy is not included, so alignment is procedural rather than evidenced.\n- The challenge review content is not included, so objection handling is templated rather than responsive to actual critique.\n- No source handoff artifacts are present, so cross-document contradictions cannot be enumerated.\n- No success metrics or delivery constraints are supplied.\n\n## Pass/Fail Readiness\nPass if:\n- one canonical PRD is approved\n- contradiction precedence is accepted\n- open questions have owners\n- source strategy and review materials are attached or reconciled\n\nFail if:\n- multiple documents remain authoritative\n- unresolved contradictions affect scope\n- acceptance criteria are not testable\n- strategy alignment depends on undocumented assumptions\n\n## Recommended Next Artifact\nProduce a reconciliation memo that maps each material claim across the strategy document, review feedback, and handoff PRD into one canonical decision log. That artifact should be completed before engineering execution begins.",
+  "claims": [
+    {
+      "claim_id": "side_b-claim-1",
+      "summary": "A usable first-pass handoff PRD in this scenario must function as a contradiction-control document, not just a feature spec, because the packet explicitly frames the task around cross-document inconsistency.",
+      "evidence_refs": [
+        "ctx-title",
+        "ctx-prompt"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-2",
+      "summary": "The artifact should preserve the required Shipwright closing blocks because the case rubric and validator both require those sections.",
+      "evidence_refs": [
+        "ctx-rubric-expected-sections",
+        "ctx-validator-expected-sections"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-3",
+      "summary": "Because no evidence or context files were supplied, the PRD can only make procedural commitments and must explicitly separate assumptions from confirmed facts.",
+      "evidence_refs": [
+        "ctx-evidence-empty",
+        "ctx-context-files-empty"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-title",
+    "ctx-prompt",
+    "ctx-rubric-expected-sections",
+    "ctx-validator-expected-sections",
+    "ctx-evidence-empty",
+    "ctx-context-files-empty"
+  ],
+  "conclusion_confidence": "medium",
+  "open_questions": [
+    "What specific platform strategy document is this PRD expected to align with?",
+    "What concrete challenge-review objections must be answered in the handoff artifact?",
+    "Which existing document is currently intended to be the canonical source of scope?",
+    "What business outcome or success metric should the acceptance criteria validate?"
+  ],
+  "critique_responses": []
+}
+
+Visible critique packet:
+{
+  "target_side": "side_b",
+  "finding_id": "finding-1",
+  "target_claim_ids": [
+    "side_b-claim-1"
+  ],
+  "claim_under_attack": "A usable first-pass handoff PRD in this scenario must function as a contradiction-control document, not just a feature spec, because the packet explicitly frames the task around cross-document inconsistency.",
+  "attack_type": "evidence_gap",
+  "evidence_or_reason": "The claim asserts the scenario 'explicitly frames the task around cross-document inconsistency,' but the case packet prompt is simply 'Write a technical handoff PRD aligned to a platform strategy and challenge review.' Cross-document contradiction is named in the scenario title, not in the prompt itself. Side B has inflated a title label into a primary design mandate, then used that inflated mandate to justify building an entire contradiction-control apparatus (canonical precedence rules, contradiction register, reconciliation memo recommendation) that displaces the core PRD deliverable. The rubric dimensions — claim quality, evidence discipline, responsiveness to critique, internal consistency, decision usefulness — do not list contradiction control as a dimension. By reframing the task as a contradiction-control exercise, Side B produces a template for managing future conflicts rather than a PRD that demonstrates those qualities now. The artifact's own Risks section concedes it cannot enumerate contradictions because no source documents were provided, which means the contradiction-control framing produces no usable output — it is procedural scaffolding presented as a first-pass product. A stronger reading of the prompt treats contradiction-handling as one quality criterion among several, not the organizing principle that overrides feature scope, stakeholder needs, and decision usefulness.",
+  "severity": "medium"
+}
