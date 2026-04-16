@@ -951,12 +951,13 @@ async function invokeJudgeTurn(options) {
     });
   }
 
-  let verdict = response.packet;
-  let validation = validateConflictDocument(verdict, 'verdict');
-  let phase2Errors = validatePhase2VerdictPayload(verdict, {
+  const phase2Options = {
     minMarginForVerdict: options.run.budgets.min_margin_for_verdict,
     unsupportedBySide: computeUnsupportedClaimCounts(options.run),
-  });
+  };
+  let verdict = stripUnusedPhase2Fields(response.packet, phase2Options);
+  let validation = validateConflictDocument(verdict, 'verdict');
+  let phase2Errors = validatePhase2VerdictPayload(verdict, phase2Options);
   const combinedErrors = [...validation.errors, ...phase2Errors];
 
   if (combinedErrors.length > 0) {
@@ -964,19 +965,19 @@ async function invokeJudgeTurn(options) {
       throw new Error(formatValidationErrors('Verdict packet failed validation', combinedErrors));
     }
 
-    verdict = await repairVerdict({
-      ...options,
-      outDir: judgeDir,
-      prompt,
-      previousVerdict: verdict,
-      errors: combinedErrors,
-    });
+    verdict = stripUnusedPhase2Fields(
+      await repairVerdict({
+        ...options,
+        outDir: judgeDir,
+        prompt,
+        previousVerdict: verdict,
+        errors: combinedErrors,
+      }),
+      phase2Options,
+    );
 
     validation = validateConflictDocument(verdict, 'verdict');
-    phase2Errors = validatePhase2VerdictPayload(verdict, {
-      minMarginForVerdict: options.run.budgets.min_margin_for_verdict,
-      unsupportedBySide: computeUnsupportedClaimCounts(options.run),
-    });
+    phase2Errors = validatePhase2VerdictPayload(verdict, phase2Options);
 
     if (validation.errors.length > 0 || phase2Errors.length > 0) {
       throw new Error(
@@ -1571,6 +1572,25 @@ function validatePhase2VerdictPayload(verdict, options = {}) {
       path: `$.${field}`,
       message: 'Missing required property.',
     }));
+}
+
+/**
+ * Remove Phase 2 uncertainty fields that the judge echoed as empty values
+ * (empty arrays or empty strings) when the trigger conditions don't apply.
+ * Prevents spurious minItems/minLength schema failures on untriggered fields.
+ */
+function stripUnusedPhase2Fields(verdict, options = {}) {
+  if (verdictRequiresUncertaintyPayload(verdict, options)) return verdict;
+  const cleaned = { ...verdict };
+  for (const field of PHASE2_UNCERTAINTY_FIELDS) {
+    if (!(field in cleaned)) continue;
+    const val = cleaned[field];
+    const isEmpty = (Array.isArray(val) && val.length === 0) ||
+                    (typeof val === 'string' && val.trim() === '') ||
+                    val === null;
+    if (isEmpty) delete cleaned[field];
+  }
+  return cleaned;
 }
 
 function computeRunMetrics(run) {
