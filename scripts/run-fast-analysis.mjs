@@ -28,6 +28,7 @@ import { existsSync, mkdtempSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { route, assessProviderAvailability } from './orchestrate.mjs';
+import { buildRunId, compactPathSegment } from './path-ids.mjs';
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -683,15 +684,11 @@ function formatRunSummary(run, analysis) {
 
 function resolveRunDirectory(scenarioId, runId, outDir) {
   const root = path.resolve(outDir || DEFAULT_OUT_DIR);
-  return path.join(root, scenarioId, runId);
+  return path.join(root, compactPathSegment(scenarioId), runId);
 }
 
 function normalizeRunId(value, scenarioId) {
-  if (typeof value === 'string' && value.trim().length > 0) {
-    return value.trim();
-  }
-  const timestamp = new Date().toISOString().replace(/[:.]/g, '').replace('T', '-').replace('Z', 'Z');
-  return `fast-${timestamp}-${scenarioId}`;
+  return buildRunId('fast', scenarioId, value);
 }
 
 function normalizePositiveNumber(value, flagName) {

@@ -82,9 +82,9 @@ export async function runOrchestrated(options = {}) {
     scenario_class: scenarioClass,
     available_providers: availableProviders,
     scenario_path: scenarioPath,
-    sessions_root: path.join(outDir, 'sessions'),
-    fast_out_dir: path.join(outDir, 'stage-1-fast'),
-    rigor_out_dir: path.join(outDir, 'stage-2-rigor'),
+    sessions_root: path.join(outDir, 's'),
+    fast_out_dir: path.join(outDir, 'f'),
+    rigor_out_dir: path.join(outDir, 'r'),
     auto_confirm: Boolean(options.autoConfirm),
     timeout_ms: options.timeoutMs,
   });
@@ -93,12 +93,12 @@ export async function runOrchestrated(options = {}) {
 
   if (options.autoConfirm && started.session?.status === 'awaiting_user_action') {
     result = await confirmNextStep(started.session.session_id, {
-      sessions_root: path.join(outDir, 'sessions'),
+      sessions_root: path.join(outDir, 's'),
       timeout_ms: options.timeoutMs,
-      rigor_out_dir: path.join(outDir, 'stage-2-rigor'),
+      rigor_out_dir: path.join(outDir, 'r'),
     });
   } else if (started.session?.session_id) {
-    result = await getDecisionSession(started.session.session_id, path.join(outDir, 'sessions'));
+    result = await getDecisionSession(started.session.session_id, path.join(outDir, 's'));
   }
 
   printOutput(result, format, false);

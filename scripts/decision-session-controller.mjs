@@ -21,6 +21,7 @@ import {
   appendSessionEvent,
   getSessionEvents,
 } from './session-store.mjs';
+import { compactScenarioId } from './path-ids.mjs';
 import {
   executeFastAnalysisForSession,
   executeRigorAnalysisForSession,
@@ -497,9 +498,10 @@ function validateRequiredString(value, label) {
 }
 
 function slugify(text) {
-  return text
+  const base = text
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
     .slice(0, 60) || 'question';
+  return compactScenarioId(base);
 }

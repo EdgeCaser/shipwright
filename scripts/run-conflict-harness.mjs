@@ -6,6 +6,7 @@ import { existsSync, mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { buildRunId, compactPathSegment } from './path-ids.mjs';
 
 import {
   buildCasePacket,
@@ -1690,16 +1691,12 @@ function normalizeMode(value) {
 }
 
 function normalizeRunId(value, scenarioId) {
-  if (typeof value === 'string' && value.trim().length > 0) {
-    return value.trim();
-  }
-  const timestamp = new Date().toISOString().replace(/[:.]/g, '').replace('T', '-').replace('Z', 'Z');
-  return `conflict-${timestamp}-${scenarioId}`;
+  return buildRunId('conflict', scenarioId, value);
 }
 
 function resolveRunDirectory(scenarioId, runId, outDir) {
   const root = path.resolve(outDir || path.join('benchmarks', 'results', 'conflict-harness'));
-  return path.join(root, scenarioId, runId);
+  return path.join(root, compactPathSegment(scenarioId), runId);
 }
 
 function normalizeRequiredString(value, flagName) {

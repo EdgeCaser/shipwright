@@ -18,6 +18,7 @@ import {
   startDecisionSession,
   getDecisionSession,
 } from './decision-session-controller.mjs';
+import { compactScenarioId } from './path-ids.mjs';
 
 // ---------------------------------------------------------------------------
 // Entry point
@@ -65,9 +66,9 @@ const isMain = process.argv[1]
       scenario_id: args.id || slugify(args.question),
       scenario_class: args.class,
       available_providers: args.providers,
-      sessions_root: args.outDir ? path.join(args.outDir, 'sessions') : undefined,
-      fast_out_dir: args.outDir ? path.join(args.outDir, 'stage-1-fast') : undefined,
-      rigor_out_dir: args.outDir ? path.join(args.outDir, 'stage-2-rigor') : undefined,
+      sessions_root: args.outDir ? path.join(args.outDir, 's') : undefined,
+      fast_out_dir: args.outDir ? path.join(args.outDir, 'f') : undefined,
+      rigor_out_dir: args.outDir ? path.join(args.outDir, 'r') : undefined,
       auto_confirm: args.yes,
       timeout_ms: args.timeoutMs,
     });
@@ -178,11 +179,12 @@ export function parseCliArgs(argv) {
 // ---------------------------------------------------------------------------
 
 function slugify(text) {
-  return text
+  const base = text
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
     .slice(0, 60) || 'question';
+  return compactScenarioId(base);
 }
 
 function printHelp() {

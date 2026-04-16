@@ -18,6 +18,7 @@
 import { mkdir, readFile, writeFile, appendFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
+import { buildRunId } from './path-ids.mjs';
 
 const DEFAULT_SESSIONS_ROOT = path.resolve('benchmarks', 'results', 'sessions');
 const SESSION_FILENAME = 'session.json';
@@ -270,8 +271,7 @@ function validateRequiredString(value, label) {
 }
 
 function generateSessionId(scenarioId) {
-  const timestamp = new Date().toISOString().replace(/[:.]/g, '').replace('T', '-').replace('Z', 'Z');
-  return `sess-${timestamp}-${scenarioId}`;
+  return buildRunId('sess', scenarioId);
 }
 
 async function writeJson(filePath, value) {
