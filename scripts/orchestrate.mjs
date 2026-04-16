@@ -135,6 +135,7 @@ export const UX_SUBSTATES = Object.freeze({
   NEEDS_MORE_EVIDENCE: 'needs_more_evidence',
   LIMITED_PROVIDER_AVAILABILITY: 'limited_provider_availability',
   DIRECTIONALLY_INCOHERENT: 'directionally_incoherent',
+  HUMAN_REVIEW_REQUIRED: 'human_review_required',
   // Shared
   USER_DECLINED_ESCALATION_NOT_READY: 'user_declined_escalation',
 });
@@ -218,6 +219,11 @@ export function resolveScenarioClass(classId) {
  * @param {string} input.stage                       - Current stage (see STAGES)
  * @param {string|null} input.confidence_band        - 'high' | 'medium' | 'low' | null
  * @param {boolean|null} input.needs_human_review    - From verdict; null at pre_run
+ * @param {number} [input.review_flag_family_count]  - How many distinct judge families have flagged
+ *                                                     needs_human_review. Defaults to 1 when
+ *                                                     needs_human_review is true and not provided.
+ *                                                     A flag only routes to human when count >= 2.
+ *                                                     A single-family flag escalates to a second judge.
  * @param {boolean} [input.uncertainty_payload_present] - Whether uncertainty payload was emitted
  * @param {string|null} [input.panel_agreement]      - 'converged' | 'disagree' | 'directionally_incoherent' | null
  * @param {boolean} [input.user_declined_escalation] - Whether user said no to the last recommendation
@@ -233,6 +239,11 @@ export function route(input) {
   const userDeclined = Boolean(input.user_declined_escalation);
   const hasUncertaintyPayload = Boolean(input.uncertainty_payload_present);
   const needsReview = input.needs_human_review === true;
+  // Infer count=1 when flag is set but caller didn't specify — treats as unconfirmed single-family flag
+  const reviewFlagFamilyCount = typeof input.review_flag_family_count === 'number'
+    ? input.review_flag_family_count
+    : (needsReview ? 1 : 0);
+  const crossFamilyReviewConfirmed = reviewFlagFamilyCount >= 2;
   const panelAgreement = input.panel_agreement || null;
   const stage = input.stage || 'pre_run';
 
@@ -243,19 +254,19 @@ export function route(input) {
     case 'post_single':
       return routePostSingle({
         scenarioClass, confidence, pa, needsReview,
-        hasUncertaintyPayload, userDeclined, input,
+        hasUncertaintyPayload, userDeclined, crossFamilyReviewConfirmed, input,
       });
 
     case 'post_double':
       return routePostDouble({
         scenarioClass, confidence, pa, needsReview,
-        panelAgreement, userDeclined, input,
+        panelAgreement, userDeclined, crossFamilyReviewConfirmed, input,
       });
 
     case 'post_judge':
       return routePostJudge({
         scenarioClass, confidence, pa, needsReview,
-        panelAgreement, hasUncertaintyPayload, input,
+        panelAgreement, hasUncertaintyPayload, crossFamilyReviewConfirmed, input,
       });
 
     default:
@@ -317,7 +328,7 @@ function routePreRun({ scenarioClass, pa, input }) {
   });
 }
 
-function routePostSingle({ scenarioClass, confidence, pa, needsReview, hasUncertaintyPayload, userDeclined, input }) {
+function routePostSingle({ scenarioClass, confidence, pa, needsReview, hasUncertaintyPayload, userDeclined, crossFamilyReviewConfirmed, input }) {
   const isWeak = confidence.below_threshold || needsReview || hasUncertaintyPayload;
 
   // Strong single result — provisional
@@ -365,14 +376,14 @@ function routePostSingle({ scenarioClass, confidence, pa, needsReview, hasUncert
 
   // Weak single result, third-family judge available → recommend Rigor Mode
   if (pa.can_run_third_family_judge) {
-    const reason = buildWeaknessReason(confidence, needsReview, hasUncertaintyPayload);
+    const reason = buildWeaknessReason(confidence, needsReview, hasUncertaintyPayload, crossFamilyReviewConfirmed);
     return makeResult({
       ux_state: UX_STATES.MORE_RIGOR_RECOMMENDED,
       ux_substate: UX_SUBSTATES.DOUBLE_PANEL_RECOMMENDED,
       recommended_next_mode: 'double_panel',
       requires_user_confirmation: true,
       recommended_provider_roles: suggestProviderRoles(pa, 'double'),
-      explanation: `This result is directionally useful but not reliable enough to stand alone. ${reason} A stronger cross-family check is recommended before acting.`,
+      explanation: `This result is directionally useful but not reliable enough to stand alone. ${reason} A second judge family is needed before routing to human review.`,
       follow_up_action: 'Run Rigor Mode',
     });
   }
@@ -388,7 +399,7 @@ function routePostSingle({ scenarioClass, confidence, pa, needsReview, hasUncert
   });
 }
 
-function routePostDouble({ scenarioClass, confidence, pa, needsReview, panelAgreement, userDeclined, input }) {
+function routePostDouble({ scenarioClass, confidence, pa, needsReview, panelAgreement, userDeclined, crossFamilyReviewConfirmed, input }) {
   // Panel converged — strong result
   if (panelAgreement === 'converged' && !needsReview && confidence.above_threshold) {
     return makeResult({
@@ -404,7 +415,19 @@ function routePostDouble({ scenarioClass, confidence, pa, needsReview, panelAgre
     });
   }
 
-  // Panel converged but review flag — provisional but flagged
+  // Panel converged + cross-family confirmed review flag → human escalation
+  if (panelAgreement === 'converged' && needsReview && crossFamilyReviewConfirmed) {
+    return makeResult({
+      ux_state: UX_STATES.NOT_READY,
+      ux_substate: UX_SUBSTATES.HUMAN_REVIEW_REQUIRED,
+      recommended_next_mode: null,
+      requires_user_confirmation: false,
+      explanation: 'Multiple judge families independently flagged this for human review. The review flag is cross-family confirmed. Route to a human decision-maker rather than running another model pass.',
+      follow_up_action: 'Escalate to human review',
+    });
+  }
+
+  // Panel converged but unconfirmed review flag or low confidence → escalate to judge for confirmation
   if (panelAgreement === 'converged' && (needsReview || confidence.below_threshold)) {
     return makeResult({
       ux_state: UX_STATES.MORE_RIGOR_RECOMMENDED,
@@ -412,7 +435,9 @@ function routePostDouble({ scenarioClass, confidence, pa, needsReview, panelAgre
       recommended_next_mode: pa.can_run_third_family_judge ? 'judge' : null,
       requires_user_confirmation: true,
       recommended_provider_roles: suggestProviderRoles(pa, 'judge'),
-      explanation: 'The panel converged on direction but at least one model flagged uncertainty or low confidence. A judge can evaluate whether the agreement is substantive.',
+      explanation: needsReview
+        ? 'The panel converged but flagged human review (single-family). A third-family judge should confirm the flag before routing to human — a single-family review flag is not sufficient to escalate.'
+        : 'The panel converged on direction but at least one model returned low confidence. A judge can evaluate whether the agreement is substantive.',
       follow_up_action: pa.can_run_third_family_judge ? 'Escalate to a judge' : null,
     });
   }
@@ -476,7 +501,7 @@ function routePostDouble({ scenarioClass, confidence, pa, needsReview, panelAgre
   });
 }
 
-function routePostJudge({ scenarioClass, confidence, pa, needsReview, panelAgreement, hasUncertaintyPayload }) {
+function routePostJudge({ scenarioClass, confidence, pa, needsReview, panelAgreement, hasUncertaintyPayload, crossFamilyReviewConfirmed }) {
   // Judge disagrees with both panel models — directionally incoherent
   if (panelAgreement === 'directionally_incoherent') {
     return makeResult({
@@ -490,7 +515,19 @@ function routePostJudge({ scenarioClass, confidence, pa, needsReview, panelAgree
     });
   }
 
-  // Judge returned low confidence, review flag, or uncertainty payload
+  // Cross-family confirmed review flag → route to human, not to more evidence gathering
+  if (needsReview && crossFamilyReviewConfirmed) {
+    return makeResult({
+      ux_state: UX_STATES.NOT_READY,
+      ux_substate: UX_SUBSTATES.HUMAN_REVIEW_REQUIRED,
+      recommended_next_mode: null,
+      requires_user_confirmation: false,
+      explanation: 'Multiple judge families independently flagged this for human review. No further model pass will resolve this — the flag is cross-family confirmed. Route to a human decision-maker.',
+      follow_up_action: 'Escalate to human review',
+    });
+  }
+
+  // Judge returned low confidence, unconfirmed review flag, or uncertainty payload → gather more evidence
   const isUnresolved = confidence.below_threshold || needsReview || hasUncertaintyPayload;
   if (isUnresolved) {
     return makeResult({
@@ -498,9 +535,13 @@ function routePostJudge({ scenarioClass, confidence, pa, needsReview, panelAgree
       ux_substate: UX_SUBSTATES.NEEDS_MORE_EVIDENCE,
       recommended_next_mode: null,
       requires_user_confirmation: false,
-      explanation: 'The judge returned an uncertain verdict. The system is not ready to force a winner. The uncertainty payload identifies what is needed to resolve this.',
+      explanation: needsReview
+        ? 'The judge flagged human review, but this is a single-family flag. The review flag is not yet cross-family confirmed. Gather clarifying evidence or run the scenario through the panel again with stronger inputs.'
+        : 'The judge returned an uncertain verdict. The system is not ready to force a winner. The uncertainty payload identifies what is needed to resolve this.',
       follow_up_artifact: 'Evidence collection brief',
-      follow_up_action: 'Gather the evidence identified in the uncertainty payload',
+      follow_up_action: needsReview
+        ? 'Gather clarifying evidence or reframe the scenario before re-adjudicating'
+        : 'Gather the evidence identified in the uncertainty payload',
     });
   }
 
@@ -550,11 +591,15 @@ function suggestProviderRoles(pa, mode) {
 // Helpers
 // ---------------------------------------------------------------------------
 
-function buildWeaknessReason(confidence, needsReview, hasUncertaintyPayload) {
+function buildWeaknessReason(confidence, needsReview, hasUncertaintyPayload, crossFamilyReviewConfirmed = false) {
   const reasons = [];
   if (confidence.band === 'low') reasons.push('Confidence is low.');
   else if (confidence.band === 'medium') reasons.push('Confidence is below the routing threshold.');
-  if (needsReview) reasons.push('The model flagged this for human review.');
+  if (needsReview) {
+    reasons.push(crossFamilyReviewConfirmed
+      ? 'Multiple judge families flagged this for human review.'
+      : 'The model flagged this for human review (single-family — needs confirmation).');
+  }
   if (hasUncertaintyPayload) reasons.push('An uncertainty payload was emitted.');
   return reasons.join(' ');
 }

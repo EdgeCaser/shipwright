@@ -560,3 +560,82 @@ test('route does not throw for missing optional fields', () => {
     });
   });
 });
+
+// ---------------------------------------------------------------------------
+// review_flag_family_count — cross-family confirmation policy
+// ---------------------------------------------------------------------------
+
+test('post_single: needs_human_review without review_flag_family_count infers count=1 (unconfirmed)', () => {
+  const r = route(baseInput({
+    scenario_class: 'pricing',
+    stage: 'post_single',
+    confidence_band: 'high',
+    needs_human_review: true,
+    provider_availability: pa(['claude', 'gpt', 'gemini']),
+  }));
+  // Unconfirmed single-family flag → escalate to second judge, not human
+  assert.equal(r.ux_state, UX_STATES.MORE_RIGOR_RECOMMENDED);
+  assert.equal(r.ux_substate, UX_SUBSTATES.DOUBLE_PANEL_RECOMMENDED);
+  assert.ok(r.explanation.includes('second judge family'));
+});
+
+test('post_double: converged + review_flag_family_count=2 → not_ready / human_review_required', () => {
+  const r = route(baseInput({
+    scenario_class: 'governance',
+    stage: 'post_double',
+    confidence_band: 'high',
+    needs_human_review: true,
+    review_flag_family_count: 2,
+    panel_agreement: 'converged',
+    provider_availability: pa(['claude', 'gpt', 'gemini']),
+  }));
+  assert.equal(r.ux_state, UX_STATES.NOT_READY);
+  assert.equal(r.ux_substate, UX_SUBSTATES.HUMAN_REVIEW_REQUIRED);
+  assert.equal(r.recommended_next_mode, null);
+  assert.ok(r.explanation.includes('cross-family confirmed'));
+});
+
+test('post_double: converged + review flag + review_flag_family_count=1 (unconfirmed) → more_rigor / judge_recommended', () => {
+  const r = route(baseInput({
+    scenario_class: 'governance',
+    stage: 'post_double',
+    confidence_band: 'high',
+    needs_human_review: true,
+    review_flag_family_count: 1,
+    panel_agreement: 'converged',
+    provider_availability: pa(['claude', 'gpt', 'gemini']),
+  }));
+  assert.equal(r.ux_state, UX_STATES.MORE_RIGOR_RECOMMENDED);
+  assert.equal(r.ux_substate, UX_SUBSTATES.JUDGE_RECOMMENDED);
+  assert.ok(r.explanation.includes('single-family'));
+});
+
+test('post_judge: needs_human_review + review_flag_family_count=2 → not_ready / human_review_required', () => {
+  const r = route(baseInput({
+    scenario_class: 'governance',
+    stage: 'post_judge',
+    confidence_band: 'high',
+    needs_human_review: true,
+    review_flag_family_count: 2,
+    panel_agreement: 'converged',
+    provider_availability: pa(['claude', 'gpt', 'gemini']),
+  }));
+  assert.equal(r.ux_state, UX_STATES.NOT_READY);
+  assert.equal(r.ux_substate, UX_SUBSTATES.HUMAN_REVIEW_REQUIRED);
+  assert.ok(r.explanation.includes('cross-family confirmed'));
+});
+
+test('post_judge: needs_human_review without review_flag_family_count → not_ready / needs_more_evidence (unconfirmed)', () => {
+  const r = route(baseInput({
+    scenario_class: 'governance',
+    stage: 'post_judge',
+    confidence_band: 'high',
+    needs_human_review: true,
+    panel_agreement: 'converged',
+    provider_availability: pa(['claude', 'gpt', 'gemini']),
+  }));
+  // Default count=1 — not yet cross-family confirmed
+  assert.equal(r.ux_state, UX_STATES.NOT_READY);
+  assert.equal(r.ux_substate, UX_SUBSTATES.NEEDS_MORE_EVIDENCE);
+  assert.ok(r.explanation.includes('single-family'));
+});
