@@ -415,6 +415,88 @@ test('rejudgeConflictRun repairs GPT verdicts that miss structured fields and we
   assert.equal(result.verdict.rubric_scores.side_b.weighted_total, 4);
 });
 
+test('rejudgeConflictRun repairs verdicts that produce invalid JSON output', async () => {
+  const tmpRoot = await mkdtemp(path.join(os.tmpdir(), 'shipwright-rejudge-'));
+  const runDir = path.join(tmpRoot, 'conflict-run');
+  const judgeDir = path.join(runDir, 'judge');
+  await mkdir(judgeDir, { recursive: true });
+
+  await Promise.all([
+    writeFile(path.join(runDir, 'run.json'), '{ "run_id": "jsonrepair-run" }\n'),
+    writeFile(path.join(judgeDir, 'verdict.input.json'), '{}\n'),
+    writeFile(path.join(judgeDir, 'verdict.prompt.txt'), 'Return ONLY a JSON object.'),
+  ]);
+
+  const validVerdict = {
+    winner: 'side_a',
+    margin: 0.4,
+    rubric_scores: {
+      side_a: {
+        claim_quality: 4,
+        evidence_discipline: 4,
+        responsiveness_to_critique: 4,
+        internal_consistency: 4,
+        decision_usefulness: 4,
+        weighted_total: 4.0,
+      },
+      side_b: {
+        claim_quality: 3,
+        evidence_discipline: 3,
+        responsiveness_to_critique: 3,
+        internal_consistency: 3,
+        decision_usefulness: 3,
+        weighted_total: 3.0,
+      },
+    },
+    dimension_rationales: {
+      claim_quality: 'Side A makes the stronger claims.',
+      evidence_discipline: 'Side A uses evidence more carefully.',
+      responsiveness_to_critique: 'Side A absorbed the critique better.',
+      internal_consistency: 'Side A is more coherent.',
+      decision_usefulness: 'Side A is more useful to the decision maker.',
+    },
+    side_summaries: {
+      side_a: {
+        strengths: ['Actionable recommendation.'],
+        weaknesses: ['Could be shorter.'],
+      },
+      side_b: {
+        strengths: ['Good framing.'],
+        weaknesses: ['Less decisive.'],
+      },
+    },
+    decisive_dimension: 'decision_usefulness',
+    decisive_findings: ['Side A is more decision-useful.'],
+    judge_confidence: 'medium',
+    needs_human_review: false,
+    rationale: 'Side A is stronger overall.',
+  };
+
+  let callCount = 0;
+  const result = await rejudgeConflictRun({
+    runDir,
+    judgeAgent: 'gpt',
+    label: 'gpt-jsonrepair',
+    turnRunner: async () => {
+      callCount += 1;
+      if (callCount === 1) {
+        // First attempt: model wraps JSON in prose — not valid JSON
+        return { stdout: 'Here is my verdict:\n\n```json\n{ winner: "side_a" }\n```', stderr: '', exitCode: 0 };
+      }
+      // Second attempt (JSON repair): valid verdict
+      return { stdout: `${JSON.stringify(validVerdict, null, 2)}\n`, stderr: '', exitCode: 0 };
+    },
+  });
+
+  assert.equal(callCount, 2);
+  assert.equal(result.verdict.winner, 'side_a');
+  assert.equal(result.verdict.decisive_dimension, 'decision_usefulness');
+
+  const metadata = JSON.parse(await readFile(path.join(result.outputDir, 'metadata.json'), 'utf8'));
+  assert.equal(metadata.replay.repair_attempted, true);
+  assert.equal(metadata.replay.repair_attempts, 1);
+});
+
 test('verdict schema rejects weighted totals outside the 1-5 scale', () => {
   const verdict = {
     winner: 'side_a',
