@@ -190,6 +190,15 @@ Follow-up actions for `not_ready` sessions: `gather_more_evidence` (re-runs Fast
 
 Run `node scripts/telemetry.mjs` to see a summary of confidence distributions, escalation funnel, and terminal states across all runs. The log lives at `benchmarks/telemetry/events.jsonl`.
 
+If you're working from a OneDrive-synced repo on Windows, you can move generated outputs to a short local root after a run:
+
+```bash
+node scripts/archive-generated-outputs.mjs --dry-run
+node scripts/archive-generated-outputs.mjs --target-root C:\shipwright-artifacts
+```
+
+That preserves the `benchmarks/results/` and `benchmarks/telemetry/` layout under the shorter root, which helps avoid OneDrive path-length sync failures on deep benchmark trees.
+
 ### Research background
 
 The calibration data, cross-model comparison results, and research memos behind the routing policy live in `docs/review/`. The key finding: judge family dominates outcome more than anything else. GPT defaults to `decision_usefulness`; Claude defaults to `evidence_discipline`. Single-judge outputs cannot be treated as reliable findings on contested governance questions.
