@@ -1,0 +1,13 @@
+# Critique: finding-2
+
+- Target Side: side_a
+- Target Claim IDs: side_a-claim-1
+- Attack Type: evidence_gap
+- Severity: medium
+
+## Claim Under Attack
+The integrated balance sheet cannot sustain foundry losses and continued full consolidation is an existential risk to the products business.
+
+## Evidence Or Reason
+The visible evidence shows large foundry losses, heavy capex, layoffs, and stock-price damage, but it does not establish insolvency-level or existential risk to the products business specifically. The artifact never shows Intel's liquidity runway, debt capacity, product-business cash generation, or why ring-fencing through a subsidiary would materially reduce consolidated economic exposure while Intel still owns and supports the asset. The step from 'severe drag on profitability and valuation' to 'cannot sustain' and 'existential risk' is asserted, not demonstrated.
+

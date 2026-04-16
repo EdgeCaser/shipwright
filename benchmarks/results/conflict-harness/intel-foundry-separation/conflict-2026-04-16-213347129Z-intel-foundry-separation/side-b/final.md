@@ -1,0 +1,26 @@
+# Revised artifact
+
+## Recommendation
+Intel should preserve tighter integration for now while using the new foundry subsidiary structure to improve transparency, accountability, and future optionality. The board should not accelerate toward outside funding or a broader structural separation until it has clearer evidence that such a move would materially strengthen the turnaround rather than add fragility to it.
+
+The strongest counterargument is serious and cannot be minimized: Intel's foundry business had lost about $7 billion in operating income in 2023 on roughly $18.9 billion in sales, Intel had been spending roughly $25 billion per year on the foundry business, the company said foundry losses would likely peak in 2024 and not break even until sometime before 2030, the stock had lost nearly 60% of its value during 2024 before the announcement, and Intel was simultaneously pursuing layoffs and a roughly $10 billion cost-reduction plan. Those facts make capital strain and investor confidence real execution risks.
+
+But the packet does not establish that outside capital is actually available on attractive terms, at meaningful scale, or without governance tradeoffs that could weaken execution or strategic control. What the evidence does show is that Intel already chose an intermediate step: creating a separate foundry entity with its own operating board and the ability to evaluate outside funding. That is the right sequencing move. It increases strategic flexibility without committing the board to a faster and more disruptive separation before the turnaround proves it can stabilize operations, maintain customer traction, and keep priority projects moving.
+
+This position also better protects Intel's strategic logic. The company is trying to revive itself while preserving the credibility of an integrated design-and-manufacturing model. Further separation could help funding optics, but it would also raise sharper questions about whether Intel still believes integration is a core advantage. That matters because the foundry strategy is not only a financial issue; it is tied to Intel's broader commercial recovery, to its expanded custom-chip relationship with Amazon Web Services, and to U.S. government support under the CHIPS Act and Secure Enclave funding. Those factors make foundry credibility important, but they do not by themselves prove that moving faster toward outside capital is the best board decision right now.
+
+The board should therefore keep the subsidiary structure, preserve the option to raise minority outside capital later, and set explicit triggers for when deeper separation would become justified. The decision should be driven by evidence of actual financing availability and strategic benefit, not by the hope that structural change alone will solve a capital-intensive turnaround.
+
+## Decision Frame
+The decision is whether Intel should push further now toward structural separation and outside funding for foundry, or keep the foundry business strategically close while using the new subsidiary structure as a discipline and reporting tool. The recommended choice is to stay tighter and treat outside capital as a conditional next step rather than an immediate strategic commitment.
+
+## Unknowns & Evidence Gaps
+The packet does not show what outside investors would actually fund, on what terms, with what governance rights, or whether those terms would improve resilience more than they would complicate execution. It also does not establish whether customers or government stakeholders require deeper separation beyond the current subsidiary model. A further uncertainty is whether the integrated design-manufacturing model still provides enough practical advantage to justify preserving tighter control during the turnaround.
+
+## Pass/Fail Readiness
+Pass if the board believes the current priority is sequencing: improve transparency and accountability now, preserve optionality, and avoid locking into a more complex structure before financing terms and execution benefits are clearer. Pass if management can continue moving key U.S. projects forward while controlling spending and sustaining foundry credibility.
+
+Fail if Intel has concrete access to outside capital on terms that materially improve endurance without undermining strategic control or execution focus. Fail if major customers, partners, or government stakeholders make clear that the current subsidiary structure is insufficient to sustain confidence in Intel's foundry commitments.
+
+## Recommended Next Artifact
+A board decision memo that compares three near-term states: keep the current subsidiary structure without external capital, raise minority outside capital with tightly bounded governance rights, or prepare for a broader carve-out. That memo should specify the decision triggers, strategic benefits, governance implications, and evidence required to move from one state to the next.
