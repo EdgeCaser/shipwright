@@ -92,14 +92,35 @@ Claude's `decision_usefulness` rate (80%) is substantially higher than GPT's (~6
 
 **Reading margins.** A Claude margin ≥ 0.7 should be read as "Claude found this clearly more actionable" — not necessarily "this is the objectively stronger artifact." Reviewers should check whether the winning artifact's advantage is operational specificity or analytical quality before treating the margin as definitive.
 
-**Side A position.** Whether this side_a lean is position-driven (Claude favors whichever side happens to occupy the Side A slot) or quality-driven (Claude is picking whichever artifact is genuinely more actionable, and Side A happened to produce stronger artifacts in this sample) cannot be determined from 5 scenarios with non-swapped positions. A swap test on one of these scenarios would isolate this.
+**Side A position.** ~~Cannot be determined without a swap test.~~ **Resolved — see swap test results below.**
+
+---
+
+## Swap Test Results (2026-04-16)
+
+Scenario: `metric-definition-disagreement`. Swapped sides: GPT as Side A, Claude as Side B. Claude as judge.
+
+| Run | Side A | Side B | Claude verdict | Margin | Confidence | Review |
+|---|---|---|---|---|---|---|
+| Original replay | Claude | GPT | side_a (Claude) | 0.70 | medium | no |
+| Swap | GPT | Claude | side_a (GPT) | 0.20 | medium | yes |
+
+**Conclusion: the lean is positional.** Claude-as-judge called side_a in both runs regardless of which provider occupied the slot. 6/6 side_a wins across all Claude-judged runs in this dataset.
+
+The margin collapse (0.70 → 0.20) and the review flag appearing in the swap provide a secondary signal: Claude's artifacts score higher in absolute terms, and Claude-as-judge is less confident when GPT holds the Side A position. But the positional effect dominates — GPT still won when placed in the Side A slot.
+
+**Operational implication:** Claude-as-judge results cannot be trusted as a standalone verdict in any harness run where position hasn't been controlled. Claude replays on frozen artifacts (where Side A = Claude by default) will systematically favor the Claude artifact regardless of quality. Any Claude replay in this project's default setup has a ~100% prior toward side_a.
+
+**Required mitigation:** Claude should not be used as a sole judge without a paired swap. Claude verdicts are most useful as a second opinion within a cross-family panel — not as a screen or standalone adjudicator.
 
 ---
 
 ## Recommended Next Steps
 
-1. **Swap test on `metric-definition-disagreement`.** This is the clearest GPT-tie / Claude-high-confidence divergence with a medium Claude confidence (not overwhelming). A swap would immediately tell us whether Claude's side_a preference follows position or quality.
+1. ~~Swap test on `metric-definition-disagreement`.~~ **Done — positional lean confirmed.**
 
 2. **Add `judge_family` to decisive dimension tracking.** The corpus-level decisive dimension distribution is currently aggregated across all judge families. Separating by family would let us track this lean quantitatively as the corpus grows.
 
 3. **Note in scenario design guidelines.** When designing scenarios where the correct answer is methodologically conservative (suspend judgment, gather evidence), flag that Claude may systematically downgrade the conservative side on `decision_usefulness`.
+
+4. **Update harness operating guidance.** Add explicit note that Claude-judged runs require a paired swap or cross-family panel to be trustworthy. Single-family Claude verdicts should be flagged in batch summaries.
