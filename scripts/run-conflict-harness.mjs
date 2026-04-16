@@ -165,6 +165,7 @@ export async function runConflictHarness(options = {}) {
       reasoningEffort: reasoningEfforts[sideId],
     });
     run.sides[sideId].first_pass = response.packet;
+    detectPhantomCitations(response.packet, casePacket);
     run.metrics.total_estimated_cost_usd += response.estimatedCostUsd;
   }
 
@@ -234,6 +235,7 @@ export async function runConflictHarness(options = {}) {
       critiquePacket: run.sides[targetSide].rebuttal,
     });
     run.sides[sideId].final = response.packet;
+    detectPhantomCitations(response.packet, casePacket);
     run.metrics.total_estimated_cost_usd += response.estimatedCostUsd;
   }
 
@@ -1119,6 +1121,7 @@ function buildFirstPassPrompt(casePacket, runId, sideId) {
     'Do not reveal provider identity.',
     'Do not mention or speculate about the opponent.',
     'Do not write the literal strings "Side A", "Side B", "side_a", or "side_b" anywhere in your output, including inside artifact_markdown. Refer to roles, teams, or parties with scenario-native language (e.g., "the requesting team", "the receiving team") instead.',
+    'EVIDENCE CONSTRAINT: The only evidence available to you is contained in the case packet above. Do not introduce statistics, benchmarks, thresholds, cost estimates, or citations not present in the packet. Every ctx-N reference in evidence_refs and citations must correspond to an actual evidence_id in the case packet. Do not invent quantitative specifics to strengthen your argument.',
     'Return ONLY a JSON object with this exact shape:',
     '',
     JSON.stringify(
@@ -1196,6 +1199,7 @@ function buildFinalPrompt(casePacket, runId, sideId, firstPassPacket, critiquePa
     `You are ${sideId.toUpperCase()} in the final revision phase for run ${runId}.`,
     'You must either adopt the critique or reject it with reasoning.',
     'Do not reveal provider identity.',
+    'EVIDENCE CONSTRAINT: The only evidence available to you is contained in the case packet above. Do not introduce statistics, benchmarks, thresholds, cost estimates, or citations not present in the packet. Every ctx-N reference in evidence_refs and citations must correspond to an actual evidence_id in the case packet. Do not invent quantitative specifics to strengthen your argument.',
     'Return ONLY a JSON object with this exact shape:',
     '',
     JSON.stringify(
@@ -1302,6 +1306,11 @@ function buildJudgePrompt(judgePacket, minMarginForVerdict) {
             weaknesses: ['One concise weakness of Side B.'],
           },
         },
+        grounding_flags: {
+          side_a: ['List each unverifiable quantitative claim or phantom ctx-N citation from Side A, or leave empty.'],
+          side_b: ['List each unverifiable quantitative claim or phantom ctx-N citation from Side B, or leave empty.'],
+        },
+        ungrounded_claim_count: 0,
         decisive_dimension: 'decision_usefulness',
         decisive_findings: ['Replace with the actual decisive findings from this run.'],
         judge_confidence: 'low',
@@ -1333,6 +1342,13 @@ function buildJudgePrompt(judgePacket, minMarginForVerdict) {
     '- high: the winning side is clearly stronger on at least 3 rubric dimensions and has no major unsupported-claim problem',
     '- medium: the winning side leads overall but has at least 1 weak dimension or absorbed only part of the opposing critique',
     '- low: score margin is below min_margin_for_verdict or both sides have significant unsupported claims',
+    '',
+    'Grounding audit (required):',
+    '- For each side, review every quantitative claim (specific numbers, percentages, cost estimates, benchmarks, thresholds) in their final artifact.',
+    '- Check whether each claim is directly traceable to the case packet evidence. Also check that every ctx-N citation corresponds to an actual evidence_id in the case packet.',
+    '- Populate grounding_flags.side_a and grounding_flags.side_b with a short description of each unverifiable claim or phantom citation found. Use empty arrays if none.',
+    '- Set ungrounded_claim_count to the total count of flagged items across both sides.',
+    '- Penalize unverifiable claims under the evidence_discipline rubric dimension.',
     '',
     'Phase 2 uncertainty payload rule:',
     '- If winner is `tie`, or judge_confidence is `low`, or needs_human_review is `true`, you MUST also populate:',
@@ -1511,6 +1527,14 @@ function applyVerdictToRun(run, verdict) {
       run.results[field] = verdict[field];
     }
   }
+
+  // Grounding audit fields — copy when present
+  if ('grounding_flags' in verdict) {
+    run.results.grounding_flags = verdict.grounding_flags;
+  }
+  if ('ungrounded_claim_count' in verdict) {
+    run.results.ungrounded_claim_count = verdict.ungrounded_claim_count;
+  }
 }
 
 function verdictRequiresUncertaintyPayload(verdict, options = {}) {
@@ -1650,6 +1674,21 @@ function computeUnsupportedClaimCounts(run) {
 function countUnsupportedClaims(packet) {
   if (!packet || !Array.isArray(packet.claims)) return 0;
   return packet.claims.filter((claim) => !Array.isArray(claim.evidence_refs) || claim.evidence_refs.length === 0).length;
+}
+
+function detectPhantomCitations(packet, casePacket) {
+  if (!packet || !casePacket) return;
+  const validIds = new Set((casePacket.evidence || []).map((e) => e.evidence_id));
+  if (validIds.size === 0) return;
+  const allRefs = [
+    ...(packet.citations || []),
+    ...((packet.claims || []).flatMap((c) => c.evidence_refs || [])),
+  ];
+  const phantoms = allRefs.filter((ref) => /^ctx-\d+$/i.test(ref) && !validIds.has(ref));
+  if (phantoms.length > 0) {
+    const unique = [...new Set(phantoms)];
+    console.warn(`[harness] phantom ctx-N citations in ${packet.side_id}/${packet.round}: ${unique.join(', ')}`);
+  }
 }
 
 async function validateAndPersistRun(outDir, run, state) {
