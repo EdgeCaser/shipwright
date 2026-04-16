@@ -714,6 +714,132 @@ test('runConflictHarness repairs judge verdicts that only miss repairable struct
   }
 });
 
+test('runConflictHarness repairs judge verdicts that produce invalid JSON output', async () => {
+  const rootDir = await mkdtemp(path.join(os.tmpdir(), 'shipwright-conflict-jsonrepair-'));
+  let judgeAttempts = 0;
+
+  const validJudgePacket = {
+    winner: 'side_b',
+    margin: 0.3,
+    rubric_scores: {
+      side_a: {
+        claim_quality: 3,
+        evidence_discipline: 3,
+        responsiveness_to_critique: 3,
+        internal_consistency: 3,
+        decision_usefulness: 3,
+        weighted_total: 3.0,
+      },
+      side_b: {
+        claim_quality: 4,
+        evidence_discipline: 4,
+        responsiveness_to_critique: 4,
+        internal_consistency: 4,
+        decision_usefulness: 4,
+        weighted_total: 4.0,
+      },
+    },
+    dimension_rationales: {
+      claim_quality: 'Side B made the stronger claims.',
+      evidence_discipline: 'Side B used evidence more carefully.',
+      responsiveness_to_critique: 'Side B absorbed the critique better.',
+      internal_consistency: 'Side B is more coherent.',
+      decision_usefulness: 'Side B is more useful to the decision maker.',
+    },
+    side_summaries: {
+      side_a: {
+        strengths: ['Good framing.'],
+        weaknesses: ['Less complete recommendation.'],
+      },
+      side_b: {
+        strengths: ['More decisive recommendation.'],
+        weaknesses: ['Slightly more rigid stance.'],
+      },
+    },
+    decisive_dimension: 'decision_usefulness',
+    decisive_findings: ['Side B is more decision-useful.'],
+    judge_confidence: 'medium',
+    needs_human_review: false,
+    rationale: 'Side B is stronger overall.',
+  };
+
+  try {
+    const { run } = await runConflictHarness({
+      casePacket: createCasePacket(),
+      outDir: rootDir,
+      runId: 'conflict-jsonrepair-run',
+      turnRunner: async (options) => {
+        if (options.phase === 'first_pass') {
+          return {
+            packet: {
+              run_id: 'conflict-jsonrepair-run',
+              side_id: options.sideId,
+              round: 'first_pass',
+              artifact_markdown: `# ${options.sideId} first pass`,
+              claims: [{ claim_id: `${options.sideId}-claim-1`, summary: `${options.sideId} major claim`, evidence_refs: ['ctx-1'], is_major: true }],
+              citations: ['ctx-1'],
+              conclusion_confidence: 'medium',
+              open_questions: [],
+              critique_responses: [],
+            },
+            usage: { estimatedCostUsd: 0 },
+          };
+        }
+
+        if (options.phase === 'rebuttal') {
+          return {
+            packet: {
+              target_side: options.sideId === 'side_a' ? 'side_b' : 'side_a',
+              finding_id: 'ignored-by-runner',
+              target_claim_ids: [options.sideId === 'side_a' ? 'side_b-claim-1' : 'side_a-claim-1'],
+              claim_under_attack: 'The opposing claim is weak.',
+              attack_type: 'evidence_gap',
+              evidence_or_reason: 'The visible claim needs stronger support.',
+              severity: 'medium',
+            },
+            usage: { estimatedCostUsd: 0 },
+          };
+        }
+
+        if (options.phase === 'final') {
+          return {
+            packet: {
+              run_id: 'conflict-jsonrepair-run',
+              side_id: options.sideId,
+              round: 'final',
+              artifact_markdown: `# ${options.sideId} final`,
+              claims: [{ claim_id: `${options.sideId}-claim-1`, summary: `${options.sideId} revised claim`, evidence_refs: ['ctx-1'], is_major: true }],
+              citations: ['ctx-1'],
+              conclusion_confidence: 'high',
+              open_questions: [],
+              critique_responses: [{ finding_id: options.sideId === 'side_a' ? 'finding-2' : 'finding-1', disposition: 'adopted', rationale: 'Critique improved the answer.' }],
+            },
+            usage: { estimatedCostUsd: 0 },
+          };
+        }
+
+        if (options.phase === 'judge') {
+          judgeAttempts += 1;
+          if (judgeAttempts === 1) {
+            // First attempt: not valid JSON (model wrapped in prose or markdown fences)
+            return { stdout: 'Here is my verdict:\n\n```\n{ winner: side_b }\n```', stderr: '', exitCode: 0 };
+          }
+          // Second attempt (repair): valid packet
+          return { packet: validJudgePacket, usage: { estimatedCostUsd: 0 } };
+        }
+
+        throw new Error(`Unexpected phase: ${options.phase}`);
+      },
+    });
+
+    assert.equal(judgeAttempts, 2);
+    assert.equal(run.status, 'completed');
+    assert.equal(run.results.winner, 'side_b');
+  } finally {
+    await rm(rootDir, { recursive: true, force: true });
+  }
+});
+
 test('runConflictHarness persists Phase 2 uncertainty fields in run results when judge flags human review', async () => {
   const rootDir = await mkdtemp(path.join(os.tmpdir(), 'shipwright-conflict-phase2-run-results-'));
 

@@ -318,7 +318,26 @@ async function runJudgeTurnWithRetries(options) {
 }
 
 async function parseAndValidateVerdict(options) {
-  const parsed = parseJsonResponse(options.output);
+  let parsed;
+  try {
+    parsed = parseJsonResponse(options.output);
+  } catch (parseError) {
+    const repaired = await repairMalformedJudgeOutput(options, options.output, parseError.message);
+    const repairedValidation = validateConflictDocument(repaired, 'verdict');
+    const repairedPhase2Errors = validatePhase2VerdictPayload(repaired, {
+      minMarginForVerdict: options.minMarginForVerdict,
+    });
+    if (repairedValidation.errors.length > 0 || repairedPhase2Errors.length > 0) {
+      throw new Error(
+        formatValidationErrors(
+          'Verdict packet failed validation after JSON repair',
+          [...repairedValidation.errors, ...repairedPhase2Errors],
+        ),
+      );
+    }
+    return repaired;
+  }
+
   const validation = validateConflictDocument(parsed, 'verdict');
   const phase2Errors = validatePhase2VerdictPayload(parsed, {
     minMarginForVerdict: options.minMarginForVerdict,
@@ -347,6 +366,58 @@ async function parseAndValidateVerdict(options) {
   }
 
   return repaired;
+}
+
+async function repairMalformedJudgeOutput(options, rawOutput, parseErrorMessage) {
+  options.repairTelemetry.repair_attempted = true;
+  options.repairTelemetry.repair_attempts += 1;
+
+  const repairPrompt = [
+    'Your previous judge output was rejected because it is not valid JSON.',
+    'Return ONLY a valid JSON object. No markdown fences, no prose, no text before or after.',
+    'If you wrapped the JSON in ``` or similar, remove the fences and return the object directly.',
+    '',
+    'Required schema shape:',
+    JSON.stringify(buildVerdictShapeExample(), null, 2),
+    '',
+    `Parse error: ${parseErrorMessage}`,
+    '',
+    'Previous raw output (for reference — do not copy verbatim, rewrite as valid JSON):',
+    rawOutput,
+  ].join('\n');
+
+  const repairPromptPath = path.join(options.outDir, 'verdict.jsonrepair.prompt.txt');
+  const repairOutputPath = path.join(options.outDir, 'verdict.jsonrepair.raw.txt');
+  await writeFile(repairPromptPath, `${repairPrompt}\n`);
+
+  const response = await options.turnRunner({
+    phase: 'judge',
+    sideId: null,
+    runId: options.runId,
+    prompt: repairPrompt,
+    packet: {},
+    cwd: options.cwd,
+    timeoutMs: options.timeoutMs,
+    command: options.judgeCommand,
+    reasoningEffort: options.judgeReasoningEffort,
+    outDir: options.outDir,
+    promptFilePath: repairPromptPath,
+    packetFilePath: options.packetFilePath,
+    attempt: 1,
+  });
+
+  if (typeof response.exitCode === 'number' && response.exitCode !== 0) {
+    throw new Error(
+      `judge JSON repair turn failed with exit code ${response.exitCode}: ${response.stderr || ''}`.trim(),
+    );
+  }
+
+  if (typeof response.stdout !== 'string') {
+    throw new Error('Judge JSON repair turn did not return stdout.');
+  }
+
+  await writeFile(repairOutputPath, response.stdout);
+  return parseJsonResponse(response.stdout);
 }
 
 function shouldAttemptVerdictRepair(errors, judgeAgent) {

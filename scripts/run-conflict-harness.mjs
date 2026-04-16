@@ -908,7 +908,8 @@ async function invokeJudgeTurn(options) {
   const judgeDir = path.join(options.outDir, 'judge');
   const judgePacket = buildJudgePacket(options.run, options.casePacket);
   const prompt = buildJudgePrompt(judgePacket, options.run.budgets.min_margin_for_verdict);
-  const response = await invokeTurn({
+  const rawOutputPath = path.join(judgeDir, 'verdict.raw.txt');
+  const invokeTurnOptions = {
     phase: 'judge',
     sideId: null,
     runId: options.run.run_id,
@@ -922,9 +923,24 @@ async function invokeJudgeTurn(options) {
     outDir: options.outDir,
     promptFilePath: path.join(judgeDir, 'verdict.prompt.txt'),
     packetFilePath: path.join(judgeDir, 'verdict.input.json'),
-    rawOutputPath: path.join(judgeDir, 'verdict.raw.txt'),
+    rawOutputPath,
     attempt: 0,
-  });
+  };
+
+  let response;
+  try {
+    response = await invokeTurn(invokeTurnOptions);
+  } catch (firstError) {
+    if (!isJsonParseError(firstError)) throw firstError;
+    const rawOutput = await readFile(rawOutputPath, 'utf8').catch(() => '');
+    response = await repairMalformedJudgeOutput({
+      outDir: judgeDir,
+      prompt,
+      rawOutput,
+      parseError: firstError.message,
+      invokeTurnOptions,
+    });
+  }
 
   let verdict = response.packet;
   let validation = validateConflictDocument(verdict, 'verdict');
@@ -1338,6 +1354,41 @@ function shouldAttemptVerdictRepair(errors) {
   return errors.every(
     (error) => error.message === 'Missing required property.' && REPAIRABLE_VERDICT_PATHS.has(error.path),
   );
+}
+
+function isJsonParseError(error) {
+  return error instanceof Error && error.message.startsWith('Model output is not valid JSON:');
+}
+
+async function repairMalformedJudgeOutput({ outDir, prompt, rawOutput, parseError, invokeTurnOptions }) {
+  const repairPrompt = [
+    prompt,
+    '',
+    'Repair addendum:',
+    '- Your previous output was rejected because it is not valid JSON.',
+    '- Return ONLY a valid JSON object. No markdown fences, no prose, no text before or after.',
+    '- If you wrapped the JSON in ``` or similar, remove the fences and return the object directly.',
+    '',
+    'Required schema shape:',
+    JSON.stringify(buildVerdictShapeExample(), null, 2),
+    '',
+    `Parse error: ${parseError}`,
+    '',
+    'Previous raw output (for reference — do not copy verbatim, rewrite as valid JSON):',
+    rawOutput,
+  ].join('\n');
+
+  const repairPromptPath = path.join(outDir, 'verdict.jsonrepair.prompt.txt');
+  const repairRawOutputPath = path.join(outDir, 'verdict.jsonrepair.raw.txt');
+  await writeText(repairPromptPath, repairPrompt);
+
+  return invokeTurn({
+    ...invokeTurnOptions,
+    prompt: repairPrompt,
+    promptFilePath: repairPromptPath,
+    rawOutputPath: repairRawOutputPath,
+    attempt: 1,
+  });
 }
 
 async function repairVerdict(options) {
