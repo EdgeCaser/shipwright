@@ -1128,7 +1128,7 @@ function buildFirstPassPrompt(casePacket, runId, sideId) {
     `You are ${sideId.toUpperCase()} in a sealed first-pass conflict harness run.`,
     'Do not reveal provider identity.',
     'Do not mention or speculate about the opponent.',
-    'Do not write the literal strings "Side A", "Side B", "side_a", or "side_b" anywhere in your output, including inside artifact_markdown. Refer to roles, teams, or parties with scenario-native language (e.g., "the requesting team", "the receiving team") instead.',
+    'Do not write the literal strings "Side A", "Side B", "side_a", or "side_b" inside artifact_markdown. Use scenario-native language there (e.g., "the requesting team", "the receiving team"). The JSON structural fields (run_id, side_id, round, etc.) must use the exact values shown in the template above.',
     'EVIDENCE CONSTRAINT: The only evidence available to you is contained in the case packet above. Do not introduce statistics, benchmarks, thresholds, cost estimates, or citations not present in the packet. Every ctx-N reference in evidence_refs and citations must correspond to an actual evidence_id in the case packet. Do not invent quantitative specifics to strengthen your argument.',
     'Return ONLY a JSON object with this exact shape:',
     '',
