@@ -569,7 +569,17 @@
             "recommended_next_action": { "type": "string", "minLength": 1 },
             "can_resolve_with_more_evidence": { "type": "boolean" },
             "escalation_recommendation": { "type": "string", "minLength": 1 },
-            "rationale": { "type": "string", "minLength": 1 }
+            "rationale": { "type": "string", "minLength": 1 },
+            "grounding_flags": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["side_a", "side_b"],
+              "properties": {
+                "side_a": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+                "side_b": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+              }
+            },
+            "ungrounded_claim_count": { "type": "integer", "minimum": 0 }
           }
         }
       }
