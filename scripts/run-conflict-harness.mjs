@@ -40,6 +40,12 @@ const DEFAULT_BUDGETS = Object.freeze({
   judgeReservedBudgetUsd: 0,
 });
 const DEFAULT_REASONING_EFFORT = 'medium';
+// Increment when judge prompt, verdict schema, or run schema changes in a way that makes
+// verdicts produced under different versions non-comparable.
+// v2.0: dimension_rationales + decisive_dimension + side_summaries + weighted_total tightening
+// v2.1: Phase 2 uncertainty payload (uncertainty_drivers, disambiguation_questions, etc.)
+// v2.2: fabrication guardrails (grounding_flags, ungrounded_claim_count, evidence constraint)
+export const HARNESS_SCHEMA_VERSION = '2.2';
 const PHASE2_UNCERTAINTY_FIELDS = Object.freeze([
   'uncertainty_drivers',
   'disambiguation_questions',
@@ -673,6 +679,7 @@ function createInitialRunRecord(options) {
   return {
     run_id: options.runId,
     scenario_id: options.casePacket.scenario_id,
+    harness_schema_version: HARNESS_SCHEMA_VERSION,
     mode: options.mode,
     status: 'initialized',
     sides: {

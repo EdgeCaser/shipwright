@@ -149,6 +149,7 @@ export async function runBatch(options = {}) {
           substantiveRevisionRate: run.metrics.substantive_revision_rate,
           unsupportedClaimCount: run.metrics.unsupported_claim_count,
           runId: run.run_id,
+          harnessSchemaVersion: run.harness_schema_version || null,
           error: null,
           // Phase 2 uncertainty payload (present when triggered)
           uncertaintyDrivers: run.results.uncertainty_drivers || null,
@@ -191,7 +192,9 @@ export function buildSummary(results) {
   const lines = [];
 
   lines.push('# Conflict Harness Batch Summary');
-  lines.push(`\nRuns completed: ${results.length}`);
+  const versions = [...new Set(results.map((r) => r.harnessSchemaVersion).filter(Boolean))];
+  lines.push(`\nHarness schema version: ${versions.length > 0 ? versions.join(', ') : 'unknown'}`);
+  lines.push(`Runs completed: ${results.length}`);
   lines.push(`Errors: ${results.filter((r) => r.status === 'error').length}`);
   lines.push('');
 

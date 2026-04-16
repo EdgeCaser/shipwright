@@ -3,7 +3,7 @@
 import { existsSync } from 'node:fs';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import { createShellTurnRunner } from './run-conflict-harness.mjs';
+import { createShellTurnRunner, HARNESS_SCHEMA_VERSION } from './run-conflict-harness.mjs';
 import { validateConflictDocument } from './build-case-packet.mjs';
 import { AGENT_PROFILES } from './run-conflict-batch.mjs';
 
@@ -114,6 +114,7 @@ export async function rejudgeConflictRun(options = {}) {
   const metadata = {
     source_run_dir: runDir,
     source_run_id: run.run_id,
+    harness_schema_version: HARNESS_SCHEMA_VERSION,
     judge: {
       label: judgeLabel,
       agent: judgeAgent,
