@@ -229,7 +229,7 @@ test('createShellSessionRunner supports prompt-file placeholders', async () => {
     });
 
     assert.equal(result.exitCode, 0);
-    assert.equal(result.stdout, 'hello from prompt file');
+    assert.equal(result.stdout.trimEnd(), 'hello from prompt file');
   } finally {
     await rm(tempDir, { recursive: true, force: true });
   }

@@ -2,6 +2,7 @@
 
 import { spawn } from 'node:child_process';
 import crypto from 'node:crypto';
+import { existsSync } from 'node:fs';
 import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
@@ -358,14 +359,14 @@ export function parseCliArgs(argv) {
 }
 
 export function createShellSessionRunner(options = {}) {
-  const shell = options.shell || process.env.SHELL || '/bin/zsh';
+  const shellConfig = resolveShellConfig(options.shell);
 
   return async function runShellSession(sessionOptions) {
     const command = expandCommandTemplate(sessionOptions.command, sessionOptions);
     const startedAt = Date.now();
 
     return new Promise((resolve) => {
-      const child = spawn(shell, ['-lc', command], {
+      const child = spawn(shellConfig.command, shellConfig.args(command), {
         cwd: sessionOptions.cwd,
         env: {
           ...process.env,
@@ -424,6 +425,41 @@ export function createShellSessionRunner(options = {}) {
       child.stdin.end(sessionOptions.prompt);
     });
   };
+}
+
+function resolveShellConfig(explicitShell) {
+  const shell = explicitShell || detectDefaultShell();
+  const shellLower = shell.toLowerCase();
+
+  if (shellLower.endsWith('bash.exe') || shellLower.endsWith('/bash') || shellLower.endsWith('\\bash')) {
+    return { command: shell, args: (cmd) => ['-lc', cmd] };
+  }
+  if (shellLower.endsWith('zsh') || shellLower.endsWith('zsh.exe') || shellLower.endsWith('/sh')) {
+    return { command: shell, args: (cmd) => ['-lc', cmd] };
+  }
+  if (shellLower.endsWith('powershell.exe') || shellLower.endsWith('pwsh.exe')) {
+    return { command: shell, args: (cmd) => ['-Command', cmd] };
+  }
+  if (shellLower.endsWith('cmd.exe')) {
+    return { command: shell, args: (cmd) => ['/d', '/s', '/c', cmd] };
+  }
+  return { command: shell, args: (cmd) => ['-lc', cmd] };
+}
+
+function detectDefaultShell() {
+  if (process.env.SHELL) return process.env.SHELL;
+
+  if (process.platform === 'win32') {
+    const gitBashCandidates = [
+      'C:\\Program Files\\Git\\bin\\bash.exe',
+      'C:\\Program Files (x86)\\Git\\bin\\bash.exe',
+    ];
+    const gitBash = gitBashCandidates.find((candidate) => existsSync(candidate));
+    if (gitBash) return gitBash;
+    return process.env.ComSpec || 'powershell.exe';
+  }
+
+  return '/bin/zsh';
 }
 
 export async function main(argv = process.argv.slice(2)) {
