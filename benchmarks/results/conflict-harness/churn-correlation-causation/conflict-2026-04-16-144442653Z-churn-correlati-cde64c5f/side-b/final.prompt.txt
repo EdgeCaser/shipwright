@@ -1,0 +1,143 @@
+You are SIDE_B in the final revision phase for run conflict-2026-04-16-144442653Z-churn-correlati-cde64c5f.
+You must either adopt the critique or reject it with reasoning.
+Do not reveal provider identity.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "run_id": "conflict-2026-04-16-144442653Z-churn-correlati-cde64c5f",
+  "side_id": "side_b",
+  "round": "final",
+  "artifact_markdown": "# Revised artifact",
+  "claims": [
+    {
+      "claim_id": "side_b-claim-1",
+      "summary": "Updated major claim",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1"
+  ],
+  "conclusion_confidence": "medium",
+  "open_questions": [],
+  "critique_responses": [
+    {
+      "finding_id": "finding-1",
+      "disposition": "adopted",
+      "rationale": "Why the critique was adopted or rejected."
+    }
+  ]
+}
+
+Case packet:
+{
+  "scenario_id": "churn-correlation-causation",
+  "title": "Churn reduction PRD built on correlation evidence, not causation",
+  "prompt": "Write a PRD for a churn reduction initiative targeting users who have not used the collaboration feature in 30 days. The evidence is a correlation: users who actively use collaboration churn at 4% annually vs. 22% for non-users. There is no experiment establishing causation, and an alternative explanation (power users self-select into collaboration and would retain regardless) has not been ruled out.",
+  "artifact_type": "prd",
+  "rubric": {
+    "dimensions": [
+      "claim quality",
+      "evidence discipline",
+      "responsiveness to critique",
+      "internal consistency",
+      "decision usefulness"
+    ],
+    "scoring_scale": "1-5",
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "constraints": {
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "expect_structured": true,
+    "context_files": [],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "evidence": [],
+  "max_rounds": 3,
+  "tool_policy": "none",
+  "sharing_policy": {
+    "share_case_packet": true,
+    "share_committed_artifacts_after_first_pass": true,
+    "share_critiques_after_open": true,
+    "share_hidden_reasoning": false,
+    "share_provider_identity": false,
+    "share_internal_coalition_drafts": false
+  },
+  "success_condition": {
+    "type": "validator_contract",
+    "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+    "validator": {
+      "artifact_type": "prd",
+      "expect_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true
+    }
+  }
+}
+
+Your first-pass artifact:
+{
+  "run_id": "conflict-2026-04-16-144442653Z-churn-correlati-cde64c5f",
+  "side_id": "side_b",
+  "round": "first_pass",
+  "artifact_markdown": "# PRD: Churn Reduction Initiative for Users Inactive in Collaboration\n\n## Overview\nThis PRD proposes a bounded churn-reduction initiative aimed at users who have not used the collaboration feature in the last 30 days. The current evidence shows a strong retention gap between active collaboration users and non-users, but it is correlational rather than causal. The initiative should therefore be framed as a measured activation-and-learning program, not as a validated churn fix.\n\n## Problem Statement\nUsers who actively use collaboration show materially lower annual churn than users who do not. A plausible interpretation is that collaboration increases product stickiness. An equally plausible alternative is selection bias: naturally higher-intent or more mature accounts may be both more likely to use collaboration and more likely to retain.\n\n## Evidence Base\n- Observed annual churn is 4% for active collaboration users versus 22% for non-users. This is the primary behavioral signal motivating the initiative.\n- No experiment has established that increased collaboration usage causes lower churn.\n- A credible competing explanation is that power users self-select into collaboration and would have retained without intervention.\n\n## Product Goal\nIncrease adoption of collaboration behaviors among eligible inactive users while generating evidence about whether adoption appears to move retention-related leading indicators.\n\n## Non-Goal\n- Do not claim that collaboration activation will reduce churn by a specific amount.\n- Do not commit to broad rollout as a proven retention lever before causal uncertainty is reduced.\n\n## Target Segment\nUsers who meet all of the following:\n- Have not used the collaboration feature in 30 days.\n- Are still active in the product through other core workflows.\n- Have account characteristics that make collaboration feasible, such as multi-user setup or shareable workflows.\n\n## Hypotheses\n1. Prompting eligible inactive users into a first or renewed collaboration action will increase collaboration adoption.\n2. Increased collaboration adoption may improve downstream retention-related indicators.\n3. Some or all of the observed churn gap may be explained by pre-existing user quality differences rather than feature impact.\n\n## Proposed Initiative\nLaunch a limited-scope collaboration activation program with the following components:\n- In-app prompts for eligible users at moments when sharing or co-editing is naturally relevant.\n- Lifecycle messaging that explains the collaboration use case and drives users back into a guided collaboration action.\n- A lightweight onboarding path that reduces setup friction for inviting a teammate or sharing work.\n- Holdout-capable instrumentation so the team can compare exposed and unexposed cohorts even if a full experiment is not yet approved.\n\n## Requirements\n### Functional\n- Identify users with no collaboration usage in the prior 30 days.\n- Trigger contextual prompts and lifecycle messages only for eligible users.\n- Support at least one guided collaboration action from prompt to completion.\n- Log exposure, click-through, activation, and downstream usage events.\n\n### Measurement\n- Primary leading metric: collaboration activation rate among targeted users.\n- Secondary leading metrics: repeat collaboration usage within 14 and 30 days, invite completion, shared artifact creation, and account-level engagement depth.\n- Guardrail metrics: unsubscribe rate, prompt dismissal rate, workflow disruption, and support tickets.\n- Outcome metric to monitor, not claim: retention/churn delta over time.\n\n## Launch Recommendation\nProceed only as a staged activation pilot with explicit uncertainty labeling. Position the work as learning-oriented retention exploration rather than a confirmed churn-reduction program.\n\n## Decision Frame\nThe decision is not whether collaboration definitively reduces churn; the evidence does not support that claim yet. The decision is whether the observed correlation is strong enough to justify a bounded product intervention that can both activate usage and improve the evidence base. Recommendation: proceed with a constrained pilot and require measurement design that can distinguish activation success from true retention impact over time.\n\n## Unknowns & Evidence Gaps\n- Whether collaboration usage itself reduces churn, or whether retained users are simply more likely to collaborate.\n- Which subsegments are genuinely collaboration-eligible versus structurally unlikely to adopt.\n- Whether prompted collaboration creates durable behavior change or only short-term metric lift.\n- What minimal causal design is feasible: randomized holdout, phased rollout, or matched cohort analysis.\n\n## Pass/Fail Readiness\nPass if:\n- The team commits to a pilot scope rather than a scaled retention promise.\n- Instrumentation can capture exposure, activation, repeat use, and downstream retention indicators.\n- Messaging targets only users for whom collaboration is contextually relevant.\n- Success criteria are framed around activation and evidence generation, not guaranteed churn reduction.\n\nFail if:\n- The initiative is positioned as a proven churn lever.\n- No holdout, comparison method, or bias-mitigation plan is included.\n- The target segment includes many users with no realistic collaboration use case.\n- Leadership expects retention impact estimates that the current evidence cannot support.\n\n## Recommended Next Artifact\nA causal-learning experiment brief or measurement plan specifying cohort design, holdout logic, segmentation rules, success metrics, minimum detectable effects, and decision thresholds for scaling, revising, or stopping the initiative.",
+  "claims": [
+    {
+      "claim_id": "side_b-claim-1",
+      "summary": "The churn initiative should be framed as a bounded activation pilot, not a proven retention program, because the underlying evidence is correlational and does not establish causation.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-2",
+      "summary": "The observed retention gap is strong enough to justify a targeted learning-oriented intervention if the PRD explicitly includes instrumentation, guardrails, and a plan to reduce causal uncertainty.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1"
+  ],
+  "conclusion_confidence": "medium",
+  "open_questions": [
+    "Can the team implement a randomized holdout or phased rollout to estimate causal impact more credibly?",
+    "Which user subsegments have a genuine collaboration use case versus low adoption likelihood regardless of intervention?",
+    "What retention-related leading indicators are acceptable as interim evidence before long-horizon churn outcomes mature?"
+  ],
+  "critique_responses": []
+}
+
+Visible critique packet:
+{
+  "target_side": "side_b",
+  "finding_id": "finding-1",
+  "target_claim_ids": [
+    "side_b-claim-2"
+  ],
+  "claim_under_attack": "The observed retention gap is strong enough to justify a targeted learning-oriented intervention if the PRD explicitly includes instrumentation, guardrails, and a plan to reduce causal uncertainty.",
+  "attack_type": "evidence_gap",
+  "evidence_or_reason": "The PRD asserts the gap is 'strong enough to justify intervention' but provides no threshold or framework for that judgment. An 18-percentage-point churn gap driven entirely by selection bias would justify zero intervention cost — yet the PRD never specifies what minimum causal signal or prior probability of effect is required before the pilot is worth running. Without a stated decision threshold (e.g., 'we believe at least X% of the gap is causal'), the readiness criteria remain circular: the initiative is justified because the gap exists, and the gap justifies the initiative. The Pass/Fail section lists instrumentation and holdout requirements but never closes the loop on what observed pilot results would cause the team to conclude the correlation is spurious and abandon the program. This leaves the 'strong enough' claim unsupported and risks laundering a correlation into a de-facto retention bet through the vehicle of a 'learning pilot.'",
+  "severity": "high"
+}

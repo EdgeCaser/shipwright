@@ -1,0 +1,270 @@
+{
+  "case_packet": {
+    "scenario_id": "async-realtime-conflict",
+    "title": "PRD spec requiring both real-time and batch processing for the same pipeline",
+    "prompt": "Write a PRD for a data pipeline feature where the requirements document specifies both 'real-time dashboard updates within 2 seconds of any event' and 'nightly batch aggregation as the source of truth for all reporting.' The two requirements are architecturally incompatible without a dual-write system that introduces consistency risk the team has previously rejected.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-16-144019197Z-async-realtime-conflict",
+      "side_id": "side_a",
+      "round": "first_pass",
+      "artifact_markdown": "# PRD: Unified Data Pipeline — Real-Time Visibility & Batch Reporting\n\n**Status:** BLOCKED — architectural conflict requires resolution before development begins  \n**Author:** Data Platform Team  \n**Date:** 2026-04-16  \n**Version:** 0.1 (Pre-Alignment Draft)\n\n---\n\n## Decision Frame\n\n### The Core Conflict\n\nThe requirements as written are architecturally incompatible without a dual-write system, which the team has explicitly rejected. Specifically:\n\n| Requirement | Implication |\n|---|---|\n| Real-time dashboard updates within 2 seconds of any event | Events must reach a queryable store in near-real-time — requires a streaming or event-driven path |\n| Nightly batch aggregation as the **source of truth** for all reporting | Authoritative numbers are produced once per day from a separate batch pipeline |\n\nThe conflict is not stylistic — it is a **consistency guarantee problem**. If real-time and batch produce different numbers (even temporarily), and batch is designated source of truth, then real-time dashboards are by definition displaying non-authoritative data at all times until batch closes. This is acceptable only if stakeholders understand and accept that framing. The current PRD does not make that framing explicit.\n\nThe previously rejected solution (dual-write with reconciliation) was rejected for sound reasons: it introduces a class of consistency bugs that are hard to detect, hard to remediate, and have burned this team before. Reintroducing it under new naming does not resolve those risks.\n\n### Decision Required Before Spec Is Actionable\n\nOne of three paths must be chosen:\n\n**Path 1 — Real-time is display-only, batch is truth**  \nReal-time dashboards show provisional data, labeled as such. Batch numbers are the only ones used for decisions, reports, and downstream systems. No consistency guarantee between the two paths is required or promised. Implementation: separate streaming consumer writes to a hot store; batch pipeline writes to cold store; no reconciliation needed.\n\n**Path 2 — Real-time is truth, batch is deprecated**  \nStreaming pipeline becomes the authoritative source. Nightly batch is eliminated or demoted to an audit/replay role. Implementation: streaming aggregations replace batch; replay capability handles late-arriving data.\n\n**Path 3 — Lambda/Kappa architecture with explicit consistency contract**  \nDual-write is accepted, but with a written consistency contract (defined reconciliation window, defined divergence tolerance, alerting on divergence, explicit SLA for when batch numbers overwrite real-time). This is the previously rejected path — it can be reconsidered only with explicit sign-off from the team leads who rejected it, and documented rationale for why conditions have changed.\n\n**This PRD cannot be implemented until the requesting team selects a path and the receiving team confirms the consistency contract.**\n\n---\n\n## Functional Requirements (Path-Conditional)\n\n### Shared Requirements (All Paths)\n\n- Pipeline must ingest events from the existing event bus (schema: TBD, see Unknowns)\n- Dashboard refresh must reflect events within the latency target (2s for real-time path, N/A for batch-only)\n- Nightly batch must complete within the maintenance window (window not yet defined — see Unknowns)\n- All aggregations must be idempotent (replay-safe)\n\n### Path 1 Requirements (Real-time display-only)\n\n- Real-time store: hot read path, TTL-based retention (dashboard lookback window only)\n- Batch store: cold read path, persistent, source of truth for all report exports and downstream API consumers\n- Dashboard UI must display provisional data label when reading from hot store\n- No reconciliation service required\n\n### Path 2 Requirements (Streaming as truth)\n\n- Streaming aggregations must handle late-arriving events up to N minutes (N = TBD)\n- Watermark strategy must be defined before implementation\n- Batch pipeline decommission plan required (separate workstream)\n\n### Path 3 Requirements (Dual-write, if accepted)\n\n- Consistency contract document required before sprint planning\n- Divergence alerting: alert if real-time and batch totals diverge by >X% within Y hours of batch close\n- Reconciliation window: batch numbers overwrite real-time within Z hours of batch completion\n- Rollback plan required for divergence events\n\n---\n\n## Non-Functional Requirements\n\n| Attribute | Target | Notes |\n|---|---|---|\n| Real-time latency | ≤ 2s p95 event-to-dashboard | Measured at dashboard query, not ingest |\n| Batch SLA | Complete by 06:00 local | Window not yet confirmed |\n| Availability | 99.5% for real-time path | Batch outage ≠ dashboard outage in Path 1/2 |\n| Data retention | 90 days queryable | Confirm with compliance |\n| Backfill capability | Required | Replay must not break idempotency |\n\n---\n\n## Unknowns & Evidence Gaps\n\n### Critical (blocks path selection)\n\n**U1 — Stakeholder intent on \"source of truth\"**  \nWho authored the nightly-batch-as-source-of-truth requirement, and what problem were they solving? If the intent was auditability and reconciled financials, Path 1 likely satisfies it. If the intent was that real-time numbers must never be acted on, Path 1 may not be sufficient.\n\n**U2 — Downstream consumers of batch output**  \nAre there external systems, finance reports, or contractual SLAs that read from the batch store? If yes, Path 2 (deprecating batch) requires a migration plan and potentially renegotiated SLAs. This is a hard dependency.\n\n**U3 — Definition of \"event\" for the 2-second SLA**  \nIs the 2-second window from event occurrence, event publication to the bus, or event arrival at the pipeline? These differ by potentially 10–30 seconds in the current infrastructure. The SLA as written may be physically impossible without additional instrumentation.\n\n### Important (shapes implementation)\n\n**U4 — Late-arriving event volume and distribution**  \nWhat percentage of events arrive more than 5 minutes after occurrence? This determines watermark strategy feasibility and whether Path 2 is viable without significant infrastructure work.\n\n**U5 — Dashboard query patterns**  \nAre users querying pre-aggregated metrics or ad-hoc slices? Pre-aggregated metrics are compatible with streaming materialized views; ad-hoc slices on a hot store at 2s latency require more careful capacity planning.\n\n**U6 — Previous dual-write rejection: documented rationale?**  \nIs there a written post-mortem or ADR documenting why dual-write was rejected? If yes, it should be linked here. If no, the rejection rationale must be reconstructed before Path 3 can be fairly evaluated.\n\n**U7 — Maintenance window for batch**  \nNightly batch window start/end time and current runtime not documented in the requirements. Required for SLA definition.\n\n---\n\n## Pass/Fail Readiness\n\n### Readiness Gates\n\nThis PRD is **not ready for sprint planning** until the following are resolved:\n\n| Gate | Owner | Status |\n|---|---|---|\n| G1: Path selection (1, 2, or 3) confirmed by product and engineering leads | Product + Eng Lead | OPEN |\n| G2: Downstream batch consumers inventoried | Data Engineering | OPEN |\n| G3: \"Source of truth\" requirement intent clarified with original author | Product | OPEN |\n| G4: Late-arriving event data pulled from current pipeline telemetry | Data Engineering | OPEN |\n| G5: If Path 3 selected — consistency contract drafted and signed off by team leads who rejected dual-write | Eng Lead | OPEN |\n\n### What IS ready\n\n- Shared non-functional requirements (retention, availability, idempotency) are unambiguous and can be written into tickets now\n- Event bus schema investigation can begin in parallel\n- Dashboard provisional-data labeling design can be prototyped under any path\n\n### Fail Conditions\n\nThis spec **fails** if:\n- Development begins on Path 3 without a written consistency contract\n- Real-time and batch pipelines are built in parallel with an implicit assumption that they will agree\n- The 2-second SLA is accepted as-is without clarifying the event timestamp definition\n\n---\n\n## Recommended Next Artifact\n\n**Artifact: Architecture Decision Record (ADR) — Pipeline Consistency Model**\n\nThe PRD cannot advance until the path decision is made. The right vehicle is a lightweight ADR that:\n\n1. States the three paths with their consistency guarantees and trade-offs\n2. Records the team's prior dual-write rejection with its rationale\n3. Forces an explicit decision with sign-off from product, engineering, and (if batch consumers exist) downstream stakeholders\n4. Specifies the consistency contract if Path 3 is chosen\n\n**Suggested format:** One-page ADR (Context / Options / Decision / Consequences)  \n**Suggested owner:** Engineering Lead with Product co-sign  \n**Suggested deadline:** Before next sprint planning session\n\nOnce the ADR is committed, this PRD should be updated to reflect the chosen path, and the conditional requirements collapsed to a single implementation spec.\n\n---\n\n## Appendix: Why Dual-Write Is Hard (Reference for Path 3 Evaluation)\n\nFor teams considering Path 3 with fresh eyes, the canonical failure modes of dual-write pipelines in this class of system:\n\n- **Silent divergence:** Real-time and batch produce different totals; no alert fires; stakeholders make decisions on stale or incorrect real-time numbers for days before batch close reveals the gap\n- **Reconciliation race conditions:** Batch overwrites real-time at close, but in-flight real-time updates during the overwrite window produce a third, transient state\n- **Operational complexity:** Two pipelines means two failure modes, two on-call runbooks, two sets of schema migrations — coordination overhead compounds over time\n- **Trust erosion:** Once a divergence event is visible to users, confidence in both numbers degrades even after reconciliation\n\nThese are not theoretical — they are the documented failure patterns from the team's prior rejection. Path 3 is viable only with explicit mitigations for each.",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "The two requirements are directly incompatible without a dual-write system, and the PRD is not actionable until a path decision is made — real-time display-only, streaming as truth, or dual-write with an explicit consistency contract.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "The 2-second SLA is ambiguous: it does not specify whether the clock starts at event occurrence, publication, or pipeline arrival — a gap that could make the requirement physically impossible with current infrastructure.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "Downstream consumers of the batch store (external systems, finance reports, contractual SLAs) must be inventoried before any path can be selected — their existence is a hard constraint on Path 2 viability.",
+          "evidence_refs": [],
+          "is_major": false
+        },
+        {
+          "claim_id": "side_a-claim-4",
+          "summary": "The recommended next artifact is an ADR — not a detailed spec — because the architectural decision is upstream of all implementation choices and cannot be resolved within a PRD alone.",
+          "evidence_refs": [],
+          "is_major": false
+        }
+      ],
+      "citations": [],
+      "conclusion_confidence": "high",
+      "open_questions": [
+        "Who authored the 'nightly batch as source of truth' requirement and what specific problem were they solving — auditability, financial reconciliation, or something else?",
+        "Are there downstream systems or contractual obligations that read from the batch store, which would constrain or block Path 2?",
+        "Is there a written ADR or post-mortem documenting the prior dual-write rejection, or must that rationale be reconstructed?",
+        "What is the measured latency distribution from event occurrence to event publication on the current event bus — is sub-2-second pipeline-to-dashboard even achievable given upstream delays?",
+        "What percentage of events arrive late (>5 minutes after occurrence) in the current system — this is the primary viability signal for Path 2's watermark strategy?"
+      ],
+      "critique_responses": []
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-16-144019197Z-async-realtime-conflict",
+      "side_id": "side_b",
+      "round": "first_pass",
+      "artifact_markdown": "# PRD: Reconciled Event Reporting Pipeline\n\n## Problem\nThe current requirements ask for dashboard updates within 2 seconds of any event while also declaring nightly batch aggregation as the source of truth for all reporting. In the current architecture, those goals conflict because meeting both would require a dual-write or dual-truth pattern that the team has already rejected due to consistency risk.\n\n## Product Goal\nProvide fast operational visibility without compromising the integrity of official reporting.\n\n## Decision\nTreat sub-2-second dashboard updates as a provisional operational view and treat nightly batch aggregation as the authoritative reporting layer.\n\n## Users\n- Operators monitoring live system activity\n- Managers reviewing daily and historical performance\n- Analysts consuming trusted reporting outputs\n\n## Requirements\n### Functional\n- Events must appear in the operational dashboard within 2 seconds for at least 95% of successfully ingested events.\n- The operational dashboard must be explicitly labeled as provisional and may differ from finalized reporting until nightly reconciliation completes.\n- Nightly batch aggregation remains the sole source of truth for official reporting, exports, finance-sensitive metrics, and historical trend analysis.\n- A reconciliation job must compare provisional event counts with nightly aggregated counts and surface drift metrics.\n- If provisional and batch values differ, finalized reporting must always display batch-derived values.\n- Metric definitions used in the dashboard and batch layer must share a common semantic contract where possible, even if execution paths differ.\n\n### Non-Functional\n- The design must avoid dual-write of authoritative business metrics.\n- The system must expose freshness and reconciliation status in the UI.\n- Failures in the low-latency path must not block batch truth generation.\n\n## Success Metrics\n- 95% of operational dashboard updates visible within 2 seconds of ingestion.\n- 100% of official reports generated from nightly batch outputs.\n- Reconciliation drift below an agreed threshold for stable metric classes.\n- Reduction in user confusion, measured by support tickets related to dashboard-versus-report mismatch.\n\n## Out of Scope\n- Real-time financial close or compliance reporting.\n- Replacing nightly batch as the authoritative historical store.\n- Any architecture that depends on previously rejected dual-write consistency patterns.\n\n## Risks\n- Users may misread provisional dashboard values as final.\n- Some metrics may be unsuitable for low-latency approximation.\n- Reconciliation drift may create trust issues unless clearly explained in product UX.\n\n## Decision Frame\nThe feature should be approved only as a split-purpose pipeline: low-latency views for operations, nightly batch outputs for truth. The conflicting original requirement should be rewritten, not implemented literally.\n\n## Unknowns & Evidence Gaps\n- Which metric families are safe to expose provisionally before batch reconciliation.\n- Acceptable reconciliation drift thresholds by stakeholder group.\n- Whether 2-second latency is required for all events or only a subset of operationally meaningful ones.\n- What UX language best prevents users from treating provisional metrics as final.\n\n## Pass/Fail Readiness\nPass if stakeholders accept a two-tier model with explicit provisional versus authoritative semantics and remove the requirement that both outputs represent the same truth at the same time. Fail if stakeholders insist that sub-2-second updates and nightly batch outputs must both be authoritative for the same metrics without architectural risk tradeoffs.\n\n## Recommended Next Artifact\nA revised architecture decision memo and requirements addendum that defines metric tiers, authority rules, reconciliation behavior, UI labeling, and acceptance criteria for provisional versus authoritative outputs.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "The requirement set must be rewritten to separate provisional real-time visibility from authoritative nightly reporting, because treating both as source-of-truth outputs would reintroduce a rejected consistency-risk architecture.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "A useful PRD can still satisfy the business intent by defining distinct user jobs: operational monitoring gets low-latency views, while historical and official reporting stays batch-authored.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "The product contract should include reconciliation status, UI labeling, and drift monitoring so the split between provisional and authoritative outputs is explicit rather than hidden.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": false
+        }
+      ],
+      "citations": [
+        "ctx-1"
+      ],
+      "conclusion_confidence": "medium",
+      "open_questions": [
+        "Which metrics, if any, require exact parity between operational dashboards and finalized reports?",
+        "Is the 2-second SLA needed for every event type or only for operationally critical subsets?",
+        "What reconciliation drift threshold is acceptable before the dashboard is considered misleading?"
+      ],
+      "critique_responses": []
+    }
+  },
+  "critique_packets": {
+    "side_a": {
+      "target_side": "side_b",
+      "finding_id": "finding-1",
+      "target_claim_ids": [
+        "side_b-claim-1"
+      ],
+      "claim_under_attack": "The requirement set must be rewritten to separate provisional real-time visibility from authoritative nightly reporting, because treating both as source-of-truth outputs would reintroduce a rejected consistency-risk architecture.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "The claim asserts that rewriting the requirements resolves the architectural conflict, but the PRD provides no evidence that the stakeholders who wrote the original dual-requirement spec have accepted—or even been consulted about—this reframing. The Pass/Fail Readiness section explicitly states the document fails if stakeholders 'insist that sub-2-second updates and nightly batch outputs must both be authoritative,' which means stakeholder alignment is an open precondition, not a resolved one. Declaring a requirement rewrite as the decision without demonstrating stakeholder buy-in converts an unresolved constraint negotiation into a product decision the PRD has no authority to make. The document cites only 'ctx-1,' which is the scenario prompt itself—no stakeholder signal, no prior alignment session, no business owner sign-off. The rewrite is a recommendation dressed as a resolution.",
+      "severity": "high"
+    },
+    "side_b": {
+      "target_side": "side_a",
+      "finding_id": "finding-2",
+      "target_claim_ids": [
+        "side_a-claim-1"
+      ],
+      "claim_under_attack": "The two requirements are directly incompatible without a dual-write system, and the PRD is not actionable until a path decision is made — real-time display-only, streaming as truth, or dual-write with an explicit consistency contract.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "This claim overreaches beyond the visible record. The case packet says the current wording is incompatible without a previously rejected dual-write approach, but it does not establish that these are the only three viable interpretations or that the PRD is wholly non-actionable before a path choice. A PRD could still be actionable at the requirement level by explicitly separating provisional operational metrics from authoritative reporting outputs, defining user-facing caveats, and deferring implementation architecture. Because side A provides no cited evidence that all other framing options are excluded, the 'only three paths' and 'cannot be implemented until' conclusions are insufficiently supported.",
+      "severity": "medium"
+    }
+  },
+  "final_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-16-144019197Z-async-realtime-conflict",
+      "side_id": "side_a",
+      "round": "final",
+      "artifact_markdown": "# PRD: Unified Data Pipeline — Real-Time Visibility & Batch Reporting\n\n**Status:** BLOCKED (architecture) / PARTIAL (requirements)  \n**Author:** Data Platform Team  \n**Date:** 2026-04-16  \n**Version:** 0.2 (Post-Critique Revision)\n\n---\n\n## Decision Frame\n\n### The Core Conflict\n\nThe requirements as written create an architectural tension that cannot be resolved within this PRD alone. Specifically:\n\n| Requirement | Implication |\n|---|---|\n| Real-time dashboard updates within 2 seconds of any event | Events must reach a queryable store in near-real-time — requires a streaming or event-driven path |\n| Nightly batch aggregation as the **source of truth** for all reporting | Authoritative numbers are produced once per day from a separate batch pipeline |\n\nThe conflict is a **consistency guarantee problem**, not a stylistic one. Real-time dashboards will by definition display non-authoritative data at all times until batch closes — unless the requirements are re-framed to explicitly acknowledge that distinction. The current PRD does not make that framing explicit.\n\n**Key revision from first pass:** The PRD is not entirely non-actionable before an architectural path is chosen. Requirements can be written — and some work can begin — at the level of user-facing semantics: what does the dashboard *promise* to users, and what does the reporting store *guarantee* to downstream consumers? Separating those two contracts is itself a deliverable that does not require implementation architecture to be settled first.\n\nHowever, development cannot begin — and tickets cannot be sized — without resolving the implementation path. The scope of parallelism between now and that decision is bounded.\n\n### Decision Required Before Development Begins\n\nThree primary paths exist. These are not exhaustive of all possible framings, but they cover the space of realistic options given the team's prior dual-write rejection:\n\n**Path 1 — Real-time is display-only, batch is truth**  \nReal-time dashboards show provisional data, labeled as such. Batch numbers are the only ones used for decisions, reports, and downstream systems. No consistency guarantee between the two paths is required or promised. Implementation: separate streaming consumer writes to a hot store; batch pipeline writes to cold store; no reconciliation needed.\n\n**Path 2 — Real-time is truth, batch is deprecated**  \nStreaming pipeline becomes the authoritative source. Nightly batch is eliminated or demoted to an audit/replay role. Implementation: streaming aggregations replace batch; replay capability handles late-arriving data.\n\n**Path 3 — Lambda/Kappa architecture with explicit consistency contract**  \nDual-write is accepted, but with a written consistency contract (defined reconciliation window, divergence tolerance, alerting on divergence, explicit SLA for when batch numbers overwrite real-time). This is the previously rejected path — reconsidering it requires explicit sign-off from the team leads who rejected it, with documented rationale for changed conditions.\n\n**Alternative framings** (not enumerated in full here) may exist — for example, a requirements-level rewrite that replaces \"source of truth\" with a scoped definition (e.g., \"authoritative for financial export only\") could reduce the conflict surface without choosing between the three paths above. Such framings should be explored in the ADR recommended below.\n\n**Development cannot begin until a path is selected and the receiving team confirms the consistency contract.** Requirements work, user-facing caveat design, and event bus schema investigation can proceed in parallel.\n\n---\n\n## What Is Actionable Now (Pre-Path Decision)\n\nThe following can be written, designed, and validated before an implementation path is chosen:\n\n1. **Provisional data labeling contract** — Define what the dashboard promises to users when displaying real-time data. At minimum: is the data labeled as provisional? Is a staleness indicator shown? This is a product decision, not an engineering one, and it constrains all three paths.\n\n2. **Authoritative reporting contract** — Define which downstream consumers treat batch output as authoritative, and what their tolerance is for a reporting lag. Inventorying these consumers (see U2) is the highest-priority parallel workstream.\n\n3. **Shared non-functional requirements** — Retention, availability, idempotency, and backfill requirements are unambiguous across all paths and can be written into shared infrastructure tickets now.\n\n4. **Event bus schema investigation** — Required regardless of path. Can begin immediately.\n\n---\n\n## Functional Requirements (Path-Conditional)\n\n### Shared Requirements (All Paths)\n\n- Pipeline must ingest events from the existing event bus (schema: TBD, see Unknowns)\n- Dashboard refresh must reflect events within the latency target (2s for real-time path, N/A for batch-only)\n- Nightly batch must complete within the maintenance window (window not yet defined — see Unknowns)\n- All aggregations must be idempotent (replay-safe)\n\n### Path 1 Requirements (Real-time display-only)\n\n- Real-time store: hot read path, TTL-based retention (dashboard lookback window only)\n- Batch store: cold read path, persistent, source of truth for all report exports and downstream API consumers\n- Dashboard UI must display provisional data label when reading from hot store\n- No reconciliation service required\n\n### Path 2 Requirements (Streaming as truth)\n\n- Streaming aggregations must handle late-arriving events up to N minutes (N = TBD)\n- Watermark strategy must be defined before implementation\n- Batch pipeline decommission plan required (separate workstream)\n\n### Path 3 Requirements (Dual-write, if accepted)\n\n- Consistency contract document required before sprint planning\n- Divergence alerting: alert if real-time and batch totals diverge by >X% within Y hours of batch close\n- Reconciliation window: batch numbers overwrite real-time within Z hours of batch completion\n- Rollback plan required for divergence events\n\n---\n\n## Non-Functional Requirements\n\n| Attribute | Target | Notes |\n|---|---|---|\n| Real-time latency | ≤ 2s p95 event-to-dashboard | Measured at dashboard query, not ingest — see U3 |\n| Batch SLA | Complete by 06:00 local | Window not yet confirmed |\n| Availability | 99.5% for real-time path | Batch outage ≠ dashboard outage in Path 1/2 |\n| Data retention | 90 days queryable | Confirm with compliance |\n| Backfill capability | Required | Replay must not break idempotency |\n\n---\n\n## Unknowns & Evidence Gaps\n\n### Critical (blocks path selection)\n\n**U1 — Stakeholder intent on \"source of truth\"**  \nWho authored the nightly-batch-as-source-of-truth requirement, and what problem were they solving? If the intent was auditability and reconciled financials, Path 1 likely satisfies it. If the intent was that real-time numbers must never be acted on, Path 1 may not be sufficient. A scoped rewrite of this requirement (e.g., \"authoritative for financial export only\") may dissolve the conflict without choosing between the three paths.\n\n**U2 — Downstream consumers of batch output**  \nAre there external systems, finance reports, or contractual SLAs that read from the batch store? If yes, Path 2 (deprecating batch) requires a migration plan and potentially renegotiated SLAs. This is a hard dependency and the highest-priority parallel investigation.\n\n**U3 — Definition of \"event\" for the 2-second SLA**  \nIs the 2-second window from event occurrence, event publication to the bus, or event arrival at the pipeline? These differ by potentially 10–30 seconds in the current infrastructure. The SLA as written may be physically impossible without additional instrumentation.\n\n### Important (shapes implementation)\n\n**U4 — Late-arriving event volume and distribution**  \nWhat percentage of events arrive more than 5 minutes after occurrence? This determines watermark strategy feasibility and whether Path 2 is viable without significant infrastructure work.\n\n**U5 — Dashboard query patterns**  \nAre users querying pre-aggregated metrics or ad-hoc slices? Pre-aggregated metrics are compatible with streaming materialized views; ad-hoc slices on a hot store at 2s latency require more careful capacity planning.\n\n**U6 — Previous dual-write rejection: documented rationale?**  \nIs there a written post-mortem or ADR documenting why dual-write was rejected? If yes, it should be linked here. If no, the rejection rationale must be reconstructed before Path 3 can be fairly evaluated.\n\n**U7 — Maintenance window for batch**  \nNightly batch window start/end time and current runtime not documented in the requirements. Required for SLA definition.\n\n---\n\n## Pass/Fail Readiness\n\n### Readiness Gates\n\n| Gate | Owner | Status |\n|---|---|---|\n| G1: Path selection (1, 2, or 3) confirmed by product and engineering leads | Product + Eng Lead | OPEN |\n| G2: Downstream batch consumers inventoried | Data Engineering | OPEN — parallel workstream can begin now |\n| G3: \"Source of truth\" requirement intent clarified with original author | Product | OPEN — parallel workstream can begin now |\n| G4: Late-arriving event data pulled from current pipeline telemetry | Data Engineering | OPEN |\n| G5: If Path 3 selected — consistency contract drafted and signed off by team leads who rejected dual-write | Eng Lead | OPEN |\n| G6: Provisional data labeling contract defined for dashboard UI | Product | OPEN — can begin now |\n\n### What IS ready\n\n- Shared non-functional requirements (retention, availability, idempotency) can be written into tickets now\n- Event bus schema investigation can begin in parallel\n- Dashboard provisional-data labeling design can be prototyped under any path\n- Downstream consumer inventory (G2) and stakeholder intent clarification (G3) are parallel-safe\n\n### Fail Conditions\n\nThis spec **fails** if:\n- Development begins on Path 3 without a written consistency contract\n- Real-time and batch pipelines are built in parallel with an implicit assumption that they will agree\n- The 2-second SLA is accepted as-is without clarifying the event timestamp definition\n- The dashboard ships without an explicit user-facing label distinguishing provisional from authoritative data\n\n---\n\n## Recommended Next Artifact\n\n**Artifact: Architecture Decision Record (ADR) — Pipeline Consistency Model**\n\nThe PRD cannot advance to sprint planning until the path decision is made. The right vehicle is a lightweight ADR that:\n\n1. States the primary paths (and any alternative requirement framings) with their consistency guarantees and trade-offs\n2. Records the team's prior dual-write rejection with its rationale\n3. Forces an explicit decision with sign-off from product, engineering, and downstream stakeholders\n4. Specifies the consistency contract if Path 3 is chosen\n5. Includes a scoped \"source of truth\" rewrite option for evaluation (may dissolve the conflict at lower implementation cost)\n\n**Suggested format:** One-page ADR (Context / Options / Decision / Consequences)  \n**Suggested owner:** Engineering Lead with Product co-sign  \n**Suggested deadline:** Before next sprint planning session\n\nOnce the ADR is committed, this PRD should be updated to reflect the chosen path and the conditional requirements collapsed to a single implementation spec.\n\n---\n\n## Appendix: Why Dual-Write Is Hard (Reference for Path 3 Evaluation)\n\nFor teams considering Path 3 with fresh eyes, the canonical failure modes:\n\n- **Silent divergence:** Real-time and batch produce different totals; no alert fires; stakeholders make decisions on incorrect real-time numbers for days before batch close reveals the gap\n- **Reconciliation race conditions:** Batch overwrites real-time at close, but in-flight real-time updates during the overwrite window produce a third, transient state\n- **Operational complexity:** Two pipelines means two failure modes, two on-call runbooks, two sets of schema migrations\n- **Trust erosion:** Once a divergence event is visible to users, confidence in both numbers degrades even after reconciliation\n\nThese are not theoretical — they are the documented failure patterns from the team's prior rejection. Path 3 is viable only with explicit mitigations for each.",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "The two requirements create an architectural tension that cannot be resolved within this PRD alone. Development cannot begin without a path decision, but some requirements work and parallel investigations can proceed now.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "The 2-second SLA is ambiguous: it does not specify whether the clock starts at event occurrence, publication, or pipeline arrival — a gap that could make the requirement physically impossible with current infrastructure.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "Downstream consumers of the batch store must be inventoried before any path can be selected — their existence is a hard constraint on Path 2 viability and can be investigated in parallel now.",
+          "evidence_refs": [],
+          "is_major": false
+        },
+        {
+          "claim_id": "side_a-claim-4",
+          "summary": "The recommended next artifact is an ADR that should include evaluation of a scoped 'source of truth' requirement rewrite — which may dissolve the conflict without choosing between the three implementation paths.",
+          "evidence_refs": [],
+          "is_major": false
+        }
+      ],
+      "citations": [],
+      "conclusion_confidence": "medium",
+      "open_questions": [
+        "Who authored the 'nightly batch as source of truth' requirement and what specific problem were they solving — could a scoped rewrite (e.g., 'authoritative for financial export only') dissolve the conflict without an implementation path change?",
+        "Are there downstream systems or contractual obligations that read from the batch store, which would constrain or block Path 2?",
+        "Is there a written ADR or post-mortem documenting the prior dual-write rejection, or must that rationale be reconstructed?",
+        "What is the measured latency distribution from event occurrence to event publication on the current event bus — is sub-2-second pipeline-to-dashboard achievable given upstream delays?",
+        "What percentage of events arrive late (>5 minutes after occurrence) in the current system — this is the primary viability signal for Path 2's watermark strategy?"
+      ],
+      "critique_responses": [
+        {
+          "finding_id": "finding-2",
+          "disposition": "adopted",
+          "rationale": "The critique correctly identifies that my original framing was too absolute. Claiming the PRD is 'wholly non-actionable' and presenting exactly three paths as exhaustive overreaches the evidence in the case packet. The revision narrows the claim: development cannot begin without a path decision, but requirements-level work — separating provisional operational metrics from authoritative reporting contracts, defining user-facing caveats, inventorying downstream consumers — is actionable now and does not require implementation architecture to be settled. I also added an explicit 'alternative framings' note acknowledging that a scoped rewrite of the 'source of truth' requirement might dissolve the conflict without choosing between the three implementation paths, which the original artifact omitted. The core claim (architectural tension is real, needs resolution before development) is retained; the overstatement about total non-actionability and path exhaustiveness is corrected."
+        }
+      ]
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-16-144019197Z-async-realtime-conflict",
+      "side_id": "side_b",
+      "round": "final",
+      "artifact_markdown": "# Revised artifact\n\n# PRD: Event Reporting Pipeline Decision-Ready Revision\n\n## Problem\nThe current specification requires both:\n- real-time dashboard updates within 2 seconds of any event\n- nightly batch aggregation as the source of truth for all reporting\n\nPer the scenario, these requirements are architecturally incompatible without a dual-write or dual-truth pattern that the team has previously rejected because of consistency risk.\n\n## Product Goal\nProvide fast operational visibility while preserving a single authoritative reporting layer.\n\n## Proposed Product Direction\nThis PRD does not treat the original conflict as resolved. It recommends a stakeholder decision: either explicitly separate operational real-time views from authoritative reporting, or remove one of the conflicting requirements.\n\n## Recommended Requirement Rewrite\nIf stakeholders approve the recommended direction, the requirement set should be rewritten as follows:\n- Operational dashboards display provisional event activity within 2 seconds for at least 95% of successfully ingested events.\n- Nightly batch aggregation remains the sole source of truth for official reporting, exports, finance-sensitive metrics, and historical analysis.\n- Provisional dashboard metrics must be labeled as non-authoritative until nightly reconciliation completes.\n- The product must expose freshness, reconciliation state, and any detected drift between provisional and authoritative values.\n- The system must not implement dual-write of authoritative business metrics.\n\n## Users\n- Operators monitoring live activity\n- Managers reviewing daily performance\n- Analysts consuming trusted reports\n\n## Functional Requirements\n- Support low-latency operational visibility only if stakeholders approve provisional semantics.\n- Preserve batch-generated outputs as the only authoritative reporting layer.\n- Record and surface reconciliation drift between provisional and batch values.\n- Ensure finalized reports always display batch-derived values.\n\n## Non-Functional Requirements\n- Avoid architectures that recreate the previously rejected consistency-risk pattern.\n- Failures in the low-latency path must not block batch truth generation.\n- UI must distinguish provisional versus authoritative states clearly enough to reduce misuse.\n\n## Success Metrics\n- 95% of approved operational dashboard events visible within 2 seconds.\n- 100% of official reports generated from nightly batch outputs.\n- Reconciliation drift tracked and kept within an agreed threshold for any provisional metric shown.\n- Fewer support or stakeholder complaints caused by dashboard-versus-report confusion.\n\n## Out of Scope\n- Making both sub-2-second and nightly outputs simultaneously authoritative for the same metrics.\n- Real-time finance, compliance, or historical reporting.\n- Reintroducing a dual-write consistency model previously rejected by the team.\n\n## Risks\n- Stakeholders may reject provisional semantics and continue to demand conflicting outcomes.\n- Users may still misread operational data as final unless labeling is explicit.\n- Some metric classes may be unsuitable for provisional display even with reconciliation.\n\n## Decision Frame\nThe decision required is not whether to implement both original requirements as written; that path is blocked by an already rejected architectural pattern in the scenario. The decision is whether stakeholders will approve a split-purpose model in which real-time data is operational and provisional, while nightly batch remains authoritative. If they do not approve that reframing, the PRD should fail and the requirements must be renegotiated before build begins.\n\n## Unknowns & Evidence Gaps\n- Whether the business owner accepts provisional real-time dashboards as satisfying the original intent.\n- Which metric families can safely appear before reconciliation.\n- Whether the 2-second SLA is needed for all events or only operationally critical subsets.\n- What reconciliation drift threshold is acceptable before a dashboard becomes misleading.\n\n## Pass/Fail Readiness\nPass only if stakeholders explicitly approve revised semantics that separate provisional operational visibility from authoritative reporting. Fail if any approver insists that the same metrics must be both sub-2-second and authoritative without accepting the associated consistency-risk architecture.\n\n## Recommended Next Artifact\nA requirements decision memo for stakeholder sign-off that records one of two outcomes: approval of the provisional-versus-authoritative split, or removal/reprioritization of one of the conflicting requirements.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "The PRD should frame the rewrite as a stakeholder decision and recommended resolution, not as an already-settled product decision, because the scenario establishes an architectural conflict but provides no evidence of stakeholder sign-off on the reframing.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "The decision-ready path is to separate provisional low-latency operational visibility from authoritative nightly reporting if stakeholders approve that split, since implementing both original requirements as simultaneously authoritative would require a previously rejected consistency-risk pattern.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "If the split-purpose model is approved, the product contract should include explicit labeling, freshness indicators, reconciliation state, and drift monitoring so users can distinguish provisional from authoritative outputs.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": false
+        }
+      ],
+      "citations": [
+        "ctx-1"
+      ],
+      "conclusion_confidence": "medium",
+      "open_questions": [
+        "Will the business owner explicitly approve provisional real-time dashboards as satisfying the operational need?",
+        "Which metrics, if any, are too sensitive to expose before nightly reconciliation?",
+        "Is the 2-second SLA required for every event type or only for operationally critical subsets?"
+      ],
+      "critique_responses": [
+        {
+          "finding_id": "finding-1",
+          "disposition": "adopted",
+          "rationale": "The critique is correct. The first-pass artifact treated the requirement rewrite too much like a resolved decision, while the available evidence only supports it as the recommended path given the stated architectural constraint. The revision now makes stakeholder approval an explicit gating condition and reframes the rewrite as a decision requiring sign-off rather than a completed resolution."
+        }
+      ]
+    }
+  },
+  "min_margin_for_verdict": 0.1
+}

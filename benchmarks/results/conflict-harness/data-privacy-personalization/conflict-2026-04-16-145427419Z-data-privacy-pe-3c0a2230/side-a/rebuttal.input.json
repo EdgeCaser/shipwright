@@ -1,0 +1,96 @@
+{
+  "case_packet": {
+    "scenario_id": "data-privacy-personalization",
+    "title": "Personalization feature that requires data retention the privacy policy prohibits",
+    "prompt": "Write a PRD for a personalized recommendation feature that requires retaining user behavioral history for 18 months to reach meaningful accuracy, but the current privacy policy commits to deleting all behavioral data within 90 days and the policy was publicly committed to users as a trust differentiator.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "opposing_first_pass": {
+    "run_id": "conflict-2026-04-16-145427419Z-data-privacy-pe-3c0a2230",
+    "side_id": "side_b",
+    "round": "first_pass",
+    "artifact_markdown": "# PRD: Personalized Recommendations\n\n## Product Decision\nDo not approve development of the requested feature as currently framed. The proposed retention requirement conflicts directly with an existing public privacy commitment that functions as a trust differentiator. The immediate product requirement is to define a compliant path first, then write an execution PRD only if that path is validated.\n\n## Problem Statement\nUsers could benefit from more relevant recommendations, but the currently described approach depends on storing behavioral history for 18 months. The current policy commits to deleting behavioral data within 90 days, and that commitment has been made publicly as part of the product's trust position.\n\n## Goals\n- Improve recommendation relevance in a way that is materially useful to users.\n- Preserve alignment with published privacy commitments unless an explicit company decision changes them.\n- Avoid shipping a feature whose operating model contradicts a public trust promise.\n\n## Non-Goals\n- Quietly redefining retention policy inside a product spec.\n- Treating legal, privacy, or trust-risk decisions as implementation details.\n- Approving a launch plan before the policy conflict is resolved.\n\n## Users and Stakeholders\n- End users who were told behavioral data is deleted within 90 days.\n- Product, engineering, privacy, legal, security, and communications teams.\n- Leadership responsible for trust-positioning tradeoffs.\n\n## Requirements\n### Functional\n- The system must generate personalized recommendations only using data practices that are policy-compliant at launch.\n- The system must support measurement of recommendation quality under the allowed retention model.\n\n### Policy and Risk\n- The feature must not require retaining behavioral data beyond the currently committed 90-day limit unless leadership explicitly approves a policy change.\n- Any proposed policy change must be evaluated as a business and trust decision before feature development is approved.\n\n### Success Metrics\n- Offline and online recommendation-quality targets defined for a compliant data window.\n- No unapproved deviation from published retention commitments.\n- Acceptable trust, legal, and support-risk assessment before launch.\n\n## Options Considered\n### Option 1: Build as requested\nReject. This creates direct conflict with the public privacy promise.\n\n### Option 2: Redesign for 90-day retention\nPreferred near-term path. Test whether acceptable accuracy can be achieved with shorter retention, aggregate signals, on-device methods, or other privacy-preserving approaches.\n\n### Option 3: Seek explicit policy change before proceeding\nPossible but high-risk. This is not a product-spec decision; it requires executive, legal, privacy, and communications review because it may weaken a stated trust differentiator.\n\n## Recommendation\nAuthorize only a discovery and feasibility phase focused on a compliant design. Do not authorize a build PRD for an 18-month-retention implementation unless the company first chooses to change the public privacy commitment through a formal cross-functional decision.\n\n## Decision Frame\nThe real decision is not whether personalized recommendations are valuable; it is whether the company should pursue personalization only within current privacy commitments, or reconsider a public trust promise in order to unlock model accuracy.\n\n## Unknowns & Evidence Gaps\n- Whether recommendation quality under a 90-day window is good enough for launch.\n- Whether privacy-preserving alternatives can recover enough performance.\n- How much user trust and brand position would be damaged by changing the retention commitment.\n- Whether the expected business upside justifies that trust and policy risk.\n\n## Pass/Fail Readiness\nPass only if one of these becomes true:\n- A compliant design reaches the minimum accuracy threshold within the 90-day limit.\n- The company explicitly approves a policy change after legal, privacy, trust, and communications review.\n\nFail under current conditions because the requested design depends on behavior the public policy prohibits.\n\n## Recommended Next Artifact\nA decision memo comparing three paths: compliant redesign, policy-change escalation, and feature deferral. That memo should include modeled business upside, trust-risk analysis, legal/privacy review, and feasibility results for privacy-preserving alternatives.",
+    "claims": [
+      {
+        "claim_id": "side_b-claim-1",
+        "summary": "The requested feature should not advance as an implementation PRD because its stated 18-month retention dependency directly conflicts with the current public 90-day deletion commitment.",
+        "evidence_refs": [
+          "packet-prompt"
+        ],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-2",
+        "summary": "The highest-value next step is a decision memo and feasibility phase for compliant alternatives, not approval of a build plan for the noncompliant design.",
+        "evidence_refs": [
+          "packet-prompt"
+        ],
+        "is_major": true
+      }
+    ],
+    "citations": [
+      "packet-prompt"
+    ],
+    "conclusion_confidence": "medium",
+    "open_questions": [
+      "Can a 90-day retention design achieve the minimum recommendation quality needed for launch?",
+      "Are there privacy-preserving approaches that materially reduce the accuracy gap without extending raw behavioral retention?",
+      "What is the quantified business upside of higher-accuracy personalization versus the trust and brand cost of changing the public retention commitment?",
+      "Who owns the go/no-go decision if product value and trust positioning remain in conflict?"
+    ],
+    "critique_responses": []
+  }
+}

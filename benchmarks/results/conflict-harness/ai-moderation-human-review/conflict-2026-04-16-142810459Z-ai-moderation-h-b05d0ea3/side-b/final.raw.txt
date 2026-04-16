@@ -1,0 +1,48 @@
+{
+  "run_id": "conflict-2026-04-16-142810459Z-ai-moderation-h-b05d0ea3",
+  "side_id": "side_b",
+  "round": "final",
+  "artifact_markdown": "# Revised artifact\n\n# AI-Assisted Content Moderation PRD\n\n## Product Requirement Document\n\n### Problem Statement\nThe specification creates an unresolved delivery conflict: AI must flag content automatically, a human must approve every removal, removals are required within 60 seconds, and the current human review queue averages 4 hours. The prompt evidence does not prove this is mathematically impossible under every conceivable staffing model, but it does show the requirement is not build-ready as written because the workflow, SLA definition, and operating model are misaligned.\n\n### Goal\nDesign a moderation workflow that stops harmful exposure quickly while preserving human accountability for irreversible enforcement.\n\n### Non-Goals\n- Eliminating human review from permanent removals\n- Assuming the current 4-hour average queue can satisfy a 60-second permanent-removal SLA without explicit operating-model changes\n- Treating AI-only irreversible removal as the default pattern\n\n### Users and Stakeholders\n- Trust and Safety operations\n- End users exposed to harmful content\n- Policy and legal teams\n- Moderators and reviewer managers\n\n### Decision Frame\nAdopt a two-stage enforcement model unless leadership funds and defines a dedicated sub-60-second human review path.\n\n1. AI performs immediate risk scoring on newly created content.\n2. For eligible high-risk content, AI may place the content into a reversible temporary containment state within 60 seconds.\n3. Human reviewers approve or reject permanent removal.\n4. If the business insists on permanent removal within 60 seconds, that requirement is blocked pending a separate operating-model decision covering severity tiers, staffing, escalation, and reviewer SLA.\n\nThis reframes the system from \"permanent removal in 60 seconds for every flagged item\" to \"harmful exposure contained in 60 seconds, permanent removal after human approval.\" That is the only decision-useful PRD path supported by the current prompt.\n\n### Product Requirements\n#### Functional Requirements\n1. Ingest all new content and run AI classification immediately.\n2. Assign each item a policy risk score, severity tier, and policy category.\n3. For content above a configurable threshold and in approved categories, automatically place the item into a temporary hold state within 60 seconds.\n4. Temporary hold must hide, quarantine, or sharply limit distribution pending review.\n5. Create a review task for every held item.\n6. Require human approval before permanent removal.\n7. Allow reviewers to confirm removal, restore content, or escalate edge cases.\n8. Record model output, timestamps, reviewer action, and policy rationale in an audit log.\n9. Notify creators when content is placed on hold and when final action is taken, subject to policy exceptions.\n\n#### Operational Requirements\n1. Measure time to temporary containment separately from time to final removal.\n2. Prioritize review queues by severity, virality, and regulatory sensitivity.\n3. Support explicit hot-queue routing if leadership wants a subset of categories reviewed near-real-time.\n4. Treat any sub-60-second permanent-removal target as an operational commitment that must be staffed and modeled separately from the current average queue.\n\n#### Policy Requirements\n1. Permanent deletion requires human approval.\n2. AI-only action must be reversible and explicitly classified as temporary enforcement.\n3. Policy must define which categories are eligible for temporary hold and which, if any, justify a dedicated rapid-review lane.\n\n### User Experience\n- Harmful content is rapidly contained from broad distribution.\n- Reviewers receive prioritized queues with model rationale and severity indicators.\n- Content creators receive clear status messaging: under review, removed, or restored.\n\n### Success Metrics\n- P95 time from upload to temporary containment for eligible high-risk content: under 60 seconds\n- Percentage of permanent removals with human approval: 100%\n- False-positive temporary hold rate: below policy-defined threshold\n- Median and P95 review completion time by severity tier: tracked separately from containment SLA\n- If a hot queue is approved, its achieved reviewer response SLA must be measured independently\n\n### Risks\n- False-positive temporary holds may create user frustration.\n- Review backlog may still create long final-resolution times.\n- A hot queue for rapid human approval may be operationally expensive.\n- Poor threshold tuning may either miss harmful content or overwhelm reviewers.\n\n### Unknowns & Evidence Gaps\n- Whether the 60-second SLA is intended for temporary containment or permanent removal\n- Flagged volume by hour, severity tier, and policy category\n- Whether a dedicated rapid-review lane is financially and operationally acceptable\n- What reviewer staffing is required to support any sub-60-second human approval path\n- Whether temporary hold satisfies the legal and policy meaning of \"removal\"\n\n### Pass/Fail Readiness\nPass if:\n- Stakeholders accept a split SLA: containment within 60 seconds, permanent removal after review\n- Policy approves reversible AI-driven temporary enforcement\n- Operations can support prioritized review queues and audit logging\n- Any sub-60-second human-review requirement is explicitly scoped to defined tiers and resourced with a dedicated operating model\n\nFail if:\n- The requirement remains permanent removal within 60 seconds for all cases without an explicit rapid-review operating model\n- Human approval is required before any visibility restriction\n- No staffing, queue design, or policy change is permitted\n\n### Recommended Next Artifact\nA policy-and-operations decision memo that resolves the SLA definition, specifies whether a rapid-review lane exists, identifies eligible severity tiers, and quantifies reviewer capacity required before engineering commits to implementation.",
+  "claims": [
+    {
+      "claim_id": "side_b-claim-1",
+      "summary": "The prompt establishes a build-readiness conflict, not a proven universal impossibility: with a 4-hour average human review baseline, the spec cannot credibly support a 60-second permanent-removal SLA unless a distinct rapid-review operating model is explicitly defined.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-2",
+      "summary": "A decision-useful PRD should distinguish reversible AI-driven temporary containment from irreversible human-approved permanent removal.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-3",
+      "summary": "Any requirement for sub-60-second human-approved permanent removal must be treated as an explicit operating-model dependency covering severity tiers, staffing, and queue design rather than assumed inside the current baseline.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1"
+  ],
+  "conclusion_confidence": "medium",
+  "open_questions": [
+    "Is the 60-second SLA intended to mean temporary containment or permanent removal?",
+    "Are any policy categories important enough to justify a dedicated rapid-review lane with near-real-time human approval?",
+    "What are flagged content volumes and severity-tier distributions under expected load?"
+  ],
+  "critique_responses": [
+    {
+      "finding_id": "finding-1",
+      "disposition": "adopted",
+      "rationale": "The critique correctly identified overreach in the original phrasing. The prompt evidence supports a contradiction in the current baseline and a lack of build readiness, but it does not prove mathematical impossibility across all possible staffing or escalation models. I revised the central claim from flat infeasibility to a narrower, better-supported conclusion: the spec is not decision-ready unless it either redefines the 60-second target as temporary containment or explicitly funds and defines a dedicated rapid-review path for any category that truly requires permanent removal inside that window."
+    }
+  ]
+}

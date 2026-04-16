@@ -1,0 +1,151 @@
+You are SIDE_A in the final revision phase for run conflict-2026-04-16-142810459Z-ai-moderation-h-b05d0ea3.
+You must either adopt the critique or reject it with reasoning.
+Do not reveal provider identity.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "run_id": "conflict-2026-04-16-142810459Z-ai-moderation-h-b05d0ea3",
+  "side_id": "side_a",
+  "round": "final",
+  "artifact_markdown": "# Revised artifact",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "Updated major claim",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1"
+  ],
+  "conclusion_confidence": "medium",
+  "open_questions": [],
+  "critique_responses": [
+    {
+      "finding_id": "finding-2",
+      "disposition": "adopted",
+      "rationale": "Why the critique was adopted or rejected."
+    }
+  ]
+}
+
+Case packet:
+{
+  "scenario_id": "ai-moderation-human-review",
+  "title": "AI content moderation with mandatory human review SLA conflict",
+  "prompt": "Write a PRD for an AI-assisted content moderation system where the spec requires AI to flag content automatically AND requires a human reviewer to approve every removal decision, but the SLA requires removals within 60 seconds and the human review queue has a 4-hour average response time.",
+  "artifact_type": "prd",
+  "rubric": {
+    "dimensions": [
+      "claim quality",
+      "evidence discipline",
+      "responsiveness to critique",
+      "internal consistency",
+      "decision usefulness"
+    ],
+    "scoring_scale": "1-5",
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "constraints": {
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "expect_structured": true,
+    "context_files": [],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "evidence": [],
+  "max_rounds": 3,
+  "tool_policy": "none",
+  "sharing_policy": {
+    "share_case_packet": true,
+    "share_committed_artifacts_after_first_pass": true,
+    "share_critiques_after_open": true,
+    "share_hidden_reasoning": false,
+    "share_provider_identity": false,
+    "share_internal_coalition_drafts": false
+  },
+  "success_condition": {
+    "type": "validator_contract",
+    "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+    "validator": {
+      "artifact_type": "prd",
+      "expect_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true
+    }
+  }
+}
+
+Your first-pass artifact:
+{
+  "run_id": "conflict-2026-04-16-142810459Z-ai-moderation-h-b05d0ea3",
+  "side_id": "side_a",
+  "round": "first_pass",
+  "artifact_markdown": "# PRD: AI-Assisted Content Moderation with Human Review\n\n**Status:** Draft — Requires Stakeholder Resolution Before Engineering Handoff\n**Version:** 0.1\n**Owner:** Trust & Safety Product\n\n---\n\n## Decision Frame\n\n### The Core Conflict\n\nThis spec contains a structural contradiction that cannot be resolved through engineering alone. Before a single line of code is written, stakeholders must choose which constraint to relax:\n\n| Constraint | As Written | Implied Requirement |\n|---|---|---|\n| Removal SLA | 60 seconds | Automated execution capability |\n| Human approval gate | Every removal | Human in the loop before action |\n| Human queue depth | 4-hour avg response | Human is a bottleneck, not a gate |\n\n**The gap is 239x.** A 60-second SLA and a 4-hour human review cycle cannot both be mandatory on the same decision path. One of them is aspirational; this PRD exists to force that determination.\n\n### Three Resolution Paths\n\nStakeholders must select one. Each has a fundamentally different risk posture.\n\n**Path 1 — Provisional Removal (Recommended)**\nThe AI removes content immediately upon high-confidence flag. Human reviewers confirm or restore within a defined window (e.g., 4 hours). The 60-second SLA is met; the human retains final authority but acts retroactively, not as a gate. False positives are recoverable. This is how most scaled platforms operate under regulatory pressure.\n\n- Risk: Content creators experience wrongful removal during the review window\n- Mitigation: Publisher notification + expedited appeals queue\n- Regulatory fit: Satisfies DSA/NetzDG removal-speed requirements; human review satisfies due-process requirements\n\n**Path 2 — Tiered SLA by Confidence Band**\nThe AI assigns a confidence tier. Only Tier 1 (e.g., CSAM, credible imminent threat) triggers auto-removal within 60 seconds. Tier 2 (policy-ambiguous) routes to human review with a relaxed SLA (e.g., 30 minutes with queue prioritization). Tier 3 (low confidence) gets async review.\n\n- Risk: Defining confidence bands is a hard calibration problem; Tier 1 scope creep is common\n- Mitigation: Quarterly band audits, locked Tier 1 taxonomy with legal sign-off\n- Regulatory fit: Requires documented band definitions to withstand audit\n\n**Path 3 — Accelerated Human Queue**\nKeep the mandatory pre-approval gate but invest in reducing human queue time to under 60 seconds (dedicated staffing, on-call reviewer pools, contractor surge capacity).\n\n- Risk: Operationally expensive; queue SLA degrades under volume spikes; does not scale\n- Mitigation: Dynamic staffing model, volume forecasting\n- Regulatory fit: Cleanest compliance posture; highest cost and fragility\n\n### Recommended Path\n\nPath 1 (Provisional Removal) with Path 2 tiering for high-stakes categories. This decouples the speed obligation from the accountability obligation. The 60-second SLA is met by the AI; the human review obligation is met asynchronously within a defined restoration window. This is not a workaround — it is the standard industry model for operating under simultaneous speed and due-process requirements.\n\n---\n\n## Functional Specification (Path 1 + Path 2 Hybrid)\n\n### AI Flagging Layer\n\n- **Input:** Content submission event stream (text, image, video metadata)\n- **Output:** `{content_id, flag_reason, confidence_score, confidence_tier, recommended_action, evidence_snapshot}`\n- **Confidence tiers:**\n  - Tier 1 (≥0.97): Auto-remove, notify publisher, create human review record\n  - Tier 2 (0.80–0.96): Soft-suppress (reduce distribution), escalate to priority human queue, SLA 30 minutes\n  - Tier 3 (<0.80): Log, async human review queue, no immediate action\n- **Latency target:** Flag decision ≤5 seconds from submission\n- **Explainability requirement:** Every flag must include a human-readable reason string referencing a specific policy clause\n\n### Human Review Layer\n\n- **Tier 1 reviews:** Confirmation or restoration within 4 hours. Restorations trigger publisher notification and audit log entry.\n- **Tier 2 reviews:** Decision required within 30 minutes. Reviewer sees AI confidence score, evidence snapshot, policy clause, and publisher history.\n- **Reviewer tooling requirements:** One-click confirm/restore, policy reference panel, escalation path to legal hold\n- **Queue management:** Priority routing by tier; Tier 1 restorations surfaced above new Tier 2 decisions\n\n### Appeals\n\n- Publisher-facing appeal form, triggered automatically on Tier 1 removal notification\n- Appeal routes to separate reviewer (not original AI flag)\n- Appeal resolution SLA: 24 hours\n\n### Audit & Compliance\n\n- Every decision (AI and human) logged immutably with timestamp, actor, confidence score, policy reference\n- Weekly false-positive/false-negative rate reports by tier\n- Quarterly confidence band recalibration with legal and policy sign-off\n\n---\n\n## Unknowns & Evidence Gaps\n\n### High Priority — Blocks Architecture\n\n1. **What is the actual false-positive rate at each confidence threshold?** The entire tiered model depends on Tier 1 being calibrated tightly enough that wrongful removals are rare. Without model benchmarks on production content distribution, the threshold numbers in this PRD are placeholders. **Required:** Offline evaluation on labeled dataset before thresholds are hardcoded.\n\n2. **What is the legal definition of \"human approval\" in applicable jurisdictions?** If the DSA, NetzDG, or platform-specific regulator requires pre-removal human approval (not post-removal confirmation), Path 1 fails compliance and Path 3 becomes mandatory regardless of cost. **Required:** Legal opinion from EU and relevant national counsel before architecture decision.\n\n3. **What is the actual volume and distribution of flagged content?** The 4-hour human queue SLA is an average — peak load behavior is unknown. A queue that handles 100 items/hour at 4-hour avg may hit 40-hour avg during a viral content incident. **Required:** Volume forecasting model and queue stress test before staffing model is finalized.\n\n### Medium Priority — Blocks Calibration\n\n4. **What content categories are in scope?** \"Content moderation\" encompasses hate speech, spam, CSAM, misinformation, copyright, self-harm, and more. Confidence thresholds, regulatory obligations, and reviewer expertise differ by category. A single undifferentiated system is likely wrong.\n\n5. **What is the publisher notification SLA?** Publishers need to know when content is removed and why. The speed of that notification affects appeals volume and legal exposure. Not specified.\n\n6. **Who owns the Tier 1 taxonomy?** Legal? Policy? Trust & Safety ops? If this is unowned, Tier 1 scope will drift in both directions under pressure.\n\n### Low Priority — Deferred\n\n7. What is the reviewer tooling budget? Does an existing moderation platform (e.g., Salesforce Content Moderation, Jira Service Management) cover the workflow, or is custom tooling required?\n\n8. What are the data retention requirements for evidence snapshots? Varies by jurisdiction and content type.\n\n---\n\n## Pass/Fail Readiness\n\n**Current status: BLOCKED**\n\nThis PRD is not ready for engineering handoff. Two gates must clear first:\n\n| Gate | Owner | Condition |\n|---|---|---|\n| Architecture decision | Stakeholder group (Legal, Policy, Product, Eng leads) | Select Path 1, 2, or 3 and sign off | \n| Legal opinion on pre-approval requirement | Legal counsel | Written opinion on whether post-removal human confirmation satisfies applicable regulations |\n\nOnce those two gates clear, the following can proceed in parallel:\n\n| Track | Ready? | Condition |\n|---|---|---|\n| AI model calibration | Yes, can start now | Offline eval on labeled dataset to establish threshold candidates |\n| Reviewer tooling scoping | Yes, can start now | Platform selection and workflow design |\n| Volume forecasting | Yes, can start now | Historical flagging data analysis |\n| Engineering architecture | Blocked | Requires architecture decision |\n| Staffing model | Blocked | Requires volume forecast + architecture decision |\n\n**Estimated time to engineering-ready PRD:** 2–3 weeks post stakeholder alignment meeting.\n\n---\n\n## Recommended Next Artifact\n\n**An Architecture Decision Record (ADR)** co-authored by Legal, Policy, and Engineering that:\n\n1. States the chosen path (1, 2, or 3) with explicit acknowledgment of the tradeoff being accepted\n2. Documents the legal opinion on pre-removal vs post-removal human review\n3. Records dissenting positions if alignment is incomplete\n4. Sets the confidence threshold calibration target (e.g., Tier 1 false-positive rate ≤ 0.1%)\n\nThis PRD cannot be meaningfully revised until that ADR exists. Attempting to engineer against the current spec will produce a system that satisfies neither the 60-second SLA nor the human review requirement — it will simply hide the conflict in implementation debt.\n\n---\n\n## Appendix: Why This PRD Does Not Pick a Final Number\n\nStakeholders sometimes expect a PRD to paper over requirement conflicts with confident-sounding specifications. This document declines to do that. The 60-second SLA and the mandatory human pre-approval gate are not a calibration problem — they are a policy problem. The right artifact for a policy problem is a decision meeting with documented outcomes, not a product spec with placeholder thresholds. This PRD's job is to make that meeting unavoidable and productive.",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "The 60-second SLA and mandatory human pre-approval gate are structurally incompatible at a 4-hour queue depth, and the correct resolution is Provisional Removal (auto-remove on high confidence, human review asynchronously for confirmation or restoration) — the standard industry model under simultaneous speed and due-process obligations.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "The most critical unknown blocking architecture is whether applicable regulations (DSA, NetzDG, etc.) require pre-removal or post-removal human review — if pre-removal is mandated, Path 1 fails compliance and the staffing model for Path 3 becomes mandatory regardless of cost.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-3",
+      "summary": "Confidence thresholds in the tiered model (e.g., Tier 1 ≥0.97) are structural placeholders that require offline evaluation on a labeled production-distribution dataset before they can be hardcoded — shipping without this calibration will produce unpredictable false-positive rates.",
+      "evidence_refs": [],
+      "is_major": false
+    },
+    {
+      "claim_id": "side_a-claim-4",
+      "summary": "This PRD is intentionally blocked at engineering handoff until two gates clear: (a) stakeholder path selection with legal/policy/product sign-off, and (b) written legal opinion on pre-approval requirement. Engineering work on AI model calibration, reviewer tooling scoping, and volume forecasting can begin in parallel without waiting.",
+      "evidence_refs": [],
+      "is_major": false
+    }
+  ],
+  "citations": [],
+  "conclusion_confidence": "medium",
+  "open_questions": [
+    "Do applicable regulations (DSA, NetzDG, platform-specific) require human approval before removal or does post-removal confirmation satisfy due-process obligations?",
+    "What is the actual false-positive rate of the AI model at each proposed confidence threshold on production content distribution?",
+    "What is peak-load queue behavior — does the 4-hour average mask multi-day queue depth during viral content incidents?",
+    "What content categories are in scope, and do they require differentiated confidence thresholds and reviewer expertise?",
+    "Who owns the Tier 1 taxonomy definition, and what governance process prevents scope drift under operational pressure?"
+  ],
+  "critique_responses": []
+}
+
+Visible critique packet:
+{
+  "target_side": "side_a",
+  "finding_id": "finding-2",
+  "target_claim_ids": [
+    "side_a-claim-1"
+  ],
+  "claim_under_attack": "The 60-second SLA and mandatory human pre-approval gate are structurally incompatible at a 4-hour queue depth, and the correct resolution is Provisional Removal (auto-remove on high confidence, human review asynchronously for confirmation or restoration) — the standard industry model under simultaneous speed and due-process obligations.",
+  "attack_type": "evidence_gap",
+  "evidence_or_reason": "The incompatibility diagnosis is visible from the scenario, but the leap to Provisional Removal as the 'correct resolution' and 'standard industry model' is unsupported in the artifact itself. There are no citations, no evidence refs, and no scenario-specific facts showing that post-removal human confirmation satisfies the stated mandatory approval requirement. On the face of the prompt, 'approve every removal decision' reads like pre-removal authorization, so recommending retroactive review appears to rewrite the requirement rather than resolve it. Without visible evidence that this interpretation is legally or operationally acceptable, the recommendation is weak.",
+  "severity": "medium"
+}

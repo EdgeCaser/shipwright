@@ -1,0 +1,42 @@
+{
+  "run_id": "conflict-2026-04-16-143701293Z-api-deprecation-ee68966c",
+  "side_id": "side_a",
+  "round": "first_pass",
+  "artifact_markdown": "# API Deprecation Strategy Memo\n## Legacy API Sunset Under Enterprise Contract Constraints\n\n---\n\n## Decision Frame\n\n**The core tension:** The business seeks to retire the legacy API within 6 months to eliminate ongoing maintenance cost, but three enterprise customers on annual contracts have made API stability an explicit renewal condition — and migration requires 3–6 months of customer engineering effort on their end.\n\nThese timelines are nearly irreconcilable as stated. A 6-month hard sunset against a 3–6 month customer migration window leaves zero buffer for contract negotiation, scoping, kickoff, and inevitable delays. The business is effectively asking customers to begin migration the moment a deprecation notice lands.\n\n**The real decision is not when to deprecate — it is which risk the business is willing to own:**\n\n| Option | Business Risk | Customer Risk |\n|--------|--------------|---------------|\n| Hard sunset at Month 6 | Potential churn of 3 enterprise accounts | Migration crunch; likely failure for slower orgs |\n| Conditional extension to Month 12 | Continued maintenance burden 6 more months | Incentivized migration with runway |\n| Tiered sunset (phased read/write deprecation) | Moderate — partial maintenance continues | Reduced — customers can migrate incrementally |\n| Negotiated per-contract SLA | Low churn risk | Custom timelines create support fragmentation |\n\n**Recommended decision posture:** Treat this as a contract risk problem first and a technical timeline problem second. The business cannot unilaterally set a sunset date that violates renewal conditions without triggering churn or legal exposure. The 6-month target should be treated as aspirational, not committed, until contract review confirms otherwise.\n\n---\n\n## Unknowns & Evidence Gaps\n\nThe following gaps must be closed before a deprecation date can be publicly committed:\n\n**1. Contract language (Critical)**\n- Do the three enterprise contracts specify the legacy API by name, version, or capability?\n- Is \"API stability\" defined as no breaking changes, no deprecation, or something else?\n- What are the renewal dates for each account, and do any fall within the 6-month window?\n- What remedies or notice periods do contracts specify for material platform changes?\n\n**2. Revenue concentration (Critical)**\n- What is the combined ARR of the three enterprise accounts?\n- What is the estimated churn probability if the 6-month timeline is held?\n- What is the maintenance cost (engineering-hours/month) of running the legacy API?\n- Does the cost-of-maintenance exceed the churn-adjusted revenue at risk?\n\n**3. Migration effort calibration (High)**\n- Is the 3–6 month estimate the customers' own estimate or an internal assumption?\n- Has any customer begun migration scoping? Are blockers known?\n- Does the new API achieve functional parity, or are there gaps customers would need to work around?\n- What migration support (SDKs, tooling, dedicated engineering) is the business prepared to offer?\n\n**4. Legacy API actual maintenance burden (Medium)**\n- Is maintenance cost driven by bug fixes, security patching, infrastructure, or staffing?\n- Is there a specific incident or cost spike driving the 6-month urgency, or is this a planning horizon choice?\n- Could a security-only maintenance mode reduce cost without full deprecation?\n\n**5. Competitive and ecosystem dynamics (Low-Medium)**\n- Are competitors offering stable long-term API guarantees?\n- Would a hard deprecation affect ISV or integration partners beyond the three named accounts?\n\n---\n\n## Pass/Fail Readiness\n\nThis strategy is **not ready to execute** on the 6-month timeline. The following conditions must be met before committing a public deprecation date:\n\n**Pass conditions (all required):**\n- [ ] Legal review of all three enterprise contracts confirms the business has the right to deprecate with adequate notice\n- [ ] Revenue-at-risk model completed (ARR × churn probability vs. maintenance cost savings)\n- [ ] At least one customer has confirmed migration feasibility within the proposed window\n- [ ] Migration support package defined (tooling, dedicated CSE hours, SLA during transition)\n- [ ] Internal go/no-go owner designated with authority to slip the date if blockers emerge\n\n**Fail conditions (any one blocks go-live commitment):**\n- Contract language prohibits deprecation within the renewal term without consent\n- Combined churn-adjusted ARR loss exceeds 18-month maintenance cost savings\n- No customer can confirm a credible migration plan within 6 months\n- New API has known capability gaps vs. legacy that block migration\n\n**Current status:** At least three of five pass conditions are unconfirmed. The business should not communicate a deprecation date externally until pass conditions are met.\n\n---\n\n## Recommended Next Artifact\n\n**Artifact:** Contract & Revenue Risk Assessment  \n**Owner:** Legal + Finance + Customer Success  \n**Deadline:** 3 weeks from memo approval\n\nThis assessment should produce:\n1. A per-account contract summary (renewal date, API clause language, notice requirements)\n2. A revenue model: worst-case churn cost vs. 12-month maintenance savings\n3. A migration readiness interview summary from each of the three accounts\n4. A recommended sunset date range (best case / expected / conservative) based on findings\n\nOnly after this artifact is complete should the business schedule a deprecation announcement or communicate timelines to customers.\n\n**Interim action (immediate):** Inform the three enterprise customers that the business is actively planning a new API migration program and will be in contact within 30 days with timeline and support details. This signals forward motion without committing to a date the business cannot yet defend.\n",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "The 6-month deprecation target is irreconcilable with a 3–6 month customer migration window and cannot be publicly committed until contract review confirms the business has the legal right to deprecate within the enterprise renewal terms.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "The deprecation decision is a contract risk problem before it is a technical timeline problem — churn-adjusted ARR loss must be modeled against maintenance cost savings before any timeline is set.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-3",
+      "summary": "A tiered or conditional extension approach (e.g., Month 12 with incentivized migration) dominates a hard Month 6 sunset on both churn risk and customer feasibility, and should be the default posture pending contract review.",
+      "evidence_refs": [],
+      "is_major": false
+    },
+    {
+      "claim_id": "side_a-claim-4",
+      "summary": "The business should send an interim communication to the three enterprise accounts within days — signaling migration planning without committing to a date — to preserve trust while contract review proceeds.",
+      "evidence_refs": [],
+      "is_major": false
+    }
+  ],
+  "citations": [],
+  "conclusion_confidence": "medium",
+  "open_questions": [
+    "Do the enterprise contracts define 'API stability' in a way that legally prohibits deprecation within the renewal term?",
+    "What is the combined ARR of the three accounts relative to the estimated 12-month maintenance cost of the legacy API?",
+    "Is the 3–6 month migration estimate customer-sourced or an internal assumption, and have any customers begun scoping?",
+    "Does the new API achieve full functional parity with the legacy API, or are there gaps that would extend migration timelines further?",
+    "Is there a specific cost event or security incident driving the 6-month urgency, or is the timeline a planning preference that could flex?"
+  ],
+  "critique_responses": []
+}

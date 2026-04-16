@@ -1,0 +1,113 @@
+{
+  "case_packet": {
+    "scenario_id": "underpowered-ab-test",
+    "title": "Feature extension from a statistically underpowered A/B test",
+    "prompt": "Write a PRD to expand a feature to all users based on an A/B test that ran for 2 weeks with 1,200 users per variant. The test showed a 6% lift in the primary metric (p=0.08). The data science team flagged the test as underpowered for the claimed effect size and recommended a minimum 6-week run. The PM is proceeding on the grounds that the direction is clear and the business cannot wait.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "opposing_first_pass": {
+    "run_id": "conflict-2026-04-16-152833745Z-underpowered-ab-test",
+    "side_id": "side_b",
+    "round": "first_pass",
+    "artifact_markdown": "# PRD: Controlled Expansion for the Feature Extension\n\n## Summary\nThis document does not support an immediate universal rollout. The observed result suggests possible upside, but the experiment did not meet conventional significance thresholds and was explicitly flagged as underpowered for the claimed effect size. The recommended product path is a controlled expansion that captures business value faster than a full 6-week pause while preserving a valid measurement path.\n\n## Problem\nThe product team wants to extend the feature to all users after a 2-week experiment with 1,200 users per variant showed a 6% lift in the primary metric at p=0.08. The analytics review concluded the test was underpowered and recommended a minimum 6-week run. The business argues that waiting has material opportunity cost.\n\n## Goal\nMake a decision that balances speed and evidence quality by enabling broader exposure only under conditions that preserve learnings, limit downside, and create a clear rollback path.\n\n## Non-Goals\n- Treating the current experiment as conclusive proof of impact\n- Eliminating all uncertainty before any action\n- Committing to irreversible universal rollout before decision thresholds are met\n\n## Users\n- End users who may benefit from the feature extension\n- Product and growth teams accountable for metric lift\n- Analytics and engineering teams accountable for measurement integrity and rollout safety\n\n## Decision Frame\nProceed with a staged rollout, not an immediate full release. Expand exposure in controlled increments while continuing measurement against a persistent holdout until one of two outcomes is reached: the effect is confirmed at the predeclared threshold, or the result degrades enough to halt or reverse the rollout.\n\n## Requirements\n1. Maintain a persistent control holdout for the duration of the expanded measurement period.\n2. Expand exposure in predefined gates rather than moving directly to 100%.\n3. Predeclare success, guardrail, and rollback thresholds before the first expansion step.\n4. Instrument the same primary metric used in the original experiment and add guardrails for retention, complaints, and operational regressions.\n5. Require daily monitoring and a written go/no-go review at each gate.\n6. Preserve the ability to roll back within one release cycle if guardrails fail.\n\n## Rollout Plan\n- Gate 1: increase exposure to a minority share of eligible users while retaining a clean holdout.\n- Gate 2: expand to a larger share only if primary metric trend remains positive and no guardrail breach occurs.\n- Gate 3: move to near-full exposure only after the minimum additional runtime or equivalent sample requirement is met.\n- Final release: move to full availability only if the predeclared evidence threshold is satisfied.\n\n## Success Metrics\n- Primary: improvement in the tested primary metric versus holdout\n- Secondary: adoption, repeat usage, and downstream conversion if relevant\n- Guardrails: retention, support burden, error rate, latency, and any revenue-risk metric tied to the feature surface\n\n## Risks\n- The apparent lift may be noise rather than a real effect.\n- Early expansion may create organizational pressure to declare success before evidence is sufficient.\n- Operational or UX harms may not appear in the primary metric alone.\n\n## Unknowns & Evidence Gaps\n- Whether the 6% observed lift persists with a longer run\n- Whether the true effect size is smaller than the business case assumes\n- Whether there are segment-specific harms masked in aggregate results\n- Whether time-based effects over a 6-week window change the conclusion\n\n## Pass/Fail Readiness\nPass if:\n- A persistent holdout is kept\n- Thresholds are predeclared\n- Rollback is technically ready\n- Monitoring is in place\n\nFail if:\n- The team removes the holdout before decision quality is achieved\n- Success criteria are changed during rollout\n- The organization treats p=0.08 from the initial run as sufficient proof for universal release\n- Rollback or guardrail monitoring is not operational\n\n## Recommended Next Artifact\nA rollout decision memo with predeclared thresholds, sample/runtime requirements, guardrail definitions, and gate review owners. That memo should be approved jointly by product, analytics, and engineering before expansion begins.",
+    "claims": [
+      {
+        "claim_id": "side_b-claim-1",
+        "summary": "The current experiment is not strong enough evidence for an immediate universal rollout because the result is statistically inconclusive and the analytics review explicitly flagged the test as underpowered.",
+        "evidence_refs": [
+          "ctx-1",
+          "ctx-2",
+          "ctx-3"
+        ],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-2",
+        "summary": "A staged rollout with a persistent holdout is the most decision-useful path because it balances business urgency with continued causal measurement and rollback safety.",
+        "evidence_refs": [
+          "ctx-1",
+          "ctx-2",
+          "ctx-4"
+        ],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-3",
+        "summary": "The PRD should define explicit gates, success thresholds, guardrails, and rollback conditions rather than treating directional evidence as final proof.",
+        "evidence_refs": [
+          "ctx-1",
+          "ctx-2",
+          "ctx-3"
+        ],
+        "is_major": true
+      }
+    ],
+    "citations": [
+      "ctx-1",
+      "ctx-2",
+      "ctx-3",
+      "ctx-4"
+    ],
+    "conclusion_confidence": "medium",
+    "open_questions": [
+      "What minimum detectable effect and power target did the analytics team use when recommending a 6-week runtime?",
+      "Can the system support a persistent randomized holdout during staged expansion?",
+      "What guardrail metrics are mandatory for this feature surface?",
+      "What is the quantified business cost of waiting versus the cost of a false-positive rollout?"
+    ],
+    "critique_responses": []
+  }
+}

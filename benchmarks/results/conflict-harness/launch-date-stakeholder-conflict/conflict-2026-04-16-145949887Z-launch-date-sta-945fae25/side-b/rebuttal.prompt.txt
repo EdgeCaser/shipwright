@@ -1,0 +1,144 @@
+You are SIDE_B in the rebuttal phase for run conflict-2026-04-16-145949887Z-launch-date-sta-945fae25.
+Attack only visible claims from the opposing first-pass artifact.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "target_side": "side_a",
+  "finding_id": "runner-will-assign",
+  "target_claim_ids": [
+    "side_a-claim-1"
+  ],
+  "claim_under_attack": "The opposing claim to challenge.",
+  "attack_type": "evidence_gap",
+  "evidence_or_reason": "Why the visible claim is weak.",
+  "severity": "medium"
+}
+
+Case packet:
+{
+  "scenario_id": "launch-date-stakeholder-conflict",
+  "title": "Launch date with conflicting stakeholder commitments",
+  "prompt": "Write a launch decision memo when engineering estimates 8 weeks, sales has already committed to Q1, and the CEO wants to announce at a conference in 3 weeks. Each stakeholder believes their constraint is non-negotiable.",
+  "artifact_type": "strategy",
+  "rubric": {
+    "dimensions": [
+      "claim quality",
+      "evidence discipline",
+      "responsiveness to critique",
+      "internal consistency",
+      "decision usefulness"
+    ],
+    "scoring_scale": "1-5",
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "constraints": {
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "expect_structured": true,
+    "context_files": [],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "evidence": [],
+  "max_rounds": 3,
+  "tool_policy": "none",
+  "sharing_policy": {
+    "share_case_packet": true,
+    "share_committed_artifacts_after_first_pass": true,
+    "share_critiques_after_open": true,
+    "share_hidden_reasoning": false,
+    "share_provider_identity": false,
+    "share_internal_coalition_drafts": false
+  },
+  "success_condition": {
+    "type": "validator_contract",
+    "description": "Produce a strategy artifact that satisfies the scenario validator contract.",
+    "validator": {
+      "artifact_type": "strategy",
+      "expect_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true
+    }
+  }
+}
+
+Opposing first-pass artifact:
+{
+  "run_id": "conflict-2026-04-16-145949887Z-launch-date-sta-945fae25",
+  "side_id": "side_a",
+  "round": "first_pass",
+  "artifact_markdown": "# Launch Decision Memo: Conflicting Stakeholder Commitments\n\n**Status:** Decision Required — Immediate  \n**Prepared for:** Executive Leadership  \n**Context:** Three non-negotiable constraints are in active conflict. This memo frames the decision, surfaces unknowns, and recommends a path to resolution.\n\n---\n\n## Decision Frame\n\n### The Core Conflict\n\nThree commitments have been made independently, and they cannot all be honored as stated:\n\n| Party | Commitment | Timeline |\n|---|---|---|\n| Engineering | Earliest complete build | 8 weeks from now |\n| Sales | Customer-facing Q1 delivery promise | Already committed, Q1 boundary |\n| CEO | Conference announcement | 3 weeks from now |\n\nEach stakeholder has characterized their constraint as non-negotiable. That framing is a negotiating posture, not an objective fact — but unpacking it requires evidence this memo does not yet have.\n\n### What Kind of Decision This Is\n\nThis is not a scheduling problem. It is a **commitment-sequencing failure**: external promises were made before internal readiness was confirmed. The decision is therefore not \"which date wins\" but **which commitment, if broken, causes the least irreversible damage** — and what must be done in the next 72 hours to limit exposure on all three fronts.\n\n### The Structural Options\n\n**Option A — Conference Announcement Only (3 weeks)**  \nAnnounce at conference with a defined GA date (8+ weeks out). Sales reframes Q1 commitment as \"announced in Q1\" rather than \"delivered in Q1.\" Engineering timeline unchanged.  \n*Risk:* Sales relationship damage if customers won't accept the reframe. Conference announcement locks a public date.\n\n**Option B — Soft Q1 Delivery (Partial / Beta)**  \nShip a limited release to sales-committed accounts in Q1. Full GA follows engineering's 8-week estimate. Conference announcement positions this as \"early access launch.\"  \n*Risk:* Partial release may undermine quality signal. Engineering scope must be immediately triaged to identify what is shippable in <4 weeks.\n\n**Option C — Slip Everything, Recalibrate**  \nAcknowledge the conflict publicly within the organization, reset all three stakeholders to a single honest date, absorb relationship damage now rather than compound it.  \n*Risk:* Sales customer attrition. CEO may override. Morale impact.\n\n**Option D — CEO Skips Conference Announcement**  \nPull the conference announcement. Sales commitment honored at Q1. Engineering holds 8-week timeline.  \n*Risk:* Conference opportunity cost. CEO buy-in unlikely without strong business case.\n\n---\n\n## Unknowns & Evidence Gaps\n\nThis memo cannot recommend a specific option without answers to the following. These are **blocking unknowns** — the decision should not be finalized until each is resolved.\n\n### ctx-1 — What did sales actually promise customers?\nThe Q1 commitment may range from \"general availability\" to \"you'll be in our beta\" to \"contract signed and implementation begins.\" The legal and relational exposure is entirely different across these. **Required:** Sales lead to produce exact language from customer communications within 24 hours.\n\n### ctx-2 — What is the conference announcement's reversibility?\nIs the CEO slot confirmed and announced? Or is it a planned slot not yet public? A private conference session that hasn't been promoted is very different from a keynote listed in the conference program. **Required:** Comms/CEO to confirm public commitment status by EOD.\n\n### ctx-3 — What is the engineering 8-week estimate's confidence interval?\nIs 8 weeks a p50 or a p90 estimate? Is there a shippable subset (core feature complete) achievable in 4-5 weeks that would support a limited release? **Required:** Engineering lead to provide a scope-tiered estimate: what ships in 3 weeks, 5 weeks, 8 weeks.\n\n### ctx-4 — What is the actual customer consequence of slipping Q1?\nAre there contract penalties? Renewal decisions at risk? Or is this a relationship expectation without formal consequence? **Required:** Sales to assess customer-by-customer impact within 48 hours.\n\n### ctx-5 — Does the CEO have full visibility into the conflict?\nIf the CEO's conference commitment was made without knowing sales had already committed Q1 and engineering was 8 weeks out, the CEO may be willing to modify approach once the conflict is named explicitly. **Required:** A direct, unambiguous conflict briefing to the CEO before any option is pursued.\n\n---\n\n## Pass/Fail Readiness\n\n### Criteria for a Viable Launch Decision\n\nA launch decision passes only if it satisfies all of the following:\n\n- [ ] **Commitment alignment:** All three stakeholders have agreed — explicitly, in writing — to the same date and the same definition of \"launch\"\n- [ ] **Engineering sign-off:** Engineering has confirmed the selected date is achievable at acceptable quality, or has documented the explicit quality trade-offs being accepted\n- [ ] **Customer exposure mapped:** Sales has confirmed what each committed customer will receive and when, and has communicated any changes\n- [ ] **Conference posture confirmed:** If an announcement is made at the conference, the announced date matches the engineering-confirmed date\n- [ ] **Escalation path identified:** If engineering slips after the decision is made, there is a pre-agreed owner and protocol for re-escalation\n\n### Current State\n\nZero of five criteria are currently met. **This is not a ready-to-decide situation.** The memo's role is to create the conditions for a decision, not to make one prematurely.\n\n### Time Constraint\n\nThe conference is 3 weeks out. If Option A (conference announcement) is viable, the CEO needs an answer within **5 business days** to prepare remarks. This creates a hard internal deadline that is shorter than any of the external ones.\n\n---\n\n## Recommended Next Artifact\n\n**Artifact:** Stakeholder Alignment Brief + Triage Decision Meeting Agenda  \n**Owner:** PM or Chief of Staff  \n**Due:** Within 48 hours\n\nThe next artifact should:\n\n1. **Collect the blocking unknowns** (ctx-1 through ctx-5 above) — assign each to a named owner with a 24-48 hour deadline\n2. **Convene a single room** (or call) with the CEO, sales lead, and engineering lead — this conflict cannot be resolved asynchronously; each party needs to hear the others' constraints directly\n3. **Present the four options** from this memo with the evidence collected, and force a ranked preference from each stakeholder\n4. **Produce a written decision** within 72 hours with a single date, a single definition of launch, and named owners for each commitment thread\n\n**What this memo should not be used for:** Making a unilateral recommendation on which stakeholder's constraint to override. That decision requires political authority this memo does not have, and evidence this memo does not yet possess.",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "The conflict is a commitment-sequencing failure, not a scheduling problem — external promises were made before internal readiness was confirmed, so the decision question is which commitment causes least irreversible damage if broken, not which date to pick.",
+      "evidence_refs": [
+        "ctx-1",
+        "ctx-2",
+        "ctx-3",
+        "ctx-4",
+        "ctx-5"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "No viable launch decision can be made until five blocking unknowns are resolved: exact sales commitment language, conference reversibility, engineering scope-tiered estimate, customer consequence of slip, and CEO visibility into the full conflict.",
+      "evidence_refs": [
+        "ctx-1",
+        "ctx-2",
+        "ctx-3",
+        "ctx-4",
+        "ctx-5"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-3",
+      "summary": "The conference's 3-week timeline creates a hard internal deadline of 5 business days to determine whether a conference announcement is viable — shorter than any external deadline and the true forcing function.",
+      "evidence_refs": [
+        "ctx-2"
+      ],
+      "is_major": false
+    },
+    {
+      "claim_id": "side_a-claim-4",
+      "summary": "Each stakeholder's 'non-negotiable' framing is a negotiating posture, not an objective fact — but correcting it requires direct evidence about actual customer commitments, conference slot status, and engineering confidence intervals.",
+      "evidence_refs": [
+        "ctx-1",
+        "ctx-2",
+        "ctx-3"
+      ],
+      "is_major": false
+    }
+  ],
+  "citations": [
+    "ctx-1",
+    "ctx-2",
+    "ctx-3",
+    "ctx-4",
+    "ctx-5"
+  ],
+  "conclusion_confidence": "medium",
+  "open_questions": [
+    "What exact language did sales use in customer commitments — GA delivery, beta access, or contract start?",
+    "Is the CEO's conference slot publicly announced or still private/reversible?",
+    "What is engineering's scope-tiered estimate: what ships in 3, 5, and 8 weeks respectively?",
+    "Are there contract penalties or renewal decisions at risk from a Q1 slip, or only relationship expectations?",
+    "Does the CEO have explicit awareness that all three constraints are simultaneously in conflict?"
+  ],
+  "critique_responses": []
+}

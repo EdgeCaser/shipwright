@@ -1,0 +1,152 @@
+You are SIDE_A in the final revision phase for run conflict-2026-04-16-142344199Z-adjacent-market-proxy.
+You must either adopt the critique or reject it with reasoning.
+Do not reveal provider identity.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "run_id": "conflict-2026-04-16-142344199Z-adjacent-market-proxy",
+  "side_id": "side_a",
+  "round": "final",
+  "artifact_markdown": "# Revised artifact",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "Updated major claim",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1"
+  ],
+  "conclusion_confidence": "medium",
+  "open_questions": [],
+  "critique_responses": [
+    {
+      "finding_id": "finding-2",
+      "disposition": "adopted",
+      "rationale": "Why the critique was adopted or rejected."
+    }
+  ]
+}
+
+Case packet:
+{
+  "scenario_id": "adjacent-market-proxy",
+  "title": "New market entry PRD using adjacent market data as unvalidated proxy",
+  "prompt": "Write a PRD for entering the SMB market. The team has strong data on enterprise buyer behavior from 3 years of sales but no direct SMB research. The business case uses enterprise conversion rates, contract values, and churn figures as proxies for SMB projections, adjusted down by 40% based on intuition. No SMB interviews, pilots, or comparable benchmarks have been conducted.",
+  "artifact_type": "prd",
+  "rubric": {
+    "dimensions": [
+      "claim quality",
+      "evidence discipline",
+      "responsiveness to critique",
+      "internal consistency",
+      "decision usefulness"
+    ],
+    "scoring_scale": "1-5",
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "constraints": {
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "expect_structured": true,
+    "context_files": [],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "evidence": [],
+  "max_rounds": 3,
+  "tool_policy": "none",
+  "sharing_policy": {
+    "share_case_packet": true,
+    "share_committed_artifacts_after_first_pass": true,
+    "share_critiques_after_open": true,
+    "share_hidden_reasoning": false,
+    "share_provider_identity": false,
+    "share_internal_coalition_drafts": false
+  },
+  "success_condition": {
+    "type": "validator_contract",
+    "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+    "validator": {
+      "artifact_type": "prd",
+      "expect_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true
+    }
+  }
+}
+
+Your first-pass artifact:
+{
+  "run_id": "conflict-2026-04-16-142344199Z-adjacent-market-proxy",
+  "side_id": "side_a",
+  "round": "first_pass",
+  "artifact_markdown": "# PRD: SMB Market Entry\n**Status:** Draft — Pre-Validation Gate  \n**Owner:** Product  \n**Last Updated:** 2026-04-16  \n**Confidence:** Low — no direct SMB evidence in hand\n\n---\n\n## Decision Frame\n\n### Problem\nThe company has saturated its initial enterprise motion and is evaluating SMB as the next growth surface. SMB represents a structurally different buyer: shorter sales cycles, lower ACVs, higher volume, self-serve or low-touch onboarding expectations, and faster churn due to budget sensitivity. The core question is whether the unit economics of an SMB segment can produce a viable business given our current cost structure and product.\n\n### Decision Being Made\nThis PRD is **not** a build authorization. It is a readiness assessment for whether the team has sufficient signal to commit budget and headcount to an SMB go-to-market. The output of this document is a go/no-go on a structured SMB validation sprint, not on an SMB launch.\n\n### Scope\n- **In scope:** Identification of critical unknowns, proxy assumptions requiring validation, minimum viable evidence set to proceed\n- **Out of scope:** Feature roadmap, pricing architecture, GTM channel selection — all contingent on validation findings\n\n### Assumptions Being Tested\nThe business case currently rests on enterprise benchmarks adjusted downward by 40% based on PM intuition. This is a starting hypothesis, not a forecast. The 40% haircut is an unanchored scalar with no comparable benchmark basis. It should be treated as a sensitivity variable, not a grounded estimate.\n\n---\n\n## Unknowns & Evidence Gaps\n\nThe following gaps are **blocking** — they must be resolved before a launch PRD can be written with defensible projections.\n\n### Gap 1 — Conversion Rate Proxy (Critical)\n**Assumed:** Enterprise conversion rate × 0.60  \n**Why this is insufficient:** Enterprise conversion is shaped by multi-stakeholder procurement, relationship-driven sales, and long evaluation cycles. SMB buyers convert via different mechanisms: trial-to-paid friction, solo decision-making, and price sensitivity at checkout. The structural drivers are non-analogous. A 40% discount on a non-comparable baseline produces a number with false precision.  \n**What's needed:** Trial conversion data from at least one comparable SMB SaaS product in adjacent category, OR a 90-day pilot with 50–100 SMB prospects tracked through funnel.\n\n### Gap 2 — Contract Value Distribution (Critical)\n**Assumed:** Enterprise ACV × 0.60  \n**Why this is insufficient:** SMB pricing is not a linear compression of enterprise pricing. SMB buyers are highly price-elastic; the viable price point is constrained by willingness-to-pay thresholds that our enterprise data cannot reveal. We do not know whether the SMB segment can support a price point that covers our current CAC structure.  \n**What's needed:** Pricing sensitivity interviews (n ≥ 20 SMB buyers in target vertical), or a landing page price experiment.\n\n### Gap 3 — Churn Dynamics (Critical)\n**Assumed:** Enterprise churn × 0.60 (implying higher SMB churn)  \n**Why this is insufficient:** The direction of the adjustment is plausible but the magnitude is arbitrary. SMB churn drivers — budget cuts, founder pivots, seasonal cash flow — are categorically different from enterprise churn (contract non-renewal, competitive displacement, consolidation). The 40% scalar does not capture this structural difference.  \n**What's needed:** Churn benchmarks from public SMB SaaS cohort data (e.g., Bessemer Cloud Index SMB cohorts, OpenView SaaS benchmarks) as a minimum; ideally a 6-month cohort from a pilot.\n\n### Gap 4 — CAC Structure Mismatch (Critical)\n**Assumed:** Existing sales motion can be adapted  \n**Why this is insufficient:** Enterprise CAC is dominated by outbound sales and relationship costs. SMB CAC typically must be 3–5× lower to produce acceptable LTV:CAC ratios at lower ACVs. We have no data on what an SMB-optimized acquisition channel would cost, nor whether our brand has organic SMB pull.  \n**What's needed:** Estimate of low-touch acquisition cost via at least one channel (paid search, PLG referral, partner), with conversion funnel modeled from first principles.\n\n### Gap 5 — Product-Market Fit Signal (Moderate)\n**Assumed:** Enterprise product is sufficient for SMB needs with minor configuration  \n**Why this is insufficient:** No SMB users have been interviewed. The product may be over-engineered for SMB use cases (complexity tax) or missing SMB-critical features (e.g., self-serve billing, simplified onboarding, low-cost tier).  \n**What's needed:** 10–15 discovery interviews with SMB buyers in target verticals to identify job-to-be-done fit and friction points.\n\n---\n\n## Pass/Fail Readiness\n\n### Current State: FAIL — Insufficient to Authorize Launch\n\n| Readiness Criterion | Status | Blocker? |\n|---|---|---|\n| Direct SMB buyer interviews conducted | Not done | Yes |\n| SMB conversion rate from comparable benchmark or pilot | Not done | Yes |\n| Pricing sensitivity validated | Not done | Yes |\n| Churn model grounded in SMB cohort data | Not done | Yes |\n| CAC estimate for low-touch channel | Not done | Yes |\n| Product fit assessment with SMB users | Not done | Yes |\n\n**All six criteria are unmet.** The current business case is a hypothesis scaffold, not a validated projection. Proceeding to build authorization on this basis carries high risk of misallocated headcount and a GTM motion tuned to the wrong buyer.\n\n### What Would Constitute a PASS\nA launch PRD may be authorized when:\n1. At least 15 SMB discovery interviews completed across 2+ verticals\n2. A pricing experiment or willingness-to-pay study yields a defensible ACV range\n3. One acquisition channel has a measured or modeled CAC with LTV:CAC ≥ 3:1 at validated ACV\n4. A 60–90 day pilot with ≥ 50 SMB accounts provides early retention signal\n5. Churn assumption is grounded in at least one external SMB SaaS cohort benchmark\n\n---\n\n## Recommended Next Artifact\n\n### Artifact: SMB Validation Sprint Plan\n**Format:** Research + experiment brief  \n**Owner:** Product + Sales (1 AE dedicated to SMB discovery)  \n**Timeline:** 8 weeks  \n**Budget required:** Minimal — interview recruitment, landing page experiment tooling, 1 AE time allocation\n\n**Sprint deliverables:**\n1. **Week 1–3:** 15 SMB discovery interviews (recruiting via LinkedIn outbound + current enterprise customer referrals to their SMB network)\n2. **Week 2–4:** Pricing page experiment — test 2–3 price points with SMB-targeted landing page, measure trial signups and stated intent\n3. **Week 3–8:** Soft pilot — identify 3–5 enterprise customers with SMB subsidiaries willing to onboard on existing product; track 60-day activation and retention\n4. **Week 6–8:** Benchmark pull — use Bessemer, OpenView, or Paddle public SMB SaaS benchmarks to anchor churn and conversion assumptions\n\n**Gate decision at Week 8:** If pilot retention ≥ 70% at 60 days, pricing experiment yields ACV supporting LTV:CAC ≥ 3, and discovery interviews confirm clear job-to-be-done fit → authorize launch PRD. Otherwise, pivot or pause.\n\n**What this sprint does NOT require:** Engineering resources, product changes, or GTM infrastructure. It is a pure discovery sprint. The cost of not doing it is writing a launch PRD on a foundation that may be structurally wrong.\n\n---\n\n## Appendix: Proxy Assumption Register\n\nAll figures below are **working hypotheses only** — not projections. They are documented here to make current assumptions explicit and to define what validation would either confirm or replace.\n\n| Metric | Enterprise Baseline | Proxy Assumption | Adjustment Basis | Confidence |\n|---|---|---|---|---|\n| Trial conversion rate | [Enterprise figure] | Baseline × 0.60 | Intuition | Very Low |\n| ACV | [Enterprise figure] | Baseline × 0.60 | Intuition | Very Low |\n| Annual churn | [Enterprise figure] | Baseline × 1.67 (inverse of 0.60) | Intuition | Very Low |\n| CAC | [Enterprise figure] | Unknown — no SMB channel tested | None | Not estimated |\n\nThese numbers must not appear in any external communication, board deck, or investment memo in their current form. They are internal scaffolding pending replacement by validated data.\n",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "The current business case is not launch-ready: all six readiness criteria are unmet because enterprise data adjusted by intuition is not a valid proxy for SMB unit economics, which are structurally non-analogous across conversion, pricing, churn, and CAC dimensions.",
+      "evidence_refs": [
+        "ctx-scenario-prompt"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "The 40% intuition-based scalar produces false precision — it applies a linear discount to non-analogous baselines, masking the structural differences in SMB buyer behavior, price sensitivity, and churn drivers that cannot be derived from enterprise cohorts.",
+      "evidence_refs": [
+        "ctx-scenario-prompt"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-3",
+      "summary": "A structured 8-week validation sprint (interviews, pricing experiment, soft pilot, external benchmarks) can resolve all blocking unknowns at minimal cost before any engineering or GTM resources are committed.",
+      "evidence_refs": [
+        "ctx-scenario-prompt"
+      ],
+      "is_major": false
+    }
+  ],
+  "citations": [
+    "ctx-scenario-prompt"
+  ],
+  "conclusion_confidence": "high",
+  "open_questions": [
+    "Does the company have any existing SMB customers acquired organically (e.g., via self-serve or inbound) whose data could serve as a starting cohort rather than building from zero?",
+    "Is there a target vertical for SMB entry, or is the assumption horizontal? Vertical focus would make discovery interviews and benchmarking significantly more tractable.",
+    "What is the minimum ACV the business model can support given current infrastructure costs? This sets a hard floor on whether SMB is viable before any research begins.",
+    "Are there public competitors serving both enterprise and SMB segments whose pricing and positioning could serve as external benchmarks?"
+  ],
+  "critique_responses": []
+}
+
+Visible critique packet:
+{
+  "target_side": "side_a",
+  "finding_id": "finding-2",
+  "target_claim_ids": [
+    "side_a-claim-3"
+  ],
+  "claim_under_attack": "A structured 8-week validation sprint (interviews, pricing experiment, soft pilot, external benchmarks) can resolve all blocking unknowns at minimal cost before any engineering or GTM resources are committed.",
+  "attack_type": "evidence_gap",
+  "evidence_or_reason": "The claim overstates what the proposed sprint can prove. An 8-week plan cannot credibly resolve churn or unit-economics unknowns when the artifact itself says an ideal churn input is a 6-month pilot cohort, yet the proposed sprint uses only 60-day retention. It also labels the effort 'minimal cost' while assigning AE time, running paid acquisition or landing-page experiments, and recruiting SMB interviews without any cost basis in the case packet. Those specifics may be reasonable hypotheses, but the visible evidence does not support the stronger claim that this sprint will resolve all blockers at minimal cost.",
+  "severity": "medium"
+}

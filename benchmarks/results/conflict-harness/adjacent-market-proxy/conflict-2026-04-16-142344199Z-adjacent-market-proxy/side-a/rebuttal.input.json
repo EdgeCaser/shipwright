@@ -1,0 +1,100 @@
+{
+  "case_packet": {
+    "scenario_id": "adjacent-market-proxy",
+    "title": "New market entry PRD using adjacent market data as unvalidated proxy",
+    "prompt": "Write a PRD for entering the SMB market. The team has strong data on enterprise buyer behavior from 3 years of sales but no direct SMB research. The business case uses enterprise conversion rates, contract values, and churn figures as proxies for SMB projections, adjusted down by 40% based on intuition. No SMB interviews, pilots, or comparable benchmarks have been conducted.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "opposing_first_pass": {
+    "run_id": "conflict-2026-04-16-142344199Z-adjacent-market-proxy",
+    "side_id": "side_b",
+    "round": "first_pass",
+    "artifact_markdown": "# SMB Entry PRD\n\n## Summary\nThis document should not authorize market entry yet. The current business case relies on enterprise buyer behavior, conversion, contract value, and churn as stand-ins for SMB outcomes, with a 40% intuition-based adjustment and no direct SMB validation. The useful output at this stage is a gated validation PRD for SMB discovery and pilot execution, not a launch PRD.\n\n## Problem Statement\nThe company wants to assess whether and how to enter the SMB segment. Current evidence is derived from three years of enterprise sales experience, but there is no direct SMB customer evidence, no pilot, and no benchmark set establishing that enterprise economics transfer to SMB.\n\n## Goals\n- Determine whether SMB demand, buying behavior, and willingness to pay are materially different from enterprise assumptions.\n- Validate whether acquisition, conversion, retention, and support economics can support entry.\n- Produce enough direct evidence to decide whether to proceed, delay, or abandon entry.\n\n## Non-Goals\n- Full revenue commitment for SMB entry.\n- Final pricing and packaging lock.\n- Headcount or GTM scale-up beyond a pilot.\n\n## Users and Buyers\nHypothesized SMB buyers and admins are not yet validated. Their decision-maker profile, purchase urgency, evaluation process, and implementation constraints remain unknown.\n\n## Requirements\n- Conduct direct SMB research before committing launch scope.\n- Run interviews with target SMB prospects and recent non-buyers.\n- Define a pilot offer with explicit pricing, packaging, and onboarding assumptions.\n- Measure actual SMB funnel metrics rather than proxying enterprise conversion.\n- Measure early retention, expansion potential, support burden, and implementation effort.\n- Compare pilot results against pre-set thresholds before authorizing broader entry.\n\n## Success Metrics\n- Interview completion against target sample.\n- Pilot conversion from qualified lead to paid account.\n- Time to first value and onboarding completion.\n- Early retention and churn indicators.\n- Gross margin and support-cost viability at SMB price points.\n\n## Risks\n- Enterprise sales behavior may not transfer to SMB self-serve or low-touch motion.\n- Contract value may be too low to absorb acquisition and support costs.\n- Churn may be materially higher than enterprise baselines.\n- The 40% adjustment may understate or overstate market differences without evidence.\n\n## Decision Frame\nRecommendation: do not approve an SMB entry PRD based on the current model. Approve only a validation-stage PRD that gates any launch decision on direct SMB evidence from research and pilot results.\n\n## Unknowns & Evidence Gaps\n- Actual SMB buyer, user, and budget-holder behavior.\n- Real SMB pricing tolerance and preferred packaging.\n- Conversion rates by channel and motion.\n- Retention and churn behavior in the first 90-180 days.\n- Support, onboarding, and product-fit differences versus enterprise.\n- Comparable benchmarks for similar products in SMB.\n\n## Pass/Fail Readiness\nPass only if the team can show direct SMB evidence from interviews, pilot conversion data, early retention data, and explicit entry thresholds tied to unit economics. Fail if the business case continues to rely primarily on enterprise proxies with intuition-based adjustments.\n\n## Recommended Next Artifact\nA validation PRD for SMB discovery and pilot execution, including target segments, interview plan, pilot design, measurable hypotheses, decision thresholds, and a go/no-go review checkpoint.",
+    "claims": [
+      {
+        "claim_id": "side_b-claim-1",
+        "summary": "A launch PRD for SMB entry is not decision-ready because the current forecast uses unvalidated enterprise proxies and intuition rather than direct SMB evidence.",
+        "evidence_refs": [
+          "packet-prompt",
+          "packet-validator"
+        ],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-2",
+        "summary": "The correct near-term artifact is a validation-stage PRD centered on interviews, pilot design, and explicit go/no-go thresholds.",
+        "evidence_refs": [
+          "packet-prompt",
+          "packet-constraints"
+        ],
+        "is_major": true
+      }
+    ],
+    "citations": [
+      "packet-prompt",
+      "packet-constraints",
+      "packet-validator"
+    ],
+    "conclusion_confidence": "high",
+    "open_questions": [
+      "Which SMB sub-segment is the intended beachhead, and how similar is it to current enterprise customers in workflow and urgency?",
+      "What acquisition motion is assumed for SMB: sales-assisted, product-led, channel-led, or hybrid?",
+      "What minimum viable price point preserves acceptable acquisition payback and gross margin for SMB?",
+      "What evidence threshold should trigger proceed, pause, or abandon decisions after the pilot?"
+    ],
+    "critique_responses": []
+  }
+}

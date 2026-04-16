@@ -1,0 +1,44 @@
+{
+  "run_id": "conflict-2026-04-16-150759737Z-mobile-first-si-6f6d564e",
+  "side_id": "side_b",
+  "round": "final",
+  "artifact_markdown": "# Revised artifact\n\n## PRD: Mobile Evidence Program and Quantified Redesign Gate\n\n## Summary\nA full mobile-first redesign is not approved on current evidence. The current signal is strong enough to justify immediate investigation and targeted remediation, but not a 6-month rebuild. This PRD defines a time-bounded validation program with quantified redesign gates so the team can reach a clear go/no-go decision rather than delay indefinitely.\n\n## Problem Statement\nA last-quarter NPS survey of 50 power users found that 72% named mobile experience as their top pain point. That is a meaningful warning signal, but it is not sufficient by itself to justify a full mobile-first redesign because it does not show prevalence across the broader user base, identify the failing workflows, or quantify the business impact relative to a 6-month engineering investment.\n\n## Goal\n1. Reduce the highest mobile friction quickly.\n2. Produce enough behavioral and user evidence within 8-10 weeks to decide whether a full redesign is warranted.\n\n## Non-Goals\n- Approving a full mobile-first rebuild immediately\n- Rewriting desktop-first flows with no demonstrated mobile impact\n- Extending discovery beyond the defined decision window without an explicit exec decision\n\n## Users\n- Active users who attempt core workflows on mobile\n- Power users represented in the survey\n- Broader non-power-user segments who may experience different mobile constraints\n\n## Hypotheses\n1. Mobile pain is concentrated in a limited number of high-value workflows.\n2. Targeted fixes may recover most of the lost user experience without a full redesign.\n3. A full redesign is justified only if mobile friction is broad, severe, persistent after targeted fixes, and material to business outcomes.\n\n## Requirements\n### R1. Instrumentation\nInstrument the top 3-5 core mobile workflows with funnel entry, completion, drop-off, error, retry, and time-to-complete events.\n\n### R2. Evidence Collection\nWithin 2 weeks of instrumentation launch, collect:\n- Mobile usage share for each core workflow\n- Completion and drop-off rates by device class and user segment\n- At least 12 session observations or recordings across power and non-power users\n- At least 15 follow-up user interviews or structured surveys, with at least 50% from non-power users\n\n### R3. Rapid Improvements\nBy week 6, ship targeted fixes for the top 2-3 highest-friction mobile workflows identified in Phase 1.\n\n### R4. Quantified Redesign Gate\nApprove a full mobile-first redesign only if all four conditions are met during the 8-10 week program:\n- Reach: at least 25% of active users, or at least 40% of users in a strategically important segment, attempt at least one core workflow on mobile each month.\n- Severity: mobile completion rate on at least 2 core workflows is at least 15 percentage points worse than desktop, or mobile error/drop-off rate is at least 1.5x desktop.\n- Persistence: targeted fixes improve the affected workflow completion gap by less than 30% relative to baseline, or leave the mobile completion gap above 10 percentage points.\n- Business case: the projected benefit of redesign is tied to a material outcome such as retention, conversion, expansion, or support-cost reduction, with a documented impact estimate large enough to justify 6 months of engineering time versus the next-best roadmap use.\n\n## Success Metrics\n- Mobile share of core-workflow usage\n- Mobile completion rate by workflow\n- Mobile drop-off and error rate by workflow\n- Time-to-complete for core mobile tasks\n- Change in mobile-related support complaints\n- Post-fix user satisfaction for affected mobile workflows\n\n## Delivery Plan\n### Phase 1: Weeks 1-2\n- Add instrumentation\n- Collect baseline behavioral data\n- Run user interviews and session reviews\n- Identify top 3-5 mobile friction points\n\n### Phase 2: Weeks 3-6\n- Ship targeted fixes for top issues\n- Measure pre/post change on workflow metrics\n\n### Phase 3: Weeks 7-10\n- Re-measure against redesign gate\n- Produce go/no-go decision memo\n- If gates are met, draft a scoped redesign PRD for the affected workflows\n\n## Risks\n- Survey signal may over-represent power-user frustration versus broader demand\n- Instrumentation may miss meaningful friction if workflow definitions are poor\n- The team may overfit to anecdotal complaints without confirming behavioral severity\n- A full redesign may still be unjustified if targeted fixes resolve most of the gap\n\n## Decision Frame\nDo not approve a full mobile-first redesign now. Approve an 8-10 week mobile evidence and remediation program with quantified gates that force a go/no-go decision.\n\n## Unknowns & Evidence Gaps\n- What percentage of the active base relies on mobile for core workflows\n- Which mobile workflows create the largest completion and error gaps\n- Whether mobile pain is broad product design failure or a smaller set of workflow defects\n- Whether targeted fixes materially close the gap before a rebuild is needed\n- Whether the business impact is large enough to justify 6 months of engineering effort\n\n## Pass/Fail Readiness\nPass if all redesign-gate thresholds are met within the 8-10 week program. Fail if mobile usage is not sufficiently broad, severity is confined to isolated workflows, targeted fixes close at least 30% of the baseline gap, or the business case remains weaker than alternative roadmap investments.\n\n## Recommended Next Artifact\nA decision memo at the end of week 10 with segmented mobile usage, workflow funnel data, pre/post fix results, business impact sizing, and an explicit recommendation to either continue targeted iteration or fund a scoped redesign.",
+  "claims": [
+    {
+      "claim_id": "side_b-claim-1",
+      "summary": "A full mobile-first redesign is not justified by the current evidence alone, but the decision should be made through a time-bounded validation program with quantified redesign thresholds rather than a subjective gate.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-2",
+      "summary": "The right immediate response is an 8-10 week validation-and-fix plan that gathers behavioral evidence, ships targeted fixes, and evaluates a redesign against explicit reach, severity, persistence, and business-case thresholds.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-3",
+      "summary": "The survey result is sufficient to prioritize mobile investigation now, even though it is insufficient to approve a 6-month rebuild on its own.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": false
+    }
+  ],
+  "citations": [
+    "ctx-1"
+  ],
+  "conclusion_confidence": "medium",
+  "open_questions": [],
+  "critique_responses": [
+    {
+      "finding_id": "finding-1",
+      "disposition": "adopted",
+      "rationale": "The critique was correct that the first-pass gate was under-specified and risked becoming subjective. I revised the artifact to add an explicit 8-10 week decision window and quantified thresholds for reach, severity, persistence after targeted fixes, and business-case sufficiency so the recommendation is decision-usable rather than open-ended."
+    }
+  ]
+}

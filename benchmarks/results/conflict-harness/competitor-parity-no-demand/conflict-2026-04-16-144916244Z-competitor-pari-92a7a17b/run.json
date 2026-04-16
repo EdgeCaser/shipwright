@@ -1,0 +1,269 @@
+{
+  "run_id": "conflict-2026-04-16-144916244Z-competitor-pari-92a7a17b",
+  "scenario_id": "competitor-parity-no-demand",
+  "mode": "head_to_head",
+  "status": "completed",
+  "sides": {
+    "side_a": {
+      "provider": "anthropic",
+      "model": "claude-max",
+      "reasoning_effort": "medium",
+      "access_mode": "subscription_cli",
+      "role": "side_a",
+      "first_pass": {
+        "run_id": "conflict-2026-04-16-144916244Z-competitor-pari-92a7a17b",
+        "side_id": "side_a",
+        "round": "first_pass",
+        "artifact_markdown": "# PRD: Advanced Export Feature\n\n**Status:** HOLD — Readiness gate not met  \n**Requested investment:** 10 weeks engineering  \n**Sole justification on intake:** Two competitors shipped similar features in the past 30 days\n\n---\n\n## Decision Frame\n\n### What decision does this PRD need to enable?\n\nShould the team commit 10 weeks of engineering capacity to build an advanced export feature, or redirect that investment toward higher-confidence priorities?\n\nThis is **not** a question about whether export functionality is generically valuable. It is a question about whether this team, at this moment, has sufficient evidence that building this feature will produce meaningful outcomes — for users, for retention, for revenue, or for competitive positioning.\n\n### Why this matters right now\n\nThe intake justification is that two competitors shipped advanced export features last month. Competitive moves are a legitimate signal worth investigating. They are not, by themselves, a sufficient basis for committing 10 engineering weeks. Competitor behavior is evidence about competitor strategy — it is not evidence about what our users need or what they will do differently if we ship this.\n\nThe risk of proceeding without demand validation:\n- We build something no current user has asked for\n- We occupy 10 weeks of roadmap with low-confidence work\n- We create maintenance surface for a feature with unknown adoption\n- We do not learn whether the feature gap is actually causing sales loss or churn\n\nThe risk of not proceeding:\n- If the feature is genuinely table-stakes for a buyer segment, continued absence may cost deals\n- Competitors establish a perception advantage in analyst/comparison contexts\n\nThese risks are **not symmetric**. The cost of a 2–3 week validation sprint is far lower than the cost of a 10-week build that produces low adoption.\n\n---\n\n## Unknowns & Evidence Gaps\n\nThe following items are unknown and must be resolved before this PRD can advance to execution-ready status.\n\n| # | Unknown | Why It Matters | How to Resolve | Est. Time |\n|---|---------|---------------|----------------|-----------|\n| U-1 | Has any user, prospect, or churned customer ever requested advanced export? | If zero requests exist, the feature likely serves a user segment we do not yet have | Support ticket audit, CRM search, CS interview, churn exit survey review | 3–5 days |\n| U-2 | Have we lost deals or experienced churn attributed to missing export capability? | This is the strongest possible signal — if sales can attribute losses, the investment justification is immediate | Sales loss report audit, deal debrief interviews with AEs | 3–5 days |\n| U-3 | What specifically did competitors ship? Are their features equivalent to what we would build? | \"Advanced export\" is vague. Competitor features may target segments we don't serve, or may be poorly received | Competitive teardown (free trial, G2/Capterra reviews, release notes) | 2–3 days |\n| U-4 | Which user workflows would advanced export unlock, and how frequently do those workflows occur? | Without this, we cannot scope the feature or measure success post-launch | 5–8 user interviews with power users or export-adjacent workflows | 1–2 weeks |\n| U-5 | What does \"advanced\" mean in our context — formats, automation, volume, API access, scheduling? | Scope ambiguity makes the 10-week estimate unreliable | Internal scoping session after U-3 and U-4 are resolved | 2 days |\n| U-6 | What is the opportunity cost of 10 weeks? What does not get built? | Competitor parity as a frame ignores the full portfolio tradeoff | Roadmap review with current prioritization context | 1 day |\n\n**Evidence discipline note:** None of the above unknowns require user research from scratch. U-1 and U-2 are internal data audits. U-3 is a competitive teardown. Only U-4 requires primary research. The full validation set can be completed in 2–3 weeks with a single researcher or PM.\n\n---\n\n## Pass/Fail Readiness\n\nThis PRD is evaluated against minimum readiness criteria for proceeding to scoping and execution.\n\n| Criterion | Required | Current Status | Pass/Fail |\n|-----------|----------|---------------|-----------|\n| At least one user-articulated pain point tied to export | Yes | Not established | **FAIL** |\n| Quantified demand signal (tickets, requests, deal loss) | Yes | Not established | **FAIL** |\n| Defined feature scope sufficient for estimation | Yes | Not established — \"advanced export\" is undefined | **FAIL** |\n| Opportunity cost assessed against roadmap alternatives | Yes | Not established | **FAIL** |\n| Success metric defined with baseline | Yes | Not established | **FAIL** |\n| Competitive teardown completed | Recommended | Not completed | **FAIL** |\n\n**Readiness verdict: NOT READY TO PROCEED**\n\nThe current basis — two competitor launches in the past 30 days — fails every readiness criterion. This does not mean the feature is wrong. It means we do not yet know whether it is right.\n\n**What would change this verdict:**  \nAny one of the following, discovered during validation, would unlock a fast-track path to execution:\n- A pattern of user requests (even 5–10 tickets) for export capabilities we do not currently offer\n- A confirmed deal loss or churn case attributable to missing export\n- A competitive teardown showing that the competitor feature is now featured in analyst comparisons in our target segment\n\n---\n\n## Recommended Next Artifact\n\n**Do not produce a full PRD at this stage.**\n\nThe recommended next artifact is a **Discovery Brief** with a 2-week time-box.\n\n### Discovery Brief scope\n\n**Owner:** Product (1 PM, 0.25 design, no engineering)\n\n**Time-box:** 2 weeks\n\n**Deliverables:**\n1. Support ticket + CRM audit for any export-related requests in the past 12 months (U-1)\n2. Sales loss report pull + 3–5 AE interviews on whether export has come up in deals (U-2)\n3. Competitive teardown: what exactly did the two competitors ship, and what are users saying about it (U-3)\n4. 5–8 power user interviews focused on data workflows and export needs (U-4)\n5. One-page synthesis: proceed / do not proceed / redirect, with supporting evidence\n\n**Decision gate:** At the end of the 2-week brief, the team reviews findings and makes one of three calls:\n- **Proceed to full PRD** — demand signal confirmed, scope can be defined, engineering estimate can be validated\n- **Redirect** — evidence shows a different, smaller export improvement is the actual user need\n- **Deprioritize** — no demand signal found; competitive parity framing was insufficient; team moves to next priority\n\n### Why not start the PRD now?\n\nStarting a full PRD before these unknowns are resolved produces a document built on assumptions. That document will either (a) get revised substantially once research is completed, wasting the writing effort, or (b) never get revised, resulting in engineering building to assumptions rather than evidence. Neither outcome is acceptable for a 10-week commitment.\n\nTwo weeks of discovery protects 10 weeks of engineering.\n\n---\n\n## Appendix: What This PRD Would Look Like If Readiness Were Met\n\nIf the Discovery Brief returns a strong demand signal, the full PRD should include:\n\n- **Problem statement** grounded in user quotes and quantified request volume\n- **User segment** — which users need this, in what workflow context, at what frequency\n- **Scope definition** — specific export formats, triggers, volume, access model\n- **Success metrics** — feature adoption rate at 90 days, support ticket deflection, AE win-rate in affected deals\n- **Engineering scope review** — 10-week estimate should be re-validated after scope is defined\n- **Rollout plan** — beta cohort, feedback loop, GA criteria\n\nThis section is provided so the team has a clear view of what \"PRD-ready\" looks like and can move quickly once validation is complete.",
+        "claims": [
+          {
+            "claim_id": "side_a-claim-1",
+            "summary": "Competitive parity alone is insufficient justification for a 10-week engineering commitment; the PRD fails all readiness criteria and should not proceed to execution without a 2-week discovery sprint.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-2",
+            "summary": "All six critical unknowns (user demand, deal loss attribution, competitive feature specifics, workflow context, scope definition, opportunity cost) can be resolved in 2–3 weeks with a single PM and no engineering resources.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-3",
+            "summary": "The risks of proceeding without validation (10 weeks building to zero-demand assumptions) are asymmetric with the risk of a short delay for discovery (2–3 week validation sprint).",
+            "evidence_refs": [],
+            "is_major": false
+          }
+        ],
+        "citations": [],
+        "conclusion_confidence": "high",
+        "open_questions": [
+          "Has the product team already conducted any informal outreach to users about export needs that was not captured in the intake brief?",
+          "What is the specific nature of the competitor export features — are they targeting the same user segment this team serves?",
+          "Is there an upcoming renewal cycle, analyst review, or sales push where the absence of export capability would become materially visible in the next 60–90 days?",
+          "What is currently occupying the 10 weeks of engineering capacity that would be redirected to this feature — and what is the cost of delaying that work?"
+        ],
+        "critique_responses": []
+      },
+      "rebuttal": {
+        "target_side": "side_b",
+        "finding_id": "finding-1",
+        "target_claim_ids": [
+          "side_b-claim-1"
+        ],
+        "claim_under_attack": "A 10-week advanced export build should not be approved on competitor launches alone; the correct near-term requirement is a gated validation phase that establishes user demand, business impact, and minimum viable scope.",
+        "attack_type": "evidence_gap",
+        "evidence_or_reason": "The artifact asserts a 2-week validation sprint as the correct next step, but provides no basis for concluding that validation evidence will actually be available or actionable within that window. The plan relies on reviewing sales calls, support tickets, and interviewing 8-10 users — but the case packet explicitly states there is no customer request data, no support ticket volume, and no sales loss attribution. If those channels are genuinely empty, the validation phase produces a null result, not a proceed/no-proceed signal. The artifact does not address what happens if the 2-week sprint yields inconclusive or absent evidence: does absence of signal mean no-build, or does it mean the research methodology was insufficient? The Pass/Fail gates also conflate evidence quality with evidence volume — 'repeated user evidence' and 'credible deal friction' are undefined thresholds that could rationalize either outcome. The core claim that validation is the correct near-term requirement is structurally sound, but the artifact overstates its confidence in the validation path by not accounting for the scenario where the evidentiary channels it proposes to mine are as empty as the case packet suggests.",
+        "severity": "medium"
+      },
+      "final": {
+        "run_id": "conflict-2026-04-16-144916244Z-competitor-pari-92a7a17b",
+        "side_id": "side_a",
+        "round": "final",
+        "artifact_markdown": "# PRD: Advanced Export Feature\n\n**Status:** HOLD — Readiness gate not met  \n**Requested investment:** 10 weeks engineering  \n**Sole justification on intake:** Two competitors shipped similar features in the past 30 days\n\n---\n\n## Decision Frame\n\n### What decision does this PRD need to enable?\n\nShould the team commit 10 weeks of engineering capacity to build an advanced export feature, or redirect that investment toward higher-confidence priorities?\n\nThis is **not** a question about whether export functionality is generically valuable. It is a question about whether this team, at this moment, has sufficient evidence that building this feature will produce meaningful outcomes — for users, for retention, for revenue, or for competitive positioning.\n\n### Why this matters right now\n\nThe intake justification is that two competitors shipped advanced export features last month. Competitive moves are a legitimate signal worth investigating. They are not, by themselves, a sufficient basis for committing 10 engineering weeks. Competitor behavior is evidence about competitor strategy — it is not evidence about what our users need or what they will do differently if we ship this.\n\nThe risk of proceeding without demand validation:\n- We build something no current user has asked for\n- We occupy 10 weeks of roadmap with low-confidence work\n- We create maintenance surface for a feature with unknown adoption\n- We do not learn whether the feature gap is actually causing sales loss or churn\n\nThe risk of not proceeding:\n- If the feature is genuinely table-stakes for a buyer segment, continued absence may cost deals\n- Competitors establish a perception advantage in analyst/comparison contexts\n\nThese risks are **not symmetric**. The cost of a 2–4 week validation sprint is far lower than the cost of a 10-week build that produces low adoption.\n\n---\n\n## Unknowns & Evidence Gaps\n\nThe following items are unknown and must be resolved before this PRD can advance to execution-ready status.\n\n| # | Unknown | Why It Matters | How to Resolve | Est. Time | Cross-Functional Dependency |\n|---|---------|---------------|----------------|-----------|-----------------------------|\n| U-1 | Has any user, prospect, or churned customer ever requested advanced export? | If zero requests exist, the feature likely serves a user segment we do not yet have | Support ticket audit, CRM search, CS interview, churn exit survey review | 3–5 days | May require Ops/CS access and data pull help |\n| U-2 | Have we lost deals or experienced churn attributed to missing export capability? | This is the strongest possible signal — if sales can attribute losses, the investment justification is immediate | Sales loss report audit, deal debrief interviews with AEs | 3–7 days | Dependent on AE availability and scheduling; not PM-controlled |\n| U-3 | What specifically did competitors ship? Are their features equivalent to what we would build? | \"Advanced export\" is vague. Competitor features may target segments we don't serve, or may be poorly received | Competitive teardown (free trial, G2/Capterra reviews, release notes) | 2–3 days | Largely self-serve; no dependencies |\n| U-4 | Which user workflows would advanced export unlock, and how frequently do those workflows occur? | Without this, we cannot scope the feature or measure success post-launch | 5–8 user interviews with power users or export-adjacent workflows | 2–4 weeks | Recruitment and scheduling are outside PM control; this is the highest-variance item |\n| U-5 | What does \"advanced\" mean in our context — formats, automation, volume, API access, scheduling? | Scope ambiguity makes the 10-week estimate unreliable | Internal scoping session; may require a feasibility check from engineering | 2–3 days | Scope definition likely requires at least one engineering touchpoint to validate feasibility assumptions |\n| U-6 | What is the opportunity cost of 10 weeks? What does not get built? | Competitor parity as a frame ignores the full portfolio tradeoff | Roadmap review with current prioritization context | 1 day | Requires engineering and leadership alignment |\n\n**Evidence discipline note:** U-1, U-2, and U-3 are primarily internal data audits and desk research — lower scheduling risk. U-4 carries the highest schedule variance because user interview recruitment is external and not PM-controlled. U-5 and U-6 require at least light engineering and leadership involvement. The full validation set is best framed as a 3–4 week time-box with explicit dependency tracking, not a single-PM deliverable.\n\n---\n\n## Pass/Fail Readiness\n\nThis PRD is evaluated against minimum readiness criteria for proceeding to scoping and execution.\n\n| Criterion | Required | Current Status | Pass/Fail |\n|-----------|----------|---------------|-----------|\n| At least one user-articulated pain point tied to export | Yes | Not established | **FAIL** |\n| Quantified demand signal (tickets, requests, deal loss) | Yes | Not established | **FAIL** |\n| Defined feature scope sufficient for estimation | Yes | Not established — \"advanced export\" is undefined | **FAIL** |\n| Opportunity cost assessed against roadmap alternatives | Yes | Not established | **FAIL** |\n| Success metric defined with baseline | Yes | Not established | **FAIL** |\n| Competitive teardown completed | Recommended | Not completed | **FAIL** |\n\n**Readiness verdict: NOT READY TO PROCEED**\n\nThe current basis — two competitor launches in the past 30 days — fails every readiness criterion. This does not mean the feature is wrong. It means we do not yet know whether it is right.\n\n**What would change this verdict:**  \nAny one of the following, discovered during validation, would unlock a fast-track path to execution:\n- A pattern of user requests (even 5–10 tickets) for export capabilities we do not currently offer\n- A confirmed deal loss or churn case attributable to missing export\n- A competitive teardown showing that the competitor feature is now featured in analyst comparisons in our target segment\n\n---\n\n## Recommended Next Artifact\n\n**Do not produce a full PRD at this stage.**\n\nThe recommended next artifact is a **Discovery Brief** with a 3–4 week time-box.\n\n### Discovery Brief scope\n\n**Owner:** Product (1 PM lead)\n\n**Cross-functional requirements:** This brief cannot be completed by a PM working in isolation. The following dependencies must be confirmed before the time-box begins:\n- CS/Ops access to pull support tickets and CRM export-related requests (U-1)\n- Sales team scheduling commitment for 3–5 AE interviews (U-2) — secure calendar holds before starting the sprint\n- User research panel or customer success–facilitated recruitment for 5–8 interviews (U-4) — this is the highest-variance item; start recruitment on day 1, not week 2\n- One engineering touchpoint (~2 hours) to pressure-test scope assumptions from competitive teardown (U-5)\n\n**Time-box:** 3–4 weeks (not 2 weeks; interview recruitment and AE scheduling introduce schedule variance outside PM control)\n\n**Deliverables:**\n1. Support ticket + CRM audit for any export-related requests in the past 12 months (U-1)\n2. Sales loss report pull + 3–5 AE interviews on whether export has come up in deals (U-2)\n3. Competitive teardown: what exactly did the two competitors ship, and what are users saying about it (U-3)\n4. 5–8 power user interviews focused on data workflows and export needs (U-4)\n5. Lightweight engineering scope check: is \"advanced export\" as defined by competitors feasible in a 10-week window, or does the estimate need revision (U-5)\n6. One-page synthesis: proceed / redirect / deprioritize, with supporting evidence\n\n**Decision gate:** At the end of the time-box, the team reviews findings and makes one of three calls:\n- **Proceed to full PRD** — demand signal confirmed, scope can be defined, engineering estimate re-validated\n- **Redirect** — evidence shows a different, smaller export improvement is the actual user need\n- **Deprioritize** — no demand signal found; competitive parity framing was insufficient; team moves to next priority\n\n### Why not start the PRD now?\n\nStarting a full PRD before these unknowns are resolved produces a document built on assumptions. That document will either (a) get revised substantially once research is completed, wasting the writing effort, or (b) never get revised, resulting in engineering building to assumptions rather than evidence. Neither outcome is acceptable for a 10-week commitment.\n\nThree to four weeks of discovery with proper cross-functional alignment protects 10 weeks of engineering.\n\n---\n\n## Appendix: What This PRD Would Look Like If Readiness Were Met\n\nIf the Discovery Brief returns a strong demand signal, the full PRD should include:\n\n- **Problem statement** grounded in user quotes and quantified request volume\n- **User segment** — which users need this, in what workflow context, at what frequency\n- **Scope definition** — specific export formats, triggers, volume, access model\n- **Success metrics** — feature adoption rate at 90 days, support ticket deflection, AE win-rate in affected deals\n- **Engineering scope review** — 10-week estimate should be re-validated after scope is defined\n- **Rollout plan** — beta cohort, feedback loop, GA criteria\n\nThis section is provided so the team has a clear view of what \"PRD-ready\" looks like and can move quickly once validation is complete.",
+        "claims": [
+          {
+            "claim_id": "side_a-claim-1",
+            "summary": "Competitive parity alone is insufficient justification for a 10-week engineering commitment; the PRD fails all readiness criteria and should not proceed to execution without a structured discovery sprint.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-2",
+            "summary": "The six critical unknowns can be resolved in a 3–4 week discovery sprint, but this requires confirmed cross-functional availability (CS/Ops for data pulls, AE scheduling, user interview recruitment, and a light engineering touchpoint) — not a single-PM effort.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-3",
+            "summary": "The risks of proceeding without validation are asymmetric with the risk of a short delay for discovery; a 3–4 week sprint with cross-functional dependencies accounted for protects 10 weeks of engineering capacity.",
+            "evidence_refs": [],
+            "is_major": false
+          }
+        ],
+        "citations": [],
+        "conclusion_confidence": "high",
+        "open_questions": [
+          "Has the product team already conducted any informal outreach to users about export needs that was not captured in the intake brief?",
+          "What is the specific nature of the competitor export features — are they targeting the same user segment this team serves?",
+          "Is there an upcoming renewal cycle, analyst review, or sales push where the absence of export capability would become materially visible in the next 60–90 days?",
+          "What is currently occupying the 10 weeks of engineering capacity that would be redirected to this feature — and what is the cost of delaying that work?",
+          "Are AE calendars available for deal debrief interviews in the next 2 weeks, and is there an active user research panel for recruitment, or will cold outreach be required?"
+        ],
+        "critique_responses": [
+          {
+            "finding_id": "finding-2",
+            "disposition": "adopted",
+            "rationale": "The critique correctly identifies that the original claim overstated certainty about timeline and staffing. CRM/support audits may require Ops assistance, AE interviews depend on sales scheduling outside PM control, user interview recruitment is the highest-variance item and can easily exceed a 1–2 week window, and scope definition (U-5) likely requires at least one engineering touchpoint to pressure-test feasibility assumptions. The revised artifact updates the time-box from 2–3 weeks to 3–4 weeks, adds a cross-functional dependency table to the unknowns section, and restructures the Discovery Brief to require explicit scheduling commitments before the sprint begins rather than assuming single-PM execution. The core conclusion — that discovery should precede the full PRD — is unchanged; only the staffing and timeline precision has been corrected."
+          }
+        ]
+      }
+    },
+    "side_b": {
+      "provider": "openai",
+      "model": "chatgpt-pro",
+      "reasoning_effort": "medium",
+      "access_mode": "subscription_cli",
+      "role": "side_b",
+      "first_pass": {
+        "run_id": "conflict-2026-04-16-144916244Z-competitor-pari-92a7a17b",
+        "side_id": "side_b",
+        "round": "first_pass",
+        "artifact_markdown": "# PRD: Advanced Export Demand Validation and Release Decision\n\n## Summary\nDo not approve a 10-week implementation on competitor motion alone. The correct product requirement is a short validation phase that determines whether advanced export solves a real customer problem, changes deal outcomes, or materially affects retention.\n\n## Problem Statement\nTwo competitors launched advanced export capabilities last month. That is a market signal, but it is not sufficient evidence of customer demand, commercial impact, or strategic necessity in this product context. There is currently no user research, no customer request volume, no support evidence, and no attributed revenue loss tied to the missing feature.\n\n## Decision\nRun a time-boxed validation effort before committing engineering build capacity. Defer full implementation approval until demand, user value, and business impact clear predefined gates.\n\n## Goals\n- Determine whether advanced export addresses a frequent, high-severity user job.\n- Determine whether the missing capability is causing measurable friction in retention, expansion, or sales.\n- Define the minimum viable scope if evidence supports proceeding.\n- Avoid spending 10 weeks on a parity feature with unclear ROI.\n\n## Non-Goals\n- Shipping the full advanced export feature in this phase.\n- Matching competitor scope feature-for-feature without evidence.\n- Writing a delivery plan for implementation before validation gates are met.\n\n## Users and Jobs To Be Done\nPrimary candidates to validate:\n- Operations or analyst users who need to move product data into downstream workflows.\n- Admin or reporting users who need scheduled, filtered, or high-volume exports.\n- Sales prospects or current customers claiming export limitations block adoption or expansion.\n\n## Hypotheses\n1. A meaningful segment has a recurring export workflow that is not served by current capabilities.\n2. The gap is important enough to influence renewal, expansion, win rate, or product adoption.\n3. A narrower version of advanced export may capture most of the value at substantially lower cost than a broad parity build.\n\n## Validation Plan\nDuration: 2 weeks.\n\nWorkstreams:\n- Review recent sales calls, lost deals, support tickets, and account notes for export-related pain.\n- Interview 8-10 target users or recent prospects with likely export-heavy workflows.\n- Quantify how often users hit current export limitations and what they do instead.\n- Compare competitor positioning to identify whether their launches target real workflow depth or only checklist parity.\n- Produce a scoped recommendation: no-build, narrow build, or full build.\n\n## Decision Gates\nProceed to implementation planning only if at least one of the following is true:\n- Repeated user evidence shows advanced export is a top workflow blocker.\n- Sales evidence shows credible deal friction or loss attributable to the missing capability.\n- Retention or expansion evidence shows clear customer risk.\n- A narrow, high-value scope can be delivered with materially lower effort than the current 10-week estimate.\n\n## Requirements for a Proceed Decision\nIf gates are met, the follow-on implementation PRD must specify:\n- Target users and workflows.\n- Exact export formats, filters, scheduling, automation, permissions, and scale requirements.\n- Success metrics tied to usage and business outcome.\n- A phased scope with MVP and deferred items.\n- Engineering tradeoffs versus other roadmap work.\n\n## Success Metrics for This Phase\n- Number of validated customer workflows that current export cannot support.\n- Count of opportunities or accounts with credible export-related friction.\n- Estimated revenue, retention, or efficiency impact tied to the gap.\n- Confidence level on MVP scope and expected adoption.\n\n## Risks\n- Competitor launches may create internal urgency that exceeds actual customer need.\n- Users may want export in principle but not enough to change behavior or buying decisions.\n- Broad parity scope may hide several distinct jobs with very different value.\n- Opportunity cost is high given the 10-week estimate.\n\n## Decision Frame\nCurrent evidence does not justify a build commitment. The actionable decision is to approve a short validation sprint, not a delivery PRD for implementation. Competitor movement is a useful trigger for investigation, but not a sufficient basis for allocating 10 weeks of engineering time.\n\n## Unknowns & Evidence Gaps\n- Which user segments actually need advanced export, and how often.\n- Whether the missing capability affects wins, losses, retention, or expansion.\n- What minimum scope would solve the real job.\n- Whether current workarounds are merely inconvenient or genuinely business-critical.\n- Whether competitor launches reflect true demand or defensive checklist expansion.\n\n## Pass/Fail Readiness\nPass:\n- Clear qualitative and quantitative evidence of painful, repeated workflows.\n- Credible commercial impact or strong strategic necessity.\n- Narrow initial scope with acceptable effort and measurable outcome.\n\nFail:\n- Interest is anecdotal or low-frequency.\n- No attributable commercial or retention impact emerges.\n- Required scope remains broad enough that ROI is still unclear at 10 weeks.\n\n## Recommended Next Artifact\nProduce a validation brief, not an implementation PRD. That brief should include interview findings, ticket and sales evidence, quantified impact, competitor comparison, recommended scope, and a build/no-build decision with confidence.",
+        "claims": [
+          {
+            "claim_id": "side_b-claim-1",
+            "summary": "A 10-week advanced export build should not be approved on competitor launches alone; the correct near-term requirement is a gated validation phase that establishes user demand, business impact, and minimum viable scope.",
+            "evidence_refs": [],
+            "is_major": true
+          }
+        ],
+        "citations": [],
+        "conclusion_confidence": "medium",
+        "open_questions": [
+          "Which specific user segments encounter export limitations often enough to justify investment?",
+          "Is there any attributable sales, retention, or expansion impact tied to the missing capability?",
+          "What is the smallest export scope that would solve the highest-value workflow if demand is validated?",
+          "How much of the competitor launch is substantive workflow depth versus market signaling?"
+        ],
+        "critique_responses": []
+      },
+      "rebuttal": {
+        "target_side": "side_a",
+        "finding_id": "finding-2",
+        "target_claim_ids": [
+          "side_a-claim-2"
+        ],
+        "claim_under_attack": "All six critical unknowns (user demand, deal loss attribution, competitive feature specifics, workflow context, scope definition, opportunity cost) can be resolved in 2–3 weeks with a single PM and no engineering resources.",
+        "attack_type": "evidence_gap",
+        "evidence_or_reason": "The artifact provides no evidence for the execution estimate or staffing assumption. Several listed tasks depend on cross-functional availability and uncertain throughput: CRM/support audits can require ops help, AE interviews depend on sales scheduling, 5–8 user interviews may take longer than 1–2 weeks to recruit and complete, and scope definition may require engineering input to test feasibility. Claiming the full unknown set can be resolved in 2–3 weeks with one PM and no engineering overstates certainty without visible support.",
+        "severity": "medium"
+      },
+      "final": {
+        "run_id": "conflict-2026-04-16-144916244Z-competitor-pari-92a7a17b",
+        "side_id": "side_b",
+        "round": "final",
+        "artifact_markdown": "# Revised artifact\n\n## PRD: Advanced Export Evidence Gate and Decision Memo\n\n## Summary\nDo not approve a 10-week advanced export build on competitor launches alone. The correct near-term product requirement is a bounded evidence-gathering phase whose primary output is a build/no-build decision, with explicit treatment of null or inconclusive findings.\n\n## Problem Statement\nTwo competitors launched advanced export features last month. That is a market signal, but the case provides no user research, no customer request data, no support ticket volume, and no attributed sales loss tied to the gap. In that context, competitor parity is insufficient justification for committing 10 weeks of engineering effort.\n\n## Product Decision\nApprove a short evidence-gathering phase, not feature delivery. The phase exists to answer a narrower decision: whether there is enough verified user or commercial impact to justify any export investment now.\n\n## Goals\n- Determine whether advanced export solves a repeated, high-severity workflow problem.\n- Determine whether the missing capability has credible commercial or retention impact.\n- Determine whether there is a narrower scope worth considering if demand exists.\n- Create an explicit decision rule for absent or inconclusive evidence.\n\n## Non-Goals\n- Committing to a full parity build in this phase.\n- Treating competitor launches as sufficient proof of demand.\n- Expanding research indefinitely if early channels show no signal.\n\n## Evidence Plan\nDuration: up to 2 weeks, ending early if evidence is clearly absent.\n\nWorkstreams:\n- Check whether any export-related evidence exists in sales notes, support logs, account history, or product feedback.\n- Interview up to 8 target users or recent prospects only if suitable candidates can be identified quickly.\n- Document current export workarounds and whether they are merely inconvenient or business-critical.\n- Assess competitor launches only as market context, not as standalone justification.\n\n## Decision Logic\nAt the end of the evidence phase, choose one of three outcomes:\n- No-build now: selected if evidence channels are empty, weak, or inconclusive and no credible business impact is established.\n- Narrow-scope exploration: selected only if a specific high-value workflow appears repeatedly and can likely be solved with materially less effort than the current 10-week estimate.\n- Full implementation PRD: selected only if strong evidence shows repeated user pain plus credible commercial, retention, or strategic impact.\n\nNull-result rule:\n- If the proposed evidence channels produce little or no signal, treat that as failure to justify the investment now, not as automatic justification for more open-ended research.\n- Additional research is warranted only if there is a concrete reason to believe the initial channels were structurally insufficient, such as missing instrumentation or inaccessible but known high-value accounts.\n\n## Readiness Thresholds\nA proceed recommendation requires all of the following:\n- At least one clearly defined user segment with a recurring export job that current product behavior does not serve.\n- Evidence that the problem is consequential, not merely a preference or checklist item.\n- A plausible path to measurable impact on adoption, retention, expansion, or sales.\n- A scoped solution hypothesis that is smaller or more targeted than undifferentiated parity where possible.\n\n## Output of This Phase\nProduce a decision memo containing:\n- Evidence found and evidence not found.\n- Quality of each evidence source.\n- Recommended outcome: no-build now, narrow-scope exploration, or full implementation PRD.\n- Confidence and rationale.\n\n## Decision Frame\nThe decision is not whether advanced export is generally useful in the market. The decision is whether this product should commit 10 weeks now. On the current record, the answer is no. The immediate requirement is a bounded evidence gate with an explicit default to no-build if meaningful signal does not emerge.\n\n## Unknowns & Evidence Gaps\n- Whether any real user segment experiences repeated export pain.\n- Whether the gap affects revenue, retention, or deal outcomes.\n- Whether there is a narrow workflow worth solving instead of broad parity.\n- Whether absence of evidence reflects true low demand versus limited observability.\n\n## Pass/Fail Readiness\nPass:\n- Clear evidence identifies a recurring workflow, affected segment, and meaningful business consequence.\n- A scoped solution can be tied to measurable outcomes.\n- Confidence is high enough to justify opportunity cost against other roadmap work.\n\nFail:\n- Evidence channels are empty or produce only anecdotal interest.\n- Commercial impact remains unattributed.\n- The likely solution remains broad parity with unclear ROI.\n- Research output is inconclusive without a specific reason to believe the method missed known demand.\n\n## Recommended Next Artifact\nProduce a decision memo, not an implementation PRD. The memo should end with one explicit recommendation: no-build now, narrow-scope exploration, or full build PRD, plus the evidence standard used to reach that conclusion.",
+        "claims": [
+          {
+            "claim_id": "side_b-claim-1",
+            "summary": "A 10-week advanced export build should not be approved on competitor launches alone; the correct near-term step is a bounded evidence gate with an explicit default to no-build if meaningful demand or business impact does not emerge.",
+            "evidence_refs": [
+              "ctx-1"
+            ],
+            "is_major": true
+          }
+        ],
+        "citations": [
+          "ctx-1"
+        ],
+        "conclusion_confidence": "medium",
+        "open_questions": [
+          "Are there any identifiable customer segments with recurring export workflows severe enough to change behavior or outcomes?",
+          "If evidence channels are sparse, is that because demand is low or because observability is weak?",
+          "Is there a materially smaller scope that captures most of the value if some demand is found?"
+        ],
+        "critique_responses": [
+          {
+            "finding_id": "finding-1",
+            "disposition": "adopted",
+            "rationale": "The critique is correct that the first pass overstated the determinacy of a 2-week validation sprint. The revision keeps the evidence-gathering phase but adds explicit null-result logic, clarifies that empty channels default to no-build rather than automatic further research, and tightens the proceed thresholds so inconclusive evidence cannot be interpreted opportunistically."
+          }
+        ]
+      }
+    }
+  },
+  "judge": {
+    "provider": "openai",
+    "model": "chatgpt-pro",
+    "reasoning_effort": "medium",
+    "access_mode": "subscription_cli",
+    "blind_labels": true,
+    "family_blind": false,
+    "selection_policy": "single_judge_cli",
+    "verdict": {
+      "winner": "side_b",
+      "margin": 0.2,
+      "rubric_scores": {
+        "side_a": {
+          "claim_quality": 4,
+          "evidence_discipline": 4,
+          "responsiveness_to_critique": 4,
+          "internal_consistency": 4,
+          "decision_usefulness": 4,
+          "weighted_total": 4
+        },
+        "side_b": {
+          "claim_quality": 4,
+          "evidence_discipline": 5,
+          "responsiveness_to_critique": 5,
+          "internal_consistency": 4,
+          "decision_usefulness": 4,
+          "weighted_total": 4.2
+        }
+      },
+      "dimension_rationales": {
+        "claim_quality": "Both sides made strong core claims that competitor parity alone does not justify a 10-week build. Side A offered a fuller operating frame, while Side B stated the decision rule more tightly.",
+        "evidence_discipline": "Side B was stronger because it explicitly handled null-result and inconclusive-evidence cases, reducing the risk of overstating what a validation phase can prove. Side A improved materially but still leaned more on estimated discovery mechanics.",
+        "responsiveness_to_critique": "Both sides adopted the critique, but Side B integrated the critique more directly into its core decision logic by adding an explicit default-to-no-build rule when evidence is absent or weak.",
+        "internal_consistency": "Both artifacts were coherent and mostly internally consistent. Side A’s added process detail was useful but introduced more operational assumptions; Side B stayed narrower and cleaner.",
+        "decision_usefulness": "Both are decision-useful and correctly recommend against immediate build approval. Side B is slightly stronger because it gives the clearest end-state logic for no-build, narrow-scope exploration, or full PRD, which better supports an actual gating decision."
+      },
+      "side_summaries": {
+        "side_a": {
+          "strengths": [
+            "Provides a thorough readiness framework and practical discovery plan tied to the missing evidence."
+          ],
+          "weaknesses": [
+            "Still carries more execution-detail assumptions than the record supports, which slightly weakens its evidence discipline."
+          ]
+        },
+        "side_b": {
+          "strengths": [
+            "Translates the critique into a sharper decision rule with explicit handling for absent or inconclusive evidence."
+          ],
+          "weaknesses": [
+            "Is less operationally detailed about how the evidence phase would be run and managed."
+          ]
+        }
+      },
+      "decisive_dimension": "evidence_discipline",
+      "decisive_findings": [
+        "Side B directly resolved the main critique by specifying that empty or weak evidence channels default to no-build now rather than open-ended further research.",
+        "Side B kept the artifact tightly scoped to the actual decision gate, avoiding additional planning assumptions not supported by the scenario.",
+        "Side A improved substantially but still depended more on assumed cross-functional execution details and timing estimates."
+      ],
+      "judge_confidence": "medium",
+      "needs_human_review": false,
+      "rationale": "Side B wins narrowly because both artifacts reach the right headline conclusion, but Side B is more disciplined about what can and cannot be inferred from the available record. Its revised artifact squarely addresses the critique by making null or inconclusive evidence decision-relevant instead of treating validation as inherently decisive. Side A remains strong, especially on structure and practical readiness framing, but it still embeds more operational assumptions than the scenario justifies. The result is a small but real advantage for Side B on evidence discipline and critique handling."
+    }
+  },
+  "budgets": {
+    "max_visible_rounds": 3,
+    "max_cost_usd": 1000000,
+    "max_latency_ms": 360000,
+    "min_margin_for_verdict": 0.1
+  },
+  "results": {
+    "winner": "side_b",
+    "margin": 0.2,
+    "judge_confidence": "medium",
+    "swap_stable": null,
+    "needs_human_review": false
+  },
+  "metrics": {
+    "disagreement_rate": 0.75,
+    "declared_adoption_rate": 1,
+    "substantive_revision_rate": 1,
+    "unsupported_claim_count": 3,
+    "self_contradiction_count": 0,
+    "total_estimated_cost_usd": 0,
+    "swap_margin_delta": null,
+    "judge_margin": 0.2,
+    "cost_per_resolved_run": 0
+  },
+  "audit": {
+    "identity_leak_warnings": [],
+    "protocol_violations": []
+  }
+}

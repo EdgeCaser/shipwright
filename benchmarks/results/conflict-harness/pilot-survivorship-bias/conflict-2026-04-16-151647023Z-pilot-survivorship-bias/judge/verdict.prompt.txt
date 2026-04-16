@@ -1,0 +1,363 @@
+You are the judge in a blinded conflict harness run.
+Provider identity is intentionally hidden. Do not infer provider family.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "winner": "tie",
+  "margin": 0,
+  "rubric_scores": {
+    "side_a": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    },
+    "side_b": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    }
+  },
+  "dimension_rationales": {
+    "claim_quality": "Brief explanation of which side made the stronger claims and why.",
+    "evidence_discipline": "Brief explanation of how the sides used or overstated evidence.",
+    "responsiveness_to_critique": "Brief explanation of how each side handled the critique phase.",
+    "internal_consistency": "Brief explanation of contradictions, coherence, or missing logic.",
+    "decision_usefulness": "Brief explanation of which artifact better supports an actual decision."
+  },
+  "side_summaries": {
+    "side_a": {
+      "strengths": [
+        "One concise strength of Side A."
+      ],
+      "weaknesses": [
+        "One concise weakness of Side A."
+      ]
+    },
+    "side_b": {
+      "strengths": [
+        "One concise strength of Side B."
+      ],
+      "weaknesses": [
+        "One concise weakness of Side B."
+      ]
+    }
+  },
+  "decisive_dimension": "decision_usefulness",
+  "decisive_findings": [
+    "Replace with the actual decisive findings from this run."
+  ],
+  "judge_confidence": "low",
+  "needs_human_review": true,
+  "uncertainty_drivers": [
+    "List the concrete reasons this verdict is uncertain or should be escalated."
+  ],
+  "disambiguation_questions": [
+    "List the most important question that would resolve the uncertainty."
+  ],
+  "needed_evidence": [
+    "List the evidence that would most improve confidence in the verdict."
+  ],
+  "recommended_next_artifact": "Name the next artifact that should exist before acting on this verdict.",
+  "recommended_next_action": "State the next action the orchestrator or user should take.",
+  "can_resolve_with_more_evidence": true,
+  "escalation_recommendation": "State whether to gather more evidence, rejudge, or escalate to human review.",
+  "rationale": "One-paragraph explanation of the verdict."
+}
+
+Use min_margin_for_verdict = 0.1.
+Set rubric_scores.*.weighted_total as a normalized aggregate on the same 1-5 scale as the rubric dimensions, not as a raw sum.
+Treat each side's reported conclusion_confidence as a calibration signal, not a vote multiplier.
+Reward confidence when it is well matched to the evidence and penalize overconfidence when the artifact overreaches.
+judge_confidence rubric:
+- high: the winning side is clearly stronger on at least 3 rubric dimensions and has no major unsupported-claim problem
+- medium: the winning side leads overall but has at least 1 weak dimension or absorbed only part of the opposing critique
+- low: score margin is below min_margin_for_verdict or both sides have significant unsupported claims
+
+Phase 2 uncertainty payload rule:
+- If winner is `tie`, or judge_confidence is `low`, or needs_human_review is `true`, you MUST also populate:
+- uncertainty_drivers
+- disambiguation_questions
+- needed_evidence
+- recommended_next_artifact
+- recommended_next_action
+- can_resolve_with_more_evidence
+- escalation_recommendation
+- If none of those trigger conditions apply, omit the uncertainty payload fields entirely.
+
+Judge packet:
+{
+  "case_packet": {
+    "scenario_id": "pilot-survivorship-bias",
+    "title": "Expansion decision based on survivorship-biased pilot data",
+    "prompt": "Write a PRD to expand a new onboarding flow to all users based on a 90-day pilot. The pilot cohort was opt-in, self-selected from users who responded to an email about trying a new experience. Pilot users showed 34% better 30-day retention than the control. There is no analysis of whether the opt-in signal itself explains the retention difference, and drop-off within the pilot is not reported.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-16-151647023Z-pilot-survivorship-bias",
+      "side_id": "side_a",
+      "round": "first_pass",
+      "artifact_markdown": "# PRD: Onboarding Flow Expansion — Evidence Review & Decision Gate\n\n**Status:** BLOCKED — Evidence gaps must be resolved before expansion is approved  \n**Decision Owner:** Head of Product  \n**Last Updated:** 2026-04-16\n\n---\n\n## Decision Frame\n\nThe product team is evaluating whether to expand a redesigned onboarding flow from a 90-day pilot to the full user base. The pilot reported 34% better 30-day retention compared to a control group.\n\n**The decision is not** \"should we ship this feature?\" — that may well be the right answer. **The decision is** whether the evidence currently in hand is sufficient to justify full rollout, or whether a targeted follow-on analysis would de-risk the investment.\n\n### What the pilot shows\n- Pilot users retained at a 34% higher rate vs. control at 30 days.\n- The pilot ran for 90 days.\n\n### What the pilot does not show\n- Whether the retention lift is attributable to the onboarding flow, or to the self-selection behavior of users who opted in.\n- How users behaved inside the pilot funnel (no within-pilot drop-off data reported).\n- Whether users who declined the opt-in email are meaningfully different from those who accepted — in motivation, intent, or baseline engagement.\n\n### Why this matters for the decision\nIf the retention difference is largely explained by opt-in intent (i.e., users who respond to \"try something new\" emails are inherently more engaged), then expanding the flow to all users — including those who would never have opted in — may produce materially weaker retention outcomes than the pilot implies. Shipping based on the current read risks over-investing in a feature whose causal lift is unknown, and generates misleading baseline metrics for future product decisions.\n\n---\n\n## Unknowns & Evidence Gaps\n\n### Gap 1 — Opt-in Confound (Critical)\n\n**What we don't know:** Whether users who responded to the opt-in email have systematically higher engagement intent than non-respondents, independent of the new onboarding flow.\n\n**Why it's critical:** This is the primary alternative explanation for the 34% lift. If email-responsive users retain at higher rates regardless of which onboarding they receive, the lift belongs to the audience, not the product.\n\n**Minimum evidence needed to close:** A comparison of historical 30-day retention for email-responsive vs. non-responsive user segments using pre-pilot data, or a holdout arm within the pilot (opted-in users, old onboarding) if one exists.\n\n---\n\n### Gap 2 — Within-Pilot Drop-off Not Reported (High)\n\n**What we don't know:** At what step(s) in the new onboarding flow do users exit? What is the completion rate?\n\n**Why it matters:** A retention lift measured at 30 days could be driven by a small segment of users who completed onboarding and became highly active, while a large fraction dropped off early and were effectively unaffected. This changes the product story — and the fix, if any.\n\n**Minimum evidence needed to close:** Step-by-step funnel analysis for pilot users (reach, start, each step, completion).\n\n---\n\n### Gap 3 — Control Group Composition (Medium)\n\n**What we don't know:** How the control group was constructed. Was it:\n- Users who received the email and did not respond?\n- A random holdout of all new users during the pilot period?\n- Users who signed up outside the pilot window?\n\n**Why it matters:** A control group of non-respondents to the same email is a stronger confound signal, not a clean control. A truly randomized holdout would substantially strengthen the causal claim.\n\n**Minimum evidence needed to close:** Documentation of control group assignment methodology.\n\n---\n\n### Gap 4 — Retention Decay Beyond 30 Days (Low / Opportunistic)\n\n**What we don't know:** Whether the 30-day retention advantage holds at 60 and 90 days. With a 90-day pilot, this data exists but was not reported.\n\n**Why it matters:** Onboarding improvements that pull users through early activation sometimes show washout as novelty fades. If the 34% gap narrows by day 90, the business case weakens.\n\n**Minimum evidence needed to close:** Pull 60- and 90-day retention curves for pilot vs. control from existing data.\n\n---\n\n## Pass/Fail Readiness\n\nFull expansion should be gated on the following criteria. Each is independently blocking.\n\n| # | Criterion | Current Status | Owner |\n|---|-----------|---------------|-------|\n| 1 | Opt-in confound addressed (Gap 1) | ❌ Not analyzed | Analytics |\n| 2 | Within-pilot funnel data reviewed (Gap 2) | ❌ Not reported | Analytics |\n| 3 | Control group methodology confirmed (Gap 3) | ❌ Unclear | Analytics / PM |\n| 4 | 60/90-day retention reviewed (Gap 4) | ⚠️ Data exists, not pulled | Analytics |\n\n**Current recommendation:** Do not proceed to full rollout. Proceed to follow-on analysis (see Recommended Next Artifact).\n\n### Conditional approval path\nIf Gap 1 and Gap 2 are closed with findings that support the causal claim, expansion to a broader randomized A/B test (not full rollout) is the appropriate next step. Full rollout requires the A/B test to replicate the retention lift in a non-self-selected population.\n\n---\n\n## Recommended Next Artifact\n\n**Artifact:** Analysis Brief — Pilot Validity Assessment  \n**Owner:** Analytics  \n**Turnaround:** 5–7 business days  \n**Scope:**\n\n1. Run pre-pilot historical retention comparison: email-responsive vs. non-responsive user cohorts (closes Gap 1).\n2. Pull step-level funnel data for pilot cohort (closes Gap 2).\n3. Document control group assignment method (closes Gap 3).\n4. Pull 60/90-day retention curves (closes Gap 4).\n\n**Output:** A one-page findings memo with a single recommendation: (a) proceed to broad A/B test, (b) redesign the study, or (c) abandon the expansion.\n\n**If findings support proceeding:** The follow-on artifact is a **Test Plan PRD** for a randomized A/B test targeting a representative 20% of new users, with pre-registered success metrics and a commit to read results before any further expansion.\n\n---\n\n## Appendix: What a Strong Evidence Package Would Look Like\n\nFor reference, the evidence bar for a full-rollout decision on an onboarding change of this scope should include:\n\n- Randomized assignment (not opt-in) in the test population\n- Documented control group construction\n- Step-level funnel analysis with statistical significance at each drop-off\n- 30-, 60-, and 90-day retention curves\n- Segment analysis confirming lift is not concentrated in one acquisition channel or cohort\n- No interaction with other in-flight tests during the pilot window\n\nThe current pilot meets none of these bars. That does not mean the feature is bad — it means the evidence is immature for a full-rollout decision.",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "The 34% retention lift is not causally attributable to the onboarding flow because the pilot cohort was self-selected via opt-in email, and no analysis was conducted to isolate the opt-in signal from the product effect.",
+          "evidence_refs": [
+            "ctx-pilot-opt-in-design",
+            "ctx-no-confound-analysis"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "The absence of within-pilot drop-off data means the team cannot distinguish between a flow that lifts all users vs. one that creates a small highly-activated segment while losing the majority.",
+          "evidence_refs": [
+            "ctx-no-funnel-reported"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "A targeted 5-7 day analysis brief can close the critical evidence gaps before any expansion commitment is made, at low cost relative to the risk of a full rollout on biased data.",
+          "evidence_refs": [],
+          "is_major": false
+        }
+      ],
+      "citations": [
+        "ctx-pilot-opt-in-design",
+        "ctx-no-confound-analysis",
+        "ctx-no-funnel-reported"
+      ],
+      "conclusion_confidence": "high",
+      "open_questions": [
+        "Was a holdout arm (opted-in users receiving old onboarding) included in the pilot design? If so, Gap 1 may already be closeable with existing data.",
+        "What was the email open and response rate for the opt-in invitation? Low response rates increase the self-selection severity.",
+        "Were any other product changes shipped during the 90-day pilot window that could confound the control comparison?"
+      ],
+      "critique_responses": []
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-16-151647023Z-pilot-survivorship-bias",
+      "side_id": "side_b",
+      "round": "first_pass",
+      "artifact_markdown": "# Your artifact\n\n## PRD: Validation-Gated Rollout for the New Onboarding Flow\n\n### Summary\nThis PRD does not authorize immediate expansion to all users. The available pilot result is directionally promising, but the pilot cohort was opt-in and self-selected, so the observed 34% lift in 30-day retention cannot be treated as causal evidence that the onboarding flow itself will improve retention for the full population. The product requirement is therefore to run a controlled validation phase that can support or reject a broader rollout decision.\n\n### Problem Statement\nThe team wants to expand a new onboarding flow based on a 90-day pilot showing materially better 30-day retention than control. The current evidence is not decision-grade because:\n- pilot enrollment was self-selected from an email response\n- no analysis isolates selection effects from product effects\n- pilot drop-off is not reported\n\n### Goals\n- Determine whether the onboarding flow causes retention improvement in the general user population.\n- Measure funnel performance across the full onboarding journey, including drop-off.\n- Define rollout gates that prevent broad launch on biased or incomplete evidence.\n\n### Non-Goals\n- Immediate 100% rollout to all users.\n- Using pilot retention lift alone as launch justification.\n\n### Users\n- New users entering onboarding.\n- Product and growth teams making rollout decisions.\n\n### Requirements\n1. Randomized assignment\nThe next phase must assign eligible new users into treatment and control through randomized allocation rather than opt-in participation.\n\n2. Funnel instrumentation\nTrack impression, step completion, abandonment, activation, and 30-day retention for both groups.\n\n3. Segment reporting\nReport results by acquisition channel, baseline engagement proxy, geography, device, and account type to detect uneven effects.\n\n4. Attrition visibility\nReport within-flow drop-off for each onboarding step and total completion rate.\n\n5. Guardrail metrics\nTrack activation quality, support contacts, time-to-value, and any negative effect on downstream conversion.\n\n6. Rollout gates\nBroader rollout is allowed only if the randomized test shows a statistically credible retention improvement without unacceptable guardrail regressions.\n\n### Success Metrics\n- Primary: 30-day retention lift in randomized treatment vs. control.\n- Secondary: onboarding completion, activation rate, time-to-value.\n- Guardrails: support burden, downstream conversion, step-level abandonment.\n\n### Launch Plan\n- Phase 1: randomized validation on a representative slice of new users.\n- Phase 2: staged rollout to a larger percentage only if pre-set success criteria are met.\n- Phase 3: full rollout only after validation confirms causal benefit and acceptable guardrails.\n\n## Decision Frame\nDo not approve expansion to all users based on the current pilot alone. Approve a validation-gated PRD whose purpose is to establish whether the onboarding flow, rather than self-selection, drives the observed retention difference.\n\n## Unknowns & Evidence Gaps\n- How much of the 34% retention gap is explained by opt-in intent rather than the new flow.\n- Whether the pilot flow improves or worsens onboarding completion and step-level abandonment.\n- Whether effects generalize beyond users motivated enough to answer an email and volunteer.\n- Whether any retention gain comes with negative tradeoffs on activation quality or downstream conversion.\n\n## Pass/Fail Readiness\nPass if:\n- randomized evidence shows meaningful retention improvement\n- pilot and treatment funnel drop-off are fully reported\n- no material guardrail regressions appear\n- results hold across major user segments\n\nFail if:\n- uplift disappears under randomization\n- drop-off worsens enough to offset retention gains\n- effects are confined to unusually motivated users\n- important instrumentation gaps remain\n\n## Recommended Next Artifact\nAn experiment brief for a randomized controlled rollout, including assignment logic, instrumentation spec, success thresholds, guardrail thresholds, segment cuts, and rollout decision rules.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "The current pilot evidence is insufficient to justify an all-user expansion because the observed retention lift may be explained by self-selection rather than the onboarding flow itself.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "A valid PRD should frame the next step as randomized validation with full funnel instrumentation, not immediate rollout.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "Missing pilot drop-off reporting creates a material blind spot because retention gains could mask onboarding funnel deterioration.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        }
+      ],
+      "citations": [
+        "ctx-1"
+      ],
+      "conclusion_confidence": "medium",
+      "open_questions": [
+        "What was the step-level completion and abandonment pattern within the pilot flow versus control?",
+        "Were pilot users materially different from control on pre-treatment engagement, acquisition source, or intent signals?",
+        "Was the reported 34% retention improvement statistically significant after controlling for observable baseline differences?",
+        "Did any guardrail metrics worsen during the pilot, including activation quality, support burden, or downstream conversion?"
+      ],
+      "critique_responses": []
+    }
+  },
+  "critique_packets": {
+    "side_a": {
+      "target_side": "side_b",
+      "finding_id": "finding-1",
+      "target_claim_ids": [
+        "side_b-claim-3"
+      ],
+      "claim_under_attack": "Missing pilot drop-off reporting creates a material blind spot because retention gains could mask onboarding funnel deterioration.",
+      "attack_type": "logical_gap",
+      "evidence_or_reason": "The claim is internally inconsistent. 30-day retention is a downstream outcome of the onboarding funnel: if a cohort shows 34% better 30-day retention, funnel deterioration cannot be simultaneously 'masked' by that same retention lift. A flow that degrades funnel completion necessarily reduces the pool of users who reach the retention measurement window — which would suppress, not inflate, the retention metric. The real concern with missing drop-off data is not that it hides a hidden funnel regression, but that we cannot distinguish between two very different explanations for the lift: (a) the flow is better and more users complete it, versus (b) the flow is harder but the users who push through are self-selected completers with higher baseline intent. Side B conflates these two distinct analytical problems, weakening the precision of the evidence-gap argument and overstating the independence of funnel metrics from the retention outcome already observed.",
+      "severity": "medium"
+    },
+    "side_b": {
+      "target_side": "side_a",
+      "finding_id": "finding-2",
+      "target_claim_ids": [
+        "side_a-claim-3"
+      ],
+      "claim_under_attack": "A targeted 5-7 day analysis brief can close the critical evidence gaps before any expansion commitment is made, at low cost relative to the risk of a full rollout on biased data.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "The visible artifact provides no evidence that the required analyses are actually feasible within 5-7 business days or that they are low cost. Several proposed tasks depend on data availability and instrumentation quality that are explicitly unknown in the packet, including step-level funnel data, control-group construction details, and longer-horizon retention cuts. If those logs or definitions are missing or inconsistent, the work expands from a brief analysis into reconstruction of the study design, so the timeline and cost claim is unsupported.",
+      "severity": "medium"
+    }
+  },
+  "final_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-16-151647023Z-pilot-survivorship-bias",
+      "side_id": "side_a",
+      "round": "final",
+      "artifact_markdown": "# PRD: Onboarding Flow Expansion — Evidence Review & Decision Gate\n\n**Status:** BLOCKED — Evidence gaps must be resolved before expansion is approved  \n**Decision Owner:** Head of Product  \n**Last Updated:** 2026-04-16\n\n---\n\n## Decision Frame\n\nThe product team is evaluating whether to expand a redesigned onboarding flow from a 90-day pilot to the full user base. The pilot reported 34% better 30-day retention compared to a control group.\n\n**The decision is not** \"should we ship this feature?\" — that may well be the right answer. **The decision is** whether the evidence currently in hand is sufficient to justify full rollout, or whether a targeted follow-on analysis would de-risk the investment.\n\n### What the pilot shows\n- Pilot users retained at a 34% higher rate vs. control at 30 days.\n- The pilot ran for 90 days.\n\n### What the pilot does not show\n- Whether the retention lift is attributable to the onboarding flow, or to the self-selection behavior of users who opted in.\n- How users behaved inside the pilot funnel (no within-pilot drop-off data reported).\n- Whether users who declined the opt-in email are meaningfully different from those who accepted — in motivation, intent, or baseline engagement.\n\n### Why this matters for the decision\nIf the retention difference is largely explained by opt-in intent (i.e., users who respond to \"try something new\" emails are inherently more engaged), then expanding the flow to all users — including those who would never have opted in — may produce materially weaker retention outcomes than the pilot implies. Shipping based on the current read risks over-investing in a feature whose causal lift is unknown, and generates misleading baseline metrics for future product decisions.\n\n---\n\n## Unknowns & Evidence Gaps\n\n### Gap 1 — Opt-in Confound (Critical)\n\n**What we don't know:** Whether users who responded to the opt-in email have systematically higher engagement intent than non-respondents, independent of the new onboarding flow.\n\n**Why it's critical:** This is the primary alternative explanation for the 34% lift. If email-responsive users retain at higher rates regardless of which onboarding they receive, the lift belongs to the audience, not the product.\n\n**Minimum evidence needed to close:** A comparison of historical 30-day retention for email-responsive vs. non-responsive user segments using pre-pilot data, or a holdout arm within the pilot (opted-in users, old onboarding) if one exists.\n\n---\n\n### Gap 2 — Within-Pilot Drop-off Not Reported (High)\n\n**What we don't know:** At what step(s) in the new onboarding flow do users exit? What is the completion rate?\n\n**Why it matters:** A retention lift measured at 30 days could be driven by a small segment of users who completed onboarding and became highly active, while a large fraction dropped off early and were effectively unaffected. This changes the product story — and the fix, if any.\n\n**Minimum evidence needed to close:** Step-by-step funnel analysis for pilot users (reach, start, each step, completion).\n\n---\n\n### Gap 3 — Control Group Composition (Medium)\n\n**What we don't know:** How the control group was constructed. Was it:\n- Users who received the email and did not respond?\n- A random holdout of all new users during the pilot period?\n- Users who signed up outside the pilot window?\n\n**Why it matters:** A control group of non-respondents to the same email is a stronger confound signal, not a clean control. A truly randomized holdout would substantially strengthen the causal claim.\n\n**Minimum evidence needed to close:** Documentation of control group assignment methodology.\n\n---\n\n### Gap 4 — Retention Decay Beyond 30 Days (Low / Opportunistic)\n\n**What we don't know:** Whether the 30-day retention advantage holds at 60 and 90 days. With a 90-day pilot, this data exists but was not reported.\n\n**Why it matters:** Onboarding improvements that pull users through early activation sometimes show washout as novelty fades. If the 34% gap narrows by day 90, the business case weakens.\n\n**Minimum evidence needed to close:** Pull 60- and 90-day retention curves for pilot vs. control from existing data.\n\n---\n\n## Pass/Fail Readiness\n\nFull expansion should be gated on the following criteria. Each is independently blocking.\n\n| # | Criterion | Current Status | Owner |\n|---|-----------|---------------|-------|\n| 1 | Opt-in confound addressed (Gap 1) | ❌ Not analyzed | Analytics |\n| 2 | Within-pilot funnel data reviewed (Gap 2) | ❌ Not reported | Analytics |\n| 3 | Control group methodology confirmed (Gap 3) | ❌ Unclear | Analytics / PM |\n| 4 | 60/90-day retention reviewed (Gap 4) | ⚠️ Data exists, not pulled | Analytics |\n\n**Current recommendation:** Do not proceed to full rollout. Proceed to follow-on analysis (see Recommended Next Artifact).\n\n### Conditional approval path\nIf Gap 1 and Gap 2 are closed with findings that support the causal claim, expansion to a broader randomized A/B test (not full rollout) is the appropriate next step. Full rollout requires the A/B test to replicate the retention lift in a non-self-selected population.\n\n---\n\n## Recommended Next Artifact\n\n**Artifact:** Data Availability Assessment + Pilot Validity Analysis  \n**Owner:** Analytics  \n**Phase 1 — Data Scoping (2–3 business days):** Before committing to full analysis work, Analytics must confirm whether the required data is actually available and consistent:\n\n- Are per-step funnel events instrumented and logged for the pilot cohort? (Gap 2)\n- Does a pre-pilot behavioral segment exist for email-responsive vs. non-responsive users? (Gap 1)\n- Is the control group assignment documented and reproducible? (Gap 3)\n- Are 60/90-day retention cuts computable from existing tables? (Gap 4)\n\n**Output of Phase 1:** A scoping memo with one of three verdicts per gap: (a) data is available and clean — analysis is straightforward, (b) data exists but requires reconstruction — timeline and cost expand, or (c) data was not captured — gap cannot be closed from existing logs.\n\n**Phase 2 — Analysis (timeline contingent on Phase 1 findings):** If Phase 1 confirms data availability, the four analyses above can likely be completed in 3–5 additional business days. If instrumentation gaps or inconsistent control group records are found, the team must decide whether to invest in study reconstruction or proceed directly to a fresh randomized A/B test — which bypasses the pilot validity question entirely and may be the faster path.\n\n**If findings support proceeding:** The follow-on artifact is a **Test Plan PRD** for a randomized A/B test targeting a representative 20% of new users, with pre-registered success metrics and a commit to read results before any further expansion.\n\n---\n\n## Appendix: What a Strong Evidence Package Would Look Like\n\nFor reference, the evidence bar for a full-rollout decision on an onboarding change of this scope should include:\n\n- Randomized assignment (not opt-in) in the test population\n- Documented control group construction\n- Step-level funnel analysis with statistical significance at each drop-off\n- 30-, 60-, and 90-day retention curves\n- Segment analysis confirming lift is not concentrated in one acquisition channel or cohort\n- No interaction with other in-flight tests during the pilot window\n\nThe current pilot meets none of these bars. That does not mean the feature is bad — it means the evidence is immature for a full-rollout decision.",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "The 34% retention lift is not causally attributable to the onboarding flow because the pilot cohort was self-selected via opt-in email, and no analysis was conducted to isolate the opt-in signal from the product effect.",
+          "evidence_refs": [
+            "ctx-pilot-opt-in-design",
+            "ctx-no-confound-analysis"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "The absence of within-pilot drop-off data means the team cannot distinguish between a flow that lifts all users vs. one that creates a small highly-activated segment while losing the majority.",
+          "evidence_refs": [
+            "ctx-no-funnel-reported"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "A follow-on analysis is the appropriate next step, but its feasibility and timeline depend on a data availability scoping exercise first — the work may expand from a brief analysis into study reconstruction if instrumentation gaps or inconsistent control group records are found.",
+          "evidence_refs": [],
+          "is_major": false
+        }
+      ],
+      "citations": [
+        "ctx-pilot-opt-in-design",
+        "ctx-no-confound-analysis",
+        "ctx-no-funnel-reported"
+      ],
+      "conclusion_confidence": "medium",
+      "open_questions": [
+        "Was a holdout arm (opted-in users receiving old onboarding) included in the pilot design? If so, Gap 1 may already be closeable with existing data.",
+        "What was the email open and response rate for the opt-in invitation? Low response rates increase the self-selection severity.",
+        "Were any other product changes shipped during the 90-day pilot window that could confound the control comparison?",
+        "Is per-step funnel instrumentation confirmed for the pilot cohort, or is step-level drop-off data unavailable regardless of analysis effort?"
+      ],
+      "critique_responses": [
+        {
+          "finding_id": "finding-2",
+          "disposition": "adopted",
+          "rationale": "The critique is correct. The original artifact asserted a 5-7 business day timeline and implicitly low cost without any basis for those claims — the data availability and instrumentation quality for the required analyses are explicitly unknown. If funnel events were not logged, control group assignment was not documented, or the pre-pilot segment data does not exist in a queryable form, the work expands substantially or becomes impossible. The revised artifact splits the recommendation into a Phase 1 data scoping step (2-3 days) before committing to analysis timelines, acknowledges that instrumentation gaps could force a pivot to a fresh A/B test entirely, and removes the unqualified cost and timeline claims."
+        }
+      ]
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-16-151647023Z-pilot-survivorship-bias",
+      "side_id": "side_b",
+      "round": "final",
+      "artifact_markdown": "# Revised artifact\n\n## PRD: Validation-Gated Expansion for the New Onboarding Flow\n\n### Summary\nThis PRD does not approve immediate expansion to all users. The reported 34% improvement in 30-day retention is promising but not decision-grade because the pilot cohort was opt-in and self-selected from an email outreach, there is no analysis separating selection effects from treatment effects, and pilot funnel drop-off is not reported. The required product outcome is a validation-gated rollout plan that can determine whether the onboarding flow causes better retention for the general population.\n\n### Problem Statement\nThe team wants to expand a new onboarding flow based on a 90-day pilot. The current evidence is insufficient for full rollout because:\n- pilot participation was voluntary and likely enriched for high-intent users\n- no causal analysis tests whether opt-in intent explains the retention gap\n- no within-flow completion or abandonment data is reported\n\n### Goals\n- Determine whether the onboarding flow causally improves 30-day retention in a representative population.\n- Measure how the flow affects onboarding completion, abandonment, activation, and downstream quality.\n- Define explicit rollout gates that block expansion when evidence remains biased or incomplete.\n\n### Non-Goals\n- Immediate 100% rollout based on the current pilot alone.\n- Treating the pilot retention lift as proof of generalizable product impact.\n\n### Users\n- New users entering onboarding.\n- Product, growth, and analytics teams responsible for rollout decisions.\n\n### Requirements\n1. Randomized assignment\nEligible new users must be assigned to treatment and control through randomized allocation rather than opt-in enrollment.\n\n2. Full funnel instrumentation\nTrack exposure, step completion, abandonment, activation, and 30-day retention for both groups.\n\n3. Selection-bias analysis\nCompare treatment and control on observable pre-treatment traits such as acquisition source, device, geography, and baseline intent proxies.\n\n4. Attrition reporting\nReport step-level completion and abandonment so the team can distinguish broad flow improvement from a narrower effect concentrated among highly motivated completers.\n\n5. Guardrail metrics\nTrack support contacts, activation quality, time-to-value, and downstream conversion.\n\n6. Rollout gates\nBroader rollout is permitted only if the randomized test shows credible retention improvement, acceptable funnel performance, and no material guardrail regressions.\n\n### Success Metrics\n- Primary: 30-day retention lift in randomized treatment vs. control.\n- Secondary: onboarding completion, activation rate, time-to-value.\n- Guardrails: support burden, downstream conversion, step-level abandonment.\n\n### Launch Plan\n- Phase 1: randomized validation on a representative slice of eligible new users.\n- Phase 2: staged rollout only if pre-set success and guardrail thresholds are met.\n- Phase 3: full rollout only after evidence supports causal benefit and acceptable tradeoffs.\n\n## Decision Frame\nDo not approve expansion to all users based on the current pilot alone. Approve a validation-gated PRD whose purpose is to test whether the onboarding flow itself, rather than self-selection by high-intent users, explains the observed retention difference.\n\n## Unknowns & Evidence Gaps\n- How much of the 34% retention gap is explained by opt-in intent versus the onboarding experience itself.\n- Whether the flow improves outcomes broadly or mainly among users already inclined to persist.\n- What the pilot step-level completion and abandonment pattern was relative to control.\n- Whether any apparent retention benefit comes with worse activation quality, support burden, or downstream conversion.\n\n## Pass/Fail Readiness\nPass if:\n- randomized evidence shows meaningful retention improvement\n- step-level completion and abandonment are fully reported\n- no material guardrail regressions appear\n- results hold across major user segments and intent proxies\n\nFail if:\n- uplift disappears under randomization\n- benefits appear limited to high-intent subgroups\n- funnel performance or guardrails regress materially\n- instrumentation gaps prevent causal interpretation\n\n## Recommended Next Artifact\nAn experiment brief for a randomized controlled rollout, including assignment logic, instrumentation spec, success thresholds, guardrail thresholds, segment cuts, and decision rules for expansion.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "The current pilot evidence is insufficient to justify an all-user expansion because the observed retention lift may be explained by self-selection rather than the onboarding flow itself.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "A valid PRD should frame the next step as randomized validation with full funnel instrumentation, not immediate rollout.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "Missing pilot drop-off reporting is a material evidence gap because it prevents distinguishing broad onboarding improvement from an effect concentrated among high-intent users who were more likely to persist anyway.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        }
+      ],
+      "citations": [
+        "ctx-1"
+      ],
+      "conclusion_confidence": "medium",
+      "open_questions": [],
+      "critique_responses": [
+        {
+          "finding_id": "finding-1",
+          "disposition": "adopted",
+          "rationale": "The critique correctly identified that the original wording overstated the independence of funnel drop-off from the downstream retention result. I revised the claim to focus on the actual analytic gap: missing drop-off data limits our ability to distinguish broad flow improvement from survivorship among high-intent completers in a self-selected pilot."
+        }
+      ]
+    }
+  },
+  "min_margin_for_verdict": 0.1
+}

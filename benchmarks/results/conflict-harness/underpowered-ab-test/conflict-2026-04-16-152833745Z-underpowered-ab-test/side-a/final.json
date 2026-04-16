@@ -1,0 +1,65 @@
+{
+  "run_id": "conflict-2026-04-16-152833745Z-underpowered-ab-test",
+  "side_id": "side_a",
+  "round": "final",
+  "artifact_markdown": "# PRD: Feature Full-Rollout Decision\n**Feature:** [Feature Name]\n**Author:** PM (with DS advisory)\n**Status:** DECISION REQUIRED — NOT APPROVED FOR SHIP\n**Date:** 2026-04-16\n\n---\n\n## Decision Frame\n\n**What is being decided:** Whether to expand the feature to 100% of users based on a 2-week A/B test (1,200 users/variant) that showed a 6% lift on the primary metric at p=0.08.\n\n**The PM's stated rationale:** Direction is clear; business timeline cannot accommodate a full recommended run.\n\n**What the evidence actually supports:** The observed lift is directionally positive but statistically inconclusive. A p-value of 0.08 means there is roughly a 1-in-12 chance this result arose by chance alone — above the conventional 0.05 threshold and well above thresholds warranted when a full rollout carries meaningful reversion cost. The data science team has explicitly flagged the test as underpowered for the claimed 6% effect size, meaning the study lacked the statistical power to reliably detect an effect of that magnitude. Underpowered tests are systematically biased toward overestimating true effect sizes (the \"winner's curse\"); the real lift, if it exists, is likely smaller than 6%.\n\n**Business constraint acknowledged:** Speed pressure is real and legitimate. This PRD does not dismiss the constraint — it structures the decision so that urgency is weighed against concrete, quantified risk, not assumed away.\n\n**Decision options on the table:**\n\n| Option | Speed | Risk | Reversibility |\n|---|---|---|---|\n| Full rollout now | Immediate | High — ~8% false positive rate; winner's curse inflates expected lift | Low if feature has downstream dependencies |\n| Staged rollout (10–20%) with kill switch | Fast (days) | Medium — limits blast radius, but does NOT accelerate statistical resolution | High |\n| Extend test to 6-week recommended run | Slow (4 more weeks) | Low | N/A — no ship yet |\n| Ship with pre-committed rollback trigger | Fast | Medium — requires defined rollback metric and threshold | High if trigger is honored |\n\n**Recommended decision path:** Staged rollout (10–20%) with a pre-committed, operationally enforced rollback trigger — **with the explicit caveat that staged rollout limits blast radius and preserves reversibility, but does not resolve the underlying statistical uncertainty faster than extending the test would.** The staged approach is a risk-management posture, not an evidence-generation substitute. Full rollout is not recommended until the rollback trigger has been defined, agreed upon, and wired into monitoring.\n\n**What staged rollout does and does not do:**\n- ✓ Reduces the fraction of users exposed to a potentially mismeasured feature\n- ✓ Preserves the ability to roll back quickly if degradation is observed\n- ✓ Can be implemented within days, satisfying the business urgency constraint\n- ✗ Does not generate the additional sample size needed to confirm the 6% lift\n- ✗ Does not resolve novelty-effect ambiguity — the observation window problem persists\n- ✗ Does not eliminate risk if the feature has systemwide or downstream effects that manifest at any exposure level\n\n**If the feature has systemwide or downstream effects:** A staged rollout may not reduce risk meaningfully. This must be assessed by engineering before proceeding. If the feature touches shared infrastructure, session state, or cross-user interactions, the staged approach may need to be replaced with the full 6-week test extension.\n\n---\n\n## Unknowns & Evidence Gaps\n\n**ctx-1 — Statistical power deficit confirmed by DS team**\nThe test ran 2 weeks with 1,200 users/variant. DS recommends a minimum 6-week run. At current sample size and run duration, the test is underpowered to detect the claimed 6% effect at standard power (0.80). The probability of a Type II error (missing a real effect) is elevated, but more critically here, the underpowered design means the observed 6% is an upward-biased estimate of the true effect size.\n\n**ctx-2 — Novelty effect not ruled out**\nA 2-week window is insufficient to separate genuine behavioral change from novelty engagement. Primary metric lift may decay after initial exposure. No longitudinal cohort data is available.\n\n**ctx-3 — Segment heterogeneity unknown**\nThe test result is an aggregate. No subgroup analysis has been surfaced. If the lift is concentrated in one segment (e.g., power users, mobile-only), a full rollout may dilute or invert the effect for other cohorts.\n\n**ctx-4 — Downstream and secondary metric impact unquantified**\nNo data on secondary metrics (e.g., support tickets, churn signal, latency impact) has been presented. A 6% lift on the primary metric at the cost of degradation on a secondary metric may be a net-negative outcome.\n\n**ctx-5 — Rollback cost and mechanism undefined**\nIf the feature underperforms post-rollout, there is no documented rollback plan, triggering threshold, or responsible owner. This gap transforms a probabilistic risk into an operational certainty of delayed response.\n\n**ctx-6 — Business cost of waiting is asserted, not quantified**\nThe PM states the business cannot wait. The cost of a 4-week extension has not been modeled (lost revenue, competitive risk, opportunity cost). Without this, the urgency argument cannot be evaluated against the statistical risk argument on equal footing.\n\n**ctx-7 — Staged rollout feasibility not confirmed**\nIt is unknown whether the monitoring and rollback machinery required for a staged rollout can be implemented within the business timeline, and whether the feature architecture supports partial exposure without systemwide effects. These must be confirmed before the staged path is adopted.\n\n---\n\n## Pass/Fail Readiness\n\nThis section defines the minimum conditions required before full rollout proceeds. These are not aspirational — they are gates. If any gate is unmet, full rollout does not proceed.\n\n**Gate 1 — Rollback trigger defined and operational**\n☐ Primary metric rollback threshold agreed upon in writing by PM and DS\n☐ Monitoring alert wired to threshold\n☐ Rollback owner named and on-call\n**Status: FAIL — not yet defined**\n\n**Gate 2 — Secondary metric baseline captured**\n☐ Support, churn, and latency baselines logged for test variants\n☐ No statistically significant degradation on secondary metrics\n**Status: FAIL — data not surfaced**\n\n**Gate 3 — Segment analysis completed**\n☐ Subgroup breakdown by at least platform, tenure cohort, and usage tier reviewed\n☐ No inversion of effect in a material segment (>15% of user base)\n**Status: FAIL — not completed**\n\n**Gate 4 — Staged rollout feasibility confirmed**\n☐ Engineering confirms feature supports partial exposure without systemwide effects\n☐ Monitoring and rollback machinery implementable within business timeline\n☐ Initial exposure percentage agreed (recommend 10–20%)\n☐ Observation window defined before next rollout increment\n☐ Increments and owners documented\n**Status: FAIL — feasibility not assessed**\n\n**Gate 5 — Business cost of delay quantified**\n☐ Revenue or competitive impact of 4-week delay estimated by finance or strategy\n☐ Comparison to cost of rollback or mismeasured lift completed\n**Status: FAIL — asserted only**\n\n**Readiness verdict: 0/5 gates passed. Full rollout is not ready to proceed.**\n\n---\n\n## Recommended Next Artifact\n\n**Artifact:** Staged Rollout Feasibility Assessment + Monitoring Runbook\n**Owner:** PM (plan), DS (trigger thresholds), Eng (feasibility + monitoring wiring)\n**Due:** Within 3 business days\n\n**Contents required:**\n1. Engineering feasibility confirmation: does the feature support partial exposure without systemwide or downstream effects?\n2. Monitoring and rollback machinery: can it be implemented within the business timeline?\n3. Rollout percentage and increment schedule (if feasibility confirmed)\n4. Primary metric rollback threshold (numeric, agreed between PM and DS)\n5. Secondary metric watch list with alert thresholds\n6. Rollback owner and escalation path\n7. Segment analysis summary from DS team\n8. Business cost of delay estimate (even a rough order of magnitude)\n\n**Why feasibility comes first:** The staged rollout recommendation is a risk-management posture that depends on two preconditions the current evidence does not confirm: (a) the feature can be safely partially exposed, and (b) the required monitoring infrastructure can be built in time. If either precondition fails, the decision reverts to a binary choice between full rollout now (high risk) and test extension (low risk, high delay).\n\n**If the business genuinely cannot wait even for the staged plan:** Document that decision explicitly, name the executive sponsor accepting the statistical and operational risk, and proceed — but do so with eyes open, not by reclassifying insufficient evidence as sufficient.",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "The observed 6% lift at p=0.08 from an underpowered 2-week test does not support full rollout; the winner's curse effect means the true lift is likely smaller than reported, and the 8% false-positive probability is materially elevated above acceptable thresholds for an irreversible rollout.",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "A staged rollout (10–20%) with a pre-committed rollback trigger is a viable risk-management posture — but only if engineering confirms the feature supports partial exposure without systemwide effects and that rollback machinery can be built within the business timeline. Staged rollout limits blast radius; it does not resolve statistical uncertainty.",
+      "evidence_refs": [
+        "ctx-1",
+        "ctx-7"
+      ],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-3",
+      "summary": "The business urgency argument is currently unquantified — without modeling the cost of a 4-week delay against the cost of rolling back a mismeasured feature, the trade-off cannot be evaluated on equal footing.",
+      "evidence_refs": [
+        "ctx-6"
+      ],
+      "is_major": false
+    },
+    {
+      "claim_id": "side_a-claim-4",
+      "summary": "Zero of five readiness gates are satisfied; the absence of a defined rollback trigger is the single highest-priority gap because it transforms a probabilistic risk into an operational certainty of delayed response.",
+      "evidence_refs": [
+        "ctx-5"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1",
+    "ctx-2",
+    "ctx-3",
+    "ctx-4",
+    "ctx-5",
+    "ctx-6",
+    "ctx-7"
+  ],
+  "conclusion_confidence": "medium",
+  "open_questions": [
+    "Does the feature architecture support partial exposure without systemwide or downstream effects? If not, staged rollout is not a viable risk-mitigation path.",
+    "Can the monitoring and rollback machinery required for a staged rollout be implemented within the business timeline?",
+    "What is the actual business cost (revenue, competitive) of a 4-week delay? Without this, urgency cannot be weighed against statistical risk quantitatively.",
+    "Are there segment-level reversals hidden in the aggregate 6% lift? A subgroup with a negative effect and >15% user share would change the rollout recommendation materially.",
+    "Has the primary metric been validated as a leading indicator of business outcomes, or is it a proxy metric with known decoupling risk?"
+  ],
+  "critique_responses": [
+    {
+      "finding_id": "finding-2",
+      "disposition": "adopted",
+      "rationale": "The critique is correct. The original claim overstated what staged rollout delivers: it frames the approach as resolving the speed-vs-risk tension, when the evidence only supports it as a blast-radius reduction measure. The critique correctly identifies three gaps: (1) staged rollout does not generate decision-quality evidence faster than extending the test; (2) the feasibility of the required monitoring/rollback machinery within the business timeline is unconfirmed; (3) if the feature has systemwide or downstream effects, partial exposure may not reduce risk meaningfully. The revised artifact addresses all three by explicitly stating what staged rollout does and does not do, adding a feasibility gate (Gate 4), introducing ctx-7 as a new evidence gap, and reframing the recommended next artifact as a feasibility assessment rather than a runbook. Confidence is downgraded from high to medium to reflect the conditional nature of the staged rollout recommendation."
+    }
+  ]
+}

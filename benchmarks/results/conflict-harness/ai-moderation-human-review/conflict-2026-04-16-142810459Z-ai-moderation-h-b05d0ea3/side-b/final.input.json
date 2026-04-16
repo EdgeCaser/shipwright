@@ -1,0 +1,114 @@
+{
+  "case_packet": {
+    "scenario_id": "ai-moderation-human-review",
+    "title": "AI content moderation with mandatory human review SLA conflict",
+    "prompt": "Write a PRD for an AI-assisted content moderation system where the spec requires AI to flag content automatically AND requires a human reviewer to approve every removal decision, but the SLA requires removals within 60 seconds and the human review queue has a 4-hour average response time.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass": {
+    "run_id": "conflict-2026-04-16-142810459Z-ai-moderation-h-b05d0ea3",
+    "side_id": "side_b",
+    "round": "first_pass",
+    "artifact_markdown": "# AI-Assisted Content Moderation PRD\n\n## Product Requirement Document\n\n### Problem Statement\nThe current specification is internally inconsistent: it requires automatic AI flagging, mandatory human approval for every removal, a 60-second removal SLA, and operates with a human review queue averaging 4 hours. A system cannot satisfy all four conditions simultaneously.\n\n### Goal\nDesign a moderation workflow that preserves human accountability for permanent removals while meeting the 60-second safety response target for harmful content exposure.\n\n### Non-Goals\n- Eliminating human review from permanent enforcement decisions\n- Guaranteeing permanent removal within 60 seconds under current staffing assumptions\n- Using AI-only irreversible enforcement for all policy categories\n\n### Users and Stakeholders\n- Trust and Safety operations\n- End users exposed to harmful content\n- Policy and legal teams\n- Moderators and reviewer managers\n\n### Decision Frame\nAdopt a two-stage enforcement model:\n1. AI performs real-time risk scoring and can place content into a temporary restricted state within 60 seconds.\n2. Human reviewers approve or reject permanent removal decisions.\n\nThis changes the SLA definition from \"permanent removal within 60 seconds\" to \"user exposure stopped within 60 seconds; permanent removal after human review.\" If the business requires permanent removal in under 60 seconds, the requirement fails readiness under the current 4-hour queue baseline and requires staffing or policy changes before build.\n\n### Product Requirements\n#### Functional Requirements\n1. Ingest newly created content and run AI classification immediately.\n2. Assign each item a policy risk score and category.\n3. For content above a configurable threshold, automatically place the item into a temporary hold state within 60 seconds.\n4. Temporary hold state must hide or severely limit distribution pending review.\n5. Create a review task for every held item.\n6. Require human approval before permanent removal.\n7. Allow reviewers to confirm removal, restore content, or escalate edge cases.\n8. Record model output, reviewer action, timestamps, and policy rationale in an audit log.\n9. Notify creators when content is held and again when final action is taken, subject to policy exceptions.\n\n#### Operational Requirements\n1. Measure time to temporary hold separately from time to final decision.\n2. Route highest-severity queues first.\n3. Support queue prioritization by risk, virality, and regulated content type.\n4. Provide fail-safe behavior if the review system is degraded: hold remains temporary until review or timeout policy is reached.\n\n#### Policy Requirements\n1. Permanent deletion requires human approval.\n2. AI-only action is reversible and explicitly classified as temporary enforcement.\n3. Policy team must define which categories are eligible for temporary hold.\n\n### User Experience\n- Harmful content is rapidly hidden from broad distribution.\n- Reviewers receive prioritized queues with model rationale.\n- Content creators receive clear status messages: under review, removed, or restored.\n\n### Success Metrics\n- P95 time from upload to temporary hold for eligible high-risk content: under 60 seconds\n- Percentage of permanent removals with human approval: 100%\n- False-positive temporary hold rate: below policy-defined threshold\n- Median review completion time: reduced from 4 hours through prioritization and staffing changes\n\n### Risks\n- Temporary holds may create user frustration if false positives are high.\n- Review backlog can still create long resolution times.\n- Poor threshold tuning may either miss harmful content or overload reviewers.\n\n### Unknowns & Evidence Gaps\n- Exact volume of flagged items per hour\n- Precision and recall by policy category\n- Whether temporary hold satisfies legal and policy obligations currently described as \"removal\"\n- Required reviewer staffing to support target turnaround by severity tier\n- Acceptable timeout behavior for items awaiting review\n\n### Pass/Fail Readiness\nPass if:\n- Stakeholders accept the revised SLA definition separating temporary containment from permanent removal\n- Policy approves temporary AI-driven holds as reversible enforcement\n- Operations can support prioritized review queues and audit logging\n\nFail if:\n- The requirement remains permanent removal within 60 seconds for every case\n- Human approval remains mandatory before any visibility restriction\n- No staffing, queue design, or policy change is permitted\n\n### Recommended Next Artifact\nAn operations-and-policy decision memo that resolves the SLA definition, names allowed temporary enforcement actions, and quantifies reviewer capacity needed by severity tier before engineering commits to delivery.",
+    "claims": [
+      {
+        "claim_id": "side_b-claim-1",
+        "summary": "The stated requirements are infeasible as written because mandatory human approval cannot coexist with a 60-second permanent removal SLA when average human review latency is 4 hours.",
+        "evidence_refs": [
+          "ctx-1"
+        ],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-2",
+        "summary": "A workable PRD must distinguish reversible AI-driven temporary containment from irreversible human-approved permanent removal.",
+        "evidence_refs": [
+          "ctx-1"
+        ],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-3",
+        "summary": "The build is only decision-useful if it explicitly states pass/fail readiness conditions tied to SLA redefinition, policy approval, and reviewer capacity.",
+        "evidence_refs": [
+          "ctx-1"
+        ],
+        "is_major": true
+      }
+    ],
+    "citations": [
+      "ctx-1"
+    ],
+    "conclusion_confidence": "medium",
+    "open_questions": [
+      "Does the organization consider temporary hiding or distribution restriction to satisfy the 60-second safety requirement, or is only permanent removal acceptable?",
+      "Which policy categories are eligible for reversible AI-driven temporary holds?",
+      "What flagged volume and reviewer staffing assumptions define feasible review turnaround targets?"
+    ],
+    "critique_responses": []
+  },
+  "critique_packet": {
+    "target_side": "side_b",
+    "finding_id": "finding-1",
+    "target_claim_ids": [
+      "side_b-claim-1"
+    ],
+    "claim_under_attack": "The stated requirements are infeasible as written because mandatory human approval cannot coexist with a 60-second permanent removal SLA when average human review latency is 4 hours.",
+    "attack_type": "evidence_gap",
+    "evidence_or_reason": "Side B asserts infeasibility as a flat conclusion but cites only ctx-1 (the scenario prompt itself) as evidence. No empirical support is offered for the 4-hour average being a structural floor rather than a current operational baseline subject to triage, escalation paths, or dedicated on-call staffing. The claim elides a critical distinction: average queue latency is not the same as worst-case latency for highest-severity content. If a P1 escalation path routes CSAM or imminent-violence content to an on-call reviewer with a 2-minute SLA, the 60-second window becomes tight but not mathematically impossible — it requires human-in-the-loop latency under 60 seconds for that tier, which is achievable with a sufficiently staffed hot queue. Side B declares the requirement infeasible without quantifying flagged volume, tier distribution, or reviewer capacity at any severity level, meaning the infeasibility claim rests entirely on the undifferentiated 4-hour average applied universally — a methodological shortcut that overstates the contradiction and forecloses engineering solutions (dedicated reviewer pools, pre-authorized removal templates, one-click confirm flows) that could close the gap for a subset of high-severity categories.",
+    "severity": "medium"
+  }
+}

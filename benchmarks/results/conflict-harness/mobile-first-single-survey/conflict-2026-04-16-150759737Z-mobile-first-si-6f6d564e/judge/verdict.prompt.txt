@@ -1,0 +1,406 @@
+You are the judge in a blinded conflict harness run.
+Provider identity is intentionally hidden. Do not infer provider family.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "winner": "tie",
+  "margin": 0,
+  "rubric_scores": {
+    "side_a": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    },
+    "side_b": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    }
+  },
+  "dimension_rationales": {
+    "claim_quality": "Brief explanation of which side made the stronger claims and why.",
+    "evidence_discipline": "Brief explanation of how the sides used or overstated evidence.",
+    "responsiveness_to_critique": "Brief explanation of how each side handled the critique phase.",
+    "internal_consistency": "Brief explanation of contradictions, coherence, or missing logic.",
+    "decision_usefulness": "Brief explanation of which artifact better supports an actual decision."
+  },
+  "side_summaries": {
+    "side_a": {
+      "strengths": [
+        "One concise strength of Side A."
+      ],
+      "weaknesses": [
+        "One concise weakness of Side A."
+      ]
+    },
+    "side_b": {
+      "strengths": [
+        "One concise strength of Side B."
+      ],
+      "weaknesses": [
+        "One concise weakness of Side B."
+      ]
+    }
+  },
+  "decisive_dimension": "decision_usefulness",
+  "decisive_findings": [
+    "Replace with the actual decisive findings from this run."
+  ],
+  "judge_confidence": "low",
+  "needs_human_review": true,
+  "uncertainty_drivers": [
+    "List the concrete reasons this verdict is uncertain or should be escalated."
+  ],
+  "disambiguation_questions": [
+    "List the most important question that would resolve the uncertainty."
+  ],
+  "needed_evidence": [
+    "List the evidence that would most improve confidence in the verdict."
+  ],
+  "recommended_next_artifact": "Name the next artifact that should exist before acting on this verdict.",
+  "recommended_next_action": "State the next action the orchestrator or user should take.",
+  "can_resolve_with_more_evidence": true,
+  "escalation_recommendation": "State whether to gather more evidence, rejudge, or escalate to human review.",
+  "rationale": "One-paragraph explanation of the verdict."
+}
+
+Use min_margin_for_verdict = 0.1.
+Set rubric_scores.*.weighted_total as a normalized aggregate on the same 1-5 scale as the rubric dimensions, not as a raw sum.
+Treat each side's reported conclusion_confidence as a calibration signal, not a vote multiplier.
+Reward confidence when it is well matched to the evidence and penalize overconfidence when the artifact overreaches.
+judge_confidence rubric:
+- high: the winning side is clearly stronger on at least 3 rubric dimensions and has no major unsupported-claim problem
+- medium: the winning side leads overall but has at least 1 weak dimension or absorbed only part of the opposing critique
+- low: score margin is below min_margin_for_verdict or both sides have significant unsupported claims
+
+Phase 2 uncertainty payload rule:
+- If winner is `tie`, or judge_confidence is `low`, or needs_human_review is `true`, you MUST also populate:
+- uncertainty_drivers
+- disambiguation_questions
+- needed_evidence
+- recommended_next_artifact
+- recommended_next_action
+- can_resolve_with_more_evidence
+- escalation_recommendation
+- If none of those trigger conditions apply, omit the uncertainty payload fields entirely.
+
+Judge packet:
+{
+  "case_packet": {
+    "scenario_id": "mobile-first-single-survey",
+    "title": "Mobile-first redesign justified by a single NPS survey",
+    "prompt": "Write a PRD for a full mobile-first redesign of the core product. The primary evidence is a single NPS survey of 50 power users conducted last quarter, in which 72% said mobile experience was their top pain point. No behavioral data, session recordings, or broader user sample exists. The redesign would require 6 months of engineering effort.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-16-150759737Z-mobile-first-si-6f6d564e",
+      "side_id": "side_a",
+      "round": "first_pass",
+      "artifact_markdown": "# PRD: Mobile-First Redesign — Decision Gate Document\n\n**Status:** NOT READY FOR EXECUTION  \n**Prepared by:** Product  \n**Date:** 2026-04-16  \n**Effort estimate:** 6 months engineering  \n\n---\n\n## Decision Frame\n\n**The question this document answers:** Should we commit 6 months of engineering capacity to a full mobile-first redesign of the core product?\n\n**Current decision state:** Gate 0 — evidence insufficient to open a delivery track. This PRD functions as a pre-mortem and evidence audit, not a specification for execution.\n\n**What is being proposed:** A complete rearchitecting of the product's UI/UX for mobile-primary interaction patterns. \"Full redesign\" is interpreted to mean layout, navigation, interaction model, and potentially data density tradeoffs — not a responsive polish pass.\n\n**Business case as stated:** 72% of respondents in an NPS survey of 50 power users (conducted last quarter) cited mobile experience as their top pain point.\n\n**Why this framing matters:** A 6-month engineering commitment at typical team sizing represents $600K–$1.2M in fully-loaded cost and near-complete opportunity cost for the team. The evidentiary threshold for that commitment is not met by a single attitudinal survey of a non-representative sample.\n\n---\n\n## Unknowns & Evidence Gaps\n\n### Gap 1 — Sample representativeness (Critical)\n- **What we know:** 50 power users surveyed. 36 said mobile experience was top pain point.\n- **What we don't know:** What fraction of total users are power users? What do casual, infrequent, or new users experience on mobile? Power users are systematically more likely to use desktop (historically) and to have strong opinions about workflow efficiency — their mobile pain may not generalize.\n- **Risk if wrong:** We redesign for a vocal minority while degrading the majority experience or missing a different priority entirely.\n- **Required evidence:** Segmented behavioral data showing mobile vs. desktop session split across user cohorts (power, casual, new, churned).\n\n### Gap 2 — Behavioral confirmation (Critical)\n- **What we know:** Users *say* mobile is their top pain point.\n- **What we don't know:** Whether users are actually attempting and failing mobile tasks (task abandonment, error rates, session length on mobile vs. desktop), or whether this is a preference signal with low behavioral consequence.\n- **Risk if wrong:** We build for an aspirational use case. Users want to use the product on mobile but don't currently try to — so reducing mobile friction may not change core metrics.\n- **Required evidence:** Session recordings, funnel analysis by device type, and mobile-specific task completion rates.\n\n### Gap 3 — Pain specificity (High)\n- **What we know:** \"Mobile experience\" was cited as top pain point.\n- **What we don't know:** Whether the pain is layout/density, load time, specific feature unavailability, auth friction, notification behavior, or something else. \"Mobile experience\" is not a design target.\n- **Risk if wrong:** A 6-month full redesign ships and doesn't address the actual friction. User satisfaction unchanged.\n- **Required evidence:** Qualitative follow-up interviews (8–12 users who flagged mobile), tagged support tickets by issue type and device, and a Jobs-to-be-Done breakdown of mobile use cases.\n\n### Gap 4 — Competitive and market signal (Medium)\n- **What we know:** Nothing from this evidence base about whether mobile is a competitive disadvantage or a hygiene expectation.\n- **What we don't know:** Whether churned users cite mobile, whether mobile gap affects acquisition, whether competitors have moved.\n- **Required evidence:** Churn interview tagging, sales loss analysis, and a competitive mobile audit (2–3 days of work).\n\n### Gap 5 — Redesign scope definition (Medium)\n- **What we know:** \"Full mobile-first redesign\" and \"6 months.\"\n- **What we don't know:** Whether 6 months assumes a parallel desktop maintenance track, a feature freeze, or a full team shift. Whether \"mobile-first\" means native app, PWA improvement, or responsive web. Whether existing desktop users face regression risk.\n- **Risk if wrong:** Scope is misunderstood at kickoff; estimate is wrong by 2x; desktop experience degrades during execution.\n\n---\n\n## Pass/Fail Readiness\n\n| Readiness Criterion | Status | Notes |\n|---|---|---|  \n| Representative behavioral data on mobile usage | **FAIL** | No session data, no device split |\n| Qualitative depth on pain specificity | **FAIL** | Survey only; no follow-up interviews |\n| Broader user sample beyond power users | **FAIL** | N=50, power users only |\n| Business case with metric targets | **FAIL** | No retention, conversion, or engagement targets stated |\n| Scope definition and desktop regression plan | **FAIL** | Undefined |\n| Competitive or churn signal | **FAIL** | Absent |\n| Attitudinal signal from existing users | **PASS** | 72% of survey; directionally useful |\n\n**Readiness verdict:** 1 of 7 criteria met. This initiative does not clear the gate for execution planning.\n\n**What this is not saying:** Mobile experience is probably a real problem. The NPS signal is directionally meaningful. The recommendation is not to ignore mobile — it is to spend 4–6 weeks gathering evidence before committing 6 months of capacity.\n\n---\n\n## Recommended Next Artifact\n\n**Artifact:** Mobile Evidence Sprint Brief  \n**Owner:** Product + Analytics  \n**Timeline:** 3–4 weeks  \n**Effort:** 1 PM, 1 analyst, 0.5 design (research mode only)\n\n### Sprint deliverables\n\n1. **Device and session analysis** — Pull 90-day behavioral data: mobile vs. desktop session share by user segment, task completion rates by device, funnel drop-off by device at each key step. Target: understand whether mobile is a usage problem or a satisfaction problem.\n\n2. **Follow-up interviews** — 8–12 users who cited mobile pain, recruited from NPS respondents. 30-minute sessions. Goal: map pain to specific jobs, flows, and failure modes. Tag to feature areas.\n\n3. **Support ticket audit** — Tag last 90 days of tickets by device type and issue category. Quantify mobile-specific volume.\n\n4. **Churn interview re-analysis** — If exit interviews exist, re-tag for mobile mentions. If not, flag for next churn cohort.\n\n5. **Competitive audit** — Document 2–3 direct competitors' mobile experience. Identify table-stakes vs. differentiated features.\n\n### Decision gate after sprint\n\nIf evidence confirms:\n- Mobile sessions represent >25% of active sessions AND task completion rate on mobile is materially lower than desktop (>10pp gap), OR\n- Mobile friction appears in >15% of churn interviews or support tickets\n\n→ Proceed to scoped PRD with defined metric targets, phased delivery plan, and explicit desktop regression protection.\n\nIf evidence shows:\n- Mobile is aspirational but rarely attempted, OR\n- Pain concentrates in 1–2 specific flows rather than the full experience\n\n→ Redirect to targeted intervention (specific flow fix or native feature) rather than full redesign. Revisit 6-month estimate entirely.\n\n---\n\n## Appendix: What a Full PRD Would Require\n\nFor reference, a PRD clearing this gate for execution would need:\n- Metric targets: what does success look like in mobile session share, task completion rate, NPS improvement, and retention delta?\n- Phased delivery plan: what ships at month 2, 4, 6? What is the rollback plan?\n- Desktop non-regression commitment: explicit test coverage and monitoring plan\n- Resource confirmation: is the 6-month estimate inclusive of design, QA, and platform work?\n- Stakeholder alignment: has the business accepted opportunity cost of deprioritized roadmap items?\n\nNone of these can be responsibly written before the evidence sprint confirms the problem shape.\n",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "A single NPS survey of 50 power users is insufficient evidence to justify a 6-month full mobile-first redesign; attitudinal signals from a non-representative sample do not confirm behavioral need, pain specificity, or business impact at the required investment threshold.",
+          "evidence_refs": [
+            "ctx-survey-n50",
+            "ctx-no-behavioral-data",
+            "ctx-no-session-recordings"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "The correct next step is a 3–4 week evidence sprint (behavioral analysis, qualitative interviews, support ticket audit) that either confirms or redirects the mobile redesign hypothesis before committing engineering capacity.",
+          "evidence_refs": [
+            "ctx-gap-1",
+            "ctx-gap-2",
+            "ctx-gap-3"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "Power users are a systematically biased sample for mobile pain assessment — they are more likely to use desktop for complex tasks and may express mobile preference without behavioral follow-through, making their signal directional but not sufficient for a full redesign mandate.",
+          "evidence_refs": [
+            "ctx-sample-bias"
+          ],
+          "is_major": false
+        },
+        {
+          "claim_id": "side_a-claim-4",
+          "summary": "Pain specificity is entirely absent from the evidence base — 'mobile experience' is not a design target, and a full redesign risks addressing the wrong friction (layout vs. load time vs. feature gaps vs. auth friction) without qualitative follow-up.",
+          "evidence_refs": [
+            "ctx-gap-3"
+          ],
+          "is_major": false
+        }
+      ],
+      "citations": [
+        "ctx-survey-n50",
+        "ctx-no-behavioral-data",
+        "ctx-no-session-recordings",
+        "ctx-gap-1",
+        "ctx-gap-2",
+        "ctx-gap-3",
+        "ctx-sample-bias"
+      ],
+      "conclusion_confidence": "high",
+      "open_questions": [
+        "What fraction of total users are power users, and do their usage patterns generalize to the broader base?",
+        "Is mobile usage currently attempted and failing, or is it aspirational (users want to but don't try)?",
+        "What specific flows or features does 'mobile experience pain' map to — layout, load time, feature availability, or auth?",
+        "Does mobile gap appear in churn interviews or sales loss data, indicating business impact beyond satisfaction scores?",
+        "What is the scope definition of 'full mobile-first redesign' — native app, PWA, responsive web — and what is the desktop regression protection plan?"
+      ],
+      "critique_responses": []
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-16-150759737Z-mobile-first-si-6f6d564e",
+      "side_id": "side_b",
+      "round": "first_pass",
+      "artifact_markdown": "# PRD: Mobile Experience Validation and Gated Improvement Plan\n\n## Summary\nA full mobile-first redesign is not approved on current evidence. The available signal is meaningful but too narrow to justify a 6-month rebuild. This PRD defines a gated plan to validate the problem, ship targeted mobile fixes, and create a go/no-go decision point for any broader redesign.\n\n## Problem Statement\nA recent NPS survey of 50 power users found that 72% identified the mobile experience as their top pain point. This indicates a likely issue, but the evidence is limited to a small, non-representative sample and does not identify which workflows fail, how often they fail, or whether mobile problems are the largest source of user or revenue risk.\n\n## Goal\nReduce high-friction mobile user pain quickly while generating enough evidence to decide whether a broader mobile-first redesign is warranted.\n\n## Non-Goals\n- Replatform the entire core product for mobile-first use immediately\n- Rewrite desktop flows that have no demonstrated mobile impact\n- Commit 6 months of engineering effort before validation gates are passed\n\n## Users\n- Existing mobile users of the core product\n- Power users represented in the survey\n- Broader active user base not represented in the survey but affected by mobile workflows\n\n## Hypotheses\n1. Mobile friction is concentrated in a small number of critical workflows rather than the entire product.\n2. Targeted fixes can materially improve mobile experience without a full redesign.\n3. If mobile pain is broad, severe, and tied to important outcomes, a larger redesign may be justified after validation.\n\n## Requirements\n### R1. Instrumentation\nAdd event tracking for the top mobile workflows, including entry, completion, drop-off, error states, and time-to-complete.\n\n### R2. Evidence Collection\nCollect a broader evidence base before any full redesign decision:\n- Quantitative mobile usage and failure data across the active user base\n- Session recordings or equivalent workflow observation for mobile users\n- Follow-up interviews with at least a broader mix of users beyond power users\n- Segmentation by user type, device class, and workflow\n\n### R3. Rapid Improvements\nShip targeted fixes to the highest-friction mobile workflows identified during the first evidence sprint.\n\n### R4. Redesign Gate\nCreate a formal redesign decision gate only after the team can show:\n- mobile pain affects a meaningful share of active users\n- the pain clusters across multiple core workflows rather than isolated defects\n- targeted fixes do not sufficiently improve outcomes\n- the expected impact justifies 6 months of engineering cost\n\n## Success Metrics\n- Mobile completion rate for top workflows\n- Mobile error rate\n- Mobile task time for top workflows\n- Change in support tickets or complaint volume related to mobile usage\n- Follow-up satisfaction signal for mobile users after targeted fixes\n\n## Delivery Plan\n### Phase 1: 2-4 weeks\n- Add instrumentation\n- Gather workflow evidence\n- Identify top 3 mobile friction points\n\n### Phase 2: 4-6 weeks\n- Ship targeted mobile fixes for top issues\n- Measure outcome changes\n\n### Phase 3: Decision review\n- Review evidence against redesign gate\n- Approve either continued targeted iteration or a broader redesign PRD\n\n## Risks\n- Overreacting to a narrow power-user sample\n- Spending 6 months on a rebuild when targeted fixes would solve most pain\n- Missing mobile pain outside surveyed power users if evidence collection is weak\n\n## Decision Frame\nDo not approve a full mobile-first redesign yet. Approve a validation-and-fix program with an explicit gate for any larger redesign commitment.\n\n## Unknowns & Evidence Gaps\n- Whether the survey signal generalizes beyond 50 power users\n- Which mobile workflows are actually broken or high-friction\n- Whether mobile pain is a usability issue, a performance issue, or a workflow-priority mismatch\n- Whether the opportunity cost of 6 months of engineering is justified by expected impact\n\n## Pass/Fail Readiness\nPass if the team can show broad mobile impact, workflow-level severity, failed targeted-remediation outcomes, and a credible business case for a larger rebuild. Fail if evidence remains sample-biased, workflow ambiguity persists, or targeted fixes materially reduce pain.\n\n## Recommended Next Artifact\nA decision memo after the validation sprint containing behavioral data, workflow evidence, segmented user findings, impact sizing, and a go/no-go recommendation for a full redesign.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "A full mobile-first redesign is not justified by a single NPS survey of 50 power users, even with a strong signal, because the evidence is too narrow for a 6-month commitment.",
+          "evidence_refs": [
+            "ctx-1",
+            "ctx-2",
+            "ctx-3"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "The right immediate product response is a gated validation-and-fix plan that gathers behavioral evidence and ships targeted mobile improvements before approving a rebuild.",
+          "evidence_refs": [
+            "ctx-1",
+            "ctx-2",
+            "ctx-3"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "The current evidence does support prioritizing mobile investigation, because 72% of surveyed power users named mobile as their top pain point.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": false
+        }
+      ],
+      "citations": [
+        "ctx-1",
+        "ctx-2",
+        "ctx-3"
+      ],
+      "conclusion_confidence": "medium",
+      "open_questions": [
+        "What share of the overall active user base uses the product on mobile for core workflows?",
+        "Which specific mobile workflows drive the reported pain, and how severe are their failure rates?",
+        "Would targeted fixes materially improve outcomes without a full redesign?",
+        "What is the opportunity cost of allocating 6 months of engineering effort versus other roadmap items?"
+      ],
+      "critique_responses": []
+    }
+  },
+  "critique_packets": {
+    "side_a": {
+      "target_side": "side_b",
+      "finding_id": "finding-1",
+      "target_claim_ids": [
+        "side_b-claim-1"
+      ],
+      "claim_under_attack": "A full mobile-first redesign is not justified by a single NPS survey of 50 power users, even with a strong signal, because the evidence is too narrow for a 6-month commitment.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "Side B treats sample size as the decisive disqualifier but provides no threshold for what evidence volume would actually satisfy the redesign gate. The PRD's Pass/Fail Readiness section lists four gate conditions (broad impact, workflow-level severity, failed targeted remediation, credible business case) without specifying measurable criteria: what share of active users constitutes 'meaningful'? What completion-rate delta counts as 'materially reduced' pain? Without quantified thresholds, the gate is subjective and the gated plan risks becoming an indefinite delay rather than a structured decision. The claim that the current evidence is 'too narrow' is asserted but not calibrated against any benchmark, making it impossible to evaluate whether the proposed 8-10 week validation sprint would actually produce sufficient evidence to decide either way.",
+      "severity": "medium"
+    },
+    "side_b": {
+      "target_side": "side_a",
+      "finding_id": "finding-2",
+      "target_claim_ids": [
+        "side_a-claim-3"
+      ],
+      "claim_under_attack": "Power users are a systematically biased sample for mobile pain assessment because they are more likely to use desktop for complex tasks and may express mobile preference without behavioral follow-through.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "The case packet provides no evidence that these power users are desktop-skewed, that their workflows are unusually complex, or that their stated mobile pain lacks behavioral follow-through. Those may be plausible hypotheses, but the artifact presents them as if they are grounded in known user behavior when no behavioral data exists at all. That weakens the claim because it relies on an unverified stereotype about power users rather than visible evidence from the scenario.",
+      "severity": "medium"
+    }
+  },
+  "final_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-16-150759737Z-mobile-first-si-6f6d564e",
+      "side_id": "side_a",
+      "round": "final",
+      "artifact_markdown": "# PRD: Mobile-First Redesign — Decision Gate Document\n\n**Status:** NOT READY FOR EXECUTION  \n**Prepared by:** Product  \n**Date:** 2026-04-16  \n**Effort estimate:** 6 months engineering  \n\n---\n\n## Decision Frame\n\n**The question this document answers:** Should we commit 6 months of engineering capacity to a full mobile-first redesign of the core product?\n\n**Current decision state:** Gate 0 — evidence insufficient to open a delivery track. This PRD functions as a pre-mortem and evidence audit, not a specification for execution.\n\n**What is being proposed:** A complete rearchitecting of the product's UI/UX for mobile-primary interaction patterns. \"Full redesign\" is interpreted to mean layout, navigation, interaction model, and potentially data density tradeoffs — not a responsive polish pass.\n\n**Business case as stated:** 72% of respondents in an NPS survey of 50 power users (conducted last quarter) cited mobile experience as their top pain point.\n\n**Why this framing matters:** A 6-month engineering commitment at typical team sizing represents $600K–$1.2M in fully-loaded cost and near-complete opportunity cost for the team. The evidentiary threshold for that commitment is not met by a single attitudinal survey of a non-representative sample.\n\n---\n\n## Unknowns & Evidence Gaps\n\n### Gap 1 — Sample representativeness (Critical)\n- **What we know:** 50 power users surveyed. 36 said mobile experience was top pain point.\n- **What we don't know:** What fraction of total users are power users? What do casual, infrequent, or new users experience on mobile? We do not know whether power users skew desktop-heavy, have more complex workflows, or express mobile pain without behavioral follow-through — these are plausible hypotheses that require behavioral data to confirm or refute.\n- **Risk if wrong:** We redesign for a vocal minority while degrading the majority experience or missing a different priority entirely.\n- **Required evidence:** Segmented behavioral data showing mobile vs. desktop session split across user cohorts (power, casual, new, churned).\n\n### Gap 2 — Behavioral confirmation (Critical)\n- **What we know:** Users *say* mobile is their top pain point.\n- **What we don't know:** Whether users are actually attempting and failing mobile tasks (task abandonment, error rates, session length on mobile vs. desktop), or whether this is a preference signal with low behavioral consequence.\n- **Risk if wrong:** We build for an aspirational use case. Users want to use the product on mobile but don't currently try to — so reducing mobile friction may not change core metrics.\n- **Required evidence:** Session recordings, funnel analysis by device type, and mobile-specific task completion rates.\n\n### Gap 3 — Pain specificity (High)\n- **What we know:** \"Mobile experience\" was cited as top pain point.\n- **What we don't know:** Whether the pain is layout/density, load time, specific feature unavailability, auth friction, notification behavior, or something else. \"Mobile experience\" is not a design target.\n- **Risk if wrong:** A 6-month full redesign ships and doesn't address the actual friction. User satisfaction unchanged.\n- **Required evidence:** Qualitative follow-up interviews (8–12 users who flagged mobile), tagged support tickets by issue type and device, and a Jobs-to-be-Done breakdown of mobile use cases.\n\n### Gap 4 — Competitive and market signal (Medium)\n- **What we know:** Nothing from this evidence base about whether mobile is a competitive disadvantage or a hygiene expectation.\n- **What we don't know:** Whether churned users cite mobile, whether mobile gap affects acquisition, whether competitors have moved.\n- **Required evidence:** Churn interview tagging, sales loss analysis, and a competitive mobile audit (2–3 days of work).\n\n### Gap 5 — Redesign scope definition (Medium)\n- **What we know:** \"Full mobile-first redesign\" and \"6 months.\"\n- **What we don't know:** Whether 6 months assumes a parallel desktop maintenance track, a feature freeze, or a full team shift. Whether \"mobile-first\" means native app, PWA improvement, or responsive web. Whether existing desktop users face regression risk.\n- **Risk if wrong:** Scope is misunderstood at kickoff; estimate is wrong by 2x; desktop experience degrades during execution.\n\n---\n\n## Pass/Fail Readiness\n\n| Readiness Criterion | Status | Notes |\n|---|---|---|\n| Representative behavioral data on mobile usage | **FAIL** | No session data, no device split |\n| Qualitative depth on pain specificity | **FAIL** | Survey only; no follow-up interviews |\n| Broader user sample beyond power users | **FAIL** | N=50, power users only |\n| Business case with metric targets | **FAIL** | No retention, conversion, or engagement targets stated |\n| Scope definition and desktop regression plan | **FAIL** | Undefined |\n| Competitive or churn signal | **FAIL** | Absent |\n| Attitudinal signal from existing users | **PASS** | 72% of survey; directionally useful |\n\n**Readiness verdict:** 1 of 7 criteria met. This initiative does not clear the gate for execution planning.\n\n**What this is not saying:** Mobile experience is probably a real problem. The NPS signal is directionally meaningful. The recommendation is not to ignore mobile — it is to spend 4–6 weeks gathering evidence before committing 6 months of capacity.\n\n---\n\n## Recommended Next Artifact\n\n**Artifact:** Mobile Evidence Sprint Brief  \n**Owner:** Product + Analytics  \n**Timeline:** 3–4 weeks  \n**Effort:** 1 PM, 1 analyst, 0.5 design (research mode only)\n\n### Sprint deliverables\n\n1. **Device and session analysis** — Pull 90-day behavioral data: mobile vs. desktop session share by user segment, task completion rates by device, funnel drop-off by device at each key step. Target: understand whether mobile is a usage problem or a satisfaction problem.\n\n2. **Follow-up interviews** — 8–12 users who cited mobile pain, recruited from NPS respondents. 30-minute sessions. Goal: map pain to specific jobs, flows, and failure modes. Tag to feature areas.\n\n3. **Support ticket audit** — Tag last 90 days of tickets by device type and issue category. Quantify mobile-specific volume.\n\n4. **Churn interview re-analysis** — If exit interviews exist, re-tag for mobile mentions. If not, flag for next churn cohort.\n\n5. **Competitive audit** — Document 2–3 direct competitors' mobile experience. Identify table-stakes vs. differentiated features.\n\n### Decision gate after sprint\n\nIf evidence confirms:\n- Mobile sessions represent >25% of active sessions AND task completion rate on mobile is materially lower than desktop (>10pp gap), OR\n- Mobile friction appears in >15% of churn interviews or support tickets\n\n→ Proceed to scoped PRD with defined metric targets, phased delivery plan, and explicit desktop regression protection.\n\nIf evidence shows:\n- Mobile is aspirational but rarely attempted, OR\n- Pain concentrates in 1–2 specific flows rather than the full experience\n\n→ Redirect to targeted intervention (specific flow fix or native feature) rather than full redesign. Revisit 6-month estimate entirely.\n\n---\n\n## Appendix: What a Full PRD Would Require\n\nFor reference, a PRD clearing this gate for execution would need:\n- Metric targets: what does success look like in mobile session share, task completion rate, NPS improvement, and retention delta?\n- Phased delivery plan: what ships at month 2, 4, 6? What is the rollback plan?\n- Desktop non-regression commitment: explicit test coverage and monitoring plan\n- Resource confirmation: is the 6-month estimate inclusive of design, QA, and platform work?\n- Stakeholder alignment: has the business accepted opportunity cost of deprioritized roadmap items?\n\nNone of these can be responsibly written before the evidence sprint confirms the problem shape.\n",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "A single NPS survey of 50 power users is insufficient evidence to justify a 6-month full mobile-first redesign; attitudinal signals from a non-representative sample do not confirm behavioral need, pain specificity, or business impact at the required investment threshold.",
+          "evidence_refs": [
+            "ctx-survey-n50",
+            "ctx-no-behavioral-data",
+            "ctx-no-session-recordings"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "The correct next step is a 3–4 week evidence sprint (behavioral analysis, qualitative interviews, support ticket audit) that either confirms or redirects the mobile redesign hypothesis before committing engineering capacity.",
+          "evidence_refs": [
+            "ctx-gap-1",
+            "ctx-gap-2",
+            "ctx-gap-3"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "Whether power users skew desktop-heavy or express mobile preference without behavioral follow-through is an untested hypothesis — not an established fact — and must be verified via device-segmented session data before it can inform redesign scope.",
+          "evidence_refs": [
+            "ctx-gap-1",
+            "ctx-no-behavioral-data"
+          ],
+          "is_major": false
+        },
+        {
+          "claim_id": "side_a-claim-4",
+          "summary": "Pain specificity is entirely absent from the evidence base — 'mobile experience' is not a design target, and a full redesign risks addressing the wrong friction (layout vs. load time vs. feature gaps vs. auth friction) without qualitative follow-up.",
+          "evidence_refs": [
+            "ctx-gap-3"
+          ],
+          "is_major": false
+        }
+      ],
+      "citations": [
+        "ctx-survey-n50",
+        "ctx-no-behavioral-data",
+        "ctx-no-session-recordings",
+        "ctx-gap-1",
+        "ctx-gap-2",
+        "ctx-gap-3"
+      ],
+      "conclusion_confidence": "high",
+      "open_questions": [
+        "What fraction of total users are power users, and do their usage patterns generalize to the broader base?",
+        "Is mobile usage currently attempted and failing, or is it aspirational (users want to but don't try)?",
+        "What specific flows or features does 'mobile experience pain' map to — layout, load time, feature availability, or auth?",
+        "Does mobile gap appear in churn interviews or sales loss data, indicating business impact beyond satisfaction scores?",
+        "What is the scope definition of 'full mobile-first redesign' — native app, PWA, responsive web — and what is the desktop regression protection plan?"
+      ],
+      "critique_responses": [
+        {
+          "finding_id": "finding-2",
+          "disposition": "adopted",
+          "rationale": "The critique is correct. The original artifact stated that power users are 'systematically more likely to use desktop' and 'may express mobile preference without behavioral follow-through' as if these were established facts about this user base. No behavioral data exists in the case packet to support either characterization — they are plausible hypotheses, not grounded observations. The revised artifact reframes claim-3 and Gap 1 to explicitly mark these as untested hypotheses that the evidence sprint must confirm or refute, rather than presenting them as known user behavior. This preserves the underlying logic (sample representativeness is a real gap) while correctly labeling the mechanism as speculative."
+        }
+      ]
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-16-150759737Z-mobile-first-si-6f6d564e",
+      "side_id": "side_b",
+      "round": "final",
+      "artifact_markdown": "# Revised artifact\n\n## PRD: Mobile Evidence Program and Quantified Redesign Gate\n\n## Summary\nA full mobile-first redesign is not approved on current evidence. The current signal is strong enough to justify immediate investigation and targeted remediation, but not a 6-month rebuild. This PRD defines a time-bounded validation program with quantified redesign gates so the team can reach a clear go/no-go decision rather than delay indefinitely.\n\n## Problem Statement\nA last-quarter NPS survey of 50 power users found that 72% named mobile experience as their top pain point. That is a meaningful warning signal, but it is not sufficient by itself to justify a full mobile-first redesign because it does not show prevalence across the broader user base, identify the failing workflows, or quantify the business impact relative to a 6-month engineering investment.\n\n## Goal\n1. Reduce the highest mobile friction quickly.\n2. Produce enough behavioral and user evidence within 8-10 weeks to decide whether a full redesign is warranted.\n\n## Non-Goals\n- Approving a full mobile-first rebuild immediately\n- Rewriting desktop-first flows with no demonstrated mobile impact\n- Extending discovery beyond the defined decision window without an explicit exec decision\n\n## Users\n- Active users who attempt core workflows on mobile\n- Power users represented in the survey\n- Broader non-power-user segments who may experience different mobile constraints\n\n## Hypotheses\n1. Mobile pain is concentrated in a limited number of high-value workflows.\n2. Targeted fixes may recover most of the lost user experience without a full redesign.\n3. A full redesign is justified only if mobile friction is broad, severe, persistent after targeted fixes, and material to business outcomes.\n\n## Requirements\n### R1. Instrumentation\nInstrument the top 3-5 core mobile workflows with funnel entry, completion, drop-off, error, retry, and time-to-complete events.\n\n### R2. Evidence Collection\nWithin 2 weeks of instrumentation launch, collect:\n- Mobile usage share for each core workflow\n- Completion and drop-off rates by device class and user segment\n- At least 12 session observations or recordings across power and non-power users\n- At least 15 follow-up user interviews or structured surveys, with at least 50% from non-power users\n\n### R3. Rapid Improvements\nBy week 6, ship targeted fixes for the top 2-3 highest-friction mobile workflows identified in Phase 1.\n\n### R4. Quantified Redesign Gate\nApprove a full mobile-first redesign only if all four conditions are met during the 8-10 week program:\n- Reach: at least 25% of active users, or at least 40% of users in a strategically important segment, attempt at least one core workflow on mobile each month.\n- Severity: mobile completion rate on at least 2 core workflows is at least 15 percentage points worse than desktop, or mobile error/drop-off rate is at least 1.5x desktop.\n- Persistence: targeted fixes improve the affected workflow completion gap by less than 30% relative to baseline, or leave the mobile completion gap above 10 percentage points.\n- Business case: the projected benefit of redesign is tied to a material outcome such as retention, conversion, expansion, or support-cost reduction, with a documented impact estimate large enough to justify 6 months of engineering time versus the next-best roadmap use.\n\n## Success Metrics\n- Mobile share of core-workflow usage\n- Mobile completion rate by workflow\n- Mobile drop-off and error rate by workflow\n- Time-to-complete for core mobile tasks\n- Change in mobile-related support complaints\n- Post-fix user satisfaction for affected mobile workflows\n\n## Delivery Plan\n### Phase 1: Weeks 1-2\n- Add instrumentation\n- Collect baseline behavioral data\n- Run user interviews and session reviews\n- Identify top 3-5 mobile friction points\n\n### Phase 2: Weeks 3-6\n- Ship targeted fixes for top issues\n- Measure pre/post change on workflow metrics\n\n### Phase 3: Weeks 7-10\n- Re-measure against redesign gate\n- Produce go/no-go decision memo\n- If gates are met, draft a scoped redesign PRD for the affected workflows\n\n## Risks\n- Survey signal may over-represent power-user frustration versus broader demand\n- Instrumentation may miss meaningful friction if workflow definitions are poor\n- The team may overfit to anecdotal complaints without confirming behavioral severity\n- A full redesign may still be unjustified if targeted fixes resolve most of the gap\n\n## Decision Frame\nDo not approve a full mobile-first redesign now. Approve an 8-10 week mobile evidence and remediation program with quantified gates that force a go/no-go decision.\n\n## Unknowns & Evidence Gaps\n- What percentage of the active base relies on mobile for core workflows\n- Which mobile workflows create the largest completion and error gaps\n- Whether mobile pain is broad product design failure or a smaller set of workflow defects\n- Whether targeted fixes materially close the gap before a rebuild is needed\n- Whether the business impact is large enough to justify 6 months of engineering effort\n\n## Pass/Fail Readiness\nPass if all redesign-gate thresholds are met within the 8-10 week program. Fail if mobile usage is not sufficiently broad, severity is confined to isolated workflows, targeted fixes close at least 30% of the baseline gap, or the business case remains weaker than alternative roadmap investments.\n\n## Recommended Next Artifact\nA decision memo at the end of week 10 with segmented mobile usage, workflow funnel data, pre/post fix results, business impact sizing, and an explicit recommendation to either continue targeted iteration or fund a scoped redesign.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "A full mobile-first redesign is not justified by the current evidence alone, but the decision should be made through a time-bounded validation program with quantified redesign thresholds rather than a subjective gate.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "The right immediate response is an 8-10 week validation-and-fix plan that gathers behavioral evidence, ships targeted fixes, and evaluates a redesign against explicit reach, severity, persistence, and business-case thresholds.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "The survey result is sufficient to prioritize mobile investigation now, even though it is insufficient to approve a 6-month rebuild on its own.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": false
+        }
+      ],
+      "citations": [
+        "ctx-1"
+      ],
+      "conclusion_confidence": "medium",
+      "open_questions": [],
+      "critique_responses": [
+        {
+          "finding_id": "finding-1",
+          "disposition": "adopted",
+          "rationale": "The critique was correct that the first-pass gate was under-specified and risked becoming subjective. I revised the artifact to add an explicit 8-10 week decision window and quantified thresholds for reach, severity, persistence after targeted fixes, and business-case sufficiency so the recommendation is decision-usable rather than open-ended."
+        }
+      ]
+    }
+  },
+  "min_margin_for_verdict": 0.1
+}
