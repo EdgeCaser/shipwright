@@ -33,6 +33,9 @@ MAPPINGS=(
   "evals:.claude/evals"
   "scripts:.claude/scripts"
   "scripts:.codex/scripts"
+  "schemas:schemas"
+  "benchmarks/scenarios:benchmarks/scenarios"
+  "benchmarks/fixtures:benchmarks/fixtures"
 )
 
 OVERLAY_MAPPINGS=(
@@ -82,7 +85,7 @@ prompt_yn() {
   while true; do
     echo -en "$msg [y/n] "
     read -r ans
-    case "${ans,,}" in
+    case "$(echo "$ans" | tr '[:upper:]' '[:lower:]')" in
       y|yes) return 0 ;;
       n|no)  return 1 ;;
       "")    [ "$default" = "y" ] && return 0 || return 1 ;;

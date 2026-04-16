@@ -232,14 +232,14 @@ test('runConflictHarness completes a head-to-head run and writes state', async (
   }
 });
 
-test('injectReasoningEffort pins Gemini to project-local aliases', () => {
+test('injectReasoningEffort injects real Gemini model names (no alias required)', () => {
   const low = injectReasoningEffort('cat {{prompt_file}} | gemini --approval-mode plan --output-format text -p ""', 'low');
   const medium = injectReasoningEffort('cat {{prompt_file}} | gemini --approval-mode plan --output-format text -p ""', 'medium');
   const high = injectReasoningEffort('cat {{prompt_file}} | gemini --approval-mode plan --output-format text -p ""', 'high');
 
-  assert.ok(low.includes("gemini -m 'shipwright-gemini-medium'"));
-  assert.ok(medium.includes("gemini -m 'shipwright-gemini-medium'"));
-  assert.ok(high.includes("gemini -m 'shipwright-gemini-high'"));
+  assert.ok(low.includes("gemini -m 'gemini-2.5-flash'"));
+  assert.ok(medium.includes("gemini -m 'gemini-2.5-flash'"));
+  assert.ok(high.includes("gemini -m 'gemini-2.5-pro'"));
 });
 
 test('runConflictHarness enforces budget at phase boundaries', async () => {

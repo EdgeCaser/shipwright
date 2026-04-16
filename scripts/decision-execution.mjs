@@ -24,13 +24,13 @@ const DEFAULT_RIGOR_OUT_DIR = path.resolve('benchmarks', 'results', 'orchestrate
 const PROVIDER_COMMANDS = {
   claude: 'cat {{prompt_file}} | claude -p --no-session-persistence --output-format text',
   gpt: 'cat {{prompt_file}} | codex exec --ephemeral --sandbox read-only',
-  gemini: 'cat {{prompt_file}} | gemini --approval-mode plan --output-format text -p "Use stdin as the full task. Return only the requested JSON object."',
+  gemini: 'cat {{prompt_file}} | gemini --model gemini-2.5-flash --approval-mode plan --output-format text -p "Use stdin as the full task. Return only the requested JSON object."',
 };
 
 const PROVIDER_META = {
   claude: { provider: 'anthropic', model: 'claude-max' },
   gpt: { provider: 'openai', model: 'chatgpt-pro' },
-  gemini: { provider: 'google', model: 'gemini-2.5-flash-lite' },
+  gemini: { provider: 'google', model: 'gemini-2.5-flash' },
 };
 
 // ---------------------------------------------------------------------------

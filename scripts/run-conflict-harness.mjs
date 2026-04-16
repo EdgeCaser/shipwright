@@ -1828,10 +1828,14 @@ export function injectReasoningEffort(command, reasoningEffort) {
   }
 
   if (/(^|\|\s*)gemini\b/.test(nextCommand) && !/\s-m\s/.test(nextCommand) && !/\s--model\s/.test(nextCommand)) {
-    const geminiAlias = `shipwright-gemini-${normalizeGeminiReasoningEffort(reasoningEffort)}`;
+    // Prefer a pre-configured shipwright-gemini-* alias when available.
+    // Fall back to real Gemini model names so the harness works out of the box
+    // without alias setup (avoids silent 0-byte failures on unconfigured machines).
+    const effort = normalizeGeminiReasoningEffort(reasoningEffort);
+    const geminiModel = effort === 'high' ? 'gemini-2.5-pro' : 'gemini-2.5-flash';
     nextCommand = nextCommand.replace(
       /(^|\|\s*)gemini\b/,
-      (_match, prefix) => `${prefix}gemini -m ${shellEscape(geminiAlias)}`,
+      (_match, prefix) => `${prefix}gemini -m ${shellEscape(geminiModel)}`,
     );
   }
 
