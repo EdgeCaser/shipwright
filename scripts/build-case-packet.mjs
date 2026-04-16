@@ -5,10 +5,29 @@ import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
-import {
-  DEFAULT_SCENARIO_DIR,
-  loadBenchmarkScenario,
-} from './run-benchmarks.mjs';
+import { DEFAULT_SCENARIO_DIR } from './run-benchmarks.mjs';
+
+/**
+ * Lightweight scenario loader for the conflict harness.
+ * Unlike loadBenchmarkScenario (run-benchmarks.mjs), this does NOT require
+ * fixture fields — the conflict harness generates its own artifacts.
+ */
+async function loadConflictScenario(filePath) {
+  const resolved = path.resolve(filePath);
+  const raw = JSON.parse(await readFile(resolved, 'utf8'));
+
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) {
+    throw new Error(`Scenario must be a JSON object: ${filePath}`);
+  }
+  if (typeof raw.id !== 'string' || raw.id.trim().length === 0) {
+    throw new Error(`Scenario is missing id: ${filePath}`);
+  }
+  if (typeof raw.inputs?.expected_artifact_type !== 'string') {
+    throw new Error(`Scenario is missing inputs.expected_artifact_type: ${filePath}`);
+  }
+
+  return { ...raw, source_path: resolved };
+}
 
 const SCHEMA_FILE_BY_NAME = Object.freeze({
   case: 'conflict-case.schema.json',
@@ -248,7 +267,7 @@ export async function buildCasePacket(options = {}) {
   }
 
   const scenarioPath = resolveScenarioPath(scenarioArg, scenarioDir);
-  const scenario = await loadBenchmarkScenario(scenarioPath);
+  const scenario = await loadConflictScenario(scenarioPath);
   return buildCasePacketFromScenario(scenario, options);
 }
 
