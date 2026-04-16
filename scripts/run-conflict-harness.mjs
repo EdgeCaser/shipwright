@@ -68,6 +68,7 @@ const REPAIRABLE_VERDICT_PATHS = new Set([
   '$.escalation_recommendation',
   '$.rubric_scores.side_a.weighted_total',
   '$.rubric_scores.side_b.weighted_total',
+  '$.needs_human_review',
 ]);
 
 export async function runConflictHarness(options = {}) {
