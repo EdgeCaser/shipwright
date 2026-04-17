@@ -69,6 +69,18 @@ function createRoleConfig(options = {}) {
     };
   });
 
+  // Warn when a judge family matches the Side A family — known positional lean.
+  const sameProviderJudges = judges.filter((j) => j.provider === sideA.provider);
+  if (sameProviderJudges.length > 0) {
+    const names = sameProviderJudges.map((j) => j.label).join(', ');
+    process.stderr.write(
+      `\nWARNING: Judge(s) [${names}] share a provider family with Side A (${sideA.provider}).\n` +
+      `  Claude-family judges have a documented positional lean toward Side A (~100% side_a rate).\n` +
+      `  Results from these judges cannot be trusted as standalone verdicts.\n` +
+      `  Recommended: add --judge-agent gpt (or another family) as a cross-check, or use --swap-sides.\n\n`
+    );
+  }
+
   return { sideA, sideB, judges };
 }
 
@@ -150,6 +162,8 @@ export async function runBatch(options = {}) {
           unsupportedClaimCount: run.metrics.unsupported_claim_count,
           runId: run.run_id,
           harnessSchemaVersion: run.harness_schema_version || null,
+          judgeProvider: judge.provider || null,
+          decisiveDimension: run.results.decisive_dimension || null,
           error: null,
           // Phase 2 uncertainty payload (present when triggered)
           uncertaintyDrivers: run.results.uncertainty_drivers || null,
@@ -328,6 +342,32 @@ export function buildSummary(results) {
     } else {
       lines.push('');
       lines.push('**No completed comparisons.** Cannot assess judge agreement. All scenario pairs must complete with both judges before any interpretation is valid.');
+    }
+  }
+
+  // Decisive dimension breakdown by judge family
+  const completedWithDim = results.filter((r) => r.status === 'completed' && r.decisiveDimension);
+  if (completedWithDim.length > 0) {
+    lines.push('');
+    lines.push('## Decisive Dimension by Judge Family');
+    lines.push('');
+
+    const providers = [...new Set(completedWithDim.map((r) => r.judgeProvider).filter(Boolean))];
+    const allDims = [...new Set(completedWithDim.map((r) => r.decisiveDimension))].sort();
+
+    lines.push('| Dimension | ' + providers.join(' | ') + ' | All |');
+    lines.push('|---|' + providers.map(() => '---|').join('') + '---|');
+
+    for (const dim of allDims) {
+      const allCount = completedWithDim.filter((r) => r.decisiveDimension === dim).length;
+      const allPct = ((allCount / completedWithDim.length) * 100).toFixed(0);
+      const providerCols = providers.map((p) => {
+        const providerRuns = completedWithDim.filter((r) => r.judgeProvider === p);
+        if (providerRuns.length === 0) return '—';
+        const count = providerRuns.filter((r) => r.decisiveDimension === dim).length;
+        return `${count}/${providerRuns.length} (${((count / providerRuns.length) * 100).toFixed(0)}%)`;
+      });
+      lines.push(`| ${dim} | ${providerCols.join(' | ')} | ${allCount}/${completedWithDim.length} (${allPct}%) |`);
     }
   }
 
