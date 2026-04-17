@@ -78,6 +78,32 @@ The batch summary now includes a **Decisive Dimension by Judge Family** table. U
 
 ---
 
+## Single-Service Compatibility
+
+The batch runner (`run-conflict-batch.mjs`) is designed for two-service operation (Claude + GPT). The following rules apply when only one service is available:
+
+### Single-run harness (`run-conflict-harness.mjs`)
+
+Fully service-agnostic. It accepts explicit `--side-a-command`, `--side-b-command`, and `--judge-command` strings. Any service combination works; the harness has no provider defaults of its own.
+
+### Batch runner with explicit flags
+
+Safe for single-service users. Pass `--side-a-agent`, `--side-b-agent`, and `--judge-agent` explicitly. The scenario-class routing (`conservative_answer_risk`) and swap test logic are both bypassed when judges are specified explicitly — they only fire on default judge selection.
+
+### Batch runner with defaults
+
+Requires both Claude and GPT. Default Side A = Claude, Side B = GPT, judges = both. Running defaults with only one service available will fail at command execution for the unavailable service.
+
+### `--auto-swap` flag
+
+Inherits the same two-service requirement as the main batch run. Swap tests re-run the scenario with sides reversed using the original agents — if GPT was Side B in the main run, GPT will be Side A in the swap. If GPT is unavailable, do not use `--auto-swap`.
+
+### Conservative-answer scenario routing
+
+When `conservative_answer_risk: true` scenarios are run with default judges, Claude is automatically skipped and GPT is used instead. If GPT is unavailable and default judges are used, the fallback will attempt to construct a GPT judge config and fail at execution. Workaround: pass `--judge-agent claude` explicitly (this bypasses the routing logic, but note that Claude is an unreliable judge for these scenarios — apply a manual swap test).
+
+---
+
 ## Schema Version Compatibility
 
 Runs with `harness_schema_version < 2.2` predate the grounding audit, evidence constraint, and cross-family confirmation policy. Do not compare margins or decisive dimensions across schema versions without a reconciliation note. The v2.2 rebaseline batch will bring the full corpus to a consistent baseline.

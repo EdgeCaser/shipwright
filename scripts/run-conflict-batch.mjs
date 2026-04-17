@@ -621,6 +621,141 @@ export function buildSummary(results) {
   return lines.join('\n') + '\n';
 }
 
+const TRUST_COLOR = { high: '#16a34a', medium: '#d97706', low: '#dc2626', unknown: '#6b7280' };
+const TRUST_BG    = { high: '#f0fdf4', medium: '#fffbeb', low: '#fef2f2', unknown: '#f9fafb' };
+
+export function buildVerdictCardsHtml(results) {
+  const completed = results.filter((r) => r.status === 'completed');
+  const versions = [...new Set(results.map((r) => r.harnessSchemaVersion).filter(Boolean))];
+
+  // Lean warning
+  const biasedPairs = [];
+  for (const r of results.filter((r) => r.sideAProvider && r.judgeProvider && r.sideAProvider === r.judgeProvider)) {
+    const key = `${r.judgeLabel}/${r.sideAProvider}`;
+    if (!biasedPairs.find((b) => b.key === key)) biasedPairs.push({ key, judgeLabel: r.judgeLabel, provider: r.sideAProvider });
+  }
+
+  function esc(s) {
+    return String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function trustBadge(trust) {
+    const color = TRUST_COLOR[trust] || TRUST_COLOR.unknown;
+    const bg = TRUST_BG[trust] || TRUST_BG.unknown;
+    return `<span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:700;letter-spacing:.05em;background:${bg};color:${color};border:1px solid ${color};">${esc(trust.toUpperCase())}</span>`;
+  }
+
+  function card(r) {
+    const trust = verdictTrustLevel(r);
+    const borderColor = TRUST_COLOR[trust] || TRUST_COLOR.unknown;
+    const winnerLabel = r.winner === 'side_a' ? (r.sideALabel || 'Side A')
+      : r.winner === 'side_b' ? (r.sideBLabel || 'Side B')
+      : r.winner || '—';
+    const { base: dimBase, caveat: dimCaveat } = r.decisiveDimension
+      ? dimAnnotation(r.decisiveDimension, r.judgeProvider)
+      : { base: null, caveat: null };
+    const interpretation = verdictInterpretation(r);
+
+    const rows = [];
+
+    rows.push(`<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+      <div>
+        <div style="font-size:15px;font-weight:700;color:#111;">${esc(r.scenario)}</div>
+        <div style="font-size:12px;color:#6b7280;margin-top:2px;">${esc(r.judgeLabel)} &nbsp;·&nbsp; ${esc(r.sideALabel || '?')} vs ${esc(r.sideBLabel || '?')}</div>
+      </div>
+      <div style="text-align:right;">
+        ${trustBadge(trust)}
+        ${r.conservativeAnswerRisk ? `<div style="margin-top:4px;font-size:10px;color:#b45309;font-weight:600;">⚠ CONSERVATIVE-ANSWER RISK</div>` : ''}
+      </div>
+    </div>`);
+
+    rows.push(`<div style="margin-bottom:10px;">
+      <span style="font-size:13px;color:#374151;"><strong>Winner:</strong> ${esc(winnerLabel)}</span>
+      <span style="margin-left:12px;font-size:13px;color:#6b7280;">margin ${r.margin != null ? r.margin.toFixed(2) : '—'} &nbsp;·&nbsp; confidence ${esc(r.judgeConfidence || '—')}</span>
+      ${r.needsHumanReview ? `<span style="margin-left:12px;font-size:12px;font-weight:600;color:#dc2626;">HUMAN REVIEW REQUIRED</span>` : ''}
+    </div>`);
+
+    if (r.decisiveDimension) {
+      rows.push(`<div style="margin-bottom:8px;font-size:12px;color:#374151;">
+        <strong>Decisive dimension:</strong> ${esc(r.decisiveDimension)}
+        ${dimBase ? `<span style="color:#6b7280;"> — ${esc(dimBase)}</span>` : ''}
+        ${dimCaveat ? `<div style="margin-top:4px;padding:6px 10px;background:#fefce8;border-left:3px solid #ca8a04;font-size:11px;color:#92400e;">${esc(dimCaveat)}</div>` : ''}
+      </div>`);
+    }
+
+    if (r.swapOutcome) {
+      const swapColors = { quality_confirmed: '#16a34a', confirmed_lean: '#dc2626', inconclusive: '#d97706', error: '#6b7280' };
+      const swapLabels = { quality_confirmed: '✓ Quality confirmed', confirmed_lean: '✗ Lean confirmed', inconclusive: '~ Inconclusive', error: 'Error' };
+      const sc = swapColors[r.swapOutcome] || '#6b7280';
+      rows.push(`<div style="margin-bottom:8px;font-size:12px;padding:6px 10px;background:#f8fafc;border-left:3px solid ${sc};color:#374151;">
+        <strong>Swap test:</strong> <span style="color:${sc};font-weight:600;">${esc(swapLabels[r.swapOutcome] || r.swapOutcome)}</span>
+        ${r.swapWinner ? `<span style="color:#6b7280;"> (swap winner: ${esc(r.swapWinner)})</span>` : ''}
+      </div>`);
+    }
+
+    if (r.uncertaintyDrivers?.length || r.disambiguationQuestions?.length || r.neededEvidence?.length) {
+      rows.push(`<details style="margin-bottom:8px;font-size:12px;"><summary style="cursor:pointer;color:#4f46e5;font-weight:600;">Uncertainty payload</summary>
+        <div style="padding:8px 0 0 12px;color:#374151;">
+          ${r.uncertaintyDrivers?.length ? `<p><strong>Why uncertain:</strong></p><ul>${r.uncertaintyDrivers.map((d) => `<li>${esc(d)}</li>`).join('')}</ul>` : ''}
+          ${r.disambiguationQuestions?.length ? `<p><strong>Questions to resolve:</strong></p><ul>${r.disambiguationQuestions.map((q) => `<li>${esc(q)}</li>`).join('')}</ul>` : ''}
+          ${r.neededEvidence?.length ? `<p><strong>Evidence needed:</strong></p><ul>${r.neededEvidence.map((e) => `<li>${esc(e)}</li>`).join('')}</ul>` : ''}
+          ${r.recommendedNextAction ? `<p><strong>Next action:</strong> ${esc(r.recommendedNextAction)}</p>` : ''}
+        </div>
+      </details>`);
+    }
+
+    rows.push(`<div style="margin-top:10px;padding:8px 12px;background:#f8fafc;border-radius:6px;font-size:12px;color:#374151;font-style:italic;">${esc(interpretation)}</div>`);
+
+    return `<div style="border:1px solid ${borderColor};border-left:4px solid ${borderColor};border-radius:8px;padding:16px;margin-bottom:16px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.06);">
+      ${rows.join('\n')}
+    </div>`;
+  }
+
+  const leanWarningHtml = biasedPairs.length > 0
+    ? `<div style="margin-bottom:24px;padding:12px 16px;background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;">
+        <strong style="color:#991b1b;">⚠ Positional Lean Warning</strong>
+        <p style="margin:6px 0 0;font-size:13px;color:#7f1d1d;">Judge(s) [${biasedPairs.map((b) => esc(b.judgeLabel)).join(', ')}] share a provider family with Side A. Claude-family judges call side_a ~100% of the time. GPT-family judges call side_b at ~3× the rate of side_a. Add a cross-family judge or run --swap-sides before drawing conclusions.</p>
+      </div>`
+    : '';
+
+  const errorResults = results.filter((r) => r.status === 'error');
+  const errorHtml = errorResults.length > 0
+    ? `<div style="margin-bottom:24px;padding:12px 16px;background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;">
+        <strong style="color:#991b1b;">Errors (${errorResults.length})</strong>
+        <ul style="margin:6px 0 0;font-size:13px;color:#7f1d1d;">${errorResults.map((r) => `<li>${esc(r.scenario)} (${esc(r.judgeLabel)}): ${esc(r.error)}</li>`).join('')}</ul>
+      </div>`
+    : '';
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Conflict Harness — Verdict Cards</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f1f5f9; margin: 0; padding: 24px; color: #111; }
+    .page { max-width: 860px; margin: 0 auto; }
+    h1 { font-size: 22px; font-weight: 700; margin: 0 0 4px; }
+    .meta { font-size: 13px; color: #6b7280; margin-bottom: 20px; }
+    details summary::-webkit-details-marker { display: none; }
+    ul { margin: 4px 0; padding-left: 18px; }
+    li { margin-bottom: 2px; }
+    p { margin: 4px 0; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h1>Conflict Harness — Verdict Cards</h1>
+    <div class="meta">Schema: ${esc(versions.join(', ') || 'unknown')} &nbsp;·&nbsp; ${completed.length} completed &nbsp;·&nbsp; ${results.length - completed.length} other &nbsp;·&nbsp; ${errorResults.length} errors</div>
+    ${leanWarningHtml}
+    ${errorHtml}
+    ${completed.map(card).join('\n')}
+  </div>
+</body>
+</html>`;
+}
+
 async function listScenarios(scenarioDir, filter) {
   const files = await readdir(scenarioDir);
   let scenarios = files
@@ -749,7 +884,7 @@ export async function main(argv = process.argv.slice(2)) {
       '  --side-a-reasoning-effort <level>  Explicit reasoning effort for Side A (default: medium)',
       '  --side-b-reasoning-effort <level>  Explicit reasoning effort for Side B (default: medium)',
       '  --judge-reasoning-effort <level>   Explicit reasoning effort for judges (default: medium)',
-      '  --format text|json    Output format (default: text)',
+      '  --format text|json|html  Output format (default: text). html generates a self-contained verdict card page.',
       '  --help                Show this help',
       '',
       'Examples:',
@@ -757,6 +892,7 @@ export async function main(argv = process.argv.slice(2)) {
       '  node scripts/run-conflict-batch.mjs --scenario prd-hidden-scope-creep --scenario handoff-contradiction',
       '  node scripts/run-conflict-batch.mjs --dry-run',
       '  node scripts/run-conflict-batch.mjs --out benchmarks/results/conflict-harness/batch-summary.md',
+      '  node scripts/run-conflict-batch.mjs --format html --out benchmarks/results/conflict-harness/verdict-cards.html',
       '',
     ].join('\n'));
     return;
@@ -800,6 +936,17 @@ export async function main(argv = process.argv.slice(2)) {
     } else {
       process.stderr.write('\nAuto-swap: no low-trust Claude verdicts found — skipping swap tests.\n');
     }
+  }
+
+  if (args.format === 'html') {
+    const output = buildVerdictCardsHtml(results);
+    if (args.outPath) {
+      await writeFile(path.resolve(args.outPath), output, 'utf8');
+      process.stderr.write(`Verdict cards written to ${path.resolve(args.outPath)}\n`);
+    } else {
+      process.stdout.write(output);
+    }
+    return;
   }
 
   if (args.format === 'json') {
