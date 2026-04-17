@@ -811,6 +811,13 @@ async function invokeCommittedArtifactTurn(options) {
     const identityLeaks = findIdentityLeaks(packet);
     const unseenOpponent = options.phase === 'first_pass' ? findUnseenOpponentReferences(packet) : [];
 
+    if (Array.isArray(packet.claims) && packet.claims.length === 0 && attempt === 0) {
+      repairIssueType = 'empty_claims';
+      attempt += 1;
+      lastResponse = response;
+      continue;
+    }
+
     if (identityLeaks.length > 0 && attempt === 0) {
       repairIssueType = 'identity_leak';
       attempt += 1;
@@ -1194,6 +1201,8 @@ function buildRepairPrompt(basePrompt, issue, attempt) {
   if (attempt === 0) return basePrompt;
 
   const messages = {
+    empty_claims:
+      'Repair instruction: the claims array is empty. Re-examine your artifact_markdown and extract at least one substantive claim. A claim is any assertion your artifact makes about what to do, what not to do, or why — including conservative recommendations. If your artifact deliberately avoids commitments, state that restraint as a claim (e.g., "Proceed only after gathering X evidence before committing to Y"). Keep the same packet shape.',
     identity_leak:
       'Repair instruction: remove any provider self-identification or family naming from the JSON output. Keep the same packet shape.',
     unseen_opponent:
