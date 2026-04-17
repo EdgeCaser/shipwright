@@ -257,13 +257,31 @@ const LEAN_SIDE_LABEL = {
   side_b: 'Side B',
 };
 
-const DIM_EXPLANATION = {
+const DIM_BASE = {
   decision_usefulness: 'operational specificity — concrete next steps, named owners, quantified thresholds',
-  evidence_discipline: 'staying within the evidence and not overreaching',
+  evidence_discipline: 'staying within the evidence and acknowledging uncertainty rather than overreaching',
   claim_quality: 'the strength and precision of the claims made',
   responsiveness_to_critique: 'how well the artifact incorporated rebuttal feedback',
   internal_consistency: 'logical coherence across the artifact',
 };
+
+// Judge-specific caveats: what a given family resolving on a given dimension means for trust.
+const DIM_CAVEAT = {
+  anthropic: {
+    decision_usefulness: 'Claude systematically rewards execution specificity (~80% of Claude verdicts resolve here). If your scenario calls for methodological caution over a concrete action plan — "stop, gather evidence, then decide" — weight this verdict less and prefer a GPT-only judge.',
+    evidence_discipline: 'Claude resolving on evidence discipline is atypical. This may indicate the winning artifact was unusually well-grounded.',
+  },
+  openai: {
+    evidence_discipline: 'GPT systematically rewards staying within the evidence and calibration discipline. This dimension is well-matched to scenarios where restraint is the correct answer.',
+    decision_usefulness: 'GPT resolving on decision usefulness is less typical (~60% of GPT verdicts). The winning artifact likely combined analytical rigor with actionable specificity.',
+  },
+};
+
+export function dimAnnotation(dimension, judgeProvider) {
+  const base = DIM_BASE[dimension] || null;
+  const caveat = DIM_CAVEAT[judgeProvider]?.[dimension] || null;
+  return { base, caveat };
+}
 
 export function verdictInterpretation(result) {
   const trust = verdictTrustLevel(result);
@@ -273,8 +291,11 @@ export function verdictInterpretation(result) {
   const winnerLabel = result.winner === 'side_a' ? (result.sideALabel || 'Side A')
     : result.winner === 'side_b' ? (result.sideBLabel || 'Side B')
     : null;
-  const dimNote = result.decisiveDimension
-    ? ` Resolved on ${result.decisiveDimension}${DIM_EXPLANATION[result.decisiveDimension] ? ` (${DIM_EXPLANATION[result.decisiveDimension]})` : ''}.`
+  const { base: dimBase, caveat: dimCaveat } = result.decisiveDimension
+    ? dimAnnotation(result.decisiveDimension, result.judgeProvider)
+    : { base: null, caveat: null };
+  const dimNote = dimBase
+    ? ` Resolved on ${result.decisiveDimension} (${dimBase}).${dimCaveat ? ` ${dimCaveat}` : ''}`
     : '';
 
   if (trust === 'unknown') return 'Verdict incomplete or missing data — no interpretation available.';
