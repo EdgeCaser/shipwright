@@ -208,6 +208,42 @@ const PROVIDER_LEAN = {
   openai: 'side_b',    // ~3x side_b rate vs side_a across rebaseline corpus
 };
 
+export async function runSwapTests(lowTrustResults, options = {}) {
+  const swapPairs = [];
+
+  for (const r of lowTrustResults) {
+    process.stderr.write(`\nSwap test: ${r.scenario} (original winner: ${r.winner}, judge: ${r.judgeLabel})\n`);
+
+    const swapRuns = await runBatch({
+      scenarios: [r.scenario],
+      scenarioDir: options.scenarioDir,
+      sideAAgent: r.sideBLabel,
+      sideBAgent: r.sideALabel,
+      judgeAgents: ['claude'],
+      sideAReasoningEffort: options.sideAReasoningEffort,
+      sideBReasoningEffort: options.sideBReasoningEffort,
+      judgeReasoningEffort: options.judgeReasoningEffort,
+    });
+
+    const swapRun = swapRuns[0];
+    let swapOutcome;
+    if (!swapRun || swapRun.status !== 'completed') {
+      swapOutcome = 'error';
+    } else if (swapRun.winner === 'side_a') {
+      swapOutcome = 'confirmed_lean'; // Claude still called side_a (now GPT's artifact) — positional lean confirmed
+    } else if (swapRun.winner === 'side_b') {
+      swapOutcome = 'quality_confirmed'; // Claude overrode lean to call its own artifact — original verdict was genuine
+    } else {
+      swapOutcome = 'inconclusive';
+    }
+
+    swapPairs.push({ original: r, swapRun, swapOutcome });
+    process.stderr.write(`Swap result: ${swapRun?.winner || 'error'} → ${swapOutcome}\n`);
+  }
+
+  return swapPairs;
+}
+
 export function verdictTrustLevel(result) {
   if (!result.winner || result.status !== 'completed' || !result.judgeProvider) return 'unknown';
   if (result.winner === 'tie') return 'medium';
@@ -252,7 +288,16 @@ export function verdictInterpretation(result) {
   }
 
   if (trust === 'low') {
-    return `${judgeLabel} called ${winnerLabel} the winner, consistent with its documented lean toward ${leanLabel}.${dimNote} Run --swap-sides before drawing conclusions.`;
+    if (result.swapOutcome === 'quality_confirmed') {
+      return `${judgeLabel} called ${winnerLabel} the winner (lean-aligned), but a swap test showed ${judgeLabel} overriding its lean to call the same artifact from the other side — quality confirmed.${dimNote}`;
+    }
+    if (result.swapOutcome === 'confirmed_lean') {
+      return `${judgeLabel} called ${winnerLabel} the winner, and a swap test confirmed this is positional lean — ${judgeLabel} called side_a again with sides reversed.${dimNote} Discount this verdict.`;
+    }
+    if (result.swapOutcome === 'inconclusive') {
+      return `${judgeLabel} called ${winnerLabel} the winner (lean-aligned), and the swap test was a tie — verdict remains inconclusive.${dimNote}`;
+    }
+    return `${judgeLabel} called ${winnerLabel} the winner, consistent with its documented lean toward ${leanLabel}.${dimNote} Run --auto-swap before drawing conclusions.`;
   }
 
   // medium — neutral provider, no documented lean
@@ -291,12 +336,15 @@ export function buildSummary(results) {
   // Per-run results table
   lines.push('## Run Results');
   lines.push('');
-  lines.push('| Scenario | Side A | Side B | Judge | Status | Winner | Margin | Confidence | Trust | Human Review | Disagreement | Declared | Revised |');
-  lines.push('|---|---|---|---|---|---|---|---|---|---|---|---|---|');
+  const hasSwapData = results.some((r) => r.swapOutcome);
+
+  lines.push(`| Scenario | Side A | Side B | Judge | Status | Winner | Margin | Confidence | Trust |${hasSwapData ? ' Swap |' : ''} Human Review | Disagreement | Declared | Revised |`);
+  lines.push(`|---|---|---|---|---|---|---|---|---|${hasSwapData ? '---|' : ''}---|---|---|---|`);
 
   for (const r of results) {
     const trust = verdictTrustLevel(r);
-    lines.push([
+    const swapCol = hasSwapData ? (r.swapOutcome || '—') : null;
+    const row = [
       '',
       r.scenario,
       r.sideALabel || '—',
@@ -307,12 +355,14 @@ export function buildSummary(results) {
       r.margin != null ? r.margin.toFixed(2) : '—',
       r.judgeConfidence || '—',
       trust,
+      ...(hasSwapData ? [swapCol] : []),
       r.needsHumanReview != null ? String(r.needsHumanReview) : '—',
       r.disagreementRate != null ? r.disagreementRate.toFixed(2) : '—',
       r.declaredAdoptionRate != null ? r.declaredAdoptionRate.toFixed(2) : '—',
       r.substantiveRevisionRate != null ? r.substantiveRevisionRate.toFixed(2) : '—',
       '',
-    ].join(' | '));
+    ];
+    lines.push(row.join(' | '));
   }
 
   // Plain-English verdict interpretations
@@ -325,6 +375,33 @@ export function buildSummary(results) {
       lines.push(`**${r.scenario} (${r.judgeLabel}):** ${verdictInterpretation(r)}`);
       lines.push('');
     }
+  }
+
+  // Swap test results section
+  const swapTested = results.filter((r) => r.swapOutcome);
+  if (swapTested.length > 0) {
+    lines.push('## Swap Test Results');
+    lines.push('');
+    lines.push('These scenarios had low-trust Claude verdicts and were re-run with sides reversed to test for positional lean.');
+    lines.push('');
+    lines.push('| Scenario | Original Winner | Swap Winner | Outcome | Interpretation |');
+    lines.push('|---|---|---|---|---|');
+    for (const r of swapTested) {
+      const outcomeLabel = {
+        quality_confirmed: '✓ Quality confirmed',
+        confirmed_lean: '✗ Lean confirmed',
+        inconclusive: '~ Inconclusive',
+        error: 'Error',
+      }[r.swapOutcome] || r.swapOutcome;
+      const interp = {
+        quality_confirmed: 'Verdict is genuine — trust upgraded to high.',
+        confirmed_lean: 'Positional lean confirmed — discount this verdict.',
+        inconclusive: 'Swap tied — verdict remains ambiguous.',
+        error: 'Swap run failed.',
+      }[r.swapOutcome] || '—';
+      lines.push(`| ${r.scenario} | ${r.winner || '—'} | ${r.swapWinner || '—'} | ${outcomeLabel} | ${interp} |`);
+    }
+    lines.push('');
   }
 
   // Flagged verdicts — uncertainty payload for triggered runs
@@ -504,6 +581,7 @@ export function parseCliArgs(argv) {
     outPath: null,
     dryRun: false,
     swapSides: false,
+    autoSwap: false,
     sideAAgent: '',
     sideBAgent: '',
     judgeAgents: [],
@@ -534,6 +612,9 @@ export function parseCliArgs(argv) {
         break;
       case '--swap-sides':
         parsed.swapSides = true;
+        break;
+      case '--auto-swap':
+        parsed.autoSwap = true;
         break;
       case '--side-a-agent':
         parsed.sideAAgent = argv[i + 1] || '';
@@ -592,6 +673,7 @@ export async function main(argv = process.argv.slice(2)) {
       '  --out <path>          Write summary to file',
       '  --dry-run             List what would run without executing',
       '  --swap-sides          Run with Side A = GPT and Side B = Claude',
+      '  --auto-swap           After the main run, re-run low-trust Claude verdicts with sides swapped to confirm or refute positional lean',
       '  --side-a-agent <id>   Agent for Side A (claude|gpt|gemini)',
       '  --side-b-agent <id>   Agent for Side B (claude|gpt|gemini)',
       '  --judge-agent <id>    Judge agent to include (repeatable; default: claude + gpt)',
@@ -611,7 +693,7 @@ export async function main(argv = process.argv.slice(2)) {
     return;
   }
 
-  const results = await runBatch({
+  const batchOptions = {
     scenarios: args.scenarios.length > 0 ? args.scenarios : undefined,
     scenarioDir: args.scenarioDir,
     dryRun: args.dryRun,
@@ -622,7 +704,34 @@ export async function main(argv = process.argv.slice(2)) {
     sideAReasoningEffort: args.sideAReasoningEffort,
     sideBReasoningEffort: args.sideBReasoningEffort,
     judgeReasoningEffort: args.judgeReasoningEffort,
-  });
+  };
+
+  const results = await runBatch(batchOptions);
+
+  let swapPairs = [];
+  if (args.autoSwap && !args.dryRun) {
+    const swapCandidates = results.filter(
+      (r) => verdictTrustLevel(r) === 'low' && r.judgeProvider === 'anthropic'
+    );
+    if (swapCandidates.length > 0) {
+      process.stderr.write(`\nAuto-swap: ${swapCandidates.length} low-trust Claude verdict(s) queued for swap testing.\n`);
+      swapPairs = await runSwapTests(swapCandidates, {
+        scenarioDir: args.scenarioDir,
+        sideAReasoningEffort: args.sideAReasoningEffort,
+        sideBReasoningEffort: args.sideBReasoningEffort,
+        judgeReasoningEffort: args.judgeReasoningEffort,
+      });
+      for (const { original, swapRun, swapOutcome } of swapPairs) {
+        const r = results.find((x) => x === original);
+        if (r) {
+          r.swapWinner = swapRun?.winner || null;
+          r.swapOutcome = swapOutcome;
+        }
+      }
+    } else {
+      process.stderr.write('\nAuto-swap: no low-trust Claude verdicts found — skipping swap tests.\n');
+    }
+  }
 
   if (args.format === 'json') {
     const output = JSON.stringify(results, null, 2) + '\n';
