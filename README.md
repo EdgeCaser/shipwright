@@ -111,31 +111,22 @@ For high-stakes decisions — governance, board-level, restructuring, pricing �
 
 **Fast Mode** runs a single structured analysis pass and returns a recommendation, confidence band, and uncertainty payload. It takes roughly 1-2 minutes.
 
-**Rigor Mode** runs a full cross-model conflict harness: two models argue opposite sides, critique each other, and a third model adjudicates. It takes 5-15 minutes and is the recommended path for governance-class questions.
-
-The orchestrator decides the routing. You declare the scenario class; the system applies the corresponding policy. Governance and publication-claim work require cross-family confirmation by default. Everything else starts with a single fast pass and only escalates with your confirmation.
+The orchestrator decides the routing. You declare the scenario class; the system applies the corresponding policy. Everything starts with a fast pass. Governance and publication-class questions are flagged for escalation when confidence is insufficient.
 
 ### Usage
 
 ```bash
-# Fast pass on a pricing question (single provider)
+# Fast pass on a pricing question
 node scripts/shipwright.mjs \
   --question "Should we raise prices by 15% in Q3 given softening retention?" \
   --class pricing \
   --provider claude
 
-# Governance question — starts with a Fast pass, then recommends Rigor Mode when a third-family judge is available
+# Governance question
 node scripts/shipwright.mjs \
   --question "Should we restructure the board now or wait for Q4 results?" \
   --class governance \
-  --provider claude --provider gpt --provider gemini
-
-# Auto-confirm escalation gate
-node scripts/shipwright.mjs \
-  --question "Should we break up the company now?" \
-  --class governance \
-  --provider claude --provider gpt --provider gemini \
-  --yes
+  --provider claude
 
 # Preview routing plan without running
 node scripts/shipwright.mjs \
@@ -147,22 +138,21 @@ node scripts/shipwright.mjs \
 
 | Class | Default path | Cross-family required |
 |---|---|---|
-| `governance` | fast pass -> Rigor Mode when available | yes |
-| `publication` | fast pass -> Rigor Mode when available | yes |
+| `governance` | fast pass, escalation flagged on low confidence | yes |
+| `publication` | fast pass, escalation flagged on low confidence | yes |
 | `pricing` | single analysis | no |
 | `product_strategy` | single analysis | no |
 | `unclassified` | single analysis | no |
 
 ### Providers
 
-Pass `--provider` once per available model family: `claude`, `gpt`, `gemini`. With one provider, analysis is single-pass and marked provisional. With two, Shipwright can still give a useful Fast Mode result and honest escalation guidance, but it cannot execute the full three-family harness. With three, a third-family judge is available for publication-grade rigor.
+Pass `--provider` once per available model family: `claude`, `gpt`, `gemini`. With one provider, analysis is single-pass and marked provisional. With two or more, Shipwright can give a Fast Mode result with honest escalation guidance when confidence is insufficient.
 
 ### Output
 
 Each run writes to `benchmarks/results/orchestrated/<scenario>/<run-id>/`:
 - `orchestration.json` — routing decisions and terminal state for every stage
 - `stage-1-fast/` — Fast Mode analysis with recommendation, confidence, and uncertainty payload
-- `stage-2-rigor/` (if escalated) — Full harness transcript and verdict
 
 ### Session API
 
@@ -177,7 +167,7 @@ const { body } = await handleDecisionSessionRequest({
   body: { question: '...', scenario_class: 'governance', providers: ['claude', 'gpt', 'gemini'] }
 }, options);
 
-// Confirm escalation to Rigor Mode
+// Confirm next step (e.g. gather more evidence, create follow-up brief)
 await handleDecisionSessionRequest({
   method: 'POST', path: `/decision-sessions/${body.session_id}/next-step`,
   body: { confirm: true }
@@ -198,15 +188,6 @@ node scripts/archive-generated-outputs.mjs --target-root C:\shipwright-artifacts
 ```
 
 That preserves the `benchmarks/results/` and `benchmarks/telemetry/` layout under the shorter root, which helps avoid OneDrive path-length sync failures on deep benchmark trees.
-
-### Research background
-
-The calibration data, cross-model comparison results, and research memos behind the routing policy live in `docs/review/`. The key finding: judge family dominates outcome more than anything else. GPT defaults to `decision_usefulness`; Claude defaults to `evidence_discipline`. Single-judge outputs cannot be treated as reliable findings on contested governance questions.
-
-For the full research corpus, including replay artifacts and analysis workups:
-
-- archive branch: `codex/cross-model-debate-harness-spec`
-- archival PR: [#6](https://github.com/EdgeCaser/shipwright/pull/6)
 
 ### 2) Add product context and go
 
