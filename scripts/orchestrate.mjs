@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Orchestrator routing module for Shipwright's Rigor Mode adjudication flow.
+ * Orchestrator routing module for Shipwright's decision analysis flow.
  *
  * Pure logic module — no I/O, no shell execution, no side effects.
  * Takes a routing input and returns a routing result describing what
@@ -344,7 +344,7 @@ function routePostSingle({ scenarioClass, confidence, pa, needsReview, hasUncert
         explanation: pa.can_run_third_family_judge
           ? `Result looks strong, but ${scenarioClass.label} requires cross-family confirmation before this can be treated as reliable. A single-family result is not sufficient for this class.`
           : `Result looks strong, but ${scenarioClass.label} still requires cross-family confirmation and no third-family judge is currently available.`,
-        follow_up_action: pa.can_run_third_family_judge ? 'Run Rigor Mode' : 'Add a third provider or treat this as provisional',
+        follow_up_action: 'Add a third provider or treat this as provisional',
       });
     }
 
@@ -355,7 +355,7 @@ function routePostSingle({ scenarioClass, confidence, pa, needsReview, hasUncert
       requires_user_confirmation: false,
       recommended_provider_roles: suggestProviderRoles(pa, 'double'),
       explanation: 'Single analysis returned high confidence with no review flags. This is the best current adjudication.',
-      follow_up_action: pa.can_run_third_family_judge ? 'Run Rigor Mode for extra rigor (optional)' : null,
+      follow_up_action: null,
     });
   }
 
@@ -370,7 +370,7 @@ function routePostSingle({ scenarioClass, confidence, pa, needsReview, hasUncert
       explanation: isWeak
         ? 'Escalation was declined. This result is below the confidence threshold. The stronger-path recommendation remains available.'
         : 'Escalation was declined. The result is provisionally usable.',
-      follow_up_action: pa.can_run_third_family_judge ? 'Run Rigor Mode (previously declined)' : null,
+      follow_up_action: null,
     });
   }
 
@@ -384,7 +384,7 @@ function routePostSingle({ scenarioClass, confidence, pa, needsReview, hasUncert
       requires_user_confirmation: true,
       recommended_provider_roles: suggestProviderRoles(pa, 'double'),
       explanation: `This result is directionally useful but not reliable enough to stand alone. ${reason} A second judge family is needed before routing to human review.`,
-      follow_up_action: 'Run Rigor Mode',
+      follow_up_action: 'Gather more evidence or add a third provider',
     });
   }
 

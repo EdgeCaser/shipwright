@@ -214,7 +214,7 @@ test('post_single: high confidence, no flags, non-cross-family → provisional /
   assert.equal(r.ux_substate, UX_SUBSTATES.SINGLE_RUN_ACCEPTABLE);
 });
 
-test('post_single: high confidence + 3 providers → provisional with optional follow-up', () => {
+test('post_single: high confidence + 3 providers → provisional, no follow-up action', () => {
   const r = route(baseInput({
     scenario_class: 'pricing',
     stage: 'post_single',
@@ -224,7 +224,7 @@ test('post_single: high confidence + 3 providers → provisional with optional f
   }));
   assert.equal(r.ux_state, UX_STATES.PROVISIONAL);
   assert.equal(r.ux_substate, UX_SUBSTATES.SINGLE_RUN_ACCEPTABLE);
-  assert.ok(r.follow_up_action !== null);
+  assert.equal(r.follow_up_action, null);
 });
 
 test('post_single: high confidence but cross_family_required + 3 providers → more_rigor_recommended', () => {
