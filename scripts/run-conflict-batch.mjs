@@ -783,6 +783,7 @@ export function parseCliArgs(argv) {
     scenarios: [],
     scenarioDir: DEFAULT_SCENARIO_DIR,
     outPath: null,
+    fromJson: null,
     dryRun: false,
     swapSides: false,
     autoSwap: false,
@@ -848,6 +849,10 @@ export function parseCliArgs(argv) {
         parsed.format = argv[i + 1] || 'text';
         i += 1;
         break;
+      case '--from-json':
+        parsed.fromJson = argv[i + 1] || null;
+        i += 1;
+        break;
       case '--help':
         parsed.help = true;
         break;
@@ -885,6 +890,7 @@ export async function main(argv = process.argv.slice(2)) {
       '  --side-b-reasoning-effort <level>  Explicit reasoning effort for Side B (default: medium)',
       '  --judge-reasoning-effort <level>   Explicit reasoning effort for judges (default: medium)',
       '  --format text|json|html  Output format (default: text). html generates a self-contained verdict card page.',
+      '  --from-json <path>    Render existing JSON results without running any models (combine with --format html)',
       '  --help                Show this help',
       '',
       'Examples:',
@@ -893,8 +899,30 @@ export async function main(argv = process.argv.slice(2)) {
       '  node scripts/run-conflict-batch.mjs --dry-run',
       '  node scripts/run-conflict-batch.mjs --out benchmarks/results/conflict-harness/batch-summary.md',
       '  node scripts/run-conflict-batch.mjs --format html --out benchmarks/results/conflict-harness/verdict-cards.html',
+      '  node scripts/run-conflict-batch.mjs --from-json results.json --format html --out verdict-cards.html',
       '',
     ].join('\n'));
+    return;
+  }
+
+  // --from-json: render existing results without running anything
+  if (args.fromJson) {
+    const raw = await readFile(path.resolve(args.fromJson), 'utf8');
+    const results = JSON.parse(raw);
+    let output;
+    if (args.format === 'html') {
+      output = buildVerdictCardsHtml(results);
+    } else if (args.format === 'json') {
+      output = JSON.stringify(results, null, 2) + '\n';
+    } else {
+      output = buildSummary(results);
+    }
+    if (args.outPath) {
+      await writeFile(path.resolve(args.outPath), output, 'utf8');
+      process.stderr.write(`Output written to ${path.resolve(args.outPath)}\n`);
+    } else {
+      process.stdout.write(output);
+    }
     return;
   }
 
