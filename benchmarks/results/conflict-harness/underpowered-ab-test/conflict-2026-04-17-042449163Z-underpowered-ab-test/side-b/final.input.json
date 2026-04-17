@@ -1,0 +1,106 @@
+{
+  "case_packet": {
+    "scenario_id": "underpowered-ab-test",
+    "title": "Feature extension from a statistically underpowered A/B test",
+    "prompt": "Write a PRD to expand a feature to all users based on an A/B test that ran for 2 weeks with 1,200 users per variant. The test showed a 6% lift in the primary metric (p=0.08). The data science team flagged the test as underpowered for the claimed effect size and recommended a minimum 6-week run. The PM is proceeding on the grounds that the direction is clear and the business cannot wait.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass": {
+    "run_id": "conflict-2026-04-17-042449163Z-underpowered-ab-test",
+    "side_id": "side_b",
+    "round": "first_pass",
+    "artifact_markdown": "# PRD: Controlled Expansion Decision for the Tested Feature\n\n## Summary\nThis document does not recommend immediate release to all users. The available test signal suggests possible upside, but the result is not decision-grade for a full rollout because the experiment was flagged as underpowered and did not meet conventional statistical confidence. The appropriate product requirement is a controlled expansion plan that preserves learning while limiting irreversible exposure.\n\n## Problem Statement\nThe team wants to expand a feature after a 2-week A/B test with 1,200 users per variant showed a 6% lift in the primary metric at p=0.08. Data science stated the test was underpowered for the claimed effect size and recommended a minimum 6-week run. Product leadership believes the directional result is sufficient and that the business cannot wait.\n\n## Product Decision\nAuthorize a staged expansion rather than a full-user rollout. The feature may progress only through controlled gates that continue measurement, preserve a holdout or equivalent validation path, and define explicit stop conditions if the observed benefit does not persist.\n\n## Goals\n- Capture potential upside without converting an uncertain test result into a full-commitment launch.\n- Maintain the ability to validate whether the observed lift is real and durable.\n- Create a decision path that balances business urgency with evidence quality.\n\n## Non-Goals\n- Declaring the current experiment conclusive.\n- Removing measurement safeguards in the name of speed.\n- Treating directional movement alone as sufficient proof for universal release.\n\n## Requirements\n1. Expansion must be staged, not immediate to all users.\n2. Measurement must continue during the staged rollout.\n3. The team must preserve a credible way to compare outcomes during expansion.\n4. The rollout plan must include explicit progression and rollback criteria.\n5. Final universal release requires a documented review of the extended evidence, including whether the initial effect holds under a longer observation window.\n\n## Risks\n- The observed lift may be noise rather than a reliable effect.\n- A full rollout now would make it harder to resolve whether the feature truly caused the improvement.\n- Business urgency may pressure the team into treating weak evidence as settled fact.\n\n## Decision Frame\nThe decision is not whether the feature looks promising; it is whether the current evidence is strong enough to justify immediate release to all users. It is not. The decision-grade recommendation is a controlled expansion with continued validation, not a universal rollout.\n\n## Unknowns & Evidence Gaps\n- Whether the observed 6% lift persists over the longer run recommended by data science.\n- Whether the current result is stable enough to reproduce beyond the initial 2-week window.\n- Whether business urgency justifies the risk of acting on an inconclusive result.\n- What rollout gate would count as sufficient evidence for full release.\n\n## Pass/Fail Readiness\nPass if:\n- The organization agrees to a staged rollout instead of an immediate full release.\n- Continued measurement and comparison are preserved during rollout.\n- Clear advancement and rollback criteria are documented before expansion begins.\n\nFail if:\n- The team intends to release to all users immediately based only on the current test.\n- The rollout removes the ability to validate the effect during expansion.\n- The team cannot define what additional evidence would be enough to support full launch.\n\n## Recommended Next Artifact\nA rollout decision memo that specifies:\n- staged release phases\n- measurement plan during expansion\n- holdout or comparison design\n- advancement criteria\n- rollback triggers\n- final review checkpoint for universal release",
+    "claims": [
+      {
+        "claim_id": "side_b-claim-1",
+        "summary": "The current experiment does not justify immediate release to all users because the result was flagged as underpowered and remained statistically inconclusive for a full-rollout decision.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-2",
+        "summary": "A staged expansion with continued measurement is a more decision-useful response than either stopping entirely or proceeding directly to universal launch.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-3",
+        "summary": "Business urgency can justify faster operational sequencing, but it does not convert directional evidence into conclusive evidence.",
+        "evidence_refs": [],
+        "is_major": false
+      }
+    ],
+    "citations": [],
+    "conclusion_confidence": "medium",
+    "open_questions": [
+      "Can the rollout preserve a credible comparison group during staged expansion?",
+      "What specific progression and rollback conditions will the team accept before rollout begins?",
+      "What decision point will be used to approve or reject universal release after additional observation?"
+    ],
+    "critique_responses": []
+  },
+  "critique_packet": {
+    "target_side": "side_b",
+    "finding_id": "finding-1",
+    "target_claim_ids": [
+      "side_b-claim-1"
+    ],
+    "claim_under_attack": "The current experiment does not justify immediate release to all users because the result was flagged as underpowered and remained statistically inconclusive for a full-rollout decision.",
+    "attack_type": "evidence_gap",
+    "evidence_or_reason": "The claim correctly identifies the underpowered condition but fails to quantify what 'decision-grade' evidence would actually require. The PRD never specifies a target sample size, required power level (e.g., 80%), or minimum detectable effect size that would satisfy a full-rollout threshold. Without these numbers, the 'not decision-grade' conclusion is itself unsupported — it asserts a standard without defining it. A reviewer cannot evaluate whether 6 weeks and the recommended sample would actually close the gap, because the artifact provides no power calculation or effect-size anchor. The claim rests on deferring to data science's flag without independently grounding what sufficient evidence looks like, which is the core analytical work the PRD should perform.",
+    "severity": "high"
+  }
+}

@@ -1,0 +1,144 @@
+You are SIDE_A in the final revision phase for run conflict-2026-04-17-022338819Z-adjacent-market-proxy.
+You must either adopt the critique or reject it with reasoning.
+Do not reveal provider identity.
+EVIDENCE CONSTRAINT: The only evidence available to you is contained in the case packet above. Do not introduce statistics, benchmarks, thresholds, cost estimates, or citations not present in the packet. Every ctx-N reference in evidence_refs and citations must correspond to an actual evidence_id in the case packet. Do not invent quantitative specifics to strengthen your argument.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "run_id": "conflict-2026-04-17-022338819Z-adjacent-market-proxy",
+  "side_id": "side_a",
+  "round": "final",
+  "artifact_markdown": "# Revised artifact",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "Updated major claim",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1"
+  ],
+  "conclusion_confidence": "medium",
+  "open_questions": [],
+  "critique_responses": [
+    {
+      "finding_id": "finding-2",
+      "disposition": "adopted",
+      "rationale": "Why the critique was adopted or rejected."
+    }
+  ]
+}
+
+Case packet:
+{
+  "scenario_id": "adjacent-market-proxy",
+  "title": "New market entry PRD using adjacent market data as unvalidated proxy",
+  "prompt": "Write a PRD for entering the SMB market. The team has strong data on enterprise buyer behavior from 3 years of sales but no direct SMB research. The business case uses enterprise conversion rates, contract values, and churn figures as proxies for SMB projections, adjusted down by 40% based on intuition. No SMB interviews, pilots, or comparable benchmarks have been conducted.",
+  "artifact_type": "prd",
+  "rubric": {
+    "dimensions": [
+      "claim quality",
+      "evidence discipline",
+      "responsiveness to critique",
+      "internal consistency",
+      "decision usefulness"
+    ],
+    "scoring_scale": "1-5",
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "constraints": {
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "expect_structured": true,
+    "context_files": [],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "evidence": [],
+  "max_rounds": 3,
+  "tool_policy": "none",
+  "sharing_policy": {
+    "share_case_packet": true,
+    "share_committed_artifacts_after_first_pass": true,
+    "share_critiques_after_open": true,
+    "share_hidden_reasoning": false,
+    "share_provider_identity": false,
+    "share_internal_coalition_drafts": false
+  },
+  "success_condition": {
+    "type": "validator_contract",
+    "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+    "validator": {
+      "artifact_type": "prd",
+      "expect_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true
+    }
+  }
+}
+
+Your first-pass artifact:
+{
+  "run_id": "conflict-2026-04-17-022338819Z-adjacent-market-proxy",
+  "side_id": "side_a",
+  "round": "first_pass",
+  "artifact_markdown": "# PRD: SMB Market Entry\n**Status:** Pre-validation — Not approved for execution\n**Owner:** Product / Strategy\n**Last Updated:** 2026-04-17\n\n---\n\n## Decision Frame\n\n**The decision:** Whether to greenlight an SMB go-to-market motion, and if so, what evidence must be in hand before committing budget and headcount.\n\n**What this PRD is and is not:** This document frames the SMB entry opportunity and exposes the current evidence state. It is not a launch plan. Execution approval is gated on the readiness criteria in the Pass/Fail section below.\n\n**Strategic context:** The company has three years of enterprise sales data and a functioning enterprise motion. SMB represents a materially different buyer profile — shorter sales cycles, lower contract values, higher volume, distinct churn drivers, and different support cost structures. The strategic hypothesis is that the core product can serve SMB buyers with targeted packaging and pricing adjustments.\n\n**Scope:** This PRD covers the decision to invest in SMB discovery and a limited pilot. It does not authorize full market launch.\n\n---\n\n## Unknowns & Evidence Gaps\n\nThis section is the operational core of this document. The business case currently rests on enterprise figures adjusted downward by 40%. That adjustment is explicitly intuition-based, not derived from SMB research, comparable benchmarks, or any direct buyer signal. The following gaps must be treated as **blocking unknowns** before financial projections can be relied upon.\n\n### Gap 1 — SMB Conversion Rate\n**What we have:** Enterprise conversion rate from our own pipeline.\n**What we need:** SMB conversion rate for this product category.\n**Why the proxy is unreliable:** Enterprise buyers engage with longer evaluation cycles, dedicated procurement, and formal vendor review. SMB buyers decide faster, with less process, and often on different criteria (ease of setup, time-to-value, price transparency). Our enterprise funnel mechanics do not map to SMB acquisition channels. A 40% discount applied to an enterprise conversion rate could be too optimistic or too conservative — we cannot determine which without data.\n**Risk if wrong:** Financial model misses by an unknown multiplier. Pipeline sizing and CAC estimates are built on a foundation with no empirical grounding.\n\n### Gap 2 — SMB Contract Value and Willingness to Pay\n**What we have:** Enterprise ACV and deal structure data.\n**What we need:** SMB willingness to pay, preferred pricing model (seat-based, usage-based, flat), and expected ACV range.\n**Why the proxy is unreliable:** SMB buyers face hard budget ceilings that enterprise buyers do not. Packaging and pricing that converts enterprise accounts may not be purchasable by SMB buyers regardless of product fit. The 40% reduction applied to enterprise ACV is an assumption with no buyer validation.\n**Risk if wrong:** Unit economics may not support the go-to-market motion at any realistic volume.\n\n### Gap 3 — SMB Churn Drivers and Retention Profile\n**What we have:** Enterprise churn rates and the primary reasons enterprise customers leave.\n**What we need:** SMB churn expectations for this product category — which are driven by different factors (cash flow pressure, team turnover, simpler competitive alternatives, lower switching costs).\n**Why the proxy is unreliable:** Enterprise churn is typically driven by strategic fit and procurement lock-in. SMB churn is typically driven by price sensitivity, ease of cancellation, and faster competitive substitution. These are structurally different.\n**Risk if wrong:** LTV projections are inflated. Payback period assumptions are wrong. The cohort model underlying the business case does not hold.\n\n### Gap 4 — SMB Support and Onboarding Cost\n**What we have:** Enterprise customer success and support cost structure.\n**What we need:** Estimated SMB support cost per account given self-serve expectations and lower revenue per account to absorb that cost.\n**Why the proxy is unreliable:** Enterprise accounts absorb high-touch CS cost across large ACV. SMB accounts do not. If SMB accounts require even moderate support, margins compress rapidly. This cost was not surfaced in the current business case.\n**Risk if wrong:** Gross margin assumptions are wrong. The unit economics case collapses at scale.\n\n### Gap 5 — Buyer Identity and Acquisition Channel\n**What we have:** Enterprise ICP and sales-led acquisition motion.\n**What we need:** SMB buyer identity (who decides, what triggers evaluation, which channels reach them) and which acquisition model — product-led, sales-assisted, or partner-led — is viable.\n**Risk if wrong:** GTM design is built for the wrong buyer. CAC and ramp assumptions are wrong.\n\n---\n\n## Pass/Fail Readiness\n\nThe following criteria must be satisfied before this PRD moves to execution approval. These are binary gates, not scoring dimensions.\n\n| Criterion | Required Evidence | Current State | Gate Status |\n|---|---|---|---|\n| SMB willingness to pay validated | ≥15 SMB buyer interviews with pricing response data | None conducted | **BLOCKED** |\n| Conversion rate proxy validated | Pilot data or comparable benchmark from SMB-adjacent product | None available | **BLOCKED** |\n| Churn assumption validated | SMB cohort data or third-party benchmark for this category | None available | **BLOCKED** |\n| Support cost modeled for SMB | Cost-per-ticket analysis at SMB support volume | Not modeled | **BLOCKED** |\n| Acquisition channel identified | Channel test or buyer-sourcing data | Not tested | **BLOCKED** |\n| Business case re-run on validated inputs | Updated model using research outputs, not adjusted enterprise proxy | Not completed | **BLOCKED** |\n\n**Current readiness state: NOT READY FOR EXECUTION**\n\nAll six gates are blocked. The business case as constructed cannot be relied upon for resource allocation decisions. Proceeding to execution on current inputs carries material risk of misallocating budget and headcount against projections that have no empirical grounding in the target segment.\n\n---\n\n## Recommended Next Artifact\n\n**Artifact:** SMB Discovery Sprint Plan\n\n**Purpose:** Close the six blocking gaps above through a structured, time-boxed discovery effort before any execution commitment is made.\n\n**Recommended scope:**\n- **Buyer interviews:** 15–20 SMB buyers (current non-customers) covering willingness to pay, evaluation triggers, competitive alternatives, and support expectations. Target completion: 6 weeks.\n- **Pricing test:** A lightweight pricing page or sales conversation test with 5–10 SMB prospects to generate willingness-to-pay signal.\n- **Benchmark sourcing:** Identify whether any comparable SaaS products in this category have published or obtainable SMB cohort benchmarks that can serve as a calibration reference.\n- **Support cost model:** Work with CS and finance to model SMB support cost per account at two volume scenarios.\n- **Channel test:** Run a small paid or outbound acquisition test to establish baseline SMB CAC range before committing to GTM design.\n\n**Success output:** A revised business case built on research inputs, with explicit confidence ratings on each assumption, replacing the current enterprise-proxy model. If discovery outputs do not support a viable unit economics case, this is the correct moment to surface that — not after execution budget is committed.\n\n**Owner:** Product + Research lead\n**Recommended timeline:** 6–8 weeks\n\n---\n\n*This PRD does not recommend for or against SMB market entry. It frames the decision honestly given current evidence, identifies what must be learned before the decision can be made responsibly, and proposes a concrete path to closing those gaps.*",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "The 40% intuition-based downward adjustment to enterprise metrics is not a valid proxy for SMB projections — conversion rates, churn drivers, contract values, and support costs are structurally different between enterprise and SMB segments, making all six financial gates currently blocked.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "The correct decision artifact at this stage is not a launch PRD but a discovery sprint plan — the business case must be rebuilt on SMB-sourced inputs before any execution commitment is justified.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-3",
+      "summary": "Support and onboarding cost per SMB account was not modeled in the original business case, representing an additional hidden risk that could compress margins even if other assumptions are directionally correct.",
+      "evidence_refs": [],
+      "is_major": false
+    }
+  ],
+  "citations": [],
+  "conclusion_confidence": "high",
+  "open_questions": [
+    "Does the company have any existing SMB customers acquired incidentally through inbound or self-serve channels whose behavior could serve as a baseline cohort?",
+    "Is there a partner or reseller channel already serving SMB buyers in adjacent categories that could accelerate benchmark data acquisition?",
+    "What is the executive appetite for a 6–8 week discovery sprint versus pressure to move directly to pilot — and does that pressure change the gating criteria?"
+  ],
+  "critique_responses": []
+}
+
+Visible critique packet:
+{
+  "target_side": "side_a",
+  "finding_id": "finding-2",
+  "target_claim_ids": [
+    "side_a-claim-1"
+  ],
+  "claim_under_attack": "The 40% intuition-based downward adjustment to enterprise metrics is not a valid proxy for SMB projections — conversion rates, churn drivers, contract values, and support costs are structurally different between enterprise and SMB segments, making all six financial gates currently blocked.",
+  "attack_type": "evidence_gap",
+  "evidence_or_reason": "The claim overreaches from a reasonable caution to a categorical invalidation without visible evidence. The artifact provides no cited benchmarks, internal cohort data, or comparable-company data showing that enterprise metrics cannot be used even as provisional priors for SMB planning. It also asserts that all six gates are blocked as if those gates were objectively required, but the thresholds and gating standard are self-imposed rather than demonstrated from the case packet. Given the prompt only establishes that SMB inputs are unvalidated, the stronger supported claim is 'high uncertainty,' not 'not a valid proxy' or 'all six financial gates are blocked.'",
+  "severity": "medium"
+}

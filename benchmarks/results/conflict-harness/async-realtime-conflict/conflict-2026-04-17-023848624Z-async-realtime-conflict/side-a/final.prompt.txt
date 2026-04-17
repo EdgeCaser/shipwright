@@ -1,0 +1,145 @@
+You are SIDE_A in the final revision phase for run conflict-2026-04-17-023848624Z-async-realtime-conflict.
+You must either adopt the critique or reject it with reasoning.
+Do not reveal provider identity.
+EVIDENCE CONSTRAINT: The only evidence available to you is contained in the case packet above. Do not introduce statistics, benchmarks, thresholds, cost estimates, or citations not present in the packet. Every ctx-N reference in evidence_refs and citations must correspond to an actual evidence_id in the case packet. Do not invent quantitative specifics to strengthen your argument.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "run_id": "conflict-2026-04-17-023848624Z-async-realtime-conflict",
+  "side_id": "side_a",
+  "round": "final",
+  "artifact_markdown": "# Revised artifact",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "Updated major claim",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1"
+  ],
+  "conclusion_confidence": "medium",
+  "open_questions": [],
+  "critique_responses": [
+    {
+      "finding_id": "finding-2",
+      "disposition": "adopted",
+      "rationale": "Why the critique was adopted or rejected."
+    }
+  ]
+}
+
+Case packet:
+{
+  "scenario_id": "async-realtime-conflict",
+  "title": "PRD spec requiring both real-time and batch processing for the same pipeline",
+  "prompt": "Write a PRD for a data pipeline feature where the requirements document specifies both 'real-time dashboard updates within 2 seconds of any event' and 'nightly batch aggregation as the source of truth for all reporting.' The two requirements are architecturally incompatible without a dual-write system that introduces consistency risk the team has previously rejected.",
+  "artifact_type": "prd",
+  "rubric": {
+    "dimensions": [
+      "claim quality",
+      "evidence discipline",
+      "responsiveness to critique",
+      "internal consistency",
+      "decision usefulness"
+    ],
+    "scoring_scale": "1-5",
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "constraints": {
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "expect_structured": true,
+    "context_files": [],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "evidence": [],
+  "max_rounds": 3,
+  "tool_policy": "none",
+  "sharing_policy": {
+    "share_case_packet": true,
+    "share_committed_artifacts_after_first_pass": true,
+    "share_critiques_after_open": true,
+    "share_hidden_reasoning": false,
+    "share_provider_identity": false,
+    "share_internal_coalition_drafts": false
+  },
+  "success_condition": {
+    "type": "validator_contract",
+    "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+    "validator": {
+      "artifact_type": "prd",
+      "expect_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true
+    }
+  }
+}
+
+Your first-pass artifact:
+{
+  "run_id": "conflict-2026-04-17-023848624Z-async-realtime-conflict",
+  "side_id": "side_a",
+  "round": "first_pass",
+  "artifact_markdown": "# PRD: Data Pipeline — Real-Time Dashboard & Batch Reporting\n\n**Status:** BLOCKED — architectural conflict requires resolution before implementation begins  \n**Owner:** Data Platform Team  \n**Version:** 0.1 (Pre-Decision Draft)\n\n---\n\n## Decision Frame\n\nThe requirements document contains two specifications that cannot be simultaneously satisfied by a single-pipeline architecture without a dual-write system:\n\n- **R1 (Real-Time):** Dashboard updates must reflect any event within 2 seconds of occurrence.\n- **R2 (Batch Authority):** Nightly batch aggregation is the authoritative source of truth for all reporting.\n\nThese requirements are in direct architectural conflict. R1 demands a low-latency streaming path. R2 designates a batch-derived dataset as canonical. If both are enforced as written, any real-time number shown to a user will diverge from the reporting source of truth until the next batch run — which may be up to ~24 hours. The gap is not a bug; it is the intended design of a batch-authoritative system.\n\nThe only known reconciliation mechanism — a dual-write system (stream + batch writing to the same downstream store) — has been previously rejected by the team due to consistency risk. This PRD does not re-litigate that decision. It surfaces the conflict so that one of the following mutually exclusive paths can be chosen:\n\n| Path | What changes | Downstream impact |\n|------|-------------|-------------------|\n| **A. Relax R1** | Real-time dashboard is dropped or replaced with near-real-time (e.g., minute-level refresh) | Dashboard shows lagged data; batch remains authoritative |\n| **B. Relax R2** | Batch is demoted from \"source of truth\" to \"reconciliation layer\" | Streaming data becomes authoritative; reporting pipeline requires redesign |\n| **C. Scope-split** | Real-time applies only to operational metrics; batch applies only to financial/compliance reporting | Two separate pipelines with explicit scope boundaries |\n| **D. Revisit dual-write rejection** | Team re-examines previously rejected dual-write approach with explicit consistency contract | Consistency risk must be formally scoped and accepted |\n\n**This PRD cannot progress to implementation until one path is selected.** Writing implementation specs against both R1 and R2 as currently stated will produce contradictory engineering work.\n\n---\n\n## Unknowns & Evidence Gaps\n\nThe following questions must be answered to select a path. None can be resolved from the requirements document as written.\n\n**1. Who owns each requirement, and do they know they conflict?**  \nR1 and R2 may have originated from different stakeholders (e.g., product vs. finance/analytics). It is unknown whether either party is aware of the conflict or whether one requirement was written with the assumption that the other did not exist.\n\n**2. What is the actual use case for the real-time dashboard?**  \nThe 2-second latency target suggests operational monitoring (e.g., error spikes, live event tracking). If the dashboard is used for operational response rather than reporting, it may be acceptable for it to diverge from the batch source of truth — but this must be stated explicitly, not assumed.\n\n**3. What reporting workflows depend on R2 being strictly authoritative?**  \nIf R2 exists to satisfy audit, compliance, or contractual obligations, Path B (demoting batch) may be non-negotiable regardless of preference. If R2 is a convention rather than a hard constraint, it is negotiable.\n\n**4. What specifically was rejected about the dual-write approach?**  \nThe rejection is noted but not characterized. If the objection was implementation complexity (resolvable), it differs from an objection to consistency semantics under failure conditions (harder to resolve). Without this characterization, Path D cannot be evaluated.\n\n**5. What is the acceptable staleness tolerance for dashboards?**  \nThe 2-second target may be a stakeholder preference rather than a hard operational requirement. If 60-second or 5-minute refresh is operationally acceptable, Path A becomes lower-cost without meaningful product impact.\n\n---\n\n## Pass/Fail Readiness\n\n| Gate | Status | Blocking? |\n|------|--------|-----------|\n| Architectural path selected (A, B, C, or D) | **FAIL** | Yes |\n| Stakeholder alignment on R1 vs. R2 priority | **FAIL** | Yes |\n| Dual-write rejection rationale documented | **FAIL** | Yes — required to evaluate Path D |\n| Real-time use case characterized | **FAIL** | Yes — required to evaluate Path A/C |\n| Batch authority scope characterized | **FAIL** | Yes — required to evaluate Path B/C |\n\n**Readiness verdict: NOT READY FOR IMPLEMENTATION SPEC**\n\nThis PRD is ready to advance only to a stakeholder alignment session. Proceeding to engineering design without resolving the above gates will result in contradictory implementation work that must be discarded.\n\n---\n\n## Recommended Next Artifact\n\n**Artifact:** Conflict Resolution Brief (1-page, stakeholder-facing)  \n**Owner:** Product + Data Platform lead  \n**Audience:** R1 stakeholder (likely product/ops) and R2 stakeholder (likely analytics/finance), plus the team member who previously rejected dual-write  \n**Contents:**\n- Plain-language statement of the conflict (no architecture jargon)\n- The four paths with their respective trade-offs stated in business terms\n- A single question to each stakeholder: *what is the minimum acceptable version of your requirement?*\n\n**Why this before an implementation spec:** The conflict is a requirements problem, not an engineering problem. Producing an implementation spec now would require the engineering team to either pick a path unilaterally (producing the wrong thing) or hedge by designing for both (producing dual-write, which was rejected). The conflict resolution brief surfaces the decision to the people who own it.",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "R1 (2-second real-time updates) and R2 (batch as authoritative source of truth) are architecturally incompatible as stated — they cannot be simultaneously satisfied without a dual-write system, which the team has already rejected.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "The PRD should be blocked at the pre-decision stage rather than advanced to implementation, because engineering work against both requirements as written will produce contradictory outputs.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-3",
+      "summary": "Four resolution paths exist (relax R1, relax R2, scope-split, or revisit dual-write), but selecting among them requires stakeholder input that is not present in the case packet.",
+      "evidence_refs": [],
+      "is_major": false
+    }
+  ],
+  "citations": [],
+  "conclusion_confidence": "high",
+  "open_questions": [
+    "Which stakeholder owns R1 vs. R2, and are they aware of the conflict?",
+    "What was the specific objection to dual-write — complexity or consistency semantics?",
+    "Is the 2-second latency target a hard operational requirement or a preference?",
+    "Does R2's batch authority exist to satisfy compliance/audit obligations, or is it a convention?"
+  ],
+  "critique_responses": []
+}
+
+Visible critique packet:
+{
+  "target_side": "side_a",
+  "finding_id": "finding-2",
+  "target_claim_ids": [
+    "side_a-claim-1"
+  ],
+  "claim_under_attack": "R1 (2-second real-time updates) and R2 (batch as authoritative source of truth) are architecturally incompatible as stated — they cannot be simultaneously satisfied without a dual-write system, which the team has already rejected.",
+  "attack_type": "evidence_gap",
+  "evidence_or_reason": "The incompatibility is overstated from the visible record. The case packet says the requirements are incompatible 'without a dual-write system that introduces consistency risk the team has previously rejected,' but that does not prove dual-write is the only way to satisfy both requirements as a product spec. A PRD could preserve both user outcomes by explicitly distinguishing provisional real-time dashboard values from batch-final reporting values, or by narrowing 'source of truth' to finalized reporting rather than every user-visible metric. Side A presents an absolute architectural claim without showing that alternative semantic contracts were ruled out by the text provided.",
+  "severity": "medium"
+}

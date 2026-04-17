@@ -1,0 +1,503 @@
+You are the judge in a blinded conflict harness run.
+Provider identity is intentionally hidden. Do not infer provider family.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "winner": "tie",
+  "margin": 0,
+  "rubric_scores": {
+    "side_a": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    },
+    "side_b": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    }
+  },
+  "dimension_rationales": {
+    "claim_quality": "Brief explanation of which side made the stronger claims and why.",
+    "evidence_discipline": "Brief explanation of how the sides used or overstated evidence.",
+    "responsiveness_to_critique": "Brief explanation of how each side handled the critique phase.",
+    "internal_consistency": "Brief explanation of contradictions, coherence, or missing logic.",
+    "decision_usefulness": "Brief explanation of which artifact better supports an actual decision."
+  },
+  "side_summaries": {
+    "side_a": {
+      "strengths": [
+        "One concise strength of Side A."
+      ],
+      "weaknesses": [
+        "One concise weakness of Side A."
+      ]
+    },
+    "side_b": {
+      "strengths": [
+        "One concise strength of Side B."
+      ],
+      "weaknesses": [
+        "One concise weakness of Side B."
+      ]
+    }
+  },
+  "grounding_flags": {
+    "side_a": [
+      "List each unverifiable quantitative claim or phantom ctx-N citation from Side A, or leave empty."
+    ],
+    "side_b": [
+      "List each unverifiable quantitative claim or phantom ctx-N citation from Side B, or leave empty."
+    ]
+  },
+  "ungrounded_claim_count": 0,
+  "decisive_dimension": "decision_usefulness",
+  "decisive_findings": [
+    "Replace with the actual decisive findings from this run."
+  ],
+  "judge_confidence": "low",
+  "needs_human_review": true,
+  "uncertainty_drivers": [
+    "List the concrete reasons this verdict is uncertain or should be escalated."
+  ],
+  "disambiguation_questions": [
+    "List the most important question that would resolve the uncertainty."
+  ],
+  "needed_evidence": [
+    "List the evidence that would most improve confidence in the verdict."
+  ],
+  "recommended_next_artifact": "Name the next artifact that should exist before acting on this verdict.",
+  "recommended_next_action": "State the next action the orchestrator or user should take.",
+  "can_resolve_with_more_evidence": true,
+  "escalation_recommendation": "State whether to gather more evidence, rejudge, or escalate to human review.",
+  "rationale": "One-paragraph explanation of the verdict."
+}
+
+Use min_margin_for_verdict = 0.1.
+Set rubric_scores.*.weighted_total as a normalized aggregate on the same 1-5 scale as the rubric dimensions, not as a raw sum.
+Treat each side's reported conclusion_confidence as a calibration signal, not a vote multiplier.
+Reward confidence when it is well matched to the evidence and penalize overconfidence when the artifact overreaches.
+judge_confidence rubric:
+- high: the winning side is clearly stronger on at least 3 rubric dimensions and has no major unsupported-claim problem
+- medium: the winning side leads overall but has at least 1 weak dimension or absorbed only part of the opposing critique
+- low: score margin is below min_margin_for_verdict or both sides have significant unsupported claims
+
+Grounding audit (required):
+- For each side, review every quantitative claim (specific numbers, percentages, cost estimates, benchmarks, thresholds) in their final artifact.
+- Check whether each claim is directly traceable to the case packet evidence. Also check that every ctx-N citation corresponds to an actual evidence_id in the case packet.
+- Populate grounding_flags.side_a and grounding_flags.side_b with a short description of each unverifiable claim or phantom citation found. Use empty arrays if none.
+- Set ungrounded_claim_count to the total count of flagged items across both sides.
+- Penalize unverifiable claims under the evidence_discipline rubric dimension.
+
+Phase 2 uncertainty payload rule:
+- If winner is `tie`, or judge_confidence is `low`, or needs_human_review is `true`, you MUST also populate:
+- uncertainty_drivers
+- disambiguation_questions
+- needed_evidence
+- recommended_next_artifact
+- recommended_next_action
+- can_resolve_with_more_evidence
+- escalation_recommendation
+- If none of those trigger conditions apply, omit the uncertainty payload fields entirely.
+
+Judge packet:
+{
+  "case_packet": {
+    "scenario_id": "launch-date-stakeholder-conflict",
+    "title": "Launch date with conflicting stakeholder commitments",
+    "prompt": "Write a launch decision memo when engineering estimates 8 weeks, sales has already committed to Q1, and the CEO wants to announce at a conference in 3 weeks. Each stakeholder believes their constraint is non-negotiable.",
+    "artifact_type": "strategy",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a strategy artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "strategy",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-17-033239789Z-launch-date-sta-945fae25",
+      "side_id": "side_a",
+      "round": "first_pass",
+      "artifact_markdown": "# Launch Decision Memo\n## Launch Date with Conflicting Stakeholder Commitments\n\n---\n\n## Decision Frame\n\nThree independent commitments have been made without a shared decision authority sign-off:\n\n| Stakeholder | Commitment | Implied Launch Window |\n|---|---|---|\n| Engineering | 8-week build estimate | ~Week 8 from today |\n| Sales | Q1 customer commitments already made | End of Q1 |\n| CEO | Conference announcement | Week 3 from today |\n\n**The conflict is structural, not interpersonal.** Each constraint is real: the CEO announcement creates market expectation; the sales commits create contractual or relational risk; the engineering estimate reflects build time before the product is shippable. No stakeholder is wrong about their constraint in isolation.\n\n**What this memo is deciding:** Not which stakeholder wins. The decision is: *what can be true on what date, and what is the minimum viable position each stakeholder can accept without organizational damage?*\n\nThree paths exist:\n\n1. **Announce at conference (Week 3), ship nothing** — CEO gets the moment; engineering ships later; sales commits become \"coming soon\" language. Risk: customer expectation mismatch.\n2. **Ship a scoped version by Week 3** — Engineering scopes to what is shippable in 3 weeks; sales re-qualifies Q1 commits against that scope. Risk: scope unknown; may not satisfy sales commitments.\n3. **Decouple announcement from availability** — Conference becomes a preview/waitlist moment; Q1 ship date becomes the contractual milestone; engineering holds to 8-week estimate. Risk: conference moment is diluted.\n\nThis memo does not recommend a path. It establishes the evidence needed before a path can be chosen responsibly.\n\n---\n\n## Unknowns & Evidence Gaps\n\nNo evidence was provided in the case packet. The following gaps must be resolved before a launch date decision is defensible:\n\n**Engineering scope:**\n- What is the definition of \"done\" at 8 weeks? Is there a smaller shippable scope at 3 weeks, and if so, what features are excluded?\n- What are the hard dependencies (infrastructure, compliance, integrations) that cannot be compressed regardless of resourcing?\n- Is the 8-week estimate a median, a P90, or a best-case?\n\n**Sales commitments:**\n- What exactly was committed to Q1 customers — a ship date, a demo, a contract start, or access to a specific feature set?\n- How many customers are affected and what is the consequence of a slip: contract penalty, churn risk, or reputational only?\n- Can the sales team re-scope the commitment to a subset of features that might be available earlier?\n\n**CEO / conference:**\n- What is the nature of the conference slot — keynote with live demo, press release, or announcement-only?\n- Is the conference date fixed or movable?\n- What is the cost of *not* announcing at conference vs. announcing a preview?\n\n**Cross-cutting:**\n- Who has final authority to make the launch date decision? This memo cannot be resolved without a named decision owner.\n- Are the Q1 sales commits documented in writing or are they verbal?\n\n---\n\n## Pass/Fail Readiness\n\nA launch date decision is **not ready to be made** until the following pass criteria are met:\n\n| Criterion | Status |\n|---|---|\n| Engineering provides a scoped 3-week deliverable with explicit feature exclusions | **Not available** |\n| Sales provides written summary of Q1 customer commitments with consequence of slip | **Not available** |\n| CEO or delegate clarifies minimum viable conference outcome (announce vs. demo vs. ship) | **Not available** |\n| Decision owner is named and has authority to override any one stakeholder | **Not available** |\n\n**Fail condition:** Proceeding to a launch date decision without the above will produce a date that at least one stakeholder did not genuinely accept, creating execution risk downstream.\n\n**Conditional pass:** If engineering can confirm a shippable 3-week scope *and* sales confirms that scope satisfies Q1 commitments, Path 2 becomes viable and the conference announcement can proceed with a real ship claim. This is the highest-value scenario to investigate first.\n\n---\n\n## Recommended Next Artifact\n\n**Produce a Scope-Feasibility Matrix within 48 hours.**\n\nEngineering and product should jointly produce a two-column artifact:\n- Column A: Features confirmed shippable in 3 weeks\n- Column B: Features requiring the full 8-week estimate\n\nSales then maps Q1 customer commitments against Column A. If the intersection is non-empty and sufficient, the conference announcement proceeds on Column A scope and the decision is resolved.\n\nIf the intersection is empty — i.e., Q1 commitments require Column B features — the decision escalates to the CEO with a clear framing: *the conference announcement can happen, but the Q1 customer commitments cannot be honored on the current timeline without additional resourcing or re-negotiation.*\n\nThis artifact converts a three-way stakeholder conflict into a bounded, answerable question. It should be owned by the product lead and completed before any public commitment is made.",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "The conflict is structural: three independent commitments were made without shared decision authority, and no path forward is defensible until scope, sales commitment details, and conference requirements are documented.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "A Scope-Feasibility Matrix (3-week vs. 8-week features) is the minimum viable next artifact — it converts a three-way stakeholder conflict into a bounded, answerable question.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "A launch date decision cannot responsibly be made until a named decision owner with authority to override any one stakeholder is identified.",
+          "evidence_refs": [],
+          "is_major": false
+        }
+      ],
+      "citations": [],
+      "conclusion_confidence": "medium",
+      "open_questions": [
+        "Can engineering confirm a shippable 3-week scope with explicit feature exclusions?",
+        "Are the Q1 sales commitments contractual or relational, and what is the documented consequence of a slip?",
+        "What is the minimum viable conference outcome the CEO requires — announcement, demo, or live availability?",
+        "Who is the named decision owner with authority to resolve the conflict if stakeholders cannot align?"
+      ],
+      "critique_responses": []
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-17-033239789Z-launch-date-sta-945fae25",
+      "side_id": "side_b",
+      "round": "first_pass",
+      "artifact_markdown": "# Launch Decision Memo\n\n## Decision Frame\nDo not commit to a full product launch at the conference in 3 weeks. Reset the external plan to a staged path: use the conference for a forward-looking announcement only if the message can be kept truthful and narrow, preserve Q1 customer conversations by immediately reframing sales commitments around access timing and scope, and anchor the actual general launch decision to the engineering 8-week delivery path.\n\nThis is the least damaging option because the current constraints are mutually incompatible as stated. Treating all three as fixed creates a credibility failure somewhere: product delivery, customer commitments, or executive messaging.\n\n## Unknowns & Evidence Gaps\nThe packet does not establish what was promised to customers, what level of product completeness is required for launch, or whether the conference announcement can be limited to roadmap intent rather than immediate availability. It also does not clarify whether the 8-week engineering estimate is for a minimum viable release or a broader launch bar. These gaps matter because they determine whether a staged announcement is viable or whether even that would create avoidable risk.\n\n## Pass/Fail Readiness\nPass if leadership aligns on one external narrative, sales is given a corrected customer message immediately, and the conference appearance is constrained to claims the team can support without implying availability inside 3 weeks. Pass if the 8-week engineering estimate is accepted as the operating date for shipped readiness unless new delivery evidence appears.\n\nFail if the organization continues to treat all three demands as non-negotiable, if sales keeps existing commitments unchanged, or if the conference plan implies launch readiness that engineering does not support.\n\n## Recommended Next Artifact\nProduce a one-page launch alignment brief that defines: the external message for the conference, the customer-facing sales script for committed accounts, the internal launch date assumption, the exact scope of what can be shown or promised before general availability, and the single decision owner for further tradeoff calls.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "A full launch in 3 weeks should not be committed because the stated engineering timeline, sales commitments, and conference timing cannot all be satisfied simultaneously as presented.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "A staged approach is more decision-useful than forcing one stakeholder constraint to override the others because it preserves room to manage customer expectations while keeping executive messaging aligned with actual delivery readiness.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "The immediate need is organizational alignment on message, scope, and ownership rather than a nominal launch date alone.",
+          "evidence_refs": [],
+          "is_major": false
+        }
+      ],
+      "citations": [],
+      "conclusion_confidence": "low",
+      "open_questions": [
+        "What exactly has sales committed to customers: announcement, pilot access, or general availability?",
+        "Is the engineering 8-week estimate for minimum viable launch scope or a broader release bar?",
+        "Can the conference message be limited to future availability without implying shipment in 3 weeks?",
+        "What level of product completeness is required for the CEO to consider the conference appearance successful?"
+      ],
+      "critique_responses": []
+    }
+  },
+  "critique_packets": {
+    "side_a": {
+      "target_side": "side_b",
+      "finding_id": "finding-1",
+      "target_claim_ids": [
+        "side_b-claim-1"
+      ],
+      "claim_under_attack": "A full launch in 3 weeks should not be committed because the stated engineering timeline, sales commitments, and conference timing cannot all be satisfied simultaneously as presented.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "This claim treats the 8-week engineering estimate as a fixed constraint without interrogating its basis. Engineering estimates in pre-launch scenarios routinely compress under scoped requirements or additional resourcing. The memo never asks whether the 3-week gap could be closed by narrowing launch scope (e.g., limited GA, beta with key accounts, or a feature-flagged release), adding engineering capacity, or deferring non-critical features. Without establishing what the 8-week estimate actually covers and whether scope reduction is off the table, the incompatibility assertion is asserted rather than demonstrated. The recommendation to 'not commit' rests on an unexamined premise.",
+      "severity": "medium"
+    },
+    "side_b": {
+      "target_side": "side_a",
+      "finding_id": "finding-2",
+      "target_claim_ids": [
+        "side_a-claim-1"
+      ],
+      "claim_under_attack": "The conflict is structural: three independent commitments were made without shared decision authority, and no path forward is defensible until scope, sales commitment details, and conference requirements are documented.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "This claim overreaches from the limited visible facts. The case packet does show conflicting timing constraints, but it does not establish that lack of shared decision authority is the root cause, nor that no provisional path is defensible before further documentation. A strategy memo can still recommend a default posture under uncertainty, such as separating announcement from GA, instead of suspending judgment entirely. The 'no path forward is defensible' language is especially weak because it is asserted without evidence about the severity of sales commitments, the conference format, or whether a preview launch would satisfy stakeholders.",
+      "severity": "medium"
+    }
+  },
+  "final_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-17-033239789Z-launch-date-sta-945fae25",
+      "side_id": "side_a",
+      "round": "final",
+      "artifact_markdown": "# Launch Decision Memo\n## Launch Date with Conflicting Stakeholder Commitments\n\n---\n\n## Decision Frame\n\nThree independent commitments have been made without a shared decision authority sign-off:\n\n| Stakeholder | Commitment | Implied Launch Window |\n|---|---|---|\n| Engineering | 8-week build estimate | ~Week 8 from today |\n| Sales | Q1 customer commitments already made | End of Q1 |\n| CEO | Conference announcement | Week 3 from today |\n\n**The conflict is structural, not interpersonal.** Each constraint is real: the CEO announcement creates market expectation; the sales commits create contractual or relational risk; the engineering estimate reflects build time before the product is shippable. No stakeholder is wrong about their constraint in isolation.\n\n**What this memo is deciding:** Not which stakeholder wins. The decision is: *what can be true on what date, and what is the minimum viable position each stakeholder can accept without organizational damage?*\n\nThree paths exist:\n\n1. **Announce at conference (Week 3), ship nothing** — CEO gets the moment; engineering ships later; sales commits become \"coming soon\" language. Risk: customer expectation mismatch depending on commitment language.\n2. **Ship a scoped version by Week 3** — Engineering scopes to what is shippable in 3 weeks; sales re-qualifies Q1 commits against that scope. Risk: scope is unknown and may not satisfy sales commitments.\n3. **Decouple announcement from general availability** — Conference becomes a preview or waitlist moment; Q1 ship date becomes the contractual milestone; engineering holds to 8-week estimate. Risk: conference moment is diluted, but downstream commitments remain intact.\n\n**Default posture under current uncertainty:** Path 3 — decoupling announcement from GA — is the lowest-destruction option given what is known. It preserves the CEO's conference moment, keeps the engineering timeline intact, and converts sales commitments to a Q1 GA date rather than a conference availability date. This is the recommended provisional position unless evidence gathered in the next 48 hours rules it out.\n\nThis default posture does not foreclose Path 2. If engineering can confirm a shippable 3-week scope that satisfies Q1 sales commitments, Path 2 supersedes Path 3 as the preferred option.\n\n---\n\n## Unknowns & Evidence Gaps\n\nNo evidence was provided in the case packet. The following gaps materially affect whether the default posture holds or whether a different path should be chosen:\n\n**Engineering scope:**\n- What is the definition of \"done\" at 8 weeks? Is there a smaller shippable scope at 3 weeks, and if so, what features are excluded?\n- What are the hard dependencies (infrastructure, compliance, integrations) that cannot be compressed regardless of resourcing?\n- Is the 8-week estimate a median, a P90, or a best-case?\n\n**Sales commitments:**\n- What exactly was committed to Q1 customers — a ship date, a demo, a contract start, or access to a specific feature set?\n- How many customers are affected and what is the consequence of a slip: contract penalty, churn risk, or reputational only?\n- Can the sales team re-scope the commitment to a subset of features that might be available earlier?\n\n**CEO / conference:**\n- What is the nature of the conference slot — keynote with live demo, press release, or announcement-only?\n- Is the conference date fixed or movable?\n- What is the cost of not announcing at conference vs. announcing a preview?\n\n**Cross-cutting:**\n- Who has final authority to make the launch date decision if stakeholders cannot align?\n- Are the Q1 sales commits documented in writing or are they verbal?\n\n---\n\n## Pass/Fail Readiness\n\nThe default posture (Path 3) is **provisionally actionable** but should be confirmed or revised once the following criteria are evaluated:\n\n| Criterion | Status | Impact on Default Posture |\n|---|---|---|\n| Engineering confirms whether a shippable 3-week scope exists | **Not available** | If yes, Path 2 may supersede Path 3 |\n| Sales clarifies whether Q1 commitments require a specific feature set or a GA date | **Not available** | If commitments require a GA date, Path 3 holds; if feature set, check against 3-week scope |\n| CEO clarifies minimum viable conference outcome (announce vs. demo vs. ship) | **Not available** | If demo or ship is required, Path 3 fails and Path 2 must be evaluated |\n| Decision owner is named with authority to override any one stakeholder if needed | **Not available** | Required if stakeholders cannot align on the default posture |\n\n**Fail condition for default posture:** If the CEO requires a live demo or GA claim at the conference, Path 3 does not satisfy the constraint and the decision must escalate before any public commitment is made.\n\n**Upgrade condition:** If engineering confirms a viable 3-week scope and sales confirms that scope satisfies Q1 commitments, Path 2 becomes the recommended path and the conference announcement can proceed with a real availability claim.\n\n---\n\n## Recommended Next Artifact\n\n**Produce a Scope-Feasibility Matrix within 48 hours.**\n\nEngineering and product should jointly produce a two-column artifact:\n- Column A: Features confirmed shippable in 3 weeks\n- Column B: Features requiring the full 8-week estimate\n\nSales then maps Q1 customer commitments against Column A. The intersection determines whether Path 2 is viable.\n\nSimultaneously, the CEO or a delegate should confirm the minimum viable conference outcome in writing — announcement only, preview with waitlist, or live availability required.\n\nIf both inputs return within 48 hours and the intersection of Column A and Q1 commitments is non-empty, and the conference accepts a preview framing, the decision is resolved at Path 2 or Path 3 without escalation.\n\nIf either input is missing or incompatible, the decision escalates to a named decision owner with a clear framing: *a conference announcement can happen, but the Q1 customer commitments cannot be honored on the current timeline without additional resourcing or re-negotiation.*\n\nThis artifact converts a three-way stakeholder conflict into a bounded, answerable question. It should be owned by the product lead and completed before any public commitment is made.",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "The conflict is structural — three independent commitments were made without shared decision authority — and a default provisional posture (decouple announcement from GA) is the lowest-destruction option given current unknowns, subject to revision as evidence is gathered.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "A Scope-Feasibility Matrix (3-week vs. 8-week features) is the minimum viable next artifact — it converts a three-way stakeholder conflict into a bounded, answerable question and determines whether the default posture holds or Path 2 supersedes it.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "A named decision owner with authority to override any one stakeholder is required only if stakeholders cannot align on the default posture — it is a contingent requirement, not an absolute prerequisite to provisional action.",
+          "evidence_refs": [],
+          "is_major": false
+        }
+      ],
+      "citations": [],
+      "conclusion_confidence": "medium",
+      "open_questions": [
+        "Can engineering confirm a shippable 3-week scope with explicit feature exclusions?",
+        "Are the Q1 sales commitments tied to a GA date or a specific feature set, and what is the documented consequence of a slip?",
+        "What is the minimum viable conference outcome the CEO requires — announcement only, preview with waitlist, or live availability?",
+        "Who is the named decision owner with authority to resolve the conflict if stakeholders cannot align on the default posture?"
+      ],
+      "critique_responses": [
+        {
+          "finding_id": "finding-2",
+          "disposition": "adopted",
+          "rationale": "The critique correctly identifies that 'no path forward is defensible' overreaches given the available facts. The case packet establishes conflicting timing constraints but does not establish the severity of sales commitments, the conference format, or whether a preview launch would satisfy stakeholders. A strategy memo should recommend a default posture under uncertainty rather than suspend judgment entirely. The revision adopts this: Path 3 (decouple announcement from GA) is named as the provisional default — the lowest-destruction option given what is known — while preserving the upgrade condition if evidence supports Path 2. The 'no path is defensible' language is replaced with a bounded claim about the default posture and the conditions under which it fails or is superseded."
+        }
+      ]
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-17-033239789Z-launch-date-sta-945fae25",
+      "side_id": "side_b",
+      "round": "final",
+      "artifact_markdown": "# Revised artifact\n\n## Decision Frame\nDo not publicly commit to a full general launch at the conference in 3 weeks based on the current record. Instead, force an immediate decision on launch scope: either validate that engineering can support a narrower, truthfully described launch within 3 weeks, or reset the external plan around a staged announcement now and a later shipped launch decision.\n\nThe core issue is not simply that engineering said \"8 weeks.\" It is that the organization is currently operating with three conflicting non-negotiable positions and no shared definition of what \"launch\" means. Until leadership resolves whether the conference event is meant to announce roadmap intent, limited access, or general availability, any hard public commitment creates avoidable credibility risk.\n\n## Unknowns & Evidence Gaps\nThe packet does not establish what the 8-week estimate includes, whether scope can be narrowed, whether additional resourcing is feasible, or what sales has already promised customers. It also does not define whether the CEO's conference objective requires shipment, a demo, or only an announcement. These are the key gaps because they determine whether a limited launch path is real or whether the only defensible option is to defer launch claims.\n\n## Pass/Fail Readiness\nPass if leadership resolves the definition of launch immediately, engineering revalidates timing against that scoped definition, and sales and executive messaging are updated to match the same external promise.\n\nPass if any conference statement is explicitly limited to what can be supported truthfully in 3 weeks.\n\nFail if the company continues to use one word, \"launch,\" to describe different outcomes across engineering, sales, and the CEO.\n\nFail if public or customer commitments are made before scope, readiness, and ownership are aligned.\n\n## Recommended Next Artifact\nProduce a launch alignment brief that answers five points: the exact launch type under consideration, the engineering scope behind the current estimate, the smallest shippable scope that could plausibly support the conference objective, the corrected customer message for sales, and the single executive owner for the final call.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "A full public launch should not be committed in 3 weeks on the current record because the organization has conflicting stakeholder commitments and no shared, validated definition of what the launch includes.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "The immediate decision need is to determine whether a narrower launch scope can be validated, rather than treating either the 3-week conference date or the 8-week estimate as sufficient by itself.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "A staged path remains the most defensible interim posture until engineering scope, customer commitments, and executive messaging are reconciled into one truthful plan.",
+          "evidence_refs": [],
+          "is_major": false
+        }
+      ],
+      "citations": [],
+      "conclusion_confidence": "medium",
+      "open_questions": [
+        "What does the current 8-week engineering estimate actually cover?",
+        "Can launch scope be narrowed enough to support a truthful conference commitment in 3 weeks?",
+        "What has sales already committed to customers: announcement, limited access, or general availability?",
+        "What outcome does the conference require: announcement, demo, beta access, or shipped product?"
+      ],
+      "critique_responses": [
+        {
+          "finding_id": "finding-1",
+          "disposition": "adopted",
+          "rationale": "The critique is correct that the first-pass memo treated the 8-week engineering estimate as more fixed than the packet supports. The revision narrows the claim: it no longer assumes the estimate cannot move, and instead centers the unresolved scope definition and the need to validate whether a narrower launch could satisfy the conference objective without creating misleading commitments."
+        }
+      ]
+    }
+  },
+  "min_margin_for_verdict": 0.1
+}
+
+Repair addendum:
+- Your previous judge output was close but rejected by schema validation.
+- Rewrite it as ONLY a JSON object.
+- Preserve the same winner, margin, rubric_scores, decisive_findings, judge_confidence, needs_human_review, rationale, and any already-valid Phase 2 fields unless schema compliance requires a direct fix.
+- Any rubric_scores.*.weighted_total value must be a normalized aggregate on the same 1-5 scale as the rubric dimensions, not a raw sum.
+- Do not omit dimension_rationales, side_summaries, or decisive_dimension.
+- If the verdict is a tie, low confidence, or needs human review, do not omit the full Phase 2 uncertainty payload.
+
+Required schema shape:
+{
+  "winner": "tie",
+  "margin": 0,
+  "rubric_scores": {
+    "side_a": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    },
+    "side_b": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    }
+  },
+  "dimension_rationales": {
+    "claim_quality": "Which side made the stronger claims and why.",
+    "evidence_discipline": "How each side used or overstated evidence.",
+    "responsiveness_to_critique": "How each side responded to the critique phase.",
+    "internal_consistency": "Contradictions, coherence, or missing logic.",
+    "decision_usefulness": "Which artifact better supports an actual decision."
+  },
+  "side_summaries": {
+    "side_a": {
+      "strengths": [
+        "One concise strength of Side A."
+      ],
+      "weaknesses": [
+        "One concise weakness of Side A."
+      ]
+    },
+    "side_b": {
+      "strengths": [
+        "One concise strength of Side B."
+      ],
+      "weaknesses": [
+        "One concise weakness of Side B."
+      ]
+    }
+  },
+  "decisive_dimension": "decision_usefulness",
+  "decisive_findings": [
+    "Replace with the actual decisive findings from this run."
+  ],
+  "judge_confidence": "low",
+  "needs_human_review": true,
+  "uncertainty_drivers": [
+    "List the concrete reasons this verdict is uncertain or should be escalated."
+  ],
+  "disambiguation_questions": [
+    "List the most important question that would resolve the uncertainty."
+  ],
+  "needed_evidence": [
+    "List the evidence that would most improve confidence in the verdict."
+  ],
+  "recommended_next_artifact": "Name the next artifact that should exist before acting on this verdict.",
+  "recommended_next_action": "State the next action the orchestrator or user should take.",
+  "can_resolve_with_more_evidence": true,
+  "escalation_recommendation": "State whether to gather more evidence, rejudge, or escalate to human review.",
+  "rationale": "One-paragraph explanation of the verdict."
+}
+
+Validation errors:
+Verdict packet failed validation:
+$.uncertainty_drivers: Missing required property.
+$.disambiguation_questions: Missing required property.
+$.needed_evidence: Missing required property.
+$.recommended_next_artifact: Missing required property.
+$.recommended_next_action: Missing required property.
+$.can_resolve_with_more_evidence: Missing required property.
+$.escalation_recommendation: Missing required property.
+
+Previous verdict JSON:
+{
+  "winner": "side_a",
+  "margin": 0.3,
+  "rubric_scores": {
+    "side_a": {
+      "claim_quality": 4,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 4,
+      "internal_consistency": 4,
+      "decision_usefulness": 4,
+      "weighted_total": 3.8
+    },
+    "side_b": {
+      "claim_quality": 4,
+      "evidence_discipline": 4,
+      "responsiveness_to_critique": 4,
+      "internal_consistency": 4,
+      "decision_usefulness": 3,
+      "weighted_total": 3.5
+    }
+  },
+  "dimension_rationales": {
+    "claim_quality": "Both sides made plausible claims under sparse evidence, but Side A framed clearer decision branches and a more explicit provisional recommendation.",
+    "evidence_discipline": "Side B was slightly tighter because it avoided adding unsupported quantitative timing. Side A introduced a 48-hour deadline for the next artifact without case-packet support.",
+    "responsiveness_to_critique": "Both sides adopted the critique well. Side A made the larger improvement by replacing an overbroad 'no path is defensible' stance with a bounded default posture.",
+    "internal_consistency": "Both final artifacts are coherent, but Side A better links conditions, failure modes, and path changes without contradicting its own uncertainty framing.",
+    "decision_usefulness": "Side A better supports action because it gives a provisional default, explicit upgrade and fail conditions, and a sharper next artifact for resolving the conflict."
+  },
+  "side_summaries": {
+    "side_a": {
+      "strengths": [
+        "Provides a usable provisional decision with clear conditions for when to keep, upgrade, or escalate it."
+      ],
+      "weaknesses": [
+        "Adds an unsupported 48-hour deadline that is not grounded in the packet."
+      ]
+    },
+    "side_b": {
+      "strengths": [
+        "Tightly integrates the critique by avoiding overcommitment to the 8-week estimate as fixed."
+      ],
+      "weaknesses": [
+        "Stops short of a fully specified operating posture, so it is less actionable for an immediate stakeholder conflict."
+      ]
+    }
+  },
+  "grounding_flags": {
+    "side_a": [
+      "Unsupported quantitative claim: recommends producing the next artifact 'within 48 hours,' which is not traceable to the case packet."
+    ],
+    "side_b": []
+  },
+  "ungrounded_claim_count": 1,
+  "decisive_dimension": "decision_usefulness",
+  "decisive_findings": [
+    "Side A offers a concrete provisional default posture instead of only warning against a bad option.",
+    "Side A defines clearer pass, fail, and upgrade conditions tied to stakeholder alignment and scope validation.",
+    "Side A's recommended artifact is more diagnostic for resolving the actual conflict, despite one unsupported timing detail."
+  ],
+  "judge_confidence": "medium",
+  "needs_human_review": false,
+  "rationale": "Side A wins narrowly because it turns the scenario into a more decision-ready memo: it names a provisional path, explains when that path should change, and proposes a sharper artifact for resolving the stakeholder conflict. Side B is disciplined and improves meaningfully after critique, especially by not treating the engineering estimate as fixed, but it remains less operational because it does not specify the interim posture as concretely. The main deduction against Side A is evidence discipline: the added 48-hour deadline is ungrounded in the case packet."
+}

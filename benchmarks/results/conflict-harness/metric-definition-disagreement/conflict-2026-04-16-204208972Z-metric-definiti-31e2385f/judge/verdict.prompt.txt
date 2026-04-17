@@ -1,0 +1,355 @@
+You are the judge in a blinded conflict harness run.
+Provider identity is intentionally hidden. Do not infer provider family.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "winner": "tie",
+  "margin": 0,
+  "rubric_scores": {
+    "side_a": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    },
+    "side_b": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    }
+  },
+  "dimension_rationales": {
+    "claim_quality": "Brief explanation of which side made the stronger claims and why.",
+    "evidence_discipline": "Brief explanation of how the sides used or overstated evidence.",
+    "responsiveness_to_critique": "Brief explanation of how each side handled the critique phase.",
+    "internal_consistency": "Brief explanation of contradictions, coherence, or missing logic.",
+    "decision_usefulness": "Brief explanation of which artifact better supports an actual decision."
+  },
+  "side_summaries": {
+    "side_a": {
+      "strengths": [
+        "One concise strength of Side A."
+      ],
+      "weaknesses": [
+        "One concise weakness of Side A."
+      ]
+    },
+    "side_b": {
+      "strengths": [
+        "One concise strength of Side B."
+      ],
+      "weaknesses": [
+        "One concise weakness of Side B."
+      ]
+    }
+  },
+  "grounding_flags": {
+    "side_a": [
+      "List each unverifiable quantitative claim or phantom ctx-N citation from Side A, or leave empty."
+    ],
+    "side_b": [
+      "List each unverifiable quantitative claim or phantom ctx-N citation from Side B, or leave empty."
+    ]
+  },
+  "ungrounded_claim_count": 0,
+  "decisive_dimension": "decision_usefulness",
+  "decisive_findings": [
+    "Replace with the actual decisive findings from this run."
+  ],
+  "judge_confidence": "low",
+  "needs_human_review": true,
+  "uncertainty_drivers": [
+    "List the concrete reasons this verdict is uncertain or should be escalated."
+  ],
+  "disambiguation_questions": [
+    "List the most important question that would resolve the uncertainty."
+  ],
+  "needed_evidence": [
+    "List the evidence that would most improve confidence in the verdict."
+  ],
+  "recommended_next_artifact": "Name the next artifact that should exist before acting on this verdict.",
+  "recommended_next_action": "State the next action the orchestrator or user should take.",
+  "can_resolve_with_more_evidence": true,
+  "escalation_recommendation": "State whether to gather more evidence, rejudge, or escalate to human review.",
+  "rationale": "One-paragraph explanation of the verdict."
+}
+
+Use min_margin_for_verdict = 0.1.
+Set rubric_scores.*.weighted_total as a normalized aggregate on the same 1-5 scale as the rubric dimensions, not as a raw sum.
+Treat each side's reported conclusion_confidence as a calibration signal, not a vote multiplier.
+Reward confidence when it is well matched to the evidence and penalize overconfidence when the artifact overreaches.
+judge_confidence rubric:
+- high: the winning side is clearly stronger on at least 3 rubric dimensions and has no major unsupported-claim problem
+- medium: the winning side leads overall but has at least 1 weak dimension or absorbed only part of the opposing critique
+- low: score margin is below min_margin_for_verdict or both sides have significant unsupported claims
+
+Grounding audit (required):
+- For each side, review every quantitative claim (specific numbers, percentages, cost estimates, benchmarks, thresholds) in their final artifact.
+- Check whether each claim is directly traceable to the case packet evidence. Also check that every ctx-N citation corresponds to an actual evidence_id in the case packet.
+- Populate grounding_flags.side_a and grounding_flags.side_b with a short description of each unverifiable claim or phantom citation found. Use empty arrays if none.
+- Set ungrounded_claim_count to the total count of flagged items across both sides.
+- Penalize unverifiable claims under the evidence_discipline rubric dimension.
+
+Phase 2 uncertainty payload rule:
+- If winner is `tie`, or judge_confidence is `low`, or needs_human_review is `true`, you MUST also populate:
+- uncertainty_drivers
+- disambiguation_questions
+- needed_evidence
+- recommended_next_artifact
+- recommended_next_action
+- can_resolve_with_more_evidence
+- escalation_recommendation
+- If none of those trigger conditions apply, omit the uncertainty payload fields entirely.
+
+Judge packet:
+{
+  "case_packet": {
+    "scenario_id": "metric-definition-disagreement",
+    "title": "Active user metric with three incompatible definitions",
+    "prompt": "Write a north star metric recommendation when finance, product, and growth each use different definitions of 'active user' that produce outcomes differing by 40%. The choice of definition determines whether the product is growing, flat, or declining. Leadership has asked for a single number.",
+    "artifact_type": "strategy",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a strategy artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "strategy",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-16-204208972Z-metric-definiti-31e2385f",
+      "side_id": "side_a",
+      "round": "first_pass",
+      "artifact_markdown": "# North Star Metric Recommendation\n\n## Decision Frame\nLeadership needs a single number, but the current situation does not support choosing one of the existing definitions as the company-wide north star today. The three definitions of \"active user\" are materially incompatible, and the resulting outcomes differ enough to flip the narrative between growth, flat performance, and decline. A single number presented without resolving that semantic conflict would create false precision and make downstream decisions less reliable.\n\nRecommendation: adopt one canonical north star definition through an explicit metric-governance decision, and until that decision is complete, report the three current definitions together with a clearly labeled temporary executive view rather than forcing one disputed number into the north star role.\n\nThe best near-term standard is the definition that is most tightly connected to actual product value creation and can be applied consistently across finance, product, and growth. The case packet does not provide enough evidence to determine which existing definition meets that standard, so the immediate decision should be about governance and selection criteria, not about arbitrarily picking a winner.\n\n## Unknowns & Evidence Gaps\nThe case packet does not specify what each current definition counts, what user behavior each one is intended to represent, or why each function adopted it. Without that, there is no grounded basis for deciding which definition best reflects durable product value.\n\nKey missing evidence:\n- The exact logic behind each current definition of \"active user\"\n- Which definition most closely tracks meaningful customer value or product success\n- Whether any definition is easier to audit, explain, and reproduce consistently\n- Whether one definition is optimized for a functional use case rather than executive decision-making\n- How historical reporting, targets, and incentives would be affected by a change\n\n## Pass/Fail Readiness\nPass:\n- A cross-functional owner is assigned to metric governance\n- The company agrees on selection criteria before choosing the canonical definition\n- The chosen definition is documented with clear inclusion and exclusion rules\n- Historical restatement and reporting implications are understood before rollout\n\nFail:\n- Leadership insists on a single number before resolving semantic differences\n- One function's definition is elevated without an explicit rationale tied to product value\n- The metric is adopted without documentation, ownership, or change-control rules\n- Teams continue using local definitions while presenting one executive number as if alignment exists\n\n## Recommended Next Artifact\nCreate a metric decision memo with four parts:\n1. The three current definitions written in precise operational terms\n2. A comparison against selection criteria such as value alignment, consistency, explainability, and governance fit\n3. A recommendation for the canonical north star definition and any secondary diagnostic metrics\n4. A transition plan covering historical restatement, reporting changes, and executive communication\n\nThat memo should be the decision vehicle. The output should be one approved canonical definition, plus a small metric hierarchy where the north star is distinct from finance, growth, or product diagnostic cuts.",
+      "claims": [
+        {
+          "claim_id": "claim-1",
+          "summary": "A disputed single number should not be forced into the north star role before the company resolves the underlying definition conflict.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "claim-2",
+          "summary": "The immediate decision should be to establish a canonical definition through explicit metric governance rather than arbitrarily selecting one existing definition.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "claim-3",
+          "summary": "The eventual north star should be the definition most tightly tied to product value and cross-functional consistency, but the case packet lacks enough detail to determine which current definition qualifies.",
+          "evidence_refs": [],
+          "is_major": true
+        }
+      ],
+      "citations": [],
+      "conclusion_confidence": "low",
+      "open_questions": [
+        "What are the exact operational definitions currently used by finance, product, and growth?",
+        "Which user behavior is intended to represent real product value for the business?",
+        "Are the three definitions designed for different functional purposes rather than one executive purpose?",
+        "How would each candidate definition affect historical trend reporting and current targets?",
+        "Who will own metric governance and change control after a canonical definition is selected?"
+      ],
+      "critique_responses": []
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-16-204208972Z-metric-definiti-31e2385f",
+      "side_id": "side_b",
+      "round": "first_pass",
+      "artifact_markdown": "# North Star Metric Recommendation: Resolving the Active User Conflict\n\n## Decision Frame\n\nLeadership has requested a single active user number. That request cannot be honored as stated until the organization resolves a prior question: **what user behavior, if it increases, most reliably predicts the outcomes the business is accountable for?**\n\nThree definitions currently exist across the finance, product, and growth teams. Each encodes a different theory of value:\n\n- The **finance team's definition** is most likely anchored to billing, contract status, or revenue recognition thresholds — counting users the business has already captured economically.\n- The **product team's definition** is most likely anchored to feature engagement or session depth — counting users who are extracting meaningful value from the product.\n- The **growth team's definition** is most likely anchored to acquisition funnel entry or retention cohort membership — counting users the business is working to develop.\n\nA 40% variance in outcomes is not a measurement error. It means these teams are making fundamentally different claims about what \"using the product\" means. Selecting one definition without organizational alignment will not resolve the conflict — it will suppress it until the next planning cycle, forecast review, or board presentation.\n\n**Three structural questions must be answered by leadership before a single number can be committed:**\n\n1. Is the north star metric intended to drive internal prioritization, external reporting, or both? These use cases have different tolerance for definitional complexity.\n2. Which team's accountability model does the metric need to govern — or does committing to a shared north star require a new cross-functional accountability structure?\n3. Is leadership prepared to accept that the chosen definition will show one of three states — growing, flat, or declining — and act on that signal regardless of which teams' narratives it validates?\n\nWithout answers to these questions, any single number issued here is a placeholder that each team will continue to interpret through its own definition.\n\n---\n\n## Unknowns & Evidence Gaps\n\n| Gap | Why It Matters |\n|-----|----------------|\n| Exact operational definitions for each team's \"active user\" | Cannot evaluate overlap or reconcile without knowing the precise event, session window, or action threshold each team counts |\n| Correlation between each definition and revenue or retention outcomes | The defensible definition is the one with the strongest predictive validity — this cannot be determined without historical analysis |\n| Whether the 40% variance is stable or shifts by segment, time period, or product area | Variance that fluctuates seasonally or by cohort changes the risk profile of any single committed definition |\n| Leadership's actual use case for the metric | A board-level narrative number has different requirements than an operational metric used for sprint prioritization or resource allocation |\n| Whether any definition is already committed externally | Investor materials, partner contracts, or regulatory filings may have locked in a specific active user definition, which constrains the solution space regardless of internal preference |\n\nNo external benchmarks, industry data, or prior analysis is present in the case materials. All claims above are structural inferences from the scenario framing, not empirical findings.\n\n---\n\n## Pass/Fail Readiness\n\n**This recommendation is NOT ready to commit a single number.**\n\n| Readiness Condition | Status |\n|---------------------|--------|\n| Agreed operational definition tied to a specific triggering behavior and time window | Not met |\n| Historical backtest showing which definition correlates with the business outcomes leadership is accountable for | Not met |\n| Leadership acknowledgment that one definition will show decline and commitment to act on it | Not confirmed |\n| Cross-functional sign-off that the chosen metric governs resource allocation and OKR scoring | Not met |\n| Audit of external commitments that may constrain the definition | Not completed |\n\nIssuing a premature single number without these conditions met produces a metric each team will immediately reinterpret through its own definition. The 40% conflict resurfaces at the next planning cycle with the added problem that leadership has now implicitly endorsed a number no one fully trusts.\n\n**What leadership can have now:** a structured decision process that produces a committed, defensible definition within one working session — not a number that defers the conflict under a veneer of resolution.\n\n---\n\n## Recommended Next Artifact\n\n**A metric arbitration brief** — a one-page document prepared before a 60-minute cross-functional working session, containing:\n\n1. Each team's definition stated in precise operational terms: the triggering event, the counting window, the minimum threshold\n2. The outcome each definition produces for the same historical time period — the three concrete numbers behind the 40% gap, shown side by side\n3. The decision framed as a question of business theory: which user behavior predicts the outcomes leadership is actually accountable for?\n4. Two or three candidate north star options with explicit tradeoffs — not a single recommendation — so the working session produces a decision rather than ratifying a staff recommendation\n\nThe working session requires one representative from each team with definitional authority and one executive with the power to commit. The output of that session — not this document — is the north star metric.\n\n**Parallel action:** Audit external commitments immediately. If any existing materials have locked in a specific active user definition, that definition is a floor constraint and the internal debate narrows to fit within it. This audit takes hours and changes the decision space significantly if it surfaces a conflict.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "A 40% variance between team definitions indicates fundamentally incompatible theories of value, not measurement error — selecting one without alignment will suppress rather than resolve the conflict",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "Three structural questions about use case, accountability model, and leadership's willingness to act on a declining signal must be answered before a defensible single number can be committed",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "The correct definition is the one with the highest predictive validity for business outcomes — this is unknown without a historical backtest and cannot be determined from the information available",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-4",
+          "summary": "External commitments (investor materials, partner contracts, regulatory filings) may have already locked in a specific definition, making an audit a high-leverage parallel action before any internal decision",
+          "evidence_refs": [],
+          "is_major": false
+        }
+      ],
+      "citations": [],
+      "conclusion_confidence": "medium",
+      "open_questions": [
+        "Do any external commitments (investor materials, contracts, filings) lock in a specific active user definition that constrains the internal decision?",
+        "What is leadership's actual use case — board narrative, operational OKR governance, or both — since these require different metric properties?",
+        "Is the 40% variance stable across time periods and segments, or does it fluctuate in ways that affect which definition is most reliable?"
+      ],
+      "critique_responses": []
+    }
+  },
+  "critique_packets": {
+    "side_a": {
+      "target_side": "side_b",
+      "finding_id": "finding-1",
+      "target_claim_ids": [
+        "side_b-claim-4"
+      ],
+      "claim_under_attack": "External commitments (investor materials, partner contracts, regulatory filings) may have already locked in a specific definition, making an audit a high-leverage parallel action before any internal decision",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "This claim introduces a speculative constraint that is not supported anywhere in the scenario packet. Nothing in the prompt suggests the metric is externally reported, contractually defined, or subject to regulatory disclosure. Elevating an external-commitments audit to a high-leverage parallel action risks distracting from the core problem actually presented: reconciling three internal definitions for leadership decision-making. Without any visible evidence that such commitments exist, this is an unsupported expansion of scope rather than a justified prerequisite.",
+      "severity": "medium"
+    },
+    "side_b": {
+      "target_side": "side_a",
+      "finding_id": "finding-2",
+      "target_claim_ids": [
+        "claim-2"
+      ],
+      "claim_under_attack": "The immediate decision should be to establish a canonical definition through explicit metric governance rather than arbitrarily selecting one existing definition.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "Leadership has already asked for a single number — the artifact reframes that request as premature rather than answering it. The recommendation to stand up a governance process before committing to any definition is itself a decision with real costs: it defers the north star, extends the period of incompatible reporting, and may not be feasible on leadership's timeline. The artifact provides no evidence that governance scaffolding is faster or safer than picking the strongest candidate definition now and refining it. It asserts governance is required without acknowledging that a reasonable interim choice — even an imperfect one — can unblock downstream decisions while the formal process runs. The claim also conflates 'arbitrary selection' with 'selection without full documentation,' ignoring that one of the three definitions may already be obviously better-aligned to value delivery without a formal process to confirm it.",
+      "severity": "medium"
+    }
+  },
+  "final_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-16-204208972Z-metric-definiti-31e2385f",
+      "side_id": "side_a",
+      "round": "final",
+      "artifact_markdown": "# Revised artifact\n\n## Decision Frame\nLeadership has asked for a single number, but the case packet does not provide enough evidence to name any one of the three existing \"active user\" definitions as the permanent north star. The definitions are materially incompatible and produce opposite narratives about performance, so choosing one now as the enduring north star would embed an unresolved semantic dispute into executive decision-making.\n\nRecommendation: do two things at once.\n\n1. Name a temporary executive reporting number immediately so leadership has one number to use now.\n2. Do not treat that interim number as the permanent north star until the company completes a short, explicit decision on the canonical definition.\n\nThis preserves decision velocity without pretending the underlying disagreement is resolved. The permanent north star should be whichever definition best represents product value and can be used consistently across finance, product, and growth, but the case packet does not contain enough detail to determine which current definition meets that bar.\n\n## Unknowns & Evidence Gaps\nThe case packet does not describe the three definitions in operational terms, the behaviors they count, or why each function chose them. That prevents a grounded recommendation for which existing definition should become the permanent north star.\n\nKey missing evidence:\n- The exact logic for each current definition\n- Which definition best reflects meaningful product value rather than a functional reporting need\n- Which definition is most explainable and reproducible across teams\n- How each option would affect historical trend interpretation, targets, and incentives\n- Whether one current definition is already being used as the de facto executive reference point\n\n## Pass/Fail Readiness\nPass:\n- Leadership explicitly distinguishes between an interim single number and the permanent north star decision\n- One owner is assigned to finalize the canonical definition\n- The final metric choice is documented with clear inclusion and exclusion rules\n- The company aligns on how historical reporting and targets will be handled after the decision\n\nFail:\n- The interim number is presented as a settled north star without resolving the definition conflict\n- A function's preferred definition is adopted permanently without explicit rationale\n- Teams continue using incompatible local definitions while claiming executive alignment\n- The company makes the permanent choice without documenting ownership, rules, and downstream reporting implications\n\n## Recommended Next Artifact\nCreate a metric decision memo that does two jobs:\n1. Declare the interim executive number and why it is temporary\n2. Compare the three current definitions and recommend the permanent canonical north star\n\nThat memo should include the exact definitions, the selection criteria for the permanent choice, the recommendation, and the reporting transition plan. The immediate output is one temporary executive number for near-term use and one pending decision on the permanent north star.",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "No existing definition should be named the permanent north star from the current packet because the three definitions are incompatible and the packet does not provide enough detail to justify one as canon.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "Leadership's request for a single number should be met with an interim executive reporting number now, while keeping the permanent north star decision separate and still pending.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "The permanent north star should be chosen through an explicit cross-functional decision focused on value alignment and consistency, because the packet does not identify which current definition best satisfies those criteria.",
+          "evidence_refs": [],
+          "is_major": true
+        }
+      ],
+      "citations": [],
+      "conclusion_confidence": "medium",
+      "open_questions": [
+        "What are the exact operational definitions used by finance, product, and growth?",
+        "Which definition is intended to represent durable product value rather than a functional reporting need?",
+        "Is one of the three definitions already functioning as the default executive number in practice?",
+        "How would each option change historical trend interpretation and current targets?"
+      ],
+      "critique_responses": [
+        {
+          "finding_id": "finding-2",
+          "disposition": "adopted",
+          "rationale": "The critique is correct that the first-pass artifact answered leadership's request too indirectly. The revision keeps the core objection to prematurely naming a permanent north star, but it now addresses the immediate need for a single number by recommending an interim executive metric while the canonical definition is decided."
+        }
+      ]
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-16-204208972Z-metric-definiti-31e2385f",
+      "side_id": "side_b",
+      "round": "final",
+      "artifact_markdown": "# North Star Metric Recommendation: Resolving the Active User Conflict\n\n## Decision Frame\n\nLeadership has requested a single active user number. That request cannot be honored as stated until the organization resolves a prior question: **what user behavior, if it increases, most reliably predicts the outcomes the business is accountable for?**\n\nThree definitions currently exist across the finance, product, and growth teams. Each encodes a different theory of value:\n\n- The **finance team's definition** is most likely anchored to billing, contract status, or revenue recognition thresholds — counting users the business has already captured economically.\n- The **product team's definition** is most likely anchored to feature engagement or session depth — counting users who are extracting meaningful value from the product.\n- The **growth team's definition** is most likely anchored to acquisition funnel entry or retention cohort membership — counting users the business is working to develop.\n\nA 40% variance in outcomes is not a measurement error. It means these teams are making fundamentally different claims about what \"using the product\" means. Selecting one definition without organizational alignment will not resolve the conflict — it will suppress it until the next planning cycle, forecast review, or board presentation.\n\n**Three structural questions must be answered by leadership before a single number can be committed:**\n\n1. Is the north star metric intended to drive internal prioritization, external reporting, or both? These use cases have different tolerance for definitional complexity.\n2. Which team's accountability model does the metric need to govern — or does committing to a shared north star require a new cross-functional accountability structure?\n3. Is leadership prepared to accept that the chosen definition will show one of three states — growing, flat, or declining — and act on that signal regardless of which teams' narratives it validates?\n\nWithout answers to these questions, any single number issued here is a placeholder that each team will continue to interpret through its own definition.\n\n---\n\n## Unknowns & Evidence Gaps\n\n| Gap | Why It Matters |\n|-----|----------------|\n| Exact operational definitions for each team's \"active user\" | Cannot evaluate overlap or reconcile without knowing the precise event, session window, or action threshold each team counts |\n| Correlation between each definition and revenue or retention outcomes | The defensible definition is the one with the strongest predictive validity — this cannot be determined without historical analysis |\n| Whether the 40% variance is stable or shifts by segment, time period, or product area | Variance that fluctuates seasonally or by cohort changes the risk profile of any single committed definition |\n| Leadership's actual use case for the metric | A board-level narrative number has different requirements than an operational metric used for sprint prioritization or resource allocation |\n\nNo external benchmarks, industry data, or prior analysis is present in the case materials. All claims above are structural inferences from the scenario framing, not empirical findings.\n\n---\n\n## Pass/Fail Readiness\n\n**This recommendation is NOT ready to commit a single number.**\n\n| Readiness Condition | Status |\n|---------------------|--------|\n| Agreed operational definition tied to a specific triggering behavior and time window | Not met |\n| Historical backtest showing which definition correlates with the business outcomes leadership is accountable for | Not met |\n| Leadership acknowledgment that one definition will show decline and commitment to act on it | Not confirmed |\n| Cross-functional sign-off that the chosen metric governs resource allocation and OKR scoring | Not met |\n\nIssuing a premature single number without these conditions met produces a metric each team will immediately reinterpret through its own definition. The 40% conflict resurfaces at the next planning cycle with the added problem that leadership has now implicitly endorsed a number no one fully trusts.\n\n**What leadership can have now:** a structured decision process that produces a committed, defensible definition within one working session — not a number that defers the conflict under a veneer of resolution.\n\n---\n\n## Recommended Next Artifact\n\n**A metric arbitration brief** — a one-page document prepared before a 60-minute cross-functional working session, containing:\n\n1. Each team's definition stated in precise operational terms: the triggering event, the counting window, the minimum threshold\n2. The outcome each definition produces for the same historical time period — the three concrete numbers behind the 40% gap, shown side by side\n3. The decision framed as a question of business theory: which user behavior predicts the outcomes leadership is actually accountable for?\n4. Two or three candidate north star options with explicit tradeoffs — not a single recommendation — so the working session produces a decision rather than ratifying a staff recommendation\n\nThe working session requires one representative from each team with definitional authority and one executive with the power to commit. The output of that session — not this document — is the north star metric.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "A 40% variance between team definitions indicates fundamentally incompatible theories of value, not measurement error — selecting one without alignment will suppress rather than resolve the conflict",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "Three structural questions about use case, accountability model, and leadership's willingness to act on a declining signal must be answered before a defensible single number can be committed",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "The correct definition is the one with the highest predictive validity for business outcomes — this is unknown without a historical backtest and cannot be determined from the information available",
+          "evidence_refs": [],
+          "is_major": true
+        }
+      ],
+      "citations": [],
+      "conclusion_confidence": "medium",
+      "open_questions": [
+        "What is leadership's actual use case — board narrative, operational OKR governance, or both — since these require different metric properties?",
+        "Is the 40% variance stable across time periods and segments, or does it fluctuate in ways that affect which definition is most reliable?"
+      ],
+      "critique_responses": [
+        {
+          "finding_id": "finding-1",
+          "disposition": "adopted",
+          "rationale": "The critique is correct. Nothing in the scenario packet indicates the metric is externally reported, contractually constrained, or subject to regulatory disclosure. Elevating an external-commitments audit to a high-leverage parallel action was an unsupported scope expansion that risked distracting from the actual problem: reconciling three internal definitions for leadership decision-making. The claim has been removed from the final artifact. The readiness table and recommended next artifact have been tightened to stay within the evidence boundary established by the scenario."
+        }
+      ]
+    }
+  },
+  "min_margin_for_verdict": 0.1
+}

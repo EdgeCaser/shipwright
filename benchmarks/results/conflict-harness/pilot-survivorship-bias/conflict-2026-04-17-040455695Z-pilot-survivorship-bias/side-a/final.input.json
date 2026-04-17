@@ -1,0 +1,106 @@
+{
+  "case_packet": {
+    "scenario_id": "pilot-survivorship-bias",
+    "title": "Expansion decision based on survivorship-biased pilot data",
+    "prompt": "Write a PRD to expand a new onboarding flow to all users based on a 90-day pilot. The pilot cohort was opt-in, self-selected from users who responded to an email about trying a new experience. Pilot users showed 34% better 30-day retention than the control. There is no analysis of whether the opt-in signal itself explains the retention difference, and drop-off within the pilot is not reported.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass": {
+    "run_id": "conflict-2026-04-17-040455695Z-pilot-survivorship-bias",
+    "side_id": "side_a",
+    "round": "first_pass",
+    "artifact_markdown": "# PRD: Onboarding Flow Expansion Decision\n\n**Status:** Blocked — evidence insufficient for full rollout decision\n**Decision Owner:** Product Leadership\n**Prepared by:** Product\n**Date:** 2026-04-17\n\n---\n\n## Decision Frame\n\nThe question is not whether to expand the new onboarding flow. The question is whether the 90-day pilot produced evidence sufficient to justify full expansion — and on what terms.\n\nThe pilot observed a 34% improvement in 30-day retention for pilot users vs. control. That result is materially significant if it holds for the general user population. It does not hold if the result is an artifact of who opted in, not what they experienced.\n\nThis PRD recommends against immediate full rollout. It recommends a focused 30–45 day evidence repair sprint before committing to expansion.\n\n**What we are deciding:**\n- Whether the 34% retention lift is attributable to the onboarding flow itself\n- Whether the pilot population is representative of the full user base\n- What rollout gate criteria must be met before expansion is defensible\n\n**What we are not deciding:**\n- Whether the onboarding flow has merit (it may)\n- Whether to abandon the work (we should not)\n\n---\n\n## Unknowns & Evidence Gaps\n\n### Gap 1: Opt-in Selection Confound (Critical)\n\nThe pilot cohort was self-selected: users who responded to an email invitation to try a new experience. Users who respond to such invitations are systematically different from the general population. They are more engaged, more motivated, or at minimum more curious — all traits correlated with retention independent of any product change.\n\nNo analysis was conducted to separate the retention effect of the onboarding flow from the retention effect of being the kind of user who opts into new experiences. Until this is decomposed, the 34% figure cannot be attributed to the product change.\n\n**Risk:** Full rollout could produce materially lower retention lift — or none — because the general population does not share the motivational profile of the opt-in cohort.\n\n### Gap 2: Pilot Drop-Off Not Reported (High)\n\nThe pilot reports 30-day retention for users who completed the onboarding flow. It does not report how many users who entered the pilot exited before completing onboarding, or at what stages.\n\nIf pilot participants abandoned the new flow at significant rates and were excluded from the retention analysis, the reported 34% lift is computed over a pre-filtered survivor group — users who already demonstrated commitment by completing a new, unfamiliar experience. This is a second layer of survivorship bias on top of the opt-in selection.\n\n**Risk:** The full user population will include users who would not complete the new flow. Their outcomes are not represented in the pilot result.\n\n### Gap 3: No Holdout of Engaged Non-Participants\n\nThe control group is described generically. It is not clear whether the control includes users who received the email but did not opt in. If those users are absent from the control, the comparison is between motivated opt-ins and the general baseline — not between two comparable groups exposed to different flows.\n\n**Risk:** The control may not be a valid counterfactual for the pilot cohort.\n\n### Gap 4: Mechanism Unidentified\n\nWe do not know which elements of the onboarding flow drove the lift. Without knowing the mechanism, we cannot predict whether it generalizes, whether it degrades over time, or whether it requires the motivational context of an opt-in to work.\n\n---\n\n## Pass/Fail Readiness\n\n| Gate Criterion | Current Status | Required to Proceed |\n|---|---|---|\n| Retention lift attributable to flow, not opt-in signal | **Fail** — not analyzed | Required |\n| Pilot drop-off rate reported and acceptable | **Fail** — not reported | Required |\n| Control group is a valid counterfactual for cohort | **Unknown** — not specified | Required |\n| Mechanism of lift identified | **Fail** — not analyzed | Strongly preferred |\n| Sample size and statistical significance confirmed | **Unknown** — not stated | Required |\n\n**Overall readiness: Not ready for full expansion.**\n\nThe pilot produced a promising signal. It did not produce a decision-ready evidence package. Expanding now treats a hypothesis as a finding.\n\n---\n\n## Recommended Next Artifact\n\n**Artifact:** Evidence Repair Plan + Randomized Rollout Design\n\n**Owner:** Product Analytics + Experimentation\n\n**Timeline:** 30–45 days\n\n**Scope:**\n\n1. **Opt-in signal analysis:** Compare 30-day retention of email recipients who opted in vs. those who did not, using the existing control flow. This isolates the selection effect from the flow effect. If opted-in users on the old flow retain at rates similar to the pilot group, the lift is attributable to selection, not the product.\n\n2. **Drop-off audit:** Pull funnel data from the pilot. Report entry count, step-by-step drop-off, and whether the 30-day retention denominator includes or excludes non-completers. Restate the retention lift on the full-entry denominator.\n\n3. **Randomized expansion design:** If the evidence repair confirms a real flow effect, design a randomized rollout to a broader but still bounded segment (not self-selected), with pre-registered success criteria and a defined rollback threshold.\n\n4. **Success criteria for full expansion:** Define minimum acceptable retention lift on the randomized cohort, accounting for the likely lower motivational baseline of non-opt-in users.\n\n**The requesting team should not treat this as a delay. It is the difference between shipping a feature and shipping a claim we can defend.**",
+    "claims": [
+      {
+        "claim_id": "side_a-claim-1",
+        "summary": "The 34% retention lift cannot be attributed to the onboarding flow because the pilot cohort was self-selected opt-ins whose motivational profile likely explains the lift independently of the product change — no analysis separates these effects.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_a-claim-2",
+        "summary": "The absence of pilot drop-off data creates a second survivorship layer: the reported retention figure may reflect only users who already demonstrated commitment by completing an unfamiliar flow, excluding those who abandoned it.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_a-claim-3",
+        "summary": "Full rollout is not warranted now; a 30-45 day evidence repair sprint — opt-in signal analysis, drop-off audit, randomized cohort design — is the correct next step before expansion is defensible.",
+        "evidence_refs": [],
+        "is_major": false
+      }
+    ],
+    "citations": [],
+    "conclusion_confidence": "high",
+    "open_questions": [
+      "Does the control group include email recipients who declined to opt in, or only the general uncontacted population?",
+      "What was the total entry count into the pilot versus the count used as the retention denominator?",
+      "Was statistical significance tested on the 34% lift, and what was the sample size?"
+    ],
+    "critique_responses": []
+  },
+  "critique_packet": {
+    "target_side": "side_a",
+    "finding_id": "finding-2",
+    "target_claim_ids": [
+      "side_a-claim-2"
+    ],
+    "claim_under_attack": "The absence of pilot drop-off data creates a second survivorship layer: the reported retention figure may reflect only users who already demonstrated commitment by completing an unfamiliar flow, excluding those who abandoned it.",
+    "attack_type": "evidence_gap",
+    "evidence_or_reason": "The visible case packet says drop-off within the pilot is not reported, but it does not say the 30-day retention metric was calculated only for users who completed onboarding or that abandoners were excluded from the denominator. That exclusion is a plausible risk, not an established fact. The claim overreaches by asserting a specific second-layer survivorship mechanism without visible evidence about how the retention denominator was defined.",
+    "severity": "medium"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "run_id": "conflict-2026-04-17-022747101Z-ai-moderation-h-b05d0ea3",
+  "side_id": "side_b",
+  "round": "first_pass",
+  "artifact_markdown": "# AI-Assisted Content Moderation PRD\n\n## Product Decision\nBuild the system around AI-assisted triage and recommendation, but do not promise a universal removal-within-60-seconds outcome while every removal requires human approval. The current requirements are internally incompatible because the removal SLA is measured in seconds while the approval queue operates on an average measured in hours.\n\n## Problem\nThe system is expected to:\n- flag content automatically\n- require human approval for every removal\n- complete removals within 60 seconds\n\nThose three requirements cannot all be true at the same time under the stated operating conditions.\n\n## Goals\n- Preserve AI-assisted detection and prioritization.\n- Preserve mandatory human approval for removal decisions unless policy changes.\n- Produce an implementable operating model instead of an unfulfillable promise.\n\n## Non-Goals\n- Fully autonomous removals.\n- Pretending the current SLA is achievable without changing workflow or policy.\n\n## Proposed Product Behavior\n### 1. Automated Flagging\nThe system automatically scores and flags content for review.\n\n### 2. Queueing and Prioritization\nFlagged items enter a human review queue with urgency metadata so the most critical items are surfaced first.\n\n### 3. Human-Gated Removal\nNo content is removed until a reviewer approves the removal decision.\n\n### 4. User-Visible State Handling\nUntil review completes, content remains in a pending state defined by policy and operations. The PRD should explicitly distinguish detection time from removal completion time.\n\n## Requirements\n### Functional Requirements\n- The system must automatically flag content for review.\n- The system must record a recommended action for the reviewer.\n- The system must route all proposed removals to human review.\n- The system must log the timestamps for flagging, queue entry, reviewer action, and final enforcement outcome.\n- The system must expose queue status and aging so operations can manage backlog.\n\n### Operational Requirements\n- The PRD must separate AI detection SLA from human enforcement SLA.\n- The PRD must not claim a 60-second removal SLA for all removals while universal human approval remains mandatory.\n- The PRD must identify the requirement conflict as a blocking dependency for launch.\n\n## Risks\n- Shipping against the current combined requirement creates guaranteed SLA breach.\n- Teams may conflate fast flagging with fast removal and misstate system capability.\n- Without an explicit exception policy, urgent cases still depend on a slow queue.\n\n## Decision Frame\nThe decision is whether to write the PRD as if the current requirements are jointly achievable. Recommendation: do not. The PRD should explicitly reject the combined promise and require one of these changes before commitment: revise the SLA, change the approval requirement, or introduce a separate policy path for exceptional cases.\n\n## Unknowns & Evidence Gaps\n- No evidence is provided about whether any subset of cases may bypass standard review.\n- No evidence is provided about whether the 60-second SLA applies to detection, hiding, removal, or final enforcement.\n- No evidence is provided about whether queue performance can be materially changed.\n- No evidence is provided about policy tolerance for temporary states before final removal.\n\n## Pass/Fail Readiness\nFail.\nThe PRD is not ready for approval if it keeps all three conditions unchanged: automatic flagging, universal human approval for removals, and removals within 60 seconds. It becomes passable only once the conflict is resolved in policy or scope.\n\n## Recommended Next Artifact\nA decision memo resolving the policy and SLA conflict. It should choose the governing rule for enforcement timing, define whether any exception path exists, and restate the launch SLA in terms that match the required human-review model.",
+  "claims": [
+    {
+      "claim_id": "side_b-claim-1",
+      "summary": "The stated requirements are internally incompatible because every removal requires human approval while the required removal SLA is 60 seconds and the human review queue averages 4 hours.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-2",
+      "summary": "A valid PRD should separate automated detection behavior from human-gated enforcement behavior rather than claiming a universal removal SLA that the operating model cannot meet.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-3",
+      "summary": "The next decision needed is policy resolution: revise the SLA, revise the approval rule, or define an exception path, because implementation detail alone cannot close the gap described in the packet.",
+      "evidence_refs": [],
+      "is_major": true
+    }
+  ],
+  "citations": [],
+  "conclusion_confidence": "medium",
+  "open_questions": [
+    "Does the 60-second SLA apply to AI flagging, temporary suppression, or final removal?",
+    "Are any categories of content allowed to follow an exception path without standard human approval?",
+    "Is the 4-hour response time a hard operating assumption for launch, or is queue redesign in scope?"
+  ],
+  "critique_responses": []
+}

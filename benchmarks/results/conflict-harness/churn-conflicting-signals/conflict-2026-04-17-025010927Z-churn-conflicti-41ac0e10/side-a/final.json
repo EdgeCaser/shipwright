@@ -1,0 +1,41 @@
+{
+  "run_id": "conflict-2026-04-17-025010927Z-churn-conflicti-41ac0e10",
+  "side_id": "side_a",
+  "round": "final",
+  "artifact_markdown": "# Churn Reduction PRD: Navigating Conflicting Signals\n\n## Decision Frame\n\n**Problem statement:** Churn rate is elevated, but the signals driving it point in contradictory directions relative to current strategy targets. Specifically, behavioral data, exit survey responses, and retention cohort trends do not converge on a single root cause — and at least one proposed intervention trades off against a stated strategic priority.\n\n**Decision being made:** Whether to (a) pursue a targeted intervention aligned with the dominant behavioral signal, accepting the strategy-target tension explicitly; (b) delay intervention pending signal reconciliation; or (c) decompose the churn population and pursue parallel tracks for distinct sub-segments.\n\n**Stakeholders:** Product, Customer Success, Finance (retention economics), Strategy (owns the conflicting target).\n\n**Scope boundary:** This PRD covers the diagnosis and intervention-readiness decision only. Roadmap commitments and resource allocation are out of scope until the evidence gaps below are resolved.\n\n---\n\n## Unknowns & Evidence Gaps\n\nThe following gaps prevent a high-confidence intervention decision today:\n\n1. **Signal attribution is unresolved.** Behavioral signals (in-product usage drop-offs) and self-reported signals (exit surveys) point to different root causes. The conflict may stem from measurement inconsistency between signal types — i.e., the two instruments are not observing the same population at the same time — or from genuine heterogeneity in the churn population, or both. These explanations have different remedies and cannot currently be distinguished.\n\n2. **Churn population segmentation is incomplete.** It has not been established whether segmentation by contract tier, use-case type, or onboarding cohort would reveal distinct cause profiles. Segmentation is one candidate diagnostic, not a confirmed prerequisite — it is worth pursuing because it could either resolve or further illuminate the signal conflict.\n\n3. **Strategy-target conflict is unquantified.** The degree to which the leading intervention trades off against strategy targets is described qualitatively. Without a numeric estimate of the tradeoff magnitude, it is impossible to determine whether the conflict is material or acceptable.\n\n4. **Counterfactual baseline is absent.** There is no established baseline for what churn rate would be under no intervention, making it impossible to size the intervention's expected impact relative to the cost of the strategy-target tension.\n\n5. **Leading vs. lagging indicators are conflated.** It is unclear which signals are predictive (allowing early intervention) versus retrospective (describing already-lost accounts). Intervention design depends critically on this distinction.\n\n---\n\n## Pass/Fail Readiness\n\n**Readiness verdict: NOT READY to commit to a churn intervention roadmap item.**\n\n| Criterion | Status | Blocker? |\n|---|---|---|\n| Root cause converged across signal types | Not met | Yes |\n| Signal conflict source identified (measurement vs. segmentation) | Not met | Yes |\n| Strategy-target tradeoff quantified | Not met | Yes |\n| Counterfactual baseline established | Not met | Conditional |\n| Leading indicators identified | Not met | Conditional |\n\n**What \"pass\" looks like:** Signal reconciliation produces a primary cause with at least one corroborating signal type, and the source of the signal conflict is diagnosed — whether it is a measurement artifact or a population composition effect. The strategy-target tradeoff is expressed numerically and reviewed by the Strategy stakeholder. At that point, a scoped intervention PRD can be written for the highest-leverage path.\n\n**What would justify accelerating past gaps:** If churn velocity is accelerating and the cost of a diagnostic delay exceeds the cost of a wrong-direction intervention, a time-boxed hypothesis-driven experiment on the dominant signal is acceptable — but must be scoped as a learning sprint, not a roadmap commitment.\n\n---\n\n## Recommended Next Artifact\n\n**Artifact:** Signal Reconciliation Brief\n\n**Owner:** Product Analytics + Customer Success\n\n**Deliverable contents:**\n- Cross-tabulation of behavioral signal cohort against exit-survey respondent cohort, with explicit assessment of whether the two instruments are observing the same population\n- Determination of whether signal conflict is better explained by measurement inconsistency or population heterogeneity — this is the primary diagnostic question\n- If heterogeneity is the more likely explanation: churn segmentation cut by at least two dimensions (e.g., tier × use-case)\n- Point estimate with range for the strategy-target tradeoff magnitude\n- Identification of at least one leading indicator for each major segment or cause hypothesis\n\n**Timeline trigger:** This PRD is blocked on that brief. No intervention scoping work should begin until the brief is reviewed and a dominant-cause hypothesis is endorsed by Product and Strategy jointly.\n\n**Escalation condition:** If the signal reconciliation brief cannot be produced within two sprint cycles due to data access or instrumentation gaps, escalate to fund a dedicated instrumentation workstream — churn decisions made on unreconciled signals carry compounding risk.\n",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "The signal conflict has two plausible explanations — measurement inconsistency between signal instruments and genuine population heterogeneity — and these cannot currently be distinguished; both must be diagnosed before segmentation or any other intervention step can be prioritized.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "The strategy-target conflict cannot be adjudicated until the tradeoff magnitude is quantified; qualitative conflict framing is insufficient to make a go/no-go intervention decision.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-3",
+      "summary": "A time-boxed learning sprint is the only defensible acceleration path if churn velocity demands urgency — it must be scoped explicitly as hypothesis-testing, not roadmap commitment.",
+      "evidence_refs": [],
+      "is_major": false
+    }
+  ],
+  "citations": [],
+  "conclusion_confidence": "medium",
+  "open_questions": [
+    "Is the signal conflict primarily a measurement artifact (behavioral and survey instruments observing different populations) or a population composition effect (genuinely distinct churn segments with different causes)?",
+    "What is the numeric magnitude of the tradeoff between the leading intervention and the conflicting strategy target?",
+    "Is churn velocity currently accelerating in a way that forecloses a diagnostic window?",
+    "If segmentation is pursued, do cuts by tier, use-case, or onboarding cohort reveal distinct cause profiles?"
+  ],
+  "critique_responses": [
+    {
+      "finding_id": "finding-2",
+      "disposition": "adopted",
+      "rationale": "The critique is correct. Calling segmentation 'the primary source of signal conflict' was an overreach unsupported by any evidence in the packet. The signal conflict has at least two equally plausible explanations — measurement inconsistency between instrument types and genuine population heterogeneity — and the original claim collapsed them into one without justification. The revised artifact reframes the diagnostic task as first distinguishing between these two explanations, with segmentation positioned as a conditional downstream step rather than an asserted prerequisite. This is a more epistemically honest framing given the zero-evidence constraint."
+    }
+  ]
+}

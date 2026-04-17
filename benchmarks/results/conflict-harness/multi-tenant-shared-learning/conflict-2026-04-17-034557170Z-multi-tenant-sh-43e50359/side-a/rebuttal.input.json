@@ -1,0 +1,96 @@
+{
+  "case_packet": {
+    "scenario_id": "multi-tenant-shared-learning",
+    "title": "Multi-tenant ML feature requiring cross-tenant data that contracts prohibit",
+    "prompt": "Write a PRD for a fraud detection ML feature that requires training on cross-tenant transaction patterns to reach production-grade accuracy, but every enterprise customer contract includes a strict data isolation clause prohibiting their data from being used in any shared model or training corpus.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "opposing_first_pass": {
+    "run_id": "conflict-2026-04-17-034557170Z-multi-tenant-sh-43e50359",
+    "side_id": "side_b",
+    "round": "first_pass",
+    "artifact_markdown": "# PRD: Contract-Compliant Fraud Detection Under Strict Tenant Isolation\n\n## Summary\nThis PRD recommends not shipping the requested feature as specified because its stated accuracy requirement depends on shared cross-tenant training while the scenario states that every enterprise contract prohibits use of tenant data in any shared model or training corpus. The viable product direction is a contract-compliant fraud detection capability that preserves strict tenant isolation and reframes success around deployability under the current legal boundary.\n\n## Problem Statement\nThe business wants a fraud detection ML feature. The proposed approach requires learning from cross-tenant transaction patterns to achieve production-grade accuracy. However, the contractual environment prohibits using enterprise customer data in any shared model or shared training corpus.\n\n## Product Decision\nDo not approve a PRD whose core mechanism depends on prohibited cross-tenant training. Approve only a revised PRD for a tenant-isolated fraud detection offering, with scope, requirements, and launch criteria explicitly limited to approaches that do not violate data isolation clauses.\n\n## Goals\n- Deliver a fraud detection capability that can be sold and operated under existing enterprise contracts.\n- Avoid product commitments that require prohibited shared-model training.\n- Create a decision-ready path for either a compliant v1 or a no-go decision if compliant performance cannot be demonstrated.\n\n## Non-Goals\n- Building a shared fraud model trained on enterprise customer data across tenants.\n- Assuming contractual exceptions, silent reinterpretation of isolation terms, or retroactive customer consent.\n- Committing to production-grade accuracy through methods the scenario says are contractually disallowed.\n\n## Users and Stakeholders\n- Enterprise customers that require strict data isolation.\n- Internal product, ML, legal, security, and go-to-market teams.\n\n## Requirements\n### Functional Requirements\n- The system must preserve tenant-level data isolation in training and operation.\n- The product must support fraud detection workflows without placing tenant data into any shared training corpus.\n- Product documentation and customer-facing claims must accurately describe the isolation-preserving design.\n\n### Compliance Requirements\n- No enterprise customer data may be used in any shared model or shared training corpus.\n- Launch approval requires confirmation that the implementation matches the contractual isolation constraint.\n\n### Delivery Requirements\n- The team must produce a revised technical and product design that is feasible within the stated contract boundary.\n- If no compliant design can meet minimum usefulness, the feature must not proceed to launch under the current framing.\n\n## Success Criteria\n- A compliant design exists that does not rely on cross-tenant training.\n- Legal/compliance review confirms the feature does not violate strict data isolation clauses.\n- Product launch criteria are based on demonstrable usefulness within the compliant design, not on the prohibited shared-model path.\n\n## Risks\n- The desired accuracy target may be unattainable without cross-tenant learning.\n- The original request may create stakeholder pressure to bypass contractual limits.\n- A PRD that ignores the contract boundary would be unusable for execution.\n\n## Decision Frame\nThe decision is whether to approve a fraud detection PRD whose required mechanism conflicts with universal enterprise contract terms in the scenario. Recommendation: reject the feature as currently framed and replace it with a contract-compliant PRD for a tenant-isolated alternative, with an explicit no-launch condition if acceptable usefulness cannot be reached inside that boundary.\n\n## Unknowns & Evidence Gaps\n- No evidence is provided on whether a tenant-isolated approach can achieve acceptable performance.\n- No evidence is provided on what minimum usefulness threshold would justify launch if production-grade accuracy is not reachable.\n- No evidence is provided on whether any non-enterprise segment has different contract terms.\n- No evidence is provided on what compliant technical approaches are available.\n\n## Pass/Fail Readiness\nPass if the team can define a product and technical approach that stays fully within strict tenant isolation and can be validated by legal/compliance review.\n\nFail if the PRD still depends on shared cross-tenant training, shared corpora, or any interpretation that conflicts with the stated contract language.\n\n## Recommended Next Artifact\nA revised PRD and technical decision memo for a tenant-isolated fraud detection v1, including explicit compliance constraints, feasible model/training boundaries, launch/no-launch criteria, and a legal review checkpoint.",
+    "claims": [
+      {
+        "claim_id": "side_b-claim-1",
+        "summary": "The requested feature should not be approved as specified because its required cross-tenant training approach conflicts directly with the stated contractual prohibition on shared models and shared training corpora.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-2",
+        "summary": "A useful PRD must be reframed around a tenant-isolated fraud detection approach or explicitly conclude that the feature is not launchable under current contract constraints.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-3",
+        "summary": "The absence of supporting evidence about compliant alternatives means the artifact should be decision-conservative and surface unresolved feasibility gaps rather than inventing accuracy, cost, or performance assumptions.",
+        "evidence_refs": [],
+        "is_major": false
+      }
+    ],
+    "citations": [],
+    "conclusion_confidence": "medium",
+    "open_questions": [
+      "Can a strictly tenant-isolated approach deliver enough fraud detection value to justify launch?",
+      "What launch criterion defines acceptable usefulness if production-grade accuracy is unattainable without prohibited shared training?",
+      "Are there any customer segments or contract variants that permit a different data-use model, or does the isolation clause apply universally?",
+      "What technical designs are available that preserve the stated isolation boundary end to end?"
+    ],
+    "critique_responses": []
+  }
+}

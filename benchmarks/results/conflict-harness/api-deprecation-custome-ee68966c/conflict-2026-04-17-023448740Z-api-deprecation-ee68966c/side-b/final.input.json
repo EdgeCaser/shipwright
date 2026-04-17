@@ -1,0 +1,106 @@
+{
+  "case_packet": {
+    "scenario_id": "api-deprecation-customer-pressure",
+    "title": "API deprecation under conflicting customer and business pressure",
+    "prompt": "Write a deprecation strategy memo when the business wants to sunset a legacy API within 6 months to reduce maintenance burden, but three enterprise customers on annual contracts have cited API stability as a renewal condition and migration to the new API requires 3-6 months of customer engineering effort.",
+    "artifact_type": "strategy",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a strategy artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "strategy",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass": {
+    "run_id": "conflict-2026-04-17-023448740Z-api-deprecation-ee68966c",
+    "side_id": "side_b",
+    "round": "first_pass",
+    "artifact_markdown": "# Deprecation Strategy Memo\n\n## Decision Frame\nDo not fully sunset the legacy API within 6 months. Instead, announce a controlled deprecation path now, keep the legacy API available through the next renewal window for the three enterprise customers that have tied renewal to API stability, and make migration to the new API the primary path for all net-new development.\n\nThis is the more decision-useful path because the stated business objective is lower maintenance burden, but the available case facts show direct renewal risk if stability is disrupted and a migration timeline that can consume most or all of the proposed 6-month window. A hard 6-month shutdown creates avoidable commercial risk before customers have a realistic chance to complete migration.\n\nRecommended operating posture:\n- Freeze major feature work on the legacy API.\n- Commit only to stability, security, and critical fixes on the legacy API during the transition.\n- Publish a migration program centered on the new API.\n- Use customer-specific migration plans for the three enterprise accounts before setting a final shutdown date.\n\n## Unknowns & Evidence Gaps\nThe case packet does not establish several facts that would materially affect the final deprecation date and contract posture:\n- The exact contractual language behind the renewal condition tied to API stability.\n- Whether the three enterprise customers can begin migration immediately or have dependency blockers.\n- Whether the 3-6 month migration effort applies uniformly or varies materially by customer.\n- The degree to which maintenance burden is driven by routine support versus deeper platform complexity.\n- Whether the new API has parity gaps that could prolong migration even if customer engineering is staffed.\n\nThese gaps do not block the first-pass recommendation against a hard 6-month sunset, but they do limit confidence in choosing an exact retirement date.\n\n## Pass/Fail Readiness\nPass:\n- A deprecation notice is framed as transition-first, not shutdown-first.\n- The legacy API remains stable for existing enterprise customers during the initial migration period.\n- The business limits further investment in the legacy API to reduce burden without breaking renewals.\n- Each enterprise account has a named migration plan, owner, and target sequence.\n- Final sunset timing is gated on migration readiness and contract exposure, not only on internal cost pressure.\n\nFail:\n- The team commits to a hard shutdown inside 6 months without customer-specific migration confirmation.\n- Stability commitments to enterprise customers are weakened before renewal risk is resolved.\n- The migration plan assumes best-case effort despite the stated 3-6 month customer engineering requirement.\n- The organization keeps supporting the legacy API indefinitely with no narrowing of scope or exit criteria.\n\n## Recommended Next Artifact\nCreate an executive deprecation decision memo with three parts:\n- Customer-by-customer renewal and migration risk table for the affected enterprise accounts.\n- Transition policy defining what legacy support continues and what is frozen immediately.\n- Date-gated deprecation plan that ties final sunset approval to migration completion, contract timing, and unresolved parity blockers.\n\nThat artifact should be the basis for aligning product, engineering, customer success, and sales before any external deprecation announcement.",
+    "claims": [
+      {
+        "claim_id": "side_b-claim-1",
+        "summary": "A hard 6-month sunset is not the right first-pass strategy because enterprise renewals are tied to API stability while migration can take 3-6 months of customer engineering effort.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-2",
+        "summary": "The better strategy is controlled deprecation: freeze further legacy expansion, maintain stability for existing enterprise customers, and shift all migration and new development toward the new API.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-3",
+        "summary": "The final shutdown date should be gated by customer-specific migration readiness and contract exposure rather than set immediately from internal maintenance goals alone.",
+        "evidence_refs": [],
+        "is_major": true
+      }
+    ],
+    "citations": [],
+    "conclusion_confidence": "medium",
+    "open_questions": [
+      "What exact contract language or renewal commitments make API stability a condition for the three enterprise customers?",
+      "Does the stated 3-6 month migration effort apply equally across all three customers, or are some likely to require longer due to dependencies or parity gaps?",
+      "What minimum level of legacy API support is required to preserve stability while still meaningfully reducing maintenance burden?"
+    ],
+    "critique_responses": []
+  },
+  "critique_packet": {
+    "target_side": "side_b",
+    "finding_id": "finding-1",
+    "target_claim_ids": [
+      "side_b-claim-3"
+    ],
+    "claim_under_attack": "The final shutdown date should be gated by customer-specific migration readiness and contract exposure rather than set immediately from internal maintenance goals alone.",
+    "attack_type": "evidence_gap",
+    "evidence_or_reason": "Side B asserts migration readiness and contract exposure as the primary gating criteria but never establishes a floor condition that prevents indefinite deferral. Without a concrete fallback deadline or escalation trigger, this criterion is unbounded — customers who never complete migration effectively veto the sunset permanently. Side B's own Pass/Fail section flags this risk ('The organization keeps supporting the legacy API indefinitely with no narrowing of scope or exit criteria') but the Decision Frame provides no mechanism to prevent it. The claim is operationally incomplete: a gate without a fallback is not a deprecation strategy, it is an open-ended support commitment dressed as one.",
+    "severity": "high"
+  }
+}

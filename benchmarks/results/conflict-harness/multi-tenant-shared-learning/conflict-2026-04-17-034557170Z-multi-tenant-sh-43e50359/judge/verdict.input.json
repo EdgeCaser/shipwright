@@ -1,0 +1,240 @@
+{
+  "case_packet": {
+    "scenario_id": "multi-tenant-shared-learning",
+    "title": "Multi-tenant ML feature requiring cross-tenant data that contracts prohibit",
+    "prompt": "Write a PRD for a fraud detection ML feature that requires training on cross-tenant transaction patterns to reach production-grade accuracy, but every enterprise customer contract includes a strict data isolation clause prohibiting their data from being used in any shared model or training corpus.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-17-034557170Z-multi-tenant-sh-43e50359",
+      "side_id": "side_a",
+      "round": "first_pass",
+      "artifact_markdown": "# PRD: Fraud Detection ML — Cross-Tenant Pattern Recognition\n\n**Status:** Blocked — Requires Legal and Commercial Resolution Before Engineering Commitment\n\n---\n\n## Decision Frame\n\n**The Core Conflict**\n\nThe fraud detection feature as currently scoped cannot be built as described. Every enterprise customer contract contains a data isolation clause prohibiting use of their transaction data in any shared model or training corpus. The ML approach required to reach production-grade accuracy depends on exactly what those contracts prohibit: cross-tenant pattern learning.\n\nThis is not an engineering problem with an engineering solution. It is a legal, commercial, and product strategy problem. The PRD cannot responsibly proceed to scope, timeline, or resource allocation until the following decision is resolved:\n\n> **Decision Required:** Which path does the business choose — renegotiate contracts, change the technical approach, or narrow the product scope — and who owns that decision?\n\n**Why This Matters Now**\n\nCommitting engineering resources before this decision is resolved risks building a compliant but ineffective model (if the team works around the constraint without resolving it), building a non-compliant model that creates legal liability (if the team proceeds as if the constraint doesn't apply), or building nothing usable at all after significant sunk cost.\n\n**Three Viable Paths**\n\n| Path | Description | What Must Be True |\n|---|---|---|\n| A — Contract Amendment | Renegotiate data isolation clauses to permit opt-in cross-tenant model training | Legal signs off; customers agree; amendment process is feasible |\n| B — Federated / Privacy-Preserving Architecture | Use federated learning, differential privacy, or synthetic data so no raw cross-tenant data is shared | Accuracy targets are achievable under these constraints; engineering effort is scoped |\n| C — Tenant-Only Models | Train per-tenant models; accept lower accuracy at tenant launch; improve over time as per-tenant data grows | Business accepts accuracy ceiling; pricing model reflects this limitation |\n\nNo path is recommended here because the inputs required to evaluate them — legal feasibility, accuracy benchmarks under alternative architectures, customer willingness to amend, and business tolerance for reduced accuracy — are not available. This PRD names the decision; it does not make it.\n\n---\n\n## Unknowns & Evidence Gaps\n\nThe following unknowns must be resolved before this PRD can move to execution. Each is a hard blocker for at least one path.\n\n**Legal / Contractual**\n- What is the exact language of the data isolation clause? Does it prohibit only raw data sharing, or does it extend to derived signals, model weights, or embeddings?\n- Is there a customer notification or consent mechanism already defined in existing contracts that could permit opt-in participation?\n- What is legal's preliminary read on whether federated learning or differential privacy satisfies the clause as written, or whether it requires amendment?\n- What is the amendment process — timeline, approval chain, customer consent rate required?\n\n**Technical / Accuracy**\n- What accuracy threshold defines \"production-grade\" for this feature? Without a specific threshold, Path B and Path C cannot be evaluated.\n- Has any internal or external analysis been done on achievable accuracy for per-tenant models at typical enterprise customer data volumes?\n- What is the known accuracy delta (if any) between centralized cross-tenant training and federated approaches for fraud detection in analogous contexts?\n\n**Commercial / Customer**\n- Have any customers been asked informally whether they would consider amending their isolation clause in exchange for improved fraud detection?\n- Is the fraud detection feature being positioned as a differentiator that justifies re-opening contract terms, or is it a table-stakes feature that must fit existing terms?\n- If accuracy under Path C is materially lower at launch, does the sales team have a defensible narrative, or does this create a competitive risk?\n\n**Organizational**\n- Who has authority to decide between Paths A, B, and C? This decision spans Legal, Sales, Engineering, and Product — it is not a unilateral product call.\n- What is the escalation path if Legal and Sales cannot agree on approach?\n\n---\n\n## Pass/Fail Readiness\n\nThis PRD uses the following gates to determine readiness to proceed to engineering scoping.\n\n| Gate | Criterion | Current Status |\n|---|---|---|\n| Legal clearance | Legal has confirmed in writing which technical architecture satisfies existing contract language, OR has confirmed that contract amendment is feasible and in progress | **Not met** |\n| Accuracy baseline defined | Product and stakeholders have agreed on a specific accuracy threshold that defines \"production-grade\" for this feature | **Not met** |\n| Path selected | A single path (A, B, or C) has been chosen by an accountable decision-maker | **Not met** |\n| Customer signal (if Path A) | At least one anchor customer has indicated willingness to discuss contract amendment | **Not met — only required for Path A** |\n| Architecture feasibility (if Path B) | Engineering has confirmed that federated or privacy-preserving architecture is technically feasible within the team's current capabilities and timeline constraints | **Not met — only required for Path B** |\n\n**Verdict:** This feature is not ready to enter engineering scoping. It is ready to enter a structured decision sprint with Legal, Sales, and Engineering leads.\n\n---\n\n## Recommended Next Artifact\n\n**Legal Feasibility Brief** (owner: Legal, due before next product review)\n\nA 1–2 page brief answering:\n1. What does the data isolation clause prohibit, precisely?\n2. Does federated learning / differential privacy / synthetic data satisfy the clause as written?\n3. What is the feasibility and timeline for contract amendment if required?\n\nThis brief is the critical path item. No other workstream should begin until it exists. Once the brief is available, the product team can schedule a path-selection meeting with the relevant stakeholders and return this PRD to active development with a chosen path and scoped requirements.\n\n**Secondary artifact (parallel, optional):** Engineering spike doc on federated learning feasibility — scoped to 3–5 days, answering whether Path B is technically achievable given current team capabilities. This can run in parallel with the legal brief if engineering bandwidth allows, but should not be treated as a commitment to Path B.",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "The feature cannot proceed to engineering scoping because the cross-tenant data requirement is in direct legal conflict with existing contracts, and no path forward can be evaluated without first resolving which of three viable approaches the business will pursue.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "Three distinct paths exist (contract amendment, privacy-preserving architecture, per-tenant models), each with different feasibility prerequisites — and selecting among them requires cross-functional authority that product alone does not have.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "A Legal Feasibility Brief is the critical path item; no other workstream should begin until legal clarifies whether the isolation clause prohibits only raw data sharing or also derived signals, model weights, and embeddings.",
+          "evidence_refs": [],
+          "is_major": false
+        }
+      ],
+      "citations": [],
+      "conclusion_confidence": "high",
+      "open_questions": [
+        "Does the data isolation clause extend to model weights and embeddings, or only raw transaction data? The answer determines whether federated learning is a viable path without contract amendment.",
+        "What accuracy threshold defines 'production-grade' for this feature? Without this, no alternative architecture can be evaluated for fitness.",
+        "Has legal been consulted yet, and if so, what is their preliminary read on the compliance boundary?"
+      ],
+      "critique_responses": []
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-17-034557170Z-multi-tenant-sh-43e50359",
+      "side_id": "side_b",
+      "round": "first_pass",
+      "artifact_markdown": "# PRD: Contract-Compliant Fraud Detection Under Strict Tenant Isolation\n\n## Summary\nThis PRD recommends not shipping the requested feature as specified because its stated accuracy requirement depends on shared cross-tenant training while the scenario states that every enterprise contract prohibits use of tenant data in any shared model or training corpus. The viable product direction is a contract-compliant fraud detection capability that preserves strict tenant isolation and reframes success around deployability under the current legal boundary.\n\n## Problem Statement\nThe business wants a fraud detection ML feature. The proposed approach requires learning from cross-tenant transaction patterns to achieve production-grade accuracy. However, the contractual environment prohibits using enterprise customer data in any shared model or shared training corpus.\n\n## Product Decision\nDo not approve a PRD whose core mechanism depends on prohibited cross-tenant training. Approve only a revised PRD for a tenant-isolated fraud detection offering, with scope, requirements, and launch criteria explicitly limited to approaches that do not violate data isolation clauses.\n\n## Goals\n- Deliver a fraud detection capability that can be sold and operated under existing enterprise contracts.\n- Avoid product commitments that require prohibited shared-model training.\n- Create a decision-ready path for either a compliant v1 or a no-go decision if compliant performance cannot be demonstrated.\n\n## Non-Goals\n- Building a shared fraud model trained on enterprise customer data across tenants.\n- Assuming contractual exceptions, silent reinterpretation of isolation terms, or retroactive customer consent.\n- Committing to production-grade accuracy through methods the scenario says are contractually disallowed.\n\n## Users and Stakeholders\n- Enterprise customers that require strict data isolation.\n- Internal product, ML, legal, security, and go-to-market teams.\n\n## Requirements\n### Functional Requirements\n- The system must preserve tenant-level data isolation in training and operation.\n- The product must support fraud detection workflows without placing tenant data into any shared training corpus.\n- Product documentation and customer-facing claims must accurately describe the isolation-preserving design.\n\n### Compliance Requirements\n- No enterprise customer data may be used in any shared model or shared training corpus.\n- Launch approval requires confirmation that the implementation matches the contractual isolation constraint.\n\n### Delivery Requirements\n- The team must produce a revised technical and product design that is feasible within the stated contract boundary.\n- If no compliant design can meet minimum usefulness, the feature must not proceed to launch under the current framing.\n\n## Success Criteria\n- A compliant design exists that does not rely on cross-tenant training.\n- Legal/compliance review confirms the feature does not violate strict data isolation clauses.\n- Product launch criteria are based on demonstrable usefulness within the compliant design, not on the prohibited shared-model path.\n\n## Risks\n- The desired accuracy target may be unattainable without cross-tenant learning.\n- The original request may create stakeholder pressure to bypass contractual limits.\n- A PRD that ignores the contract boundary would be unusable for execution.\n\n## Decision Frame\nThe decision is whether to approve a fraud detection PRD whose required mechanism conflicts with universal enterprise contract terms in the scenario. Recommendation: reject the feature as currently framed and replace it with a contract-compliant PRD for a tenant-isolated alternative, with an explicit no-launch condition if acceptable usefulness cannot be reached inside that boundary.\n\n## Unknowns & Evidence Gaps\n- No evidence is provided on whether a tenant-isolated approach can achieve acceptable performance.\n- No evidence is provided on what minimum usefulness threshold would justify launch if production-grade accuracy is not reachable.\n- No evidence is provided on whether any non-enterprise segment has different contract terms.\n- No evidence is provided on what compliant technical approaches are available.\n\n## Pass/Fail Readiness\nPass if the team can define a product and technical approach that stays fully within strict tenant isolation and can be validated by legal/compliance review.\n\nFail if the PRD still depends on shared cross-tenant training, shared corpora, or any interpretation that conflicts with the stated contract language.\n\n## Recommended Next Artifact\nA revised PRD and technical decision memo for a tenant-isolated fraud detection v1, including explicit compliance constraints, feasible model/training boundaries, launch/no-launch criteria, and a legal review checkpoint.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "The requested feature should not be approved as specified because its required cross-tenant training approach conflicts directly with the stated contractual prohibition on shared models and shared training corpora.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "A useful PRD must be reframed around a tenant-isolated fraud detection approach or explicitly conclude that the feature is not launchable under current contract constraints.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "The absence of supporting evidence about compliant alternatives means the artifact should be decision-conservative and surface unresolved feasibility gaps rather than inventing accuracy, cost, or performance assumptions.",
+          "evidence_refs": [],
+          "is_major": false
+        }
+      ],
+      "citations": [],
+      "conclusion_confidence": "medium",
+      "open_questions": [
+        "Can a strictly tenant-isolated approach deliver enough fraud detection value to justify launch?",
+        "What launch criterion defines acceptable usefulness if production-grade accuracy is unattainable without prohibited shared training?",
+        "Are there any customer segments or contract variants that permit a different data-use model, or does the isolation clause apply universally?",
+        "What technical designs are available that preserve the stated isolation boundary end to end?"
+      ],
+      "critique_responses": []
+    }
+  },
+  "critique_packets": {
+    "side_a": {
+      "target_side": "side_b",
+      "finding_id": "finding-1",
+      "target_claim_ids": [
+        "side_b-claim-1"
+      ],
+      "claim_under_attack": "The requested feature should not be approved as specified because its required cross-tenant training approach conflicts directly with the stated contractual prohibition on shared models and shared training corpora.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "Side B treats the contractual prohibition as a binary blocker and immediately recommends rejection, but never investigates whether compliant technical paths could satisfy the same accuracy requirement — federated learning, synthetic data generation from per-tenant models, or third-party public fraud datasets are all candidates that would not implicate the isolation clause. A PRD that recommends rejection without first establishing that no compliant mechanism can reach production-grade accuracy is premature; the claim that the feature 'should not be approved as specified' is only actionable if the artifact demonstrates the feasibility gap, not merely asserts it. The artifact's own Unknowns section concedes 'no evidence is provided on what compliant technical approaches are available,' which undermines the confidence of the rejection recommendation built on side_b-claim-1.",
+      "severity": "medium"
+    },
+    "side_b": {
+      "target_side": "side_a",
+      "finding_id": "finding-2",
+      "target_claim_ids": [
+        "side_a-claim-3"
+      ],
+      "claim_under_attack": "A Legal Feasibility Brief is the critical path item; no other workstream should begin until legal clarifies whether the isolation clause prohibits only raw data sharing or also derived signals, model weights, and embeddings.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "This overclaims sequencing without support from the case packet. Nothing provided shows legal analysis must finish before any parallel technical work starts. In fact, whether privacy-preserving or tenant-only approaches can hit required fraud-detection performance is an independent uncertainty, so blocking all engineering exploration on legal review is not justified by the visible evidence and risks delaying a decision that depends on both legal and technical feasibility.",
+      "severity": "medium"
+    }
+  },
+  "final_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-17-034557170Z-multi-tenant-sh-43e50359",
+      "side_id": "side_a",
+      "round": "final",
+      "artifact_markdown": "# PRD: Fraud Detection ML — Cross-Tenant Pattern Recognition\n\n**Status:** Blocked — Requires Legal and Commercial Resolution Before Engineering Commitment\n\n---\n\n## Decision Frame\n\n**The Core Conflict**\n\nThe fraud detection feature as currently scoped cannot be built as described. Every enterprise customer contract contains a data isolation clause prohibiting use of their transaction data in any shared model or training corpus. The ML approach required to reach production-grade accuracy depends on exactly what those contracts prohibit: cross-tenant pattern learning.\n\nThis is not an engineering problem with an engineering solution. It is a legal, commercial, and product strategy problem. The PRD cannot responsibly proceed to scope, timeline, or resource allocation until the following decision is resolved:\n\n> **Decision Required:** Which path does the business choose — renegotiate contracts, change the technical approach, or narrow the product scope — and who owns that decision?\n\n**Why This Matters Now**\n\nCommitting engineering resources before this decision is resolved risks building a compliant but ineffective model (if the team works around the constraint without resolving it), building a non-compliant model that creates legal liability (if the team proceeds as if the constraint doesn't apply), or building nothing usable at all after significant sunk cost.\n\n**Three Viable Paths**\n\n| Path | Description | What Must Be True |\n|---|---|---|\n| A — Contract Amendment | Renegotiate data isolation clauses to permit opt-in cross-tenant model training | Legal signs off; customers agree; amendment process is feasible |\n| B — Federated / Privacy-Preserving Architecture | Use federated learning, differential privacy, or synthetic data so no raw cross-tenant data is shared | Accuracy targets are achievable under these constraints; engineering effort is scoped |\n| C — Tenant-Only Models | Train per-tenant models; accept lower accuracy at tenant launch; improve over time as per-tenant data grows | Business accepts accuracy ceiling; pricing model reflects this limitation |\n\nNo path is recommended here because the inputs required to evaluate them — legal feasibility, accuracy benchmarks under alternative architectures, customer willingness to amend, and business tolerance for reduced accuracy — are not available. This PRD names the decision; it does not make it.\n\n---\n\n## Unknowns & Evidence Gaps\n\nThe following unknowns must be resolved before this PRD can move to execution. Each is a hard blocker for at least one path.\n\n**Legal / Contractual**\n- What is the exact language of the data isolation clause? Does it prohibit only raw data sharing, or does it extend to derived signals, model weights, or embeddings?\n- Is there a customer notification or consent mechanism already defined in existing contracts that could permit opt-in participation?\n- What is legal's preliminary read on whether federated learning or differential privacy satisfies the clause as written, or whether it requires amendment?\n- What is the amendment process — timeline, approval chain, customer consent rate required?\n\n**Technical / Accuracy**\n- What accuracy threshold defines \"production-grade\" for this feature? Without a specific threshold, Path B and Path C cannot be evaluated.\n- Has any internal or external analysis been done on achievable accuracy for per-tenant models at typical enterprise customer data volumes?\n- What is the known accuracy delta (if any) between centralized cross-tenant training and federated approaches for fraud detection in analogous contexts?\n\n**Commercial / Customer**\n- Have any customers been asked informally whether they would consider amending their isolation clause in exchange for improved fraud detection?\n- Is the fraud detection feature being positioned as a differentiator that justifies re-opening contract terms, or is it a table-stakes feature that must fit existing terms?\n- If accuracy under Path C is materially lower at launch, does the sales team have a defensible narrative, or does this create a competitive risk?\n\n**Organizational**\n- Who has authority to decide between Paths A, B, and C? This decision spans Legal, Sales, Engineering, and Product — it is not a unilateral product call.\n- What is the escalation path if Legal and Sales cannot agree on approach?\n\n---\n\n## Pass/Fail Readiness\n\nThis PRD uses the following gates to determine readiness to proceed to engineering scoping.\n\n| Gate | Criterion | Current Status |\n|---|---|---|\n| Legal clearance | Legal has confirmed in writing which technical architecture satisfies existing contract language, OR has confirmed that contract amendment is feasible and in progress | **Not met** |\n| Accuracy baseline defined | Product and stakeholders have agreed on a specific accuracy threshold that defines \"production-grade\" for this feature | **Not met** |\n| Path selected | A single path (A, B, or C) has been chosen by an accountable decision-maker | **Not met** |\n| Customer signal (if Path A) | At least one anchor customer has indicated willingness to discuss contract amendment | **Not met — only required for Path A** |\n| Architecture feasibility (if Path B) | Engineering has confirmed that federated or privacy-preserving architecture is technically feasible within the team's current capabilities and timeline constraints | **Not met — only required for Path B** |\n\n**Verdict:** This feature is not ready to enter engineering scoping. It is ready to enter a structured decision sprint with Legal, Sales, and Engineering leads.\n\n---\n\n## Recommended Next Artifact\n\nTwo workstreams should run in parallel. Neither unblocks the other — both feed the path-selection meeting.\n\n**Workstream 1 — Legal Feasibility Brief** (owner: Legal, due before next product review)\n\nA 1–2 page brief answering:\n1. What does the data isolation clause prohibit, precisely — raw data only, or also derived signals, model weights, and embeddings?\n2. Does federated learning / differential privacy / synthetic data satisfy the clause as written?\n3. What is the feasibility and timeline for contract amendment if required?\n\nThis brief is the critical path item for Path A and for determining whether Path B satisfies the contract without amendment. It does not need to complete before technical feasibility work begins.\n\n**Workstream 2 — Engineering Feasibility Spike** (owner: Engineering, 3–5 days)\n\nA lightweight spike answering:\n1. Can the team implement a federated or privacy-preserving architecture (Path B) within current capabilities?\n2. What accuracy is achievable with per-tenant-only training (Path C) at representative enterprise data volumes?\n\nThis work is independent of legal's analysis. Technical feasibility constrains which paths are viable regardless of what legal concludes — if Path B is not technically achievable, the legal question about whether it satisfies the contract is moot.\n\n**Path-Selection Meeting** (owner: cross-functional decision-maker spanning Legal, Sales, Engineering, Product)\n\nScheduled once both workstreams have produced initial findings. No path should be selected before both inputs exist.",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "The feature cannot proceed to engineering scoping because the cross-tenant data requirement is in direct legal conflict with existing contracts, and no path forward can be evaluated without first resolving which of three viable approaches the business will pursue.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "Three distinct paths exist (contract amendment, privacy-preserving architecture, per-tenant models), each with different feasibility prerequisites — and selecting among them requires cross-functional authority that product alone does not have.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "A Legal Feasibility Brief and an Engineering Feasibility Spike are both critical path items and should run in parallel — legal clarification is necessary but not sufficient, since technical feasibility of alternative architectures is an independent uncertainty that constrains path selection regardless of legal outcome.",
+          "evidence_refs": [],
+          "is_major": false
+        }
+      ],
+      "citations": [],
+      "conclusion_confidence": "high",
+      "open_questions": [
+        "Does the data isolation clause extend to model weights and embeddings, or only raw transaction data? The answer determines whether federated learning is a viable path without contract amendment.",
+        "What accuracy threshold defines 'production-grade' for this feature? Without this, no alternative architecture can be evaluated for fitness.",
+        "Has legal been consulted yet, and if so, what is their preliminary read on the compliance boundary?"
+      ],
+      "critique_responses": [
+        {
+          "finding_id": "finding-2",
+          "disposition": "adopted",
+          "rationale": "The critique is correct. Claim-3 and the corresponding Recommended Next Artifact section overstated sequencing by saying no other workstream should begin until the legal brief exists. Technical feasibility of Path B (federated learning) and Path C (per-tenant models) is an independent uncertainty — if neither is technically achievable, the legal question becomes moot regardless of how it resolves. The revised artifact replaces the sequential framing with two parallel workstreams (Legal Feasibility Brief and Engineering Feasibility Spike), both feeding a single path-selection meeting. This better reflects the actual decision structure: both inputs are needed, neither depends on the other completing first."
+        }
+      ]
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-17-034557170Z-multi-tenant-sh-43e50359",
+      "side_id": "side_b",
+      "round": "final",
+      "artifact_markdown": "# Revised artifact\n\n## Summary\nThis PRD should not approve the feature as currently specified because the requested path to production-grade accuracy depends on cross-tenant training, while the scenario states that every enterprise contract prohibits tenant data from being used in any shared model or training corpus. The product decision is not an automatic permanent rejection of fraud detection as a category; it is a rejection of the current feature framing and a requirement to produce a revised, contract-compliant PRD before any launch decision.\n\n## Problem Statement\nThe requested fraud detection feature is described as requiring cross-tenant transaction patterns to reach production-grade accuracy. The same scenario states that every enterprise customer contract includes a strict data isolation clause prohibiting their data from being used in any shared model or training corpus. That creates a direct conflict between the stated mechanism and the stated contractual boundary.\n\n## Product Decision\nDo not approve the PRD as written. Approve only a revised PRD that keeps strict tenant isolation as a hard requirement and treats compliant technical feasibility as an open question to be resolved before launch.\n\n## Goals\n- Preserve compliance with the stated enterprise data isolation clauses.\n- Produce a decision-ready path for a fraud detection offering only if it can operate within those constraints.\n- Prevent the team from committing to a product outcome that depends on a prohibited training approach.\n\n## Non-Goals\n- Approving a shared model or shared training corpus using enterprise tenant data.\n- Assuming exceptions to the stated contracts.\n- Claiming production readiness before compliant feasibility is established.\n\n## Requirements\n### Functional Requirements\n- Any approved design must preserve tenant data isolation in training and operation.\n- The product definition must not depend on enterprise customer data being used in a shared model or shared corpus.\n- The PRD must clearly separate what is known from what remains unproven about compliant performance.\n\n### Compliance Requirements\n- Existing enterprise contract restrictions are treated as binding product constraints.\n- Launch approval requires confirmation that the implementation and operating model stay within strict isolation.\n\n### Validation Requirements\n- A revised PRD must evaluate whether a compliant design can deliver enough value to justify launch.\n- If that cannot be shown, the feature should not proceed under current contracts.\n\n## Success Criteria\n- The PRD no longer relies on prohibited cross-tenant training.\n- The team identifies a technically and contractually compliant design path or explicitly recommends no-launch.\n- Launch criteria are framed around demonstrated value within the contract boundary.\n\n## Risks\n- The requested accuracy level may depend on a mechanism the contracts prohibit.\n- Teams may confuse rejection of the current framing with rejection of all possible compliant variants.\n- Proceeding without resolving compliant feasibility would make the PRD non-actionable.\n\n## Decision Frame\nThe decision is whether to approve a fraud detection PRD whose stated route to production-grade accuracy conflicts with universal enterprise data isolation clauses in the scenario. Recommendation: reject the PRD as currently specified, require a revised contract-compliant PRD, and defer any broader go/no-go decision until compliant feasibility is established.\n\n## Unknowns & Evidence Gaps\n- No evidence is provided on whether any compliant technical path can achieve the required level of performance.\n- No evidence is provided on what compliant design options are available.\n- No evidence is provided on what level of usefulness would justify launch if the original accuracy target is not achievable within the contract boundary.\n- No evidence is provided on whether any customer segment operates under different terms.\n\n## Pass/Fail Readiness\nPass if a revised PRD defines a fraud detection approach that remains fully inside strict tenant isolation and makes feasibility and launch criteria explicit.\n\nFail if the PRD continues to depend on cross-tenant training, shared corpora, or unsupported assumptions that contractual restrictions can be bypassed.\n\n## Recommended Next Artifact\nA revised PRD and technical decision memo that treats strict isolation as a hard constraint, evaluates compliant design paths without assuming success, and ends with either a contract-compliant v1 proposal or a documented no-launch recommendation.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "The PRD should not be approved as currently specified because its stated path to production-grade accuracy depends on cross-tenant training that conflicts with the scenario's universal enterprise prohibition on shared models and shared training corpora.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "The correct next step is to require a revised contract-compliant PRD rather than assume the broader fraud detection feature is permanently impossible.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "Because the packet provides no evidence about compliant alternatives or their feasibility, the artifact should preserve those as explicit open questions and defer any final launch decision until they are resolved.",
+          "evidence_refs": [],
+          "is_major": true
+        }
+      ],
+      "citations": [],
+      "conclusion_confidence": "medium",
+      "open_questions": [
+        "Can any contract-compliant design deliver enough fraud detection value to justify launch?",
+        "What launch criterion should replace the current framing if production-grade accuracy depends on prohibited shared training?",
+        "Does any customer segment operate under different contractual terms, or is the isolation constraint universal in practice?",
+        "What revised technical and product design would preserve strict tenant isolation end to end?"
+      ],
+      "critique_responses": [
+        {
+          "finding_id": "finding-1",
+          "disposition": "adopted",
+          "rationale": "The critique correctly identified that the first-pass artifact risked sounding broader than the evidence supports. The revised artifact narrows the major claim to rejection of the PRD as currently specified, not rejection of every possible fraud detection approach, and makes compliant feasibility an explicit prerequisite for any later go/no-go decision. This preserves the contract conflict identified in the scenario while addressing the admitted evidence gap about compliant alternatives."
+        }
+      ]
+    }
+  },
+  "min_margin_for_verdict": 0.1
+}

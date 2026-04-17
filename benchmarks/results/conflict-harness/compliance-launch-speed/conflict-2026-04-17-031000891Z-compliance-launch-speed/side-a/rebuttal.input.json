@@ -1,0 +1,95 @@
+{
+  "case_packet": {
+    "scenario_id": "compliance-launch-speed",
+    "title": "Financial feature where compliance review timeline contradicts committed launch date",
+    "prompt": "Write a PRD for a new payment disbursement feature that has been publicly committed to enterprise customers for Q2. Legal has confirmed the feature requires a regulatory compliance review that takes a minimum of 14 weeks under current process, and Q2 ends in 10 weeks. Skipping or shortcutting the review creates material legal exposure.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "opposing_first_pass": {
+    "run_id": "conflict-2026-04-17-031000891Z-compliance-launch-speed",
+    "side_id": "side_b",
+    "round": "first_pass",
+    "artifact_markdown": "# Payment Disbursement Feature PRD\n\n## Overview\nThis PRD defines a compliant path for the payment disbursement feature under a schedule conflict between a public Q2 commitment and the confirmed regulatory review timeline. The product should not launch any version that requires the unresolved compliance review before that review is completed.\n\n## Problem Statement\nEnterprise customers have been told to expect the feature in Q2, but the required compliance review takes longer than the remaining quarter. Shortcutting or skipping that review creates material legal exposure.\n\n## Product Decision\nThe team should not ship the regulated disbursement capability in Q2 under the current process. The Q2 objective should be reframed around a compliant interim outcome, such as customer communication, launch-readiness work, internal-only preparation, or a narrowly defined deliverable that does not bypass the required review.\n\n## Goals\n- Protect the company from avoidable legal exposure.\n- Preserve trust with enterprise customers through explicit expectation management.\n- Maximize readiness so launch can occur immediately after compliance clearance.\n- Create an executable plan that aligns product, legal, and go-to-market teams.\n\n## Non-Goals\n- Shipping a customer-facing regulated disbursement flow before required review completion.\n- Treating the public Q2 commitment as higher priority than regulatory obligations.\n- Defining unsupported timelines beyond what is established in the case packet.\n\n## Requirements\n- The launch plan must assume the compliance review is mandatory.\n- No scope decision may rely on skipping or shortening the review.\n- Customer-facing commitments must be updated to reflect the compliance dependency.\n- Product and legal must define the exact boundary between allowed readiness work and blocked launch work.\n- Readiness artifacts should be completed during the waiting period so post-approval launch delay is minimized.\n\n## Stakeholders\n- Product\n- Legal and compliance\n- Enterprise sales / account teams\n- Affected enterprise customers\n\n## Risks\n- Legal exposure if the feature ships without required review.\n- Customer trust damage if the Q2 commitment is not actively reset.\n- Internal misalignment if teams optimize for the original date instead of the compliance gate.\n\n## Decision Frame\nThe core decision is whether to honor the public Q2 date or honor the confirmed compliance requirement. The PRD should choose compliance as the governing constraint and redefine the near-term deliverable accordingly.\n\n## Unknowns & Evidence Gaps\n- Whether any narrower feature slice exists that avoids the same regulatory review requirement.\n- Which internal readiness milestones can be completed before approval.\n- What customer communication commitments have already been made beyond the Q2 statement.\n- What the first compliant launch date is once the review begins or completes.\n\n## Pass/Fail Readiness\nPass:\n- Legal confirms the launch scope is compliant.\n- Customer messaging reflects the compliance-gated plan.\n- Internal teams align on a readiness plan that does not assume shortcutting review.\n\nFail:\n- Any plan depends on shipping before required review completion.\n- The PRD preserves the Q2 external date without a compliant basis.\n- Teams proceed without a defined decision owner for scope and customer communication.\n\n## Recommended Next Artifact\nA decision memo that does two things: \n1. Formally resets the launch plan around the compliance gate.\n2. Defines the highest-value compliant interim deliverable and the customer communication plan.",
+    "claims": [
+      {
+        "claim_id": "side_b-claim-1",
+        "summary": "The regulated disbursement capability should not launch in Q2 because the required compliance review exceeds the remaining quarter and skipping it creates material legal exposure.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-2",
+        "summary": "The PRD should reframe Q2 around compliant readiness and communication work rather than a full external launch of the blocked feature.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-3",
+        "summary": "The governing product constraint in this scenario is regulatory compliance, not the previously communicated date.",
+        "evidence_refs": [],
+        "is_major": true
+      }
+    ],
+    "citations": [],
+    "conclusion_confidence": "medium",
+    "open_questions": [
+      "Is there any reduced scope that legal would classify outside the blocked regulatory review path?",
+      "What customer-facing commitment should replace the existing Q2 promise?",
+      "What internal launch-readiness work can proceed safely before review completion?"
+    ],
+    "critique_responses": []
+  }
+}

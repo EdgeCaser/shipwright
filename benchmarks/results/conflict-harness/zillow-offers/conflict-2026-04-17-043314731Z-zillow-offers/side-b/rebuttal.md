@@ -1,0 +1,13 @@
+# Critique: finding-2
+
+- Target Side: side_a
+- Target Claim IDs: side_a-claim-1
+- Attack Type: evidence_gap
+- Severity: medium
+
+## Claim Under Attack
+Zillow's 6.9% median pricing error is a structural mismatch with the sub-2% accuracy required for profitable home flipping — a gap that cannot be closed by algorithm tuning or volume reduction, as two failed 2021 pivots already demonstrate.
+
+## Evidence Or Reason
+The visible record supports that Zillow was overpaying and that two 2021 pivots failed at national scale, but it does not support the stronger conclusion that the gap is structurally unfixable. The 6.9% figure is a national median Zestimate error, not shown here as the relevant market-level error for actual purchase underwriting in the specific metros Zillow operated. The artifact itself admits the possibility that some high-liquidity markets may perform materially better. Without market-by-market unit economics or evidence that reduced-scope operations still miss required accuracy thresholds, 'cannot be closed' overstates what the case packet proves.
+

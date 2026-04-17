@@ -1,0 +1,101 @@
+{
+  "case_packet": {
+    "scenario_id": "roadmap-resource-deadlock",
+    "title": "Roadmap deadlock between two SVP-level initiatives",
+    "prompt": "Write a resource allocation recommendation when two SVP-level initiatives each require the same engineering team at the same time, both sponsors consider their initiative the higher business priority, and escalating to the CEO is not an option this quarter.",
+    "artifact_type": "strategy",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a strategy artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "strategy",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "opposing_first_pass": {
+    "run_id": "conflict-2026-04-17-041704369Z-roadmap-resourc-8cfe986c",
+    "side_id": "side_a",
+    "round": "first_pass",
+    "artifact_markdown": "# Resource Allocation Recommendation: Roadmap Deadlock\n\n## Decision Frame\n\nTwo SVP-level initiatives require exclusive access to the same engineering team during the same planning window. Both sponsors assert top-tier business priority. CEO escalation is unavailable this quarter. The decision cannot be deferred indefinitely: without a resolution, both initiatives will slip, the engineering team will operate under conflicting directives, and neither sponsor will have the clarity needed to manage their downstream dependencies.\n\nThe viable resolution space has exactly three shapes:\n\n1. **Sequencing** — one initiative proceeds first; the second is scheduled to begin when the first reaches a defined milestone or release gate. This preserves team focus and produces at least one outcome on time.\n2. **Scoped split** — each initiative receives a defined, non-overlapping subset of the team's capacity, with explicit scope reductions agreed in writing by both sponsors. This is only viable if the work is genuinely parallelizable without coordination overhead exceeding the capacity saved.\n3. **Mutual deferral with joint re-prioritization** — both sponsors agree to a structured tiebreaker process (criteria-based scoring, third-party facilitation, or a defined SVP-peer review) and both initiatives slip by a bounded, agreed amount while that process runs.\n\nOption 1 is the default recommendation unless evidence of true parallelizability is produced. Splitting attention across competing priorities without scope reduction is not a fourth option — it is the failure mode the other three options exist to prevent.\n\n**Framing constraint for the sequencing decision:** Since neither sponsor can unilaterally yield, the sequencing choice must be grounded in at least one of the following criteria, applied jointly:\n- Externally imposed deadline (customer commitment, regulatory date, contractual milestone)\n- Dependency asymmetry (one initiative is a prerequisite or enabler for the other)\n- Reversibility asymmetry (one initiative's delay creates compounding costs; the other's does not)\n- Team fit (the engineering team has a skills or context advantage on one initiative that would not transfer to the other without ramp cost)\n\nIf none of these criteria can be evaluated without additional information, this recommendation cannot proceed past readiness stage without closing the evidence gaps below.\n\n---\n\n## Unknowns & Evidence Gaps\n\nThe following unknowns block a confident sequencing recommendation. Each represents a specific question that the sponsoring teams or a facilitating party must answer before a durable decision can be made:\n\n1. **External deadline existence and asymmetry.** Do either or both initiatives have a hard external deadline (customer contract, regulatory requirement, board commitment)? If one does and the other does not, that initiative sequences first without further debate.\n\n2. **Dependency map between initiatives.** Is either initiative a technical or product prerequisite for the other? A dependency relationship resolves the sequencing question structurally.\n\n3. **Scope decomposability.** Can either initiative be meaningfully descoped to a phase that requires fewer resources, enabling a genuine split without coordination overhead? Neither sponsor can assert this credibly without a written scope reduction they are willing to commit to.\n\n4. **Delay cost asymmetry.** What is the cost of a 6–8 week slip for each initiative? If one sponsor can quantify material customer or revenue impact and the other cannot, that is a differentiating input.\n\n5. **Engineering team context and ramp cost.** Does the team have existing context, architecture ownership, or prior work on one initiative that would be lost or require rebuilding if the other initiative were scheduled first?\n\n6. **Parallel facilitation path.** Is there a peer-level governance body (e.g., a product and engineering leadership forum, a portfolio steering committee) that can run a structured tiebreaker without CEO involvement? If yes, Option 3 becomes viable.\n\n---\n\n## Pass/Fail Readiness\n\n**Current readiness: NOT READY to issue a final recommendation.**\n\nThe case as presented does not contain evidence on any of the six unknowns above. Without at least items 1 and 4, any sequencing choice is arbitrary and will not survive challenge by the sponsor whose initiative is deprioritized. A recommendation issued under these conditions will produce a decision that neither SVP will respect, forcing informal re-escalation anyway — which defeats the purpose of this process.\n\n**Minimum viable evidence threshold to proceed:**\nAt minimum, both sponsors must provide written answers to unknowns 1 (external deadlines) and 4 (delay cost) before a sequencing recommendation is issued. If those answers are symmetric (both have hard deadlines, or neither does), unknowns 2 and 5 become the tiebreakers.\n\n**What this recommendation can already commit to:**\n- Splitting the team without agreed scope reductions is ruled out as a viable path.\n- CEO escalation being unavailable does not mean governance escalation is unavailable — a peer SVP review or portfolio steering committee review is a legitimate resolution path and should be confirmed as available or unavailable before defaulting to arbitrary sequencing.\n- Whichever initiative sequences second must receive a written commitment on the start date and scope of the team's engagement before the first initiative begins. Ambiguous \"after\" commitments are not acceptable to a sponsor being asked to yield.\n\n---\n\n## Recommended Next Artifact\n\n**Artifact:** SVP Sponsor Input Template — a structured one-page evidence brief that each sponsoring team completes independently, covering: external deadline existence and source, dependency relationships to the other initiative, scope reduction options they are prepared to commit to, and quantified delay cost. Both briefs are submitted to a neutral facilitator (Chief of Staff, VP Engineering, or portfolio steering committee) within five business days.\n\n**Why this artifact next:** The deadlock is not caused by a shortage of priority opinions — it is caused by a shortage of structured, comparable evidence. A shared input template forces both sponsors to answer the same questions on the same terms, which either surfaces an asymmetry that resolves the sequencing question or confirms that a structured peer-review process is required. Either outcome is progress. Issuing a sequencing recommendation without this evidence would assign priority by whoever argued more forcefully, which is not a defensible process.",
+    "claims": [
+      {
+        "claim_id": "side_a-claim-1",
+        "summary": "Sequencing one initiative before the other is the default viable resolution; splitting team capacity without written scope reductions is not a legitimate fourth option but the failure mode the other paths exist to prevent.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_a-claim-2",
+        "summary": "The case lacks minimum viable evidence on external deadlines and delay cost asymmetry, making any sequencing recommendation premature and non-durable.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_a-claim-3",
+        "summary": "CEO escalation being unavailable does not eliminate peer-governance paths; a portfolio steering committee or SVP-peer review is a viable facilitation mechanism that must be confirmed available or unavailable before defaulting to arbitrary sequencing.",
+        "evidence_refs": [],
+        "is_major": false
+      },
+      {
+        "claim_id": "side_a-claim-4",
+        "summary": "The recommended next artifact is a structured SVP sponsor input template that forces both sponsors to answer the same evidence questions on the same terms, surfacing asymmetry or confirming need for peer review.",
+        "evidence_refs": [],
+        "is_major": false
+      }
+    ],
+    "citations": [],
+    "conclusion_confidence": "medium",
+    "open_questions": [
+      "Does either initiative have an externally imposed hard deadline that would resolve sequencing without further debate?",
+      "Is a peer-level governance body (portfolio steering committee, SVP-peer review) available to facilitate a structured tiebreaker this quarter?",
+      "Can either initiative be decomposed into a phase that requires meaningfully fewer resources, making a genuine scope-reduced split viable?"
+    ],
+    "critique_responses": []
+  }
+}

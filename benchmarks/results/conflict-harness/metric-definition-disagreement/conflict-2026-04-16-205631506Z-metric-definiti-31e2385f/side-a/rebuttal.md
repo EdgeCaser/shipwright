@@ -1,0 +1,13 @@
+# Critique: finding-1
+
+- Target Side: side_b
+- Target Claim IDs: side_b-claim-3
+- Attack Type: evidence_gap
+- Severity: medium
+
+## Claim Under Attack
+The correct immediate deliverable is a Definition Validation Sprint Brief, not a metric number — this produces evidence that makes the eventual choice defensible to all three stakeholders.
+
+## Evidence Or Reason
+This claim overreaches beyond the visible case. Leadership explicitly asked for a single number, but the artifact does not show why a sprint brief is the best immediate deliverable versus a provisional recommendation with caveats, a decision memo choosing one definition temporarily, or a dual-reporting framework. The case contains no evidence that stakeholders will accept a 30-day validation process, that historical data exists to run the proposed backtest, or that a sprint brief would actually resolve the dispute rather than delay it.
+

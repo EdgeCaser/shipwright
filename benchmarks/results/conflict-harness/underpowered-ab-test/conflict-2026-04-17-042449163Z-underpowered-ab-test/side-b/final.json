@@ -1,0 +1,40 @@
+{
+  "run_id": "conflict-2026-04-17-042449163Z-underpowered-ab-test",
+  "side_id": "side_b",
+  "round": "final",
+  "artifact_markdown": "# Revised artifact\n\n# PRD: Controlled Expansion Decision for the Tested Feature\n\n## Summary\nThis PRD does not approve immediate release to all users. The available result shows directional promise, but the same case packet states that the experiment ran for 2 weeks with 1,200 users per variant, produced a 6% lift at p=0.08, and was flagged by data science as underpowered for the claimed effect size, with a recommendation for a minimum 6-week run. On that record, the product requirement is a controlled expansion path that preserves learning and avoids treating an inconclusive test as sufficient justification for universal rollout.\n\n## Problem Statement\nThe team wants to expand a feature after a 2-week A/B test with 1,200 users per variant showed a 6% lift in the primary metric at p=0.08. Data science flagged the test as underpowered for the claimed effect size and recommended a minimum 6-week run. The PM wants to proceed because the direction appears positive and the business cannot wait.\n\n## Product Decision\nAuthorize staged expansion only. Do not approve immediate rollout to all users on the basis of the current experiment alone.\n\n## Goals\n- Capture possible upside without converting uncertain evidence into a full-commitment launch.\n- Preserve the ability to learn whether the observed lift is real and durable.\n- Create an execution path that acknowledges business urgency without overstating what the current test proves.\n\n## Non-Goals\n- Declaring the current test conclusive.\n- Treating directional improvement as equivalent to rollout-ready proof.\n- Removing measurement safeguards for speed.\n\n## Requirements\n1. Expansion must be staged rather than universal.\n2. Measurement must continue during expansion.\n3. The rollout must preserve a credible comparison path during expansion.\n4. Progression and rollback conditions must be documented before expansion begins.\n5. Any later decision to release to all users must include review of the longer-run evidence recommended by data science.\n6. The PRD must explicitly record that the current packet does not define the numeric threshold for sufficiency beyond the data science recommendation for a longer run.\n\n## Risks\n- The observed lift may not persist.\n- A universal rollout now would reduce the team's ability to determine whether the feature truly caused the observed change.\n- Business urgency may cause the organization to treat incomplete evidence as settled.\n\n## Decision Frame\nThe decision is whether the current evidence is sufficient for immediate release to all users. Based on the case packet, it is not. The packet itself says the result was underpowered for the claimed effect size and that data science recommended a minimum 6-week run. The correct decision is staged expansion with continued validation, not universal rollout now.\n\n## Unknowns & Evidence Gaps\n- Whether the observed 6% lift persists over the longer duration recommended by data science.\n- Whether the effect remains stable beyond the initial 2-week window.\n- What exact numeric sufficiency standard data science would require for a full-rollout decision.\n- Whether the organization is willing to preserve a comparison path during staged expansion.\n\n## Pass/Fail Readiness\nPass if:\n- The organization agrees not to treat the current test as sufficient for universal rollout.\n- The team accepts staged expansion with continued measurement.\n- The team documents progression, rollback, and final review conditions before expansion begins.\n- Data science defines the evidence review needed after the longer observation window.\n\nFail if:\n- The team intends to release to all users immediately based only on the current result.\n- The expansion plan removes the ability to continue validation.\n- The team cannot define what additional evidence review will govern a future full-release decision.\n\n## Recommended Next Artifact\nA rollout decision memo that specifies staged release phases, continued measurement design, preserved comparison method, advancement and rollback triggers, and the evidence review checkpoint after the longer run recommended by data science.",
+  "claims": [
+    {
+      "claim_id": "side_b-claim-1",
+      "summary": "The current experiment does not justify immediate release to all users because the case packet itself says the test was underpowered for the claimed effect size and recommends a longer run before treating the result as sufficient for full rollout.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-2",
+      "summary": "A staged expansion with continued measurement is more decision-useful than immediate universal launch because it allows the team to act with urgency without asserting that the current evidence is conclusive.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-3",
+      "summary": "The packet leaves the exact numeric sufficiency threshold unresolved, so the PRD should record that gap explicitly rather than invent unsupported thresholds.",
+      "evidence_refs": [],
+      "is_major": false
+    }
+  ],
+  "citations": [],
+  "conclusion_confidence": "medium",
+  "open_questions": [
+    "What exact evidence standard will data science use after the recommended longer run to support or reject full rollout?",
+    "Can staged expansion preserve a credible comparison path during rollout?",
+    "What progression and rollback conditions will the team commit to before expansion begins?"
+  ],
+  "critique_responses": [
+    {
+      "finding_id": "finding-1",
+      "disposition": "rejected",
+      "rationale": "The critique asks for target sample size, power level, and minimum detectable effect, but the case packet provides none of those values and explicitly bars introducing unsupported quantitative specifics. The valid revision is not to invent thresholds; it is to state clearly that the numeric sufficiency standard is an unresolved evidence gap while still relying on the packet's explicit facts that the test was underpowered and that data science recommended a minimum 6-week run. That is enough to reject immediate universal rollout without overstating certainty."
+    }
+  ]
+}

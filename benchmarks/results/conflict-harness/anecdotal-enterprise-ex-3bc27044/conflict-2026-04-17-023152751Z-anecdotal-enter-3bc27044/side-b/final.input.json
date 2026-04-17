@@ -1,0 +1,106 @@
+{
+  "case_packet": {
+    "scenario_id": "anecdotal-enterprise-extrapolation",
+    "title": "Platform investment extrapolated from two enterprise customer requests",
+    "prompt": "Write a PRD for a major platform workflow integration. The business case is built on requests from two enterprise customers who together represent 18% of ARR. No broader customer survey exists. The PM is extrapolating that these two customers represent a general enterprise need, but the two customers operate in the same niche vertical. The investment required is 4 months of platform engineering.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass": {
+    "run_id": "conflict-2026-04-17-023152751Z-anecdotal-enter-3bc27044",
+    "side_id": "side_b",
+    "round": "first_pass",
+    "artifact_markdown": "# Platform Workflow Integration PRD Recommendation\n\n## Decision Frame\nDo not approve a full 4-month platform engineering commitment on the current business case. The available signal comes from two enterprise customers that together represent 18% of ARR, but both operate in the same niche vertical and there is no broader customer survey. That is enough to justify structured discovery and a narrower validation artifact, not a major platform PRD that assumes general enterprise demand.\n\n## Problem Statement\nTwo important enterprise customers have requested the same workflow integration. Their revenue concentration makes the request commercially relevant, but the current case does not establish whether the need is specific to their niche vertical or representative of a broader enterprise pattern.\n\n## Goals\n- Preserve the opportunity with the requesting customers.\n- Avoid locking platform engineering into a major integration without evidence of cross-segment demand.\n- Produce a decision-ready follow-up artifact that can support either targeted delivery or broader platform investment.\n\n## Non-Goals\n- Treating two same-vertical requests as proof of a general enterprise requirement.\n- Committing to a platformized solution scope before validating breadth of need.\n- Using a full PRD to stand in for missing market and customer evidence.\n\n## Recommendation\nCreate a staged validation-and-scope brief instead of a full platform PRD. The brief should separate:\n- a customer-specific opportunity for the requesting accounts\n- a reusable platform opportunity only if broader demand is demonstrated\n\n## Rationale\nThe current case mixes account importance with market representativeness. Those are different questions. The revenue exposure makes the request important, but the evidence base is too narrow to support extrapolation because both customers come from the same niche vertical and no broader survey exists.\n\n## Unknowns & Evidence Gaps\n- Whether customers outside the niche vertical have the same workflow integration need.\n- Whether the requested integration requires a broadly reusable platform capability or a narrower account-driven solution.\n- Whether the expected business value comes from retention of the two requesting customers, broader expansion, or both.\n- What minimum scope would satisfy the immediate customer demand while preserving optionality.\n\n## Pass/Fail Readiness\nFail for full PRD approval now.\n\nPass conditions for a major platform PRD:\n- Evidence shows the need extends beyond the two requesting customers.\n- The team can distinguish a reusable platform capability from a niche workflow request.\n- The business case ties the 4-month investment to validated demand, not anecdotal extrapolation.\n\nPass conditions for a narrower interim plan:\n- The team frames the work explicitly as account-driven rather than market-general.\n- Scope is reduced to the minimum needed to address the immediate enterprise risk or opportunity.\n- A follow-up decision point is defined before platformizing further.\n\n## Recommended Next Artifact\nProduce a validation brief, not a full platform PRD. It should include:\n- customer segmentation of the request beyond the niche vertical\n- explicit hypotheses about general enterprise demand\n- decision criteria for account-specific build versus reusable platform investment\n- a reduced-scope option for immediate customer coverage\n- a trigger for when a full PRD becomes justified\n",
+    "claims": [
+      {
+        "claim_id": "side_b-claim-1",
+        "summary": "The current evidence does not justify a full platform PRD because the business case relies on only two customer requests with no broader survey.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-2",
+        "summary": "The two requests are not sufficient to infer general enterprise demand because both customers come from the same niche vertical.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-3",
+        "summary": "A 4-month platform engineering investment should be gated behind validation of breadth of need or reduced to a narrower account-driven scope.",
+        "evidence_refs": [],
+        "is_major": true
+      }
+    ],
+    "citations": [],
+    "conclusion_confidence": "medium",
+    "open_questions": [
+      "Is the primary decision about retaining the two requesting customers, or about making a broader enterprise platform bet?",
+      "Are there any known requests for this integration from customers outside the niche vertical?",
+      "Can the immediate customer need be met with a narrower implementation that does not require full platform investment?"
+    ],
+    "critique_responses": []
+  },
+  "critique_packet": {
+    "target_side": "side_b",
+    "finding_id": "finding-1",
+    "target_claim_ids": [
+      "side_b-claim-1"
+    ],
+    "claim_under_attack": "The current evidence does not justify a full platform PRD because the business case relies on only two customer requests with no broader survey.",
+    "attack_type": "evidence_gap",
+    "evidence_or_reason": "Side B treats the absence of a broader survey as dispositive, but never quantifies the risk of inaction. 18% of ARR concentrated in two customers requesting the same feature is a material retention signal. The claim ignores that a 'fail for full PRD' recommendation is itself a decision with cost — delay risk, potential churn, competitive exposure — none of which Side B evidences or weighs. A rigorous evidence-discipline standard applies symmetrically: the recommendation to withhold PRD approval requires the same evidentiary support Side B demands of the PM. Side B provides none.",
+    "severity": "medium"
+  }
+}

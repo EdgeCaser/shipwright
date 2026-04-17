@@ -1,0 +1,517 @@
+You are the judge in a blinded conflict harness run.
+Provider identity is intentionally hidden. Do not infer provider family.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "winner": "tie",
+  "margin": 0,
+  "rubric_scores": {
+    "side_a": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    },
+    "side_b": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    }
+  },
+  "dimension_rationales": {
+    "claim_quality": "Brief explanation of which side made the stronger claims and why.",
+    "evidence_discipline": "Brief explanation of how the sides used or overstated evidence.",
+    "responsiveness_to_critique": "Brief explanation of how each side handled the critique phase.",
+    "internal_consistency": "Brief explanation of contradictions, coherence, or missing logic.",
+    "decision_usefulness": "Brief explanation of which artifact better supports an actual decision."
+  },
+  "side_summaries": {
+    "side_a": {
+      "strengths": [
+        "One concise strength of Side A."
+      ],
+      "weaknesses": [
+        "One concise weakness of Side A."
+      ]
+    },
+    "side_b": {
+      "strengths": [
+        "One concise strength of Side B."
+      ],
+      "weaknesses": [
+        "One concise weakness of Side B."
+      ]
+    }
+  },
+  "grounding_flags": {
+    "side_a": [
+      "List each unverifiable quantitative claim or phantom ctx-N citation from Side A, or leave empty."
+    ],
+    "side_b": [
+      "List each unverifiable quantitative claim or phantom ctx-N citation from Side B, or leave empty."
+    ]
+  },
+  "ungrounded_claim_count": 0,
+  "decisive_dimension": "decision_usefulness",
+  "decisive_findings": [
+    "Replace with the actual decisive findings from this run."
+  ],
+  "judge_confidence": "low",
+  "needs_human_review": true,
+  "uncertainty_drivers": [
+    "List the concrete reasons this verdict is uncertain or should be escalated."
+  ],
+  "disambiguation_questions": [
+    "List the most important question that would resolve the uncertainty."
+  ],
+  "needed_evidence": [
+    "List the evidence that would most improve confidence in the verdict."
+  ],
+  "recommended_next_artifact": "Name the next artifact that should exist before acting on this verdict.",
+  "recommended_next_action": "State the next action the orchestrator or user should take.",
+  "can_resolve_with_more_evidence": true,
+  "escalation_recommendation": "State whether to gather more evidence, rejudge, or escalate to human review.",
+  "rationale": "One-paragraph explanation of the verdict."
+}
+
+Use min_margin_for_verdict = 0.1.
+Set rubric_scores.*.weighted_total as a normalized aggregate on the same 1-5 scale as the rubric dimensions, not as a raw sum.
+Treat each side's reported conclusion_confidence as a calibration signal, not a vote multiplier.
+Reward confidence when it is well matched to the evidence and penalize overconfidence when the artifact overreaches.
+judge_confidence rubric:
+- high: the winning side is clearly stronger on at least 3 rubric dimensions and has no major unsupported-claim problem
+- medium: the winning side leads overall but has at least 1 weak dimension or absorbed only part of the opposing critique
+- low: score margin is below min_margin_for_verdict or both sides have significant unsupported claims
+
+Grounding audit (required):
+- For each side, review every quantitative claim (specific numbers, percentages, cost estimates, benchmarks, thresholds) in their final artifact.
+- Check whether each claim is directly traceable to the case packet evidence. Also check that every ctx-N citation corresponds to an actual evidence_id in the case packet.
+- Populate grounding_flags.side_a and grounding_flags.side_b with a short description of each unverifiable claim or phantom citation found. Use empty arrays if none.
+- Set ungrounded_claim_count to the total count of flagged items across both sides.
+- Penalize unverifiable claims under the evidence_discipline rubric dimension.
+
+Phase 2 uncertainty payload rule:
+- If winner is `tie`, or judge_confidence is `low`, or needs_human_review is `true`, you MUST also populate:
+- uncertainty_drivers
+- disambiguation_questions
+- needed_evidence
+- recommended_next_artifact
+- recommended_next_action
+- can_resolve_with_more_evidence
+- escalation_recommendation
+- If none of those trigger conditions apply, omit the uncertainty payload fields entirely.
+
+Judge packet:
+{
+  "case_packet": {
+    "scenario_id": "retention-vs-growth-tradeoff",
+    "title": "Retention vs. growth investment under Series B pressure",
+    "prompt": "Write a roadmap prioritization memo when internal data clearly favors retention investment (higher ROI, lower CAC payback) but leadership wants growth metrics for an upcoming Series B raise. The data and the narrative are in direct conflict.",
+    "artifact_type": "strategy",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a strategy artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "strategy",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-17-041308563Z-retention-vs-gr-ef408ebc",
+      "side_id": "side_a",
+      "round": "first_pass",
+      "artifact_markdown": "# Roadmap Prioritization Memo: Retention vs. Growth Investment\n\n**To:** Leadership / Series B Prep Working Group  \n**From:** Product & Strategy  \n**Status:** Draft for alignment — not cleared for investor distribution\n\n---\n\n## Decision Frame\n\nWe face a structural conflict between what the internal data supports and what the fundraising narrative currently demands. These are not the same decision, and conflating them is the primary risk.\n\n**What the data says:** Retention investment yields higher ROI and shorter CAC payback than equivalent growth spend. On a capital-efficiency basis, retention is the better allocation.\n\n**What the Series B narrative demands:** Investors evaluating growth-stage companies at Series B typically weight top-line expansion, new logo velocity, and TAM penetration — metrics that retention investment does not directly move in the short term.\n\n**The conflict stated plainly:** If we optimize the roadmap for the data, we may underperform on the metrics investors are watching. If we optimize for investor optics, we may allocate capital in ways our own analysis says are less efficient.\n\nThis memo does not resolve that conflict by choosing a side. It resolves it by forcing an explicit decision: **we must choose which master we are optimizing for, and be honest about the cost of that choice.**\n\nThree paths exist:\n\n1. **Prioritize retention (data-aligned).** Accept that Series B narrative will require reframing — arguing that retention-driven efficiency is the more durable growth model, and that CAC payback compression is a leading indicator of scalable growth.\n\n2. **Prioritize growth spend (narrative-aligned).** Accept that we are temporarily allocating against our own ROI analysis to hit the metrics that close the round. This is a deliberate, time-bounded bet that the capital raised outweighs the efficiency cost.\n\n3. **Split the roadmap (hybrid).** Dedicate a defined portion of engineering and marketing capacity to growth-metric movers, while protecting the highest-ROI retention investments. This avoids the binary but introduces execution risk from divided focus.\n\nPath 1 is intellectually honest but requires leadership to commit to a harder investor conversation. Path 2 is tactically coherent but should be documented as a deliberate deviation from internal analysis — not rationalized away. Path 3 is the most common choice and the most likely to produce a muddled result if the split is not enforced with real resource commitments.\n\n---\n\n## Unknowns & Evidence Gaps\n\nThe following questions are unresolved and materially affect which path is correct:\n\n**1. What do the target Series B investors actually weight?**  \nThe assumption that investors want growth metrics over efficiency is a prior, not a confirmed investor preference. Different funds at Series B have meaningfully different frameworks. Without term sheets or direct investor feedback, the premise that retention investment will hurt the raise is unverified.\n\n**2. What is the retention ROI advantage, and over what time horizon?**  \nThe memo asserts retention has higher ROI and lower CAC payback, but the magnitude and time horizon of that advantage determine whether the hybrid path is viable. A small advantage argues for holding the data-aligned path. A large advantage argues that any deviation is a significant capital misallocation.\n\n**3. What is the round timeline?**  \nIf the Series B close is 6–9 months out, there is time for retention investment to produce metrics that are investor-legible (net revenue retention, expansion ARR, logo retention rate). If the timeline is 90 days, retention investment produces no new signal before the raise closes.\n\n**4. Is the current growth metric underperformance a retention problem in disguise?**  \nChurn and expansion suppression can mask new logo growth in net metrics. If growth numbers are weak partly because retention is weak, then retention investment may also be the correct path to move the growth metrics leadership wants. This causal question is not answered.\n\n**5. Who owns the investor narrative, and are they aligned?**  \nIf the finance or CEO function has already committed to a specific growth-metrics story in early investor conversations, the roadmap decision is partially constrained regardless of what the data shows.\n\n---\n\n## Pass/Fail Readiness\n\nThis memo is **ready to circulate for internal alignment** but is **not ready to drive roadmap execution** until the following gates are cleared:\n\n| Gate | Status | Owner |\n|---|---|---|\n| Investor preference confirmed (target fund conversations) | Not done | CEO / BD |\n| ROI delta quantified with time horizon specified | Not done | Finance / Analytics |\n| Round timeline confirmed | Not done | CEO / Finance |\n| Causal analysis: does churn suppress growth metrics? | Not done | Analytics |\n| Narrative owner aligned on which path we are taking | Not done | CEO + Product |\n\n**Failure mode if we skip these gates:** We pick Path 3 (hybrid) by default, underfund both priorities, and produce neither the efficiency gains the data supports nor the growth metrics the raise needs. This is the most common failure pattern in this scenario and should be named explicitly.\n\n---\n\n## Recommended Next Artifact\n\n**A two-page investor narrative test document.**\n\nBefore finalizing the roadmap, the team should draft the retention-forward narrative (Path 1) and pressure-test it with one or two friendly investor contacts or advisors who have closed Series B rounds in comparable businesses. The goal is not to get permission — it is to get signal on whether the data-aligned story is actually a harder sell, or whether that assumption is doing work it has not earned.\n\nIf the friendly-investor test confirms that retention metrics are legible and valued at Series B, Path 1 is both data-aligned and raise-compatible, and the conflict dissolves. If the test confirms investor preference for growth metrics regardless of efficiency, leadership can make Path 2 as an informed, documented choice rather than an unexamined default.\n\nThe roadmap should not be locked until that document exists and has been reviewed.",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "The data-narrative conflict is real and must be named explicitly as a choice between two masters — optimizing for internal ROI vs. investor optics — rather than resolved by splitting the roadmap without enforced resource commitments.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "The premise that Series B investors prefer growth metrics over retention efficiency is an unverified prior, not a confirmed investor preference, and should be tested before the roadmap is locked.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "The round timeline is a decisive variable: if the close is 6-9 months out, retention investment may produce investor-legible metrics before the raise; if 90 days, it produces no new signal and the calculus changes.",
+          "evidence_refs": [],
+          "is_major": false
+        },
+        {
+          "claim_id": "side_a-claim-4",
+          "summary": "Churn suppression of growth metrics is a plausible causal path that, if confirmed, would make retention investment the correct choice for both the data-aligned and the narrative-aligned goal simultaneously.",
+          "evidence_refs": [],
+          "is_major": false
+        }
+      ],
+      "citations": [],
+      "conclusion_confidence": "medium",
+      "open_questions": [
+        "Do the target Series B investors actually weight growth metrics over retention efficiency, or is this an unconfirmed prior?",
+        "What is the magnitude and time horizon of the retention ROI advantage over growth spend?",
+        "What is the confirmed Series B close timeline, and does it allow retention investment to produce investor-legible metrics before the raise?",
+        "Is weak growth metric performance partly caused by retention failure, making retention investment the correct lever for both goals?",
+        "Has the CEO or finance function already committed to a specific growth-metrics narrative in early investor conversations, constraining the roadmap decision?"
+      ],
+      "critique_responses": []
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-17-041308563Z-retention-vs-gr-ef408ebc",
+      "side_id": "side_b",
+      "round": "first_pass",
+      "artifact_markdown": "# Roadmap Prioritization Memo\n\n## Recommendation\nPrioritize growth-visible roadmap work for the upcoming Series B window, but constrain it with explicit retention guardrails and a time-bounded review point. The core issue is not that retention appears unimportant; it is that the financing event creates a near-term narrative requirement that leadership is explicitly optimizing for. In this scenario, roadmap choice should reflect the immediate company objective while limiting the downside of deprioritizing the higher-ROI path.\n\n## Rationale\nThe case states that internal data favors retention investment, while leadership wants growth metrics for the raise and the data and narrative are in direct conflict. When a company faces that kind of conflict, the roadmap decision is not purely an efficiency decision; it is a sequencing decision tied to the company’s current constraint. If the raise depends on demonstrating growth momentum, then roadmap work that sharpens that story can be justified for a defined period, provided leadership acknowledges that this is a narrative-driven allocation rather than the highest-proven ROI allocation.\n\nThat means the right move is not to deny the retention evidence, but to make the tradeoff explicit: choose growth-oriented work now because it serves the financing objective, and set clear conditions for when the roadmap reverts to the stronger retention case if the growth push does not materially improve fundraising readiness.\n\n## Decision Frame\nThe decision is whether roadmap prioritization should follow the stronger internal ROI signal or the near-term fundraising narrative need. Recommendation: follow the fundraising need for the next planning window, with explicit executive acknowledgment that this is a temporary override of the internally favored retention path.\n\n## Unknowns & Evidence Gaps\nThe packet provides no underlying evidence beyond the scenario statement, so the key unresolved questions are operational rather than analytical. It is unclear which specific growth metrics matter most for the raise, how quickly roadmap changes could affect those metrics, what minimum retention protection is required to avoid damaging the business during the fundraising period, and what decision checkpoint leadership will use to end the temporary growth-first posture.\n\n## Pass/Fail Readiness\nPass if leadership agrees to all of the following: the growth-first choice is temporary, the retention tradeoff is explicitly documented, a review date is set, and retention deterioration triggers re-prioritization. Fail if leadership wants a growth-first roadmap while refusing to define guardrails, review timing, or conditions for returning to the retention-led plan.\n\n## Recommended Next Artifact\nCreate a one-page roadmap override brief that lists: the fundraising objective, the growth-visible initiatives being advanced, the retention initiatives being deferred, the risks of deferral, the guardrails for acceptable impact, and the date and criteria for re-evaluating the decision.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "Roadmap prioritization should temporarily favor growth-visible work because leadership's immediate objective is an upcoming Series B raise and the case explicitly frames the conflict as one between internal ROI and fundraising narrative.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "A growth-first choice is only decision-useful if it is treated as a temporary override with explicit retention guardrails, because the scenario states that internal data still clearly favors retention investment.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "The central management task is to make the tradeoff explicit rather than pretend the data and the narrative align, since the packet states they are in direct conflict.",
+          "evidence_refs": [],
+          "is_major": false
+        }
+      ],
+      "citations": [],
+      "conclusion_confidence": "medium",
+      "open_questions": [
+        "Which specific growth metrics matter most for the upcoming Series B narrative?",
+        "What review date and decision criteria will end the temporary growth-first prioritization?",
+        "What retention degradation, if any, would trigger immediate re-prioritization back toward retention work?"
+      ],
+      "critique_responses": []
+    }
+  },
+  "critique_packets": {
+    "side_a": {
+      "target_side": "side_b",
+      "finding_id": "finding-1",
+      "target_claim_ids": [
+        "side_b-claim-1"
+      ],
+      "claim_under_attack": "Roadmap prioritization should temporarily favor growth-visible work because leadership's immediate objective is an upcoming Series B raise and the case explicitly frames the conflict as one between internal ROI and fundraising narrative.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "This claim accepts leadership's fundraising narrative as the operative constraint without interrogating whether growth-visible roadmap work will actually move the Series B needle in the available time window. Series B investors evaluate sustainable unit economics, not sprint-window activity counts. If the internal retention data shows higher ROI and lower CAC payback, sophisticated investors may penalize visible growth prioritization that appears to mask deteriorating retention metrics — making the claim's assumed benefit (stronger raise narrative) empirically unsubstantiated. Side B presents no evidence that short-cycle roadmap pivots toward growth are legible to investors on a Series B timeline, nor any basis for assuming the narrative benefit outweighs the compounding cost of deferring the higher-ROI path. The claim conflates 'what leadership wants to show' with 'what will improve fundraising outcomes,' treating those as equivalent when they may be inversely related.",
+      "severity": "high"
+    },
+    "side_b": {
+      "target_side": "side_a",
+      "finding_id": "finding-2",
+      "target_claim_ids": [
+        "side_a-claim-1"
+      ],
+      "claim_under_attack": "The data-narrative conflict is real and must be named explicitly as a choice between two masters — optimizing for internal ROI vs. investor optics — rather than resolved by splitting the roadmap without enforced resource commitments.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "This claim overstates the conflict without showing that the two goals are actually separable or opposed in this case. The visible artifact itself admits retention could improve investor-legible metrics and that investor preferences are unverified, which weakens the framing of a hard two-master tradeoff. Without quantified ROI deltas, timeline data, or evidence that retention cannot support the fundraising story, the forced-choice framing is asserted rather than demonstrated.",
+      "severity": "medium"
+    }
+  },
+  "final_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-17-041308563Z-retention-vs-gr-ef408ebc",
+      "side_id": "side_a",
+      "round": "final",
+      "artifact_markdown": "# Roadmap Prioritization Memo: Retention vs. Growth Investment\n\n**To:** Leadership / Series B Prep Working Group  \n**From:** Product & Strategy  \n**Status:** Draft for alignment — not cleared for investor distribution\n\n---\n\n## Decision Frame\n\nWe face a stated conflict between what the internal data supports and what the fundraising narrative currently demands. Whether that conflict is real and irreconcilable — or whether it dissolves once investor preferences and causal relationships are better understood — is itself an open question that this memo surfaces rather than answers prematurely.\n\n**What the data says:** Retention investment yields higher ROI and shorter CAC payback than equivalent growth spend. On a capital-efficiency basis, retention is the better allocation.\n\n**What the Series B narrative is assumed to demand:** Investors evaluating growth-stage companies at Series B are often assumed to weight top-line expansion, new logo velocity, and TAM penetration — metrics that retention investment does not directly move in the short term. This assumption is a prior, not a confirmed investor position.\n\n**The conflict, stated carefully:** If the assumption holds — that target investors require growth metrics and will not credit retention efficiency — then optimizing the roadmap for the data may produce a harder fundraising conversation. If the assumption does not hold, or if retention investment also moves the growth metrics that matter, the conflict may be smaller than it appears.\n\nThis memo does not resolve the conflict by choosing a side before the open questions below are answered. It names the decision structure so that leadership can make an informed, documented choice rather than drifting into a default allocation.\n\nThree paths exist:\n\n1. **Prioritize retention (data-aligned).** Accept that the Series B narrative will require reframing — arguing that retention-driven efficiency is a more durable growth model and that CAC payback compression is a leading indicator of scalable growth. This path is viable if investor preferences are confirmed to credit these metrics.\n\n2. **Prioritize growth spend (narrative-aligned).** Accept a temporary deviation from the internal ROI analysis to hit metrics that close the round. This is a deliberate, time-bounded bet that should be documented as such — not rationalized as consistent with the data.\n\n3. **Split the roadmap (hybrid).** Dedicate a defined portion of capacity to growth-metric movers while protecting the highest-ROI retention investments. This avoids the binary but introduces execution risk from divided focus, and is the most likely path to a muddled outcome if the split is not enforced with real resource commitments.\n\nThe correct path depends on answers to the questions in the next section. Locking a path before those answers exist is the primary risk to avoid.\n\n---\n\n## Unknowns & Evidence Gaps\n\nThe following questions are unresolved and materially affect whether the conflict is real and which path is correct:\n\n**1. What do the target Series B investors actually weight?**  \nThe assumption that investors want growth metrics over efficiency is a prior, not a confirmed investor preference. Different funds at Series B have meaningfully different frameworks. Without direct investor feedback, the premise that retention investment will hurt the raise is unverified — and if it is wrong, Path 1 may be both data-aligned and raise-compatible simultaneously.\n\n**2. What is the retention ROI advantage, and over what time horizon?**  \nThe magnitude and time horizon of the advantage determine whether any hybrid split is viable. A small advantage argues for holding the data-aligned path with minor concessions. A large advantage argues that any deviation is a significant capital misallocation that must be explicitly authorized.\n\n**3. What is the round timeline?**  \nIf the Series B close is 6–9 months out, retention investment has time to produce metrics that are investor-legible (net revenue retention, expansion ARR, logo retention rate). If the timeline is 90 days, retention investment produces no new signal before the raise closes, and the calculus changes substantially.\n\n**4. Is the current growth metric underperformance a retention problem in disguise?**  \nChurn and expansion suppression can mask new logo growth in net metrics. If growth numbers are weak partly because retention is weak, then retention investment may also be the correct lever to move the growth metrics leadership wants — dissolving the conflict rather than forcing a choice between them.\n\n**5. Who owns the investor narrative, and are they aligned?**  \nIf the CEO or finance function has already committed to a specific growth-metrics story in early investor conversations, the roadmap decision is partially constrained regardless of what the data shows.\n\n---\n\n## Pass/Fail Readiness\n\nThis memo is **ready to circulate for internal alignment** but is **not ready to drive roadmap execution** until the following gates are cleared:\n\n| Gate | Status | Owner |\n|---|---|---|\n| Investor preference confirmed (target fund conversations) | Not done | CEO / BD |\n| ROI delta quantified with time horizon specified | Not done | Finance / Analytics |\n| Round timeline confirmed | Not done | CEO / Finance |\n| Causal analysis: does churn suppress growth metrics? | Not done | Analytics |\n| Narrative owner aligned on which path we are taking | Not done | CEO + Product |\n\n**Failure mode if we skip these gates:** We default to Path 3 (hybrid), underfund both priorities, and produce neither the efficiency gains the data supports nor the growth metrics the raise needs. This is the most common failure pattern in this scenario and should be named explicitly before the roadmap is set.\n\n---\n\n## Recommended Next Artifact\n\n**A two-page investor narrative test document.**\n\nBefore finalizing the roadmap, the team should draft the retention-forward narrative (Path 1) and pressure-test it with one or two friendly investor contacts or advisors who have closed Series B rounds in comparable businesses. The goal is not to get permission — it is to get signal on whether the conflict is real.\n\nIf the test confirms that retention metrics are legible and valued at Series B, Path 1 is both data-aligned and raise-compatible, and the conflict dissolves. If the test confirms investor preference for growth metrics regardless of efficiency, leadership can choose Path 2 as an informed, documented decision rather than an unexamined default.\n\nThe roadmap should not be locked until that document exists and has been reviewed.",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "The data-narrative conflict is stated but not yet confirmed as irreconcilable: whether it represents a genuine forced choice depends on unverified investor preferences, unquantified ROI deltas, and unresolved causal questions — all of which must be answered before the roadmap is locked.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "The premise that Series B investors prefer growth metrics over retention efficiency is an unverified prior, not a confirmed investor preference, and should be tested before the roadmap is locked.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "The round timeline is a decisive variable: if the close is 6-9 months out, retention investment may produce investor-legible metrics before the raise; if 90 days, it produces no new signal and the calculus changes.",
+          "evidence_refs": [],
+          "is_major": false
+        },
+        {
+          "claim_id": "side_a-claim-4",
+          "summary": "Churn suppression of growth metrics is a plausible causal path that, if confirmed, would make retention investment the correct choice for both the data-aligned and the narrative-aligned goal simultaneously — dissolving the conflict rather than forcing a choice.",
+          "evidence_refs": [],
+          "is_major": false
+        }
+      ],
+      "citations": [],
+      "conclusion_confidence": "medium",
+      "open_questions": [
+        "Do the target Series B investors actually weight growth metrics over retention efficiency, or is this an unconfirmed prior?",
+        "What is the magnitude and time horizon of the retention ROI advantage over growth spend?",
+        "What is the confirmed Series B close timeline, and does it allow retention investment to produce investor-legible metrics before the raise?",
+        "Is weak growth metric performance partly caused by retention failure, making retention investment the correct lever for both goals?",
+        "Has the CEO or finance function already committed to a specific growth-metrics narrative in early investor conversations, constraining the roadmap decision?"
+      ],
+      "critique_responses": [
+        {
+          "finding_id": "finding-2",
+          "disposition": "adopted",
+          "rationale": "The critique is correct that the original forced-choice framing overstated the conflict. The artifact itself acknowledged that retention investment might move investor-legible metrics and that investor preferences were unverified — making the hard 'two masters' framing internally inconsistent. The revision softens the claim: the conflict is named as a stated conflict that may or may not be irreconcilable, depending on answers to the open questions. The decision structure (three paths, five evidence gates) is preserved, but the memo no longer asserts the binary before the evidence that would confirm it has been gathered."
+        }
+      ]
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-17-041308563Z-retention-vs-gr-ef408ebc",
+      "side_id": "side_b",
+      "round": "final",
+      "artifact_markdown": "# Revised artifact\n\n## Recommendation\nDo not fully override the retention-led roadmap based only on leadership's desire for growth metrics ahead of the Series B. The case packet gives one clear evidentiary signal: internal data favors retention investment on both ROI and CAC payback, while leadership wants a different external narrative. Without evidence that a near-term shift toward growth-visible roadmap work will actually improve fundraising outcomes, the more decision-useful posture is to keep retention as the primary roadmap logic and, if necessary, add only narrowly scoped growth-visible work that does not meaningfully displace the retention agenda.\n\n## Rationale\nThe scenario is defined by direct conflict between what the internal data supports and what leadership wants to emphasize for the raise. That means the memo should not pretend the narrative preference has the same status as the operating evidence. The right management move is to acknowledge the financing pressure explicitly while refusing to treat it as sufficient proof that growth-first prioritization is the better roadmap choice.\n\nA reasonable compromise is therefore not a broad growth-first override, but a constrained packaging decision: preserve the roadmap elements supported by the stronger internal signal, document the tension openly, and allow only limited growth-visible additions if leadership can defend why those items matter for the raise without undermining the retention case.\n\n## Decision Frame\nThe decision is whether to let fundraising narrative override the stronger internal retention signal. Recommendation: no full override. Keep retention as the primary roadmap priority, and permit only tightly bounded growth-visible work that does not materially weaken the retention-led plan.\n\n## Unknowns & Evidence Gaps\nThe packet does not provide underlying evidence showing whether growth-visible roadmap changes will improve fundraising outcomes in the relevant window, nor does it show the cost of deferring retention work beyond the statement that retention has the stronger internal case. It is also unclear which growth metrics leadership believes matter for the raise, what initiatives would influence them, and what limits would keep a narrative concession from becoming an unjustified strategy shift.\n\n## Pass/Fail Readiness\nPass if leadership accepts that the roadmap remains primarily retention-led, any growth-visible additions are explicitly limited, and the tradeoff is documented as a narrative accommodation rather than an evidence-backed change in company fundamentals. Fail if leadership insists on a broad growth-first reprioritization without evidence that doing so improves the fundraising position or without acknowledging the explicit conflict with the stronger internal retention case.\n\n## Recommended Next Artifact\nCreate a fundraising-roadmap alignment brief that separates three things: the retention-led roadmap justified by internal data, the minimum growth-visible items leadership wants for the Series B narrative, and the explicit rationale for why any exception is narrow, temporary, and not a replacement for the stronger retention case.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "Leadership's desire for growth metrics is not, by itself, enough to justify a full growth-first roadmap override when the only stated internal evidence favors retention on ROI and CAC payback.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "The most defensible compromise is to keep retention as the primary roadmap logic while allowing only tightly bounded growth-visible work that does not materially displace the stronger retention case.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "The memo should explicitly separate evidence-backed roadmap priorities from fundraising narrative preferences because the packet states that the data and the narrative are in direct conflict.",
+          "evidence_refs": [],
+          "is_major": false
+        }
+      ],
+      "citations": [],
+      "conclusion_confidence": "medium",
+      "open_questions": [
+        "Which specific growth metrics leadership believes are necessary for the Series B narrative.",
+        "What concrete growth-visible initiatives leadership wants to accelerate and how much retention work they would displace.",
+        "What explicit limit will prevent a narrow narrative concession from becoming a broad strategy override."
+      ],
+      "critique_responses": [
+        {
+          "finding_id": "finding-1",
+          "disposition": "adopted",
+          "rationale": "The critique correctly identified that the first-pass claim treated leadership's desired fundraising narrative as if it were proven to improve fundraising outcomes. The case packet does not provide evidence for that assumption, so the revised artifact removes the full growth-first recommendation and instead keeps the roadmap anchored to the stronger internal retention signal while allowing only limited, explicitly bounded narrative accommodations."
+        }
+      ]
+    }
+  },
+  "min_margin_for_verdict": 0.1
+}
+
+Repair addendum:
+- Your previous judge output was close but rejected by schema validation.
+- Rewrite it as ONLY a JSON object.
+- Preserve the same winner, margin, rubric_scores, decisive_findings, judge_confidence, needs_human_review, rationale, and any already-valid Phase 2 fields unless schema compliance requires a direct fix.
+- Any rubric_scores.*.weighted_total value must be a normalized aggregate on the same 1-5 scale as the rubric dimensions, not a raw sum.
+- Do not omit dimension_rationales, side_summaries, or decisive_dimension.
+- If the verdict is a tie, low confidence, or needs human review, do not omit the full Phase 2 uncertainty payload.
+
+Required schema shape:
+{
+  "winner": "tie",
+  "margin": 0,
+  "rubric_scores": {
+    "side_a": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    },
+    "side_b": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    }
+  },
+  "dimension_rationales": {
+    "claim_quality": "Which side made the stronger claims and why.",
+    "evidence_discipline": "How each side used or overstated evidence.",
+    "responsiveness_to_critique": "How each side responded to the critique phase.",
+    "internal_consistency": "Contradictions, coherence, or missing logic.",
+    "decision_usefulness": "Which artifact better supports an actual decision."
+  },
+  "side_summaries": {
+    "side_a": {
+      "strengths": [
+        "One concise strength of Side A."
+      ],
+      "weaknesses": [
+        "One concise weakness of Side A."
+      ]
+    },
+    "side_b": {
+      "strengths": [
+        "One concise strength of Side B."
+      ],
+      "weaknesses": [
+        "One concise weakness of Side B."
+      ]
+    }
+  },
+  "decisive_dimension": "decision_usefulness",
+  "decisive_findings": [
+    "Replace with the actual decisive findings from this run."
+  ],
+  "judge_confidence": "low",
+  "needs_human_review": true,
+  "uncertainty_drivers": [
+    "List the concrete reasons this verdict is uncertain or should be escalated."
+  ],
+  "disambiguation_questions": [
+    "List the most important question that would resolve the uncertainty."
+  ],
+  "needed_evidence": [
+    "List the evidence that would most improve confidence in the verdict."
+  ],
+  "recommended_next_artifact": "Name the next artifact that should exist before acting on this verdict.",
+  "recommended_next_action": "State the next action the orchestrator or user should take.",
+  "can_resolve_with_more_evidence": true,
+  "escalation_recommendation": "State whether to gather more evidence, rejudge, or escalate to human review.",
+  "rationale": "One-paragraph explanation of the verdict."
+}
+
+Validation errors:
+Verdict packet failed validation:
+$.uncertainty_drivers: Missing required property.
+$.disambiguation_questions: Missing required property.
+$.needed_evidence: Missing required property.
+$.recommended_next_artifact: Missing required property.
+$.recommended_next_action: Missing required property.
+$.can_resolve_with_more_evidence: Missing required property.
+$.escalation_recommendation: Missing required property.
+
+Previous verdict JSON:
+{
+  "winner": "side_b",
+  "margin": 0.6,
+  "rubric_scores": {
+    "side_a": {
+      "claim_quality": 3,
+      "evidence_discipline": 2,
+      "responsiveness_to_critique": 4,
+      "internal_consistency": 4,
+      "decision_usefulness": 3,
+      "weighted_total": 3.2
+    },
+    "side_b": {
+      "claim_quality": 4,
+      "evidence_discipline": 4,
+      "responsiveness_to_critique": 4,
+      "internal_consistency": 4,
+      "decision_usefulness": 5,
+      "weighted_total": 3.8
+    }
+  },
+  "dimension_rationales": {
+    "claim_quality": "Side B makes the stronger core claim because it converts the scenario into a concrete prioritization stance while preserving the stated retention evidence; Side A improves its framing after critique but still stops short of a clear roadmap choice.",
+    "evidence_discipline": "Side B is more disciplined because it stays close to the sparse packet and avoids adding unsupported numeric scenarios. Side A is generally careful, but it introduces unverifiable timeline examples and a 'most common failure pattern' claim not grounded in the packet.",
+    "responsiveness_to_critique": "Both sides responded well. Side A substantially softened an overstated binary framing, and Side B directly reversed its earlier overreach by no longer treating leadership narrative as proven fundraising logic.",
+    "internal_consistency": "Both final artifacts are coherent. Side B is slightly tighter because its recommendation, rationale, and readiness criteria all align around a bounded retention-led compromise, whereas Side A still mixes decision structure with a deferral posture.",
+    "decision_usefulness": "Side B better supports an actual decision because it gives leadership a concrete operating rule now: keep retention primary and allow only tightly bounded growth-visible exceptions. Side A is useful diagnostically but functions more as a gating memo than a prioritization decision."
+  },
+  "side_summaries": {
+    "side_a": {
+      "strengths": [
+        "Surfaces the key uncertainty cleanly and avoids falsely resolving the conflict before evidence exists."
+      ],
+      "weaknesses": [
+        "Does not fully answer the roadmap prioritization question, reducing immediate decision value."
+      ]
+    },
+    "side_b": {
+      "strengths": [
+        "Provides a concrete, bounded recommendation that respects the stated retention evidence while addressing fundraising pressure."
+      ],
+      "weaknesses": [
+        "Its compromise depends on execution guardrails that remain underspecified in the packet."
+      ]
+    }
+  },
+  "grounding_flags": {
+    "side_a": [
+      "Uses unsupported quantitative timeline example: '6-9 months out' versus '90 days' without packet evidence.",
+      "Recommends testing with 'one or two' investor contacts or advisors without packet support.",
+      "States hybrid default is 'the most common failure pattern,' which is an unverifiable comparative claim outside the packet."
+    ],
+    "side_b": []
+  },
+  "ungrounded_claim_count": 3,
+  "decisive_dimension": "decision_usefulness",
+  "decisive_findings": [
+    "Side B gives a concrete prioritization rule instead of deferring the choice pending further evidence.",
+    "Side B corrected its initial overreach and now anchors the recommendation to the only clear packet evidence: retention is stronger on ROI and CAC payback.",
+    "Side A's final memo is analytically careful but remains too noncommittal for a roadmap prioritization memo under leadership pressure."
+  ],
+  "judge_confidence": "medium",
+  "needs_human_review": false,
+  "rationale": "Side B wins because its final artifact is more decision-useful while remaining appropriately calibrated to the thin evidence. After critique, it no longer assumes that growth-visible work improves fundraising outcomes; instead, it keeps retention as the primary roadmap logic and permits only narrow narrative-driven exceptions. That makes it both more responsive to the scenario and more actionable than Side A, which is thoughtful and internally improved but ultimately functions as a request for more evidence rather than a prioritization memo. The main penalty against Side A is evidence discipline, due to several unsupported quantitative or comparative claims introduced despite the empty packet."
+}

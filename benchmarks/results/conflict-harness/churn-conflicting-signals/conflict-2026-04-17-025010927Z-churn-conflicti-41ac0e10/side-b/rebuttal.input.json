@@ -1,0 +1,96 @@
+{
+  "case_packet": {
+    "scenario_id": "churn-conflicting-signals",
+    "title": "Churn diagnosis with conflicting signals",
+    "prompt": "Write a churn reduction PRD when signals conflict with strategy targets.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "opposing_first_pass": {
+    "run_id": "conflict-2026-04-17-025010927Z-churn-conflicti-41ac0e10",
+    "side_id": "side_a",
+    "round": "first_pass",
+    "artifact_markdown": "# Churn Reduction PRD: Navigating Conflicting Signals\n\n## Decision Frame\n\n**Problem statement:** Churn rate is elevated, but the signals driving it point in contradictory directions relative to current strategy targets. Specifically, behavioral data, exit survey responses, and retention cohort trends do not converge on a single root cause — and at least one proposed intervention trades off against a stated strategic priority.\n\n**Decision being made:** Whether to (a) pursue a targeted intervention aligned with the dominant behavioral signal, accepting the strategy-target tension explicitly; (b) delay intervention pending signal reconciliation; or (c) decompose the churn population and pursue parallel tracks for distinct sub-segments.\n\n**Stakeholders:** Product, Customer Success, Finance (retention economics), Strategy (owns the conflicting target).\n\n**Scope boundary:** This PRD covers the diagnosis and intervention-readiness decision only. Roadmap commitments and resource allocation are out of scope until the evidence gaps below are resolved.\n\n---\n\n## Unknowns & Evidence Gaps\n\nThe following gaps prevent a high-confidence intervention decision today:\n\n1. **Signal attribution is unresolved.** Behavioral signals (in-product usage drop-offs) and self-reported signals (exit surveys) point to different root causes. Without a structured reconciliation — e.g., whether exit-survey respondents are the same cohort showing behavioral decline — the dominant cause is uncertain.\n\n2. **Churn population is likely heterogeneous.** Treating churn as a single population may be masking two or more distinct segments with different causes and different intervention leverage. Segmentation by contract tier, use-case type, or onboarding cohort has not been completed.\n\n3. **Strategy-target conflict is unquantified.** The degree to which the leading intervention trades off against strategy targets is described qualitatively. Without a numeric estimate of the tradeoff magnitude, it is impossible to determine whether the conflict is material or acceptable.\n\n4. **Counterfactual baseline is absent.** There is no established baseline for what churn rate would be under no intervention, making it impossible to size the intervention's expected impact relative to the cost of the strategy-target tension.\n\n5. **Leading vs. lagging indicators are conflated.** It is unclear which signals are predictive (allowing early intervention) versus retrospective (describing already-lost accounts). Intervention design depends critically on this distinction.\n\n---\n\n## Pass/Fail Readiness\n\n**Readiness verdict: NOT READY to commit to a churn intervention roadmap item.**\n\n| Criterion | Status | Blocker? |\n|---|---|---|\n| Root cause converged across signal types | Not met | Yes |\n| Churn population segmented | Not met | Yes |\n| Strategy-target tradeoff quantified | Not met | Yes |\n| Counterfactual baseline established | Not met | Conditional |\n| Leading indicators identified | Not met | Conditional |\n\n**What \"pass\" looks like:** Signal reconciliation produces a primary cause with at least one corroborating signal type. Churn population is split into addressable segments. The strategy-target tradeoff is expressed numerically and reviewed by Strategy stakeholder. At that point, a scoped intervention PRD can be written for the highest-leverage segment.\n\n**What would justify accelerating past gaps:** If churn velocity is accelerating and the cost of a 4–6 week diagnostic delay exceeds the cost of a wrong-direction intervention, a time-boxed hypothesis-driven experiment on the dominant signal is acceptable — but must be scoped as a learning sprint, not a roadmap commitment.\n\n---\n\n## Recommended Next Artifact\n\n**Artifact:** Signal Reconciliation Brief\n\n**Owner:** Product Analytics + Customer Success\n\n**Deliverable contents:**\n- Cross-tabulation of behavioral signal cohort against exit-survey respondent cohort\n- Churn segmentation cut by at least two dimensions (e.g., tier × use-case)\n- Point estimate with range for the strategy-target tradeoff magnitude\n- Identification of at least one leading indicator for each major segment\n\n**Timeline trigger:** This PRD is blocked on that brief. No intervention scoping work should begin until the brief is reviewed and a dominant-cause hypothesis is endorsed by Product and Strategy jointly.\n\n**Escalation condition:** If the signal reconciliation brief itself cannot be produced within two sprint cycles due to data access or instrumentation gaps, escalate to fund a dedicated instrumentation workstream — churn decisions made on unreconciled signals carry compounding risk.\n",
+    "claims": [
+      {
+        "claim_id": "side_a-claim-1",
+        "summary": "The churn population is likely heterogeneous, and treating it as a single segment is the primary source of signal conflict — segmentation is the prerequisite step before any intervention can be scoped responsibly.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_a-claim-2",
+        "summary": "The strategy-target conflict cannot be adjudicated until the tradeoff magnitude is quantified; qualitative conflict framing is insufficient to make a go/no-go intervention decision.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_a-claim-3",
+        "summary": "A time-boxed learning sprint is the only defensible acceleration path if churn velocity demands urgency — it must be scoped explicitly as hypothesis-testing, not roadmap commitment.",
+        "evidence_refs": [],
+        "is_major": false
+      }
+    ],
+    "citations": [],
+    "conclusion_confidence": "medium",
+    "open_questions": [
+      "Are the cohorts driving behavioral signals and exit-survey signals overlapping or distinct?",
+      "What is the numeric magnitude of the tradeoff between the leading intervention and the conflicting strategy target?",
+      "Is churn velocity currently accelerating in a way that forecloses a 4–6 week diagnostic window?",
+      "Has the churn population ever been segmented by tier, use-case, or onboarding cohort, and if so, do those cuts reveal distinct cause profiles?"
+    ],
+    "critique_responses": []
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "run_id": "conflict-2026-04-17-023848624Z-async-realtime-conflict",
+  "side_id": "side_b",
+  "round": "final",
+  "artifact_markdown": "# Revised artifact\n\n## Summary\nThis PRD should not be treated as implementation-ready in its current form because it specifies both sub-2-second dashboard updates for any event and nightly batch aggregation as the source of truth for all reporting, while also stating that satisfying both would require a dual-write approach with consistency risk that has previously been rejected. The immediate product requirement is to remove the contradiction and force an explicit decision on authoritative freshness semantics before delivery planning.\n\n## Problem\nThe current requirements conflict:\n- real-time dashboard updates within 2 seconds of any event\n- nightly batch aggregation as the source of truth for all reporting\n\nThe case packet states these are architecturally incompatible without a dual-write system, and that this option has already been rejected. As written, the PRD contains unresolved product and architecture conflict.\n\n## Product Decision\nThe PRD should designate nightly batch aggregation as the authoritative source for reporting unless stakeholders explicitly reopen the architecture decision and accept the associated consistency-risk tradeoff. Any faster dashboard surface, if retained in scope, should be framed as a non-authoritative operational view pending stakeholder confirmation that this satisfies the need.\n\n## Goals\n- Eliminate the contradiction in reporting requirements.\n- Preserve internal consistency between product requirements and stated architectural constraints.\n- Make implementation readiness contingent on a clear decision about authoritative reporting freshness.\n- Prevent ambiguous use of dashboard and reporting language.\n\n## Non-Goals\n- Reintroducing dual-write implicitly.\n- Treating unresolved stakeholder needs as settled.\n- Claiming authoritative sub-2-second reporting without an explicit architecture decision.\n\n## Requirements\n1. The PRD must not state both sub-2-second authoritative reporting and nightly batch authoritative reporting for the same pipeline.\n2. Nightly batch aggregation remains the default authoritative reporting path unless a separate decision explicitly reopens the rejected dual-write tradeoff.\n3. Any fast dashboard experience included in scope must be labeled as operational or non-authoritative unless stakeholders explicitly require otherwise.\n4. Metrics, exports, and downstream reporting consumers must align to the authoritative reporting path named in the PRD.\n5. If stakeholders require authoritative real-time reporting, the team must pause PRD finalization and open a separate architecture and decision review.\n\n## User Impact\nThis approach preserves a clear source of truth for reporting while keeping open the possibility of a faster operational surface. It does not assume that a non-authoritative fast view is sufficient; that point requires stakeholder confirmation.\n\n## Risks\n- Stakeholders may reject a non-authoritative fast dashboard if they actually need authoritative real-time reporting.\n- Teams may continue to blur dashboard and reporting terminology, recreating ambiguity.\n- The feature may stall if the unresolved requirement conflict is not escalated into an explicit decision.\n\n## Decision Frame\nThe decision is not simply how to word the PRD; it is whether the team will keep one authoritative nightly reporting pipeline or reopen a previously rejected approach in order to support authoritative real-time reporting. The recommended path is to rewrite the PRD around nightly batch as the default authoritative reporting source and treat any fast dashboard concept as conditional on stakeholder confirmation unless leadership explicitly reopens the architecture tradeoff.\n\n## Unknowns & Evidence Gaps\n- Whether stakeholders need authoritative real-time reporting or only fast operational visibility.\n- Whether a non-authoritative dashboard would satisfy the intended user need.\n- Which consumers and decisions depend on the dashboard versus formal reporting outputs.\n- Whether the prior rejection of the dual-write approach is final for this feature scope.\n\n## Pass/Fail Readiness\nPass if the team resolves the contradiction by naming one authoritative reporting path and explicitly documenting whether any fast surface is operational-only or whether architecture review must be reopened.\nFail if the PRD continues to require both real-time authoritative updates and nightly authoritative truth in the same pipeline without resolving the rejected consistency-risk conflict.\n\n## Recommended Next Artifact\nA PRD addendum or decision memo that does three things:\n- names the authoritative reporting source\n- records whether a fast dashboard is operational-only or insufficient for stakeholder needs\n- captures whether the previously rejected dual-write tradeoff remains closed or is being formally reconsidered",
+  "claims": [
+    {
+      "claim_id": "side_b-claim-1",
+      "summary": "The PRD is not implementation-ready as written because it combines conflicting requirements for sub-2-second updates and nightly source-of-truth reporting in the same pipeline.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-2",
+      "summary": "The case packet rules out resolving the conflict implicitly through dual-write because that approach introduces consistency risk and has previously been rejected.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-3",
+      "summary": "Nightly batch aggregation should be treated as the default authoritative reporting path, while any fast dashboard view is only a conditional candidate resolution pending stakeholder confirmation or an explicit reopening of the architecture decision.",
+      "evidence_refs": [],
+      "is_major": true
+    }
+  ],
+  "citations": [],
+  "conclusion_confidence": "medium",
+  "open_questions": [
+    "Do stakeholders require authoritative real-time reporting, or only rapid operational visibility?",
+    "Would a non-authoritative dashboard satisfy the intended use case?",
+    "Is the prior rejection of the dual-write approach final for this feature scope, or can it be formally reconsidered?"
+  ],
+  "critique_responses": [
+    {
+      "finding_id": "finding-1",
+      "disposition": "adopted",
+      "rationale": "The critique is correct that the first-pass language overstated certainty. The case packet supports rejecting the contradictory requirement set and preserving a single authoritative path by default, but it does not establish that stakeholders will accept a non-authoritative fast view. The revised artifact therefore reframes that fast view as a conditional candidate pending stakeholder confirmation or a formal reopening of the architecture decision."
+    }
+  ]
+}

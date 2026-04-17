@@ -1,0 +1,106 @@
+{
+  "case_packet": {
+    "scenario_id": "metric-definition-disagreement",
+    "title": "Active user metric with three incompatible definitions",
+    "prompt": "Write a north star metric recommendation when finance, product, and growth each use different definitions of 'active user' that produce outcomes differing by 40%. The choice of definition determines whether the product is growing, flat, or declining. Leadership has asked for a single number.",
+    "artifact_type": "strategy",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a strategy artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "strategy",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass": {
+    "run_id": "conflict-2026-04-16-205032901Z-metric-definiti-31e2385f",
+    "side_id": "side_a",
+    "round": "first_pass",
+    "artifact_markdown": "# North Star Metric Recommendation\n\n## Decision Frame\nLeadership should not force a single undifferentiated \"active user\" number until the company first decides what decision the metric is meant to serve. The recommendation is to adopt one canonical north star metric owned by product strategy, publish the finance and growth variants as labeled companion metrics, and require every leadership readout to state the definition explicitly. A single number is only decision-useful if it preserves meaning; in this case, the current 40% spread means collapsing the definitions into one unlabeled figure would create false precision and likely drive the wrong conclusion about whether the product is growing, flat, or declining.\n\nThe canonical choice should be the definition that best reflects repeat customer value creation and product usage, not the one that makes the trend look strongest or aligns most cleanly to reporting convenience. Finance and growth still need their own operational views, but those should not substitute for the company-level north star.\n\n## Unknowns & Evidence Gaps\nThe case packet does not specify the three definitions, what behaviors each counts, or which business decisions each team is optimizing for. That leaves unresolved:\n\n- which definition best tracks durable product value rather than acquisition or reporting artifacts\n- whether one definition is materially more vulnerable to channel mix, seasonality, or accounting treatment\n- how leadership intends to use the metric: board reporting, roadmap prioritization, forecast setting, or growth execution\n- whether the 40% gap comes from timing windows, event thresholds, user identity rules, or inclusion/exclusion logic\n\nThese gaps do not block the governance recommendation to separate a canonical north star from companion metrics, but they do block naming the exact winning definition with high confidence.\n\n## Pass/Fail Readiness\nPass if:\n\n- the company agrees that the north star metric must answer a single primary question about product value creation\n- each existing definition is documented in plain language with its counting rules and intended use\n- leadership accepts that one canonical metric can coexist with other functional metrics without pretending they are interchangeable\n\nFail if:\n\n- leadership insists on one unlabeled number regardless of decision purpose\n- teams continue presenting incompatible definitions under the same metric name\n- the chosen north star is selected mainly because it makes the business appear healthier, rather than because it is the best operating measure\n\n## Recommended Next Artifact\nCreate a one-page metric decision memo with four fields for each candidate definition: what it measures, what decision it is for, what it excludes, and what failure mode it introduces. End the memo with a formal designation of:\n\n- canonical north star metric\n- finance companion metric\n- growth companion metric\n- standard labeling language for dashboards and exec reviews",
+    "claims": [
+      {
+        "claim_id": "side_a-claim-1",
+        "summary": "A single unlabeled active-user number should not be adopted until the company chooses the decision purpose the metric must serve.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_a-claim-2",
+        "summary": "Because the three existing definitions differ enough to make the product appear growing, flat, or declining, the immediate priority is metric governance and explicit labeling rather than forced consolidation.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_a-claim-3",
+        "summary": "The canonical north star should be the definition that best reflects repeat customer value creation, while finance and growth retain labeled companion metrics for their own operating needs.",
+        "evidence_refs": [],
+        "is_major": true
+      }
+    ],
+    "citations": [],
+    "conclusion_confidence": "low",
+    "open_questions": [
+      "What are the exact three definitions currently used by finance, product, and growth?",
+      "Which leadership decision is the requested single number supposed to support?",
+      "What specific rules create the 40% spread across the definitions?"
+    ],
+    "critique_responses": []
+  },
+  "critique_packet": {
+    "target_side": "side_a",
+    "finding_id": "finding-2",
+    "target_claim_ids": [
+      "side_a-claim-1"
+    ],
+    "claim_under_attack": "A single unlabeled active-user number should not be adopted until the company chooses the decision purpose the metric must serve.",
+    "attack_type": "evidence_gap",
+    "evidence_or_reason": "The artifact treats 'choose decision purpose first' as a prerequisite, but leadership has already stated the decision purpose: a single number for leadership alignment across finance, product, and growth. Deferring on the grounds that purpose is unclear ignores the explicit request. The real unknowns are the three definition rules and the 40% gap composition—not the purpose. By conflating 'we don't know which definition wins' with 'we don't know what the metric is for,' the artifact justifies delay without surfacing the concrete analysis (timing windows, event thresholds, identity rules) that would actually resolve the choice. A strategy artifact that redirects a leadership request back to leadership without narrowing the decision space fails the decision-usefulness dimension.",
+    "severity": "high"
+  }
+}

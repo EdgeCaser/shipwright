@@ -1,0 +1,233 @@
+{
+  "run_id": "conflict-2026-04-17-031000891Z-compliance-launch-speed",
+  "scenario_id": "compliance-launch-speed",
+  "harness_schema_version": "2.2",
+  "mode": "head_to_head",
+  "status": "final_complete",
+  "sides": {
+    "side_a": {
+      "provider": "anthropic",
+      "model": "claude-max",
+      "reasoning_effort": "medium",
+      "access_mode": "subscription_cli",
+      "role": "side_a",
+      "first_pass": {
+        "run_id": "conflict-2026-04-17-031000891Z-compliance-launch-speed",
+        "side_id": "side_a",
+        "round": "first_pass",
+        "artifact_markdown": "# PRD: Payment Disbursement Feature\n**Status:** Blocked — Launch Condition Unmet\n**Prepared for:** Executive Decision\n**Horizon:** Q2 (10 weeks remaining)\n\n---\n\n## Decision Frame\n\nThis PRD documents a payment disbursement feature that has been publicly committed to enterprise customers for Q2 delivery. A hard constraint has emerged: Legal has confirmed the feature requires a minimum 14-week regulatory compliance review under current process. Q2 ends in 10 weeks. This is a 4-week shortfall with no approved remediation path.\n\n**The decision this PRD is designed to support is not \"how do we ship by Q2\" — it is \"what is the right response to a commitment made without full compliance information.\"**\n\nThree structurally distinct paths exist:\n\n1. **Renegotiate the commitment.** Engage enterprise customers now with a revised timeline (Q3 at earliest, pending review start date). Preserves legal standing. Damages short-term relationship capital.\n\n2. **Pursue expedited review.** Determine whether the 14-week floor is a process constraint or a regulatory floor. If process-driven, assess whether a parallel-track or scoped review can compress the timeline without waiving material review steps. This requires immediate Legal engagement — it is not assumed feasible.\n\n3. **Launch a scoped version exempt from the review.** Evaluate whether a reduced feature scope (e.g., disbursement to existing verified accounts only, below a regulatory threshold) is genuinely exempt from the review requirement. Legal must confirm scope, not product. This is not a workaround — it is a different feature with different compliance status.\n\n**What is not a path:** Skipping or shortcutting the review. Legal has confirmed this creates material legal exposure. This PRD does not treat that as a lever.\n\n---\n\n## Unknowns & Evidence Gaps\n\nThe following unknowns block confident path selection. Each must be resolved before a launch plan can be committed.\n\n| Unknown | Why It Matters | Owner |\n|---|---|---|\n| Is the 14-week minimum a regulatory floor or an internal process artifact? | If process-driven, expedited review may be possible. If regulatory, no compression is available. | Legal |\n| What is the exact scope of the committed feature? | A scope reduction may yield a genuinely exempt variant. Without the commitment language, this cannot be assessed. | Product + Legal |\n| What are the contractual consequences of a Q2 miss? | Customer relationship damage is not equivalent to contractual breach. The severity of renegotiation depends on contract terms. | Legal + Sales |\n| Have enterprise customers been informed of the compliance dependency? | If not, early disclosure changes the renegotiation dynamic. Delay in disclosure increases reputational risk. | Sales + Exec |\n| When does the compliance review clock start, and has it been initiated? | A review started now finishes in 14 weeks. Every week of delay extends the actual ship date. | Legal + Engineering |\n\n**No quantitative estimates (cost of delay, probability of expedited approval, customer churn risk) are available in evidence. Decisions should not be made on invented figures.**\n\n---\n\n## Pass/Fail Readiness\n\nThis section scores the feature against the minimum conditions required to proceed toward any launch path.\n\n| Condition | Status | Blocker? |\n|---|---|---|\n| Compliance review initiated | Unknown — not confirmed | Yes |\n| Regulatory scope confirmed by Legal | Not confirmed | Yes |\n| Customer commitment language reviewed | Not completed | Yes |\n| Contractual miss consequences assessed | Not completed | Yes |\n| Executive decision on path (renegotiate / expedite / scope-reduce) | Not made | Yes |\n| Engineering readiness for feature build | Not assessed in this PRD | No (premature) |\n\n**Current readiness verdict: NOT READY TO PROCEED.** No launch path is available until the five blocking conditions above are resolved. Engineering work may proceed in parallel only if the feature scope is stable — which it is not until Legal confirms the compliance boundary.\n\n---\n\n## Recommended Next Artifact\n\n**Immediate (this week):** Legal Brief — expedited review feasibility and scope exemption analysis. This is the highest-leverage unknown. Until Legal answers whether the 14-week floor is compressible and whether a scoped variant is genuinely exempt, the product team cannot make a credible path recommendation.\n\n**Following Legal Brief:** Executive Decision Memo — presenting the three paths above with Legal's updated constraints, contractual exposure from Sales/Legal review, and a recommended path with rationale. This memo, not this PRD, is the document that resolves the Q2 question.\n\n**If path selected is renegotiation or scope-reduce:** Customer Communication Plan — drafted by Sales with Legal review before any outbound contact with enterprise customers.\n\n**This PRD should not be treated as a launch specification.** It is a decision-framing document. A standard feature PRD (requirements, acceptance criteria, rollout plan) is appropriate only after a compliant launch path has been confirmed by Legal.\n",
+        "claims": [
+          {
+            "claim_id": "side_a-claim-1",
+            "summary": "The Q2 commitment cannot be honored as stated: a 14-week compliance review with 10 weeks remaining is a hard constraint, not a negotiable schedule risk.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-2",
+            "summary": "Three structurally distinct paths exist (renegotiate, expedite, scope-reduce), but none can be selected without first resolving whether the 14-week floor is process-driven or regulatory, and whether a scoped variant is genuinely exempt.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-3",
+            "summary": "The correct next artifact is a Legal Brief, not a launch plan — the unknown with highest leverage is whether any compliant path exists within a compressed timeline.",
+            "evidence_refs": [],
+            "is_major": false
+          }
+        ],
+        "citations": [],
+        "conclusion_confidence": "high",
+        "open_questions": [
+          "Is the 14-week compliance review minimum driven by regulation or by internal process? If process, what would an expedited path require?",
+          "Does the committed feature scope have a genuinely exempt variant (reduced disbursement scope, threshold-based carve-out) that Legal would confirm as outside the review requirement?",
+          "What are the exact contractual terms with enterprise customers — is a Q2 miss a relationship issue or a breach issue?",
+          "Has the compliance review clock been started? If not, what is the current projected completion date?"
+        ],
+        "critique_responses": []
+      },
+      "rebuttal": {
+        "target_side": "side_b",
+        "finding_id": "finding-1",
+        "target_claim_ids": [
+          "side_b-claim-1"
+        ],
+        "claim_under_attack": "The regulated disbursement capability should not launch in Q2 because the required compliance review exceeds the remaining quarter and skipping it creates material legal exposure.",
+        "attack_type": "evidence_gap",
+        "evidence_or_reason": "Side B treats the 14-week review timeline as immovable without investigating whether an expedited or parallel review process exists. The PRD lists 'narrower feature slice that avoids the same regulatory review' as an open question but never closes it — a decision-quality PRD should either confirm no such slice exists (with legal sign-off) or structure the recommendation conditionally on that finding. As written, the no-Q2-launch conclusion is stated with medium confidence but the evidence base is the case packet alone, with no documented inquiry into process acceleration, phased regulatory submissions, or jurisdictional scoping. The claim forecloses options it has not actually ruled out.",
+        "severity": "medium"
+      },
+      "final": {
+        "run_id": "conflict-2026-04-17-031000891Z-compliance-launch-speed",
+        "side_id": "side_a",
+        "round": "final",
+        "artifact_markdown": "# PRD: Payment Disbursement Feature\n**Status:** Blocked — Launch Condition Unmet\n**Prepared for:** Executive Decision\n**Horizon:** Q2 (10 weeks remaining)\n\n---\n\n## Decision Frame\n\nThis PRD documents a payment disbursement feature publicly committed to enterprise customers for Q2 delivery. A hard constraint has emerged: Legal has confirmed the feature requires a minimum 14-week regulatory compliance review under current process. Q2 ends in 10 weeks. This is a 4-week shortfall with no approved remediation path.\n\n**The decision this PRD is designed to support is not \"how do we ship by Q2\" — it is \"what is the right response to a commitment made without full compliance information.\"**\n\nThree structurally distinct paths exist:\n\n1. **Renegotiate the commitment.** Engage enterprise customers now with a revised timeline (Q3 at earliest, pending review start date). Preserves legal standing. Damages short-term relationship capital.\n\n2. **Pursue expedited review.** Determine whether the 14-week floor is a process constraint or a regulatory floor. If process-driven, assess whether a parallel-track or scoped review can compress the timeline without waiving material review steps. This requires immediate Legal engagement — it is not assumed feasible.\n\n3. **Launch a scoped version exempt from the review.** Evaluate whether a reduced feature scope (e.g., disbursement to existing verified accounts only, below a regulatory threshold) is genuinely exempt from the review requirement. Legal must confirm scope, not product. This is not a workaround — it is a different feature with different compliance status.\n\n**What is not a path:** Skipping or shortcutting the review. Legal has confirmed this creates material legal exposure. This PRD does not treat that as a lever.\n\n---\n\n## Unknowns & Evidence Gaps\n\nThe following unknowns block confident path selection. Each must be resolved before a launch plan can be committed.\n\n| Unknown | Why It Matters | Owner |\n|---|---|---|\n| Is the 14-week minimum a regulatory floor or an internal process artifact? | If process-driven, expedited review may be possible. If regulatory, no compression is available. | Legal |\n| What is the exact scope of the committed feature? | A scope reduction may yield a genuinely exempt variant. Without the commitment language, this cannot be assessed. | Product + Legal |\n| What are the contractual consequences of a Q2 miss? | Customer relationship damage is not equivalent to contractual breach. The severity of renegotiation depends on contract terms. | Legal + Sales |\n| Have enterprise customers been informed of the compliance dependency? | If not, early disclosure changes the renegotiation dynamic. Delay in disclosure increases reputational risk. | Sales + Exec |\n| When does the compliance review clock start, and has it been initiated? | A review started now finishes in 14 weeks. Every week of delay extends the actual ship date. | Legal + Engineering |\n\n**No quantitative estimates (cost of delay, probability of expedited approval, customer churn risk) are available in evidence. Decisions should not be made on invented figures.**\n\n---\n\n## Pass/Fail Readiness\n\nThis section scores the feature against the minimum conditions required to proceed toward any launch path.\n\n| Condition | Status | Blocker? |\n|---|---|---|\n| Compliance review initiated | Unknown — not confirmed | Yes |\n| Regulatory scope confirmed by Legal | Not confirmed | Yes |\n| Customer commitment language reviewed | Not completed | Yes |\n| Contractual miss consequences assessed | Not completed | Yes |\n| Executive decision on path (renegotiate / expedite / scope-reduce) | Not made | Yes |\n| Engineering readiness for feature build | Not assessed in this PRD | No (premature) |\n\n**Current readiness verdict: NOT READY TO PROCEED.** No launch path is available until the five blocking conditions above are resolved. Engineering work may proceed in parallel only if the feature scope is stable — which it is not until Legal confirms the compliance boundary.\n\n---\n\n## Recommended Next Artifact\n\nThis PRD serves as the decision-framing document. It blocks launch, names the open questions, and identifies the three candidate paths. It does not require a separately-typed artifact to accomplish that function.\n\nThe sequencing of next artifacts depends on which actions the executive team takes after reading this document:\n\n**If Legal engagement happens immediately (recommended):** The next formal artifact is an **Executive Decision Memo** — presenting the three paths above with Legal's updated constraints, contractual exposure from Sales/Legal review, and a recommended path with rationale. That memo resolves the Q2 question. It is the decision artifact; this PRD is the blocking artifact.\n\n**If path selected is renegotiation or scope-reduce:** A **Customer Communication Plan** — drafted by Sales with Legal review before any outbound contact with enterprise customers.\n\n**If expedited review is confirmed feasible:** A revised PRD with a compliant launch gating plan, updated timeline, and pass/fail criteria tied to review completion.\n\n**What this PRD is not:** A launch specification. A standard feature PRD (requirements, acceptance criteria, rollout plan) is appropriate only after a compliant launch path has been confirmed by Legal. Producing that artifact now would be premature and would misrepresent the feature's readiness state.\n",
+        "claims": [
+          {
+            "claim_id": "side_a-claim-1",
+            "summary": "The Q2 commitment cannot be honored as stated: a 14-week compliance review with 10 weeks remaining is a hard constraint, not a negotiable schedule risk.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-2",
+            "summary": "Three structurally distinct paths exist (renegotiate, expedite, scope-reduce), but none can be selected without first resolving whether the 14-week floor is process-driven or regulatory, and whether a scoped variant is genuinely exempt.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_a-claim-3",
+            "summary": "This PRD itself is the decision-framing artifact; the next formal artifact is an Executive Decision Memo once Legal has answered the key unknowns — not a separate upstream document.",
+            "evidence_refs": [],
+            "is_major": false
+          }
+        ],
+        "citations": [],
+        "conclusion_confidence": "high",
+        "open_questions": [
+          "Is the 14-week compliance review minimum driven by regulation or by internal process? If process, what would an expedited path require?",
+          "Does the committed feature scope have a genuinely exempt variant (reduced disbursement scope, threshold-based carve-out) that Legal would confirm as outside the review requirement?",
+          "What are the exact contractual terms with enterprise customers — is a Q2 miss a relationship issue or a breach issue?",
+          "Has the compliance review clock been started? If not, what is the current projected completion date?"
+        ],
+        "critique_responses": [
+          {
+            "finding_id": "finding-2",
+            "disposition": "adopted",
+            "rationale": "The critique is correct that recommending a 'Legal Brief' as the next artifact overreaches. A PRD can itself document compliant decision paths and no-launch conditions — which is exactly what this PRD does. The prior version implied this document was insufficient and needed to be followed by a different artifact type before any decisions could be made. That framing was too prescriptive and unsupported by the case packet. The revised 'Recommended Next Artifact' section acknowledges this PRD as the decision-framing document and sequences next artifacts conditionally on executive action, not on production of an intermediate document type."
+          }
+        ]
+      }
+    },
+    "side_b": {
+      "provider": "openai",
+      "model": "chatgpt-pro",
+      "reasoning_effort": "medium",
+      "access_mode": "subscription_cli",
+      "role": "side_b",
+      "first_pass": {
+        "run_id": "conflict-2026-04-17-031000891Z-compliance-launch-speed",
+        "side_id": "side_b",
+        "round": "first_pass",
+        "artifact_markdown": "# Payment Disbursement Feature PRD\n\n## Overview\nThis PRD defines a compliant path for the payment disbursement feature under a schedule conflict between a public Q2 commitment and the confirmed regulatory review timeline. The product should not launch any version that requires the unresolved compliance review before that review is completed.\n\n## Problem Statement\nEnterprise customers have been told to expect the feature in Q2, but the required compliance review takes longer than the remaining quarter. Shortcutting or skipping that review creates material legal exposure.\n\n## Product Decision\nThe team should not ship the regulated disbursement capability in Q2 under the current process. The Q2 objective should be reframed around a compliant interim outcome, such as customer communication, launch-readiness work, internal-only preparation, or a narrowly defined deliverable that does not bypass the required review.\n\n## Goals\n- Protect the company from avoidable legal exposure.\n- Preserve trust with enterprise customers through explicit expectation management.\n- Maximize readiness so launch can occur immediately after compliance clearance.\n- Create an executable plan that aligns product, legal, and go-to-market teams.\n\n## Non-Goals\n- Shipping a customer-facing regulated disbursement flow before required review completion.\n- Treating the public Q2 commitment as higher priority than regulatory obligations.\n- Defining unsupported timelines beyond what is established in the case packet.\n\n## Requirements\n- The launch plan must assume the compliance review is mandatory.\n- No scope decision may rely on skipping or shortening the review.\n- Customer-facing commitments must be updated to reflect the compliance dependency.\n- Product and legal must define the exact boundary between allowed readiness work and blocked launch work.\n- Readiness artifacts should be completed during the waiting period so post-approval launch delay is minimized.\n\n## Stakeholders\n- Product\n- Legal and compliance\n- Enterprise sales / account teams\n- Affected enterprise customers\n\n## Risks\n- Legal exposure if the feature ships without required review.\n- Customer trust damage if the Q2 commitment is not actively reset.\n- Internal misalignment if teams optimize for the original date instead of the compliance gate.\n\n## Decision Frame\nThe core decision is whether to honor the public Q2 date or honor the confirmed compliance requirement. The PRD should choose compliance as the governing constraint and redefine the near-term deliverable accordingly.\n\n## Unknowns & Evidence Gaps\n- Whether any narrower feature slice exists that avoids the same regulatory review requirement.\n- Which internal readiness milestones can be completed before approval.\n- What customer communication commitments have already been made beyond the Q2 statement.\n- What the first compliant launch date is once the review begins or completes.\n\n## Pass/Fail Readiness\nPass:\n- Legal confirms the launch scope is compliant.\n- Customer messaging reflects the compliance-gated plan.\n- Internal teams align on a readiness plan that does not assume shortcutting review.\n\nFail:\n- Any plan depends on shipping before required review completion.\n- The PRD preserves the Q2 external date without a compliant basis.\n- Teams proceed without a defined decision owner for scope and customer communication.\n\n## Recommended Next Artifact\nA decision memo that does two things: \n1. Formally resets the launch plan around the compliance gate.\n2. Defines the highest-value compliant interim deliverable and the customer communication plan.",
+        "claims": [
+          {
+            "claim_id": "side_b-claim-1",
+            "summary": "The regulated disbursement capability should not launch in Q2 because the required compliance review exceeds the remaining quarter and skipping it creates material legal exposure.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_b-claim-2",
+            "summary": "The PRD should reframe Q2 around compliant readiness and communication work rather than a full external launch of the blocked feature.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_b-claim-3",
+            "summary": "The governing product constraint in this scenario is regulatory compliance, not the previously communicated date.",
+            "evidence_refs": [],
+            "is_major": true
+          }
+        ],
+        "citations": [],
+        "conclusion_confidence": "medium",
+        "open_questions": [
+          "Is there any reduced scope that legal would classify outside the blocked regulatory review path?",
+          "What customer-facing commitment should replace the existing Q2 promise?",
+          "What internal launch-readiness work can proceed safely before review completion?"
+        ],
+        "critique_responses": []
+      },
+      "rebuttal": {
+        "target_side": "side_a",
+        "finding_id": "finding-2",
+        "target_claim_ids": [
+          "side_a-claim-3"
+        ],
+        "claim_under_attack": "The correct next artifact is a Legal Brief, not a launch plan — the unknown with highest leverage is whether any compliant path exists within a compressed timeline.",
+        "attack_type": "evidence_gap",
+        "evidence_or_reason": "This overreaches from the stated facts. The packet establishes a timing conflict and legal risk, but it does not show that a standalone Legal Brief is the uniquely correct next artifact. A PRD could still document a compliant decision path, launch gating, and customer-commitment implications while explicitly blocking shipment pending legal clearance. Side A gives no evidence that switching artifact type improves decision usefulness more than producing the requested PRD with clear no-launch conditions.",
+        "severity": "medium"
+      },
+      "final": {
+        "run_id": "conflict-2026-04-17-031000891Z-compliance-launch-speed",
+        "side_id": "side_b",
+        "round": "final",
+        "artifact_markdown": "# Revised artifact\n\n## Payment Disbursement Feature PRD\n\n## Overview\nThis PRD addresses a conflict between a public Q2 commitment and a confirmed regulatory dependency. The feature cannot be planned as a Q2 external launch if that plan depends on skipping or shortcutting the required compliance review.\n\n## Problem Statement\nEnterprise customers were publicly told to expect the feature in Q2, but legal has confirmed that the feature requires a regulatory compliance review with a minimum duration longer than the time remaining in Q2 under the current process. Skipping or shortcutting that review creates material legal exposure.\n\n## Product Decision\nThe PRD should not commit to a Q2 launch of any scope that requires the stated compliance review under the current process. The immediate product decision is to reset the committed deliverable around a compliant path: either a non-regulated readiness outcome or a narrower scope only if legal explicitly confirms that scope does not require the blocked review.\n\n## Goals\n- Avoid material legal exposure.\n- Replace an infeasible launch commitment with a compliant plan.\n- Preserve customer trust through clear expectation resets.\n- Maximize launch readiness for the first legally approvable release.\n\n## Non-Goals\n- Shipping any customer-facing scope that still requires the unresolved review before that review is complete.\n- Treating the public Q2 commitment as justification to bypass compliance.\n- Assuming an expedited path exists when the case packet only confirms the current minimum review process.\n\n## Requirements\n- The launch plan must treat the compliance review as mandatory for any scope legal classifies as in-scope.\n- No requirement may depend on skipping or shortcutting review.\n- Product and legal must explicitly define whether any narrower Q2 deliverable exists outside the blocked review path.\n- External communication must be updated to reflect the compliance dependency and revised delivery framing.\n- Internal work during Q2 should focus on readiness, approvals preparation, and any legally permitted non-blocked scope.\n\n## Stakeholders\n- Product\n- Legal and compliance\n- Enterprise sales and account teams\n- Enterprise customers expecting the Q2 release\n\n## Risks\n- Legal exposure if blocked scope ships without required review.\n- Customer trust damage if the public commitment is not reset.\n- Internal misalignment if teams keep optimizing for the original date instead of the compliance gate.\n- Decision drift if the team does not resolve whether any narrower scope is actually outside the review requirement.\n\n## Decision Frame\nThe decision is not simply whether to launch in Q2. It is whether any compliant Q2 deliverable exists. Based on the case packet, the answer is no for the feature scope that requires the confirmed review under the current process. A Q2 commitment is only viable if legal explicitly confirms a narrower deliverable that does not require that blocked review.\n\n## Unknowns & Evidence Gaps\n- Whether legal can define any narrower scope that falls outside the stated review requirement.\n- Whether the current process permits any alternative path; the case packet only confirms the current minimum review timeline and the risk of skipping or shortcutting it.\n- What customer-facing replacement commitment should be made once the Q2 launch is reset.\n- Which launch-readiness tasks can be completed before review completion.\n\n## Pass/Fail Readiness\nPass:\n- Legal confirms the external scope is compliant.\n- Any Q2 deliverable is explicitly validated as outside the blocked review path.\n- Customer communication is updated to match the compliance-gated plan.\n- Internal teams align on readiness work that does not assume a shortcut.\n\nFail:\n- The PRD commits to launching blocked scope in Q2.\n- The plan assumes acceleration or exemption not established in the case packet.\n- Teams continue operating against the original public date without legal-confirmed scope boundaries.\n\n## Recommended Next Artifact\nA decision memo that does three things:\n1. Resets the public launch plan around the compliance gate.\n2. Forces a legal product-scope determination on whether any narrower Q2 deliverable exists.\n3. Defines the customer communication and readiness plan for the first compliant release.",
+        "claims": [
+          {
+            "claim_id": "side_b-claim-1",
+            "summary": "The PRD should not commit to a Q2 launch for any scope that requires the confirmed compliance review under the current process, and any Q2 deliverable must be conditional on legal confirming it falls outside that blocked review path.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_b-claim-2",
+            "summary": "The near-term plan should shift from a full launch commitment to compliant readiness work, customer communication, and legal scope determination.",
+            "evidence_refs": [],
+            "is_major": true
+          },
+          {
+            "claim_id": "side_b-claim-3",
+            "summary": "Regulatory compliance is the governing constraint in this scenario, and the public date cannot override it.",
+            "evidence_refs": [],
+            "is_major": true
+          }
+        ],
+        "citations": [],
+        "conclusion_confidence": "medium",
+        "open_questions": [
+          "Can legal identify any narrower Q2 deliverable that does not require the stated review?",
+          "What external commitment should replace the original Q2 promise?",
+          "Which readiness tasks can proceed safely before review completion?"
+        ],
+        "critique_responses": [
+          {
+            "finding_id": "finding-1",
+            "disposition": "adopted",
+            "rationale": "The critique is correct that the first-pass claim was too absolute relative to the evidence available. The case packet confirms the current minimum review timeline and the risk of skipping or shortcutting it, but it does not rule out every narrower scope option. The revised artifact makes the no-Q2 conclusion conditional: no Q2 launch for any scope that requires the confirmed review under the current process, while preserving a path for a narrower Q2 deliverable only if legal explicitly confirms it is outside that review requirement."
+          }
+        ]
+      }
+    }
+  },
+  "judge": {
+    "provider": "openai",
+    "model": "chatgpt-pro",
+    "reasoning_effort": "medium",
+    "access_mode": "subscription_cli",
+    "blind_labels": true,
+    "family_blind": false,
+    "selection_policy": "single_judge_cli",
+    "verdict": null
+  },
+  "budgets": {
+    "max_visible_rounds": 3,
+    "max_cost_usd": 1000000,
+    "max_latency_ms": 360000,
+    "min_margin_for_verdict": 0.1
+  },
+  "results": {
+    "winner": null,
+    "margin": null,
+    "judge_confidence": null,
+    "swap_stable": null,
+    "needs_human_review": null
+  },
+  "metrics": {
+    "disagreement_rate": null,
+    "declared_adoption_rate": null,
+    "substantive_revision_rate": null,
+    "unsupported_claim_count": null,
+    "self_contradiction_count": null,
+    "total_estimated_cost_usd": 0,
+    "swap_margin_delta": null,
+    "judge_margin": null,
+    "cost_per_resolved_run": null
+  },
+  "audit": {
+    "identity_leak_warnings": [],
+    "protocol_violations": []
+  }
+}

@@ -1,0 +1,13 @@
+# Critique: finding-1
+
+- Target Side: side_b
+- Target Claim IDs: side_b-claim-1
+- Attack Type: evidence_gap
+- Severity: medium
+
+## Claim Under Attack
+A full delivery PRD should not be approved because the request lacks any user-demand or business-impact evidence.
+
+## Evidence Or Reason
+Side B treats absence of collected evidence as evidence of absence of demand, but this conflates an evidence gap with a negative finding. The scenario states no research was conducted — not that research was conducted and returned null results. A PRD gating document that recommends against proceeding based solely on missing inputs commits the same logical error it accuses the original request of: drawing a strong conclusion from an incomplete evidentiary record. The claim would require at minimum one affirmative signal that demand is absent (e.g., CS survey showing no export pain, win/loss data showing parity is irrelevant to buyers) to justify 'do not approve' over 'investigate first and return to gate.'
+

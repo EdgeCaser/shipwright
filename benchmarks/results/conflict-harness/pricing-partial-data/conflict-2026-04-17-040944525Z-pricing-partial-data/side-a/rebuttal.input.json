@@ -1,0 +1,96 @@
+{
+  "case_packet": {
+    "scenario_id": "pricing-partial-data",
+    "title": "Pricing change with partial market data",
+    "prompt": "Draft a pricing strategy recommendation under partial market data.",
+    "artifact_type": "strategy",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a strategy artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "strategy",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "opposing_first_pass": {
+    "run_id": "conflict-2026-04-17-040944525Z-pricing-partial-data",
+    "side_id": "side_b",
+    "round": "first_pass",
+    "artifact_markdown": "# Pricing Strategy Recommendation\n\n## Decision Frame\nRecommendation: do not commit to a broad permanent pricing change yet. Use a reversible, tightly scoped pricing move only if a decision must be made now; otherwise hold current pricing until the missing market inputs are gathered.\n\nRationale: the case packet provides no market evidence, no customer evidence, no competitor evidence, and no internal performance evidence. Under those conditions, the most decision-useful path is to preserve flexibility and avoid turning uncertainty into an irreversible pricing mistake.\n\n## Unknowns & Evidence Gaps\nThe key missing inputs are the ones that would normally determine whether pricing should move at all: customer willingness to pay, competitor positioning, current conversion and retention sensitivity, and the business objective of the change.\n\nBecause the packet contains no evidence records, there is no grounded basis to recommend a price increase, price decrease, or packaging shift with confidence. The central unknown is not which exact price is best; it is whether any change is justified.\n\n## Pass/Fail Readiness\nPass: a cautious recommendation is actionable now if leadership accepts a flexibility-first posture, treats any near-term move as provisional, and avoids treating partial data as proof.\n\nFail: this is not ready for a full rollout decision if the expectation is a confident recommendation on final price levels, durable packaging changes, or strong claims about market response. The evidence base in the packet does not support that.\n\n## Recommended Next Artifact\nCreate a short pricing decision memo that answers four questions: what decision must be made now, what evidence is currently available internally, what market inputs are still missing, and what reversible decision options exist in the meantime. That artifact should be the gate before any broad pricing rollout.",
+    "claims": [
+      {
+        "claim_id": "side_b-claim-1",
+        "summary": "A broad permanent pricing change is not justified because the case packet contains no evidence to support any specific pricing direction.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-2",
+        "summary": "The most defensible near-term recommendation is to preserve flexibility by holding current pricing or using only a reversible provisional move.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-3",
+        "summary": "The immediate need is not a final pricing answer but a decision memo that clarifies the decision, the missing evidence, and the reversible options.",
+        "evidence_refs": [],
+        "is_major": false
+      }
+    ],
+    "citations": [],
+    "conclusion_confidence": "medium",
+    "open_questions": [
+      "What business objective is the pricing change intended to achieve?",
+      "What internal evidence exists on conversion, retention, discounting, or sales friction at current pricing?",
+      "What competitor pricing or packaging information is currently missing?",
+      "Is a provisional, reversible pricing move acceptable, or is leadership asking for a final rollout decision now?"
+    ],
+    "critique_responses": []
+  }
+}

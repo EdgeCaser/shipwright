@@ -1,0 +1,13 @@
+# Critique: finding-1
+
+- Target Side: side_b
+- Target Claim IDs: side_b-claim-1
+- Attack Type: evidence_gap
+- Severity: high
+
+## Claim Under Attack
+Microsoft's need for search scale creates leverage for a higher-priced transaction, making reopening negotiations the value-protective course.
+
+## Evidence Or Reason
+Side B treats Microsoft's urgency as a durable negotiating lever, but the case packet shows Ballmer already withdrew the offer after Yahoo's rejection — meaning Microsoft demonstrated willingness to walk away once. Side B provides no evidence that Microsoft will return at $37+, and the open questions section itself admits this is unknown. A negotiating strategy whose core premise ('use Microsoft's urgency') is unverified by the packet, and whose primary counterparty has already demonstrated exit behavior, is not decision-grade. The recommendation to 'reopen talks' assumes a willing buyer at a higher price that the evidence does not confirm exists.
+

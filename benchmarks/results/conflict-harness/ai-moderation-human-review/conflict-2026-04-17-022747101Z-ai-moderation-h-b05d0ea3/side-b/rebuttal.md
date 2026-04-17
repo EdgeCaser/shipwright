@@ -1,0 +1,13 @@
+# Critique: finding-2
+
+- Target Side: side_a
+- Target Claim IDs: side_a-claim-2
+- Attack Type: evidence_gap
+- Severity: medium
+
+## Claim Under Attack
+Provisional removal (Option C) is the most promising resolution path because it satisfies both constraints without silently eliminating either.
+
+## Evidence Or Reason
+The artifact provides no visible evidence that Option C is actually permissible or operationally superior. It explicitly admits Option C depends on the unresolved legal and policy definition of 'removal,' which is a gating uncertainty, so calling it the 'most promising' path is not supported by the record shown. On the visible facts alone, Option C is only one hypothetical reframing of the requirements, not a justified leading recommendation.
+

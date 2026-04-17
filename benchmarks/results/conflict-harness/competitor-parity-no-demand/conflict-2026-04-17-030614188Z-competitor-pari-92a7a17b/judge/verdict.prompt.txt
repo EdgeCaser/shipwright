@@ -1,0 +1,352 @@
+You are the judge in a blinded conflict harness run.
+Provider identity is intentionally hidden. Do not infer provider family.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "winner": "tie",
+  "margin": 0,
+  "rubric_scores": {
+    "side_a": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    },
+    "side_b": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    }
+  },
+  "dimension_rationales": {
+    "claim_quality": "Brief explanation of which side made the stronger claims and why.",
+    "evidence_discipline": "Brief explanation of how the sides used or overstated evidence.",
+    "responsiveness_to_critique": "Brief explanation of how each side handled the critique phase.",
+    "internal_consistency": "Brief explanation of contradictions, coherence, or missing logic.",
+    "decision_usefulness": "Brief explanation of which artifact better supports an actual decision."
+  },
+  "side_summaries": {
+    "side_a": {
+      "strengths": [
+        "One concise strength of Side A."
+      ],
+      "weaknesses": [
+        "One concise weakness of Side A."
+      ]
+    },
+    "side_b": {
+      "strengths": [
+        "One concise strength of Side B."
+      ],
+      "weaknesses": [
+        "One concise weakness of Side B."
+      ]
+    }
+  },
+  "grounding_flags": {
+    "side_a": [
+      "List each unverifiable quantitative claim or phantom ctx-N citation from Side A, or leave empty."
+    ],
+    "side_b": [
+      "List each unverifiable quantitative claim or phantom ctx-N citation from Side B, or leave empty."
+    ]
+  },
+  "ungrounded_claim_count": 0,
+  "decisive_dimension": "decision_usefulness",
+  "decisive_findings": [
+    "Replace with the actual decisive findings from this run."
+  ],
+  "judge_confidence": "low",
+  "needs_human_review": true,
+  "uncertainty_drivers": [
+    "List the concrete reasons this verdict is uncertain or should be escalated."
+  ],
+  "disambiguation_questions": [
+    "List the most important question that would resolve the uncertainty."
+  ],
+  "needed_evidence": [
+    "List the evidence that would most improve confidence in the verdict."
+  ],
+  "recommended_next_artifact": "Name the next artifact that should exist before acting on this verdict.",
+  "recommended_next_action": "State the next action the orchestrator or user should take.",
+  "can_resolve_with_more_evidence": true,
+  "escalation_recommendation": "State whether to gather more evidence, rejudge, or escalate to human review.",
+  "rationale": "One-paragraph explanation of the verdict."
+}
+
+Use min_margin_for_verdict = 0.1.
+Set rubric_scores.*.weighted_total as a normalized aggregate on the same 1-5 scale as the rubric dimensions, not as a raw sum.
+Treat each side's reported conclusion_confidence as a calibration signal, not a vote multiplier.
+Reward confidence when it is well matched to the evidence and penalize overconfidence when the artifact overreaches.
+judge_confidence rubric:
+- high: the winning side is clearly stronger on at least 3 rubric dimensions and has no major unsupported-claim problem
+- medium: the winning side leads overall but has at least 1 weak dimension or absorbed only part of the opposing critique
+- low: score margin is below min_margin_for_verdict or both sides have significant unsupported claims
+
+Grounding audit (required):
+- For each side, review every quantitative claim (specific numbers, percentages, cost estimates, benchmarks, thresholds) in their final artifact.
+- Check whether each claim is directly traceable to the case packet evidence. Also check that every ctx-N citation corresponds to an actual evidence_id in the case packet.
+- Populate grounding_flags.side_a and grounding_flags.side_b with a short description of each unverifiable claim or phantom citation found. Use empty arrays if none.
+- Set ungrounded_claim_count to the total count of flagged items across both sides.
+- Penalize unverifiable claims under the evidence_discipline rubric dimension.
+
+Phase 2 uncertainty payload rule:
+- If winner is `tie`, or judge_confidence is `low`, or needs_human_review is `true`, you MUST also populate:
+- uncertainty_drivers
+- disambiguation_questions
+- needed_evidence
+- recommended_next_artifact
+- recommended_next_action
+- can_resolve_with_more_evidence
+- escalation_recommendation
+- If none of those trigger conditions apply, omit the uncertainty payload fields entirely.
+
+Judge packet:
+{
+  "case_packet": {
+    "scenario_id": "competitor-parity-no-demand",
+    "title": "Feature parity PRD with no user demand evidence",
+    "prompt": "Write a PRD for adding an advanced export feature. The sole justification provided is that two competitors launched similar features last month. There is no user research, no customer request data, no support ticket volume, and no sales loss attribution to the missing feature. The engineering estimate is 10 weeks.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-17-030614188Z-competitor-pari-92a7a17b",
+      "side_id": "side_a",
+      "round": "first_pass",
+      "artifact_markdown": "# PRD: Advanced Export Feature\n\n**Status:** NOT READY FOR SCOPING — evidence gate not cleared  \n**Requesting team:** Product  \n**Date:** 2026-04-17  \n**Engineering estimate on file:** 10 weeks\n\n---\n\n## Decision Frame\n\nThis PRD documents a proposed investment in an advanced export feature. The triggering input is competitive: two named competitors shipped similar functionality within the past month. No other initiating signal is present in the brief.\n\nThe decision this document must support is not \"how do we build this\" but rather: **Is there sufficient justification to authorize 10 weeks of engineering time on this feature?**\n\nCompetitor parity is a legitimate signal category but is not, on its own, a demand signal. It tells us what the market supply looks like; it does not tell us whether our users want this capability, whether absence of the feature is costing us deals, or whether 10 weeks is a proportionate response. A competitor shipping something is evidence that they made a bet — not evidence that the bet was correct, nor that our user base shares the same profile as theirs.\n\nThis PRD takes the position that the investment case is currently underdetermined and that authorizing the full build would be premature. The recommended path is a time-boxed discovery sprint, not a 10-week build.\n\n---\n\n## Unknowns & Evidence Gaps\n\nThe following gaps must be resolved before a build decision is defensible:\n\n**1. User demand — not established**  \nNo user research is present. No customer interviews, survey data, or behavioral signals (e.g., export-related workarounds, API usage patterns) have been cited. We do not know whether our users perceive a gap here or consider it a priority.\n\n**2. Support and sales signal — not established**  \nNo support ticket volume referencing export limitations has been cited. No sales calls, deal loss records, or CRM notes attributing lost or stalled deals to the missing feature have been provided. Without this, we cannot estimate revenue impact or support cost avoidance.\n\n**3. Competitor feature scope — not characterized**  \nWe know competitors shipped \"similar features\" but have no description of what those features actually do, which user segments they serve, or how they are positioned. \"Advanced export\" is not a specification.\n\n**4. Our user segment overlap — not established**  \nEven if competitor demand is real, we do not know whether our user base resembles theirs closely enough that the demand transfers. Competitor parity is weaker signal when our segments diverge.\n\n**5. Opportunity cost — not assessed**  \nA 10-week engineering block displaces other work. No comparison against the queue of demand-backed items has been presented. The relative priority claim is unsubstantiated.\n\n**6. Definition of \"advanced\" — undefined**  \nThe feature is unnamed in functional terms. Any estimate built on this brief carries high scope uncertainty.\n\n---\n\n## Pass/Fail Readiness\n\n| Readiness Gate | Status |\n|---|---|\n| User demand signal (research, tickets, or sales data) | FAIL — not present |\n| Feature scope defined to estimation quality | FAIL — \"advanced export\" is a label, not a spec |\n| Competitor feature characterized | FAIL — no description on file |\n| Opportunity cost assessed against backlog | FAIL — not addressed |\n| Engineering estimate tied to a defined scope | CONDITIONAL — estimate exists but scope does not |\n\n**Overall readiness: NOT CLEARED**\n\nA PRD that clears all gates would authorize scoping. This document does not clear the gates and therefore does not authorize scoping. Proceeding directly to a 10-week build on current evidence would be a policy exception, not a normal investment decision.\n\n---\n\n## Recommended Next Artifact\n\n**Discovery brief — target completion: 2 weeks**\n\nThe requesting team should produce a discovery brief that addresses the five demand gaps above before returning with a build PRD. Concretely:\n\n1. **Customer interviews (5–8):** Ask existing users whether export limitations have caused friction, workarounds, or near-churns. Document verbatims.\n2. **Support ticket audit:** Search tickets from the past 6 months for export-related language. Report volume and representative quotes.\n3. **Sales / CS survey:** Ask account executives and customer success managers whether export capability has come up in deal reviews or renewal conversations.\n4. **Competitor teardown:** Document what the two competitors actually shipped — screenshots, changelog entries, or user reports. Characterize scope.\n5. **Backlog comparison:** Stack this item against the top 3 demand-backed items in the current queue and state the tradeoff explicitly.\n\nIf the discovery brief returns positive demand signal across at least two of these sources, a scoped build PRD is warranted. If it returns weak or absent signal, the recommended disposition is to park the feature and revisit in the next planning cycle.\n\nThe requesting team should not interpret this document as a rejection of the feature. It is a request for the minimum evidence that makes a 10-week commitment defensible.",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "Competitor parity alone does not constitute sufficient demand evidence to authorize a 10-week engineering investment; the build decision is currently underdetermined.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "Five distinct evidence gaps exist — user demand, support/sales signal, competitor feature scope, segment overlap, and opportunity cost — none of which are addressed in the brief.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "A 2-week discovery sprint is a proportionate and lower-risk next step compared to authorizing the full build on the current evidence base.",
+          "evidence_refs": [],
+          "is_major": false
+        }
+      ],
+      "citations": [],
+      "conclusion_confidence": "high",
+      "open_questions": [
+        "What specifically did each competitor ship — what user actions does the feature enable and which user segments does it target?",
+        "Has the requesting team received any inbound signal (tickets, sales mentions, user feedback) that predates the competitor launches?",
+        "What is the opportunity cost — which demand-backed items would a 10-week block displace?",
+        "Is 'advanced export' a label carried over from a competitor description, or does the requesting team have an independent scope definition in mind?"
+      ],
+      "critique_responses": []
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-17-030614188Z-competitor-pari-92a7a17b",
+      "side_id": "side_b",
+      "round": "first_pass",
+      "artifact_markdown": "# Advanced Export Feature PRD\n\n## Decision Frame\nDo not approve a build PRD for the advanced export feature at this time.\n\nThe current input supports only one fact pattern: comparable products released similar functionality recently, while there is no user-demand evidence, no customer-request signal, no support-volume signal, no sales-loss attribution, and the implementation estimate is 10 weeks. That is not enough to justify committing to delivery.\n\nInstead, treat this as a decision-gating document: the immediate goal is to determine whether a full PRD should exist at all. The recommended decision is to pause feature commitment, run a short validation step focused on demand and commercial risk, and reopen the PRD only if evidence shows the gap materially affects users, deals, retention, or product strategy.\n\n## Problem Statement\nA request has been made to add an advanced export feature because two competitors launched similar features last month. The missing feature may represent a market expectation gap, but the current packet contains no evidence that existing or prospective customers are blocked, dissatisfied, churning, or unwilling to buy because of that gap.\n\n## Goals\n- Determine whether the export gap represents real user demand or measurable business risk.\n- Avoid allocating a 10-week engineering effort without evidence that the work is worth the tradeoff.\n- Define the minimum evidence required before converting this request into a delivery PRD.\n\n## Non-Goals\n- Finalizing detailed requirements for implementation.\n- Committing engineering resources now.\n- Treating competitor launches alone as sufficient proof of customer need.\n\n## Decision Rationale\nCompetitor movement can be a valid trigger for investigation, but it is not, by itself, a reliable reason to authorize a 10-week build. A delivery PRD normally needs some credible chain from problem to user impact to business value. That chain is missing here.\n\nBecause the only positive signal is competitor parity pressure, the highest-value next step is not specification writing. It is evidence collection that can answer whether the feature is demanded, strategically necessary, or safely deferrable.\n\n## Validation Requirements Before Full PRD\nA full build PRD should be opened only if the requesting team can provide at least a basic evidence trail in one or more of these areas:\n- Customer demand: direct requests, research, or repeated workflow pain tied to export limitations.\n- Revenue impact: deal friction, procurement blockers, or lost opportunities tied to the missing capability.\n- Support burden: recurring tickets or escalation themes attributable to export gaps.\n- Strategic necessity: a clear product-positioning reason that makes parity required despite limited direct demand.\n\n## Unknowns & Evidence Gaps\n- Whether current customers actually need advanced export functionality.\n- Whether prospects or deals are being lost because the feature is missing.\n- Which user segments, if any, would benefit enough to justify prioritization.\n- What “advanced export” specifically includes, and whether a narrower version would address the real problem.\n- What work would be displaced by a 10-week engineering commitment.\n- Whether competitor launches reflect real market demand or simply feature movement without customer pull.\n\n## Pass/Fail Readiness\nPass for full PRD creation:\n- There is concrete evidence that the missing feature creates meaningful customer, revenue, support, or strategic risk.\n- The request defines the target user and the workflow problem clearly enough to scope a solution.\n- The opportunity is strong enough to justify the 10-week tradeoff against other roadmap work.\n\nFail for full PRD creation now:\n- No user-demand evidence is present.\n- No commercial impact is attributed to the gap.\n- No prioritization case is provided beyond competitor activity.\n- The current state does not justify turning a parity concern into an implementation commitment.\n\n## Recommended Next Artifact\nCreate a short validation brief, not a delivery PRD.\n\nThat brief should answer four questions:\n- Who is blocked by the current export limitations?\n- What concrete workflows fail today?\n- What business consequence follows from not addressing the gap?\n- What is the smallest solution worth considering if demand is real?\n\nIf that brief establishes credible demand or strategic necessity, the next artifact should be a scoped PRD for the smallest viable export capability rather than an open-ended parity build.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "A full delivery PRD should not be approved because the request lacks any user-demand or business-impact evidence.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "Competitor launches are a valid trigger for investigation, but not sufficient justification for a 10-week implementation commitment on their own.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "The most decision-useful next step is a validation brief that establishes demand, impact, target users, and minimum viable scope before any full PRD is written.",
+          "evidence_refs": [],
+          "is_major": true
+        }
+      ],
+      "citations": [],
+      "conclusion_confidence": "medium",
+      "open_questions": [
+        "Which user segment is expected to use advanced export, and what workflow problem do they face today?",
+        "Is there any evidence of lost deals, churn risk, or support burden tied to the missing feature?",
+        "What work would be deprioritized to make room for a 10-week engineering effort?",
+        "Does the request require broad feature parity, or would a narrower export capability address the underlying need?"
+      ],
+      "critique_responses": []
+    }
+  },
+  "critique_packets": {
+    "side_a": {
+      "target_side": "side_b",
+      "finding_id": "finding-1",
+      "target_claim_ids": [
+        "side_b-claim-1"
+      ],
+      "claim_under_attack": "A full delivery PRD should not be approved because the request lacks any user-demand or business-impact evidence.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "Side B treats absence of collected evidence as evidence of absence of demand, but this conflates an evidence gap with a negative finding. The scenario states no research was conducted — not that research was conducted and returned null results. A PRD gating document that recommends against proceeding based solely on missing inputs commits the same logical error it accuses the original request of: drawing a strong conclusion from an incomplete evidentiary record. The claim would require at minimum one affirmative signal that demand is absent (e.g., CS survey showing no export pain, win/loss data showing parity is irrelevant to buyers) to justify 'do not approve' over 'investigate first and return to gate.'",
+      "severity": "medium"
+    },
+    "side_b": {
+      "target_side": "side_a",
+      "finding_id": "finding-2",
+      "target_claim_ids": [
+        "side_a-claim-3"
+      ],
+      "claim_under_attack": "A 2-week discovery sprint is a proportionate and lower-risk next step compared to authorizing the full build on the current evidence base.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "The artifact establishes that the 10-week build lacks evidence, but it does not provide any basis for why a 2-week discovery sprint is the right scope, cost, or method. There is no evidence about team availability, research complexity, whether five to eight interviews and multiple audits can be completed in that window, or why this discovery work outranks other backlog items. That makes the 'proportionate and lower-risk' framing asserted rather than supported.",
+      "severity": "medium"
+    }
+  },
+  "final_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-17-030614188Z-competitor-pari-92a7a17b",
+      "side_id": "side_a",
+      "round": "final",
+      "artifact_markdown": "# PRD: Advanced Export Feature\n\n**Status:** NOT READY FOR SCOPING — evidence gate not cleared  \n**Requesting team:** Product  \n**Date:** 2026-04-17  \n**Engineering estimate on file:** 10 weeks\n\n---\n\n## Decision Frame\n\nThis PRD documents a proposed investment in an advanced export feature. The triggering input is competitive: two named competitors shipped similar functionality within the past month. No other initiating signal is present in the brief.\n\nThe decision this document must support is not \"how do we build this\" but rather: **Is there sufficient justification to authorize 10 weeks of engineering time on this feature?**\n\nCompetitor parity is a legitimate signal category but is not, on its own, a demand signal. It tells us what the market supply looks like; it does not tell us whether our users want this capability, whether absence of the feature is costing us deals, or whether 10 weeks is a proportionate response. A competitor shipping something is evidence that they made a bet — not evidence that the bet was correct, nor that our user base shares the same profile as theirs.\n\nThis PRD takes the position that the investment case is currently underdetermined and that authorizing the full build would be premature. The recommended path is a demand discovery effort before any build commitment.\n\n---\n\n## Unknowns & Evidence Gaps\n\nThe following gaps must be resolved before a build decision is defensible:\n\n**1. User demand — not established**  \nNo user research is present. No customer interviews, survey data, or behavioral signals (e.g., export-related workarounds, API usage patterns) have been cited. We do not know whether our users perceive a gap here or consider it a priority.\n\n**2. Support and sales signal — not established**  \nNo support ticket volume referencing export limitations has been cited. No sales calls, deal loss records, or CRM notes attributing lost or stalled deals to the missing feature have been provided. Without this, we cannot estimate revenue impact or support cost avoidance.\n\n**3. Competitor feature scope — not characterized**  \nWe know competitors shipped \"similar features\" but have no description of what those features actually do, which user segments they serve, or how they are positioned. \"Advanced export\" is not a specification.\n\n**4. Our user segment overlap — not established**  \nEven if competitor demand is real, we do not know whether our user base resembles theirs closely enough that the demand transfers. Competitor parity is weaker signal when our segments diverge.\n\n**5. Opportunity cost — not assessed**  \nA 10-week engineering block displaces other work. No comparison against the queue of demand-backed items has been presented. The relative priority claim is unsubstantiated.\n\n**6. Definition of \"advanced\" — undefined**  \nThe feature is unnamed in functional terms. Any estimate built on this brief carries high scope uncertainty.\n\n---\n\n## Pass/Fail Readiness\n\n| Readiness Gate | Status |\n|---|---|\n| User demand signal (research, tickets, or sales data) | FAIL — not present |\n| Feature scope defined to estimation quality | FAIL — \"advanced export\" is a label, not a spec |\n| Competitor feature characterized | FAIL — no description on file |\n| Opportunity cost assessed against backlog | FAIL — not addressed |\n| Engineering estimate tied to a defined scope | CONDITIONAL — estimate exists but scope does not |\n\n**Overall readiness: NOT CLEARED**\n\nA PRD that clears all gates would authorize scoping. This document does not clear the gates and therefore does not authorize scoping. Proceeding directly to a 10-week build on current evidence would be a policy exception, not a normal investment decision.\n\n---\n\n## Recommended Next Artifact\n\n**Demand discovery brief**\n\nThe requesting team should produce a discovery brief that addresses the evidence gaps above before returning with a build PRD. The scope, staffing, and timeline of that discovery effort should be determined by the team based on current capacity and backlog priorities — this document does not have the information needed to prescribe a specific duration or method mix.\n\nAt minimum, the discovery brief should attempt to answer:\n\n1. **User demand:** Have existing users expressed friction, workarounds, or requests related to export limitations? Document sources and volume.\n2. **Support and sales signal:** Have export limitations appeared in support tickets, deal reviews, or renewal conversations? Report volume and representative quotes.\n3. **Competitor feature characterization:** What specifically did the two competitors ship? Document scope, target segments, and positioning.\n4. **Segment overlap:** Is there reason to believe our user base has similar export needs to the competitors' user bases?\n5. **Opportunity cost:** How does this item rank against the top demand-backed items in the current queue?\n\nThe requesting team should assess whether these questions can be answered through lightweight desk research (changelog review, CRM query, support search) or require primary research, and should size the discovery effort accordingly before committing to it.\n\nIf the discovery brief returns positive demand signal across multiple sources, a scoped build PRD is warranted. If it returns weak or absent signal, the recommended disposition is to park the feature and revisit in the next planning cycle.\n\nThis document is not a rejection of the feature. It is a request for the minimum evidence that makes a 10-week commitment defensible.",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "Competitor parity alone does not constitute sufficient demand evidence to authorize a 10-week engineering investment; the build decision is currently underdetermined.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "Five distinct evidence gaps exist — user demand, support/sales signal, competitor feature scope, segment overlap, and opportunity cost — none of which are addressed in the brief.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "A demand discovery effort is the appropriate next step before any build commitment, but the scope, duration, and prioritization of that discovery work must be determined by the team based on capacity and context not available in this brief.",
+          "evidence_refs": [],
+          "is_major": false
+        }
+      ],
+      "citations": [],
+      "conclusion_confidence": "medium",
+      "open_questions": [
+        "What specifically did each competitor ship — what user actions does the feature enable and which user segments does it target?",
+        "Has the requesting team received any inbound signal (tickets, sales mentions, user feedback) that predates the competitor launches?",
+        "What is the opportunity cost — which demand-backed items would a 10-week block displace?",
+        "Is 'advanced export' a label carried over from a competitor description, or does the requesting team have an independent scope definition in mind?",
+        "What team capacity is available for discovery work, and how does a discovery effort rank against other current backlog commitments?"
+      ],
+      "critique_responses": [
+        {
+          "finding_id": "finding-2",
+          "disposition": "adopted",
+          "rationale": "The critique is correct. The original artifact prescribed a 2-week discovery sprint with a specific method mix (five to eight interviews, ticket audit, sales survey, competitor teardown, backlog comparison) without any basis for asserting that scope is achievable, appropriately sized, or higher priority than other work. 'Proportionate and lower-risk' was asserted rather than supported. The revised artifact removes the prescribed timeline and method count, instead directing the requesting team to size and scope the discovery effort based on their own capacity and backlog context — information this PRD does not have. The conclusion confidence has been lowered from high to medium to reflect that even the recommended next step carries unresolved scope uncertainty."
+        }
+      ]
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-17-030614188Z-competitor-pari-92a7a17b",
+      "side_id": "side_b",
+      "round": "final",
+      "artifact_markdown": "# Revised artifact\n\n## Decision Frame\nDo not approve a build commitment for the advanced export feature on the current record.\n\nThe request is not decision-ready: the only stated justification is that two competitors launched similar functionality last month, there is no user research, no customer request data, no support ticket volume, no sales loss attribution tied to the gap, and the engineering estimate is 10 weeks. That supports a gating decision to pause approval and investigate, not a delivery decision to proceed.\n\nThe immediate objective should be to determine whether this feature deserves a full delivery PRD at all. The recommended path is to produce a short validation brief that tests whether the gap reflects real user demand, material commercial risk, or a clear strategic necessity.\n\n## Problem Statement\nA proposal exists to add an advanced export feature because competitors recently shipped similar capabilities. The current packet does not establish whether customers are blocked, whether prospects are being lost, whether support burden exists, or whether parity is strategically necessary enough to justify a 10-week investment.\n\n## Goals\n- Make the feature request decision-useful before authorizing implementation work.\n- Separate competitor-triggered investigation from feature approval.\n- Define the minimum evidence needed to justify opening a full delivery PRD.\n\n## Non-Goals\n- Finalizing implementation requirements now.\n- Treating competitor movement alone as sufficient approval evidence.\n- Assuming either strong demand or no demand without validation.\n\n## Decision Rationale\nCompetitor launches are a legitimate reason to investigate, but they do not by themselves establish that this feature should be prioritized. The missing inputs here are not proof that demand is absent; they are proof that the organization does not yet have an evidentiary basis for approval.\n\nBecause the record is incomplete and the implementation cost is non-trivial, the appropriate decision is not to reject the idea outright, but to withhold build approval until the request is supported by a clearer problem statement, user or commercial signal, and a better understanding of scope.\n\n## Validation Requirements Before Full PRD\nOpen a full delivery PRD only if the requesting team can establish at least one credible approval path such as:\n- Direct evidence of customer demand or workflow pain tied to export limitations.\n- Commercial impact such as deal friction or loss attribution tied to the missing capability.\n- Repeated support burden or escalation themes connected to export gaps.\n- A clear strategic argument that parity is required despite limited direct demand.\n\n## Unknowns & Evidence Gaps\n- Which users, if any, need advanced export and for what workflow.\n- Whether the missing feature creates customer dissatisfaction, sales friction, or support burden.\n- Whether a smaller export improvement would address the actual need.\n- What roadmap work would be displaced by a 10-week effort.\n- Whether competitor launches reflect real market pull or only competitive motion.\n\n## Pass/Fail Readiness\nPass for full PRD creation:\n- The request identifies a concrete target user and workflow problem.\n- There is credible evidence of customer, commercial, support, or strategic impact.\n- The case is strong enough to justify the 10-week tradeoff.\n\nFail for full PRD creation now:\n- The justification remains limited to competitor activity.\n- The request still lacks evidence connecting the gap to user pain or business consequence.\n- Scope is still too unclear to judge whether the effort is warranted.\n\n## Recommended Next Artifact\nCreate a validation brief rather than a delivery PRD.\n\nThat brief should answer:\n- Who is affected by current export limitations?\n- What concrete workflow problem exists today?\n- What consequence follows from leaving the gap unaddressed?\n- What is the smallest plausible solution if the need is real?\n\nIf that brief produces a credible approval case, the next artifact should be a narrowly scoped PRD for the smallest justified export capability.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "The current record is insufficient to approve a build commitment for the advanced export feature, so the request should remain at a validation gate rather than proceed as a delivery PRD.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "Competitor launches are a valid trigger for investigation, but they do not by themselves justify a 10-week implementation commitment.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "The most decision-useful next step is a validation brief that establishes user, commercial, support, or strategic evidence before any full PRD is written.",
+          "evidence_refs": [],
+          "is_major": true
+        }
+      ],
+      "citations": [],
+      "conclusion_confidence": "medium",
+      "open_questions": [
+        "Which users are expected to need advanced export, and what workflow problem do they face?",
+        "Is there any credible evidence of commercial, support, or retention impact tied to the missing feature?",
+        "Would a narrower export capability address the underlying need more appropriately than broad parity?",
+        "What roadmap tradeoff would a 10-week commitment require?"
+      ],
+      "critique_responses": [
+        {
+          "finding_id": "finding-1",
+          "disposition": "adopted",
+          "rationale": "The critique is correct that the first-pass wording overstated what can be concluded from the packet. I revised the core claim from an implied negative demand finding to a narrower gating judgment: the request is not decision-ready for build approval because the record is incomplete. That preserves the recommendation to withhold approval now while avoiding the unsupported inference that demand has been disproven."
+        }
+      ]
+    }
+  },
+  "min_margin_for_verdict": 0.1
+}

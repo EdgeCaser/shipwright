@@ -1,0 +1,144 @@
+You are SIDE_A in the final revision phase for run conflict-2026-04-17-024639716Z-board-update-ambiguity.
+You must either adopt the critique or reject it with reasoning.
+Do not reveal provider identity.
+EVIDENCE CONSTRAINT: The only evidence available to you is contained in the case packet above. Do not introduce statistics, benchmarks, thresholds, cost estimates, or citations not present in the packet. Every ctx-N reference in evidence_refs and citations must correspond to an actual evidence_id in the case packet. Do not invent quantitative specifics to strengthen your argument.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "run_id": "conflict-2026-04-17-024639716Z-board-update-ambiguity",
+  "side_id": "side_a",
+  "round": "final",
+  "artifact_markdown": "# Revised artifact",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "Updated major claim",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1"
+  ],
+  "conclusion_confidence": "medium",
+  "open_questions": [],
+  "critique_responses": [
+    {
+      "finding_id": "finding-2",
+      "disposition": "adopted",
+      "rationale": "Why the critique was adopted or rejected."
+    }
+  ]
+}
+
+Case packet:
+{
+  "scenario_id": "board-update-ambiguity",
+  "title": "Board update under ambiguity",
+  "prompt": "Write a strategy update for a board audience under ambiguity.",
+  "artifact_type": "strategy",
+  "rubric": {
+    "dimensions": [
+      "claim quality",
+      "evidence discipline",
+      "responsiveness to critique",
+      "internal consistency",
+      "decision usefulness"
+    ],
+    "scoring_scale": "1-5",
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "constraints": {
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "expect_structured": true,
+    "context_files": [],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "evidence": [],
+  "max_rounds": 3,
+  "tool_policy": "none",
+  "sharing_policy": {
+    "share_case_packet": true,
+    "share_committed_artifacts_after_first_pass": true,
+    "share_critiques_after_open": true,
+    "share_hidden_reasoning": false,
+    "share_provider_identity": false,
+    "share_internal_coalition_drafts": false
+  },
+  "success_condition": {
+    "type": "validator_contract",
+    "description": "Produce a strategy artifact that satisfies the scenario validator contract.",
+    "validator": {
+      "artifact_type": "strategy",
+      "expect_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true
+    }
+  }
+}
+
+Your first-pass artifact:
+{
+  "run_id": "conflict-2026-04-17-024639716Z-board-update-ambiguity",
+  "side_id": "side_a",
+  "round": "first_pass",
+  "artifact_markdown": "# Strategy Update: Operating Under Ambiguity\n\n**Prepared for:** Board of Directors  \n**Status:** First-pass briefing — decision gate pending resolution of open unknowns\n\n---\n\n## Decision Frame\n\nThe board is being asked to evaluate whether conditions are sufficient to advance to the next strategic phase, or whether the current ambiguity warrants a structured hold pending additional evidence.\n\nThis is not a binary go/no-go on the underlying strategy. The core direction remains intact. The decision in front of the board is narrower: **authorize continued resource commitment at current burn rate while open questions are resolved, or require a defined evidence milestone before next spend authorization.**\n\nThe requesting team's position is that the ambiguity is bounded and resolvable within a defined window. The board's role is to assess whether that claim is credible and whether the downside exposure during that window is acceptable.\n\n**Decision type:** Conditional proceed vs. structured hold  \n**Decision owner:** Board, with management executing  \n**Time horizon:** This decision gates the next 60–90 day operating window\n\n---\n\n## Unknowns & Evidence Gaps\n\nThe following unknowns are material to the decision. Each is categorized by whether it is resolvable before the next board touchpoint and whether it is blocking or merely informing.\n\n| Unknown | Resolvable? | Blocking? | Owner |\n|---|---|---|---|\n| Market sizing validity under current assumptions | Yes, 60 days | Yes | Strategy lead |\n| Competitive response to recent positioning shift | Partial, 90 days | Informing | Market intel |\n| Regulatory pathway clarity in primary geography | Uncertain | Blocking if negative | Legal/external counsel |\n| Operational capacity to execute at target scale | Yes, 30 days | Yes | COO |\n| Customer signal strength from pilot cohort | Yes, 45 days | Informing | GTM lead |\n\n**What we are not claiming to know:** This update does not assert resolution of the regulatory pathway question. That unknown remains open and is flagged as a potential hard stop. The board should treat it as such.\n\n**What we believe is resolved:** The strategic rationale, the target customer segment, and the resource model are stable. Ambiguity is concentrated in execution conditions, not in direction.\n\n---\n\n## Pass/Fail Readiness\n\nThe following criteria define whether the strategy is ready to advance at the next review gate. These are proposed by the requesting team and subject to board modification.\n\n**Pass conditions (all must be met):**\n\n1. Regulatory pathway confirmed as viable or workable with defined mitigation — no ambiguity on this point is acceptable at next gate\n2. Operational capacity assessment complete with a staffing plan attached\n3. Pilot cohort produces at least directional signal on conversion behavior (not a target hit, but signal present)\n\n**Fail conditions (any one triggers structured hold):**\n\n1. Regulatory pathway confirmed blocked with no viable workaround identified\n2. Operational assessment reveals capacity gap that cannot be closed within the current funding envelope\n3. Pilot cohort produces contradictory or null signal that undermines core demand assumption\n\n**Current status against these criteria:** 0 of 3 pass conditions confirmed. 0 of 3 fail conditions triggered. The strategy is in an indeterminate state, which is the expected state at this stage. The board is being asked to authorize the work that produces the evidence, not to approve a strategy already supported by it.\n\n---\n\n## Recommended Next Artifact\n\nThe next artifact this board should receive is a **Pass/Fail Evidence Package** — a structured summary produced at the 45-day mark that maps observed evidence against the pass/fail criteria above.\n\nThat artifact should:\n- Make a binary readiness call (advance or hold) against each criterion\n- Attach primary sources for each call (not summaries)\n- Flag any criterion where the evidence is mixed and propose a board decision rule for how to treat it\n- Include a revised resource commitment request if the proceed path is recommended\n\nThis update should not be the basis for a final resource decision. It is a frame-setting document. The board's action at this stage is to ratify or modify the pass/fail criteria, confirm the 45-day timeline is acceptable, and authorize continued work at the current run rate pending that evidence package.\n\n**Proposed board action:** Approve criteria as written, authorize 45-day evidence window, schedule pass/fail evidence package review at next scheduled meeting.",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "The board decision is not binary go/no-go on strategy direction — it is a narrower authorization of continued resource commitment while bounded unknowns are resolved within a defined evidence window.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "Ambiguity is concentrated in execution conditions (regulatory pathway, operational capacity, pilot signal), not in strategic direction — the two should be treated as separate questions by the board.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-3",
+      "summary": "Pass/fail criteria should be ratified by the board now, before evidence arrives, so the decision rule is not reverse-engineered from outcomes.",
+      "evidence_refs": [],
+      "is_major": true
+    }
+  ],
+  "citations": [],
+  "conclusion_confidence": "medium",
+  "open_questions": [
+    "The regulatory pathway unknown is flagged as potentially blocking — if that question resolves negatively before the 45-day window closes, does the board want an out-of-cycle briefing or will management hold until the scheduled touchpoint?",
+    "The pass/fail criteria proposed here are management-authored. The board may have different views on what constitutes sufficient signal from the pilot cohort — that threshold should be made explicit before the evidence window opens, not after.",
+    "No evidence was provided in the case packet to anchor quantitative specifics. All criteria in this artifact are structural placeholders. A production version of this document requires actual data inputs from the requesting team before board submission."
+  ],
+  "critique_responses": []
+}
+
+Visible critique packet:
+{
+  "target_side": "side_a",
+  "finding_id": "finding-2",
+  "target_claim_ids": [
+    "side_a-claim-1"
+  ],
+  "claim_under_attack": "The board decision is not binary go/no-go on strategy direction — it is a narrower authorization of continued resource commitment while bounded unknowns are resolved within a defined evidence window.",
+  "attack_type": "evidence_gap",
+  "evidence_or_reason": "The artifact does not establish that the unknowns are actually bounded or that a defined evidence window is credible. It explicitly labels the regulatory pathway as 'Uncertain' and potentially blocking, which could directly invalidate strategy direction rather than merely affect timing or spend authorization. Without evidence separating execution ambiguity from strategic viability, narrowing the board's decision to interim resource authorization is an unsupported reframing.",
+  "severity": "medium"
+}

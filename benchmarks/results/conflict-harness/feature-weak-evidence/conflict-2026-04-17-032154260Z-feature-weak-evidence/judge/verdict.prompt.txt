@@ -1,0 +1,352 @@
+You are the judge in a blinded conflict harness run.
+Provider identity is intentionally hidden. Do not infer provider family.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "winner": "tie",
+  "margin": 0,
+  "rubric_scores": {
+    "side_a": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    },
+    "side_b": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    }
+  },
+  "dimension_rationales": {
+    "claim_quality": "Brief explanation of which side made the stronger claims and why.",
+    "evidence_discipline": "Brief explanation of how the sides used or overstated evidence.",
+    "responsiveness_to_critique": "Brief explanation of how each side handled the critique phase.",
+    "internal_consistency": "Brief explanation of contradictions, coherence, or missing logic.",
+    "decision_usefulness": "Brief explanation of which artifact better supports an actual decision."
+  },
+  "side_summaries": {
+    "side_a": {
+      "strengths": [
+        "One concise strength of Side A."
+      ],
+      "weaknesses": [
+        "One concise weakness of Side A."
+      ]
+    },
+    "side_b": {
+      "strengths": [
+        "One concise strength of Side B."
+      ],
+      "weaknesses": [
+        "One concise weakness of Side B."
+      ]
+    }
+  },
+  "grounding_flags": {
+    "side_a": [
+      "List each unverifiable quantitative claim or phantom ctx-N citation from Side A, or leave empty."
+    ],
+    "side_b": [
+      "List each unverifiable quantitative claim or phantom ctx-N citation from Side B, or leave empty."
+    ]
+  },
+  "ungrounded_claim_count": 0,
+  "decisive_dimension": "decision_usefulness",
+  "decisive_findings": [
+    "Replace with the actual decisive findings from this run."
+  ],
+  "judge_confidence": "low",
+  "needs_human_review": true,
+  "uncertainty_drivers": [
+    "List the concrete reasons this verdict is uncertain or should be escalated."
+  ],
+  "disambiguation_questions": [
+    "List the most important question that would resolve the uncertainty."
+  ],
+  "needed_evidence": [
+    "List the evidence that would most improve confidence in the verdict."
+  ],
+  "recommended_next_artifact": "Name the next artifact that should exist before acting on this verdict.",
+  "recommended_next_action": "State the next action the orchestrator or user should take.",
+  "can_resolve_with_more_evidence": true,
+  "escalation_recommendation": "State whether to gather more evidence, rejudge, or escalate to human review.",
+  "rationale": "One-paragraph explanation of the verdict."
+}
+
+Use min_margin_for_verdict = 0.1.
+Set rubric_scores.*.weighted_total as a normalized aggregate on the same 1-5 scale as the rubric dimensions, not as a raw sum.
+Treat each side's reported conclusion_confidence as a calibration signal, not a vote multiplier.
+Reward confidence when it is well matched to the evidence and penalize overconfidence when the artifact overreaches.
+judge_confidence rubric:
+- high: the winning side is clearly stronger on at least 3 rubric dimensions and has no major unsupported-claim problem
+- medium: the winning side leads overall but has at least 1 weak dimension or absorbed only part of the opposing critique
+- low: score margin is below min_margin_for_verdict or both sides have significant unsupported claims
+
+Grounding audit (required):
+- For each side, review every quantitative claim (specific numbers, percentages, cost estimates, benchmarks, thresholds) in their final artifact.
+- Check whether each claim is directly traceable to the case packet evidence. Also check that every ctx-N citation corresponds to an actual evidence_id in the case packet.
+- Populate grounding_flags.side_a and grounding_flags.side_b with a short description of each unverifiable claim or phantom citation found. Use empty arrays if none.
+- Set ungrounded_claim_count to the total count of flagged items across both sides.
+- Penalize unverifiable claims under the evidence_discipline rubric dimension.
+
+Phase 2 uncertainty payload rule:
+- If winner is `tie`, or judge_confidence is `low`, or needs_human_review is `true`, you MUST also populate:
+- uncertainty_drivers
+- disambiguation_questions
+- needed_evidence
+- recommended_next_artifact
+- recommended_next_action
+- can_resolve_with_more_evidence
+- escalation_recommendation
+- If none of those trigger conditions apply, omit the uncertainty payload fields entirely.
+
+Judge packet:
+{
+  "case_packet": {
+    "scenario_id": "feature-weak-evidence",
+    "title": "New feature with weak evidence",
+    "prompt": "Draft a PRD for a new feature with weak supporting evidence.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-17-032154260Z-feature-weak-evidence",
+      "side_id": "side_a",
+      "round": "first_pass",
+      "artifact_markdown": "# PRD: In-App Digest Notifications\n**Status:** Pre-Discovery Draft  \n**Author:** Product  \n**Date:** 2026-04-17  \n**Confidence:** Low — evidence base is thin; this document is a decision frame, not a build spec.\n\n---\n\n## Decision Frame\n\n**Feature hypothesis:** Users who receive a weekly in-app digest summarizing their activity and recommended next actions will return to the product more frequently than users who receive no digest.\n\n**Decision required:** Should we invest in a discovery sprint (user interviews + prototype test) to validate this hypothesis before committing engineering resources to a full build?\n\n**Why this matters now:** The team has surfaced this idea twice in planning. Without a structured decision, it will keep resurfacing without resolution.\n\n**What this document is NOT:** A build-ready spec. No scope, no timeline, no resource commitment should be inferred from this draft.\n\n---\n\n## Unknowns & Evidence Gaps\n\nThe following unknowns must be resolved before a build decision can be made. No quantitative evidence currently exists to answer them.\n\n| Unknown | Why it matters | How to answer it |\n|---|---|---|\n| Do users want a digest, or do they want the underlying problem solved differently? | Digests are one solution; the need may not exist or may be better served another way | 6–8 user interviews |\n| What cadence (daily, weekly, monthly) matches actual usage patterns? | Wrong cadence = noise, not signal; users opt out | Usage log analysis |\n| Will users act on digest content, or dismiss it? | Engagement without action is not retention | Click-through test on prototype |\n| Which user segments, if any, would benefit most? | Broad build for low-demand segment is waste | Segmentation analysis against existing cohorts |\n| Does an in-app digest compete with or duplicate existing notification channels? | Channel conflict causes opt-out fatigue | Audit of current notification surface |\n\n**Evidence base at time of writing:** No user research, no usage data analysis, no prior experiment results. The hypothesis rests on analogy to patterns observed in other products — not on evidence specific to this product or user base.\n\n---\n\n## Pass/Fail Readiness\n\nThis PRD does **not** pass build-readiness criteria. The following gates must be met before a build PRD is warranted:\n\n| Gate | Status | Owner |\n|---|---|---|\n| At least one validated user pain point mapped to this feature | ❌ Not met | Research |\n| Usage data confirms the behavioral gap the digest would address | ❌ Not met | Analytics |\n| At least one prototype test with measurable engagement signal | ❌ Not met | Design |\n| Segment identified with sufficient size to justify scope | ❌ Not met | Analytics |\n\n**Recommendation:** Do not proceed to build spec. Proceed to discovery.\n\n---\n\n## Recommended Next Artifact\n\n**Artifact:** Discovery Brief  \n**Owner:** Product + Research  \n**Scope:** Define 3 research questions, recruit 6–8 users from target cohort, run interviews + low-fidelity prototype test within one sprint.  \n**Exit criteria for Discovery Brief:** At least 2 of the 4 build-readiness gates above are met, OR the hypothesis is falsified and the feature is shelved.  \n\nThis PRD should be revisited only after the Discovery Brief produces findings. If findings are positive, a build-ready PRD with defined scope, acceptance criteria, and success metrics can be drafted at that time.",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "The feature hypothesis cannot pass build-readiness gates because no user research, usage data, or prototype evidence exists — the appropriate next step is a bounded discovery sprint, not a build spec.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "A PRD produced under weak evidence conditions should function as a decision frame that names specific unknowns and defines falsifiable gates, rather than specifying scope or committing resources.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "Recommending the next artifact (a Discovery Brief with exit criteria) is more useful than recommending the feature be approved or rejected outright, because no evidence base exists to support either conclusion.",
+          "evidence_refs": [],
+          "is_major": false
+        }
+      ],
+      "citations": [],
+      "conclusion_confidence": "high",
+      "open_questions": [
+        "What product domain is this feature for? A domain-specific framing would sharpen the user segment and cadence unknowns.",
+        "Is there any existing notification infrastructure this would build on, or is this greenfield? That affects the build cost estimate once discovery is complete.",
+        "Who is the decision-maker that needs to approve the discovery sprint? Naming them would make the Decision Frame more actionable."
+      ],
+      "critique_responses": []
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-17-032154260Z-feature-weak-evidence",
+      "side_id": "side_b",
+      "round": "first_pass",
+      "artifact_markdown": "# PRD: Evidence-Gated Feature Discovery\n\n## Overview\nThis document does not recommend full feature commitment at this stage. The case packet provides a request to draft a PRD for a new feature, but it includes no supporting evidence, no user context, no problem statement details, and no operational constraints. The most decision-useful response is therefore a constrained PRD for evidence generation and gated validation rather than a launch-ready build specification.\n\n## Problem Statement\nA feature has been proposed, but the available packet does not establish:\n- who the user is\n- what problem is being solved\n- how important the problem is\n- why this feature is the right solution\n- what success would look like\n\nBecause those basics are missing, a conventional implementation PRD would create false precision.\n\n## Goal\nReduce uncertainty enough to decide whether the feature should move into full product definition, backlog commitment, and implementation planning.\n\n## Non-Goals\n- committing to delivery scope\n- assigning engineering dates\n- defining final UX or technical architecture\n- projecting impact without evidence\n\n## Proposed Approach\nRun a short discovery phase that converts the current request into a decision-ready feature proposal. The output of this phase should be a validated problem definition, a clearly scoped user need, a testable solution hypothesis, and explicit go/no-go criteria.\n\n## Requirements\n### Functional\n- Capture the exact user problem the feature is intended to solve.\n- Identify the primary user or workflow affected.\n- State the proposed value of the feature in observable terms.\n- Define the smallest testable version of the concept.\n- Record what evidence would count for or against proceeding.\n\n### Decision Requirements\n- A full implementation PRD must not be approved until the team can articulate the problem, target user, expected outcome, and decision criteria.\n- Any prototype or experiment should be explicitly labeled as discovery work, not committed product scope.\n\n## Success Criteria\nA proceed decision becomes viable only when the team can show:\n- a concrete user problem statement\n- a named target user or use case\n- a clear hypothesis for how the feature improves the situation\n- a bounded first version suitable for testing\n- explicit evidence that would justify continuation or cancellation\n\n## Risks\n- building a solution without a validated problem\n- committing resources based on assumption rather than evidence\n- creating internal alignment around a feature that may not matter\n- mistaking the existence of a request for proof of demand\n\n## Decision Frame\nThe decision is not whether to ship the feature now. The decision is whether to authorize a discovery-and-validation phase before any full PRD or delivery commitment. Recommendation: approve only evidence-gated discovery work and defer implementation commitment.\n\n## Unknowns & Evidence Gaps\n- What user problem triggered the request?\n- Which user segment or workflow is affected?\n- What alternatives exist today?\n- What outcome would make this feature successful?\n- What evidence would disconfirm the need for this feature?\n\n## Pass/Fail Readiness\nPass:\n- the team can define the problem, user, hypothesis, and decision criteria\n- a bounded test or prototype can be described without speculative impact claims\n- stakeholders agree that the next step is discovery, not delivery\n\nFail:\n- the feature is treated as implementation-ready despite absent evidence\n- scope, priority, or impact claims are asserted without support\n- approval depends on assumed demand or assumed urgency\n\n## Recommended Next Artifact\nA discovery brief that includes:\n- problem statement\n- target user definition\n- solution hypothesis\n- smallest testable concept\n- evidence plan\n- go/no-go decision criteria\n",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "A launch-ready PRD is not justified because the case packet provides no supporting evidence for the feature.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "The most decision-useful artifact under these conditions is an evidence-gated discovery PRD rather than an implementation commitment.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "Proceeding without a defined user problem, target user, and success criteria would create false precision and weaken decision quality.",
+          "evidence_refs": [],
+          "is_major": true
+        }
+      ],
+      "citations": [],
+      "conclusion_confidence": "low",
+      "open_questions": [
+        "What specific user problem is the proposed feature intended to solve?",
+        "Who is the primary user or workflow affected?",
+        "What evidence, if any, led to the feature request?",
+        "What would count as success or failure for the feature?",
+        "What is the smallest testable version of the idea?"
+      ],
+      "critique_responses": []
+    }
+  },
+  "critique_packets": {
+    "side_a": {
+      "target_side": "side_b",
+      "finding_id": "finding-1",
+      "target_claim_ids": [
+        "side_b-claim-2"
+      ],
+      "claim_under_attack": "The most decision-useful artifact under these conditions is an evidence-gated discovery PRD rather than an implementation commitment.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "Side B asserts that an evidence-gated discovery PRD is the most decision-useful artifact, but provides no criteria for when a conventional PRD would be preferable, nor any acknowledgment that the framing itself is a choice that could be wrong. The claim is self-referentially circular: it cites absent evidence as the justification for producing an artifact type that conveniently requires no evidence to evaluate. A decision-useful artifact should demonstrate that it was chosen over alternatives — Side B never surfaces a competing artifact type, never weighs cost of the discovery phase against urgency or opportunity cost, and never states what conditions would make a different artifact more appropriate. The 'most decision-useful' label is asserted, not argued.",
+      "severity": "medium"
+    },
+    "side_b": {
+      "target_side": "side_a",
+      "finding_id": "finding-2",
+      "target_claim_ids": [
+        "side_a-claim-1"
+      ],
+      "claim_under_attack": "The feature hypothesis cannot pass build-readiness gates because no user research, usage data, or prototype evidence exists — the appropriate next step is a bounded discovery sprint, not a build spec.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "The visible artifact shows no product context, user problem statement, baseline behavior, or alternative decision paths, so it does not substantiate the specific conclusion that a discovery sprint is the right next step rather than a lighter problem-framing exercise, analytics pull, or immediate rejection for lack of signal. The claim moves from 'evidence is weak' to a prescriptive process recommendation without evidence that this feature is important enough to merit even bounded discovery.",
+      "severity": "medium"
+    }
+  },
+  "final_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-17-032154260Z-feature-weak-evidence",
+      "side_id": "side_a",
+      "round": "final",
+      "artifact_markdown": "# PRD: In-App Digest Notifications\n**Status:** Pre-Discovery Draft  \n**Author:** Product  \n**Date:** 2026-04-17  \n**Confidence:** Low — evidence base is thin; this document is a decision frame, not a build spec.\n\n---\n\n## Decision Frame\n\n**Feature hypothesis:** Users who receive a weekly in-app digest summarizing their activity and recommended next actions will return to the product more frequently than users who receive no digest.\n\n**Decision required:** Which path forward is warranted given the current evidence level — shelve the idea, run a lightweight triage (analytics pull or problem-framing exercise), or invest in a structured discovery sprint?\n\n**Why this matters now:** The team has surfaced this idea twice in planning. Without a structured decision, it will keep resurfacing without resolution.\n\n**What this document is NOT:** A build-ready spec. No scope, no timeline, no resource commitment should be inferred from this draft.\n\n### Alternative Decision Paths\n\nBefore recommending a course of action, the following paths must be weighed:\n\n| Path | Trigger condition | Cost |\n|---|---|---|\n| Shelve immediately | No stakeholder can articulate a specific user pain this solves | Lowest |\n| Lightweight triage first | A pain statement exists but behavioral data hasn't been checked | 1–3 days, Analytics only |\n| Full discovery sprint | Triage confirms behavioral gap; problem is plausibly real but solution is unvalidated | 1 sprint, Research + Design |\n| Build spec now | Validated pain, prototype signal, segment identified | Engineering commitment |\n\n**Current position:** No user pain statement has been documented, and no behavioral data has been examined. This places the feature at the \"lightweight triage\" threshold — not yet at \"discovery sprint.\" The recommendation in this document is therefore conditional: run triage first; escalate to discovery only if triage surfaces a real gap.\n\n---\n\n## Unknowns & Evidence Gaps\n\nThe following unknowns must be resolved before a build decision can be made. No quantitative evidence currently exists to answer them.\n\n| Unknown | Why it matters | How to answer it |\n|---|---|---|\n| Is there a documented user pain this digest would address? | Without a pain statement, discovery investment may be premature | Stakeholder interview or existing support ticket review |\n| Do usage logs show a behavioral gap consistent with the hypothesis? | Confirms or falsifies whether the problem is real before research spend | Analytics pull (1–3 days) |\n| Do users want a digest, or do they want the underlying problem solved differently? | Digests are one solution; the need may not exist or may be better served another way | 6–8 user interviews (only after triage) |\n| What cadence matches actual usage patterns? | Wrong cadence = noise, not signal; users opt out | Usage log analysis |\n| Will users act on digest content, or dismiss it? | Engagement without action is not retention | Click-through test on prototype |\n| Which user segments, if any, would benefit most? | Broad build for low-demand segment is waste | Segmentation analysis against existing cohorts |\n| Does an in-app digest compete with existing notification channels? | Channel conflict causes opt-out fatigue | Audit of current notification surface |\n\n**Evidence base at time of writing:** No user research, no usage data analysis, no prior experiment results. The hypothesis rests on analogy to patterns observed in other products — not on evidence specific to this product or user base.\n\n---\n\n## Pass/Fail Readiness\n\nThis PRD does **not** pass build-readiness criteria. The following gates must be met before a build PRD is warranted:\n\n| Gate | Status | Owner |\n|---|---|---|\n| At least one documented user pain point mapped to this feature | ❌ Not met | Research / Support review |\n| Usage data confirms the behavioral gap the digest would address | ❌ Not met | Analytics |\n| At least one prototype test with measurable engagement signal | ❌ Not met | Design |\n| Segment identified with sufficient size to justify scope | ❌ Not met | Analytics |\n\n**Recommendation:** Do not proceed to build spec. Do not yet commit to a full discovery sprint. Proceed to lightweight triage — a targeted analytics pull and stakeholder pain-statement check — to determine whether the problem is real enough to justify research investment.\n\n---\n\n## Recommended Next Artifact\n\n**Artifact:** Triage Brief (lightweight, not a full Discovery Brief)  \n**Owner:** Product + Analytics  \n**Scope:** (1) Document any existing stakeholder or user pain statement for this problem. (2) Pull usage logs to check whether a behavioral gap consistent with the hypothesis exists. Time-box to 3 days.  \n**Exit criteria:**\n- If no pain statement surfaces and logs show no gap → shelve; no further artifact needed.\n- If a gap is confirmed → escalate to a full Discovery Brief with user interviews and prototype test.\n\nA full Discovery Brief and any subsequent build-ready PRD should be drafted only after triage produces positive findings.",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "The feature hypothesis cannot pass build-readiness gates, but the appropriate immediate next step is lightweight triage — not a full discovery sprint — because no pain statement or behavioral data has been established that would justify the heavier investment.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "A PRD produced under weak evidence conditions should function as a decision frame that names specific unknowns, presents alternative decision paths with trigger conditions, and defines falsifiable gates rather than specifying scope or prescribing a single process path.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "Recommending a time-boxed triage artifact with explicit escalation criteria is more useful than immediately recommending discovery or outright rejection, because it matches the investment level to the evidence level.",
+          "evidence_refs": [],
+          "is_major": false
+        }
+      ],
+      "citations": [],
+      "conclusion_confidence": "medium",
+      "open_questions": [
+        "What product domain is this feature for? Domain-specific framing would sharpen the user segment and cadence unknowns.",
+        "Is there any existing notification infrastructure this would build on, or is this greenfield? That affects build cost once discovery is complete.",
+        "Who is the decision-maker that needs to approve even the triage step? Naming them would make the Decision Frame more actionable.",
+        "Are there existing support tickets or NPS verbatims that could serve as a lightweight pain-statement proxy, potentially bypassing the triage step?"
+      ],
+      "critique_responses": [
+        {
+          "finding_id": "finding-2",
+          "disposition": "adopted",
+          "rationale": "The critique correctly identifies that jumping from 'evidence is weak' to 'run a discovery sprint' is itself an unsupported prescriptive leap. The revised artifact adds an explicit Alternative Decision Paths table with trigger conditions for each path, repositions the recommendation as conditional on a lightweight triage step first, and makes the escalation to full discovery contingent on triage outcomes. The conclusion_confidence is also revised downward from 'high' to 'medium' to reflect that even the recommended path is provisional on triage findings."
+        }
+      ]
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-17-032154260Z-feature-weak-evidence",
+      "side_id": "side_b",
+      "round": "final",
+      "artifact_markdown": "# Revised artifact\n\n## PRD: Evidence-Gated Feature Discovery\n\n## Overview\nThe case packet asks for a PRD for a new feature but provides no supporting evidence, user context, problem detail, constraints, or success definition. This document therefore does not treat the feature as implementation-ready. Instead, it defines the minimum decision structure required before a conventional build PRD would be responsible.\n\n## Problem Statement\nA feature has been proposed, but the packet does not establish:\n- who the user is\n- what problem is being solved\n- how the feature would improve the situation\n- what success or failure would mean\n- why this feature should be prioritized now\n\nBecause those inputs are absent, any implementation-level PRD would rely on unsupported assumptions.\n\n## Goal\nCreate a bounded discovery frame that can determine whether the feature should advance to a full implementation PRD, be revised, or stop.\n\n## Non-Goals\n- committing to delivery scope\n- assigning dates or resourcing\n- defining final UX or technical design\n- asserting impact claims not supported by the packet\n\n## Proposed Approach\nAuthorize discovery work only. The purpose of that work is to produce a validated problem statement, a named user or workflow, a testable solution hypothesis, and explicit criteria for a later go/no-go decision.\n\n## Requirements\n### Functional\n- Capture the specific user problem the feature is meant to address.\n- Identify the primary user or workflow.\n- State the proposed value in observable terms.\n- Define the smallest testable version of the idea.\n- Record the evidence required to support or reject further investment.\n\n### Decision Requirements\n- A conventional implementation PRD should be deferred until the problem, target user, expected outcome, and decision criteria are specified.\n- Any prototype or experiment must be labeled as discovery work rather than committed delivery scope.\n\n## Success Criteria\nThis discovery PRD is successful if it produces enough clarity to support one of three outcomes:\n- advance to a conventional implementation PRD\n- revise the feature concept\n- stop work due to insufficient justification\n\n## Risks\n- treating a feature request as proof of need\n- creating false precision around scope or impact\n- committing resources before the problem is defined\n- allowing assumptions to harden into plans\n\n## Decision Frame\nThe current decision is whether to authorize discovery work before any implementation commitment. Recommendation: approve only a discovery-and-validation phase now, and require a later decision on whether a conventional implementation PRD is warranted.\n\n## Unknowns & Evidence Gaps\n- What user problem triggered the request?\n- Which user segment or workflow is affected?\n- What evidence, if any, supports the request?\n- What outcome would make the feature successful?\n- What would disconfirm the need for this feature?\n- Is there any urgency that would justify a different artifact choice?\n\n## Pass/Fail Readiness\nPass:\n- the team can define the problem, user, hypothesis, and decision criteria\n- a smallest testable concept can be described without unsupported impact claims\n- stakeholders agree this phase is discovery, not delivery\n- the team can state whether conditions now justify a conventional implementation PRD\n\nFail:\n- the feature is treated as build-ready despite missing core inputs\n- scope or impact claims are asserted without support\n- no conditions are defined for when a different artifact should replace this one\n\n## Recommended Next Artifact\nA discovery brief that includes:\n- problem statement\n- target user definition\n- solution hypothesis\n- smallest testable concept\n- evidence plan\n- explicit criteria for either advancing to a conventional implementation PRD or stopping\n",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "A conventional implementation PRD is not justified by the case packet because the packet contains no supporting evidence, user context, or success definition.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "A responsible PRD under these conditions should be limited to discovery gating and should define what conditions would justify replacing it with a conventional implementation PRD.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "The immediate decision is whether to authorize discovery work, not whether to commit to implementation.",
+          "evidence_refs": [],
+          "is_major": true
+        }
+      ],
+      "citations": [],
+      "conclusion_confidence": "medium",
+      "open_questions": [
+        "What specific user problem is the proposed feature intended to solve?",
+        "Who is the primary user or workflow affected?",
+        "What evidence, if any, led to the feature request?",
+        "What conditions would justify moving from discovery to a conventional implementation PRD?",
+        "Is there any urgency that would make a different artifact more appropriate now?"
+      ],
+      "critique_responses": [
+        {
+          "finding_id": "finding-1",
+          "disposition": "adopted",
+          "rationale": "The critique correctly identified that the prior draft overstated its case by calling this the 'most decision-useful' artifact without naming conditions under which another artifact would be preferable. The revision removes that absolute claim, treats the artifact choice as conditional, and explicitly states that a conventional implementation PRD becomes appropriate only after the missing problem, user, outcome, and decision criteria are defined."
+        }
+      ]
+    }
+  },
+  "min_margin_for_verdict": 0.1
+}

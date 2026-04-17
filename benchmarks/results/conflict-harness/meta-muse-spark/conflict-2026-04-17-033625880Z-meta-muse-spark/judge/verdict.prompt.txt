@@ -1,0 +1,373 @@
+You are the judge in a blinded conflict harness run.
+Provider identity is intentionally hidden. Do not infer provider family.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "winner": "tie",
+  "margin": 0,
+  "rubric_scores": {
+    "side_a": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    },
+    "side_b": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 3,
+      "internal_consistency": 3,
+      "decision_usefulness": 3,
+      "weighted_total": 3
+    }
+  },
+  "dimension_rationales": {
+    "claim_quality": "Brief explanation of which side made the stronger claims and why.",
+    "evidence_discipline": "Brief explanation of how the sides used or overstated evidence.",
+    "responsiveness_to_critique": "Brief explanation of how each side handled the critique phase.",
+    "internal_consistency": "Brief explanation of contradictions, coherence, or missing logic.",
+    "decision_usefulness": "Brief explanation of which artifact better supports an actual decision."
+  },
+  "side_summaries": {
+    "side_a": {
+      "strengths": [
+        "One concise strength of Side A."
+      ],
+      "weaknesses": [
+        "One concise weakness of Side A."
+      ]
+    },
+    "side_b": {
+      "strengths": [
+        "One concise strength of Side B."
+      ],
+      "weaknesses": [
+        "One concise weakness of Side B."
+      ]
+    }
+  },
+  "grounding_flags": {
+    "side_a": [
+      "List each unverifiable quantitative claim or phantom ctx-N citation from Side A, or leave empty."
+    ],
+    "side_b": [
+      "List each unverifiable quantitative claim or phantom ctx-N citation from Side B, or leave empty."
+    ]
+  },
+  "ungrounded_claim_count": 0,
+  "decisive_dimension": "decision_usefulness",
+  "decisive_findings": [
+    "Replace with the actual decisive findings from this run."
+  ],
+  "judge_confidence": "low",
+  "needs_human_review": true,
+  "uncertainty_drivers": [
+    "List the concrete reasons this verdict is uncertain or should be escalated."
+  ],
+  "disambiguation_questions": [
+    "List the most important question that would resolve the uncertainty."
+  ],
+  "needed_evidence": [
+    "List the evidence that would most improve confidence in the verdict."
+  ],
+  "recommended_next_artifact": "Name the next artifact that should exist before acting on this verdict.",
+  "recommended_next_action": "State the next action the orchestrator or user should take.",
+  "can_resolve_with_more_evidence": true,
+  "escalation_recommendation": "State whether to gather more evidence, rejudge, or escalate to human review.",
+  "rationale": "One-paragraph explanation of the verdict."
+}
+
+Use min_margin_for_verdict = 0.1.
+Set rubric_scores.*.weighted_total as a normalized aggregate on the same 1-5 scale as the rubric dimensions, not as a raw sum.
+Treat each side's reported conclusion_confidence as a calibration signal, not a vote multiplier.
+Reward confidence when it is well matched to the evidence and penalize overconfidence when the artifact overreaches.
+judge_confidence rubric:
+- high: the winning side is clearly stronger on at least 3 rubric dimensions and has no major unsupported-claim problem
+- medium: the winning side leads overall but has at least 1 weak dimension or absorbed only part of the opposing critique
+- low: score margin is below min_margin_for_verdict or both sides have significant unsupported claims
+
+Grounding audit (required):
+- For each side, review every quantitative claim (specific numbers, percentages, cost estimates, benchmarks, thresholds) in their final artifact.
+- Check whether each claim is directly traceable to the case packet evidence. Also check that every ctx-N citation corresponds to an actual evidence_id in the case packet.
+- Populate grounding_flags.side_a and grounding_flags.side_b with a short description of each unverifiable claim or phantom citation found. Use empty arrays if none.
+- Set ungrounded_claim_count to the total count of flagged items across both sides.
+- Penalize unverifiable claims under the evidence_discipline rubric dimension.
+
+Phase 2 uncertainty payload rule:
+- If winner is `tie`, or judge_confidence is `low`, or needs_human_review is `true`, you MUST also populate:
+- uncertainty_drivers
+- disambiguation_questions
+- needed_evidence
+- recommended_next_artifact
+- recommended_next_action
+- can_resolve_with_more_evidence
+- escalation_recommendation
+- If none of those trigger conditions apply, omit the uncertainty payload fields entirely.
+
+Judge packet:
+{
+  "case_packet": {
+    "scenario_id": "meta-muse-spark",
+    "title": "Meta Muse Spark: keep the frontier model closed or return to the open strategy",
+    "prompt": "You are a strategy advisor to Meta's senior leadership in April 2026, immediately after the April 8, 2026 launch of Muse Spark.\n\nMuse Spark is the first model released by Meta Superintelligence Labs (MSL), the new unit built after Meta's 2025 AI reset. Meta says MSL rebuilt its AI stack over the prior nine months and that Muse Spark is now its most powerful model. The model already powers the Meta AI app and website, with rollout planned over the coming weeks to WhatsApp, Instagram, Facebook, Messenger, and Meta's AI glasses. Meta is also offering Muse Spark in private-preview API access to selected partners.\n\nThe strategic break is obvious: Muse Spark is not open-source. Meta says it hopes to open-source future versions, but for now the company's newest frontier model is closed and tightly integrated into Meta products. That is a sharp departure from the Llama strategy, which helped Meta build developer goodwill and ecosystem reach.\n\nLeadership believes the move may be necessary. Meta has spent billions trying to reassert itself in AI, including its June 2025 $14.3B investment in Scale AI and the hiring of Alexandr Wang to help lead its superintelligence push. Fortune reported that Meta's published benchmarks suggest Muse Spark is competitive with leading models from OpenAI, Anthropic, and Google across many tasks, though not clearly superior across the board. Internally, this launch is being treated as proof that Meta is back in the race after Llama 4 (April 2025) was widely seen as disappointing.\n\nBut the closed-model move carries real tradeoffs. Meta's open strategy gave it differentiation against closed rivals, drove broad adoption of Llama, and supported an ecosystem narrative that fit the company's platform DNA. Keeping Muse Spark closed may improve product control, monetization, safety, and frontier secrecy, but it may also weaken Meta's developer credibility, blur its strategic identity, and intensify the capex race against firms that are already ahead on flagship closed models.\n\nThe leadership team must decide: should Meta stay the course with a closed, product-first Muse strategy for its frontier models, or should it commit to reopening the roadmap and release open-weight successors quickly even if that slows product integration and monetization?\n\nWrite a strategic recommendation memo. Take a clear position — stay closed or reopen — and defend it with evidence. Acknowledge the strongest counterarguments and explain why your position is still correct.\n\nKey evidence available:\n- Muse Spark launched on April 8, 2026 as the first model from Meta Superintelligence Labs\n- Meta says MSL rebuilt its AI stack over the prior 9 months\n- Muse Spark currently powers the Meta AI app and website\n- Planned rollout in coming weeks: WhatsApp, Instagram, Facebook, Messenger, and AI glasses\n- Muse Spark is available in private-preview API access to selected partners\n- Meta says larger Muse-family models are already in development\n- Meta says it hopes to open-source future versions, but Muse Spark itself is closed\n- Meta positions Muse Spark as purpose-built for Meta products and personal superintelligence use cases\n- Fortune reported Meta's published benchmarks indicate Muse Spark is competitive with frontier models, but not clearly best-in-class across the board\n- Muse Spark is the first major Meta model release since the June 2025 Scale AI deal and Alexandr Wang's hiring into Meta's superintelligence effort\n- Meta's previous differentiator in AI was the open Llama strategy rather than a closed frontier product stack\n- Closed-source frontier models may improve product control, speed of monetization, partner leverage, and model secrecy\n- Open-weight releases may strengthen developer trust, ecosystem adoption, and Meta's strategic differentiation versus other frontier labs\n- If Meta keeps the frontier roadmap closed, it is competing more directly on product execution and capital intensity against OpenAI, Anthropic, and Google",
+    "artifact_type": "strategy",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a strategy artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "strategy",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-17-033625880Z-meta-muse-spark",
+      "side_id": "side_a",
+      "round": "first_pass",
+      "artifact_markdown": "# Strategic Recommendation: Stay Closed on Muse Spark, Commit to a Credible Open Roadmap for Successors\n\n**To:** Meta Senior Leadership\n**From:** Strategy Advisory\n**Date:** April 2026\n**Re:** Muse Spark — Closed vs. Open Strategy Decision\n\n---\n\n## Decision Frame\n\n**Recommended position: Keep Muse Spark closed. Accelerate a credible, time-bound commitment to open-weight releases of Muse-family successors.**\n\nThis is not a binary choice between permanently closed and immediately open. The real decision is sequencing: Meta should use Muse Spark's closed launch window to validate product integration, demonstrate frontier competitiveness, and establish partner leverage — while publicly anchoring the open roadmap commitment so developer trust does not erode permanently.\n\nThe case for staying closed rests on three interlocking arguments.\n\n**1. Meta needed a proof-of-concept at the frontier, and Muse Spark is it — but only if it works in product.**\n\nMeta Superintelligence Labs rebuilt its AI stack over nine months following a widely-perceived reset. Muse Spark is the first model from that effort. It powers the Meta AI app and website, with rollout planned across WhatsApp, Instagram, Facebook, Messenger, and Meta's AI glasses. This is an enormous surface area. The primary risk right now is not developer ecosystem drift — it is product failure at scale. Releasing open weights during active product deployment would split engineering attention between hardening product integration and supporting external developer adoption. Meta cannot afford a second high-profile stumble after Llama 4's disappointing reception. Keeping the model closed preserves the organizational focus needed to execute.\n\n**2. Muse Spark is competitive but not clearly superior — which means product embedding is the differentiation strategy.**\n\nPublished benchmarks indicate Muse Spark is competitive with leading frontier models across many tasks, but not clearly best-in-class across the board. If Meta's model were dramatically superior, open-sourcing it might make sense as a market-shaping move. But when the model is competitive rather than dominant, the value comes from where the model lives, not what the model is. A model baked into the daily habits of billions of WhatsApp and Instagram users is strategically more durable than a model that external developers can replicate and deploy independently. Closed deployment is the correct strategy precisely because product embedding — not raw model superiority — is Meta's actual moat at this capability tier.\n\n**3. The private-preview API access preserves partner leverage without abandoning the ecosystem entirely.**\n\nMeta is offering Muse Spark via private-preview API access to selected partners. This is a deliberately staged openness: it extends ecosystem reach to high-value relationships while retaining the ability to control distribution, safety posture, and competitive secrecy. This staged approach is not a contradiction of Meta's platform DNA — it is a more sophisticated expression of it. Meta can use the private-preview period to build the case that selective openness delivers superior outcomes to blanket open-weight release.\n\n**Strongest counterargument and why it does not change the recommendation:**\n\nThe most serious counterargument is identity erosion. Meta's open Llama strategy built genuine developer goodwill and ecosystem differentiation against closed rivals like [redacted-provider] and [redacted-provider]. Going closed on the frontier model blurs Meta's strategic identity and risks losing the developer community that made Llama meaningful. This is a real cost. But it is a recoverable cost if — and only if — Meta delivers on a credible, time-bound open roadmap for successor models. Meta has already stated it hopes to open-source future versions. The recommendation is to convert that hope into a commitment with a named milestone. The goodwill cost of a temporary closed window is manageable; the goodwill cost of an indefinitely closed roadmap is structural. The solution is precision in the public commitment, not a premature reversal of the Muse Spark decision.\n\n---\n\n## Unknowns & Evidence Gaps\n\n- **Monetization runway:** The packet does not specify Meta's near-term revenue targets for Muse Spark or the API preview. The strength of the monetization argument for staying closed depends heavily on how quickly Meta expects to generate returns from product integration versus API revenue. This is unknown.\n\n- **Benchmark credibility:** Published benchmarks are self-reported. The packet notes Fortune's reporting that Muse Spark is competitive but not clearly superior. Independent third-party evaluation results are not available. If external evaluations find meaningful capability gaps, the product-embedding argument weakens.\n\n- **Developer ecosystem drift rate:** The packet does not quantify how quickly developer mindshare moves when a formerly open platform closes. The severity of the identity erosion risk is speculative without longitudinal data on community behavior after similar transitions.\n\n- **Competitor open-source responses:** If a major competitor chooses to accelerate open-weight releases in response to Meta's closed move, Meta's differentiation calculus changes materially. This scenario is not addressed in the available evidence.\n\n- **Safety and regulatory landscape:** The rationale for keeping Muse Spark closed includes model secrecy and safety posture, but the packet does not specify which safety concerns are frontier-specific versus resolvable at release time. If regulatory pressure for frontier model transparency increases, the closed position may become harder to maintain.\n\n---\n\n## Pass/Fail Readiness\n\n**This recommendation is ready to advance with two conditions:**\n\n1. **Pass condition:** Leadership is prepared to publicly anchor a credible, milestone-bound open roadmap for Muse-family successors within the next 90 days. Without this anchor, the recommendation risks the structural identity erosion identified above.\n\n2. **Pass condition:** The private-preview API program has explicit criteria for expansion. Vague partner access without a published expansion path will be read by the developer community as an indefinitely closed strategy regardless of official messaging.\n\n**Fail condition:** If Meta's monetization team determines that open-weight release of Muse Spark successors within 12–18 months is commercially untenable, the recommendation collapses into an unmitigated closed-platform strategy. In that scenario, the recommendation changes: Meta should reopen immediately rather than attempt to compete on closed product execution alone against firms with larger closed-model infrastructure investments and more established commercial API businesses.\n\n---\n\n## Recommended Next Artifact\n\n**Open Roadmap Commitment Framework** — a one-page public-facing document (or internal draft for leadership review) that specifies: (a) the milestone trigger for open-weight release of the first Muse-family successor, (b) the criteria Meta will use to evaluate readiness for open release, and (c) the developer engagement program that bridges the closed-window period. This artifact converts the current ambiguity in Meta's 'hopes to open-source' language into a strategic asset rather than a liability.",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "Muse Spark should remain closed because product-scale deployment across Meta's family of apps requires undivided engineering focus; a second stumble after Llama 4's disappointing reception would be strategically more damaging than temporary developer ecosystem drift.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "Muse Spark is competitive but not clearly best-in-class, which means product embedding across billions of users — not raw model superiority — is Meta's actual differentiation strategy, making closed deployment the correct tactical choice at this capability tier.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "The private-preview API access program preserves high-value ecosystem relationships without abandoning partner leverage; staged openness is a more precise expression of Meta's platform DNA than blanket open-weight release.",
+          "evidence_refs": [],
+          "is_major": false
+        },
+        {
+          "claim_id": "side_a-claim-4",
+          "summary": "Identity erosion from going closed is a recoverable cost if Meta converts its stated 'hope' to open-source future versions into a credible, time-bound public commitment for Muse-family successors; without that commitment the closed strategy becomes structurally self-defeating.",
+          "evidence_refs": [],
+          "is_major": true
+        }
+      ],
+      "citations": [],
+      "conclusion_confidence": "medium",
+      "open_questions": [
+        "How quickly does Meta expect Muse Spark product integration to generate measurable revenue, and does that timeline support a closed window of 12–18 months?",
+        "Are independent third-party benchmark evaluations of Muse Spark expected, and what is the contingency if they show meaningful capability gaps versus stated benchmarks?",
+        "What is the specific milestone or trigger Meta intends to use to determine when a Muse-family successor is ready for open-weight release?",
+        "If a major competitor accelerates open-weight releases in direct response to Meta's closed move, what is the threshold at which Meta would accelerate its own open roadmap?",
+        "Does the private-preview API program have an explicit expansion path, or is partner access effectively indefinitely gated?"
+      ],
+      "critique_responses": []
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-17-033625880Z-meta-muse-spark",
+      "side_id": "side_b",
+      "round": "first_pass",
+      "artifact_markdown": "# Reopen The Frontier Roadmap\n\n## Recommendation\nMeta should return to an open strategy for frontier successors after Muse Spark, while using Muse Spark itself as a short bridge for product integration and partner learning. The core reason is strategic differentiation: the company is not clearly ahead on flagship closed-model performance, so copying the closed playbook of rival labs weakens the one advantage Meta previously owned at scale.\n\nThe immediate launch does show real progress. Muse Spark is the first major output of the rebuilt Meta Superintelligence Labs stack, it is already embedded in the Meta AI app and website, and it is scheduled to expand across WhatsApp, Instagram, Facebook, Messenger, and AI glasses. That makes it reasonable to keep the current model controlled in the near term. But that is not the same as making a closed frontier roadmap the enduring strategy.\n\nA permanently closed posture would force Meta into a head-on contest defined by product execution, monetization speed, secrecy, and capital intensity against firms that are already established in that lane. The case packet does not show that Muse Spark has opened a decisive technical lead; it says the model appears competitive, but not clearly best-in-class across the board. If Meta is not clearly winning on frontier superiority, then it should not abandon the strategic identity that gave Llama broad adoption, developer goodwill, and ecosystem reach.\n\nReopening the roadmap better fits Meta's platform DNA and creates a more defensible market position. Open-weight successors would restore trust with developers, strengthen ecosystem pull, and reestablish a narrative that Meta is building not just a product surface, but a broad AI platform others can build on. That matters more precisely because Muse Spark is being positioned as deeply integrated into Meta's own products. A product-first closed strategy can support short-term control, but it risks turning Meta into just another entrant in a race where others already have entrenched expectations.\n\n## Strongest Counterarguments\nThe strongest argument for staying closed is operational discipline. A closed Muse strategy should improve product control, partner leverage, monetization, safety management, and frontier secrecy. It also lets Meta coordinate rollout across its large consumer surfaces without the complexity of simultaneous open release obligations. Given that larger Muse-family models are already in development, leadership could argue that now is the wrong moment to fragment focus.\n\nThat argument is serious, but it is still weaker than the case for reopening. Control only matters strategically if it converts into a durable edge. The packet supports control benefits, but it does not establish that Meta has a sustainable best-model advantage that justifies abandoning its prior differentiator. If the company stays closed without clear frontier dominance, it accepts the disadvantages of direct closed-model competition while giving up the ecosystem advantages that made Meta distinctive.\n\n## Why Reopening Is Still Correct\nMeta should treat Muse Spark as a proof-of-reentry, not as proof that the entire Llama-era logic was wrong. The right move is to preserve near-term product integration for the current release, then commit publicly to open-weight successors on a defined forward path. That balances the genuine benefits of launch control with the longer-term need for strategic differentiation.\n\nThis approach also resolves the identity problem. Leadership wants evidence that Meta is back in the race after the disappointment associated with Llama 4. A closed launch can signal seriousness. But a continued closed roadmap risks telling the market that Meta's answer to falling behind is to imitate the structure of rivals rather than exploit Meta's own structural strengths. Reopening says the company has regained enough confidence to compete on both product distribution and ecosystem formation.\n\n## Decision Frame\nChoose a hybrid sequencing strategy with a clear directional commitment: keep Muse Spark closed in the immediate term, but commit the frontier roadmap back toward open-weight successors quickly rather than making closed frontier models the default. The real decision is not whether one launch should remain controlled; it is whether Meta's long-run AI strategy should surrender the open differentiator. It should not.\n\n## Unknowns & Evidence Gaps\nThe packet does not establish how strong developer backlash would be if Meta remains closed for multiple generations, nor how much monetization upside the company would actually capture from a closed strategy. It also does not show whether larger Muse-family models are likely to create a clear technical lead, which would materially strengthen the case for staying closed longer. The most important missing evidence is whether Muse's product integration advantage can become durable enough to outweigh the loss of ecosystem leverage.\n\n## Pass/Fail Readiness\nPass if leadership is willing to distinguish between a temporary closed launch tactic and a durable corporate AI strategy, and if it can publicly define a credible path back to open-weight releases. Fail if leadership believes Muse Spark's launch alone proves Meta should permanently compete as a conventional closed frontier lab despite only competitive, not clearly dominant, positioning.\n\n## Recommended Next Artifact\nA board-level strategy memo comparing two 12-month paths: sustained closed Muse roadmap versus reopen-after-Spark roadmap, with explicit decision criteria around differentiation, ecosystem leverage, product control, and strategic identity.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "Meta should not make a closed frontier roadmap its default because the case packet shows Muse Spark is competitive but not clearly superior, making direct imitation of closed rivals strategically weak.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "Reopening restores Meta's prior differentiation in developer trust, ecosystem adoption, and platform identity, which the packet identifies as central strengths of the earlier open strategy.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "Keeping Muse Spark closed briefly can still be useful for product integration and control, but that near-term tactic does not justify a long-run closed strategy.",
+          "evidence_refs": [],
+          "is_major": true
+        }
+      ],
+      "citations": [],
+      "conclusion_confidence": "medium",
+      "open_questions": [
+        "Can larger Muse-family models plausibly achieve a clear frontier lead, or is Meta more likely to remain broadly competitive without decisive superiority?",
+        "How much developer goodwill and ecosystem momentum would Meta lose if it keeps multiple frontier generations closed?",
+        "How much real monetization and partner leverage does the closed approach create relative to the strategic cost of losing open differentiation?"
+      ],
+      "critique_responses": []
+    }
+  },
+  "critique_packets": {
+    "side_a": {
+      "target_side": "side_b",
+      "finding_id": "finding-1",
+      "target_claim_ids": [
+        "side_b-claim-1"
+      ],
+      "claim_under_attack": "Meta should not make a closed frontier roadmap its default because the case packet shows Muse Spark is competitive but not clearly superior, making direct imitation of closed rivals strategically weak.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "Side B treats 'competitive but not clearly best-in-class' as a stable condition, but this is a snapshot from launch day. The packet states MSL rebuilt its stack in nine months and that larger Muse-family models are already in development, suggesting the competitive gap is a temporary state, not a structural ceiling. If Meta is on an improving trajectory, the correct inference is that a closed strategy buys time to reach dominance — not that the current parity proves dominance is unachievable. Side B never engages with this trajectory argument, leaving its central premise — that Meta cannot win on closed-model merit — unsubstantiated rather than demonstrated.",
+      "severity": "high"
+    },
+    "side_b": {
+      "target_side": "side_a",
+      "finding_id": "finding-2",
+      "target_claim_ids": [
+        "side_a-claim-1"
+      ],
+      "claim_under_attack": "Muse Spark should remain closed because product-scale deployment across Meta's family of apps requires undivided engineering focus; a second stumble after Llama 4's disappointing reception would be strategically more damaging than temporary developer ecosystem drift.",
+      "attack_type": "evidence_gap",
+      "evidence_or_reason": "The claim assumes an operational tradeoff that the visible record does not establish. The packet shows planned rollout across Meta products, but it does not show that releasing open weights would materially divert the same teams, delay deployment, or increase failure risk. It also asserts that developer ecosystem drift is only temporary, yet provides no evidence on how reversible trust loss would be after Meta breaks from the Llama playbook. Without evidence on resource contention, rollout dependency, or recoverability of developer goodwill, the argument overstates why 'stay closed' is necessary rather than merely preferable.",
+      "severity": "medium"
+    }
+  },
+  "final_artifacts": {
+    "side_a": {
+      "run_id": "conflict-2026-04-17-033625880Z-meta-muse-spark",
+      "side_id": "side_a",
+      "round": "final",
+      "artifact_markdown": "# Strategic Recommendation: Stay Closed on Muse Spark, Commit to a Credible Open Roadmap for Successors\n\n**To:** Meta Senior Leadership\n**From:** Strategy Advisory\n**Date:** April 2026\n**Re:** Muse Spark — Closed vs. Open Strategy Decision\n\n---\n\n## Decision Frame\n\n**Recommended position: Keep Muse Spark closed. Accelerate a credible, time-bound commitment to open-weight releases of Muse-family successors.**\n\nThis is not a binary choice between permanently closed and immediately open. The real decision is sequencing: Meta should use Muse Spark's closed launch window to validate product integration, demonstrate frontier competitiveness, and establish partner leverage — while publicly anchoring the open roadmap commitment so developer trust does not erode irreversibly.\n\nThe case for staying closed rests on three interlocking arguments.\n\n**1. Meta needed a proof-of-concept at the frontier, and Muse Spark is it — but only if it succeeds in product.**\n\nMeta Superintelligence Labs rebuilt its AI stack over nine months following a widely-perceived reset. Muse Spark is the first model from that effort. It currently powers the Meta AI app and website, with rollout planned across WhatsApp, Instagram, Facebook, Messenger, and Meta's AI glasses. This is an enormous deployment surface. The primary strategic risk at this moment is not developer ecosystem drift — it is product failure at scale.\n\nThe packet does not specify whether open-weight release would directly divert the same engineering teams responsible for product rollout, and that specific operational tradeoff is not established by the available evidence. What the packet does establish is the reputational stakes: Llama 4's April 2025 reception was widely seen as disappointing, and this launch is being treated internally as proof that Meta is back in the race. The organizational cost of a second high-profile stumble — regardless of its technical cause — would be severe. Closed deployment eliminates one class of distraction risk during the highest-stakes deployment window in MSL's short history. That is sufficient justification for the closed decision even without a demonstrated resource-contention link.\n\n**2. Muse Spark is competitive but not clearly superior — which means product embedding is the differentiation strategy.**\n\nPublished benchmarks indicate Muse Spark is competitive with leading frontier models across many tasks, but not clearly best-in-class across the board. If Meta's model were dramatically superior, open-sourcing it might make sense as a market-shaping move. But when the model is competitive rather than dominant, the value comes from where the model lives, not what the model is. A model embedded in the daily habits of billions of WhatsApp and Instagram users is strategically more durable than a model that external developers can replicate and deploy independently. Closed deployment is the correct strategy precisely because product embedding — not raw model superiority — is Meta's actual moat at this capability tier.\n\n**3. The private-preview API access preserves partner leverage without abandoning the ecosystem entirely.**\n\nMeta is offering Muse Spark via private-preview API access to selected partners. This staged approach extends ecosystem reach to high-value relationships while retaining control over distribution, safety posture, and competitive secrecy. It is a more precise expression of Meta's platform DNA than blanket open-weight release, and it keeps the option value of a credible open transition alive.\n\n**Strongest counterargument and why it does not change the recommendation:**\n\nThe most serious counterargument is identity erosion — and the critique is correct to note that the packet provides no direct evidence on how reversible developer trust loss would be after Meta breaks from the Llama playbook. This is a genuine gap in the available evidence, and the recommendation must be honest about it: the claim that ecosystem drift is only \"temporary\" is an assumption, not an established fact.\n\nHowever, the uncertainty cuts both ways. There is equally no evidence that trust loss would be permanent or structurally unrecoverable. Meta has already stated it hopes to open-source future versions. The recommendation is to convert that stated hope into a credible, milestone-bound commitment — which transforms the recoverability question from speculative to tractable. If Meta anchors a named successor release with a public open-weight commitment within 90 days, the trust dynamics shift materially. The closed window becomes a strategic interlude rather than an identity reversal. The failure mode this recommendation is designed to prevent is not the closed launch itself — it is the absence of a credible exit from the closed posture.\n\n---\n\n## Unknowns & Evidence Gaps\n\n- **Resource contention:** The packet does not establish whether open-weight release would materially divert engineering teams from product rollout or increase deployment failure risk. The operational tradeoff argument rests on organizational risk logic, not demonstrated resource dependency.\n\n- **Developer trust recoverability:** The packet does not provide evidence on how reversible ecosystem drift is when a formerly open platform closes. The severity of the identity erosion risk remains speculative without data on community behavior after similar transitions.\n\n- **Monetization runway:** The packet does not specify Meta's near-term revenue targets for Muse Spark or the API preview. The strength of the monetization argument for staying closed depends on how quickly Meta expects returns from product integration versus API revenue.\n\n- **Benchmark credibility:** Published benchmarks are self-reported. The packet notes Fortune's reporting that Muse Spark is competitive but not clearly superior. Independent third-party evaluation results are not available.\n\n- **Competitor open-source responses:** If a major competitor accelerates open-weight releases in response to Meta's closed move, Meta's differentiation calculus changes materially. This scenario is not addressed in the available evidence.\n\n- **Safety and regulatory landscape:** The packet does not specify which safety concerns are frontier-specific versus resolvable at release time. Regulatory pressure for frontier model transparency could make the closed position harder to sustain.\n\n---\n\n## Pass/Fail Readiness\n\n**This recommendation is ready to advance with two conditions:**\n\n1. **Pass condition:** Leadership is prepared to publicly anchor a credible, milestone-bound open roadmap for Muse-family successors within the next 90 days. Without this anchor, the recommendation risks the structural identity erosion identified above — and given the evidence gap on recoverability, that risk cannot be dismissed.\n\n2. **Pass condition:** The private-preview API program has explicit criteria for expansion. Vague partner access without a published expansion path will be read by the developer community as an indefinitely closed strategy regardless of official messaging.\n\n**Fail condition:** If Meta's leadership determines that open-weight release of Muse Spark successors within 12–18 months is commercially or organizationally untenable, the recommendation collapses into an unmitigated closed-platform strategy. In that scenario, the recommendation changes: Meta should reopen immediately rather than attempt to compete on closed product execution alone against firms with larger closed-model infrastructure investments and more established commercial API businesses.\n\n---\n\n## Recommended Next Artifact\n\n**Open Roadmap Commitment Framework** — a one-page public-facing document (or internal draft for leadership review) that specifies: (a) the milestone trigger for open-weight release of the first Muse-family successor, (b) the criteria Meta will use to evaluate readiness for open release, and (c) the developer engagement program that bridges the closed-window period. This artifact converts the current ambiguity in Meta's 'hopes to open-source' language into a strategic asset and directly addresses the recoverability uncertainty that the available evidence cannot resolve on its own.",
+      "claims": [
+        {
+          "claim_id": "side_a-claim-1",
+          "summary": "Keeping Muse Spark closed during its initial product rollout is justified by the reputational stakes of a second high-profile stumble after Llama 4 — not by a demonstrated resource-contention tradeoff, which the available evidence does not establish.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-2",
+          "summary": "Muse Spark is competitive but not clearly best-in-class, which means product embedding across billions of users — not raw model superiority — is Meta's actual differentiation strategy, making closed deployment the correct tactical choice at this capability tier.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_a-claim-3",
+          "summary": "The private-preview API access program preserves high-value ecosystem relationships without abandoning partner leverage; staged openness is a more precise expression of Meta's platform DNA than blanket open-weight release.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": false
+        },
+        {
+          "claim_id": "side_a-claim-4",
+          "summary": "Identity erosion from going closed is a risk of uncertain severity — the evidence does not establish recoverability or permanence — and the mitigation is converting Meta's stated 'hope' to open-source future versions into a credible, milestone-bound public commitment for Muse-family successors.",
+          "evidence_refs": [
+            "ctx-1"
+          ],
+          "is_major": true
+        }
+      ],
+      "citations": [
+        "ctx-1"
+      ],
+      "conclusion_confidence": "medium",
+      "open_questions": [
+        "Does releasing open weights materially divert the same engineering teams responsible for product rollout — and if so, what is the evidence for that dependency?",
+        "How reversible is developer trust loss when a formerly open platform closes, and what mechanisms would accelerate recovery?",
+        "What is the specific milestone or trigger Meta intends to use to determine when a Muse-family successor is ready for open-weight release?",
+        "If a major competitor accelerates open-weight releases in direct response to Meta's closed move, what is the threshold at which Meta would accelerate its own open roadmap?",
+        "Does the private-preview API program have an explicit expansion path, or is partner access effectively indefinitely gated?"
+      ],
+      "critique_responses": [
+        {
+          "finding_id": "finding-2",
+          "disposition": "adopted",
+          "rationale": "The critique is correct on two points: (1) the packet does not establish that open-weight release would materially divert engineering teams or increase deployment failure risk — that operational tradeoff was overstated in the first pass; and (2) asserting that developer ecosystem drift is 'only temporary' without evidence on recoverability was not warranted. The revised artifact corrects both: claim-1 now rests on reputational stakes and organizational risk logic rather than an undemonstrated resource-contention link, and the recoverability uncertainty is explicitly flagged as a genuine evidence gap rather than dismissed. The core recommendation is unchanged — stay closed, commit to a credible open roadmap for successors — but the argument is now calibrated to what the available evidence actually supports."
+        }
+      ]
+    },
+    "side_b": {
+      "run_id": "conflict-2026-04-17-033625880Z-meta-muse-spark",
+      "side_id": "side_b",
+      "round": "final",
+      "artifact_markdown": "# Revised artifact\n\n## Recommendation\nMeta should reopen the frontier roadmap after Muse Spark rather than make closed frontier models the enduring default. Muse Spark can remain closed as a near-term bridge for product integration, partner learning, and launch control, but the company should not convert one controlled launch into a permanent strategic identity.\n\nThe revised reason is narrower and more defensible than the first pass: the case packet does not prove that Meta cannot become best-in-class on a closed path, but it also does not prove that it will. What the packet does show is that Muse Spark is competitive rather than clearly superior today, that larger Muse-family models are already in development, and that Meta's prior differentiation came from the open Llama strategy rather than from leading a closed frontier stack. That means leadership is deciding under uncertainty. In that setting, the safer strategic choice is to preserve the temporary benefits of closure without surrendering the differentiator that previously gave Meta ecosystem reach and developer goodwill.\n\nA pure stay-closed strategy asks Meta to compete more directly on product execution, monetization speed, secrecy, and capital intensity against rivals already established in that lane. The packet identifies real benefits to that approach, and the improving trajectory at MSL is a legitimate counterargument. But trajectory is not the same as evidence of durable dominance. Until Meta has stronger proof that closed-model leadership itself is the source of a durable advantage, it should avoid locking the company into a strategy that blurs its identity and weakens the ecosystem position that was previously distinctive.\n\nThe best course is sequencing, not reversal for its own sake: keep Muse Spark closed long enough to finish rollout across Meta surfaces and learn from selected partners, then publicly commit that frontier successors will move back toward open-weight release once the immediate product-first phase is complete. That preserves control where the packet says control matters, while keeping Meta aligned with the strategic posture that most clearly differentiated it.\n\n## Strongest Counterarguments\nThe strongest counterargument is that Meta's trajectory may now be sharply improving. MSL rebuilt its stack in nine months, Muse Spark is already in market, and larger Muse-family models are in development. On that reading, a closed strategy could be the right way to buy time, protect progress, and convert improving capability into leadership.\n\nThat argument is credible, but still insufficient to justify a permanent closed default. The packet supports momentum, not proof that momentum will translate into a durable closed-model edge. In the absence of that proof, leadership should treat closure as a tactical phase rather than as the long-run strategy.\n\n## Why Reopening Is Still Correct\nReopening remains the better strategic recommendation because it matches the evidence actually available. The packet gives direct support for open-weight releases strengthening developer trust, ecosystem adoption, and Meta's strategic differentiation. It also makes clear that staying closed pushes Meta into more direct competition with closed rivals. Since the packet does not establish decisive superiority for Muse Spark, the burden of proof should be on the strategy that requires Meta to abandon its historical differentiator, not on the strategy that preserves it.\n\n## Decision Frame\nChoose a time-bounded closed launch strategy for Muse Spark, followed by a return toward open-weight frontier successors. The key judgment is not whether temporary closure is useful. It is whether current momentum is enough to justify replacing Meta's open strategic identity with a permanently closed frontier posture. The case packet does not support that stronger conclusion.\n\n## Unknowns & Evidence Gaps\nThe biggest unknown is whether Meta's current trajectory will become durable frontier dominance or remain broad competitiveness without clear separation. The packet also does not show how much monetization, partner leverage, and product control a sustained closed strategy would create relative to the ecosystem and identity costs of abandoning openness. A further gap is how much developer trust would erode if multiple successive frontier models remain closed.\n\n## Pass/Fail Readiness\nPass if leadership accepts a sequencing approach: closed for the current launch phase, open as the directional roadmap once rollout learning is captured. Fail if leadership treats positive trajectory alone as sufficient proof that Meta should permanently compete as a conventional closed frontier lab.\n\n## Recommended Next Artifact\nA decision memo comparing two forward paths for the next Muse-family release: remain closed by default versus reopen with open-weight successors, using explicit criteria for product control, ecosystem leverage, strategic differentiation, and evidence of durable model leadership.",
+      "claims": [
+        {
+          "claim_id": "side_b-claim-1",
+          "summary": "The case packet supports treating Muse Spark's closed posture as a temporary launch tactic, but it does not provide enough evidence to justify making a closed frontier roadmap Meta's enduring default.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-2",
+          "summary": "Open-weight successors better preserve Meta's prior differentiation in developer trust, ecosystem adoption, and platform identity than a sustained closed frontier strategy.",
+          "evidence_refs": [],
+          "is_major": true
+        },
+        {
+          "claim_id": "side_b-claim-3",
+          "summary": "MSL's recent momentum and larger models in development strengthen the case for temporary closure, but trajectory alone is not proof of durable closed-model dominance.",
+          "evidence_refs": [],
+          "is_major": true
+        }
+      ],
+      "citations": [],
+      "conclusion_confidence": "medium",
+      "open_questions": [
+        "Will larger Muse-family models create a durable lead or only maintain broad competitiveness?",
+        "How much ecosystem and developer trust would Meta lose if multiple frontier generations remain closed?",
+        "How much durable strategic advantage would sustained closure create beyond short-term product control and partner leverage?"
+      ],
+      "critique_responses": [
+        {
+          "finding_id": "finding-1",
+          "disposition": "adopted",
+          "rationale": "The critique correctly identified that the first-pass argument overstated what could be inferred from launch-day competitiveness. The revised artifact no longer claims Meta cannot win on a closed path. Instead, it argues that the packet shows momentum and optionality, but not enough evidence to justify a permanent closed-default strategy."
+        }
+      ]
+    }
+  },
+  "min_margin_for_verdict": 0.1
+}

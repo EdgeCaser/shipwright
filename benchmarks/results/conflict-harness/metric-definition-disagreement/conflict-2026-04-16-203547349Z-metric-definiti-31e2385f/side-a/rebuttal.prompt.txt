@@ -1,0 +1,119 @@
+You are SIDE_A in the rebuttal phase for run conflict-2026-04-16-203547349Z-metric-definiti-31e2385f.
+Attack only visible claims from the opposing first-pass artifact.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "target_side": "side_b",
+  "finding_id": "runner-will-assign",
+  "target_claim_ids": [
+    "side_b-claim-1"
+  ],
+  "claim_under_attack": "The opposing claim to challenge.",
+  "attack_type": "evidence_gap",
+  "evidence_or_reason": "Why the visible claim is weak.",
+  "severity": "medium"
+}
+
+Case packet:
+{
+  "scenario_id": "metric-definition-disagreement",
+  "title": "Active user metric with three incompatible definitions",
+  "prompt": "Write a north star metric recommendation when finance, product, and growth each use different definitions of 'active user' that produce outcomes differing by 40%. The choice of definition determines whether the product is growing, flat, or declining. Leadership has asked for a single number.",
+  "artifact_type": "strategy",
+  "rubric": {
+    "dimensions": [
+      "claim quality",
+      "evidence discipline",
+      "responsiveness to critique",
+      "internal consistency",
+      "decision usefulness"
+    ],
+    "scoring_scale": "1-5",
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "constraints": {
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "expect_structured": true,
+    "context_files": [],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "evidence": [],
+  "max_rounds": 3,
+  "tool_policy": "none",
+  "sharing_policy": {
+    "share_case_packet": true,
+    "share_committed_artifacts_after_first_pass": true,
+    "share_critiques_after_open": true,
+    "share_hidden_reasoning": false,
+    "share_provider_identity": false,
+    "share_internal_coalition_drafts": false
+  },
+  "success_condition": {
+    "type": "validator_contract",
+    "description": "Produce a strategy artifact that satisfies the scenario validator contract.",
+    "validator": {
+      "artifact_type": "strategy",
+      "expect_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true
+    }
+  }
+}
+
+Opposing first-pass artifact:
+{
+  "run_id": "conflict-2026-04-16-203547349Z-metric-definiti-31e2385f",
+  "side_id": "side_b",
+  "round": "first_pass",
+  "artifact_markdown": "# North Star Metric Recommendation: Resolving the Active User Definition Conflict\n\n## Decision Frame\n\nLeadership has asked for a single number. The underlying problem is not which definition is numerically largest — it is that the three definitions answer three different business questions, and collapsing them without arbitration will embed the losing teams' concerns into a metric they will quietly ignore or contest.\n\n**The real decision is not \"which number\" but \"what question is the business trying to answer at the north star level.\"**\n\nThe three definitions in conflict are:\n\n| Team | Implicit Question | Typical Definition Shape |\n|---|---|---|\n| Finance | Who is paying or at risk of churning? | Monetizable engagement threshold |\n| Product | Who is deriving core value from the product? | Feature-depth or session-quality threshold |\n| Growth | Who can be counted as acquired and retained? | Any signal of return visit or activation |\n\nThese produce a 40% spread in outcomes — meaning the same underlying user base reads as growth under one lens and decline under another. A north star metric adopted under these conditions will fracture into three shadow metrics within one planning cycle.\n\n**Recommended decision posture:** Do not select a definition on technical grounds alone. Convene a brief leadership alignment session (not a working group) to answer one question first: *Is the business currently optimizing for acquisition breadth, retention depth, or monetization quality?* The answer to that question — not analytical preference — should determine which definition becomes the north star.\n\nIf leadership cannot answer that question, the right output is a **metric architecture** (one north star + two diagnostic metrics), not a single consolidated number. A single number that satisfies no one produces worse decisions than three numbers that are honestly labeled.\n\n---\n\n## Unknowns & Evidence Gaps\n\nThe following are unresolved before a defensible recommendation can be finalized:\n\n1. **Strategic phase of the business.** A growth-phase business should weight acquisition breadth; a maturity-phase business should weight retention depth or monetization quality. The correct definition depends on which phase leadership believes the company is in — this is not in the available evidence.\n\n2. **Behavioral overlap between definitions.** Without knowing what fraction of users qualify under all three definitions vs. only one, it is impossible to determine whether the definitions are measuring genuinely different populations or are simply threshold variants of the same behavior. The 40% spread could reflect a real segmentation gap or a threshold sensitivity artifact.\n\n3. **Downstream metric dependencies.** If compensation, board reporting, or investor commitments are already anchored to one team's definition, the political cost of switching is asymmetric. This is a constraint, not a recommendation driver, but it must be surfaced before a final call.\n\n4. **Reversibility horizon.** If a definition is adopted and later proves wrong, how long until the error is detectable? A metric that takes two quarters to show a signal cannot be corrected quickly. Short reversibility horizon favors conservatism (higher threshold = fewer false positives).\n\n5. **Whether a composite is technically feasible.** A weighted composite of all three definitions might satisfy all teams in principle — but only if the weighting methodology is agreed in advance and the components are independently measurable without double-counting.\n\n---\n\n## Pass/Fail Readiness\n\n**Ready to proceed to definition selection:** No.\n\n**Blocker checklist:**\n\n- [ ] Leadership has stated the current strategic phase (acquisition / retention / monetization)\n- [ ] Behavioral overlap between the three user populations has been quantified\n- [ ] Downstream dependency audit is complete (comp plans, board decks, investor materials)\n- [ ] Composite metric feasibility has been assessed by data engineering\n\n**If all four blockers are resolved:** Proceed to definition selection or composite design with full stakeholder buy-in.\n\n**If leadership requires a number before blockers are resolved:** Issue the Growth team's definition as a *provisional* north star with an explicit sunset date (one planning cycle), paired with a mandate to resolve the above blockers before the next planning cycle. Do not present it as a permanent decision. Document the provisional status in writing.\n\nThe provisional recommendation is the Growth definition because:\n- It produces the largest denominator, which makes it least likely to trigger false alarms during a transition period\n- It is most consistent with external benchmarking conventions, reducing board-level confusion\n- It does not foreclose the Finance or Product definitions, which can be preserved as diagnostic metrics\n\nThis is a holding position, not a north star. Treat it as such.\n\n---\n\n## Recommended Next Artifact\n\n**Metric Architecture Document** — a one-page specification that formalizes:\n\n1. The provisional north star (Growth definition) with its exact operational definition, measurement cadence, and sunset trigger\n2. Two retained diagnostic metrics (Finance and Product definitions) with explicit questions they answer and owners responsible for them\n3. A reconciliation protocol — when the three metrics diverge by more than a defined threshold, who convenes and what is the decision process\n4. A timeline for resolving the four blockers listed above, with named owners\n\nThis document should be reviewed and signed by all three team leads and the executive sponsor before being published. The signing step is not ceremonial — it is the mechanism that prevents each team from continuing to use their own definition in practice while nominally accepting the north star.\n\nWithout the Metric Architecture Document, a north star selection is a naming exercise. With it, it becomes an operating agreement.",
+  "claims": [
+    {
+      "claim_id": "side_b-claim-1",
+      "summary": "The three definitions answer three different business questions; selecting one on technical grounds without first resolving the strategic phase question will produce a metric that is nominally unified but behaviorally ignored by the losing teams.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-2",
+      "summary": "A provisional adoption of the Growth definition is the least-bad holding position if leadership requires an immediate number, because it uses the largest denominator, avoids false alarms during transition, and preserves the other two definitions as diagnostics without foreclosing them.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-3",
+      "summary": "The correct terminal artifact is a Metric Architecture Document with a reconciliation protocol and named owners — not a single definition selected in isolation — because the 40% spread reflects a real segmentation disagreement that a number alone cannot resolve.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-4",
+      "summary": "Four unresolved blockers (strategic phase, behavioral overlap, downstream dependencies, reversibility horizon) prevent a final defensible definition selection; proceeding without them embeds unknown risk into the north star.",
+      "evidence_refs": [],
+      "is_major": false
+    }
+  ],
+  "citations": [],
+  "conclusion_confidence": "medium",
+  "open_questions": [
+    "What is the behavioral overlap between users who qualify under all three definitions vs. only one — is the 40% spread a threshold artifact or a real population gap?",
+    "Are any compensation plans, board commitments, or investor materials already anchored to one team's definition, creating an asymmetric switching cost?",
+    "What strategic phase does leadership believe the business is in — acquisition breadth, retention depth, or monetization quality — and is there an existing document that names this?",
+    "Is a weighted composite of all three definitions technically feasible given current data infrastructure, and if so, who owns the weighting methodology?"
+  ],
+  "critique_responses": []
+}

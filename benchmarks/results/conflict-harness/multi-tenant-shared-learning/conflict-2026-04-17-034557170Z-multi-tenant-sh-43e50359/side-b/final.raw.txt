@@ -1,0 +1,41 @@
+{
+  "run_id": "conflict-2026-04-17-034557170Z-multi-tenant-sh-43e50359",
+  "side_id": "side_b",
+  "round": "final",
+  "artifact_markdown": "# Revised artifact\n\n## Summary\nThis PRD should not approve the feature as currently specified because the requested path to production-grade accuracy depends on cross-tenant training, while the scenario states that every enterprise contract prohibits tenant data from being used in any shared model or training corpus. The product decision is not an automatic permanent rejection of fraud detection as a category; it is a rejection of the current feature framing and a requirement to produce a revised, contract-compliant PRD before any launch decision.\n\n## Problem Statement\nThe requested fraud detection feature is described as requiring cross-tenant transaction patterns to reach production-grade accuracy. The same scenario states that every enterprise customer contract includes a strict data isolation clause prohibiting their data from being used in any shared model or training corpus. That creates a direct conflict between the stated mechanism and the stated contractual boundary.\n\n## Product Decision\nDo not approve the PRD as written. Approve only a revised PRD that keeps strict tenant isolation as a hard requirement and treats compliant technical feasibility as an open question to be resolved before launch.\n\n## Goals\n- Preserve compliance with the stated enterprise data isolation clauses.\n- Produce a decision-ready path for a fraud detection offering only if it can operate within those constraints.\n- Prevent the team from committing to a product outcome that depends on a prohibited training approach.\n\n## Non-Goals\n- Approving a shared model or shared training corpus using enterprise tenant data.\n- Assuming exceptions to the stated contracts.\n- Claiming production readiness before compliant feasibility is established.\n\n## Requirements\n### Functional Requirements\n- Any approved design must preserve tenant data isolation in training and operation.\n- The product definition must not depend on enterprise customer data being used in a shared model or shared corpus.\n- The PRD must clearly separate what is known from what remains unproven about compliant performance.\n\n### Compliance Requirements\n- Existing enterprise contract restrictions are treated as binding product constraints.\n- Launch approval requires confirmation that the implementation and operating model stay within strict isolation.\n\n### Validation Requirements\n- A revised PRD must evaluate whether a compliant design can deliver enough value to justify launch.\n- If that cannot be shown, the feature should not proceed under current contracts.\n\n## Success Criteria\n- The PRD no longer relies on prohibited cross-tenant training.\n- The team identifies a technically and contractually compliant design path or explicitly recommends no-launch.\n- Launch criteria are framed around demonstrated value within the contract boundary.\n\n## Risks\n- The requested accuracy level may depend on a mechanism the contracts prohibit.\n- Teams may confuse rejection of the current framing with rejection of all possible compliant variants.\n- Proceeding without resolving compliant feasibility would make the PRD non-actionable.\n\n## Decision Frame\nThe decision is whether to approve a fraud detection PRD whose stated route to production-grade accuracy conflicts with universal enterprise data isolation clauses in the scenario. Recommendation: reject the PRD as currently specified, require a revised contract-compliant PRD, and defer any broader go/no-go decision until compliant feasibility is established.\n\n## Unknowns & Evidence Gaps\n- No evidence is provided on whether any compliant technical path can achieve the required level of performance.\n- No evidence is provided on what compliant design options are available.\n- No evidence is provided on what level of usefulness would justify launch if the original accuracy target is not achievable within the contract boundary.\n- No evidence is provided on whether any customer segment operates under different terms.\n\n## Pass/Fail Readiness\nPass if a revised PRD defines a fraud detection approach that remains fully inside strict tenant isolation and makes feasibility and launch criteria explicit.\n\nFail if the PRD continues to depend on cross-tenant training, shared corpora, or unsupported assumptions that contractual restrictions can be bypassed.\n\n## Recommended Next Artifact\nA revised PRD and technical decision memo that treats strict isolation as a hard constraint, evaluates compliant design paths without assuming success, and ends with either a contract-compliant v1 proposal or a documented no-launch recommendation.",
+  "claims": [
+    {
+      "claim_id": "side_b-claim-1",
+      "summary": "The PRD should not be approved as currently specified because its stated path to production-grade accuracy depends on cross-tenant training that conflicts with the scenario's universal enterprise prohibition on shared models and shared training corpora.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-2",
+      "summary": "The correct next step is to require a revised contract-compliant PRD rather than assume the broader fraud detection feature is permanently impossible.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-3",
+      "summary": "Because the packet provides no evidence about compliant alternatives or their feasibility, the artifact should preserve those as explicit open questions and defer any final launch decision until they are resolved.",
+      "evidence_refs": [],
+      "is_major": true
+    }
+  ],
+  "citations": [],
+  "conclusion_confidence": "medium",
+  "open_questions": [
+    "Can any contract-compliant design deliver enough fraud detection value to justify launch?",
+    "What launch criterion should replace the current framing if production-grade accuracy depends on prohibited shared training?",
+    "Does any customer segment operate under different contractual terms, or is the isolation constraint universal in practice?",
+    "What revised technical and product design would preserve strict tenant isolation end to end?"
+  ],
+  "critique_responses": [
+    {
+      "finding_id": "finding-1",
+      "disposition": "adopted",
+      "rationale": "The critique correctly identified that the first-pass artifact risked sounding broader than the evidence supports. The revised artifact narrows the major claim to rejection of the PRD as currently specified, not rejection of every possible fraud detection approach, and makes compliant feasibility an explicit prerequisite for any later go/no-go decision. This preserves the contract conflict identified in the scenario while addressing the admitted evidence gap about compliant alternatives."
+    }
+  ]
+}

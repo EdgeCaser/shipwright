@@ -1,0 +1,60 @@
+```json
+{
+  "winner": "side_a",
+  "margin": 0.24,
+  "rubric_scores": {
+    "side_a": {
+      "claim_quality": 4,
+      "evidence_discipline": 4,
+      "responsiveness_to_critique": 5,
+      "internal_consistency": 5,
+      "decision_usefulness": 5,
+      "weighted_total": 4.6
+    },
+    "side_b": {
+      "claim_quality": 3,
+      "evidence_discipline": 3,
+      "responsiveness_to_critique": 4,
+      "internal_consistency": 4,
+      "decision_usefulness": 3,
+      "weighted_total": 3.4
+    }
+  },
+  "dimension_rationales": {
+    "claim_quality": "Side A frames the decision precisely — 'the decision is not should we ship, the decision is whether evidence is sufficient' — and identifies the opt-in confound with a clear mechanistic explanation. Side B's major claims are correct but less precise, and claim 3 in the first pass contained a logical error (funnel deterioration cannot be masked by a downstream retention lift it would suppress). Side B corrected this under critique, but the original imprecision is a mark against claim quality.",
+    "evidence_discipline": "Both sides work from the same sparse scenario inputs and use placeholder citation IDs. Side A uses more specific citation labels (ctx-pilot-opt-in-design, ctx-no-confound-analysis, ctx-no-funnel-reported) that map to distinct evidentiary claims, whereas Side B cites 'ctx-1' for all three major claims indiscriminately. Neither side overclaims the data, but Side A demonstrates tighter evidence tagging. Side A also appropriately downgraded conclusion_confidence from high to medium after absorbing the critique, showing calibration.",
+    "responsiveness_to_critique": "Side A fully adopted the critique about the unsupported 5-7 day timeline, restructuring the recommendation into a Phase 1 data scoping step (2-3 days) with explicit acknowledgment that instrumentation gaps could force a pivot to a fresh A/B test entirely. This is substantive, not cosmetic. Side B also correctly adopted its critique and reframed the drop-off claim precisely, but the revision required less structural change and the response is thinner.",
+    "internal_consistency": "Side A is tightly coherent end-to-end: the pass/fail table maps directly to the gap taxonomy, the conditional approval path is logically sequenced (analysis → A/B test → full rollout), and the appendix articulates the full evidence bar that the rest of the document measures against. The conclusion_confidence downgrade aligns with the structural change in the final artifact. Side B is internally consistent but thinner — the requirements list and pass/fail criteria align, but the document lacks cross-referencing mechanisms that would make the consistency legible.",
+    "decision_usefulness": "Side A's artifact is substantially more actionable: a structured pass/fail table with status and owners, a phased recommendation with specific decision triggers, a conditional approval path naming intermediate steps (A/B test before full rollout), and an appendix that sets the full evidence bar. A product leader can immediately assign work from Side A's output. Side B's recommended next artifact is described only as 'an experiment brief' with a list of components — useful framing but not enough to hand off without further elaboration."
+  },
+  "side_summaries": {
+    "side_a": {
+      "strengths": [
+        "Pass/fail table with gap owners and status is immediately actionable without further elaboration.",
+        "Two-phase recommendation (data scoping before analysis) correctly absorbed the critique and added material nuance about instrumentation risk."
+      ],
+      "weaknesses": [
+        "Appendix 'strong evidence bar' adds value but signals the main body may underspecify what a full rollout would eventually require — some readers may treat it as aspirational rather than binding."
+      ]
+    },
+    "side_b": {
+      "strengths": [
+        "Requirements section (randomized assignment, funnel instrumentation, selection-bias analysis) is well-structured and maps directly to the evidence gaps.",
+        "Appropriately calibrated at medium confidence throughout, avoiding overconfidence given the scenario's thin evidence base."
+      ],
+      "weaknesses": [
+        "All three major claims cite the same undifferentiated 'ctx-1' reference, making evidence traceability low and obscuring which specific scenario facts support which claims."
+      ]
+    }
+  },
+  "decisive_dimension": "decision_usefulness",
+  "decisive_findings": [
+    "Side A's pass/fail readiness table assigns owners and current status to each gap, enabling immediate work assignment; Side B's pass/fail section is a checklist without owners or status.",
+    "Side A's final artifact restructured the next-steps recommendation into two phases with a decision fork (data scoping may reveal that a fresh A/B test is faster than analysis reconstruction), a level of operational specificity absent from Side B.",
+    "Side A's conditional approval path explicitly names the intermediate step (randomized A/B test at 20% of new users before full rollout), whereas Side B names phases without specifying the intermediate gate or scope."
+  ],
+  "judge_confidence": "high",
+  "needs_human_review": false,
+  "rationale": "Both sides correctly diagnose the survivorship bias problem and block the immediate expansion decision. The gap between them is not in the core analytical conclusion but in the depth and operationalizability of the artifact. Side A produces a document that a product team can act on directly: it names gap owners, assigns status, sequences the approval path with named intermediate artifacts, and adds an evidence bar appendix that sets the standard for eventual full rollout. Its response to critique was substantive — adding a Phase 1 data scoping step rather than just softening timeline language — and it correctly updated its confidence calibration. Side B is a sound document that would pass a basic PRD review, but its recommendation section, citation discipline, and pass/fail table are all less specific than Side A's. The margin is clear across four of five dimensions, warranting high judge confidence."
+}
+```

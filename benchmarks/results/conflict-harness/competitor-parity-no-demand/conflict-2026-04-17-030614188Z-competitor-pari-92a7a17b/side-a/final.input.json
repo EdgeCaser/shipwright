@@ -1,0 +1,107 @@
+{
+  "case_packet": {
+    "scenario_id": "competitor-parity-no-demand",
+    "title": "Feature parity PRD with no user demand evidence",
+    "prompt": "Write a PRD for adding an advanced export feature. The sole justification provided is that two competitors launched similar features last month. There is no user research, no customer request data, no support ticket volume, and no sales loss attribution to the missing feature. The engineering estimate is 10 weeks.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "first_pass": {
+    "run_id": "conflict-2026-04-17-030614188Z-competitor-pari-92a7a17b",
+    "side_id": "side_a",
+    "round": "first_pass",
+    "artifact_markdown": "# PRD: Advanced Export Feature\n\n**Status:** NOT READY FOR SCOPING — evidence gate not cleared  \n**Requesting team:** Product  \n**Date:** 2026-04-17  \n**Engineering estimate on file:** 10 weeks\n\n---\n\n## Decision Frame\n\nThis PRD documents a proposed investment in an advanced export feature. The triggering input is competitive: two named competitors shipped similar functionality within the past month. No other initiating signal is present in the brief.\n\nThe decision this document must support is not \"how do we build this\" but rather: **Is there sufficient justification to authorize 10 weeks of engineering time on this feature?**\n\nCompetitor parity is a legitimate signal category but is not, on its own, a demand signal. It tells us what the market supply looks like; it does not tell us whether our users want this capability, whether absence of the feature is costing us deals, or whether 10 weeks is a proportionate response. A competitor shipping something is evidence that they made a bet — not evidence that the bet was correct, nor that our user base shares the same profile as theirs.\n\nThis PRD takes the position that the investment case is currently underdetermined and that authorizing the full build would be premature. The recommended path is a time-boxed discovery sprint, not a 10-week build.\n\n---\n\n## Unknowns & Evidence Gaps\n\nThe following gaps must be resolved before a build decision is defensible:\n\n**1. User demand — not established**  \nNo user research is present. No customer interviews, survey data, or behavioral signals (e.g., export-related workarounds, API usage patterns) have been cited. We do not know whether our users perceive a gap here or consider it a priority.\n\n**2. Support and sales signal — not established**  \nNo support ticket volume referencing export limitations has been cited. No sales calls, deal loss records, or CRM notes attributing lost or stalled deals to the missing feature have been provided. Without this, we cannot estimate revenue impact or support cost avoidance.\n\n**3. Competitor feature scope — not characterized**  \nWe know competitors shipped \"similar features\" but have no description of what those features actually do, which user segments they serve, or how they are positioned. \"Advanced export\" is not a specification.\n\n**4. Our user segment overlap — not established**  \nEven if competitor demand is real, we do not know whether our user base resembles theirs closely enough that the demand transfers. Competitor parity is weaker signal when our segments diverge.\n\n**5. Opportunity cost — not assessed**  \nA 10-week engineering block displaces other work. No comparison against the queue of demand-backed items has been presented. The relative priority claim is unsubstantiated.\n\n**6. Definition of \"advanced\" — undefined**  \nThe feature is unnamed in functional terms. Any estimate built on this brief carries high scope uncertainty.\n\n---\n\n## Pass/Fail Readiness\n\n| Readiness Gate | Status |\n|---|---|\n| User demand signal (research, tickets, or sales data) | FAIL — not present |\n| Feature scope defined to estimation quality | FAIL — \"advanced export\" is a label, not a spec |\n| Competitor feature characterized | FAIL — no description on file |\n| Opportunity cost assessed against backlog | FAIL — not addressed |\n| Engineering estimate tied to a defined scope | CONDITIONAL — estimate exists but scope does not |\n\n**Overall readiness: NOT CLEARED**\n\nA PRD that clears all gates would authorize scoping. This document does not clear the gates and therefore does not authorize scoping. Proceeding directly to a 10-week build on current evidence would be a policy exception, not a normal investment decision.\n\n---\n\n## Recommended Next Artifact\n\n**Discovery brief — target completion: 2 weeks**\n\nThe requesting team should produce a discovery brief that addresses the five demand gaps above before returning with a build PRD. Concretely:\n\n1. **Customer interviews (5–8):** Ask existing users whether export limitations have caused friction, workarounds, or near-churns. Document verbatims.\n2. **Support ticket audit:** Search tickets from the past 6 months for export-related language. Report volume and representative quotes.\n3. **Sales / CS survey:** Ask account executives and customer success managers whether export capability has come up in deal reviews or renewal conversations.\n4. **Competitor teardown:** Document what the two competitors actually shipped — screenshots, changelog entries, or user reports. Characterize scope.\n5. **Backlog comparison:** Stack this item against the top 3 demand-backed items in the current queue and state the tradeoff explicitly.\n\nIf the discovery brief returns positive demand signal across at least two of these sources, a scoped build PRD is warranted. If it returns weak or absent signal, the recommended disposition is to park the feature and revisit in the next planning cycle.\n\nThe requesting team should not interpret this document as a rejection of the feature. It is a request for the minimum evidence that makes a 10-week commitment defensible.",
+    "claims": [
+      {
+        "claim_id": "side_a-claim-1",
+        "summary": "Competitor parity alone does not constitute sufficient demand evidence to authorize a 10-week engineering investment; the build decision is currently underdetermined.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_a-claim-2",
+        "summary": "Five distinct evidence gaps exist — user demand, support/sales signal, competitor feature scope, segment overlap, and opportunity cost — none of which are addressed in the brief.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_a-claim-3",
+        "summary": "A 2-week discovery sprint is a proportionate and lower-risk next step compared to authorizing the full build on the current evidence base.",
+        "evidence_refs": [],
+        "is_major": false
+      }
+    ],
+    "citations": [],
+    "conclusion_confidence": "high",
+    "open_questions": [
+      "What specifically did each competitor ship — what user actions does the feature enable and which user segments does it target?",
+      "Has the requesting team received any inbound signal (tickets, sales mentions, user feedback) that predates the competitor launches?",
+      "What is the opportunity cost — which demand-backed items would a 10-week block displace?",
+      "Is 'advanced export' a label carried over from a competitor description, or does the requesting team have an independent scope definition in mind?"
+    ],
+    "critique_responses": []
+  },
+  "critique_packet": {
+    "target_side": "side_a",
+    "finding_id": "finding-2",
+    "target_claim_ids": [
+      "side_a-claim-3"
+    ],
+    "claim_under_attack": "A 2-week discovery sprint is a proportionate and lower-risk next step compared to authorizing the full build on the current evidence base.",
+    "attack_type": "evidence_gap",
+    "evidence_or_reason": "The artifact establishes that the 10-week build lacks evidence, but it does not provide any basis for why a 2-week discovery sprint is the right scope, cost, or method. There is no evidence about team availability, research complexity, whether five to eight interviews and multiple audits can be completed in that window, or why this discovery work outranks other backlog items. That makes the 'proportionate and lower-risk' framing asserted rather than supported.",
+    "severity": "medium"
+  }
+}

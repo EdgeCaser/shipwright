@@ -1,0 +1,90 @@
+You are SIDE_B in a sealed first-pass conflict harness run.
+Do not reveal provider identity.
+Do not mention or speculate about the opponent.
+Do not write the literal strings "Side A", "Side B", "side_a", or "side_b" inside artifact_markdown. Use scenario-native language there (e.g., "the requesting team", "the receiving team"). The JSON structural fields (run_id, side_id, round, etc.) must use the exact values shown in the template above.
+EVIDENCE CONSTRAINT: The only evidence available to you is contained in the case packet above. Do not introduce statistics, benchmarks, thresholds, cost estimates, or citations not present in the packet. Every ctx-N reference in evidence_refs and citations must correspond to an actual evidence_id in the case packet. Do not invent quantitative specifics to strengthen your argument.
+Return ONLY a JSON object with this exact shape:
+
+{
+  "run_id": "conflict-2026-04-17-043314731Z-zillow-offers",
+  "side_id": "side_b",
+  "round": "first_pass",
+  "artifact_markdown": "# Your artifact",
+  "claims": [
+    {
+      "claim_id": "side_b-claim-1",
+      "summary": "One major claim",
+      "evidence_refs": [
+        "ctx-1"
+      ],
+      "is_major": true
+    }
+  ],
+  "citations": [
+    "ctx-1"
+  ],
+  "conclusion_confidence": "medium",
+  "open_questions": [],
+  "critique_responses": []
+}
+
+Case packet:
+{
+  "scenario_id": "zillow-offers",
+  "title": "Zillow Offers: reform iBuying or exit the business",
+  "prompt": "You are a strategy advisor to Zillow's board in October 2021. CEO Rich Barton is evaluating the future of Zillow Offers, the company's iBuying division that purchases homes directly from sellers using algorithmic pricing.\n\nZillow Offers launched in 2018 as a bold bet to transform Zillow from an advertising/lead-gen marketplace into a transactional player. The thesis: Zillow's proprietary Zestimate algorithm (used by 200M+ monthly visitors) gives Zillow a pricing edge that competitors like Opendoor and Offerpad lack.\n\nThe reality has been different. Zillow Offers purchased 9,680 homes in Q3 2021 alone, but the pricing algorithm has been systematically overpaying. Zillow is sitting on ~7,000 homes purchased above current market value. The company just announced it would pause home purchases due to 'labor and supply constraints' — but insiders know the real issue is pricing model failure.\n\nKey evidence available:\n- Zillow Offers Q3 2021: purchased 9,680 homes, sold 3,032 homes\n- Inventory backlog: ~7,000 homes on the books, many underwater\n- Estimated write-down exposure: $300-500M\n- Zillow Offers revenue: $1.2B in Q3 2021 (vs $740M in Q3 2020)\n- Zillow Offers EBITDA: negative, losses widening quarter-over-quarter\n- Total Zillow revenue: $1.7B in Q3 2021 (Offers is 70% of revenue but a drag on margins)\n- Zestimate median error rate: ~6.9% nationally (too wide for thin-margin home flipping)\n- Competitor Opendoor: narrower geography, lower volume, but consistently closer to breakeven\n- Zillow core business (IMT segment): $490M revenue, ~30% EBITDA margins, growing 20%+ YoY\n- Zillow stock: dropped from $200 (Feb 2021) to ~$85 (Oct 2021)\n- Housing market: prices rose 19.5% YoY (Case-Shiller, Aug 2021) but showing signs of cooling\n- Zillow headcount: grew from 5,400 (2019) to 8,000+ (2021), mostly Offers-related hires\n- Home flipping industry average margin: 2-5% gross, requires sub-2% pricing accuracy\n- Zillow had already pivoted the algorithm twice in 2021 to reduce overpayment\n- Board concern: Offers losses are masking the strength of the core marketplace business\n\nThe board must decide: reform Zillow Offers with tighter pricing controls and reduced volume, or exit iBuying entirely and refocus on the high-margin marketplace business?\n\nWrite a strategic recommendation memo. Take a clear position — reform or exit — and defend it with evidence. Acknowledge the strongest counterarguments and explain why your position is still correct.",
+  "artifact_type": "strategy",
+  "rubric": {
+    "dimensions": [
+      "claim quality",
+      "evidence discipline",
+      "responsiveness to critique",
+      "internal consistency",
+      "decision usefulness"
+    ],
+    "scoring_scale": "1-5",
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "constraints": {
+    "expected_sections": [
+      "Decision Frame",
+      "Unknowns & Evidence Gaps",
+      "Pass/Fail Readiness",
+      "Recommended Next Artifact"
+    ],
+    "expect_structured": true,
+    "context_files": [],
+    "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+  },
+  "evidence": [],
+  "max_rounds": 3,
+  "tool_policy": "none",
+  "sharing_policy": {
+    "share_case_packet": true,
+    "share_committed_artifacts_after_first_pass": true,
+    "share_critiques_after_open": true,
+    "share_hidden_reasoning": false,
+    "share_provider_identity": false,
+    "share_internal_coalition_drafts": false
+  },
+  "success_condition": {
+    "type": "validator_contract",
+    "description": "Produce a strategy artifact that satisfies the scenario validator contract.",
+    "validator": {
+      "artifact_type": "strategy",
+      "expect_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true
+    }
+  }
+}
