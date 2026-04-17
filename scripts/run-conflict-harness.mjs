@@ -1417,7 +1417,11 @@ async function repairMalformedJudgeOutput({ outDir, prompt, rawOutput, parseErro
 }
 
 async function repairVerdict(options) {
-  const repairPrompt = [
+  const phase2FieldErrors = options.errors.filter((e) =>
+    PHASE2_UNCERTAINTY_FIELDS.some((f) => e.path === `$.${f}`),
+  );
+
+  const repairLines = [
     options.prompt,
     '',
     'Repair addendum:',
@@ -1427,6 +1431,22 @@ async function repairVerdict(options) {
     '- Any rubric_scores.*.weighted_total value must be a normalized aggregate on the same 1-5 scale as the rubric dimensions, not a raw sum.',
     '- Do not omit dimension_rationales, side_summaries, or decisive_dimension.',
     '- If the verdict is a tie, low confidence, or needs human review, do not omit the full Phase 2 uncertainty payload.',
+  ];
+
+  if (phase2FieldErrors.length > 0) {
+    const missingFields = phase2FieldErrors.map((e) => e.path.replace('$.', ''));
+    repairLines.push(
+      '',
+      'MANDATORY — PHASE 2 UNCERTAINTY PAYLOAD:',
+      'Your verdict triggers the uncertainty payload (tie, low confidence, or needs_human_review: true).',
+      'The following fields are REQUIRED and must contain substantive content derived from your rationale:',
+      ...missingFields.map((f) => `  - ${f} (must not be absent, null, or empty)`),
+      'Each array field needs at least 1 non-empty string. Each string field needs at least 1 character.',
+      'Base the content on your rationale, the rubric scores, and the scenario context.',
+    );
+  }
+
+  repairLines.push(
     '',
     'Required schema shape:',
     JSON.stringify(buildVerdictShapeExample(), null, 2),
@@ -1435,7 +1455,9 @@ async function repairVerdict(options) {
     '',
     'Previous verdict JSON:',
     JSON.stringify(options.previousVerdict, null, 2),
-  ].join('\n');
+  );
+
+  const repairPrompt = repairLines.join('\n');
 
   const repairPromptPath = path.join(options.outDir, 'verdict.repair.prompt.txt');
   const repairPacketPath = path.join(options.outDir, 'verdict.repair.input.json');
