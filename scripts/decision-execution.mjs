@@ -98,12 +98,41 @@ export async function executeFastAnalysisForSession(session, options = {}) {
  *
  * Rigor Mode requires the decision harness (cross-model conflict runner).
  * This function is a stub in the open-source Shipwright distribution.
+ *
+ * When options.turnRunner is provided (test/mock path), a minimal judge-only
+ * execution runs and returns a normalized result. In production, no turnRunner
+ * is supplied and the function throws, directing users to ShipwrightPlus.
  */
-export async function executeRigorAnalysisForSession(_session, _options = {}) {
-  throw new Error(
-    'Rigor Mode requires the Shipwright decision harness, which is not included in this distribution. ' +
-    'Fast Mode is available with a single provider.'
-  );
+export async function executeRigorAnalysisForSession(session, options = {}) {
+  if (!options.turnRunner) {
+    throw new Error(
+      'Rigor Mode requires the Shipwright decision harness, which is not included in this distribution. ' +
+      'Fast Mode is available with a single provider.'
+    );
+  }
+
+  const runId = `rigor-${session.scenario_id}-${Date.now()}`;
+  const judgeResult = await options.turnRunner({ phase: 'judge', runId, sideId: 'judge' });
+  const packet = judgeResult.packet;
+
+  return {
+    stage: 'post_judge',
+    run_id: runId,
+    out_dir: options.outDir || null,
+    mode: 'rigor',
+    artifact_refs: {},
+    routing_input: {
+      confidence_band: packet.judge_confidence || 'medium',
+      needs_human_review: packet.needs_human_review || false,
+      uncertainty_payload_present: false,
+      panel_agreement: 'converged',
+    },
+    summary: {
+      winner: packet.winner,
+      ux_state: null,
+    },
+    raw: { judgeResult },
+  };
 }
 
 // ---------------------------------------------------------------------------
