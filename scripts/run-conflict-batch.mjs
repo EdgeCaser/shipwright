@@ -202,6 +202,63 @@ export async function runBatch(options = {}) {
   return results;
 }
 
+// Documented empirical leans: the side each provider family consistently favors as judge.
+const PROVIDER_LEAN = {
+  anthropic: 'side_a', // ~100% side_a rate across all judged runs
+  openai: 'side_b',    // ~3x side_b rate vs side_a across rebaseline corpus
+};
+
+export function verdictTrustLevel(result) {
+  if (!result.winner || result.status !== 'completed' || !result.judgeProvider) return 'unknown';
+  if (result.winner === 'tie') return 'medium';
+  const lean = PROVIDER_LEAN[result.judgeProvider];
+  if (!lean) return 'medium'; // provider with no empirical lean data
+  return result.winner === lean ? 'low' : 'high';
+}
+
+const LEAN_SIDE_LABEL = {
+  side_a: 'Side A',
+  side_b: 'Side B',
+};
+
+const DIM_EXPLANATION = {
+  decision_usefulness: 'operational specificity — concrete next steps, named owners, quantified thresholds',
+  evidence_discipline: 'staying within the evidence and not overreaching',
+  claim_quality: 'the strength and precision of the claims made',
+  responsiveness_to_critique: 'how well the artifact incorporated rebuttal feedback',
+  internal_consistency: 'logical coherence across the artifact',
+};
+
+export function verdictInterpretation(result) {
+  const trust = verdictTrustLevel(result);
+  const judgeLabel = result.judgeLabel || 'The judge';
+  const lean = PROVIDER_LEAN[result.judgeProvider];
+  const leanLabel = lean ? LEAN_SIDE_LABEL[lean] : null;
+  const winnerLabel = result.winner === 'side_a' ? (result.sideALabel || 'Side A')
+    : result.winner === 'side_b' ? (result.sideBLabel || 'Side B')
+    : null;
+  const dimNote = result.decisiveDimension
+    ? ` Resolved on ${result.decisiveDimension}${DIM_EXPLANATION[result.decisiveDimension] ? ` (${DIM_EXPLANATION[result.decisiveDimension]})` : ''}.`
+    : '';
+
+  if (trust === 'unknown') return 'Verdict incomplete or missing data — no interpretation available.';
+
+  if (result.winner === 'tie') {
+    return `${judgeLabel} deadlocked — both artifacts scored too close to call.${dimNote} Check the uncertainty payload for what evidence would resolve this.`;
+  }
+
+  if (trust === 'high') {
+    return `${judgeLabel} overrode its documented lean toward ${leanLabel} to call ${winnerLabel} the winner — this is the strongest trust signal the harness produces.${dimNote}`;
+  }
+
+  if (trust === 'low') {
+    return `${judgeLabel} called ${winnerLabel} the winner, consistent with its documented lean toward ${leanLabel}.${dimNote} Run --swap-sides before drawing conclusions.`;
+  }
+
+  // medium — neutral provider, no documented lean
+  return `${judgeLabel} (no documented lean) called ${winnerLabel} the winner.${dimNote}`;
+}
+
 export function buildSummary(results) {
   const lines = [];
 
@@ -212,13 +269,33 @@ export function buildSummary(results) {
   lines.push(`Errors: ${results.filter((r) => r.status === 'error').length}`);
   lines.push('');
 
+  // Positional lean warning — surface inline so it can't be missed
+  const completedResults = results.filter((r) => r.sideAProvider && r.judgeProvider);
+  const sideAProviders = [...new Set(completedResults.map((r) => r.sideAProvider))];
+  for (const sideAProvider of sideAProviders) {
+    const biasedJudgeLabels = [
+      ...new Set(
+        completedResults
+          .filter((r) => r.sideAProvider === sideAProvider && r.judgeProvider === sideAProvider)
+          .map((r) => r.judgeLabel)
+      ),
+    ];
+    if (biasedJudgeLabels.length > 0) {
+      lines.push(`> **WARNING — Positional Lean:** Judge(s) [${biasedJudgeLabels.join(', ')}] share a provider family with Side A (${sideAProvider}).`);
+      lines.push(`> Claude-family judges call side_a ~100% of the time. GPT-family judges call side_b at ~3x the rate of side_a.`);
+      lines.push(`> Verdicts from these judges cannot be trusted as standalone conclusions. Add a cross-family judge or run --swap-sides before drawing any conclusions.`);
+      lines.push('');
+    }
+  }
+
   // Per-run results table
   lines.push('## Run Results');
   lines.push('');
-  lines.push('| Scenario | Side A | Side B | Judge | Status | Winner | Margin | Confidence | Human Review | Disagreement | Declared | Revised |');
-  lines.push('|---|---|---|---|---|---|---|---|---|---|---|---|');
+  lines.push('| Scenario | Side A | Side B | Judge | Status | Winner | Margin | Confidence | Trust | Human Review | Disagreement | Declared | Revised |');
+  lines.push('|---|---|---|---|---|---|---|---|---|---|---|---|---|');
 
   for (const r of results) {
+    const trust = verdictTrustLevel(r);
     lines.push([
       '',
       r.scenario,
@@ -229,12 +306,25 @@ export function buildSummary(results) {
       r.winner || '—',
       r.margin != null ? r.margin.toFixed(2) : '—',
       r.judgeConfidence || '—',
+      trust,
       r.needsHumanReview != null ? String(r.needsHumanReview) : '—',
       r.disagreementRate != null ? r.disagreementRate.toFixed(2) : '—',
       r.declaredAdoptionRate != null ? r.declaredAdoptionRate.toFixed(2) : '—',
       r.substantiveRevisionRate != null ? r.substantiveRevisionRate.toFixed(2) : '—',
       '',
     ].join(' | '));
+  }
+
+  // Plain-English verdict interpretations
+  const interpretable = results.filter((r) => r.status === 'completed');
+  if (interpretable.length > 0) {
+    lines.push('');
+    lines.push('## Verdict Interpretations');
+    lines.push('');
+    for (const r of interpretable) {
+      lines.push(`**${r.scenario} (${r.judgeLabel}):** ${verdictInterpretation(r)}`);
+      lines.push('');
+    }
   }
 
   // Flagged verdicts — uncertainty payload for triggered runs
