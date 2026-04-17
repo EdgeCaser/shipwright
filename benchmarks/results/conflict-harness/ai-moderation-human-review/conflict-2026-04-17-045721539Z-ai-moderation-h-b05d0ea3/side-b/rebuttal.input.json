@@ -1,0 +1,103 @@
+{
+  "case_packet": {
+    "scenario_id": "ai-moderation-human-review",
+    "title": "AI content moderation with mandatory human review SLA conflict",
+    "prompt": "Write a PRD for an AI-assisted content moderation system where the spec requires AI to flag content automatically AND requires a human reviewer to approve every removal decision, but the SLA requires removals within 60 seconds and the human review queue has a 4-hour average response time.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "opposing_first_pass": {
+    "run_id": "conflict-2026-04-17-045721539Z-ai-moderation-h-b05d0ea3",
+    "side_id": "side_a",
+    "round": "first_pass",
+    "artifact_markdown": "# PRD: AI-Assisted Content Moderation System\n\n> **Status:** BLOCKED — contains an unresolved spec conflict that must be resolved before implementation can proceed.\n\n---\n\n## Decision Frame\n\n### The Core Conflict\n\nThe current spec contains three requirements that cannot simultaneously be satisfied:\n\n| Requirement | Source |\n|---|---|\n| AI flags content automatically | Spec |\n| A human reviewer must approve every removal decision | Spec |\n| Removals must complete within 60 seconds | SLA |\n\nHuman review averages 4 hours. Human pre-approval of removals is therefore structurally incompatible with the 60-second SLA. This is not a tuning problem — it is a logical contradiction. No implementation path resolves it without the requesting team choosing which requirement to relax.\n\n### What Must Be Decided\n\nThe requesting team must choose one of the following three resolution paths before this spec can be built:\n\n**Path 1 — Provisional Removal (AI acts first, human reviews after)**\nThe AI removes content within the 60-second SLA. Human reviewers audit removals within an agreed post-hoc window (e.g., 4 hours). Overturned removals trigger content restoration and creator notification. \"Mandatory human review\" is reframed as a mandatory reversal window, not a pre-approval gate.\n\n- Meets 60-second SLA.\n- Requires accepting that some removals will be wrong until overturned.\n- Requires a defined restoration SLA and appeals workflow.\n- Shifts human review from a gate to an audit.\n\n**Path 2 — SLA Renegotiation (accept human-gated latency)**\nThe 60-second SLA is renegotiated to reflect actual human review capacity. The SLA is redefined as the time from AI flag to human decision, not to removal execution.\n\n- Preserves mandatory pre-approval semantics.\n- Requires stakeholder agreement that the 60-second SLA is not binding for human-reviewed decisions.\n- May be suitable if the content category is low-velocity or high-stakes (e.g., legal hold content).\n\n**Path 3 — Tiered Authorization (SLA tier by AI confidence)**\nHigh-confidence AI decisions (above a defined threshold) proceed to removal without human pre-approval. Decisions below threshold enter the human review queue with an extended SLA.\n\n- Partial SLA compliance (fast tier meets 60 seconds; slow tier does not).\n- Requires defining confidence threshold and its validation methodology.\n- Introduces a two-tier system that must be governed and audited separately.\n- Shifts risk: miscalibrated thresholds silently route content to wrong tier.\n\n### Recommended Path\n\nPath 1 is the most viable starting point for a high-velocity moderation system. It preserves the 60-second SLA, retains meaningful human oversight through mandatory audit, and maps to common industry practice for platform moderation at scale. However, it requires the requesting team to explicitly accept provisional-removal semantics — this is a policy decision, not a technical one, and it must be documented as such.\n\nPath 3 is viable as a Phase 2 refinement once confidence threshold data exists from Path 1 operations.\n\n---\n\n## Unknowns & Evidence Gaps\n\nThe following questions are currently unanswered and block final spec lock:\n\n1. **What is the acceptable false-positive rate for AI-driven provisional removals?** The risk tolerance for wrongful removal governs whether Path 1 is acceptable at all. Without a stated tolerance, the spec cannot be evaluated for safety.\n\n2. **What is the content volume and velocity?** Human review queue depth of 4 hours could reflect understaffing, high volume, or both. If volume is low, staffing investment could close the gap and make Path 2 viable.\n\n3. **What are the legal or regulatory obligations driving the \"mandatory human review\" requirement?** If human pre-approval is legally required (e.g., GDPR, DSA compliance, contractual obligation), Paths 1 and 3 may not be available regardless of technical feasibility.\n\n4. **What is the restoration SLA if a provisional removal is overturned?** Path 1 is incomplete without a defined recovery path. Restoration latency is a user-harm vector that needs its own SLA.\n\n5. **Is the 60-second SLA externally committed or internally aspirational?** An aspirational SLA can be renegotiated; a contractual one cannot. The answer changes which paths are available.\n\n6. **What content categories are in scope?** A system moderating spam has different risk profiles than one moderating potential self-harm content. Category-level risk tiering may change which path applies per content type.\n\n---\n\n## Pass/Fail Readiness\n\n| Criterion | Status | Blocker |\n|---|---|---|\n| Spec is internally consistent | **FAIL** | 60-second SLA + mandatory human pre-approval are mutually exclusive |\n| Decision owner identified | **UNKNOWN** | Resolution path requires a policy decision; owner not named in spec |\n| Legal/regulatory constraints documented | **UNKNOWN** | Human review requirement may be legally mandated — not stated |\n| False-positive tolerance stated | **FAIL** | Required to evaluate Path 1 risk |\n| Restoration/appeals workflow specified | **FAIL** | Required for any provisional-removal implementation |\n| Content volume/velocity known | **UNKNOWN** | Required to evaluate Path 2 viability |\n\n**Overall Readiness: NOT READY FOR IMPLEMENTATION**\n\nThis spec should not proceed to engineering scoping until the resolution path is chosen and the FAIL items are closed.\n\n---\n\n## Recommended Next Artifact\n\n**Produce a Decision Brief addressed to the product owner and legal/policy stakeholder**, covering:\n\n1. A plain-language summary of the three resolution paths with their tradeoffs.\n2. A direct question: Is mandatory human pre-approval a legal/regulatory requirement or a product policy preference?\n3. A request for stated false-positive tolerance and content volume data.\n4. A proposed timeline for decision (suggest 5 business days to avoid implementation delay).\n\nOnce the decision brief is returned with answers, this PRD can be relocked in a single revision pass. Engineering scoping should not begin until that revision is complete.\n",
+    "claims": [
+      {
+        "claim_id": "side_a-claim-1",
+        "summary": "The spec contains a logical contradiction: mandatory human pre-approval of removals and a 60-second removal SLA cannot both be satisfied when human review averages 4 hours. No implementation resolves this without relaxing one requirement.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_a-claim-2",
+        "summary": "Provisional removal (AI acts first, human audits after) is the most viable path for high-velocity moderation, but requires an explicit policy decision to accept provisional-removal semantics — which is out of scope for engineering to decide unilaterally.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_a-claim-3",
+        "summary": "Whether the mandatory human review requirement is legally mandated or a product preference is the single highest-priority unknown, because it determines which resolution paths are legally available.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_a-claim-4",
+        "summary": "The spec is not ready for implementation and should not proceed to engineering scoping until the contradiction is resolved and a restoration/appeals workflow is defined.",
+        "evidence_refs": [],
+        "is_major": false
+      }
+    ],
+    "citations": [],
+    "conclusion_confidence": "high",
+    "open_questions": [
+      "Is mandatory human pre-approval a regulatory/legal obligation or an internal policy preference? This is the highest-priority blocker.",
+      "What is the acceptable false-positive rate for provisional AI-driven removals?",
+      "Is the 60-second SLA externally committed (contractual) or internally aspirational?",
+      "What is the human review queue volume and staffing level — is the 4-hour average reducible with investment?",
+      "What is the required restoration SLA if a provisional removal is overturned?"
+    ],
+    "critique_responses": []
+  }
+}

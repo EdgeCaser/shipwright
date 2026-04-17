@@ -1,0 +1,40 @@
+{
+  "run_id": "conflict-2026-04-17-045721539Z-ai-moderation-h-b05d0ea3",
+  "side_id": "side_b",
+  "round": "final",
+  "artifact_markdown": "# Revised artifact\n\n## PRD: AI-Assisted Content Moderation With Human Approval Constraint\n\n## Product Decision\nDesign the system around automatic AI flagging and human-approved removals, and treat the current combination of requirements as unresolved at the PRD level unless stakeholders redefine either the SLA, the approval rule, or the review operating model. The PRD should separate immediate machine actions from final removal actions and state that the current spec does not yet describe an implementable removal flow.\n\n## Problem Statement\nThe requested system must do all of the following:\n- Automatically flag content with AI.\n- Require a human reviewer to approve every removal decision.\n- Meet a removal SLA of 60 seconds.\n- Operate with a human review queue that currently averages a 4-hour response time.\n\nAs written, these requirements conflict in the current operating model for any flow where final removal depends on prior human approval. A revised review design could change that, but that redesign is not yet specified in the case packet.\n\n## Users and Stakeholders\n- Trust and safety operations team reviewing flagged content.\n- End users whose content may be flagged or removed.\n- Product and policy owners responsible for enforcement quality and SLA compliance.\n\n## Goals\n- Detect potentially violative content automatically.\n- Preserve human accountability for final removal decisions.\n- Make the operating contract explicit for what happens immediately versus after review.\n- Produce a PRD that is implementable only after the requirement conflict is resolved.\n\n## Non-Goals\n- Fully autonomous removals.\n- Assuming the present review latency is immutable.\n- Claiming the current spec is launch-ready without resolving the conflict.\n\n## Proposed Product Behavior\n### 1. AI Flagging\nThe system automatically evaluates incoming content and flags content that may require action.\n\n### 2. Queueing for Human Review\nAll candidate removals are routed to human review for approval before final removal.\n\n### 3. Interim System Actions\nThe PRD should explicitly define whether the product supports non-final actions before human review, such as hold, limited visibility, or pending status. These actions must be distinguished from final removal.\n\n### 4. Final Enforcement\nContent is removed only after human approval unless stakeholders change the approval rule for defined cases.\n\n## Requirements\n### Functional Requirements\n- The system must automatically flag content for review.\n- The system must record AI rationale and review status for each flagged item.\n- The system must require explicit human approval before final removal unless policy defines an exception.\n- The system must expose queue state and decision status to operations tooling.\n\n### Policy Requirements\n- Final removal must remain a human-authorized action under the current policy statement.\n- Any machine-driven interim restriction must be explicitly distinguished from removal.\n\n### SLA Requirements\n- The PRD must not claim that the current operating model satisfies 60-second final removals when final removal depends on a review queue that currently averages 4 hours.\n- The PRD must require a decision on whether to change the SLA, the approval rule, or the review operating model before launch.\n\n## Risks\n- Shipping against unresolved requirements creates either SLA breach or policy noncompliance.\n- Teams may collapse provisional handling and final removal into one state.\n- A redesigned review process may be assumed rather than specified, leaving the PRD ambiguous.\n\n## Decision Frame\nThe decision is whether to write this as a launch-ready PRD under the current constraints or to surface the unresolved operating conflict. Recommendation: preserve AI flagging and mandatory human approval as stated, but classify the current removal flow as not yet implementable until stakeholders specify whether the SLA, the approval policy, or the review system design changes.\n\n## Unknowns & Evidence Gaps\n- Whether the 60-second SLA applies to final removal, provisional handling, or initial flagging.\n- Whether any content categories may bypass prior human approval.\n- Whether the review operating model will be redesigned enough to satisfy the SLA.\n- What interim actions, if any, are policy-acceptable before human approval.\n\n## Pass/Fail Readiness\nPass if stakeholders resolve the conflict by choosing one of these:\n- Redefine the 60-second SLA to apply to flagging or provisional handling rather than final removal.\n- Change the approval rule so some removals do not require prior human approval.\n- Specify a redesigned review operating model that makes the removal SLA compatible with mandatory approval.\n\nFail if the requirement remains that every removal needs human approval, removals must occur within 60 seconds, and no redesigned review model is specified.\n\n## Recommended Next Artifact\nA decision memo that resolves which variable changes: the SLA definition, the human-approval policy, or the review operating design.",
+  "claims": [
+    {
+      "claim_id": "side_b-claim-1",
+      "summary": "The current spec is not implementable as written because it combines mandatory human approval for every removal with a 60-second removal SLA while also stating a current human review queue average of 4 hours, without specifying a redesigned review model.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-2",
+      "summary": "A valid PRD should preserve the conflict as an unresolved requirement decision and distinguish immediate AI actions from human-approved final removals instead of claiming the present spec is launch-ready.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_b-claim-3",
+      "summary": "The next useful artifact is a decision memo clarifying whether the SLA, approval policy, or review operating model will change.",
+      "evidence_refs": [],
+      "is_major": false
+    }
+  ],
+  "citations": [],
+  "conclusion_confidence": "medium",
+  "open_questions": [
+    "Does the 60-second SLA apply to final removal, provisional handling, or initial flagging?",
+    "Are any content categories allowed to be removed without prior human approval?",
+    "Will the review operating model be redesigned, and if so, how is that redesign meant to satisfy the stated SLA?"
+  ],
+  "critique_responses": [
+    {
+      "finding_id": "finding-1",
+      "disposition": "adopted",
+      "rationale": "The critique is correct that the first-pass claim overstated the case by treating the 4-hour review latency as effectively fixed. The revised artifact narrows the claim: the contradiction exists in the current spec as written because no redesigned review model is specified, not because review latency is proven irreducible in all future operating designs."
+    }
+  ]
+}
