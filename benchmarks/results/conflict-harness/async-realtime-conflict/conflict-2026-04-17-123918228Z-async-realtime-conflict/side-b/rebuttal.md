@@ -1,0 +1,13 @@
+# Critique: finding-2
+
+- Target Side: side_a
+- Target Claim IDs: side_a-claim-1
+- Attack Type: evidence_gap
+- Severity: medium
+
+## Claim Under Attack
+The two requirements are mutually exclusive without dual-write, and the PRD's primary job is to force a stakeholder decision between three named paths rather than propose an implementation.
+
+## Evidence Or Reason
+This overstates certainty from the visible packet. The scenario says the requirements are incompatible 'without a dual-write system that introduces consistency risk the team has previously rejected,' but it does not prove that only three paths exist or that every feasible implementation collapses to dual-write. The artifact never shows evidence that alternatives such as a clearly labeled provisional real-time view with batch reconciliation, narrowed reporting scope, or redefining which surfaces count as 'reporting' were evaluated and ruled out. Because the packet contains no architectural evidence beyond the scenario summary, the claim that there are exactly three paths is insufficiently supported.
+

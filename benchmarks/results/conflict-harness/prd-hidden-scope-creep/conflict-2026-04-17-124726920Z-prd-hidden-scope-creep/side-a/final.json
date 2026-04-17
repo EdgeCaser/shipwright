@@ -1,0 +1,40 @@
+{
+  "run_id": "conflict-2026-04-17-124726920Z-prd-hidden-scope-creep",
+  "side_id": "side_a",
+  "round": "final",
+  "artifact_markdown": "# PRD: Team Inbox Workflow Handoff Improvement\n\n**Status:** Draft — Pre-Discovery  \n**Owner:** Requesting team  \n**Last Updated:** 2026-04-17\n\n---\n\n## Decision Frame\n\n**What decision does this PRD enable?**  \nWhether to invest engineering capacity in redesigning the handoff experience between agents working a shared team inbox — and if so, which failure mode to target first.\n\n**Why now?**  \nHandoff friction in shared inbox workflows compounds with team size. Without a structured handoff mechanism, work is duplicated, ownership is ambiguous, and context is lost between agents. This PRD defines the boundary of the problem before solution work begins.\n\n**What is explicitly out of scope?**  \n- Inbox routing logic or triage rules  \n- Individual inbox (non-shared) workflows  \n- Notification or alerting infrastructure  \n- Integrations with external ticketing systems (unless discovered as load-bearing during discovery)\n\n**Scope risk flag:** The prompt \"team inbox workflow handoff improvement\" is surface-area-ambiguous. \"Handoff\" could plausibly mean: (a) agent-to-agent mid-thread transfer, (b) shift-change ownership reassignment, (c) escalation to a specialist queue, or (d) closure/resolution handoff to the requester. These are analytical possibilities surfaced for disambiguation — not confirmed live risks. This PRD treats (a) as the primary framing pending discovery. Interpretations (b)–(d) must be explicitly confirmed in or out during discovery; if left unaddressed, they are candidates for silent absorption into solution scope.\n\n---\n\n## Unknowns & Evidence Gaps\n\nNo quantitative evidence was provided in the case packet. The following unknowns are blocking confident scoping:\n\n| Unknown | Why it matters | How to resolve |\n|---|---|---|\n| Which handoff type causes the most dropped threads? | Determines which interpretation to target first | User research or support ticket analysis |\n| What does a \"good\" handoff look like to agents today? | Informs the minimum viable handoff UX | Agent interviews / shadowing |\n| Is the failure mode coordination (nobody owns it) or context loss (new owner lacks history)? | These require different solutions | Support log review, agent survey |\n| What tools are agents currently using for handoff? | Workarounds reveal real needs | Workflow audit |\n| What is the volume and frequency of handoffs per agent per shift? | Determines if the problem is high-leverage | Data pull from inbox system |\n\n**Evidence discipline note:** No baseline metrics, user quotes, or incident data were provided. Any quantitative targets in a subsequent spec must be grounded in discovery findings — not assumed.\n\n---\n\n## Pass/Fail Readiness\n\n**This PRD is NOT ready to proceed to solution spec.** It passes structural readiness (problem framed, scope bounded, unknowns enumerated) but fails evidence readiness.\n\n| Gate | Status | Blocker |\n|---|---|---|\n| Problem statement is falsifiable | ✅ Pass | — |\n| Scope is bounded and explicit | ✅ Pass | — |\n| Adjacent scope is named and excluded | ✅ Pass | — |\n| Evidence supports prioritization | ❌ Fail | No data provided |\n| Success metric is defined | ❌ Fail | Requires discovery first |\n| Stakeholder alignment confirmed | ❌ Fail | Receiving team not identified |\n\n**Minimum to proceed:** Complete the five discovery actions in the Unknowns table above. Return with at least: one confirmed handoff failure mode, one baseline metric, and receiving-team sign-off on scope exclusions.\n\n---\n\n## Recommended Next Artifact\n\n**Discovery Brief** — a short (1–2 page) research plan that assigns owners to each of the five unknowns above, sets a time-box (recommended: 2 weeks), and defines the threshold of evidence needed to unlock solution spec work.\n\nDo not write a solution spec, technical design, or user story map until the Discovery Brief findings are in hand. Premature solution artifacts risk absorbing unconfirmed adjacent scope and producing rework.\n",
+  "claims": [
+    {
+      "claim_id": "side_a-claim-1",
+      "summary": "The prompt is surface-area-ambiguous: 'handoff' has at least four plausible interpretations (mid-thread transfer, shift-change reassignment, escalation, closure handoff). These are analytical possibilities for disambiguation, not confirmed live risks. If left unaddressed in discovery, they are candidates for silent scope absorption — which is a structural risk, not a guarantee.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-2",
+      "summary": "No evidence was provided in the case packet. The PRD cannot define a success metric, prioritize a failure mode, or justify engineering investment without at minimum: a confirmed failure mode, a baseline metric, and receiving-team alignment. Proceeding to solution spec now produces rework.",
+      "evidence_refs": [],
+      "is_major": true
+    },
+    {
+      "claim_id": "side_a-claim-3",
+      "summary": "The correct next artifact is a Discovery Brief, not a solution spec or technical design. The Discovery Brief time-boxes research and defines evidence thresholds — preventing the PRD from silently absorbing adjacent scope during solution work.",
+      "evidence_refs": [],
+      "is_major": false
+    }
+  ],
+  "citations": [],
+  "conclusion_confidence": "medium",
+  "open_questions": [
+    "Which of the plausible handoff interpretations (mid-thread transfer, shift-change, escalation, closure) is the actual failure mode for this team — and which are irrelevant?",
+    "Who is the receiving team that must sign off on scope exclusions before solution work begins?",
+    "Is there existing data (ticket logs, agent surveys) that could resolve the five unknowns in the Unknowns table without a full discovery sprint?"
+  ],
+  "critique_responses": [
+    {
+      "finding_id": "finding-2",
+      "disposition": "adopted",
+      "rationale": "The critique is correct that the four-way taxonomy is asserted from the prompt alone, not from case packet evidence. No workflow data, user research, or incident logs were provided to confirm which interpretations are live risks for this team, or that each has a different owner. The original claim overstated certainty by saying scope creep is 'structurally guaranteed.' The revised claim preserves the analytical value of naming the interpretations — disambiguation is still necessary — but frames them as plausible possibilities and scope absorption as a structural risk rather than a certainty. The language change is material: it reflects what can actually be supported without evidence."
+    }
+  ]
+}

@@ -1,0 +1,95 @@
+{
+  "case_packet": {
+    "scenario_id": "churn-correlation-causation",
+    "title": "Churn reduction PRD built on correlation evidence, not causation",
+    "prompt": "Write a PRD for a churn reduction initiative targeting users who have not used the collaboration feature in 30 days. The evidence is a correlation: users who actively use collaboration churn at 4% annually vs. 22% for non-users. There is no experiment establishing causation, and an alternative explanation (power users self-select into collaboration and would retain regardless) has not been ruled out.",
+    "artifact_type": "prd",
+    "rubric": {
+      "dimensions": [
+        "claim quality",
+        "evidence discipline",
+        "responsiveness to critique",
+        "internal consistency",
+        "decision usefulness"
+      ],
+      "scoring_scale": "1-5",
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "constraints": {
+      "expected_sections": [
+        "Decision Frame",
+        "Unknowns & Evidence Gaps",
+        "Pass/Fail Readiness",
+        "Recommended Next Artifact"
+      ],
+      "expect_structured": true,
+      "context_files": [],
+      "scoring_spec_ref": "docs/shipwright-v2-benchmark-scoring-spec.md"
+    },
+    "evidence": [],
+    "max_rounds": 3,
+    "tool_policy": "none",
+    "sharing_policy": {
+      "share_case_packet": true,
+      "share_committed_artifacts_after_first_pass": true,
+      "share_critiques_after_open": true,
+      "share_hidden_reasoning": false,
+      "share_provider_identity": false,
+      "share_internal_coalition_drafts": false
+    },
+    "success_condition": {
+      "type": "validator_contract",
+      "description": "Produce a prd artifact that satisfies the scenario validator contract.",
+      "validator": {
+        "artifact_type": "prd",
+        "expect_sections": [
+          "Decision Frame",
+          "Unknowns & Evidence Gaps",
+          "Pass/Fail Readiness",
+          "Recommended Next Artifact"
+        ],
+        "expect_structured": true
+      }
+    }
+  },
+  "opposing_first_pass": {
+    "run_id": "conflict-2026-04-17-124303512Z-churn-correlati-cde64c5f",
+    "side_id": "side_b",
+    "round": "first_pass",
+    "artifact_markdown": "# PRD: Validation-First Churn Reduction Initiative\n\n## Summary\nThis initiative should not proceed as a direct churn-reduction rollout on the assumption that collaboration usage causes retention. The current evidence shows a correlation between collaboration usage and lower churn, but it does not establish that increasing collaboration usage will reduce churn for the targeted population. The appropriate product requirement is a validation-first program: identify whether collaboration adoption is a causal lever, and only then define a scaled intervention.\n\n## Problem Statement\nUsers who have not used the collaboration feature in 30 days are being considered for a churn-reduction initiative. The motivating evidence is that active collaboration users have materially lower annual churn than non-users. However, the evidence does not rule out the alternative explanation that higher-retention users are more likely to adopt collaboration in the first place.\n\n## Product Requirement\nThe team should build a validation-first initiative with two goals:\n1. Determine whether increased collaboration usage causally improves retention for the target population.\n2. Determine whether the target segment can be influenced to adopt collaboration in a meaningful and sustained way.\n\nThe scope of this PRD is limited to learning-oriented interventions and measurement needed to resolve those questions. It does not authorize a broad churn-reduction claim or scaled rollout based solely on the existing correlation.\n\n## Users and Segment\nPrimary segment: users who have not used the collaboration feature in 30 days.\n\n## Goals\n- Test whether collaboration adoption is a plausible causal retention lever.\n- Distinguish feature underuse from user-type self-selection.\n- Produce evidence strong enough to support or reject a broader churn initiative.\n\n## Non-Goals\n- Claiming that collaboration usage reduces churn based on current evidence alone.\n- Committing to a full rollout intended to lower churn before causal uncertainty is reduced.\n- Treating all non-users as a homogeneous at-risk segment.\n\n## Requirements\n- Define the target segment precisely as users with no collaboration usage in the past 30 days.\n- Design interventions intended to increase collaboration usage within that segment.\n- Instrument adoption, repeat usage, and downstream retention outcomes.\n- Compare outcomes in a way that can separate behavior change from simple user self-selection.\n- Document alternative explanations for any observed retention change.\n- Establish decision criteria for whether to continue, revise, or stop the initiative after the learning phase.\n\n## Risks\n- The observed correlation may be non-causal.\n- The targeted users may be poor candidates for collaboration adoption.\n- Apparent gains may reflect selection effects rather than product impact.\n- A rollout framed as churn reduction could overstate what the evidence supports.\n\n## Decision Frame\nThe decision is not whether to launch a broad churn-reduction program aimed at recent non-users of collaboration. The decision is whether to approve a validation-first initiative that tests whether collaboration is a causal retention lever for that group. The recommendation is yes to validation-first work, no to a scaled churn-reduction rollout on current evidence.\n\n## Unknowns & Evidence Gaps\n- Whether collaboration usage itself reduces churn.\n- Whether power-user self-selection fully explains the observed churn gap.\n- Whether users with no collaboration usage in 30 days are meaningfully persuadable.\n- Which observed behaviors, if any, precede durable retention improvement rather than merely correlate with it.\n\n## Pass/Fail Readiness\nPass if the initiative is explicitly framed as a causal-validation effort, includes measurement capable of testing the alternative self-selection explanation, and avoids unsupported retention claims.\n\nFail if the initiative assumes collaboration adoption will reduce churn without resolving the causation gap, or if success is defined only by increased feature usage absent retention interpretation discipline.\n\n## Recommended Next Artifact\nA test plan that specifies the intervention design, target cohort definition, measurement approach, decision criteria, and the conditions required to conclude that collaboration adoption is or is not a causal retention lever.",
+    "claims": [
+      {
+        "claim_id": "side_b-claim-1",
+        "summary": "The current evidence supports a validation-first PRD, not a scaled churn-reduction rollout, because the observed relationship between collaboration usage and churn is correlational rather than causal.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-2",
+        "summary": "Any credible initiative must explicitly test the alternative explanation that higher-retention users self-select into collaboration usage.",
+        "evidence_refs": [],
+        "is_major": true
+      },
+      {
+        "claim_id": "side_b-claim-3",
+        "summary": "The target segment of users with no collaboration usage in 30 days can be used for learning-oriented intervention design, but current evidence does not justify claiming churn reduction as an expected outcome.",
+        "evidence_refs": [],
+        "is_major": false
+      }
+    ],
+    "citations": [],
+    "conclusion_confidence": "medium",
+    "open_questions": [
+      "Can the target segment be influenced to adopt collaboration in a sustained way?",
+      "If collaboration usage increases, does retention improve beyond what would be expected from user self-selection alone?",
+      "What decision criteria should determine whether to scale, revise, or stop the initiative after the validation phase?"
+    ],
+    "critique_responses": []
+  }
+}
