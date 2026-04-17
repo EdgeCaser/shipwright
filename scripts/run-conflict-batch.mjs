@@ -96,12 +96,51 @@ export async function runBatch(options = {}) {
   const sideBReasoningEffort = options.sideBReasoningEffort || DEFAULT_REASONING_EFFORT;
   const judgeReasoningEffort = options.judgeReasoningEffort || DEFAULT_REASONING_EFFORT;
 
+  // Load scenario metadata for class-based judge routing.
+  // Only needed when judge selection is at its default (user didn't specify --judge-agent or judgeConfigs).
+  const usingDefaultJudges = !options.judgeAgents?.length && !options.judgeConfigs;
+  const scenarioMeta = {};
+  if (usingDefaultJudges) {
+    for (const scenario of scenarios) {
+      try {
+        const raw = await readFile(path.join(scenarioDir, `${scenario}.json`), 'utf8');
+        scenarioMeta[scenario] = JSON.parse(raw);
+      } catch {
+        scenarioMeta[scenario] = {};
+      }
+    }
+  }
+
+  function effectiveJudgesFor(scenario) {
+    if (!usingDefaultJudges) return judgeConfigs;
+    const meta = scenarioMeta[scenario] || {};
+    if (!meta.conservative_answer_risk) return judgeConfigs;
+    const nonClaude = judgeConfigs.filter((j) => j.provider !== 'anthropic');
+    if (nonClaude.length > 0) return nonClaude;
+    // No non-Claude judge in config — fall back to default GPT judge
+    const gpt = resolveAgentProfile('gpt', 'judge agent');
+    return [{ ...gpt, label: `${gpt.label}-judge` }];
+  }
+
   const results = [];
-  const totalRuns = scenarios.length * judgeConfigs.length;
+  const totalRuns = scenarios.reduce((sum, s) => sum + effectiveJudgesFor(s).length, 0);
   let completed = 0;
 
   for (const scenario of scenarios) {
-    for (const judge of judgeConfigs) {
+    const conservativeAnswerRisk = Boolean(scenarioMeta[scenario]?.conservative_answer_risk);
+    const effectiveJudgeConfigs = effectiveJudgesFor(scenario);
+
+    if (conservativeAnswerRisk && usingDefaultJudges) {
+      const skipped = judgeConfigs.filter((j) => j.provider === 'anthropic').map((j) => j.label);
+      if (skipped.length > 0) {
+        process.stderr.write(
+          `\n[${scenario}] conservative_answer_risk — skipping Claude judge(s) [${skipped.join(', ')}]. ` +
+          `Claude systematically penalizes restraint recommendations on evidence-gap scenarios.\n\n`
+        );
+      }
+    }
+
+    for (const judge of effectiveJudgeConfigs) {
       completed += 1;
       const label = `[${completed}/${totalRuns}] ${scenario} + ${judge.label}`;
       process.stderr.write(`${label} — starting\n`);
@@ -112,6 +151,7 @@ export async function runBatch(options = {}) {
           judgeLabel: judge.label,
           sideALabel: roleConfig.sideA.label,
           sideBLabel: roleConfig.sideB.label,
+          conservativeAnswerRisk,
           status: 'dry_run',
           winner: null,
           margin: null,
@@ -164,6 +204,7 @@ export async function runBatch(options = {}) {
           harnessSchemaVersion: run.harness_schema_version || null,
           judgeProvider: judge.provider || null,
           decisiveDimension: run.results.decisive_dimension || null,
+          conservativeAnswerRisk,
           error: null,
           // Phase 2 uncertainty payload (present when triggered)
           uncertaintyDrivers: run.results.uncertainty_drivers || null,
@@ -182,6 +223,7 @@ export async function runBatch(options = {}) {
           judgeLabel: judge.label,
           sideALabel: roleConfig.sideA.label,
           sideBLabel: roleConfig.sideB.label,
+          conservativeAnswerRisk,
           status: 'error',
           winner: null,
           margin: null,
@@ -318,11 +360,17 @@ export function verdictInterpretation(result) {
     if (result.swapOutcome === 'inconclusive') {
       return `${judgeLabel} called ${winnerLabel} the winner (lean-aligned), and the swap test was a tie — verdict remains inconclusive.${dimNote}`;
     }
-    return `${judgeLabel} called ${winnerLabel} the winner, consistent with its documented lean toward ${leanLabel}.${dimNote} Run --auto-swap before drawing conclusions.`;
+    const conservativeWarning = result.conservativeAnswerRisk
+      ? ' WARNING: this scenario is tagged conservative_answer_risk — Claude is an unreliable judge here. Treat this verdict as provisional.'
+      : '';
+    return `${judgeLabel} called ${winnerLabel} the winner, consistent with its documented lean toward ${leanLabel}.${dimNote}${conservativeWarning} Run --auto-swap before drawing conclusions.`;
   }
 
   // medium — neutral provider, no documented lean
-  return `${judgeLabel} (no documented lean) called ${winnerLabel} the winner.${dimNote}`;
+  const conservativeNote = result.conservativeAnswerRisk
+    ? ' This scenario is tagged conservative_answer_risk — the correct answer may reward restraint over execution specificity.'
+    : '';
+  return `${judgeLabel} (no documented lean) called ${winnerLabel} the winner.${dimNote}${conservativeNote}`;
 }
 
 export function buildSummary(results) {
