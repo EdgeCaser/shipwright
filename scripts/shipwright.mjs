@@ -68,7 +68,6 @@ const isMain = process.argv[1]
       available_providers: args.providers,
       sessions_root: args.outDir ? path.join(args.outDir, 's') : undefined,
       fast_out_dir: args.outDir ? path.join(args.outDir, 'f') : undefined,
-      rigor_out_dir: args.outDir ? path.join(args.outDir, 'r') : undefined,
       auto_confirm: args.yes,
       timeout_ms: args.timeoutMs,
     });
@@ -206,8 +205,8 @@ Options:
   --help, -h                  Show this help
 
 Scenario classes:
-  governance       Board / restructuring decisions (cross-family required)
-  publication      Publication-claim work (cross-family required)
+  governance       Board / restructuring decisions (escalation flagged on low confidence)
+  publication      Publication-claim work (escalation flagged on low confidence)
   pricing          Pricing / packaging
   product_strategy Product strategy / prioritization
   unclassified     Everything else (default)

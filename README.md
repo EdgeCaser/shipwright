@@ -6,9 +6,9 @@
 
 **Write PRDs, run discovery cycles, plan launches, and facilitate strategy sessions — from your terminal.**
 
-Shipwright gives PMs a real operating system for product work: framework-backed skills, orchestrated workflows, quality gates that produce artifacts teams can execute, and a multi-model decision analysis system for high-stakes questions.
+Shipwright gives PMs a real operating system for product work: framework-backed skills, orchestrated workflows, quality gates that produce artifacts teams can execute, and a single-model decision analysis system for high-stakes questions.
 
-Under the hood, Shipwright includes 46 skills, 7 agents (6 specialists plus the orchestrator), 17 chained workflows, 3 Claude helper commands, and a decision analysis system with Fast Mode and Rigor Mode adjudication. The counts matter less than the contract: evidence-first outputs, explicit decisions, pass/fail gating, deterministic recovery, adversarial review for high-stakes artifacts, and cross-family model adjudication when a single-model answer isn't enough.
+Under the hood, Shipwright includes 46 skills, 7 agents (6 specialists plus the orchestrator), 17 chained workflows, 3 Claude helper commands, and a decision analysis system with Fast Mode analysis. The counts matter less than the contract: evidence-first outputs, explicit decisions, pass/fail gating, deterministic recovery, and adversarial review for high-stakes artifacts.
 
 The skills are plain markdown files, so they're compatible with any AI coding tool that reads skill files (Cursor, Codex, Gemini CLI, and others). Agents, commands, and the Claude Code helper commands (`/shipwright`, `/start`, and `/shipwright-help`) are Claude Code-specific. This repo also includes a Codex-native bridge via [AGENTS.md](AGENTS.md) so plain-language prompts in Codex can still route through Shipwright's bounded research and framework selection.
 
@@ -107,11 +107,11 @@ If you are running directly from this repo in Codex, you do not need slash comma
 
 ## Decision Analysis
 
-For high-stakes decisions — governance, board-level, restructuring, pricing — Shipwright includes a decision analysis system that routes questions through Fast Mode or Rigor Mode based on scenario class and provider availability.
+For high-stakes decisions — governance, board-level, restructuring, pricing — Shipwright includes a decision analysis system that runs a structured Fast Mode analysis and returns a recommendation, confidence band, and uncertainty payload.
 
-**Fast Mode** runs a single structured analysis pass and returns a recommendation, confidence band, and uncertainty payload. It takes roughly 1-2 minutes.
+**Fast Mode** runs a single structured analysis pass. It takes roughly 1-2 minutes.
 
-The orchestrator decides the routing. You declare the scenario class; the system applies the corresponding policy. Everything starts with a fast pass. Governance and publication-class questions are flagged for escalation when confidence is insufficient.
+You declare the scenario class; the system applies the corresponding routing policy. Governance and publication-class questions are flagged when confidence is insufficient, returning an explicit uncertainty payload and recommended next actions rather than a false-confident answer.
 
 ### Usage
 
