@@ -24,7 +24,7 @@ Shipwright is not "better prompting." It is a quality system around prompting.
 | **Readiness gating** | "Looks good" is subjective | Binary [pass/fail gates](evals/pass-fail.md) before scoring |
 | **Adversarial pressure** | Critique depends on the same prompt that produced the work | Optional `/challenge` workflow and red-team review for pressure-testing finished artifacts |
 | **Recovery path** | Ad hoc rewrites | Deterministic [recovery playbooks](docs/recovery-playbooks.md) |
-| **Handoff quality** | Varies by prompt quality | Repeatable workflows with role constraints and checks |
+| **Handoff quality** | Varies by prompt quality | Repeatable workflows with role constraints and checks ([prompting guide](docs/prompting.md)) |
 
 ## Demo
 
@@ -324,6 +324,7 @@ Setup, configuration, safety guidance, and supported commands are documented in 
 ## Deep Reference Docs
 
 - [Workflows guide](docs/using-workflows.md): all commands, orchestration model, common paths
+- [Prompting guide](docs/prompting.md): what makes a strong prompt, and what makes a strong Shipwright prompt
 - [Output standard](docs/output-standard.md): required sections, signature rules, decision framing
 - [Composition model](docs/composition-model.md): how skills, workflows, and agents compose
 - [AI vs non-AI guide](docs/ai-vs-non-ai-design-guide.md): what to automate deterministically, what to keep agentic, and where to invest next
