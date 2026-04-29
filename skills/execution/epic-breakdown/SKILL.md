@@ -34,7 +34,7 @@ Takes a large product initiative and decomposes it into shippable epics, each wi
 
 ```markdown
 ## Initiative: [Name]
-**Objective:** [What we're trying to achieve — outcome, not output]
+**Objective:** [What we're trying to achieve, outcome, not output]
 **Success metric:** [Primary metric and target]
 **Total estimated scope:** [T-shirt size or person-weeks range]
 **Target completion:** [Quarter or date range]
@@ -69,7 +69,7 @@ Think in terms of "what's the thinnest slice that delivers real value to a real 
 
 **Scope:**
 - In: [What's included]
-- Out: [What's explicitly excluded — moves to a later epic or is cut]
+- Out: [What's explicitly excluded, moves to a later epic or is cut]
 
 **Dependencies:**
 - Requires: [Other epics or external work that must complete first]
@@ -78,7 +78,7 @@ Think in terms of "what's the thinnest slice that delivers real value to a real 
 **Estimated effort:** [T-shirt size: S (1-2 weeks) / M (2-4 weeks) / L (4-8 weeks)]
 
 **Key risks:**
-- [Risk 1] — Mitigation: [approach]
+- [Risk 1], Mitigation: [approach]
 ```
 
 ### Step 4: Sequence the Epics
@@ -86,14 +86,14 @@ Think in terms of "what's the thinnest slice that delivers real value to a real 
 ```markdown
 ## Epic Sequence
 
-### Phase 1: [Name — e.g., "Foundation"]
+### Phase 1: [Name, e.g., "Foundation"]
 Timeline: [Sprints N-M]
-- Epic 1: [name] — [what it delivers]
-- Epic 2: [name] — [what it delivers]
+- Epic 1: [name], [what it delivers]
+- Epic 2: [name], [what it delivers]
 
 Milestone: [What's true when Phase 1 is complete]
 
-### Phase 2: [Name — e.g., "Core Experience"]
+### Phase 2: [Name, e.g., "Core Experience"]
 Timeline: [Sprints N-M]
 Depends on: Phase 1
 - Epic 3: [name]
@@ -101,7 +101,7 @@ Depends on: Phase 1
 
 Milestone: [What's true when Phase 2 is complete]
 
-### Phase 3: [Name — e.g., "Polish & Scale"]
+### Phase 3: [Name, e.g., "Polish & Scale"]
 Timeline: [Sprints N-M]
 Depends on: Phase 2
 - Epic 5: [name]
@@ -140,25 +140,25 @@ Run through these checks:
 ## Output Format
 
 Produce an Epic Breakdown Document with:
-1. **Initiative Overview** — objective, metric, timeline
-2. **Epic Definitions** — hypothesis, scope, metric, effort for each
-3. **Sequence & Phases** — ordered delivery plan with milestones
-4. **Dependency Map** — which epics depend on which
-5. **Validation Checklist** — breakdown quality assessment
+1. **Initiative Overview**, objective, metric, timeline
+2. **Epic Definitions**, hypothesis, scope, metric, effort for each
+3. **Sequence & Phases**, ordered delivery plan with milestones
+4. **Dependency Map**, which epics depend on which
+5. **Validation Checklist**, breakdown quality assessment
 
 **Shipwright Signature (required closing):**
-6. **Decision Frame** — recommended sequencing and slicing strategy, trade-off, confidence with evidence quality, owner, decision date, revisit trigger
-7. **Unknowns & Evidence Gaps** — unvalidated effort estimates, untested hypotheses, unclear cross-team dependencies
-8. **Pass/Fail Readiness** — PASS if every epic has independent value, a measurable hypothesis, and a sequenced delivery order (at Light depth: one-line hypothesis per epic and a sequencing order are sufficient; success metrics and validation checklist are not required); FAIL if any epic lacks a hypothesis or exceeds 8 weeks
-9. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+6. **Decision Frame**, recommended sequencing and slicing strategy, trade-off, confidence with evidence quality, owner, decision date, revisit trigger
+7. **Unknowns & Evidence Gaps**, unvalidated effort estimates, untested hypotheses, unclear cross-team dependencies
+8. **Pass/Fail Readiness**, PASS if every epic has independent value, a measurable hypothesis, and a sequenced delivery order (at Light depth: one-line hypothesis per epic and a sequencing order are sufficient; success metrics and validation checklist are not required); FAIL if any epic lacks a hypothesis or exceeds 8 weeks
+9. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid
 
-- **Epics without independent value** — "Set up infrastructure" isn't an epic; it's a task inside an epic
-- **No hypothesis** — If there's no hypothesis, there's no way to learn from shipping
-- **Too large** — If an epic takes more than 6-8 weeks, it needs further decomposition
-- **Sequencing by comfort, not risk** — Ship the riskiest thing first, not the easiest
-- **Scope creep across epics** — Each epic's "out of scope" must be clear and respected
+- **Epics without independent value**, "Set up infrastructure" isn't an epic; it's a task inside an epic
+- **No hypothesis**, If there's no hypothesis, there's no way to learn from shipping
+- **Too large**, If an epic takes more than 6-8 weeks, it needs further decomposition
+- **Sequencing by comfort, not risk**, Ship the riskiest thing first, not the easiest
+- **Scope creep across epics**, Each epic's "out of scope" must be clear and respected
 
 ## Weak vs. Strong Output
 

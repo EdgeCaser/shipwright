@@ -97,7 +97,7 @@ Evaluate the document from each stakeholder perspective:
 - [ ] New patterns needed? If so, are they justified?
 
 **Concerns:**
-- [Concern 1]: [Description — UX risk]
+- [Concern 1]: [Description, UX risk]
 
 **Verdict:** [Green / Yellow / Red]
 
@@ -275,24 +275,24 @@ Evaluate the document from each stakeholder perspective:
 ## Output Format
 
 Produce a Design Review Report with:
-1. **Review Setup** — document under review, scope, constraints
-2. **7 Perspective Reviews** — each with assessment, concerns, and verdict
-3. **Synthesis** — consensus, tensions, blockers, recommendations, open questions
-4. **Overall Verdict** — go/no-go recommendation
+1. **Review Setup**, document under review, scope, constraints
+2. **7 Perspective Reviews**, each with assessment, concerns, and verdict
+3. **Synthesis**, consensus, tensions, blockers, recommendations, open questions
+4. **Overall Verdict**, go/no-go recommendation
 
 **Shipwright Signature (required closing):**
-5. **Decision Frame** — approve/revise/reject recommendation, trade-off, confidence with evidence quality, owner, decision date, revisit trigger
-6. **Unknowns & Evidence Gaps** — unresolved tensions, missing stakeholder input, untested assumptions surfaced by Devil's Advocate
-7. **Pass/Fail Readiness** — PASS if no Critical blockers remain and all tensions have assigned owners; FAIL if any perspective is Red without a resolution plan. At Light depth, PASS scopes to the 3 included perspectives only (Engineering, Customer Voice, Devil's Advocate).
-8. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+5. **Decision Frame**, approve/revise/reject recommendation, trade-off, confidence with evidence quality, owner, decision date, revisit trigger
+6. **Unknowns & Evidence Gaps**, unresolved tensions, missing stakeholder input, untested assumptions surfaced by Devil's Advocate
+7. **Pass/Fail Readiness**, PASS if no Critical blockers remain and all tensions have assigned owners; FAIL if any perspective is Red without a resolution plan. At Light depth, PASS scopes to the 3 included perspectives only (Engineering, Customer Voice, Devil's Advocate).
+8. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid
 
-- **Skipping the Devil's Advocate** — This is the most valuable perspective; don't cut it for time
-- **All green verdicts** — If every perspective says "Green," you probably weren't rigorous enough
-- **No resolution owners for tensions** — Identified tensions without owners become permanent ambiguity
-- **Review too late** — Run design reviews before significant engineering investment, not after
-- **Missing perspectives** — Even if you don't have a legal team, simulate the legal perspective
+- **Skipping the Devil's Advocate**, This is the most valuable perspective; don't cut it for time
+- **All green verdicts**, If every perspective says "Green," you probably weren't rigorous enough
+- **No resolution owners for tensions**, Identified tensions without owners become permanent ambiguity
+- **Review too late**, Run design reviews before significant engineering investment, not after
+- **Missing perspectives**, Even if you don't have a legal team, simulate the legal perspective
 
 ## Weak vs. Strong Output
 

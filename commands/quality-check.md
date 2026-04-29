@@ -3,7 +3,7 @@ name: quality-check
 description: "Score recent Shipwright artifacts against core rubric dimensions to detect quality drift over time."
 ---
 
-# /quality-check — Artifact Quality Audit
+# /quality-check, Artifact Quality Audit
 
 Run this command to review recent Shipwright artifacts and track whether output quality is trending up, down, or holding steady.
 
@@ -28,9 +28,9 @@ Confirm the final list before scoring.
 
 Read and apply `/skills/measurement/artifact-quality-audit/SKILL.md`. Use the universal 4 dimensions (Clarity, Completeness, Actionability, Correctness) with the anchored scale:
 
-- **3** = weak — significant gaps or confusion
-- **6** = adequate — meets the bar, no major issues
-- **9** = strong — notably sharp, thorough, and ready to act on
+- **3** = weak, significant gaps or confusion
+- **6** = adequate, meets the bar, no major issues
+- **9** = strong, notably sharp, thorough, and ready to act on
 
 If an artifact-specific eval exists (e.g., a PRD eval, a strategy eval), layer those criteria on top and note any additional dimension scores separately.
 
@@ -57,9 +57,9 @@ Flag the single most concerning trend and the single strongest pattern.
 
 Based on findings, provide:
 
-1. **Failure modes to watch** — reference specific modes from `docs/failure-modes.md` that match the observed weaknesses
-2. **Recovery playbooks** — suggest which playbooks or skills to apply for artifacts scoring Below Bar
-3. **Agent instruction tightening** — if a specific agent or workflow is consistently producing lower-quality output, recommend targeted instruction changes
+1. **Failure modes to watch**, reference specific modes from `docs/failure-modes.md` that match the observed weaknesses
+2. **Recovery playbooks**, suggest which playbooks or skills to apply for artifacts scoring Below Bar
+3. **Agent instruction tightening**, if a specific agent or workflow is consistently producing lower-quality output, recommend targeted instruction changes
 
 Keep recommendations to 3-5 items. Each must be specific and actionable.
 

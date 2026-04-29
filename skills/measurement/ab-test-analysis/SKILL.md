@@ -35,7 +35,7 @@ Evaluates experiment results for statistical significance, practical significanc
 ```markdown
 ## Experiment: [Name]
 **Hypothesis:** We believe that [change] will [improve metric] because [reasoning].
-**Test dates:** [start] — [end]
+**Test dates:** [start], [end]
 **Duration:** [N] days
 **Traffic allocation:** [X]% control / [Y]% treatment
 **Sample size:** Control: [N] | Treatment: [N]
@@ -52,7 +52,7 @@ Evaluates experiment results for statistical significance, practical significanc
 ### Primary Metric: [Name]
 | Variant | Value | Change vs. Control | Confidence | Significant? |
 |---|---|---|---|---|
-| Control | [value] | — | — | — |
+| Control | [value] |, |, |, |
 | Treatment | [value] | [+/- X%] | [95% CI: lower, upper] | [Yes / No] |
 
 **Statistical significance:** [p-value] (threshold: p < 0.05)
@@ -110,7 +110,7 @@ Does the effect vary across important segments?
 | [Paid plan] | [N] | [N] | [%] | [Yes/No] |
 
 **Segment insights:**
-- [Insight — e.g., "Effect is 3x stronger for new users, suggesting this primarily helps onboarding"]
+- [Insight, e.g., "Effect is 3x stronger for new users, suggesting this primarily helps onboarding"]
 
 **Caution:** Segment analyses are exploratory, not confirmatory. Small segments may lack power.
 ```
@@ -123,9 +123,9 @@ Does the effect vary across important segments?
 ### Recommendation: [Ship / Don't Ship / Iterate / Extend Test]
 
 **Rationale:**
-- [Reason 1 — tied to data]
-- [Reason 2 — tied to strategic context]
-- [Reason 3 — tied to guardrail assessment]
+- [Reason 1, tied to data]
+- [Reason 2, tied to strategic context]
+- [Reason 3, tied to guardrail assessment]
 
 ### If shipping:
 - [ ] Roll out to 100% of users
@@ -158,39 +158,39 @@ Does the effect vary across important segments?
 **Insufficient evidence:** If sample size does not meet minimum detectable effect (MDE) requirements or the test ran fewer than 7 days, stop and recommend extending the test to reach the required sample size before running this skill. Do not produce a ship/no-ship recommendation on underpowered data.
 
 **Hypotheses vs. findings:**
-- **Findings:** Effect classification (win/loss/inconclusive), statistical significance, guardrail status — must be grounded in provided data.
-- **Hypotheses:** Segment-level explanations and proposed next experiments — must be labeled as exploratory.
+- **Findings:** Effect classification (win/loss/inconclusive), statistical significance, guardrail status, must be grounded in provided data.
+- **Hypotheses:** Segment-level explanations and proposed next experiments, must be labeled as exploratory.
 
 ## Output Format
 
 Produce an Experiment Analysis Report with:
-1. **Experiment Summary** — hypothesis, design, duration
-2. **Results** — primary, secondary, and guardrail metrics
-3. **Interpretation** — rigor checks and effect classification
-4. **Segment Analysis** — how effects vary across groups
-5. **Decision** — ship/iterate/extend with rationale
-6. **Learnings** — institutional knowledge capture
+1. **Experiment Summary**, hypothesis, design, duration
+2. **Results**, primary, secondary, and guardrail metrics
+3. **Interpretation**, rigor checks and effect classification
+4. **Segment Analysis**, how effects vary across groups
+5. **Decision**, ship/iterate/extend with rationale
+6. **Learnings**, institutional knowledge capture
 
 **Shipwright Signature (required closing):**
-7. **Decision Frame** — ship/no-ship/iterate recommendation, trade-off, confidence with evidence quality (sample size, test duration, SRM check), owner, decision date, revisit trigger
-8. **Unknowns & Evidence Gaps** — segments not tested, long-term effects unmeasured, novelty/primacy uncertainty
-9. **Pass/Fail Readiness** — PASS if primary metric has sufficient power and no guardrail degradation; FAIL if sample size below MDE or guardrails breached without mitigation
-10. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+7. **Decision Frame**, ship/no-ship/iterate recommendation, trade-off, confidence with evidence quality (sample size, test duration, SRM check), owner, decision date, revisit trigger
+8. **Unknowns & Evidence Gaps**, segments not tested, long-term effects unmeasured, novelty/primacy uncertainty
+9. **Pass/Fail Readiness**, PASS if primary metric has sufficient power and no guardrail degradation; FAIL if sample size below MDE or guardrails breached without mitigation
+10. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid
 
-- **Peeking and stopping early** — Checking results daily and stopping when p < 0.05 inflates false positives
-- **Ignoring practical significance** — A statistically significant 0.1% lift on a metric may not be worth shipping
-- **No guardrail checks** — A win on the primary metric that degrades something critical is a net loss
-- **Overclaiming segment results** — Segment analysis is hypothesis-generating, not hypothesis-confirming
-- **Not documenting learnings** — An experiment that doesn't update your team's mental model was wasted
+- **Peeking and stopping early**, Checking results daily and stopping when p < 0.05 inflates false positives
+- **Ignoring practical significance**, A statistically significant 0.1% lift on a metric may not be worth shipping
+- **No guardrail checks**, A win on the primary metric that degrades something critical is a net loss
+- **Overclaiming segment results**, Segment analysis is hypothesis-generating, not hypothesis-confirming
+- **Not documenting learnings**, An experiment that doesn't update your team's mental model was wasted
 
 ## Weak vs. Strong Output
 
 **Weak:**
 > "The test was statistically significant so we should ship it."
 
-No effect size, no guardrail check, no practical significance judgment — significance alone does not justify shipping.
+No effect size, no guardrail check, no practical significance judgment, significance alone does not justify shipping.
 
 **Strong:**
 > "Treatment lifted activation rate +3.2% (95% CI: +1.8% to +4.6%, p=0.002). Guardrails stable. Effect is 2x our MDE threshold. Recommend ship with 14-day post-launch monitoring on error rate."

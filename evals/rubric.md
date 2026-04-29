@@ -26,7 +26,7 @@ This rubric applies to any artifact produced by a Shipwright skill or workflow. 
 | **6 (Adequate)** | All sections are filled, but some are thin. The document covers the territory but doesn't go deep on any dimension. No obvious gaps, but a reviewer would ask "what about X?" for 2-3 areas. |
 | **9 (Strong)** | Every section has substantive content specific to this product and situation. Edge cases are addressed. Counter-arguments are anticipated. A reviewer would struggle to find a missing consideration. |
 
-**Common failure mode:** Filling every section with roughly equal depth. A 9/10 document is opinionated about where depth matters — it goes deep on the hard decisions and stays concise on the obvious ones.
+**Common failure mode:** Filling every section with roughly equal depth. A 9/10 document is opinionated about where depth matters, it goes deep on the hard decisions and stays concise on the obvious ones.
 
 ### 3. Actionability
 
@@ -38,7 +38,7 @@ This rubric applies to any artifact produced by a Shipwright skill or workflow. 
 | **6 (Adequate)** | Recommendations exist but are hedged. "We should consider X" instead of "We will do X, owned by Y, by Z date." Some sections end without clear next steps. |
 | **9 (Strong)** | Every section that implies a decision explicitly states it. Every action has an owner and a deadline. Open questions have owners and due dates. The reader knows exactly what to do after reading. |
 
-**Common failure mode:** Presenting analysis without committing to a recommendation. Strong artifacts take a position. It's fine to say "we're 70% confident" — it's not fine to say "there are pros and cons to each approach."
+**Common failure mode:** Presenting analysis without committing to a recommendation. Strong artifacts take a position. It's fine to say "we're 70% confident", it's not fine to say "there are pros and cons to each approach."
 
 ### 4. Correctness
 
@@ -48,7 +48,7 @@ This rubric applies to any artifact produced by a Shipwright skill or workflow. 
 |---|---|
 | **3 (Weak)** | Frameworks are misapplied (e.g., a SWOT with identical items in Strengths and Opportunities). Evidence is vague or unsourced. Trade-offs feel manufactured to fill a template. |
 | **6 (Adequate)** | Frameworks are applied correctly but mechanically. Evidence is present but not verified. Trade-offs are reasonable but not deeply examined. |
-| **9 (Strong)** | Frameworks are applied with judgment — the template is adapted to fit the situation, not the other way around. Evidence is specific and sourced. Trade-offs reflect genuine tension, not just "more work vs. less work." |
+| **9 (Strong)** | Frameworks are applied with judgment, the template is adapted to fit the situation, not the other way around. Evidence is specific and sourced. Trade-offs reflect genuine tension, not just "more work vs. less work." |
 
 **Common failure mode:** Symmetrical analysis where reality is asymmetric. If a SWOT has exactly 4 items in each quadrant, or a competitive analysis shows every competitor as "equal but different," the analysis is likely template-driven rather than reality-driven.
 
@@ -57,7 +57,7 @@ This rubric applies to any artifact produced by a Shipwright skill or workflow. 
 1. Read the complete artifact once without scoring
 2. Score each dimension independently (don't let one dimension bias another)
 3. Write a one-sentence justification for each score
-4. Identify the lowest-scoring dimension — that's where revision effort should focus
+4. Identify the lowest-scoring dimension, that's where revision effort should focus
 5. Re-score after revision to confirm improvement
 
 ## Interpreting scores

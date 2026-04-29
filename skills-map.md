@@ -3,7 +3,7 @@
 > This file is the orchestrator agent's routing reference. It maps plain-language PM needs
 > to the skills, agents, and workflows best suited to handle them.
 
-## All Skills — Quick Reference
+## All Skills, Quick Reference
 
 ### Discovery & Research
 | Skill | Directory | Best For |
@@ -93,7 +93,7 @@
 
 ---
 
-## All Agents — Capability Matrix
+## All Agents, Capability Matrix
 
 | Agent | Core Capability | Uses These Skills | Does NOT Do |
 |---|---|---|---|
@@ -120,7 +120,7 @@ If the user's need doesn't fit a path, use the individual workflow table below.
 
 ---
 
-## All Workflows — When to Use Each
+## All Workflows, When to Use Each
 
 | Command | Chain | Best For | Time Required |
 |---|---|---|---|

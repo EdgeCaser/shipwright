@@ -37,7 +37,7 @@ Runs a structured "imagine this already failed" exercise to surface risks, assum
 
 ### The Scenario
 It is [date 6 months from now]. We launched [initiative].
-It has FAILED. Not a minor setback — a clear, undeniable failure.
+It has FAILED. Not a minor setback, a clear, undeniable failure.
 
 ### What "failure" means for this initiative:
 - [Metric] is at [bad number] instead of [target]
@@ -58,18 +58,18 @@ Ask: "Working backward from this failure, what went wrong?"
 ### Customer & Market Failures
 - [We built for the wrong persona]
 - [The problem wasn't painful enough to change behavior]
-- [Timing was wrong — market wasn't ready]
+- [Timing was wrong, market wasn't ready]
 - [Competitors moved faster]
 
 ### Execution Failures
 - [Scope crept and we shipped too late]
-- [Quality was poor — too many bugs at launch]
+- [Quality was poor, too many bugs at launch]
 - [Key dependency didn't deliver on time]
 - [Team was under-resourced or burned out]
 
 ### Strategy & Business Failures
 - [Business model assumptions were wrong]
-- [Pricing was off — too high or too low]
+- [Pricing was off, too high or too low]
 - [Go-to-market didn't reach the right audience]
 - [Internal stakeholder pulled support]
 
@@ -95,7 +95,7 @@ Ask: "Working backward from this failure, what went wrong?"
 
 **Scoring:**
 - Focus on High Likelihood × High Impact items first
-- Pay special attention to "Late detectability" risks — these are the ones that blindside you
+- Pay special attention to "Late detectability" risks, these are the ones that blindside you
 ```
 
 ### Step 4: Define Mitigations
@@ -150,25 +150,25 @@ If any of the following become true, we will pause and reassess:
 ## Output Format
 
 Produce a Pre-Mortem Report with:
-1. **Failure Scenario** — vivid description of what failure looks like
-2. **Failure Modes** — categorized list of what could go wrong
-3. **Risk Assessment** — prioritized by likelihood × impact
-4. **Mitigation Plan** — prevention, detection, and contingency for each top risk
-5. **Kill Criteria** — pre-committed decision triggers
+1. **Failure Scenario**, vivid description of what failure looks like
+2. **Failure Modes**, categorized list of what could go wrong
+3. **Risk Assessment**, prioritized by likelihood × impact
+4. **Mitigation Plan**, prevention, detection, and contingency for each top risk
+5. **Kill Criteria**, pre-committed decision triggers
 
 **Shipwright Signature (required closing):**
-6. **Decision Frame** — go/no-go recommendation based on risk profile, trade-off, confidence with evidence quality, owner, decision date, revisit trigger
-7. **Unknowns & Evidence Gaps** — failure modes with low-confidence likelihood ratings, risks that need spike investigation, missing historical baselines
-8. **Pass/Fail Readiness** — PASS if top 3 risks have owned mitigations and kill criteria are pre-committed (at Light depth: PASS if top 5 risks are ranked by likelihood × impact with scores; mitigations and kill criteria are not required); FAIL if fewer than 3 risks are identified or risk scores lack both likelihood and impact ratings
-9. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+6. **Decision Frame**, go/no-go recommendation based on risk profile, trade-off, confidence with evidence quality, owner, decision date, revisit trigger
+7. **Unknowns & Evidence Gaps**, failure modes with low-confidence likelihood ratings, risks that need spike investigation, missing historical baselines
+8. **Pass/Fail Readiness**, PASS if top 3 risks have owned mitigations and kill criteria are pre-committed (at Light depth: PASS if top 5 risks are ranked by likelihood × impact with scores; mitigations and kill criteria are not required); FAIL if fewer than 3 risks are identified or risk scores lack both likelihood and impact ratings
+9. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid
 
-- **Being too polite** — The whole point is to imagine failure; encourage brutal honesty
-- **Only listing obvious risks** — Push for the uncomfortable, politically sensitive failure modes
-- **Mitigations without owners** — Unowned mitigations don't happen
-- **No kill criteria** — Without pre-committed exit conditions, sunk cost fallacy takes over
-- **Doing it once and forgetting** — Revisit the pre-mortem at milestones to check for emerging risks
+- **Being too polite**, The whole point is to imagine failure; encourage brutal honesty
+- **Only listing obvious risks**, Push for the uncomfortable, politically sensitive failure modes
+- **Mitigations without owners**, Unowned mitigations don't happen
+- **No kill criteria**, Without pre-committed exit conditions, sunk cost fallacy takes over
+- **Doing it once and forgetting**, Revisit the pre-mortem at milestones to check for emerging risks
 
 ## Weak vs. Strong Output
 

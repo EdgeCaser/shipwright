@@ -33,12 +33,12 @@ Generates user stories with acceptance criteria, edge cases, and definition of d
 ### INVEST Criteria
 
 Every story should be:
-- **I**ndependent — Can be built and delivered separately from other stories
-- **N**egotiable — Details can be discussed; it's not a rigid contract
-- **V**aluable — Delivers value to a user or stakeholder
-- **E**stimable — Team can estimate the effort required
-- **S**mall — Completable within one sprint
-- **T**estable — Clear criteria to verify it works
+- **I**ndependent, Can be built and delivered separately from other stories
+- **N**egotiable, Details can be discussed; it's not a rigid contract
+- **V**aluable, Delivers value to a user or stakeholder
+- **E**stimable, Team can estimate the effort required
+- **S**mall, Completable within one sprint
+- **T**estable, Clear criteria to verify it works
 
 ## Framework
 
@@ -51,7 +51,7 @@ So that [benefit/outcome].
 ```
 
 **Rules:**
-- The persona should be specific (not "a user" — use named personas)
+- The persona should be specific (not "a user", use named personas)
 - The action should describe a goal, not a UI interaction
 - The benefit must be from the user's perspective
 
@@ -94,8 +94,8 @@ Use Given/When/Then format for testable criteria:
 ### Edge Cases
 | Scenario | Expected Behavior |
 |---|---|
-| [Empty state — no data] | [What the user sees] |
-| [Maximum data — 10,000 items] | [Performance expectation] |
+| [Empty state, no data] | [What the user sees] |
+| [Maximum data, 10,000 items] | [Performance expectation] |
 | [Concurrent editing] | [Conflict resolution behavior] |
 | [Network failure mid-action] | [Recovery behavior] |
 | [Invalid input] | [Validation message] |
@@ -120,12 +120,12 @@ Use Given/When/Then format for testable criteria:
 ### Step 5: Story Splitting (when stories are too large)
 
 **Splitting strategies:**
-1. **By workflow step** — Registration → Login → Profile setup
-2. **By data variation** — Text input → File upload → Rich text
-3. **By operation** — Create → Read → Update → Delete
-4. **By role** — Admin view → Member view → Guest view
-5. **By platform** — Web → Mobile → API
-6. **By happy path vs. edge case** — Core flow → Error handling → Bulk operations
+1. **By workflow step**, Registration → Login → Profile setup
+2. **By data variation**, Text input → File upload → Rich text
+3. **By operation**, Create → Read → Update → Delete
+4. **By role**, Admin view → Member view → Guest view
+5. **By platform**, Web → Mobile → API
+6. **By happy path vs. edge case**, Core flow → Error handling → Bulk operations
 
 **Template for split stories:**
 ```markdown
@@ -152,7 +152,7 @@ Depends on: Story 1
 
 **Acceptable evidence:** PRD requirements, design mockups, user interview notes, support ticket patterns, or an approved epic with scope definition.
 
-**Insufficient evidence:** If the persona is undefined or the user need is assumed without evidence, produce a partial artifact with unanswered sections marked `[TBD — requires: user research or persona definition]` and flag the artifact as draft-only.
+**Insufficient evidence:** If the persona is undefined or the user need is assumed without evidence, produce a partial artifact with unanswered sections marked `[TBD, requires: user research or persona definition]` and flag the artifact as draft-only.
 
 **Hypotheses vs. findings:**
 - **Findings:** Persona definition, core acceptance criteria, and known system constraints must be grounded in evidence.
@@ -161,25 +161,25 @@ Depends on: Story 1
 ## Output Format
 
 For each user story, produce:
-1. **Story statement** — As a / I want to / So that
-2. **Acceptance criteria** — Given/When/Then for each scenario
-3. **Edge cases** — table of scenarios and expected behaviors
-4. **Definition of done** — checklist
-5. **Estimation notes** — dependencies, risks, unknowns
+1. **Story statement**, As a / I want to / So that
+2. **Acceptance criteria**, Given/When/Then for each scenario
+3. **Edge cases**, table of scenarios and expected behaviors
+4. **Definition of done**, checklist
+5. **Estimation notes**, dependencies, risks, unknowns
 
 **Shipwright Signature (required closing):**
-6. **Decision Frame** — story readiness recommendation (ready for sprint / needs grooming / needs split), trade-off, confidence with evidence quality, owner, decision date, revisit trigger
-7. **Unknowns & Evidence Gaps** — undefined edge case behaviors, missing design specs, unconfirmed performance thresholds
-8. **Pass/Fail Readiness** — PASS if story meets INVEST criteria, has 3+ acceptance criteria (at Light depth: 2+), and persona is evidence-based; FAIL if persona is generic ("a user"), acceptance criteria are untestable, or story is too large for one sprint
-9. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+6. **Decision Frame**, story readiness recommendation (ready for sprint / needs grooming / needs split), trade-off, confidence with evidence quality, owner, decision date, revisit trigger
+7. **Unknowns & Evidence Gaps**, undefined edge case behaviors, missing design specs, unconfirmed performance thresholds
+8. **Pass/Fail Readiness**, PASS if story meets INVEST criteria, has 3+ acceptance criteria (at Light depth: 2+), and persona is evidence-based; FAIL if persona is generic ("a user"), acceptance criteria are untestable, or story is too large for one sprint
+9. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid
 
-- **Stories that are tasks** — "Set up database table" is a task, not a user story
-- **Missing the "so that"** — Without the benefit, you can't evaluate trade-offs
-- **Acceptance criteria that duplicate implementation** — Describe *what*, not *how*
-- **Stories too large to estimate** — If it can't fit in a sprint, split it
-- **Ignoring unhappy paths** — Error states and empty states are where UX quality lives
+- **Stories that are tasks**, "Set up database table" is a task, not a user story
+- **Missing the "so that"**, Without the benefit, you can't evaluate trade-offs
+- **Acceptance criteria that duplicate implementation**, Describe *what*, not *how*
+- **Stories too large to estimate**, If it can't fit in a sprint, split it
+- **Ignoring unhappy paths**, Error states and empty states are where UX quality lives
 
 ## Weak vs. Strong Output
 

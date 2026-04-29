@@ -141,8 +141,8 @@ A: [T-shirt size and breakdown]
 - [Requirement 2]
 
 ### Out of Scope
-- [Item 1] — Rationale: [why]
-- [Item 2] — Rationale: [why]
+- [Item 1], Rationale: [why]
+- [Item 2], Rationale: [why]
 
 ### Future Considerations
 - [Item that may come later]
@@ -164,9 +164,9 @@ A: [T-shirt size and breakdown]
 | [Dep 1] | [team] | [status] | [risk level] |
 
 ## 8. Rollout Plan
-- [ ] Phase 1: [Internal dogfood — date]
-- [ ] Phase 2: [Beta with N% — date]
-- [ ] Phase 3: [GA — date]
+- [ ] Phase 1: [Internal dogfood, date]
+- [ ] Phase 2: [Beta with N%, date]
+- [ ] Phase 3: [GA, date]
 
 ## 9. Open Questions
 | Question | Owner | Due Date | Resolution |
@@ -180,7 +180,7 @@ A: [T-shirt size and breakdown]
 
 **Acceptable evidence:** Customer interview transcripts, support ticket volume/trends, usage analytics, churned-customer feedback, competitive teardowns, or sales call recordings.
 
-**Insufficient evidence:** If no customer evidence exists for the stated problem, produce a partial artifact with unanswered sections marked `[TBD — requires: customer interviews, support ticket analysis, or usage data]` and flag the artifact as draft-only.
+**Insufficient evidence:** If no customer evidence exists for the stated problem, produce a partial artifact with unanswered sections marked `[TBD, requires: customer interviews, support ticket analysis, or usage data]` and flag the artifact as draft-only.
 
 **Hypotheses vs. findings:**
 - **Findings:** Problem statement, current metric baselines, and documented customer pain must be grounded in evidence.
@@ -189,23 +189,23 @@ A: [T-shirt size and breakdown]
 ## Output Format
 
 Produce a complete PRD with all three phases:
-1. **Press Release** — customer-facing narrative
-2. **FAQ** — customer and internal questions answered
-3. **Detailed Requirements** — full specification
+1. **Press Release**, customer-facing narrative
+2. **FAQ**, customer and internal questions answered
+3. **Detailed Requirements**, full specification
 
 **Shipwright Signature (required closing):**
-4. **Decision Frame** — build/buy/partner recommendation, trade-off, confidence with evidence quality, owner, decision date, revisit trigger
-5. **Unknowns & Evidence Gaps** — unvalidated customer assumptions, missing technical feasibility data, untested pricing or GTM hypotheses
-6. **Pass/Fail Readiness** — PASS if problem is evidence-backed, success metrics have baselines and targets, and scope boundaries are explicit; at Light depth, PASS if problem is evidence-backed (prior PRD, launch data, or stakeholder alignment qualifies), scope boundaries are explicit, and at least one success metric is identified; FAIL if no customer evidence exists or success metrics lack baselines
-7. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+4. **Decision Frame**, build/buy/partner recommendation, trade-off, confidence with evidence quality, owner, decision date, revisit trigger
+5. **Unknowns & Evidence Gaps**, unvalidated customer assumptions, missing technical feasibility data, untested pricing or GTM hypotheses
+6. **Pass/Fail Readiness**, PASS if problem is evidence-backed, success metrics have baselines and targets, and scope boundaries are explicit; at Light depth, PASS if problem is evidence-backed (prior PRD, launch data, or stakeholder alignment qualifies), scope boundaries are explicit, and at least one success metric is identified; FAIL if no customer evidence exists or success metrics lack baselines
+7. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid
 
-- **Starting with requirements** — Always start with the press release to ground the work in customer value
-- **No success metrics** — If you can't measure success, you can't know if you succeeded
-- **Missing "out of scope"** — Scope creep starts when boundaries aren't explicit
-- **Writing for engineers only** — A good PRD is readable by design, marketing, and leadership too
-- **Treating the PRD as final** — It's a living document; update it as you learn
+- **Starting with requirements**, Always start with the press release to ground the work in customer value
+- **No success metrics**, If you can't measure success, you can't know if you succeeded
+- **Missing "out of scope"**, Scope creep starts when boundaries aren't explicit
+- **Writing for engineers only**, A good PRD is readable by design, marketing, and leadership too
+- **Treating the PRD as final**, It's a living document; update it as you learn
 
 ## Weak vs. Strong Output
 

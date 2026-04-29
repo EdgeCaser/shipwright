@@ -27,7 +27,7 @@ Produces a structured Strengths, Weaknesses, Opportunities, and Threats analysis
 | **Standard** | Strategic planning input or product review | All sections |
 | **Deep** | Market entry decision, M&A evaluation, or board presentation | All sections + PESTEL overlay per threat/opportunity, competitive SWOT comparison, quantified impact estimates per item |
 
-**Omit rules:** At Light depth, skip Cross-Reference for Strategic Options and Prioritize. Produce only the four-quadrant grid with evidence. Watch for symmetrical outputs — if every quadrant has exactly the same number of items with equal weight, the analysis is likely superficial.
+**Omit rules:** At Light depth, skip Cross-Reference for Strategic Options and Prioritize. Produce only the four-quadrant grid with evidence. Watch for symmetrical outputs, if every quadrant has exactly the same number of items with equal weight, the analysis is likely superficial.
 
 ## Framework
 
@@ -110,15 +110,15 @@ Rank the strategic options by impact and feasibility. Identify which belong on t
 
 ## Minimum Evidence Bar
 
-**Required inputs:** A clearly scoped subject (product, feature, business unit — not "our company"), and at least one source of internal data and one source of external/market data.
+**Required inputs:** A clearly scoped subject (product, feature, business unit, not "our company"), and at least one source of internal data and one source of external/market data.
 
 **Acceptable evidence:** Customer feedback, usage metrics, competitive analysis, market reports, win/loss data, support ticket themes, industry benchmarks.
 
-**Insufficient evidence:** If no competitive or market context is available for the external quadrants (Opportunities/Threats), produce a partial artifact with external quadrants marked `[TBD — requires: competitive research or market analysis data]` and flag the artifact as draft-only.
+**Insufficient evidence:** If no competitive or market context is available for the external quadrants (Opportunities/Threats), produce a partial artifact with external quadrants marked `[TBD, requires: competitive research or market analysis data]` and flag the artifact as draft-only.
 
 **Hypotheses vs. findings:**
 - **Findings:** Strengths and Weaknesses backed by internal data (metrics, customer quotes, support volumes)
-- **Hypotheses:** Opportunities and Threats based on market projections or competitor speculation — must be labeled with source and confidence
+- **Hypotheses:** Opportunities and Threats based on market projections or competitor speculation, must be labeled with source and confidence
 
 ## Output Format
 
@@ -128,10 +128,10 @@ Produce:
 3. **Top 3 Actions** ranked by urgency and impact
 
 **Shipwright Signature (required closing):**
-4. **Decision Frame** — Top strategic action from cross-reference analysis with trade-off (offensive vs. defensive posture), confidence with evidence quality, owner, decision date, revisit trigger
-5. **Unknowns & Evidence Gaps** — Quadrant items based on assumption rather than data, missing competitive intel, unverified market trends
-6. **Pass/Fail Readiness** — PASS if every quadrant item cites evidence and at least one SO/WT strategy is actionable (at Light depth: PASS if every quadrant item cites evidence — cross-reference strategies are deferred); FAIL if quadrants contain unsourced assertions
-7. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+4. **Decision Frame**, Top strategic action from cross-reference analysis with trade-off (offensive vs. defensive posture), confidence with evidence quality, owner, decision date, revisit trigger
+5. **Unknowns & Evidence Gaps**, Quadrant items based on assumption rather than data, missing competitive intel, unverified market trends
+6. **Pass/Fail Readiness**, PASS if every quadrant item cites evidence and at least one SO/WT strategy is actionable (at Light depth: PASS if every quadrant item cites evidence, cross-reference strategies are deferred); FAIL if quadrants contain unsourced assertions
+7. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid
 
@@ -146,9 +146,9 @@ Produce:
 **Weak:**
 > "Strength: Great product. Weakness: Could be better. Opportunity: Market is growing. Threat: Competition."
 
-Symmetrical, unsourced, and interchangeable with any company — this SWOT does zero analytical work.
+Symmetrical, unsourced, and interchangeable with any company, this SWOT does zero analytical work.
 
 **Strong:**
-> "Strength: 3-day avg onboarding vs. 14-day industry benchmark (Source: internal telemetry, Jan 2026). Threat: Incumbent announced free tier at $0/seat targeting our SMB segment (Source: competitor press release, Feb 2026). ST Strategy: Accelerate enterprise onboarding as moat — free-tier competitors can't match our white-glove setup."
+> "Strength: 3-day avg onboarding vs. 14-day industry benchmark (Source: internal telemetry, Jan 2026). Threat: Incumbent announced free tier at $0/seat targeting our SMB segment (Source: competitor press release, Feb 2026). ST Strategy: Accelerate enterprise onboarding as moat, free-tier competitors can't match our white-glove setup."
 
 Each item cites a source, and the cross-reference generates an actionable strategy rather than restating the inputs.

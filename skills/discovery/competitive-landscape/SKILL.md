@@ -86,7 +86,7 @@ For each competitor, map:
 **Target persona:** [Who they sell to]
 **Key differentiator:** [What they claim is unique]
 **Pricing model:** [Free / Freemium / Usage / Seat / Enterprise]
-**Price range:** [Estimated — or see pricing-diff table above]
+**Price range:** [Estimated, or see pricing-diff table above]
 **Sales motion:** [PLG / Sales-led / Hybrid]
 **Messaging themes:** [What they emphasize in marketing]
 ```
@@ -129,36 +129,36 @@ For each key competitor:
 
 **Acceptable evidence:** Public pricing pages, G2/Capterra reviews, analyst reports (Gartner, Forrester), customer win/loss interviews, job postings, press releases, SEC filings, product changelogs, direct product usage.
 
-**Insufficient evidence:** If the competitive set is based solely on internal assumptions with no external validation, state "Insufficient evidence: competitive set is unvalidated" and produce a partial artifact with unvalidated sections marked `[TBD — requires: external validation via customer interviews, win/loss analysis, or public competitor data]` and flag the artifact as draft-only.
+**Insufficient evidence:** If the competitive set is based solely on internal assumptions with no external validation, state "Insufficient evidence: competitive set is unvalidated" and produce a partial artifact with unvalidated sections marked `[TBD, requires: external validation via customer interviews, win/loss analysis, or public competitor data]` and flag the artifact as draft-only.
 
 **Hypotheses vs. findings:**
 - **Findings:** Strengths, weaknesses, and recent moves backed by observable evidence (public data, customer quotes, product tests)
-- **Hypotheses:** "Likely next moves" and "Strategic implications" — must be explicitly labeled as hypotheses with supporting reasoning
+- **Hypotheses:** "Likely next moves" and "Strategic implications", must be explicitly labeled as hypotheses with supporting reasoning
 
 ## Output Format
 
 Produce a structured competitive intelligence report with:
-1. **Executive Summary** — 3-5 bullet top-line competitive takeaways
-2. **Competitive Set** — categorized list of competitors
-3. **Feature Matrix** — capability comparison grid
-4. **Positioning Map** — how each competitor positions themselves
-5. **Competitor Deep Dives** — strengths, weaknesses, recent moves
-6. **Market Dynamics** — macro trends affecting competition
-7. **Strategic Implications** — what this means for our product decisions (label as hypotheses)
+1. **Executive Summary**, 3-5 bullet top-line competitive takeaways
+2. **Competitive Set**, categorized list of competitors
+3. **Feature Matrix**, capability comparison grid
+4. **Positioning Map**, how each competitor positions themselves
+5. **Competitor Deep Dives**, strengths, weaknesses, recent moves
+6. **Market Dynamics**, macro trends affecting competition
+7. **Strategic Implications**, what this means for our product decisions (label as hypotheses)
 
 **Shipwright Signature (required closing):**
-8. **Decision Frame** — Primary strategic takeaway, trade-off, confidence with evidence quality, owner, decision date, revisit trigger
-9. **Unknowns & Evidence Gaps** — What we don't know about the competitive landscape and what evidence would resolve it
-10. **Pass/Fail Readiness** — PASS if ≥2 competitors analyzed with sourced evidence (at Light depth: PASS if ≥2 competitors listed with sourced evidence and capability matrix is present; Positioning Analysis, Competitor Deep Dives, and Market Dynamics not required); FAIL if competitive set is assumption-only or no capability matrix produced
-11. **Recommended Next Artifact** — Which Shipwright skill to run next (e.g., positioning-statement, competitive-battlecard) and why
+8. **Decision Frame**, Primary strategic takeaway, trade-off, confidence with evidence quality, owner, decision date, revisit trigger
+9. **Unknowns & Evidence Gaps**, What we don't know about the competitive landscape and what evidence would resolve it
+10. **Pass/Fail Readiness**, PASS if ≥2 competitors analyzed with sourced evidence (at Light depth: PASS if ≥2 competitors listed with sourced evidence and capability matrix is present; Positioning Analysis, Competitor Deep Dives, and Market Dynamics not required); FAIL if competitive set is assumption-only or no capability matrix produced
+11. **Recommended Next Artifact**, Which Shipwright skill to run next (e.g., positioning-statement, competitive-battlecard) and why
 
 ## Common Mistakes to Avoid
 
-- **Only analyzing direct competitors** — Indirect competitors and non-consumption are often the bigger threat
-- **Feature-counting without context** — Having a feature doesn't mean it's good or that buyers care
-- **Stale intelligence** — Competitive landscapes shift quarterly; timestamp everything
-- **Ignoring pricing and GTM** — Product parity means nothing if they out-distribute you
-- **Bias toward your own strengths** — Be rigorous about where competitors genuinely beat you
+- **Only analyzing direct competitors**, Indirect competitors and non-consumption are often the bigger threat
+- **Feature-counting without context**, Having a feature doesn't mean it's good or that buyers care
+- **Stale intelligence**, Competitive landscapes shift quarterly; timestamp everything
+- **Ignoring pricing and GTM**, Product parity means nothing if they out-distribute you
+- **Bias toward your own strengths**, Be rigorous about where competitors genuinely beat you
 
 ## Weak vs. Strong Output
 

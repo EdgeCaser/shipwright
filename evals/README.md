@@ -1,6 +1,6 @@
 # Evaluation System
 
-Shipwright skills produce structured artifacts. This directory provides rubrics for evaluating whether those artifacts are actually good — not just well-formatted, but decision-ready.
+Shipwright skills produce structured artifacts. This directory provides rubrics for evaluating whether those artifacts are actually good, not just well-formatted, but decision-ready.
 
 ## Why evaluate
 
@@ -15,13 +15,13 @@ After a skill or workflow produces an artifact, ask the agent to score it:
 Score this PRD against the evaluation rubric in evals/prd.md. Be honest.
 ```
 
-The agent will rate each dimension, identify the weakest areas, and suggest specific improvements. This works best as a second pass — generate the artifact first, then evaluate and revise.
+The agent will rate each dimension, identify the weakest areas, and suggest specific improvements. This works best as a second pass, generate the artifact first, then evaluate and revise.
 
 ### For team calibration
 Use the rubrics to align your team on what "good" looks like. The scored examples in each rubric show the concrete difference between a 6/10 and a 9/10 artifact. Review these in a team setting to build shared quality standards.
 
 ### For continuous improvement
-Track scores across sessions. If your PRDs consistently score low on "evidence grounding," that's a signal to invest more in discovery before writing requirements — not a prompt engineering problem.
+Track scores across sessions. If your PRDs consistently score low on "evidence grounding," that's a signal to invest more in discovery before writing requirements, not a prompt engineering problem.
 
 ## Enforcement first, scoring second
 

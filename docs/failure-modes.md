@@ -18,7 +18,7 @@ Each agent has characteristic weaknesses tied to its role.
 
 | Failure Mode | What It Looks Like | How to Detect | How to Fix |
 |---|---|---|---|
-| **Framework overfitting** | Forces a SWOT when the problem is operational. Runs a full positioning exercise for an internal tool. Applies heavyweight strategy to lightweight decisions. | Ask: "Does this decision actually require this framework?" If a pricing decision is being analyzed through PESTEL, the framework is wrong. | Tell the agent which framework to use, or say "this is a tactical decision, not a strategic one — skip the framework and just give me a recommendation." |
+| **Framework overfitting** | Forces a SWOT when the problem is operational. Runs a full positioning exercise for an internal tool. Applies heavyweight strategy to lightweight decisions. | Ask: "Does this decision actually require this framework?" If a pricing decision is being analyzed through PESTEL, the framework is wrong. | Tell the agent which framework to use, or say "this is a tactical decision, not a strategic one, skip the framework and just give me a recommendation." |
 | **Unfalsifiable strategies** | Strategy sounds impressive but can't be proven wrong. "We will become the leading platform" is not a strategy. Bets lack kill criteria. | Check: can you describe what failure looks like for each bet? If not, the strategy is unfalsifiable. | Demand kill criteria for every bet. "Under what specific conditions would we abandon this?" If the agent can't answer, the bet isn't well-defined. |
 | **Excessive hedging** | Every recommendation comes with "however," "on the other hand," and "it depends." The strategy avoids commitment. | Count recommendations vs. qualifications. If every paragraph ends with a caveat, the agent is optimizing for not being wrong rather than being useful. | Tell the agent: "Take a position. I want your recommendation, not a list of options. You can note risks but must commit to a direction." |
 
@@ -27,7 +27,7 @@ Each agent has characteristic weaknesses tied to its role.
 | Failure Mode | What It Looks Like | How to Detect | How to Fix |
 |---|---|---|---|
 | **Verbose stories** | User stories are 200+ words each. Acceptance criteria include implementation details. Stories describe HOW to build, not WHAT to build. | Read the story to a designer who didn't write the spec. If they ask "but what does the user actually want?", the story is too technical. | Tell the agent: "Write stories from the user's perspective. Acceptance criteria should describe behavior, not implementation. Max 3 acceptance criteria per story." |
-| **Scope creep via helpfulness** | The agent "helpfully" adds features that weren't in the spec. "While we're building the integration, we should also add a reporting dashboard." | Compare the output scope against the input spec. Anything not in the PRD or spec should be flagged. | Tell the agent: "Only break down what's in the spec. If you think something is missing, flag it as an open question — don't add it to the scope." |
+| **Scope creep via helpfulness** | The agent "helpfully" adds features that weren't in the spec. "While we're building the integration, we should also add a reporting dashboard." | Compare the output scope against the input spec. Anything not in the PRD or spec should be flagged. | Tell the agent: "Only break down what's in the spec. If you think something is missing, flag it as an open question, don't add it to the scope." |
 | **Fabricated estimates** | Sprint plan includes hour or point estimates that have no basis. "This story is 5 points" without knowing the team's velocity or capacity. | Ask: "What is this estimate based on?" If the answer is "typical complexity," it's fabricated. | Don't ask the agent for estimates. Use it for scope breakdown and risk identification. Let your engineering team estimate based on their own velocity. |
 
 ### Customer Intelligence
@@ -43,7 +43,7 @@ Each agent has characteristic weaknesses tied to its role.
 | Failure Mode | What It Looks Like | How to Detect | How to Fix |
 |---|---|---|---|
 | **Diplomatic vagueness** | Meeting notes say "the team discussed concerns about the timeline" instead of "Sarah said the timeline is impossible and engineering needs 3 more weeks." | Compare the notes against your memory of the meeting. If sharp disagreements are softened, the notes aren't accurate. | Tell the agent: "Capture disagreements exactly as stated. Don't soften language. Attribute concerns to specific people." |
-| **Buried critical information** | Executive briefing leads with good news and buries the actual blocker in paragraph 4. Stakeholder update presents risks as "considerations." | Read only the first paragraph and the headers. If you'd walk away thinking everything is fine when it isn't, the information architecture is wrong. | Tell the agent: "Lead with the most important information, even if it's bad news. Use SCR format: Situation, Complication, Resolution — the complication comes second, not last." |
+| **Buried critical information** | Executive briefing leads with good news and buries the actual blocker in paragraph 4. Stakeholder update presents risks as "considerations." | Read only the first paragraph and the headers. If you'd walk away thinking everything is fine when it isn't, the information architecture is wrong. | Tell the agent: "Lead with the most important information, even if it's bad news. Use SCR format: Situation, Complication, Resolution, the complication comes second, not last." |
 
 ### Red-Team
 
@@ -106,7 +106,7 @@ Skip to step 4. I already have the output from steps 1-3 and don't need to regen
 
 **Switch frameworks:**
 ```
-Don't use SWOT here. This is a pricing decision — use the pricing strategy skill instead.
+Don't use SWOT here. This is a pricing decision, use the pricing strategy skill instead.
 ```
 
 **Challenge the output:**

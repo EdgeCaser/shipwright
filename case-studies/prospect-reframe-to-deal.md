@@ -10,7 +10,7 @@
 ## The situation
 
 A pre-revenue B2B data platform was pursuing a prospect in a niche vertical. The platform's core
-offer — adaptive ML personalization for consumer subscription apps — was well-defined. The problem
+offer, adaptive ML personalization for consumer subscription apps, was well-defined. The problem
 was that the prospect didn't look like the standard ICP on the surface.
 
 The prospect's business model involved long-term institutional contracts rather than individual
@@ -30,11 +30,11 @@ meeting. A competent PM might block out a full day for it.
 Shipwright was given the prospect's name and the platform's existing product context (CLAUDE.md).
 No other input.
 
-Within a single session — under ten minutes — Shipwright:
+Within a single session, under ten minutes, Shipwright:
 
 1. **Identified the correct unit of analysis.** The prospect's institutional clients were the
    analog to "subscribers" in the platform's model. Retention, renewal, and expansion metrics
-   applied directly — just at the organizational level, not the individual user level.
+   applied directly, just at the organizational level, not the individual user level.
 
 2. **Mapped the right pilot template.** The platform had two pilot templates: Option A
    (conversion/early retention for new subscribers) and Option B (renewal prediction for
@@ -44,8 +44,8 @@ Within a single session — under ten minutes — Shipwright:
    candidates for expansion was a direct translation of Option B's mechanics.
 
 3. **Identified the input signals.** Rather than requiring new data infrastructure, Shipwright
-   identified the prospect's existing behavioral signals — usage patterns, engagement with
-   reporting tools, incident volume trends — as sufficient inputs for a pilot. The client
+   identified the prospect's existing behavioral signals, usage patterns, engagement with
+   reporting tools, incident volume trends, as sufficient inputs for a pilot. The client
    wouldn't need to build anything new.
 
 4. **Wrote stakeholder-specific framing.** The output included framing for the technical
@@ -55,7 +55,7 @@ Within a single session — under ten minutes — Shipwright:
 
 5. **Documented it as a reusable artifact.** The framing was saved in the project's memory
    and referenced in the client file, so every future conversation with this prospect starts
-   from the right frame — not from scratch.
+   from the right frame, not from scratch.
 
 ---
 
@@ -63,10 +63,10 @@ Within a single session — under ten minutes — Shipwright:
 
 The founder walked into the prospect meeting with a clear, specific pitch: not "AI-powered
 personalization" but "predict which of your institutional clients won't renew and which are
-ready to expand — using the behavioral data you already have."
+ready to expand, using the behavioral data you already have."
 
 The use cases were immediately recognized as relevant. The prospect didn't need to be convinced
-that the problem existed — they already knew their renewal and expansion motions were manual
+that the problem existed, they already knew their renewal and expansion motions were manual
 and reactive. Shipwright had named the pain correctly before the meeting started.
 
 The deal was signed.
@@ -75,8 +75,8 @@ The deal was signed.
 
 ## Why this is a Shipwright proof point
 
-The reframe was not obvious. The platform's standard pitch language — consumer subscriptions,
-onboarding behavior, free-to-paid conversion — didn't map cleanly to the prospect's vocabulary.
+The reframe was not obvious. The platform's standard pitch language, consumer subscriptions,
+onboarding behavior, free-to-paid conversion, didn't map cleanly to the prospect's vocabulary.
 A raw AI prompt ("how do I pitch my personalization platform to this company?") would have
 produced generic suggestions. It wouldn't have identified the institutional-client-as-subscriber
 reframe, selected the right pilot template, named the specific input signals, or written
@@ -84,7 +84,7 @@ stakeholder-differentiated framing.
 
 Shipwright did this because it had full product context (CLAUDE.md), a structured discovery
 process, and pilot templates grounded in the platform's actual offer. The output wasn't a
-summary — it was a usable artifact.
+summary, it was a usable artifact.
 
 **Time comparison:**
 
@@ -97,7 +97,7 @@ summary — it was a usable artifact.
 | Documentation for future sessions | 30–45 min | Included |
 | **Total** | **6–8 hours** | **< 10 minutes** |
 
-The founder's time was spent in the meeting — not preparing for it.
+The founder's time was spent in the meeting, not preparing for it.
 
 ---
 
@@ -107,7 +107,7 @@ The founder's time was spent in the meeting — not preparing for it.
   directly in a client conversation without editing.
 - **Product context is leverage.** CLAUDE.md carries the product's pilot templates, personas,
   and positioning constraints into every session. The quality of the output depends on the
-  quality of the context — and Shipwright compounds it.
+  quality of the context, and Shipwright compounds it.
 - **The value is in the translation.** The hard work wasn't finding information about the
   prospect. It was mapping the prospect's revenue model to the platform's product mechanics
-  and naming the right pilot. That's judgment work, not search work — and Shipwright did it.
+  and naming the right pilot. That's judgment work, not search work, and Shipwright did it.

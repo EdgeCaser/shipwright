@@ -16,7 +16,7 @@ This copies skills, agents, commands, docs, and evals into `your-project/.claude
 
 ```bash
 cd your-project/
-bash shipwright-sync.sh          # interactive — review changes before applying
+bash shipwright-sync.sh          # interactive, review changes before applying
 bash shipwright-sync.sh --yes    # auto-update without prompts
 ```
 
@@ -161,7 +161,7 @@ Then, read [path]/strategy/prioritization-advisor/SKILL.md and score
 the opportunities using RICE.
 ```
 
-This produces the same output as a workflow — you're just sequencing it yourself instead of letting a command file do it.
+This produces the same output as a workflow, you're just sequencing it yourself instead of letting a command file do it.
 
 ### Evaluating standalone output
 

@@ -48,7 +48,7 @@ Collect raw feedback and normalize it into a common format:
 ```
 
 **Normalization rules:**
-- Preserve verbatim quotes — don't paraphrase at this stage
+- Preserve verbatim quotes, don't paraphrase at this stage
 - Tag sentiment: Positive / Neutral / Negative / Mixed
 - Tag source channel
 - Tag customer segment if identifiable (plan tier, company size, persona)
@@ -61,16 +61,16 @@ Group related feedback into themes using bottom-up clustering:
 ```markdown
 ## Feedback Clusters
 
-### Cluster: [Theme Name — e.g., "Export functionality is unreliable"]
+### Cluster: [Theme Name, e.g., "Export functionality is unreliable"]
 **Volume:** [N] pieces of feedback across [N] channels
 **Segments affected:** [Enterprise, SMB, etc.]
 **Sentiment distribution:** [N] negative, [N] neutral, [N] positive
 **Trend:** [Increasing / Stable / Decreasing over past [timeframe]]
 
 **Representative quotes:**
-- "[Quote 1]" — [Source, Segment, Date]
-- "[Quote 2]" — [Source, Segment, Date]
-- "[Quote 3]" — [Source, Segment, Date]
+- "[Quote 1]", [Source, Segment, Date]
+- "[Quote 2]", [Source, Segment, Date]
+- "[Quote 3]", [Source, Segment, Date]
 
 **Variations within this cluster:**
 - Sub-theme A: [description] ([N] mentions)
@@ -81,7 +81,7 @@ Group related feedback into themes using bottom-up clustering:
 - Name clusters as assertions, not labels: "Users can't reliably export to PDF" not "Export"
 - A cluster needs 3+ independent pieces of feedback to be meaningful
 - Track cross-channel confirmation (same theme from support AND reviews = stronger signal)
-- Separate "feature requests" from "bug reports" from "usability complaints" — they need different responses
+- Separate "feature requests" from "bug reports" from "usability complaints", they need different responses
 
 ### Step 3: Categorize by Type
 
@@ -132,7 +132,7 @@ Score each cluster for action priority:
 ### Step 5: Produce the Feedback Report
 
 ```markdown
-## Voice of the Customer Report — [Period]
+## Voice of the Customer Report, [Period]
 
 ### Executive Summary
 - **Total feedback processed:** [N] items from [N] channels
@@ -141,9 +141,9 @@ Score each cluster for action priority:
 - **Positive signal:** [What customers love most]
 
 ### Priority Action Items
-1. [Highest priority cluster] — Recommended action: [specific]
-2. [Second priority] — Recommended action: [specific]
-3. [Third priority] — Recommended action: [specific]
+1. [Highest priority cluster], Recommended action: [specific]
+2. [Second priority], Recommended action: [specific]
+3. [Third priority], Recommended action: [specific]
 
 ### Detailed Cluster Analysis
 [Full cluster details as structured above]
@@ -165,30 +165,30 @@ Score each cluster for action priority:
 
 **Hypotheses vs. findings:**
 - **Findings:** Cluster volumes, sentiment distributions, and trend directions must be grounded in the raw data.
-- **Hypotheses:** Inferred underlying needs behind feature requests (e.g., "50 dark mode requests = eye strain during evening use") must be labeled "Hypothesis — validate with user interviews."
+- **Hypotheses:** Inferred underlying needs behind feature requests (e.g., "50 dark mode requests = eye strain during evening use") must be labeled "Hypothesis, validate with user interviews."
 
 ## Output Format
 
 Produce a Feedback Intelligence Report with:
-1. **Executive Summary** — top-line themes and recommended actions
-2. **Feedback Register** — normalized raw data
-3. **Cluster Analysis** — themed groupings with volume, sentiment, and trends
-4. **Taxonomy** — categorized by type (bugs, UX, feature requests, praise, churn)
-5. **Priority Matrix** — scored and ranked for action
+1. **Executive Summary**, top-line themes and recommended actions
+2. **Feedback Register**, normalized raw data
+3. **Cluster Analysis**, themed groupings with volume, sentiment, and trends
+4. **Taxonomy**, categorized by type (bugs, UX, feature requests, praise, churn)
+5. **Priority Matrix**, scored and ranked for action
 
 **Shipwright Signature (required closing):**
-6. **Decision Frame** — top clusters with response options (fix, build, investigate, or defer) and trade-offs between high-volume and high-revenue-impact items, confidence level with evidence quality, owner, decision date, revisit trigger
-7. **Unknowns & Evidence Gaps** — clusters with single-channel signal only, segments with no feedback representation, underlying needs inferred but not validated
-8. **Pass/Fail Readiness** — PASS if feedback is sourced from 2+ channels, clusters have 3+ independent items each, and priority scoring is applied (at Light depth: single-channel with 3+ items per cluster is acceptable, and priority scoring is not required); FAIL if clusters are based on fewer than 3 independent items or fewer than 20 total items
-9. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+6. **Decision Frame**, top clusters with response options (fix, build, investigate, or defer) and trade-offs between high-volume and high-revenue-impact items, confidence level with evidence quality, owner, decision date, revisit trigger
+7. **Unknowns & Evidence Gaps**, clusters with single-channel signal only, segments with no feedback representation, underlying needs inferred but not validated
+8. **Pass/Fail Readiness**, PASS if feedback is sourced from 2+ channels, clusters have 3+ independent items each, and priority scoring is applied (at Light depth: single-channel with 3+ items per cluster is acceptable, and priority scoring is not required); FAIL if clusters are based on fewer than 3 independent items or fewer than 20 total items
+9. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid
 
-- **Counting votes, not understanding needs** — 50 people asking for "dark mode" might really mean "the UI is hard on my eyes during evening use"
-- **Recency bias** — This week's angry ticket is not automatically the highest priority; look at trends
-- **Ignoring positive feedback** — What customers love tells you what NOT to break
-- **Single-channel blindness** — Support tickets skew toward bugs; NPS skews toward overall sentiment; you need multiple channels
-- **No deduplication** — One customer submitting 10 tickets about the same issue is 1 signal, not 10
+- **Counting votes, not understanding needs**, 50 people asking for "dark mode" might really mean "the UI is hard on my eyes during evening use"
+- **Recency bias**, This week's angry ticket is not automatically the highest priority; look at trends
+- **Ignoring positive feedback**, What customers love tells you what NOT to break
+- **Single-channel blindness**, Support tickets skew toward bugs; NPS skews toward overall sentiment; you need multiple channels
+- **No deduplication**, One customer submitting 10 tickets about the same issue is 1 signal, not 10
 
 ## Weak vs. Strong Output
 
@@ -198,6 +198,6 @@ Produce a Feedback Intelligence Report with:
 A label with a count. No assertion about what the problem actually is, no segment, no trend.
 
 **Strong:**
-> "Cluster: PDF exports drop formatting and images for documents over 10 pages (15 mentions — 9 support tickets, 4 app store reviews, 2 NPS comments). Segments: Enterprise (11), Mid-Market (4). Trend: increasing — 3 mentions in Q1, 12 in Q2. Cross-channel confirmed."
+> "Cluster: PDF exports drop formatting and images for documents over 10 pages (15 mentions, 9 support tickets, 4 app store reviews, 2 NPS comments). Segments: Enterprise (11), Mid-Market (4). Trend: increasing, 3 mentions in Q1, 12 in Q2. Cross-channel confirmed."
 
 Names the specific failure, quantifies across channels, identifies affected segments, and flags the trend direction.

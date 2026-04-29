@@ -9,7 +9,7 @@ default_depth: standard
 
 ## Description
 
-Generates constraint-aware questionnaires that map a prospect or customer's workflows, surface friction points, and identify where processes can be optimized or eliminated. Accepts a configurable lens (e.g., AI/automation readiness, tool consolidation, compliance gaps) that scopes every question toward a specific optimization angle — so the questionnaire discovers what you need, not everything there is to know.
+Generates constraint-aware questionnaires that map a prospect or customer's workflows, surface friction points, and identify where processes can be optimized or eliminated. Accepts a configurable lens (e.g., AI/automation readiness, tool consolidation, compliance gaps) that scopes every question toward a specific optimization angle, so the questionnaire discovers what you need, not everything there is to know.
 
 ## When to Use
 
@@ -44,16 +44,16 @@ The lens constrains every question in the questionnaire. Without a lens, questio
 ```markdown
 ## Questionnaire Lens
 
-**Lens:** [One sentence — the optimization angle]
+**Lens:** [One sentence, the optimization angle]
 **Target respondent:** [Role, department, seniority]
 **Workflow domains:** [Comma-separated list]
 **Out of scope:** [What we are deliberately not asking about]
-**Company context:** [Industry, size, stage — if known]
+**Company context:** [Industry, size, stage, if known]
 ```
 
 **Lens validation rules:**
 - The lens must be specific enough that you could explain to the respondent WHY each question is being asked
-- If the lens is "understand their workflows" with no angle, push back — that produces an unfocused audit, not actionable discovery
+- If the lens is "understand their workflows" with no angle, push back, that produces an unfocused audit, not actionable discovery
 - The lens determines question inclusion: if a question doesn't serve the lens, cut it
 
 ### Step 2: Map Workflow Domains to Question Themes
@@ -72,13 +72,13 @@ For each workflow domain, generate question themes that serve the lens. Every th
 ```
 
 **Theme categories (select per domain based on lens):**
-- **Current process & tools** — What exists today, who does it, what tools are involved
-- **Manual touchpoints & handoffs** — Where humans intervene, pass work, wait, or re-key data
-- **Failure modes & rework** — What breaks, what gets redone, what causes delays
-- **Volume & frequency** — How often, how many, how long — establishes scale for ROI
-- **Decision points** — Where judgment is required vs. where rules could apply
-- **Pain & friction** — What frustrates the team, what they've tried to fix, what they've given up on
-- **Desired outcomes** — What "better" looks like to them, in their words
+- **Current process & tools**, What exists today, who does it, what tools are involved
+- **Manual touchpoints & handoffs**, Where humans intervene, pass work, wait, or re-key data
+- **Failure modes & rework**, What breaks, what gets redone, what causes delays
+- **Volume & frequency**, How often, how many, how long, establishes scale for ROI
+- **Decision points**, Where judgment is required vs. where rules could apply
+- **Pain & friction**, What frustrates the team, what they've tried to fix, what they've given up on
+- **Desired outcomes**, What "better" looks like to them, in their words
 
 Not every theme applies to every lens. A compliance lens would emphasize failure modes and decision points; an AI lens would emphasize manual touchpoints and decision points. Select themes that serve the lens.
 
@@ -86,13 +86,13 @@ Not every theme applies to every lens. A compliance lens would emphasize failure
 
 **Question design principles:**
 
-1. **Behavioral, not hypothetical** — "Walk me through what happens when a new data file arrives" not "Would you benefit from automated ingestion?"
-2. **Specific, not generic** — "How many hours per week does your team spend reformatting reports?" not "Is reporting a challenge?"
-3. **Sequenced by workflow stage** — Questions follow the natural order of the work, not an arbitrary thematic order
-4. **Calibrated to the respondent** — Executive questions focus on outcomes and costs; practitioner questions focus on steps and tools
-5. **Lens-filtered** — Every question must pass the test: "Does the answer to this question help us evaluate [lens]?" If not, cut it.
-6. **No leading questions** — "What's working well and what isn't?" not "Don't you find this process inefficient?"
-7. **Closed + open pairing** — Pair quantitative questions (frequency, duration, count) with open follow-ups (why, what happens when, walk me through)
+1. **Behavioral, not hypothetical**, "Walk me through what happens when a new data file arrives" not "Would you benefit from automated ingestion?"
+2. **Specific, not generic**, "How many hours per week does your team spend reformatting reports?" not "Is reporting a challenge?"
+3. **Sequenced by workflow stage**, Questions follow the natural order of the work, not an arbitrary thematic order
+4. **Calibrated to the respondent**, Executive questions focus on outcomes and costs; practitioner questions focus on steps and tools
+5. **Lens-filtered**, Every question must pass the test: "Does the answer to this question help us evaluate [lens]?" If not, cut it.
+6. **No leading questions**, "What's working well and what isn't?" not "Don't you find this process inefficient?"
+7. **Closed + open pairing**, Pair quantitative questions (frequency, duration, count) with open follow-ups (why, what happens when, walk me through)
 
 **Questionnaire structure:**
 
@@ -173,27 +173,27 @@ For qualitative questions, score on two dimensions:
 **Friction Severity (1-5):**
 | Score | Meaning | Signal Words |
 |---|---|---|
-| 1 | No friction — process works smoothly | "works fine," "no issues," "happy with it" |
-| 2 | Minor annoyance — workaround exists and is fast | "slightly annoying," "we just [quick fix]" |
-| 3 | Moderate friction — regular time cost or error rate | "takes too long," "happens weekly," "we lose time" |
-| 4 | Significant friction — major time cost, frequent errors, team frustration | "constant problem," "hours per week," "we've complained" |
-| 5 | Critical — blocking business outcomes, causing churn/revenue loss | "can't scale," "losing customers," "compliance risk" |
+| 1 | No friction, process works smoothly | "works fine," "no issues," "happy with it" |
+| 2 | Minor annoyance, workaround exists and is fast | "slightly annoying," "we just [quick fix]" |
+| 3 | Moderate friction, regular time cost or error rate | "takes too long," "happens weekly," "we lose time" |
+| 4 | Significant friction, major time cost, frequent errors, team frustration | "constant problem," "hours per week," "we've complained" |
+| 5 | Critical, blocking business outcomes, causing churn/revenue loss | "can't scale," "losing customers," "compliance risk" |
 
 **Lens Relevance (1-3):**
 | Score | Meaning |
 |---|---|
-| 1 | Tangentially related to the lens — nice to know |
-| 2 | Directly relevant — the lens applies to this friction point |
-| 3 | High-impact target — strong lens fit AND high friction severity |
+| 1 | Tangentially related to the lens, nice to know |
+| 2 | Directly relevant, the lens applies to this friction point |
+| 3 | High-impact target, strong lens fit AND high friction severity |
 
 ### Opportunity Score
 **Opportunity = Friction Severity x Lens Relevance**
 
 | Score Range | Interpretation |
 |---|---|
-| 12-15 | Top priority — high friction, strong lens fit |
-| 7-11 | Worth pursuing — meaningful opportunity |
-| 3-6 | Low priority — monitor but don't lead with |
+| 12-15 | Top priority, high friction, strong lens fit |
+| 7-11 | Worth pursuing, meaningful opportunity |
+| 3-6 | Low priority, monitor but don't lead with |
 | 1-2 | Out of scope or negligible friction |
 ```
 
@@ -224,7 +224,7 @@ Provide a template for synthesizing responses across multiple respondents.
 - [Pattern 2: workflow domain with highest aggregate friction]
 
 ### Contradictions & Outliers
-- [Where respondents disagree — signals different roles experience the workflow differently]
+- [Where respondents disagree, signals different roles experience the workflow differently]
 ```
 
 ### Step 6: Follow-Up Decision Tree
@@ -237,8 +237,8 @@ Map questionnaire findings to next actions.
 | Finding Pattern | Next Action | Shipwright Skill |
 |---|---|---|
 | High friction + high lens relevance across respondents | Deep-dive interview on top 3 friction points | discovery-interview-prep |
-| High friction but LOW lens relevance | Park — real problem, but not in scope for this engagement | (none — log for future) |
-| Low friction across the board | Revisit lens — either the lens is wrong or this isn't a pain area | Re-run Step 1 with refined lens |
+| High friction but LOW lens relevance | Park, real problem, but not in scope for this engagement | (none, log for future) |
+| Low friction across the board | Revisit lens, either the lens is wrong or this isn't a pain area | Re-run Step 1 with refined lens |
 | Contradictory responses across roles | Map the workflow end-to-end with multiple stakeholders | customer-journey-mapping |
 | Clear opportunity with quantifiable scale | Build the business case | lean-canvas or pricing-strategy |
 | Respondent describes desired outcome clearly | Frame as JTBD and validate | jobs-to-be-done |
@@ -253,35 +253,35 @@ Map questionnaire findings to next actions.
 **Insufficient evidence:** If no lens statement is provided or the lens is too vague to filter questions (e.g., "understand their business"), state "Insufficient evidence: lens is undefined or too broad to generate a focused questionnaire" and stop. Recommend the PM define a specific optimization angle before proceeding. If no workflow domains are specified, ask the PM to identify at least one domain or provide context about the prospect's business so domains can be inferred.
 
 **Hypotheses vs. findings:**
-- **Findings:** The questionnaire structure and question design are outputs of this skill — they are artifacts, not claims about the customer.
-- **Hypotheses:** The theme map (Step 2) hypothesizes which themes will surface the most useful data for the lens. Label theme selections as "hypothesis — validate after first 2-3 responses" and adjust the questionnaire if early responses indicate a theme is unproductive.
+- **Findings:** The questionnaire structure and question design are outputs of this skill, they are artifacts, not claims about the customer.
+- **Hypotheses:** The theme map (Step 2) hypothesizes which themes will surface the most useful data for the lens. Label theme selections as "hypothesis, validate after first 2-3 responses" and adjust the questionnaire if early responses indicate a theme is unproductive.
 
 ## Output Format
 
 Produce up to six artifacts depending on depth:
 
-1. **Questionnaire Lens** — lens statement, target respondent, domains, out-of-scope declaration
-2. **Theme Map** — workflow domains mapped to question themes with lens connection
-3. **Questionnaire** — ready-to-use, numbered question set organized by workflow domain
-4. **Scoring Rubric** — friction severity and lens relevance scales with opportunity scoring
-5. **Response Analysis Template** — synthesis framework for multiple respondents
-6. **Follow-Up Decision Tree** — maps finding patterns to next actions and Shipwright skills
+1. **Questionnaire Lens**, lens statement, target respondent, domains, out-of-scope declaration
+2. **Theme Map**, workflow domains mapped to question themes with lens connection
+3. **Questionnaire**, ready-to-use, numbered question set organized by workflow domain
+4. **Scoring Rubric**, friction severity and lens relevance scales with opportunity scoring
+5. **Response Analysis Template**, synthesis framework for multiple respondents
+6. **Follow-Up Decision Tree**, maps finding patterns to next actions and Shipwright skills
 
 **Shipwright Signature (required closing):**
-7. **Decision Frame** — Primary lens and workflow domains selected, trade-off between questionnaire breadth (more domains) vs. depth (more questions per domain), confidence that the lens will surface actionable data with evidence quality, owner, date, revisit trigger (e.g., "revisit lens after first 3 responses if top opportunities don't emerge")
-8. **Unknowns & Evidence Gaps** — Workflow domains not covered, respondent roles not represented, assumptions about the prospect's operations that the questionnaire itself will test
-9. **Pass/Fail Readiness** — PASS if questionnaire has a defined lens with all questions traceable to it, at least 3 behavioral questions per workflow domain, and no leading or hypothetical questions (at Light depth: PASS if lens is defined and at least 3 behavioral questions per domain are present; scoring rubric not required); FAIL if lens is undefined, questions are leading/hypothetical, or questions fall outside declared scope
-10. **Recommended Next Artifact** — Which Shipwright skill to run next and why (typically discovery-interview-prep for deep-dive follow-ups, or jobs-to-be-done for framing validated friction as job statements)
+7. **Decision Frame**, Primary lens and workflow domains selected, trade-off between questionnaire breadth (more domains) vs. depth (more questions per domain), confidence that the lens will surface actionable data with evidence quality, owner, date, revisit trigger (e.g., "revisit lens after first 3 responses if top opportunities don't emerge")
+8. **Unknowns & Evidence Gaps**, Workflow domains not covered, respondent roles not represented, assumptions about the prospect's operations that the questionnaire itself will test
+9. **Pass/Fail Readiness**, PASS if questionnaire has a defined lens with all questions traceable to it, at least 3 behavioral questions per workflow domain, and no leading or hypothetical questions (at Light depth: PASS if lens is defined and at least 3 behavioral questions per domain are present; scoring rubric not required); FAIL if lens is undefined, questions are leading/hypothetical, or questions fall outside declared scope
+10. **Recommended Next Artifact**, Which Shipwright skill to run next and why (typically discovery-interview-prep for deep-dive follow-ups, or jobs-to-be-done for framing validated friction as job statements)
 
 ## Common Mistakes to Avoid
 
-- **No lens or a vague lens** — "Understand their workflows" is not a lens. Without a specific angle, the questionnaire becomes an unfocused process audit that wastes the respondent's time and produces data you can't act on.
-- **Leading questions that pitch the solution** — "How much time would you save with automation?" presumes the answer. Ask "How much time does your team spend on [specific manual step] per week?" and let the implication land on its own.
-- **Asking about hypothetical futures instead of current behavior** — "Would you use an AI tool for this?" produces unreliable data. "Walk me through what happens when [trigger]" produces real workflow intelligence.
-- **Too many questions without prioritization** — A 60-question questionnaire gets abandoned. Standard depth should target 25-35 questions. If you need more, split into domain-specific modules the respondent can complete in stages.
-- **Skipping the scoring rubric** — Raw qualitative responses are hard to compare across respondents. The rubric converts "this is really painful" into a severity score you can rank and prioritize.
-- **Asking the same question with different wording** — Review the full questionnaire for redundancy. Each question should surface unique information. If two questions would get the same answer, cut one.
-- **Ignoring the out-of-scope declaration** — If the lens says "not evaluating tool purchases," don't ask "what tools would you consider buying?" Scope discipline keeps the questionnaire credible.
+- **No lens or a vague lens**, "Understand their workflows" is not a lens. Without a specific angle, the questionnaire becomes an unfocused process audit that wastes the respondent's time and produces data you can't act on.
+- **Leading questions that pitch the solution**, "How much time would you save with automation?" presumes the answer. Ask "How much time does your team spend on [specific manual step] per week?" and let the implication land on its own.
+- **Asking about hypothetical futures instead of current behavior**, "Would you use an AI tool for this?" produces unreliable data. "Walk me through what happens when [trigger]" produces real workflow intelligence.
+- **Too many questions without prioritization**, A 60-question questionnaire gets abandoned. Standard depth should target 25-35 questions. If you need more, split into domain-specific modules the respondent can complete in stages.
+- **Skipping the scoring rubric**, Raw qualitative responses are hard to compare across respondents. The rubric converts "this is really painful" into a severity score you can rank and prioritize.
+- **Asking the same question with different wording**, Review the full questionnaire for redundancy. Each question should surface unique information. If two questions would get the same answer, cut one.
+- **Ignoring the out-of-scope declaration**, If the lens says "not evaluating tool purchases," don't ask "what tools would you consider buying?" Scope discipline keeps the questionnaire credible.
 
 ## Weak vs. Strong Output
 

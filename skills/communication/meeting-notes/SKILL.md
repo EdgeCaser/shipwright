@@ -15,7 +15,7 @@ Transforms raw meeting notes, transcripts, or recordings into structured summari
 
 - After any meeting (standup, planning, 1:1, design review, stakeholder sync)
 - Processing a meeting transcript or recording
-- Before the next meeting — review previous action items
+- Before the next meeting, review previous action items
 - When someone asks "what did we decide in that meeting?"
 
 ## Depth
@@ -33,11 +33,11 @@ Transforms raw meeting notes, transcripts, or recordings into structured summari
 ### Meeting Notes Template
 
 ```markdown
-# [Meeting Name] — [Date]
+# [Meeting Name], [Date]
 
 ## Metadata
 - **Date & Time:** [date, time, duration]
-- **Attendees:** [names — mark who was absent with ~~strikethrough~~]
+- **Attendees:** [names, mark who was absent with ~~strikethrough~~]
 - **Facilitator:** [name]
 - **Note-taker:** [name]
 - **Recording:** [link, if available]
@@ -53,7 +53,7 @@ Transforms raw meeting notes, transcripts, or recordings into structured summari
 
 | # | Decision | Context | Decision-Maker | Dissent? |
 |---|---|---|---|---|
-| D1 | [What was decided] | [Brief context — why this came up] | [Who made the call] | [Any notable disagreement to record] |
+| D1 | [What was decided] | [Brief context, why this came up] | [Who made the call] | [Any notable disagreement to record] |
 | D2 | [What was decided] | [Context] | [Who] | [Dissent] |
 
 ---
@@ -62,7 +62,7 @@ Transforms raw meeting notes, transcripts, or recordings into structured summari
 
 | # | Action | Owner | Due Date | Status |
 |---|---|---|---|---|
-| A1 | [Specific, actionable task] | [Single owner — never "the team"] | [Date] | [ ] Open |
+| A1 | [Specific, actionable task] | [Single owner, never "the team"] | [Date] | [ ] Open |
 | A2 | [Specific task] | [Owner] | [Date] | [ ] Open |
 | A3 | [Specific task] | [Owner] | [Date] | [ ] Open |
 
@@ -92,8 +92,8 @@ Transforms raw meeting notes, transcripts, or recordings into structured summari
 
 ## Parking Lot
 [Items raised but explicitly deferred to a future discussion]
-- [Topic 1] — Revisit: [when]
-- [Topic 2] — Revisit: [when]
+- [Topic 1], Revisit: [when]
+- [Topic 2], Revisit: [when]
 
 ---
 
@@ -108,25 +108,25 @@ Transforms raw meeting notes, transcripts, or recordings into structured summari
 
 When given a raw transcript or brain-dump notes:
 
-**Step 1: Extract decisions** — Scan for language indicating a decision was made:
+**Step 1: Extract decisions**, Scan for language indicating a decision was made:
 - "We agreed to..."
 - "Let's go with..."
 - "The decision is..."
 - "We're going to..."
 
-**Step 2: Extract action items** — Look for commitments:
+**Step 2: Extract action items**, Look for commitments:
 - "[Name] will..."
 - "Can you [action] by [date]?"
 - "The next step is..."
 - "We need someone to..."
 
-**Step 3: Identify open questions** — Unresolved items:
+**Step 3: Identify open questions**, Unresolved items:
 - "We still need to figure out..."
 - "I'll check on that"
 - "TBD"
 - Questions asked but not answered
 
-**Step 4: Synthesize discussion** — Compress to key points:
+**Step 4: Synthesize discussion**, Compress to key points:
 - Remove small talk, filler, and repeated points
 - Preserve disagreements and their resolution
 - Capture data points and evidence cited
@@ -148,49 +148,49 @@ Add: Alignment status, escalation items, communication actions
 
 ## Minimum Evidence Bar
 
-**Required inputs:** Raw meeting notes, transcript, or recording — plus attendee list and meeting purpose.
+**Required inputs:** Raw meeting notes, transcript, or recording, plus attendee list and meeting purpose.
 
 **Acceptable evidence:** Direct quotes from participants, screen-shared data referenced in discussion, stated commitments ("I'll do X by Friday"), explicit decisions ("We're going with option B").
 
-**Insufficient evidence:** If a decision was implied but never explicitly stated, produce a partial artifact with the implied decision marked `[TBD — requires: explicit confirmation from decision-maker]` and flag the artifact as draft-only.
+**Insufficient evidence:** If a decision was implied but never explicitly stated, produce a partial artifact with the implied decision marked `[TBD, requires: explicit confirmation from decision-maker]` and flag the artifact as draft-only.
 
 **Hypotheses vs. findings:**
 - **Findings:** Decisions Made, Action Items, and the TL;DR must reflect only what was actually said or agreed.
-- **Hypotheses:** Inferred sentiment or unstated concerns noted in Discussion Notes — must be labeled as "inferred" or "implied."
+- **Hypotheses:** Inferred sentiment or unstated concerns noted in Discussion Notes, must be labeled as "inferred" or "implied."
 
 ## Output Format
 
 Produce structured meeting notes with:
-1. **TL;DR** — 2-3 sentence summary
-2. **Decisions** — numbered with context and decision-maker
-3. **Action Items** — owned, dated, trackable
-4. **Discussion Notes** — substance by topic
-5. **Open Questions** — assigned and dated
-6. **Parking Lot** — deferred items with revisit dates
-7. **Previous Action Review** — accountability check
+1. **TL;DR**, 2-3 sentence summary
+2. **Decisions**, numbered with context and decision-maker
+3. **Action Items**, owned, dated, trackable
+4. **Discussion Notes**, substance by topic
+5. **Open Questions**, assigned and dated
+6. **Parking Lot**, deferred items with revisit dates
+7. **Previous Action Review**, accountability check
 
 **Shipwright Signature (required closing):**
-8. **Decision Frame** — key decision from this meeting, trade-offs discussed, confidence based on evidence cited in-room, decision owner, decision date, revisit trigger
-9. **Unknowns & Evidence Gaps** — questions raised but unanswered, data cited but not verified, absent stakeholders whose input is needed
-10. **Pass/Fail Readiness** — PASS if every action item has a single owner and due date and every decision has a named decision-maker; FAIL if any action item is unowned or any decision lacks attribution. **Light-depth exception:** At Light depth, PASS requires only that every action item has a single owner and due date; decision attribution is not evaluated.
-11. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+8. **Decision Frame**, key decision from this meeting, trade-offs discussed, confidence based on evidence cited in-room, decision owner, decision date, revisit trigger
+9. **Unknowns & Evidence Gaps**, questions raised but unanswered, data cited but not verified, absent stakeholders whose input is needed
+10. **Pass/Fail Readiness**, PASS if every action item has a single owner and due date and every decision has a named decision-maker; FAIL if any action item is unowned or any decision lacks attribution. **Light-depth exception:** At Light depth, PASS requires only that every action item has a single owner and due date; decision attribution is not evaluated.
+11. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid
 
-- **Transcript, not notes** — Don't capture everything; capture what matters (decisions, actions, key arguments)
-- **Unowned action items** — "We should look into X" is not an action item; "[Name] will research X by Friday" is
-- **Missing decisions** — If a decision was made, it must be explicitly captured; implicit decisions get relitigated
-- **No TL;DR** — People who weren't in the meeting need the summary; they won't read the full notes
-- **Never reviewing previous actions** — Without accountability, meeting notes are write-only artifacts
+- **Transcript, not notes**, Don't capture everything; capture what matters (decisions, actions, key arguments)
+- **Unowned action items**, "We should look into X" is not an action item; "[Name] will research X by Friday" is
+- **Missing decisions**, If a decision was made, it must be explicitly captured; implicit decisions get relitigated
+- **No TL;DR**, People who weren't in the meeting need the summary; they won't read the full notes
+- **Never reviewing previous actions**, Without accountability, meeting notes are write-only artifacts
 
 ## Weak vs. Strong Output
 
 **Weak:**
-> "A1: Look into the analytics issue — Team — ASAP"
+> "A1: Look into the analytics issue, Team, ASAP"
 
-No single owner, no specific date, vague task — this will never get done.
+No single owner, no specific date, vague task, this will never get done.
 
 **Strong:**
-> "A1: Investigate 15% drop in dashboard load time since March deploy — @Sarah — Due: 2025-04-04 — Status: Open"
+> "A1: Investigate 15% drop in dashboard load time since March deploy, @Sarah, Due: 2025-04-04, Status: Open"
 
-Named owner, specific problem, concrete deadline — trackable and accountable.
+Named owner, specific problem, concrete deadline, trackable and accountable.

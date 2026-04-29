@@ -36,7 +36,7 @@ Creates sales-ready competitive battlecards with objection handling, win/loss pa
 ```markdown
 # Competitive Battlecard: [Our Product] vs. [Competitor]
 **Last updated:** [date]
-**Confidence level:** [High / Medium — based on data freshness]
+**Confidence level:** [High / Medium, based on data freshness]
 
 ---
 
@@ -69,7 +69,7 @@ Creates sales-ready competitive battlecards with objection handling, win/loss pa
 ### Their Positioning
 **Tagline:** "[their headline]"
 **Key claim:** [what they say makes them different]
-**Reality check:** [how accurate is their claim — with evidence]
+**Reality check:** [how accurate is their claim, with evidence]
 
 ---
 
@@ -93,7 +93,7 @@ Creates sales-ready competitive battlecards with objection handling, win/loss pa
 
 ### "[Competitor] is cheaper."
 **Response:**
-> "On sticker price, [Competitor] starts lower. But when you factor in [hidden cost 1 — e.g., implementation time], [hidden cost 2 — e.g., missing feature requiring workaround], and [hidden cost 3 — e.g., scaling costs], the total cost of ownership is actually [comparable / higher]. [Customer X] estimated they saved [$Y] over [timeframe] by choosing us because [reason]."
+> "On sticker price, [Competitor] starts lower. But when you factor in [hidden cost 1, e.g., implementation time], [hidden cost 2, e.g., missing feature requiring workaround], and [hidden cost 3, e.g., scaling costs], the total cost of ownership is actually [comparable / higher]. [Customer X] estimated they saved [$Y] over [timeframe] by choosing us because [reason]."
 
 ### "[Competitor] has [feature we don't have]."
 **Response:**
@@ -101,24 +101,24 @@ Creates sales-ready competitive battlecards with objection handling, win/loss pa
 
 ### "We're already using [Competitor]."
 **Response:**
-> "Many of our best customers came from [Competitor]. The switching cost is [description — ideally low]. What typically triggers the switch is [common trigger]. Would it be helpful to see how [similar company] made the transition?"
+> "Many of our best customers came from [Competitor]. The switching cost is [description, ideally low]. What typically triggers the switch is [common trigger]. Would it be helpful to see how [similar company] made the transition?"
 
 ---
 
 ## Win/Loss Patterns
 
 ### We tend to WIN when:
-- [Pattern — e.g., "The buyer prioritizes [capability] over [capability]"]
-- [Pattern — e.g., "There's a technical evaluator in the process"]
-- [Pattern — e.g., "They've experienced [pain point] with [Competitor]"]
+- [Pattern, e.g., "The buyer prioritizes [capability] over [capability]"]
+- [Pattern, e.g., "There's a technical evaluator in the process"]
+- [Pattern, e.g., "They've experienced [pain point] with [Competitor]"]
 
 ### We tend to LOSE when:
-- [Pattern — e.g., "Price is the only criterion"]
-- [Pattern — e.g., "They're deeply embedded in [Competitor's ecosystem]"]
-- [Pattern — e.g., "Decision is made without a trial/POC"]
+- [Pattern, e.g., "Price is the only criterion"]
+- [Pattern, e.g., "They're deeply embedded in [Competitor's ecosystem]"]
+- [Pattern, e.g., "Decision is made without a trial/POC"]
 
 ### Trap questions they might set:
-- "[Question designed to highlight their strength]" — Reframe: [how to redirect]
+- "[Question designed to highlight their strength]", Reframe: [how to redirect]
 
 ---
 
@@ -133,7 +133,7 @@ Questions to ask the prospect that expose competitor weaknesses:
 ---
 
 ## Recent Intelligence
-- [Date]: [Notable move — funding, launch, pricing change, key hire, loss]
+- [Date]: [Notable move, funding, launch, pricing change, key hire, loss]
 - [Date]: [Customer feedback about competitor]
 ```
 
@@ -143,36 +143,36 @@ Questions to ask the prospect that expose competitor weaknesses:
 
 **Acceptable evidence:** Public pricing pages, analyst reports, verified customer reviews, CRM win/loss notes, sales call transcripts, competitor documentation.
 
-**Insufficient evidence:** If no win/loss data or direct customer feedback exists, produce a partial artifact with unanswered sections marked `[TBD — requires: win/loss interview data from 3-5 recent deals]` and flag the artifact as draft-only.
+**Insufficient evidence:** If no win/loss data or direct customer feedback exists, produce a partial artifact with unanswered sections marked `[TBD, requires: win/loss interview data from 3-5 recent deals]` and flag the artifact as draft-only.
 
 **Hypotheses vs. findings:**
 - **Findings:** Feature Comparison ratings, pricing data, and Competitor Overview must be sourced.
-- **Hypotheses:** Win/Loss Patterns and Landmines may be hypothesized from limited data — must be labeled "Hypothesis — validate with sales team."
+- **Hypotheses:** Win/Loss Patterns and Landmines may be hypothesized from limited data, must be labeled "Hypothesis, validate with sales team."
 
 ## Output Format
 
 Produce a Competitive Battlecard with:
-1. **Quick Reference** — pocket card for live conversations
-2. **Competitor Overview** — company profile and positioning
-3. **Feature Comparison** — honest capability matrix
-4. **Objection Handling** — scripted responses to top 4-5 objections
-5. **Win/Loss Patterns** — when we win and when we lose
-6. **Landmines** — questions that expose competitor weaknesses
-7. **Recent Intelligence** — latest competitive signals
+1. **Quick Reference**, pocket card for live conversations
+2. **Competitor Overview**, company profile and positioning
+3. **Feature Comparison**, honest capability matrix
+4. **Objection Handling**, scripted responses to top 4-5 objections
+5. **Win/Loss Patterns**, when we win and when we lose
+6. **Landmines**, questions that expose competitor weaknesses
+7. **Recent Intelligence**, latest competitive signals
 
 **Shipwright Signature (required closing):**
-8. **Decision Frame** — recommended competitive positioning stance, trade-off acknowledged, confidence level with source quality, owner (product marketing or sales enablement), decision date, revisit trigger (competitor launch or pricing change)
-9. **Unknowns & Evidence Gaps** — unverified feature claims, missing win/loss data, pricing tiers not yet confirmed
-10. **Pass/Fail Readiness** — PASS if Quick Reference, Feature Comparison, and at least 3 objection handlers are evidence-backed; FAIL if feature ratings are unverified or no win/loss patterns exist. **Light-depth exception:** At Light depth, PASS requires only an evidence-backed Quick Reference and Feature Comparison; win/loss patterns and objection handlers are not evaluated.
-11. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+8. **Decision Frame**, recommended competitive positioning stance, trade-off acknowledged, confidence level with source quality, owner (product marketing or sales enablement), decision date, revisit trigger (competitor launch or pricing change)
+9. **Unknowns & Evidence Gaps**, unverified feature claims, missing win/loss data, pricing tiers not yet confirmed
+10. **Pass/Fail Readiness**, PASS if Quick Reference, Feature Comparison, and at least 3 objection handlers are evidence-backed; FAIL if feature ratings are unverified or no win/loss patterns exist. **Light-depth exception:** At Light depth, PASS requires only an evidence-backed Quick Reference and Feature Comparison; win/loss patterns and objection handlers are not evaluated.
+11. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid
 
-- **Trashing the competitor** — Buyers respect honesty; acknowledge strengths and pivot
-- **Stale information** — Update quarterly at minimum; pricing and features change fast
-- **No win/loss data** — Without pattern recognition, battlecards are guesswork
-- **Too long for live use** — The quick reference section must fit on one screen
-- **Ignoring their strengths** — If sales is surprised by a competitor advantage, the battlecard failed
+- **Trashing the competitor**, Buyers respect honesty; acknowledge strengths and pivot
+- **Stale information**, Update quarterly at minimum; pricing and features change fast
+- **No win/loss data**, Without pattern recognition, battlecards are guesswork
+- **Too long for live use**, The quick reference section must fit on one screen
+- **Ignoring their strengths**, If sales is surprised by a competitor advantage, the battlecard failed
 
 ## Weak vs. Strong Output
 
@@ -182,6 +182,6 @@ Produce a Competitive Battlecard with:
 Vague claim with no specific differentiators, no evidence, and nothing a rep can say on a call.
 
 **Strong:**
-> "Our 3 biggest advantages: 1. Sub-200ms API response (their median is 800ms per G2 benchmarks, Dec 2025). 2. Native SSO — they charge $5k/yr add-on. 3. SOC 2 Type II certified since 2023; they have Type I only."
+> "Our 3 biggest advantages: 1. Sub-200ms API response (their median is 800ms per G2 benchmarks, Dec 2025). 2. Native SSO, they charge $5k/yr add-on. 3. SOC 2 Type II certified since 2023; they have Type I only."
 
 Specific, sourced, and immediately usable in a live conversation.

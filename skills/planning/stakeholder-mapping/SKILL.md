@@ -95,7 +95,7 @@ Rate each stakeholder:
 ### Champions (actively support)
 | Stakeholder | Why They Support | How to Leverage |
 |---|---|---|
-| [Name] | [Their motivation] | [How they can help — e.g., "Can advocate in exec meeting"] |
+| [Name] | [Their motivation] | [How they can help, e.g., "Can advocate in exec meeting"] |
 
 ### Resistors (actively oppose or passively block)
 | Stakeholder | Why They Resist | Risk Level | Engagement Plan |
@@ -110,7 +110,7 @@ Rate each stakeholder:
 ### Influence Network
 Who influences whom?
 - [Decision-maker A] is heavily influenced by [Influencer B]
-- [Resistor C] reports to [Champion D] — potential path to resolution
+- [Resistor C] reports to [Champion D], potential path to resolution
 - [Swing Vote E] trusts [F's] technical judgment
 ```
 
@@ -121,14 +121,14 @@ Who influences whom?
 
 | Stakeholder | Quadrant | Key Message | Channel | Frequency | Owner | Next Touch |
 |---|---|---|---|---|---|---|
-| [S1] | Manage Closely | [Tailored message — what they care about] | 1:1 | Weekly | [PM] | [Date] |
+| [S1] | Manage Closely | [Tailored message, what they care about] | 1:1 | Weekly | [PM] | [Date] |
 | [S2] | Keep Satisfied | [Executive summary focus] | Email | Biweekly | [PM] | [Date] |
 
 ### Communication Principles
-1. **Tailor the message** — Each stakeholder cares about different things; don't send the same update to everyone
-2. **Bad news travels fast** — Tell "Manage Closely" stakeholders about risks BEFORE they hear from someone else
-3. **Ask, don't just inform** — Engagement is more powerful than broadcasting
-4. **Track commitments** — If you promised to follow up, follow up
+1. **Tailor the message**, Each stakeholder cares about different things; don't send the same update to everyone
+2. **Bad news travels fast**, Tell "Manage Closely" stakeholders about risks BEFORE they hear from someone else
+3. **Ask, don't just inform**, Engagement is more powerful than broadcasting
+4. **Track commitments**, If you promised to follow up, follow up
 ```
 
 ### Step 5: Track Over Time
@@ -156,43 +156,43 @@ If any "Manage Closely" stakeholder moves to "Resistant":
 
 **Acceptable evidence:** 1:1 conversations, meeting behavior, email/Slack tone, org chart reporting lines, prior project history with the stakeholder, direct quotes or stated positions.
 
-**Insufficient evidence:** If a stakeholder's stance is based solely on title or assumption with no interaction data, produce a partial stakeholder map with unverified stakeholders marked `[TBD — requires: discovery 1:1 with <Name> to validate stance and interest level]` and flag the artifact as draft-only.
+**Insufficient evidence:** If a stakeholder's stance is based solely on title or assumption with no interaction data, produce a partial stakeholder map with unverified stakeholders marked `[TBD, requires: discovery 1:1 with <Name> to validate stance and interest level]` and flag the artifact as draft-only.
 
 **Hypotheses vs. findings:**
 - **Findings:** Stakeholder roles, reporting lines, and observed behavior (champion/resistant/neutral) must be grounded in evidence.
-- **Hypotheses:** Influence network connections and swing vote predictions may be inferred — label these as "Estimated" until validated through engagement.
+- **Hypotheses:** Influence network connections and swing vote predictions may be inferred, label these as "Estimated" until validated through engagement.
 
 ## Output Format
 
 Produce a Stakeholder Map with:
-1. **Register** — all stakeholders with roles
-2. **Power × Interest Grid** — mapped and quadranted
-3. **Alignment Analysis** — champions, resistors, swing votes, influence network
-4. **Communication Plan** — tailored by stakeholder
-5. **Tracking Sheet** — alignment over time with escalation triggers
+1. **Register**, all stakeholders with roles
+2. **Power × Interest Grid**, mapped and quadranted
+3. **Alignment Analysis**, champions, resistors, swing votes, influence network
+4. **Communication Plan**, tailored by stakeholder
+5. **Tracking Sheet**, alignment over time with escalation triggers
 
 **Shipwright Signature (required closing):**
-6. **Decision Frame** — Top engagement priority (which stakeholder relationship to invest in first), trade-off between breadth and depth of engagement, confidence based on evidence quality of stance assessments, map owner, date, revisit trigger
-7. **Unknowns & Evidence Gaps** — Stakeholders whose stance is assumed not observed, influence relationships not yet validated, hidden decision-makers not yet identified
-8. **Pass/Fail Readiness** — PASS if every "Manage Closely" stakeholder has a documented stance based on direct interaction; FAIL if any high-power stakeholder's stance is unverified assumption. (At Light depth, the tailored engagement plan requirement is waived since the Communication Plan is omitted.)
-9. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+6. **Decision Frame**, Top engagement priority (which stakeholder relationship to invest in first), trade-off between breadth and depth of engagement, confidence based on evidence quality of stance assessments, map owner, date, revisit trigger
+7. **Unknowns & Evidence Gaps**, Stakeholders whose stance is assumed not observed, influence relationships not yet validated, hidden decision-makers not yet identified
+8. **Pass/Fail Readiness**, PASS if every "Manage Closely" stakeholder has a documented stance based on direct interaction; FAIL if any high-power stakeholder's stance is unverified assumption. (At Light depth, the tailored engagement plan requirement is waived since the Communication Plan is omitted.)
+9. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid
 
-- **Mapping only the obvious stakeholders** — Include indirect influencers, executive assistants, and "shadow" decision-makers
-- **Static map** — Stakeholder positions change; update monthly
-- **Same message to everyone** — The VP of Engineering cares about different things than the VP of Sales
-- **Ignoring resistors** — Unaddressed resistance becomes sabotage; engage early
-- **Over-investing in "Monitor" quadrant** — Don't spend weekly 1:1 time on people who have low power and low interest
+- **Mapping only the obvious stakeholders**, Include indirect influencers, executive assistants, and "shadow" decision-makers
+- **Static map**, Stakeholder positions change; update monthly
+- **Same message to everyone**, The VP of Engineering cares about different things than the VP of Sales
+- **Ignoring resistors**, Unaddressed resistance becomes sabotage; engage early
+- **Over-investing in "Monitor" quadrant**, Don't spend weekly 1:1 time on people who have low power and low interest
 
 ## Weak vs. Strong Output
 
 **Weak:**
-> **VP Engineering — Resistant.** Engagement plan: Set up a meeting to discuss concerns.
+> **VP Engineering, Resistant.** Engagement plan: Set up a meeting to discuss concerns.
 
-No stated reason for resistance, no tailored approach — "set up a meeting" is not a plan.
+No stated reason for resistance, no tailored approach, "set up a meeting" is not a plan.
 
 **Strong:**
-> **VP Engineering — Resistant (Power: 5, Interest: 4, Manage Closely).** Resists because migration threatens Q2 uptime SLA. Engagement plan: Share load-test results from staging (available April 3) in a 1:1 before the steering committee vote; frame as risk reduction, not feature delivery. Fallback: escalate to CTO with joint risk brief if stance doesn't shift.
+> **VP Engineering, Resistant (Power: 5, Interest: 4, Manage Closely).** Resists because migration threatens Q2 uptime SLA. Engagement plan: Share load-test results from staging (available April 3) in a 1:1 before the steering committee vote; frame as risk reduction, not feature delivery. Fallback: escalate to CTO with joint risk brief if stance doesn't shift.
 
 Names the specific concern, ties the engagement to concrete evidence, provides a fallback path.

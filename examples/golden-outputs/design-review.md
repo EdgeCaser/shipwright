@@ -2,7 +2,7 @@
 
 **Skill:** `design-review`
 **Framework:** 7-perspective parallel review with synthesized verdict
-**Product context:** ComplianceOS — B2B SaaS compliance automation (see `examples/CLAUDE.md.b2b-saas`)
+**Product context:** ComplianceOS, B2B SaaS compliance automation (see `examples/CLAUDE.md.b2b-saas`)
 
 ---
 
@@ -34,10 +34,10 @@ and ComplianceOS maps collected evidence to their active compliance controls.
 - Automatic control mapping reduces manual effort
 
 **Concerns:**
-- The wizard may be too long if all three providers are set up at once — consider allowing one at a time
+- The wizard may be too long if all three providers are set up at once, consider allowing one at a time
 - Error handling needs to be clear when credentials are incorrect or permissions are insufficient
-- Users may not understand what "read-only access" means in practical terms — consider showing exactly what ComplianceOS can and cannot see
-- Loading time for initial evidence collection could be long — need a progress indicator
+- Users may not understand what "read-only access" means in practical terms, consider showing exactly what ComplianceOS can and cannot see
+- Loading time for initial evidence collection could be long, need a progress indicator
 
 **Recommendations:**
 - Add a "test connection" step before saving credentials
@@ -80,14 +80,14 @@ and ComplianceOS maps collected evidence to their active compliance controls.
 **Missing Technical Details:**
 - Retry strategy when provider APIs are temporarily unavailable
 - Data model for evidence artifacts (blob storage vs. structured metadata vs. both)
-- Multi-region AWS support — customers may have resources across 5+ regions
+- Multi-region AWS support, customers may have resources across 5+ regions
 
 **Effort Estimate Validation:**
 - Proposed: 10 weeks (2 engineers)
 - Engineering assessment: 10 weeks is achievable for core flow; add 2 weeks buffer for credential edge cases and provider API inconsistencies
 - Delta rationale: Provider-specific error handling always takes longer than expected
 
-**Verdict:** Yellow — Feasible with changes. Need credential lifecycle design and backfill UX before starting.
+**Verdict:** Yellow, Feasible with changes. Need credential lifecycle design and backfill UX before starting.
 
 ---
 
@@ -96,22 +96,22 @@ and ComplianceOS maps collected evidence to their active compliance controls.
 
 **Usability Assessment:**
 - [x] Step-by-step wizard matches the established mental model for integration setup
-- [ ] Error states are under-designed — "invalid credentials" means different things for each provider and Carmen needs actionable guidance, not a generic error
-- [ ] Information hierarchy unclear: the wizard mixes "connect provider" with "configure evidence mapping" in a single flow — these are cognitively different tasks
+- [ ] Error states are under-designed, "invalid credentials" means different things for each provider and Carmen needs actionable guidance, not a generic error
+- [ ] Information hierarchy unclear: the wizard mixes "connect provider" with "configure evidence mapping" in a single flow, these are cognitively different tasks
 
 **Accessibility Review:**
 - [ ] Wizard must support keyboard navigation (Tab through steps, Enter to confirm)
-- [ ] Credential input fields need proper ARIA labels — screen readers must distinguish between "AWS Role ARN" and "GCP Service Account Key"
-- [x] No color-only status indicators — current proposal uses icons alongside colors
+- [ ] Credential input fields need proper ARIA labels, screen readers must distinguish between "AWS Role ARN" and "GCP Service Account Key"
+- [x] No color-only status indicators, current proposal uses icons alongside colors
 
 **Consistency Check:**
-- [ ] ComplianceOS has no existing wizard pattern — this creates a new UI component. It should be designed as a reusable wizard component, not a one-off.
-- [ ] Provider setup varies significantly (IAM role vs. service account key vs. OAuth App install) — the wizard must feel unified despite different underlying flows
+- [ ] ComplianceOS has no existing wizard pattern, this creates a new UI component. It should be designed as a reusable wizard component, not a one-off.
+- [ ] Provider setup varies significantly (IAM role vs. service account key vs. OAuth App install), the wizard must feel unified despite different underlying flows
 
 **Concerns:**
 - **Cognitive overload** (Medium): Asking Carmen to set up 3 providers in one session is daunting. She may not have all credentials ready. The flow should optimize for "connect one provider and see value fast" rather than "set up everything at once."
 
-**Verdict:** Yellow — Feasible with changes. Split "connect provider" from "configure mapping." Optimize for single-provider first-run.
+**Verdict:** Yellow, Feasible with changes. Split "connect provider" from "configure mapping." Optimize for single-provider first-run.
 
 ---
 
@@ -119,7 +119,7 @@ and ComplianceOS maps collected evidence to their active compliance controls.
 **Evaluator mindset:** "Does this align with our strategy and move the right metrics?"
 
 **Strategic Alignment:**
-- [x] Supports Bet 1 (Evidence Auto-Collection) — the highest-priority strategic bet
+- [x] Supports Bet 1 (Evidence Auto-Collection), the highest-priority strategic bet
 - [x] Moves primary metric: % of controls with auto-collected evidence
 - Opportunity cost: Engineering time comes from deferring Custom Report Builder (RICE 34 vs. 67 for this)
 
@@ -131,7 +131,7 @@ and ComplianceOS maps collected evidence to their active compliance controls.
 **Concerns:**
 - **Time-to-value definition** (Low): "1 hour to first evidence" is compelling but only if evidence is correctly mapped to controls. Incorrect mapping that requires manual cleanup could make time-to-value worse, not better.
 
-**Verdict:** Green — Strong strategic alignment. Proceed.
+**Verdict:** Green, Strong strategic alignment. Proceed.
 
 ---
 
@@ -140,7 +140,7 @@ and ComplianceOS maps collected evidence to their active compliance controls.
 
 **Data & Privacy:**
 - [ ] Read-only access to customer infrastructure still means we're accessing their cloud metadata. What data do we store? Metadata only, or raw configurations?
-- [ ] If we store AWS IAM policies, these may contain role names that reveal organizational structure — is this PII or sensitive business data under customer contracts?
+- [ ] If we store AWS IAM policies, these may contain role names that reveal organizational structure, is this PII or sensitive business data under customer contracts?
 - [ ] Data residency: where is collected evidence stored? Customers in regulated industries may require US-only storage.
 
 **Contractual:**
@@ -150,7 +150,7 @@ and ComplianceOS maps collected evidence to their active compliance controls.
 **Concerns:**
 - **Contract gap** (High): We cannot launch this without updating customer contracts. This is a potential timeline blocker that isn't reflected in the engineering estimate.
 
-**Verdict:** Red — Cannot proceed without contract/DPA updates and data residency decisions.
+**Verdict:** Red, Cannot proceed without contract/DPA updates and data residency decisions.
 
 ---
 
@@ -159,11 +159,11 @@ and ComplianceOS maps collected evidence to their active compliance controls.
 
 **Demand Validation:**
 - [x] 8/12 CAB members identified manual evidence collection as top pain point
-- [x] Primary persona (Carmen) benefits most — this directly addresses her "chasing engineers" problem
+- [x] Primary persona (Carmen) benefits most, this directly addresses her "chasing engineers" problem
 - [x] Addresses core JTBD: "prove controls are working without a quarter-long project"
 
 **Adoption Concerns:**
-- [ ] Will Carmen be the one with AWS credentials? In most orgs, Carmen is Compliance — she'll need to ask an engineer or IT admin to complete the setup wizard. The "no engineering involvement" promise is partially false.
+- [ ] Will Carmen be the one with AWS credentials? In most orgs, Carmen is Compliance, she'll need to ask an engineer or IT admin to complete the setup wizard. The "no engineering involvement" promise is partially false.
 - [ ] Learning curve: Carmen needs to understand what "read-only IAM role" means to evaluate whether granting access is safe. She may need to get security team approval.
 
 **Voice of Customer Data:**
@@ -172,9 +172,9 @@ and ComplianceOS maps collected evidence to their active compliance controls.
 - 60% of pipeline deals cite integration depth during evaluation
 
 **Concerns:**
-- **Setup ownership gap** (Medium): The person who wants this feature (Carmen) likely can't complete setup alone. The wizard needs a "delegate setup" flow — send a link to an engineer or IT admin with specific instructions.
+- **Setup ownership gap** (Medium): The person who wants this feature (Carmen) likely can't complete setup alone. The wizard needs a "delegate setup" flow, send a link to an engineer or IT admin with specific instructions.
 
-**Verdict:** Yellow — Strong demand, but setup flow doesn't match the real-world permission chain. Add delegation.
+**Verdict:** Yellow, Strong demand, but setup flow doesn't match the real-world permission chain. Add delegation.
 
 ---
 
@@ -185,7 +185,7 @@ and ComplianceOS maps collected evidence to their active compliance controls.
 
 | Assumption in the Proposal | Why It Might Be Wrong | Evidence |
 |---|---|---|
-| 60% of controls can be auto-covered | This assumes cloud infrastructure evidence covers most controls. Many SOC 2 controls are process-based (e.g., employee training, background checks) and can't be automated | Review the SOC 2 control list — estimate is likely 40-50% for Type II |
+| 60% of controls can be auto-covered | This assumes cloud infrastructure evidence covers most controls. Many SOC 2 controls are process-based (e.g., employee training, background checks) and can't be automated | Review the SOC 2 control list, estimate is likely 40-50% for Type II |
 | Read-only access is sufficient for all evidence types | Some evidence requires point-in-time snapshots that may not be available via read APIs (e.g., "state of IAM policy on audit date") | AWS Config provides history, but GCP audit log retention is 400 days max |
 | Auditors will accept auto-collected evidence | Some auditors prefer human-attested evidence and may distrust automated collection | Need to pilot with 2-3 audit firms before GA |
 
@@ -197,7 +197,7 @@ and ComplianceOS maps collected evidence to their active compliance controls.
 - Evidence mapping accuracy cannot exceed 90% in beta testing with real customer accounts
 - Fewer than 2 audit firms confirm they'd accept auto-collected evidence format
 
-**Verdict:** Yellow — Assumptions need validation before GA. Pilot with auditor acceptance testing is critical.
+**Verdict:** Yellow, Assumptions need validation before GA. Pilot with auditor acceptance testing is critical.
 
 ---
 
@@ -206,7 +206,7 @@ and ComplianceOS maps collected evidence to their active compliance controls.
 
 **Sales Impact:**
 - [x] Directly addresses the #1 lost-deal reason against Vanta (integration depth)
-- [x] New selling point: "Connect your cloud, see evidence in 1 hour" — demo-able and compelling
+- [x] New selling point: "Connect your cloud, see evidence in 1 hour", demo-able and compelling
 - [ ] Competitive positioning shift: we go from "better frameworks" to "better frameworks + better automation"
 
 **Enablement Needs:**
@@ -217,7 +217,7 @@ and ComplianceOS maps collected evidence to their active compliance controls.
 **Concerns:**
 - **Demo dependency** (Medium): This feature is only compelling in a live demo. Static screenshots won't convey the value. Sales needs a reliable demo environment before launch.
 
-**Verdict:** Green — Strong sales impact. Need demo environment and updated battlecards.
+**Verdict:** Green, Strong sales impact. Need demo environment and updated battlecards.
 
 ---
 
@@ -272,7 +272,7 @@ and ComplianceOS maps collected evidence to their active compliance controls.
 
 1. **Seven perspectives vs. one.** The baseline gives a single-voice review that catches UX issues but misses legal, security, sales, and customer adoption concerns entirely. The Shipwright output's Legal perspective identified a hard blocker (contract gap) that would have surfaced weeks into development.
 
-2. **Forced verdicts prevent hand-waving.** Each perspective must commit to Green/Yellow/Red. The baseline says "looks good with minor improvements" — the Shipwright output shows 1 Red, 4 Yellow, 2 Green, which is a fundamentally different risk picture.
+2. **Forced verdicts prevent hand-waving.** Each perspective must commit to Green/Yellow/Red. The baseline says "looks good with minor improvements", the Shipwright output shows 1 Red, 4 Yellow, 2 Green, which is a fundamentally different risk picture.
 
 3. **Tensions are surfaced explicitly.** The synthesis identifies where perspectives disagree (timeline vs. legal, setup ownership messaging) and assigns resolution owners. The baseline treats all feedback as a single undifferentiated list.
 

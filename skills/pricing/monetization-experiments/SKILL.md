@@ -38,8 +38,8 @@ Designs and evaluates pricing, packaging, and monetization experiments including
 
 ### Hypothesis
 We believe that [change to pricing/packaging/monetization]
-will [expected outcome — e.g., "increase free-to-paid conversion by 15%"]
-because [reasoning — e.g., "usage data shows 60% of free users hit the current limit within 2 weeks but don't convert because the jump to paid is too large"].
+will [expected outcome, e.g., "increase free-to-paid conversion by 15%"]
+because [reasoning, e.g., "usage data shows 60% of free users hit the current limit within 2 weeks but don't convert because the jump to paid is too large"].
 
 ### Experiment Type
 | Type | Description | Risk Level |
@@ -63,7 +63,7 @@ because [reasoning — e.g., "usage data shows 60% of free users hit the current
 **Audience:**
 - [ ] New signups only (cleanest test, no existing contract complications)
 - [ ] Existing free users (tests conversion, larger sample)
-- [ ] Existing paid users (tests expansion — high risk, handle carefully)
+- [ ] Existing paid users (tests expansion, high risk, handle carefully)
 
 **Sample size calculation:**
 - Baseline conversion rate: [X]%
@@ -78,12 +78,12 @@ because [reasoning — e.g., "usage data shows 60% of free users hit the current
 |---|---|---|
 | Control | Current pricing/packaging | Nothing |
 | Treatment A | [Change description] | [Specific change] |
-| Treatment B | [Change description — if testing multiple] | [Specific change] |
+| Treatment B | [Change description, if testing multiple] | [Specific change] |
 
 **Randomization:**
 - Unit: [User / Account / Organization]
 - Method: [Hash-based assignment / Feature flag service]
-- Sticky: [Yes — user stays in variant for entire experiment]
+- Sticky: [Yes, user stays in variant for entire experiment]
 
 **Exclusions:**
 - Enterprise / custom-priced accounts (can't change their pricing mid-contract)
@@ -179,7 +179,7 @@ Stop the experiment immediately if:
 
 ## Minimum Evidence Bar
 
-**Required inputs:** Baseline conversion rate (or relevant monetization metric), current pricing/packaging structure, and traffic volume sufficient to estimate sample size. At Light depth, baseline metric and current pricing/packaging structure are sufficient — traffic volume for sample sizing is deferred.
+**Required inputs:** Baseline conversion rate (or relevant monetization metric), current pricing/packaging structure, and traffic volume sufficient to estimate sample size. At Light depth, baseline metric and current pricing/packaging structure are sufficient, traffic volume for sample sizing is deferred.
 
 **Acceptable evidence:** Product analytics (conversion funnels, ARPU, churn cohorts), prior experiment results, customer support ticket themes around pricing, competitive pricing data, user research on upgrade friction.
 
@@ -187,30 +187,30 @@ Stop the experiment immediately if:
 
 **Hypotheses vs. findings:**
 - **Findings:** Baseline metrics, sample size requirements, guardrail thresholds, and kill criteria must be grounded in actual data.
-- **Hypotheses:** Expected effect size and revenue projections are forward-looking estimates — must be labeled as such with stated assumptions.
+- **Hypotheses:** Expected effect size and revenue projections are forward-looking estimates, must be labeled as such with stated assumptions.
 
 ## Output Format
 
 Produce a Monetization Experiment Plan with:
-1. **Hypothesis** — what we're testing and why
-2. **Design** — variants, sample size, randomization
-3. **Metrics** — primary, secondary, guardrails, revenue projection
-4. **Risk Assessment** — risks with mitigations and kill criteria
-5. **Rollout Plan** — phased deployment with checkpoints
+1. **Hypothesis**, what we're testing and why
+2. **Design**, variants, sample size, randomization
+3. **Metrics**, primary, secondary, guardrails, revenue projection
+4. **Risk Assessment**, risks with mitigations and kill criteria
+5. **Rollout Plan**, phased deployment with checkpoints
 
 **Shipwright Signature (required closing):**
-6. **Decision Frame** — Ship/iterate/kill recommendation, revenue vs. churn trade-off, confidence level with evidence quality, experiment owner, decision date, revisit trigger (e.g., metric drift post-rollout)
-7. **Unknowns & Evidence Gaps** — Segments not yet tested, long-term retention effects, price elasticity beyond tested range
-8. **Pass/Fail Readiness** — PASS if hypothesis is falsifiable, sample size is achievable within 8 weeks, and kill criteria are defined (at Light depth: PASS if hypothesis is falsifiable and kill criteria are defined — sample size check is deferred); FAIL if no baseline metric exists or guardrails are missing
-9. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+6. **Decision Frame**, Ship/iterate/kill recommendation, revenue vs. churn trade-off, confidence level with evidence quality, experiment owner, decision date, revisit trigger (e.g., metric drift post-rollout)
+7. **Unknowns & Evidence Gaps**, Segments not yet tested, long-term retention effects, price elasticity beyond tested range
+8. **Pass/Fail Readiness**, PASS if hypothesis is falsifiable, sample size is achievable within 8 weeks, and kill criteria are defined (at Light depth: PASS if hypothesis is falsifiable and kill criteria are defined, sample size check is deferred); FAIL if no baseline metric exists or guardrails are missing
+9. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid
 
-- **Testing price in isolation** — Price changes interact with packaging, messaging, and positioning; test holistically
-- **No guardrails** — A pricing experiment that increases conversion but tanks NPS is a net loss
-- **Excluding revenue metrics** — Conversion up + ARPU down = possibly net negative revenue
-- **Forgetting existing customers** — Price experiments on new users are clean; changing prices for existing users requires careful communication
-- **Too short** — Pricing decisions need at least one full billing cycle to evaluate properly
+- **Testing price in isolation**, Price changes interact with packaging, messaging, and positioning; test holistically
+- **No guardrails**, A pricing experiment that increases conversion but tanks NPS is a net loss
+- **Excluding revenue metrics**, Conversion up + ARPU down = possibly net negative revenue
+- **Forgetting existing customers**, Price experiments on new users are clean; changing prices for existing users requires careful communication
+- **Too short**, Pricing decisions need at least one full billing cycle to evaluate properly
 
 ## Weak vs. Strong Output
 

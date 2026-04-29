@@ -3,7 +3,7 @@ name: strategy
 description: "Facilitate a product strategy session: vision, strategic context, bets, boundaries, and success criteria."
 ---
 
-# /strategy — Product Strategy Workflow
+# /strategy, Product Strategy Workflow
 
 Run this command to develop or refresh a product strategy through a structured workshop format.
 

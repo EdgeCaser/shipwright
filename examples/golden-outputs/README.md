@@ -8,11 +8,11 @@ Skills and workflows define *structure*, but structure alone doesn't prove quali
 
 Each example shows:
 
-1. **Scenario** — what the PM is trying to accomplish
-2. **Input prompt** — what you'd actually type
-3. **Baseline output** — what a capable AI produces without Shipwright (typical ChatGPT/Claude response)
-4. **Shipwright output** — what the same AI produces when guided by a Shipwright skill or workflow
-5. **Why it's better** — specific annotations on what changed and why it matters
+1. **Scenario**, what the PM is trying to accomplish
+2. **Input prompt**, what you'd actually type
+3. **Baseline output**, what a capable AI produces without Shipwright (typical ChatGPT/Claude response)
+4. **Shipwright output**, what the same AI produces when guided by a Shipwright skill or workflow
+5. **Why it's better**, specific annotations on what changed and why it matters
 
 ## The examples
 
@@ -26,10 +26,10 @@ Each example shows:
 
 ## How to read these
 
-Start with [PRD](prd.md) — it's the most common PM artifact and the contrast is sharpest.
+Start with [PRD](prd.md), it's the most common PM artifact and the contrast is sharpest.
 
-The baseline outputs are not intentionally bad. They represent what a competent AI produces when given a reasonable prompt and no framework guidance. The point is not "AI is bad without us" — it's "frameworks produce more rigorous, decision-ready artifacts."
+The baseline outputs are not intentionally bad. They represent what a competent AI produces when given a reasonable prompt and no framework guidance. The point is not "AI is bad without us", it's "frameworks produce more rigorous, decision-ready artifacts."
 
 ## Generating your own
 
-Run any workflow or skill with your real product context and compare the output against what you'd get from a vanilla prompt. The difference compounds across a full workflow chain — a `/write-prd` that chains press release → FAQ → stories → full PRD produces a fundamentally different artifact than "write me a PRD."
+Run any workflow or skill with your real product context and compare the output against what you'd get from a vanilla prompt. The difference compounds across a full workflow chain, a `/write-prd` that chains press release → FAQ → stories → full PRD produces a fundamentally different artifact than "write me a PRD."

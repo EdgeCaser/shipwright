@@ -30,7 +30,7 @@ Use this skill for web-heavy product, market, and business research in Codex.
 
 3. **Format the facts sidecar** if `facts.json` exists:
    - `node scripts/format-facts.mjs path/to/facts.json`
-   - The compact block output (~300-500 tokens) is ready to inject directly into a synthesis prompt as structured evidence. Read it before the full evidence pack — if `priorityFacts` fields are all present at high confidence, the full pack may only be needed for context.
+   - The compact block output (~300-500 tokens) is ready to inject directly into a synthesis prompt as structured evidence. Read it before the full evidence pack, if `priorityFacts` fields are all present at high confidence, the full pack may only be needed for context.
 
 4. Interpret `facts.json` by `confidence_hint`:
    - `high`: use directly for structured fields, tables, and summaries, while keeping source attribution.

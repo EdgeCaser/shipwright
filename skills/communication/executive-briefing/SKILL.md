@@ -1,6 +1,6 @@
 ---
 name: executive-briefing
-description: "Produces single-page executive briefings designed to secure alignment, approval, or resources from senior leadership. Uses the Situation-Complication-Resolution (SCR) framework and Pyramid Principle to deliver maximum impact in minimum reading time. Different from a status update — this is a persuasive artifact with a clear ask."
+description: "Produces single-page executive briefings designed to secure alignment, approval, or resources from senior leadership. Uses the Situation-Complication-Resolution (SCR) framework and Pyramid Principle to deliver maximum impact in minimum reading time. Different from a status update, this is a persuasive artifact with a clear ask."
 category: communication
 default_depth: standard
 ---
@@ -9,7 +9,7 @@ default_depth: standard
 
 ## Description
 
-Produces single-page executive briefings designed to secure alignment, approval, or resources from senior leadership. Uses the Situation-Complication-Resolution (SCR) framework and Pyramid Principle to deliver maximum impact in minimum reading time. Different from a status update — this is a persuasive artifact with a clear ask.
+Produces single-page executive briefings designed to secure alignment, approval, or resources from senior leadership. Uses the Situation-Complication-Resolution (SCR) framework and Pyramid Principle to deliver maximum impact in minimum reading time. Different from a status update, this is a persuasive artifact with a clear ask.
 
 ## When to Use
 
@@ -42,7 +42,7 @@ Every executive briefing follows: **Situation → Complication → Resolution**
 ### One-Pager Template
 
 ```markdown
-# [Title — Concise, Descriptive]
+# [Title, Concise, Descriptive]
 **Date:** [date] | **Author:** [name] | **Ask:** [1-sentence summary of what you need]
 
 ---
@@ -93,7 +93,7 @@ Why does this need attention NOW, not next quarter?]
 
 ---
 
-## Appendix (optional — for those who want to go deeper)
+## Appendix (optional, for those who want to go deeper)
 [Links to detailed PRD, analysis, or supporting documents. NOT required reading.]
 ```
 
@@ -107,7 +107,7 @@ Why does this need attention NOW, not next quarter?]
 3. **No jargon.** If a term isn't in common use at the exec level, define it or replace it.
 4. **Bold the important numbers.** Executives scan; make the key data points impossible to miss.
 5. **Include "Do Nothing" as an option.** It makes the cost of inaction explicit.
-6. **One recommendation.** Don't present options without a recommendation — that's delegating your job upward.
+6. **One recommendation.** Don't present options without a recommendation, that's delegating your job upward.
 7. **Specific ask, specific deadline.** "Please approve by Friday" not "Let me know what you think."
 ```
 
@@ -127,43 +127,43 @@ Why does this need attention NOW, not next quarter?]
 
 **Acceptable evidence:** Internal metrics, customer quotes, market research, competitive intel, financial projections with stated assumptions.
 
-**Insufficient evidence:** If you cannot quantify the cost of inaction or the expected outcome of your recommendation, produce a partial artifact with unanswered sections marked `[TBD — requires: quantified cost-of-inaction analysis or outcome projection]` and flag the artifact as draft-only.
+**Insufficient evidence:** If you cannot quantify the cost of inaction or the expected outcome of your recommendation, produce a partial artifact with unanswered sections marked `[TBD, requires: quantified cost-of-inaction analysis or outcome projection]` and flag the artifact as draft-only.
 
 **Hypotheses vs. findings:**
 - **Findings:** The Situation, Complication, and Supporting Evidence data must be grounded in verified facts.
-- **Hypotheses:** Projected outcomes in the options table and ROI estimates may be forward-looking — must be labeled with assumptions.
+- **Hypotheses:** Projected outcomes in the options table and ROI estimates may be forward-looking, must be labeled with assumptions.
 
 ## Output Format
 
 Produce a One-Page Executive Briefing with:
-1. **Title & Ask** — immediately clear what this is about and what's needed
-2. **SCR Narrative** — Situation, Complication, Resolution
-3. **Supporting Evidence** — key data and options comparison
-4. **The Ask** — specific, time-bound, actionable
+1. **Title & Ask**, immediately clear what this is about and what's needed
+2. **SCR Narrative**, Situation, Complication, Resolution
+3. **Supporting Evidence**, key data and options comparison
+4. **The Ask**, specific, time-bound, actionable
 
 **Shipwright Signature (required closing):**
-5. **Decision Frame** — recommended option, trade-off vs. alternatives, confidence level with evidence quality cited, decision owner, decision-by date, revisit trigger
-6. **Unknowns & Evidence Gaps** — unvalidated assumptions in projections, missing competitive data, untested customer willingness
-7. **Pass/Fail Readiness** — PASS if SCR is complete, ask is specific and time-bound, and at least one data point supports the complication; FAIL if the ask is vague or the complication lacks quantified urgency
-8. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+5. **Decision Frame**, recommended option, trade-off vs. alternatives, confidence level with evidence quality cited, decision owner, decision-by date, revisit trigger
+6. **Unknowns & Evidence Gaps**, unvalidated assumptions in projections, missing competitive data, untested customer willingness
+7. **Pass/Fail Readiness**, PASS if SCR is complete, ask is specific and time-bound, and at least one data point supports the complication; FAIL if the ask is vague or the complication lacks quantified urgency
+8. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid
 
-- **Burying the ask** — If the executive has to read the whole page to find out what you want, you've failed
-- **Too much background** — They know the business; get to the complication quickly
-- **No recommendation** — Presenting options without a recommendation is asking the exec to do your job
-- **Weasel words** — "We might want to consider possibly exploring..." → "We should invest $X in Y because Z"
-- **Missing the "do nothing" cost** — Executives default to inaction; make the cost of inaction explicit
-- **More than one page** — Ruthlessly edit. If you can't say it in one page, you don't understand it well enough yet.
+- **Burying the ask**, If the executive has to read the whole page to find out what you want, you've failed
+- **Too much background**, They know the business; get to the complication quickly
+- **No recommendation**, Presenting options without a recommendation is asking the exec to do your job
+- **Weasel words**, "We might want to consider possibly exploring..." → "We should invest $X in Y because Z"
+- **Missing the "do nothing" cost**, Executives default to inaction; make the cost of inaction explicit
+- **More than one page**, Ruthlessly edit. If you can't say it in one page, you don't understand it well enough yet.
 
 ## Weak vs. Strong Output
 
 **Weak:**
 > "We might want to consider investing in a new onboarding flow, as we've been hearing some feedback about it."
 
-Vague ask, no data, no urgency — an executive will defer this indefinitely.
+Vague ask, no data, no urgency, an executive will defer this indefinitely.
 
 **Strong:**
 > "We need $120K to rebuild onboarding by Q3. Trial-to-paid conversion has dropped from 18% to 11% since January (source: Amplitude cohort report), costing ~$40K/mo in lost revenue. Doing nothing means $480K lost by year-end."
 
-Specific ask, quantified complication, explicit cost of inaction — forces a decision.
+Specific ask, quantified complication, explicit cost of inaction, forces a decision.

@@ -30,12 +30,12 @@ Applies the Jobs-to-Be-Done (JTBD) framework to frame customer needs as job stat
 
 ## Key Concepts
 
-**Job:** The progress a customer is trying to make in a particular circumstance. Jobs are stable over time — technology changes, jobs don't.
+**Job:** The progress a customer is trying to make in a particular circumstance. Jobs are stable over time, technology changes, jobs don't.
 
 **Three layers of jobs:**
-1. **Functional job** — The practical task (e.g., "get from A to B quickly")
-2. **Emotional job** — How they want to feel (e.g., "feel confident I'll arrive on time")
-3. **Social job** — How they want to be perceived (e.g., "appear responsible to my team")
+1. **Functional job**, The practical task (e.g., "get from A to B quickly")
+2. **Emotional job**, How they want to feel (e.g., "feel confident I'll arrive on time")
+3. **Social job**, How they want to be perceived (e.g., "appear responsible to my team")
 
 **Hiring and firing:** Customers "hire" products to do a job and "fire" them when something does it better.
 
@@ -53,7 +53,7 @@ So I can [desired outcome].
 
 **Rules for good job statements:**
 - Describe the customer's goal, not your product's function
-- Include the triggering context — jobs exist in situations
+- Include the triggering context, jobs exist in situations
 - Focus on outcomes, not solutions
 - Should be solution-agnostic (no product names or feature names)
 
@@ -95,7 +95,7 @@ Examples:
 **Rules:**
 - Start with a direction: Minimize, Increase, Reduce, Maximize
 - Reference something measurable, even if not precisely quantified
-- Keep solution-agnostic — no product or feature names
+- Keep solution-agnostic, no product or feature names
 
 ### Step 4: Assess Satisfaction (Opportunity Scoring)
 
@@ -107,9 +107,9 @@ For each outcome, assess:
 
 | Score Range | Interpretation |
 |---|---|
-| 15-20 | Underserved — high opportunity |
-| 10-14 | Appropriately served — moderate opportunity |
-| 0-9 | Overserved — low opportunity (or table stakes) |
+| 15-20 | Underserved, high opportunity |
+| 10-14 | Appropriately served, moderate opportunity |
+| 0-9 | Overserved, low opportunity (or table stakes) |
 
 ### Step 5: Identify Competing Solutions
 
@@ -124,11 +124,11 @@ Map what customers currently "hire" to do this job:
 
 **Acceptable evidence:** Customer interview transcripts, support tickets, survey verbatims, behavioral analytics, sales call recordings, or documented workaround observations.
 
-**Insufficient evidence:** If no customer evidence exists (only stakeholder opinions or feature requests), state "Insufficient evidence for opportunity scoring" and produce a partial artifact with job statements drafted as hypotheses and scoring sections marked `[TBD — requires: customer interview data or behavioral analytics]`; flag the artifact as draft-only.
+**Insufficient evidence:** If no customer evidence exists (only stakeholder opinions or feature requests), state "Insufficient evidence for opportunity scoring" and produce a partial artifact with job statements drafted as hypotheses and scoring sections marked `[TBD, requires: customer interview data or behavioral analytics]`; flag the artifact as draft-only.
 
 **Hypotheses vs. findings:**
 - **Findings:** Opportunity scores (Step 4) and competing solutions (Step 5) must be grounded in evidence or sourced data.
-- **Hypotheses:** Job statements (Step 1) and job maps (Step 2) may be drafted speculatively when evidence is thin — label as "hypothesis" and flag for validation.
+- **Hypotheses:** Job statements (Step 1) and job maps (Step 2) may be drafted speculatively when evidence is thin, label as "hypothesis" and flag for validation.
 
 ## Output Format
 
@@ -158,22 +158,22 @@ When I [context], I want to [goal], So I can [outcome].
 [Top 3-5 outcomes with highest opportunity scores, with strategic implications]
 
 ## Framed Options
-[Top underserved opportunities with possible next steps — prototype tests, deeper research, etc.]
+[Top underserved opportunities with possible next steps, prototype tests, deeper research, etc.]
 ```
 
 **Shipwright Signature (required closing):**
-8. **Decision Frame** — Top underserved opportunities worth pursuing, trade-off between breadth of jobs vs. depth of scoring, confidence in opportunity scores with evidence quality, owner, decision date, revisit trigger
-9. **Unknowns & Evidence Gaps** — Job steps with no customer evidence, outcomes scored on assumption rather than data
-10. **Pass/Fail Readiness** — PASS if core job statement is solution-agnostic with at least 3 scored outcomes backed by evidence (at Light depth: PASS if core job statement is solution-agnostic with functional, emotional, and social layers articulated; outcome scoring not required); FAIL if job statements contain product/feature names or all scores are assumed
-11. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+8. **Decision Frame**, Top underserved opportunities worth pursuing, trade-off between breadth of jobs vs. depth of scoring, confidence in opportunity scores with evidence quality, owner, decision date, revisit trigger
+9. **Unknowns & Evidence Gaps**, Job steps with no customer evidence, outcomes scored on assumption rather than data
+10. **Pass/Fail Readiness**, PASS if core job statement is solution-agnostic with at least 3 scored outcomes backed by evidence (at Light depth: PASS if core job statement is solution-agnostic with functional, emotional, and social layers articulated; outcome scoring not required); FAIL if job statements contain product/feature names or all scores are assumed
+11. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid
 
-- **Defining jobs as features** — "I want to use a Gantt chart" is a solution, not a job
-- **Ignoring context** — Jobs only make sense in specific situations
-- **Skipping emotional and social jobs** — Functional alone misses half the picture
-- **Surveying importance without satisfaction** — You need both to find opportunity
-- **Competitor analysis by product instead of by job** — Your real competition might not be in your category
+- **Defining jobs as features**, "I want to use a Gantt chart" is a solution, not a job
+- **Ignoring context**, Jobs only make sense in specific situations
+- **Skipping emotional and social jobs**, Functional alone misses half the picture
+- **Surveying importance without satisfaction**, You need both to find opportunity
+- **Competitor analysis by product instead of by job**, Your real competition might not be in your category
 
 ## Weak vs. Strong Output
 

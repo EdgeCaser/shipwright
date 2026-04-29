@@ -43,8 +43,8 @@ The single metric that best captures the value your product delivers to customer
 ```markdown
 ## North Star Metric
 
-**Metric:** [Name — e.g., "Weekly active projects with 3+ collaborators"]
-**Definition:** [Precise technical definition — what counts, what doesn't]
+**Metric:** [Name, e.g., "Weekly active projects with 3+ collaborators"]
+**Definition:** [Precise technical definition, what counts, what doesn't]
 **Current value:** [baseline]
 **Target:** [goal by date]
 **Why this metric:** [How it captures customer value delivery]
@@ -111,7 +111,7 @@ Counter-metrics detect when an optimization in one area causes harm in another.
 ### Executive View (weekly review)
 - North Star metric: [trend line, WoW change]
 - Input metrics: [sparklines with targets]
-- Guardrails: [status indicators — green/yellow/red]
+- Guardrails: [status indicators, green/yellow/red]
 
 ### Team View (daily)
 - Input metrics with daily granularity
@@ -145,38 +145,38 @@ Counter-metrics detect when an optimization in one area causes harm in another.
 **Insufficient evidence:** If the team cannot define what user value the product delivers or cannot instrument the proposed North Star today, stop and recommend running a user-research-synthesis or jobs-to-be-done discovery sprint before attempting this skill. A metrics architecture built on an unvalidated value hypothesis will mislead rather than inform.
 
 **Hypotheses vs. findings:**
-- **Findings:** Current metric baselines, existing instrumentation gaps, known data source limitations — must be grounded in evidence.
-- **Hypotheses:** Proposed North Star rationale, input metric decomposition, predicted counter-metric risks — must be labeled as assumptions to validate.
+- **Findings:** Current metric baselines, existing instrumentation gaps, known data source limitations, must be grounded in evidence.
+- **Hypotheses:** Proposed North Star rationale, input metric decomposition, predicted counter-metric risks, must be labeled as assumptions to validate.
 
 ## Output Format
 
 Produce a Metrics Architecture Document with:
-1. **North Star Metric** — definition, rationale, target
-2. **Input Metrics** — decomposition of the North Star into actionable levers
-3. **Guardrail Metrics** — what must not degrade
-4. **Counter-Metrics** — side effect detection
-5. **Dashboard Specification** — layout, data sources, alert rules
+1. **North Star Metric**, definition, rationale, target
+2. **Input Metrics**, decomposition of the North Star into actionable levers
+3. **Guardrail Metrics**, what must not degrade
+4. **Counter-Metrics**, side effect detection
+5. **Dashboard Specification**, layout, data sources, alert rules
 
 **Shipwright Signature (required closing):**
-6. **Decision Frame** — recommended North Star with rationale, trade-off vs. alternative candidates, confidence with evidence quality (data availability, instrumentation readiness), owner, decision date, revisit trigger
-7. **Unknowns & Evidence Gaps** — metrics that cannot be instrumented yet, unvalidated causal assumptions in the input metric decomposition
-8. **Pass/Fail Readiness** — PASS if North Star meets all four validation criteria and at least 3 input metrics are instrumentable today; at Light depth, PASS if North Star meets all four validation criteria and input metric decomposition is logically sound — instrumentability verification is deferred; FAIL if North Star is a vanity metric or no baseline data exists
-9. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+6. **Decision Frame**, recommended North Star with rationale, trade-off vs. alternative candidates, confidence with evidence quality (data availability, instrumentation readiness), owner, decision date, revisit trigger
+7. **Unknowns & Evidence Gaps**, metrics that cannot be instrumented yet, unvalidated causal assumptions in the input metric decomposition
+8. **Pass/Fail Readiness**, PASS if North Star meets all four validation criteria and at least 3 input metrics are instrumentable today; at Light depth, PASS if North Star meets all four validation criteria and input metric decomposition is logically sound, instrumentability verification is deferred; FAIL if North Star is a vanity metric or no baseline data exists
+9. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid
 
-- **Revenue as North Star** — Revenue is a lagging business metric, not a product health indicator
-- **Too many metrics** — 1 North Star, 3-5 inputs, 3-4 guardrails. More than that and nothing gets attention.
-- **No guardrails** — Without guardrails, teams optimize the North Star by degrading everything else
-- **Vanity metrics** — Page views, total registered users, and "downloads" feel good but don't drive decisions
-- **Unmeasurable metrics** — If you can't instrument it today, it can't be a North Star today
+- **Revenue as North Star**, Revenue is a lagging business metric, not a product health indicator
+- **Too many metrics**, 1 North Star, 3-5 inputs, 3-4 guardrails. More than that and nothing gets attention.
+- **No guardrails**, Without guardrails, teams optimize the North Star by degrading everything else
+- **Vanity metrics**, Page views, total registered users, and "downloads" feel good but don't drive decisions
+- **Unmeasurable metrics**, If you can't instrument it today, it can't be a North Star today
 
 ## Weak vs. Strong Output
 
 **Weak:**
 > "North Star Metric: Monthly Active Users."
 
-No definition of "active," no validation against the four criteria, no connection to customer value — MAU is a vanity metric in disguise.
+No definition of "active," no validation against the four criteria, no connection to customer value, MAU is a vanity metric in disguise.
 
 **Strong:**
 > "North Star Metric: Weekly teams completing at least one shared workflow. Definition: distinct team accounts where 2+ members execute a collaborative workflow within a 7-day window. Current: 1,240. Target: 2,000 by Q3. Why: captures both activation and collaboration value, validated against all four criteria."

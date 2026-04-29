@@ -37,15 +37,15 @@ For PMs who own APIs, platforms, or developer-facing products. Covers API endpoi
 ## API Product Overview
 
 ### API Persona
-- **Primary developer:** [Who uses this API — e.g., "Backend engineers at mid-market SaaS companies integrating our data into their dashboards"]
+- **Primary developer:** [Who uses this API, e.g., "Backend engineers at mid-market SaaS companies integrating our data into their dashboards"]
 - **Technical proficiency:** [Junior / Mid / Senior]
 - **Language ecosystem:** [Python, JavaScript, Go, etc.]
 - **Integration context:** [What they're building with our API]
 
 ### Job-to-Be-Done
-When I [situation — e.g., "need to pull customer analytics into my internal dashboard"],
-I want to [goal — e.g., "query our API for real-time usage metrics"],
-So I can [outcome — e.g., "show my leadership team live product health data"].
+When I [situation, e.g., "need to pull customer analytics into my internal dashboard"],
+I want to [goal, e.g., "query our API for real-time usage metrics"],
+So I can [outcome, e.g., "show my leadership team live product health data"].
 
 ### API Success Metrics
 | Metric | Current | Target | Why It Matters |
@@ -73,7 +73,7 @@ So I can [outcome — e.g., "show my leadership team live product health data"].
 ### Resource Design
 For each resource:
 
-#### Resource: [Name — e.g., "Projects"]
+#### Resource: [Name, e.g., "Projects"]
 
 **Endpoints:**
 | Method | Path | Description | Auth Required |
@@ -91,7 +91,7 @@ For each resource:
 | per_page | integer | 20 | Items per page (max 100) |
 | sort | string | "created_at" | Sort field |
 | order | string | "desc" | Sort direction (asc/desc) |
-| filter[status] | string | — | Filter by status |
+| filter[status] | string |, | Filter by status |
 
 **Response Schema:**
 ```json
@@ -253,7 +253,7 @@ docs/
 - Separate test environment with test API keys
 - Seed data available for common scenarios
 - No rate limits in sandbox
-- Webhook testing via [tool — e.g., local tunnel or webhook.site integration]
+- Webhook testing via [tool, e.g., local tunnel or webhook.site integration]
 ```
 
 ## Minimum Evidence Bar
@@ -262,7 +262,7 @@ docs/
 
 **Acceptable evidence:** Developer interviews or support tickets showing integration demand, existing internal API usage data, competitive API benchmarks, or documented partner requirements.
 
-**Insufficient evidence:** If no developer persona has been validated with real users or prospects, produce a partial artifact with unanswered sections marked `[TBD — requires: validated developer persona from discovery interviews]` and flag the artifact as draft-only.
+**Insufficient evidence:** If no developer persona has been validated with real users or prospects, produce a partial artifact with unanswered sections marked `[TBD, requires: validated developer persona from discovery interviews]` and flag the artifact as draft-only.
 
 **Hypotheses vs. findings:**
 - **Findings:** Developer persona, JTBD, endpoint resource structure (must be grounded in validated use cases)
@@ -271,25 +271,25 @@ docs/
 ## Output Format
 
 Produce an API Product Spec with:
-1. **API Strategy** — persona, JTBD, success metrics
-2. **Endpoint Design** — resource schemas, pagination, errors
-3. **Authentication** — auth methods and security
-4. **Versioning** — compatibility rules and deprecation policy
-5. **Developer Experience** — getting started flow, docs structure, SDK design
+1. **API Strategy**, persona, JTBD, success metrics
+2. **Endpoint Design**, resource schemas, pagination, errors
+3. **Authentication**, auth methods and security
+4. **Versioning**, compatibility rules and deprecation policy
+5. **Developer Experience**, getting started flow, docs structure, SDK design
 
 **Shipwright Signature (required closing):**
-6. **Decision Frame** — recommended API strategy (build vs. extend vs. partner), trade-off, confidence with evidence quality, owner, decision date, revisit trigger
-7. **Unknowns & Evidence Gaps** — unvalidated persona assumptions, untested rate limits, unknown integration patterns
-8. **Pass/Fail Readiness** — PASS if developer persona validated and at least one endpoint schema reviewed by engineering; FAIL if no developer has attempted the proposed getting-started flow (Light depth: FAIL gate scopes to persona validation and endpoint schema review only, since DX/getting-started flow is omitted at Light)
-9. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+6. **Decision Frame**, recommended API strategy (build vs. extend vs. partner), trade-off, confidence with evidence quality, owner, decision date, revisit trigger
+7. **Unknowns & Evidence Gaps**, unvalidated persona assumptions, untested rate limits, unknown integration patterns
+8. **Pass/Fail Readiness**, PASS if developer persona validated and at least one endpoint schema reviewed by engineering; FAIL if no developer has attempted the proposed getting-started flow (Light depth: FAIL gate scopes to persona validation and endpoint schema review only, since DX/getting-started flow is omitted at Light)
+9. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid
 
-- **Designing for internal convenience, not developer experience** — Your database schema is not your API schema
-- **No sandbox environment** — Developers won't risk production data to test your API
-- **Inconsistent naming** — Mixed casing, plural/singular inconsistency, or verb-based endpoints destroy trust
-- **Breaking changes without notice** — This is the fastest way to lose developer trust permanently
-- **Documentation as afterthought** — For APIs, docs ARE the product; budget for them accordingly
+- **Designing for internal convenience, not developer experience**, Your database schema is not your API schema
+- **No sandbox environment**, Developers won't risk production data to test your API
+- **Inconsistent naming**, Mixed casing, plural/singular inconsistency, or verb-based endpoints destroy trust
+- **Breaking changes without notice**, This is the fastest way to lose developer trust permanently
+- **Documentation as afterthought**, For APIs, docs ARE the product; budget for them accordingly
 
 ## Weak vs. Strong Output
 

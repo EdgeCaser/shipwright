@@ -9,7 +9,7 @@ default_depth: standard
 
 ## Description
 
-Scores a set of Shipwright artifacts against the universal rubric dimensions (Clarity, Completeness, Actionability, Correctness), layers artifact-specific eval criteria when available, and compares scores across the set to detect quality drift. The output is a Quality Audit Report — a scoring artifact, not a review or rewrite.
+Scores a set of Shipwright artifacts against the universal rubric dimensions (Clarity, Completeness, Actionability, Correctness), layers artifact-specific eval criteria when available, and compares scores across the set to detect quality drift. The output is a Quality Audit Report, a scoring artifact, not a review or rewrite.
 
 This skill is distinct from adversarial review. Adversarial review pressure-tests a single artifact for weak reasoning. Quality audit scores multiple artifacts against a consistent rubric to find patterns over time.
 
@@ -56,7 +56,7 @@ Before scoring manually, run the postflight validator on each artifact file:
 node scripts/validate-artifact.mjs path/to/artifact.md
 ```
 
-The validator produces machine-generated issue counts for unsupported claims and missing sections. Use these counts as a floor for the **Correctness** dimension — an artifact flagged for multiple unsupported dollar figures cannot score above 6 on Correctness without PM-reviewed justification. If the artifact has a `## Sources` / `## References` / `## Evidence` section, citation checks are skipped and that penalty does not apply. Record the validator output alongside each artifact in the audit set.
+The validator produces machine-generated issue counts for unsupported claims and missing sections. Use these counts as a floor for the **Correctness** dimension, an artifact flagged for multiple unsupported dollar figures cannot score above 6 on Correctness without PM-reviewed justification. If the artifact has a `## Sources` / `## References` / `## Evidence` section, citation checks are skipped and that penalty does not apply. Record the validator output alongside each artifact in the audit set.
 
 ### Step 2: Score Each Artifact
 
@@ -68,9 +68,9 @@ Apply the universal 4 dimensions from `/evals/rubric.md`:
 - **Correctness** (1-9): Are claims sourced, consistent, and free of logical errors?
 
 Use the anchored scale:
-- **3** = Weak — significant gaps, confusion, or unsupported claims
-- **6** = Adequate — meets the bar, no major issues
-- **9** = Strong — notably sharp, thorough, and ready to act on
+- **3** = Weak, significant gaps, confusion, or unsupported claims
+- **6** = Adequate, meets the bar, no major issues
+- **9** = Strong, notably sharp, thorough, and ready to act on
 
 If an artifact-specific eval exists in `/evals/` (e.g., `prd.md`, `strategy.md`, `adversarial-review.md`), layer those additional dimensions and note them separately.
 
@@ -102,45 +102,45 @@ Then analyze:
 
 Based on findings, produce 3-5 targeted recommendations:
 
-1. **Failure modes to watch** — reference specific patterns from `docs/failure-modes.md`
-2. **Recovery playbooks** — suggest which playbooks to apply for Below Bar artifacts
-3. **Instruction tightening** — if a specific agent or workflow consistently underperforms on a dimension, recommend what to change
+1. **Failure modes to watch**, reference specific patterns from `docs/failure-modes.md`
+2. **Recovery playbooks**, suggest which playbooks to apply for Below Bar artifacts
+3. **Instruction tightening**, if a specific agent or workflow consistently underperforms on a dimension, recommend what to change
 
 Each recommendation must be specific (name the dimension, the agent/workflow, and the fix) rather than generic ("improve quality").
 
 ## Minimum Evidence Bar
 
-**Required inputs:** At least 2 completed Shipwright artifacts to compare. Single-artifact scoring is possible but produces no trend data — note this limitation explicitly.
+**Required inputs:** At least 2 completed Shipwright artifacts to compare. Single-artifact scoring is possible but produces no trend data, note this limitation explicitly.
 
 **Acceptable evidence:** The artifacts themselves, plus any source materials or context that informed them.
 
-**Insufficient evidence:** If artifacts are drafts with placeholder sections, note "Scoring deferred — artifact incomplete" for those entries rather than scoring partial work as weak.
+**Insufficient evidence:** If artifacts are drafts with placeholder sections, note "Scoring deferred, artifact incomplete" for those entries rather than scoring partial work as weak.
 
 **Hypotheses vs. findings:**
-- **Findings:** Scores grounded in specific evidence from the artifact (e.g., "Actionability 4 — no owner named in Decision Frame")
-- **Hypotheses:** Trend attributions with small sample sizes — label "Directional — N=2, confirm over next cycle" when the audit set is fewer than 4 artifacts
+- **Findings:** Scores grounded in specific evidence from the artifact (e.g., "Actionability 4, no owner named in Decision Frame")
+- **Hypotheses:** Trend attributions with small sample sizes, label "Directional, N=2, confirm over next cycle" when the audit set is fewer than 4 artifacts
 
 ## Output Format
 
 Produce a **Quality Audit Report** with:
-1. **Audit Set** — artifacts reviewed, types, dates, producing workflows
-2. **Scores Table** — per-artifact scores on each dimension with totals and bands
-3. **Trend Observations** — declining, stable, or improving per dimension; strongest and weakest patterns
-4. **Recommendations** — 3-5 specific actions tied to failure modes and recovery playbooks
+1. **Audit Set**, artifacts reviewed, types, dates, producing workflows
+2. **Scores Table**, per-artifact scores on each dimension with totals and bands
+3. **Trend Observations**, declining, stable, or improving per dimension; strongest and weakest patterns
+4. **Recommendations**, 3-5 specific actions tied to failure modes and recovery playbooks
 
 **Shipwright Signature (required closing):**
-5. **Decision Frame** — Primary quality finding, trade-off (invest in fixing weakest dimension vs. maintain current trajectory), confidence with sample size caveat, owner, decision date, revisit trigger (next audit cycle)
-6. **Unknowns & Evidence Gaps** — Artifacts not included in the audit, dimensions not scored due to missing artifact-specific evals, sample size limitations
-7. **Pass/Fail Readiness** — PASS if at least 2 artifacts scored on all 4 universal dimensions with evidence-backed rationales and trend observations are present; FAIL if scores lack rationales or trends are asserted without cross-artifact comparison
-8. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+5. **Decision Frame**, Primary quality finding, trade-off (invest in fixing weakest dimension vs. maintain current trajectory), confidence with sample size caveat, owner, decision date, revisit trigger (next audit cycle)
+6. **Unknowns & Evidence Gaps**, Artifacts not included in the audit, dimensions not scored due to missing artifact-specific evals, sample size limitations
+7. **Pass/Fail Readiness**, PASS if at least 2 artifacts scored on all 4 universal dimensions with evidence-backed rationales and trend observations are present; FAIL if scores lack rationales or trends are asserted without cross-artifact comparison
+8. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid
 
-- **Scoring without rationale** — A score of "Clarity: 7" means nothing without citing what made it a 7 and not a 6 or 8
-- **Blaming the agent for PM input quality** — If an artifact is weak because the PM provided no evidence, note that as context rather than scoring the agent down
-- **Treating one weak artifact as a trend** — Two data points is not a trend; label small-sample observations as directional
-- **Averaging across artifact types** — A PRD and a competitive landscape have different quality profiles; compare like with like when possible
-- **Recommending "try harder"** — Every recommendation must name the specific dimension, the specific failure mode, and a concrete fix
+- **Scoring without rationale**, A score of "Clarity: 7" means nothing without citing what made it a 7 and not a 6 or 8
+- **Blaming the agent for PM input quality**, If an artifact is weak because the PM provided no evidence, note that as context rather than scoring the agent down
+- **Treating one weak artifact as a trend**, Two data points is not a trend; label small-sample observations as directional
+- **Averaging across artifact types**, A PRD and a competitive landscape have different quality profiles; compare like with like when possible
+- **Recommending "try harder"**, Every recommendation must name the specific dimension, the specific failure mode, and a concrete fix
 
 ## Weak vs. Strong Output
 

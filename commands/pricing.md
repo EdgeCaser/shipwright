@@ -3,7 +3,7 @@ name: pricing
 description: "Build a complete pricing strategy in two phases: evidence first, then value metric, model, packaging, and validation decisions."
 ---
 
-# /pricing — Pricing Strategy Workflow
+# /pricing, Pricing Strategy Workflow
 
 Run this command to develop or evaluate a pricing strategy end-to-end.
 

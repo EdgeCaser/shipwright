@@ -2,7 +2,7 @@
 
 **Workflow:** `/write-prd`
 **Skill chain:** Press Release → FAQ → User Stories → Full PRD
-**Product context:** ComplianceOS — B2B SaaS compliance automation (see `examples/CLAUDE.md.b2b-saas`)
+**Product context:** ComplianceOS, B2B SaaS compliance automation (see `examples/CLAUDE.md.b2b-saas`)
 
 ---
 
@@ -22,7 +22,7 @@ This is our #2 priority this quarter.
 
 ## Baseline output (without Shipwright)
 
-> A typical AI response to this prompt. Not bad — but notice what's missing.
+> A typical AI response to this prompt. Not bad, but notice what's missing.
 
 ### Product Requirements Document: Evidence Auto-Collection
 
@@ -67,7 +67,7 @@ This is our #2 priority this quarter.
 ComplianceOS customers now pass audits without manually gathering a single piece of evidence from their cloud infrastructure.
 
 ## Subheading
-For compliance officers at mid-market fintech companies, Evidence Auto-Collection continuously pulls and maps compliance evidence from AWS, GCP, and GitHub — reducing audit prep from weeks to hours.
+For compliance officers at mid-market fintech companies, Evidence Auto-Collection continuously pulls and maps compliance evidence from AWS, GCP, and GitHub, reducing audit prep from weeks to hours.
 
 ## Summary
 ComplianceOS today launched Evidence Auto-Collection, a new capability that connects directly to customers' cloud infrastructure and developer tools to automatically gather, validate, and map compliance evidence to SOC 2, HIPAA, and PCI-DSS controls. Compliance officers who previously spent 3-4 weeks manually collecting screenshots, logs, and configurations from 12+ tools can now maintain continuous evidence coverage with zero manual uploads for supported integrations.
@@ -76,7 +76,7 @@ ComplianceOS today launched Evidence Auto-Collection, a new capability that conn
 Carmen is a compliance officer at a 200-person fintech company. Every quarter, she spends 3 weeks asking engineering teams to export CloudTrail logs, screenshot IAM configurations, and document GitHub branch protection rules. Engineers resent the interruption. Evidence arrives in inconsistent formats. And Carmen still isn't sure she has everything until the auditor asks for something she missed. The process is manual, adversarial, and unreliable.
 
 ## Solution
-Evidence Auto-Collection connects to customers' existing AWS accounts, GCP projects, and GitHub organizations using read-only credentials. It continuously monitors and collects evidence relevant to active compliance frameworks, maps each piece of evidence to the specific control it satisfies, and flags gaps where evidence is missing or stale. Carmen opens ComplianceOS and sees a live evidence dashboard — green where auto-collected, yellow where evidence is aging, red where manual intervention is still needed.
+Evidence Auto-Collection connects to customers' existing AWS accounts, GCP projects, and GitHub organizations using read-only credentials. It continuously monitors and collects evidence relevant to active compliance frameworks, maps each piece of evidence to the specific control it satisfies, and flags gaps where evidence is missing or stale. Carmen opens ComplianceOS and sees a live evidence dashboard, green where auto-collected, yellow where evidence is aging, red where manual intervention is still needed.
 
 ## How It Works
 - **Connect once:** Add read-only credentials for AWS, GCP, and/or GitHub through a guided setup wizard. No agents to install, no infrastructure changes.
@@ -98,7 +98,7 @@ Existing ComplianceOS customers can enable Evidence Auto-Collection from Setting
 ## Customer FAQ
 
 **Q: What cloud providers do you support?**
-A: At launch, AWS, GCP, and GitHub. Azure and GitLab are on the roadmap for H2 2026. We prioritized based on customer infrastructure surveys — 89% of our customers use at least one of the launch providers.
+A: At launch, AWS, GCP, and GitHub. Azure and GitLab are on the roadmap for H2 2026. We prioritized based on customer infrastructure surveys, 89% of our customers use at least one of the launch providers.
 
 **Q: What permissions does this require?**
 A: Read-only access. We never write to or modify your infrastructure. Specific permissions are documented per provider: AWS uses a cross-account IAM role with SecurityAudit policy; GCP uses a service account with Viewer role; GitHub uses a GitHub App with read-only repository and organization permissions.
@@ -107,7 +107,7 @@ A: Read-only access. We never write to or modify your infrastructure. Specific p
 A: Yes. Evidence Auto-Collection maps to controls across SOC 2, HIPAA, and PCI-DSS. Multi-framework overlap detection means a single piece of evidence (e.g., CloudTrail logging configuration) can satisfy controls across multiple frameworks simultaneously.
 
 **Q: What happens when you can't collect evidence automatically?**
-A: The dashboard clearly marks which controls still need manual evidence. Auto-collection doesn't replace all manual evidence — it handles infrastructure and developer tool evidence. Process-based evidence (e.g., training records, policy acknowledgments) still requires manual upload.
+A: The dashboard clearly marks which controls still need manual evidence. Auto-collection doesn't replace all manual evidence, it handles infrastructure and developer tool evidence. Process-based evidence (e.g., training records, policy acknowledgments) still requires manual upload.
 
 ## Internal FAQ
 
@@ -115,13 +115,13 @@ A: The dashboard clearly marks which controls still need manual evidence. Auto-c
 A: 60% of pipeline deals in Q2 cited "too much manual work" as a concern during evaluation. Win/loss analysis shows we lose to Vanta specifically on integration depth. Evidence auto-collection directly addresses the #1 churn risk factor identified in Q1 customer health reviews.
 
 **Q: What are we NOT building?**
-A: We are not building real-time remediation (auto-fixing non-compliant configurations). We are not building Azure or GitLab integrations in this phase. We are not building custom evidence collection scripts — we support the standard APIs only.
+A: We are not building real-time remediation (auto-fixing non-compliant configurations). We are not building Azure or GitLab integrations in this phase. We are not building custom evidence collection scripts, we support the standard APIs only.
 
 **Q: How will we measure success?**
 A: Primary metric: % of controls with auto-collected evidence (target: 60% for customers using 2+ integrations). Secondary: time to audit-ready (target: reduce from 47 days to 30 days). Guardrail: no increase in false-positive evidence mapping rates.
 
 **Q: What are the biggest risks?**
-A: (1) API rate limiting from cloud providers during initial backfill — mitigation: progressive collection with configurable throttling. (2) Evidence mapping accuracy — incorrect mapping is worse than no mapping — mitigation: confidence scoring with manual review required below 85% confidence. (3) Credential rotation — customers may revoke or rotate credentials without updating ComplianceOS — mitigation: daily health check with alerts on failed collection attempts.
+A: (1) API rate limiting from cloud providers during initial backfill, mitigation: progressive collection with configurable throttling. (2) Evidence mapping accuracy, incorrect mapping is worse than no mapping, mitigation: confidence scoring with manual review required below 85% confidence. (3) Credential rotation, customers may revoke or rotate credentials without updating ComplianceOS, mitigation: daily health check with alerts on failed collection attempts.
 
 **Q: What's the estimated effort?**
 A: L-sized initiative. ~10 weeks with 2 engineers. Breakdown: AWS integration (3 weeks), GCP integration (2 weeks), GitHub integration (2 weeks), evidence mapping engine (2 weeks), dashboard and gap detection (1 week). This assumes we reuse the existing control mapping taxonomy.
@@ -162,7 +162,7 @@ A: L-sized initiative. ~10 weeks with 2 engineers. Breakdown: AWS integration (3
 - As Carmen, I want to connect my AWS account to ComplianceOS so that evidence is collected automatically without bothering the engineering team.
   - Acceptance criteria:
     - [ ] Guided setup flow for AWS cross-account role creation
-    - [ ] Read-only permissions only — no write access
+    - [ ] Read-only permissions only, no write access
     - [ ] Setup completes in under 15 minutes with no engineering assistance
     - [ ] Success confirmation shows which controls are now auto-covered
   - Edge cases:
@@ -198,10 +198,10 @@ A: L-sized initiative. ~10 weeks with 2 engineers. Breakdown: AWS integration (3
 - Auditor-ready evidence export
 
 ### Out of Scope
-- Azure and GitLab integrations — Rationale: coverage for 89% of customer base with AWS/GCP/GitHub; Azure/GitLab planned for H2 2026
-- Real-time remediation — Rationale: auto-fixing compliance issues is a different product surface; detect first, remediate later
-- Custom evidence scripts — Rationale: maintenance burden too high; standard APIs only
-- SOC 1 or ISO 27001 control mapping — Rationale: frameworks not yet supported in ComplianceOS
+- Azure and GitLab integrations, Rationale: coverage for 89% of customer base with AWS/GCP/GitHub; Azure/GitLab planned for H2 2026
+- Real-time remediation, Rationale: auto-fixing compliance issues is a different product surface; detect first, remediate later
+- Custom evidence scripts, Rationale: maintenance burden too high; standard APIs only
+- SOC 1 or ISO 27001 control mapping, Rationale: frameworks not yet supported in ComplianceOS
 
 ### Future Considerations
 - Azure integration (H2 2026)
@@ -221,7 +221,7 @@ A: L-sized initiative. ~10 weeks with 2 engineers. Breakdown: AWS integration (3
 | Dependency | Team/System | Status | Risk |
 |---|---|---|---|
 | Control taxonomy finalization | Compliance Content | Complete | Low |
-| Multi-framework mapping (for PCI-DSS) | Compliance Content | In Progress | Medium — needed for PCI evidence mapping |
+| Multi-framework mapping (for PCI-DSS) | Compliance Content | In Progress | Medium, needed for PCI evidence mapping |
 | Secrets Manager access | Platform/Infra | Available | Low |
 
 ## 7. Rollout Plan
@@ -250,7 +250,7 @@ A: L-sized initiative. ~10 weeks with 2 engineers. Breakdown: AWS integration (3
 
 3. **Evidence-grounded decisions.** The Shipwright output cites specific data: "60% of pipeline deals," "win rate drops from 45% to 22%," "8/12 CAB members." The baseline says "significant time" and "tedious and error-prone" without quantification.
 
-4. **Explicit scope boundaries with rationale.** Each out-of-scope item has a "Rationale" explaining *why* it's excluded and *when* it might be revisited. The baseline's scope is implicit — it lists what to build but not what to skip.
+4. **Explicit scope boundaries with rationale.** Each out-of-scope item has a "Rationale" explaining *why* it's excluded and *when* it might be revisited. The baseline's scope is implicit, it lists what to build but not what to skip.
 
 5. **Testable acceptance criteria.** User stories have checkbox acceptance criteria and edge cases. The baseline lists requirements as bullet points with no definition of "done."
 

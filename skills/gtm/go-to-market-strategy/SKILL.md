@@ -45,9 +45,9 @@ Identify the single segment you'll win first before expanding:
 
 ### Selected Beachhead: [Segment Name]
 **Why this segment first:**
-- [Reason 1 — e.g., "Highest pain severity, shortest sales cycle"]
-- [Reason 2 — e.g., "We have existing relationships and credibility"]
-- [Reason 3 — e.g., "Success here creates referrals to adjacent segments"]
+- [Reason 1, e.g., "Highest pain severity, shortest sales cycle"]
+- [Reason 2, e.g., "We have existing relationships and credibility"]
+- [Reason 3, e.g., "Success here creates referrals to adjacent segments"]
 
 **Expansion path from beachhead:**
 [Beachhead] → [Adjacent segment 1] → [Adjacent segment 2] → [Mainstream market]
@@ -74,12 +74,12 @@ Identify the single segment you'll win first before expanding:
 
 ### Qualification Criteria
 **Must-have (deal breakers):**
-- [ ] [Criterion — e.g., "Actively experiencing the problem"]
-- [ ] [Criterion — e.g., "Has budget allocated for this category"]
+- [ ] [Criterion, e.g., "Actively experiencing the problem"]
+- [ ] [Criterion, e.g., "Has budget allocated for this category"]
 
 **Disqualification signals:**
-- [Signal — e.g., "Just signed a 2-year contract with competitor"]
-- [Signal — e.g., "No technical resources to implement"]
+- [Signal, e.g., "Just signed a 2-year contract with competitor"]
+- [Signal, e.g., "No technical resources to implement"]
 ```
 
 ### Step 3: Messaging Framework
@@ -90,15 +90,15 @@ Identify the single segment you'll win first before expanding:
 ### Core Narrative
 **Before [product]:** [Describe the painful status quo]
 **After [product]:** [Describe the transformed state]
-**How:** [The bridge — what the product enables]
+**How:** [The bridge, what the product enables]
 
 ### Message Hierarchy
 | Level | Message | Audience |
 |---|---|---|
-| Tagline | [7 words max — headline positioning] | Everyone |
-| Value prop | [1-2 sentences — key benefit] | Website visitors |
-| Elevator pitch | [30 seconds — problem, solution, proof] | Prospects |
-| Full narrative | [2-3 minutes — complete story] | Sales conversations |
+| Tagline | [7 words max, headline positioning] | Everyone |
+| Value prop | [1-2 sentences, key benefit] | Website visitors |
+| Elevator pitch | [30 seconds, problem, solution, proof] | Prospects |
+| Full narrative | [2-3 minutes, complete story] | Sales conversations |
 
 ### Proof Points
 - [Metric: e.g., "Reduces onboarding time by 60%"]
@@ -120,14 +120,14 @@ Identify the single segment you'll win first before expanding:
 | [Partnerships] | [effort] | [reach] | [$X] | [months] |
 
 ### Conversion Channels (how they evaluate and buy)
-- **Self-serve:** [Free trial / freemium — what triggers conversion]
-- **Sales-assisted:** [Demo request flow — qualification criteria for sales touch]
-- **Hybrid:** [PLG + sales — when does sales engage?]
+- **Self-serve:** [Free trial / freemium, what triggers conversion]
+- **Sales-assisted:** [Demo request flow, qualification criteria for sales touch]
+- **Hybrid:** [PLG + sales, when does sales engage?]
 
 ### Retention Channels (how we keep them)
-- [Onboarding emails — cadence and content]
-- [In-app guidance — key activation moments]
-- [Customer success — trigger for CSM engagement]
+- [Onboarding emails, cadence and content]
+- [In-app guidance, key activation moments]
+- [Customer success, trigger for CSM engagement]
 ```
 
 ### Step 5: Launch Plan
@@ -174,31 +174,31 @@ Identify the single segment you'll win first before expanding:
 
 **Hypotheses vs. findings:**
 - **Findings:** Beachhead Segment scoring and ICP qualification criteria must reference real data or interviews.
-- **Hypotheses:** Channel Strategy CAC estimates and Launch Timeline adoption targets may be projected — must be labeled "Assumption — validate in first 30 days."
+- **Hypotheses:** Channel Strategy CAC estimates and Launch Timeline adoption targets may be projected, must be labeled "Assumption, validate in first 30 days."
 
 ## Output Format
 
 Produce a GTM Plan with:
-1. **Beachhead Segment** — who we're targeting first and why
-2. **ICP** — detailed ideal customer profile
-3. **Messaging Framework** — narrative, hierarchy, proof points
-4. **Channel Strategy** — awareness, conversion, retention
-5. **Launch Timeline** — pre-launch, launch day, post-launch
-6. **Success Metrics** — what we're measuring and target values
+1. **Beachhead Segment**, who we're targeting first and why
+2. **ICP**, detailed ideal customer profile
+3. **Messaging Framework**, narrative, hierarchy, proof points
+4. **Channel Strategy**, awareness, conversion, retention
+5. **Launch Timeline**, pre-launch, launch day, post-launch
+6. **Success Metrics**, what we're measuring and target values
 
 **Shipwright Signature (required closing):**
-7. **Decision Frame** — recommended beachhead and primary channel, trade-off vs. alternatives, confidence level with evidence quality, owner (head of product or marketing), decision date, revisit trigger (post-launch metric review)
-8. **Unknowns & Evidence Gaps** — unvalidated ICP assumptions, untested channels, missing pricing sensitivity data
-9. **Pass/Fail Readiness** — PASS if beachhead is scored with real data and messaging is grounded in customer language; FAIL if segment selection is unsupported or no trigger event is identified. **Light-depth exception:** At Light depth, PASS requires only a scored beachhead selection rationale and a core messaging framework; trigger event identification is not evaluated.
-10. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+7. **Decision Frame**, recommended beachhead and primary channel, trade-off vs. alternatives, confidence level with evidence quality, owner (head of product or marketing), decision date, revisit trigger (post-launch metric review)
+8. **Unknowns & Evidence Gaps**, unvalidated ICP assumptions, untested channels, missing pricing sensitivity data
+9. **Pass/Fail Readiness**, PASS if beachhead is scored with real data and messaging is grounded in customer language; FAIL if segment selection is unsupported or no trigger event is identified. **Light-depth exception:** At Light depth, PASS requires only a scored beachhead selection rationale and a core messaging framework; trigger event identification is not evaluated.
+10. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid
 
-- **Targeting everyone** — A beachhead of "all SMBs" is no beachhead at all
-- **Features-first messaging** — Lead with the customer problem and outcome, not your feature list
-- **No trigger event** — Without knowing what makes someone search NOW, your timing will be wrong
-- **Channel spray-and-pray** — Pick 2-3 channels and go deep; spreading thin across 10 channels fails
-- **Measuring only vanity metrics** — Page views and signups matter less than activation and revenue
+- **Targeting everyone**, A beachhead of "all SMBs" is no beachhead at all
+- **Features-first messaging**, Lead with the customer problem and outcome, not your feature list
+- **No trigger event**, Without knowing what makes someone search NOW, your timing will be wrong
+- **Channel spray-and-pray**, Pick 2-3 channels and go deep; spreading thin across 10 channels fails
+- **Measuring only vanity metrics**, Page views and signups matter less than activation and revenue
 
 ## Weak vs. Strong Output
 
@@ -208,6 +208,6 @@ Produce a GTM Plan with:
 No segment scoring, no pain severity, no reason this segment wins over alternatives.
 
 **Strong:**
-> "Beachhead: Series A-B fintech startups (50-200 employees). Pain severity 5/5 — manual compliance reporting costs them 40+ hrs/month and blocks SOC 2 certification. Accessibility 4/5 — three warm intros via YC network. Selected over healthtech (higher pain but 18-month sales cycles) and e-commerce (lower willingness to pay)."
+> "Beachhead: Series A-B fintech startups (50-200 employees). Pain severity 5/5, manual compliance reporting costs them 40+ hrs/month and blocks SOC 2 certification. Accessibility 4/5, three warm intros via YC network. Selected over healthtech (higher pain but 18-month sales cycles) and e-commerce (lower willingness to pay)."
 
 Scored, compared against alternatives, with a clear reason this segment is first.

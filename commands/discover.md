@@ -3,7 +3,7 @@ name: discover
 description: "Run a full discovery cycle: brainstorm opportunities, identify assumptions, prioritize, and design experiments."
 ---
 
-# /discover — Full Discovery Workflow
+# /discover, Full Discovery Workflow
 
 Run this command to execute a structured product discovery cycle. This chains four skills into a single end-to-end workflow.
 

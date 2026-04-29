@@ -36,10 +36,10 @@ Creates end-to-end customer journey maps with stages, touchpoints, actions, emot
 ```markdown
 ## Journey Map Scope
 
-**Persona:** [Name — from your persona library]
-**Journey:** [Which journey — e.g., "First-time user from signup to first value moment"]
-**Trigger:** [What initiates this journey — e.g., "Colleague shares a link to a project"]
-**End state:** [What "done" looks like — e.g., "User has created their first project and invited a teammate"]
+**Persona:** [Name, from your persona library]
+**Journey:** [Which journey, e.g., "First-time user from signup to first value moment"]
+**Trigger:** [What initiates this journey, e.g., "Colleague shares a link to a project"]
+**End state:** [What "done" looks like, e.g., "User has created their first project and invited a teammate"]
 **Time span:** [Minutes / Hours / Days / Weeks]
 ```
 
@@ -92,7 +92,7 @@ For each stage, map the full experience:
 #### Moments of Truth
 Critical decision points where the user decides to continue or leave:
 
-- **MOT 1:** [Description — e.g., "User sees the empty state after signup"]
+- **MOT 1:** [Description, e.g., "User sees the empty state after signup"]
   - Current experience: [What happens now]
   - Ideal experience: [What should happen]
   - Drop-off rate: [X]% of users leave at this point
@@ -111,7 +111,7 @@ Critical decision points where the user decides to continue or leave:
 ## Cross-Stage Analysis
 
 ### Emotional Arc
-[Describe the overall emotional trajectory — where are the peaks and valleys?]
+[Describe the overall emotional trajectory, where are the peaks and valleys?]
 
 ### Critical Drop-Off Points
 | Transition | Drop-Off Rate | Primary Reason | Opportunity |
@@ -121,7 +121,7 @@ Critical decision points where the user decides to continue or leave:
 | Activation → Habit | [X]% | [reason] | [opportunity] |
 
 ### Moments of Delight
-- [Moment 1]: [What makes users happy — protect and amplify this]
+- [Moment 1]: [What makes users happy, protect and amplify this]
 - [Moment 2]: [Another positive moment to preserve]
 
 ### Channel Consistency Gaps
@@ -156,35 +156,35 @@ Critical decision points where the user decides to continue or leave:
 
 **Acceptable evidence:** Product analytics (funnels, drop-offs, TTFV), user research transcripts, session recordings, support ticket patterns, NPS/CSAT by stage, onboarding completion data.
 
-**Insufficient evidence:** If a journey stage has no analytics and no qualitative research, state "Insufficient evidence for Stage [N] detail" and produce a partial artifact with evidenced stages fully mapped and unsupported stages marked `[TBD — requires: analytics instrumentation or user interviews for this stage]`. Flag the artifact as draft-only.
+**Insufficient evidence:** If a journey stage has no analytics and no qualitative research, state "Insufficient evidence for Stage [N] detail" and produce a partial artifact with evidenced stages fully mapped and unsupported stages marked `[TBD, requires: analytics instrumentation or user interviews for this stage]`. Flag the artifact as draft-only.
 
 **Hypotheses vs. findings:**
 - **Findings:** Drop-off rates, touchpoint sequences, and documented pain points must be grounded in observed data.
-- **Hypotheses:** Emotional journey intensities and moment-of-truth impact estimates may be inferred — label them "Hypothesis — validate with research" when not sourced from direct user input.
+- **Hypotheses:** Emotional journey intensities and moment-of-truth impact estimates may be inferred, label them "Hypothesis, validate with research" when not sourced from direct user input.
 
 ## Output Format
 
 Produce a Customer Journey Map with:
-1. **Scope & Persona** — who and what journey
-2. **Stage Map** — high-level journey stages
-3. **Stage Details** — touchpoints, emotions, pain points, moments of truth per stage
-4. **Cross-Stage Analysis** — drop-offs, patterns, delight moments
-5. **Opportunity Register** — prioritized list of improvements
-6. **Measurement Framework** — metrics per stage
+1. **Scope & Persona**, who and what journey
+2. **Stage Map**, high-level journey stages
+3. **Stage Details**, touchpoints, emotions, pain points, moments of truth per stage
+4. **Cross-Stage Analysis**, drop-offs, patterns, delight moments
+5. **Opportunity Register**, prioritized list of improvements
+6. **Measurement Framework**, metrics per stage
 
 **Shipwright Signature (required closing):**
-7. **Decision Frame** — experience findings and improvement options with expected impact, trade-offs (quick wins vs. structural redesigns), confidence level with evidence quality, owner, decision date, revisit trigger
-8. **Unknowns & Evidence Gaps** — stages with no analytics or research coverage, emotional journey assumptions not validated with users, backstage failure points not yet mapped
-9. **Pass/Fail Readiness** — PASS if all stages have at least one evidence-backed pain point and the opportunity register is prioritized (at Light depth: PASS if the scoped segment has at least one evidence-backed pain point per mapped stage and opportunities are listed); FAIL if stages are mapped from internal assumptions with no customer data
-10. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+7. **Decision Frame**, experience findings and improvement options with expected impact, trade-offs (quick wins vs. structural redesigns), confidence level with evidence quality, owner, decision date, revisit trigger
+8. **Unknowns & Evidence Gaps**, stages with no analytics or research coverage, emotional journey assumptions not validated with users, backstage failure points not yet mapped
+9. **Pass/Fail Readiness**, PASS if all stages have at least one evidence-backed pain point and the opportunity register is prioritized (at Light depth: PASS if the scoped segment has at least one evidence-backed pain point per mapped stage and opportunities are listed); FAIL if stages are mapped from internal assumptions with no customer data
+10. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid
 
-- **Inside-out mapping** — Map from the customer's perspective, not your product's feature list
-- **Happy path only** — Include error states, confusion, and abandonment
-- **No evidence** — Every pain point needs a source: analytics, research, or support data
-- **Too granular** — A journey map is strategic, not a UI flowchart; stay at the experience level
-- **Maps that sit on a shelf** — Connect every pain point to an opportunity with an owner
+- **Inside-out mapping**, Map from the customer's perspective, not your product's feature list
+- **Happy path only**, Include error states, confusion, and abandonment
+- **No evidence**, Every pain point needs a source: analytics, research, or support data
+- **Too granular**, A journey map is strategic, not a UI flowchart; stay at the experience level
+- **Maps that sit on a shelf**, Connect every pain point to an opportunity with an owner
 
 ## Weak vs. Strong Output
 

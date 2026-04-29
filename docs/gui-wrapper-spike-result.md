@@ -1,4 +1,4 @@
-# GUI Wrapper — Integration Spike Result
+# GUI Wrapper, Integration Spike Result
 
 **Date:** 2026-04-10  
 **Branch:** `feature/gui-wrapper`  
@@ -21,7 +21,7 @@ Results may differ under API key auth, org-managed accounts, or custom permissio
 
 ## What was tested
 
-### Test 1 — `--output-format stream-json` in print mode
+### Test 1, `--output-format stream-json` in print mode
 
 **Command:**
 ```bash
@@ -43,15 +43,15 @@ claude --print "My secret word is ZEBRA. Reply with only: acknowledged." \
 
 ---
 
-### Test 2 — `--resume` session chaining (statefulness)
+### Test 2, `--resume` session chaining (statefulness)
 
 **Commands:**
 ```bash
-# Turn 1 — captures session_id from result event
+# Turn 1, captures session_id from result event
 claude --print "My secret word is ZEBRA. Reply with only: acknowledged." \
   --output-format stream-json --verbose
 
-# Turn 2 — resumes with session_id from turn 1
+# Turn 2, resumes with session_id from turn 1
 claude --print "What was the secret word I gave you?" \
   --output-format stream-json --verbose \
   --resume 3e0e669a-a78d-4b88-ac77-670c41230a30
@@ -68,7 +68,7 @@ claude --print "What was the secret word I gave you?" \
 
 ---
 
-### Test 3 — Tool use events in stream-json
+### Test 3, Tool use events in stream-json
 
 **Command:**
 ```bash
@@ -76,7 +76,7 @@ claude --print "Use the Bash tool to run: echo spike-tool-test" \
   --output-format stream-json --verbose
 ```
 
-**Observed behavior:** Tool use appears as an `assistant` event whose `message.content` array contains a `tool_use` block, followed by a second `assistant` event with the text response. Tool results are not emitted as a separate top-level event type — they are embedded in the assistant message sequence.
+**Observed behavior:** Tool use appears as an `assistant` event whose `message.content` array contains a `tool_use` block, followed by a second `assistant` event with the text response. Tool results are not emitted as a separate top-level event type, they are embedded in the assistant message sequence.
 
 **Event sequence:**
 ```
@@ -91,12 +91,12 @@ TYPE: result
 
 ---
 
-### Test 4 — Long-lived subprocess (Architecture A)
+### Test 4, Long-lived subprocess (Architecture A)
 
 **Approaches tried:**
-1. `printf "msg1\nmsg2\n" | claude --output-format stream-json --verbose` — piped input with EOF. Produced output but treated both lines as a single prompt (one turn). Not multi-turn.
-2. Python `subprocess.Popen` with `stdin=PIPE, stdout=PIPE` — sent turn 1 message to stdin, kept pipe open. Process hung; no output received within 15-second timeout.
-3. Python `pty.openpty()` — spawned claude with a synthetic PTY, sent turn 1 via master fd. Process started but produced no output.
+1. `printf "msg1\nmsg2\n" | claude --output-format stream-json --verbose`, piped input with EOF. Produced output but treated both lines as a single prompt (one turn). Not multi-turn.
+2. Python `subprocess.Popen` with `stdin=PIPE, stdout=PIPE`, sent turn 1 message to stdin, kept pipe open. Process hung; no output received within 15-second timeout.
+3. Python `pty.openpty()`, spawned claude with a synthetic PTY, sent turn 1 via master fd. Process started but produced no output.
 
 **Observed behavior:** None of the approaches produced a persistent multi-turn session via a long-lived process. The process either treats all piped stdin as a single prompt (when EOF is received), or hangs waiting for input in ways that don't produce output (when stdin remains open).
 
@@ -108,11 +108,11 @@ TYPE: result
 
 | Architecture | Status | Notes |
 |---|---|---|
-| A — long-lived subprocess with stream-json | **Unconfirmed** | Requires real TTY for multi-turn; synthetic PTY and piped stdin both failed |
-| B — per-message spawn with `--resume` | **Confirmed** | Works cleanly; session context preserved; tool events captured |
-| C — plain stdout, unstructured | **Not tested** | Fallback if needed; known to work for basic use |
+| A, long-lived subprocess with stream-json | **Unconfirmed** | Requires real TTY for multi-turn; synthetic PTY and piped stdin both failed |
+| B, per-message spawn with `--resume` | **Confirmed** | Works cleanly; session context preserved; tool events captured |
+| C, plain stdout, unstructured | **Not tested** | Fallback if needed; known to work for basic use |
 
-**Active architecture: B — per-message spawn with `--resume`.**
+**Active architecture: B, per-message spawn with `--resume`.**
 
 ---
 
@@ -124,7 +124,7 @@ The session model section of `docs/gui-wrapper-plan.md` stated "each app launch 
 - Each user message spawns a new `claude --print` process with `--output-format stream-json --verbose --resume <session-id>`
 - The first message of a session spawns without `--resume`; the returned `session_id` from the `result` event is stored in app-local state and used for all subsequent messages
 - Session context is maintained by the CLI, not the app
-- The app stores only the `session_id` — identical to the mechanism originally proposed and then deferred
+- The app stores only the `session_id`, identical to the mechanism originally proposed and then deferred
 
 **Latency implication:** Each turn incurs subprocess startup overhead (observed: ~1–3 seconds per call in testing). This is acceptable for a Shipwright workflow tool where responses already take 5–30 seconds, but should be disclosed. A startup spinner per turn rather than a typing indicator is the right UX pattern.
 
@@ -147,53 +147,53 @@ The session model section of `docs/gui-wrapper-plan.md` stated "each app launch 
 
 ## Permission spike (follow-on, 2026-04-10)
 
-### Test 4 — `--disallowedTools` case sensitivity
+### Test 4, `--disallowedTools` case sensitivity
 
 **Commands:**
 ```bash
-# lowercase — no effect
+# lowercase, no effect
 claude --print "Use the Bash tool to run: echo test" --output-format stream-json --verbose --disallowedTools bash
 
-# capital B — blocks
+# capital B, blocks
 claude --print "Use the Bash tool to run: echo test" --output-format stream-json --verbose --disallowedTools Bash
 ```
 
 **Observed behavior:**
 - `--disallowedTools bash` (lowercase): Bash ran successfully. Tool name matching is case-sensitive; lowercase has no effect.
-- `--disallowedTools Bash` (capital B): Bash never appeared as a `tool_use` event — Claude received no Bash tool in its context, degraded gracefully via text, `result.subtype=success`, `is_error=False`.
+- `--disallowedTools Bash` (capital B): Bash never appeared as a `tool_use` event, Claude received no Bash tool in its context, degraded gracefully via text, `result.subtype=success`, `is_error=False`.
 
 **Conclusion:** Use `Bash` (capital B) in `--disallowedTools`. The plan's permission section must specify the exact casing.
 
 ---
 
-### Test 5 — Permission blocking signal
+### Test 5, Permission blocking signal
 
 **Commands:**
 ```bash
-# default permission mode — Write to /tmp (outside project dir)
+# default permission mode, Write to /tmp (outside project dir)
 claude --print "Use the Write tool to create /tmp/spike-perm-test.txt containing: hello" \
   --output-format stream-json --verbose
 
-# --permission-mode acceptEdits — Write to /tmp (outside project dir)
+# --permission-mode acceptEdits, Write to /tmp (outside project dir)
 claude --print "..." --output-format stream-json --verbose --permission-mode acceptEdits
 
-# --permission-mode acceptEdits — Write inside project dir
+# --permission-mode acceptEdits, Write inside project dir
 claude --print "..." --output-format stream-json --verbose --permission-mode acceptEdits
 ```
 
 **Observed behavior:**
 - Default mode, `/tmp/` path: `tool_use` event emitted for Write, then a `user` event whose `tool_result.content` = `"Claude requested permissions to write to /tmp/spike-perm-test.txt, but you haven't granted it yet."` File not created. `result.subtype=success`, `is_error=False`.
-- `acceptEdits`, `/tmp/` path: same blocking behavior — `acceptEdits` is scoped to the CWD (project directory), not all paths.
+- `acceptEdits`, `/tmp/` path: same blocking behavior, `acceptEdits` is scoped to the CWD (project directory), not all paths.
 - `acceptEdits`, project-dir path: Write succeeded. File created. `result.subtype=success`.
 - `--permission-mode reject`: not a valid value (CLI error at startup).
 
 **Key finding:** Permission blocks do NOT surface as `result.is_error=True`. The signal is in the `user` event's `tool_result.content` string, which contains "requested permissions... but you haven't granted it yet." The `result` event is `success` regardless.
 
-**Conclusion:** The stream adapter must inspect `user(tool_result).content` to detect permission blocks — checking `result.is_error` alone is insufficient. `--permission-mode acceptEdits` is the correct default for project-directory file operations; paths outside the project dir remain protected.
+**Conclusion:** The stream adapter must inspect `user(tool_result).content` to detect permission blocks, checking `result.is_error` alone is insufficient. `--permission-mode acceptEdits` is the correct default for project-directory file operations; paths outside the project dir remain protected.
 
 ---
 
-### Test 6 — Invalid `--resume` failure semantics
+### Test 6, Invalid `--resume` failure semantics
 
 **Command:**
 ```bash

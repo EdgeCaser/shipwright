@@ -2,7 +2,7 @@
 
 **Skill:** `ab-test-analysis`
 **Framework:** Experiment summary → Results → Interpretation → Segments → Decision
-**Product context:** ComplianceOS — B2B SaaS compliance automation (see `examples/CLAUDE.md.b2b-saas`)
+**Product context:** ComplianceOS, B2B SaaS compliance automation (see `examples/CLAUDE.md.b2b-saas`)
 
 ---
 
@@ -34,7 +34,7 @@ n=340 total (170 per group). Help me make the ship/no-ship decision.
 
 **Analysis:**
 
-This is a mixed result. The activation improvement is meaningful — a 12% lift in framework completion directly impacts your North Star metric. However, the NPS decline is concerning, especially since your current NPS of 34 is already below target.
+This is a mixed result. The activation improvement is meaningful, a 12% lift in framework completion directly impacts your North Star metric. However, the NPS decline is concerning, especially since your current NPS of 34 is already below target.
 
 The tension is likely because the checklist pushes users through setup faster, which improves activation but may feel more mechanical and less supportive than the email sequence, which probably felt more personal.
 
@@ -55,7 +55,7 @@ The 12% activation lift will compound over time and likely improve retention, wh
 
 **Hypothesis:** We believe that replacing the unstructured email onboarding sequence with a guided setup checklist will increase activation (first framework completion within 30 days) because new users currently lack a clear path through setup and the checklist reduces decision fatigue.
 
-**Test dates:** January 12 — February 22, 2026
+**Test dates:** January 12, February 22, 2026
 **Duration:** 42 days (6 weeks)
 **Traffic allocation:** 50% control / 50% treatment
 **Sample size:** Control: 170 | Treatment: 170
@@ -69,11 +69,11 @@ The 12% activation lift will compound over time and likely improve retention, wh
 
 | Variant | Activation Rate | Change vs. Control | 95% CI | Significant? |
 |---|---|---|---|---|
-| Control (email sequence) | 38.2% (65/170) | — | — | — |
+| Control (email sequence) | 38.2% (65/170) |, |, |, |
 | Treatment (checklist) | 42.9% (73/170) | +12.3% relative (+4.7pp absolute) | [-1.8pp, +11.2pp] | No |
 
 **Statistical significance:** p = 0.14 (threshold: p < 0.05)
-**Practical significance:** A 4.7 percentage point lift in activation is meaningful if real — translates to ~8 additional activated customers per quarter at current volume.
+**Practical significance:** A 4.7 percentage point lift in activation is meaningful if real, translates to ~8 additional activated customers per quarter at current volume.
 **Power:** With n=170 per group and a baseline of 38%, this test had 34% power to detect a 5pp lift. The test was significantly underpowered.
 
 ### Secondary Metrics
@@ -96,7 +96,7 @@ The 12% activation lift will compound over time and likely improve retention, wh
 - [ ] **Sample size meets MDE requirements:** NO. With n=170 per group, the minimum detectable effect is ~10pp (not the 5pp we hoped to detect). This test needed ~500 per group for adequate power.
 - [x] Test ran for at least 1 full business cycle: Yes (6 weeks covers multiple business cycles for B2B)
 - [x] No sample ratio mismatch: 170/170 split is clean
-- [ ] **Novelty/primacy effects considered:** UNCLEAR. The checklist is a new UX element — early users may engage more (novelty) or less (unfamiliar). 6 weeks may not be long enough to wash out novelty for B2B with long onboarding cycles.
+- [ ] **Novelty/primacy effects considered:** UNCLEAR. The checklist is a new UX element, early users may engage more (novelty) or less (unfamiliar). 6 weeks may not be long enough to wash out novelty for B2B with long onboarding cycles.
 - [x] Multiple comparison correction: N/A (single primary metric)
 
 ### Effect Classification
@@ -105,9 +105,9 @@ The 12% activation lift will compound over time and likely improve retention, wh
 |---|---|---|
 | Clear Win | Primary metric sig. positive, no guardrail degradation | No |
 | Clear Loss | Primary metric sig. negative | No |
-| Inconclusive | Not statistically significant | **Yes — primary metric** |
-| Mixed | Primary positive but secondary/guardrail negative | **Yes — directional pattern** |
-| Surprising | Result opposite to hypothesis | Partially — NPS degradation was not anticipated |
+| Inconclusive | Not statistically significant | **Yes, primary metric** |
+| Mixed | Primary positive but secondary/guardrail negative | **Yes, directional pattern** |
+| Surprising | Result opposite to hypothesis | Partially, NPS degradation was not anticipated |
 
 **Classification: Inconclusive with a concerning mixed signal.** The primary metric is not statistically significant due to insufficient power. The directional pattern (activation up, NPS down) suggests the checklist may trade user satisfaction for activation speed.
 
@@ -122,26 +122,26 @@ The 12% activation lift will compound over time and likely improve retention, wh
 | Multi-framework | 58 | 62 | +2.3% relative | No (p=0.91) |
 
 **Segment insights:**
-- The checklist effect appears concentrated in smaller companies and single-framework customers. This makes sense — simpler setups benefit more from a structured checklist. Complex multi-framework or enterprise setups may need more guidance than a checklist provides.
-- Enterprise segment (500+) shows a slight negative direction, consistent with the NPS degradation — larger orgs may perceive the checklist as oversimplified.
+- The checklist effect appears concentrated in smaller companies and single-framework customers. This makes sense, simpler setups benefit more from a structured checklist. Complex multi-framework or enterprise setups may need more guidance than a checklist provides.
+- Enterprise segment (500+) shows a slight negative direction, consistent with the NPS degradation, larger orgs may perceive the checklist as oversimplified.
 
 **Caution:** All segment analyses are underpowered (small n per cell). These are hypotheses for future testing, not conclusions.
 
 ## Decision
 
-### Recommendation: Iterate — do NOT ship as-is, do NOT revert
+### Recommendation: Iterate, do NOT ship as-is, do NOT revert
 
 **Rationale:**
 1. **Insufficient statistical power.** The primary metric is not significant. We cannot confidently claim the 12% lift is real. Shipping based on a p=0.14 result means accepting a ~14% chance this is noise.
 2. **Guardrail degradation is real.** The NPS drop from 28 to 21 is significant in practical terms. NPS is already below target (34 vs. 45 goal). Shipping a change that further depresses NPS contradicts a strategic priority.
-3. **Strong secondary signals suggest the mechanism works.** Setup step completion improved by 52% (highly significant). Time-to-completion dropped 12 days. The checklist clearly changes behavior — the question is whether the current version trades too much hand-holding for speed.
-4. **Segment signal suggests a targeted approach.** The effect appears strongest for smaller, single-framework customers — exactly the segment where a self-serve checklist makes sense. Enterprise customers may need a different treatment.
+3. **Strong secondary signals suggest the mechanism works.** Setup step completion improved by 52% (highly significant). Time-to-completion dropped 12 days. The checklist clearly changes behavior, the question is whether the current version trades too much hand-holding for speed.
+4. **Segment signal suggests a targeted approach.** The effect appears strongest for smaller, single-framework customers, exactly the segment where a self-serve checklist makes sense. Enterprise customers may need a different treatment.
 
 ### Next experiment:
 
 **What we learned:** The checklist successfully drives setup completion and reduces support load, but the current version may feel impersonal or pushy, depressing NPS. The effect is likely segment-dependent.
 
-**Next experiment:** Test a hybrid approach — checklist structure with embedded personal touchpoints (CSM check-in at step 3, human-written tips contextual to the customer's framework). Target single-framework customers under 200 employees only.
+**Next experiment:** Test a hybrid approach, checklist structure with embedded personal touchpoints (CSM check-in at step 3, human-written tips contextual to the customer's framework). Target single-framework customers under 200 employees only.
 
 **Hypothesis:** A checklist with human touchpoints will maintain the activation lift while preserving NPS, specifically for smaller/simpler customers.
 
@@ -152,8 +152,8 @@ The 12% activation lift will compound over time and likely improve retention, wh
 
 - **What we expected:** Checklist improves activation without affecting satisfaction
 - **What happened:** Activation trended up (not significant), NPS dropped meaningfully, support tickets decreased
-- **What we learned:** Structured onboarding drives completion but may sacrifice perceived support quality. The effect is likely segment-dependent — simpler customers benefit, complex customers may feel rushed. Speed and satisfaction are not automatically aligned.
-- **Impact on strategy:** Onboarding Acceleration (Strategic Bet 3) should be segmented — different treatments for different customer complexity levels. A one-size-fits-all approach risks hurting the customers we most need to retain.
+- **What we learned:** Structured onboarding drives completion but may sacrifice perceived support quality. The effect is likely segment-dependent, simpler customers benefit, complex customers may feel rushed. Speed and satisfaction are not automatically aligned.
+- **Impact on strategy:** Onboarding Acceleration (Strategic Bet 3) should be segmented, different treatments for different customer complexity levels. A one-size-fits-all approach risks hurting the customers we most need to retain.
 
 ---
 
@@ -161,7 +161,7 @@ The 12% activation lift will compound over time and likely improve retention, wh
 
 1. **Power analysis catches the fatal flaw.** The test was underpowered (34% power). The baseline recommends shipping based on a non-significant result. The Shipwright output identifies this immediately and adjusts the recommendation accordingly.
 
-2. **Guardrails are checked explicitly.** The NPS decline is flagged as a guardrail degradation, not just a "concern." The baseline acknowledges the NPS drop but still recommends shipping — the Shipwright framework treats guardrail violations as blocking signals.
+2. **Guardrails are checked explicitly.** The NPS decline is flagged as a guardrail degradation, not just a "concern." The baseline acknowledges the NPS drop but still recommends shipping, the Shipwright framework treats guardrail violations as blocking signals.
 
 3. **Effect classification forces clarity.** Instead of "mixed results," the Shipwright output classifies this as "Inconclusive with a concerning mixed signal" and explains exactly why. The classification table makes it impossible to cherry-pick the positive result.
 
@@ -169,4 +169,4 @@ The 12% activation lift will compound over time and likely improve retention, wh
 
 5. **Decision includes a concrete next experiment.** The Shipwright output specifies what to test next, with an updated hypothesis and required sample size. The baseline says "ship with modifications" but doesn't define what success looks like for the modified version.
 
-6. **Institutional learning is captured.** "Speed and satisfaction are not automatically aligned" is an insight that applies beyond this experiment. The baseline captures no reusable learning — the analysis dies when the decision is made.
+6. **Institutional learning is captured.** "Speed and satisfaction are not automatically aligned" is an insight that applies beyond this experiment. The baseline captures no reusable learning, the analysis dies when the decision is made.

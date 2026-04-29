@@ -46,7 +46,7 @@ Start from a known market size and narrow down.
 ### TAM
 Source: [Industry report / analyst estimate]
 Total market value: $[X]B
-Basis: [What's included — e.g., "global project management software spending"]
+Basis: [What's included, e.g., "global project management software spending"]
 Year: [year of estimate]
 
 ### SAM
@@ -113,7 +113,7 @@ Every market sizing exercise must include an explicit assumption log:
 ## Assumption Register
 | # | Assumption | Value Used | Sensitivity | Source |
 |---|---|---|---|---|
-| A1 | ACV | $[X] | HIGH — ±20% changes SOM by $[Y]M | [source] |
+| A1 | ACV | $[X] | HIGH, ±20% changes SOM by $[Y]M | [source] |
 | A2 | Segment penetration | [X]% | MEDIUM | [source] |
 | A3 | Market growth rate | [X]% CAGR | LOW | [analyst report] |
 ```
@@ -130,38 +130,38 @@ Every market sizing exercise must include an explicit assumption log:
 
 **Hypotheses vs. findings:**
 - **Findings:** TAM base figures and customer counts must cite a specific source with publication year.
-- **Hypotheses:** Narrowing factors (segment penetration, capture rate) and ACV assumptions may be estimated — label each as "assumed" with sensitivity rating in the Assumption Register.
+- **Hypotheses:** Narrowing factors (segment penetration, capture rate) and ACV assumptions may be estimated, label each as "assumed" with sensitivity rating in the Assumption Register.
 
 ## Output Format
 
 Produce a market sizing document with:
-1. **Executive Summary** — TAM/SAM/SOM headline numbers with confidence ranges
-2. **Top-Down Analysis** — with sources and narrowing factors
-3. **Bottom-Up Analysis** — with unit economics and customer counts
-4. **Triangulation** — comparison and reconciliation
-5. **Assumption Register** — all assumptions with sensitivity ratings
-6. **Visualization** — nested TAM > SAM > SOM summary
+1. **Executive Summary**, TAM/SAM/SOM headline numbers with confidence ranges
+2. **Top-Down Analysis**, with sources and narrowing factors
+3. **Bottom-Up Analysis**, with unit economics and customer counts
+4. **Triangulation**, comparison and reconciliation
+5. **Assumption Register**, all assumptions with sensitivity ratings
+6. **Visualization**, nested TAM > SAM > SOM summary
 
 **Shipwright Signature (required closing):**
-7. **Decision Frame** — Whether the market justifies investment given SOM range, trade-off between market size confidence vs. speed to decision, confidence in estimates with evidence quality, owner, decision date, revisit trigger
-8. **Unknowns & Evidence Gaps** — Assumptions with HIGH sensitivity that lack primary sources, segments with no bottom-up validation
-9. **Pass/Fail Readiness** — PASS if both top-down and bottom-up estimates are present with cited sources and deltas are reconciled (at Light depth: PASS if top-down TAM/SAM/SOM is present with at least one cited source; bottom-up and triangulation not required); FAIL if only one method used or TAM source is undocumented (at Light depth: FAIL if TAM source is undocumented)
-10. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+7. **Decision Frame**, Whether the market justifies investment given SOM range, trade-off between market size confidence vs. speed to decision, confidence in estimates with evidence quality, owner, decision date, revisit trigger
+8. **Unknowns & Evidence Gaps**, Assumptions with HIGH sensitivity that lack primary sources, segments with no bottom-up validation
+9. **Pass/Fail Readiness**, PASS if both top-down and bottom-up estimates are present with cited sources and deltas are reconciled (at Light depth: PASS if top-down TAM/SAM/SOM is present with at least one cited source; bottom-up and triangulation not required); FAIL if only one method used or TAM source is undocumented (at Light depth: FAIL if TAM source is undocumented)
+10. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid
 
-- **Conflating TAM with opportunity** — TAM is theoretical; SOM is what matters for planning
-- **Cherry-picking favorable estimates** — Show both methods and reconcile honestly
-- **Hidden assumptions** — Every number should have a source or a labeled assumption
-- **Ignoring growth rates** — Static sizing misses trajectory; include CAGR estimates
-- **Precision theater** — A range ($800M-$1.2B) is more honest than a false-precision point estimate ($943M)
+- **Conflating TAM with opportunity**, TAM is theoretical; SOM is what matters for planning
+- **Cherry-picking favorable estimates**, Show both methods and reconcile honestly
+- **Hidden assumptions**, Every number should have a source or a labeled assumption
+- **Ignoring growth rates**, Static sizing misses trajectory; include CAGR estimates
+- **Precision theater**, A range ($800M-$1.2B) is more honest than a false-precision point estimate ($943M)
 
 ## Weak vs. Strong Output
 
 **Weak:**
 > "TAM is $50B based on the global SaaS market."
 
-Unsourced, uses an overbroad category, no narrowing logic — makes any SOM look artificially large.
+Unsourced, uses an overbroad category, no narrowing logic, makes any SOM look artificially large.
 
 **Strong:**
 > "TAM is $8.2B (Gartner 2025, global spend on employee onboarding software). SAM = $2.5B after filtering to North America (40%) and mid-market 100-1000 employees (76% of segment). Source: LinkedIn company count cross-referenced with BLS data."

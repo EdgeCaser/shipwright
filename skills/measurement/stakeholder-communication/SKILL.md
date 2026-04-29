@@ -48,7 +48,7 @@ Level 1: Answer / Recommendation (what you want them to know or do)
 #### Template 1: Executive Status Update (C-Suite / VP)
 
 ```markdown
-# [Product/Initiative] Status Update — [Date]
+# [Product/Initiative] Status Update, [Date]
 
 ## Bottom Line
 [One sentence: Are we on track, at risk, or off track? What's the most important thing they need to know?]
@@ -62,8 +62,8 @@ Level 1: Answer / Recommendation (what you want them to know or do)
 | [Key metric 2] | [target] | [actual] | [↑/↓/→] |
 
 ## Highlights
-- [Win 1 — quantified impact]
-- [Win 2 — quantified impact]
+- [Win 1, quantified impact]
+- [Win 2, quantified impact]
 
 ## Risks & Blockers
 | Risk | Impact | Mitigation | Need from You |
@@ -106,12 +106,12 @@ Level 1: Answer / Recommendation (what you want them to know or do)
 | [Engineering] | $[X] | $[Y] | $[Z] | [On/Over/Under budget] |
 
 ### Key Decisions Made Since Last Update
-1. [Decision] — Rationale: [why] — Impact: [what changes]
+1. [Decision], Rationale: [why], Impact: [what changes]
 
 ### Decisions Required from Committee
 1. **[Decision needed]**
-   - Option A: [description] — Pro: [x] / Con: [y]
-   - Option B: [description] — Pro: [x] / Con: [y]
+   - Option A: [description], Pro: [x] / Con: [y]
+   - Option B: [description], Pro: [x] / Con: [y]
    - **Recommendation:** [Option X] because [rationale]
 
 ### Risks & Issues
@@ -125,10 +125,10 @@ Level 1: Answer / Recommendation (what you want them to know or do)
 #### Template 3: Cross-Functional Team Update
 
 ```markdown
-# [Initiative] Team Update — Week of [Date]
+# [Initiative] Team Update, Week of [Date]
 
 ## What We Shipped
-- [Shipped item — with link to release notes / demo]
+- [Shipped item, with link to release notes / demo]
 
 ## What We Learned
 - [Learning from user feedback, data, or experiment]
@@ -150,11 +150,11 @@ Level 1: Answer / Recommendation (what you want them to know or do)
 # Risk Escalation: [Issue Name]
 
 ## Situation (what happened)
-[Factual description — 2-3 sentences max]
+[Factual description, 2-3 sentences max]
 
 ## Impact (why it matters)
-- [Business impact — revenue, users, reputation]
-- [Timeline impact — delay, missed commitment]
+- [Business impact, revenue, users, reputation]
+- [Timeline impact, delay, missed commitment]
 - [Who is affected]
 
 ## Actions Taken
@@ -192,38 +192,38 @@ Level 1: Answer / Recommendation (what you want them to know or do)
 **Insufficient evidence:** If no metrics or concrete progress data are available, stop and recommend gathering metric actuals and milestone status from the team before running this skill. A status update without data trains stakeholders to ignore future updates.
 
 **Hypotheses vs. findings:**
-- **Findings:** Status (on track/at risk/off track), metric actuals, completed milestones, known risks — must be grounded in verifiable data.
-- **Hypotheses:** Forecasted completion dates, predicted risk impacts, proposed mitigations — must be labeled as projections.
+- **Findings:** Status (on track/at risk/off track), metric actuals, completed milestones, known risks, must be grounded in verifiable data.
+- **Hypotheses:** Forecasted completion dates, predicted risk impacts, proposed mitigations, must be labeled as projections.
 
 ## Output Format
 
 Produce the appropriate communication document based on the audience:
-1. **Identify the audience** — who's reading this and what do they care about
-2. **Select the template** — match audience to format
-3. **Draft the communication** — Pyramid Principle, lead with the answer
-4. **Calibrate the detail** — right depth for the audience
-5. **Specify the ask** — every communication should have a clear "so what" for the reader
+1. **Identify the audience**, who's reading this and what do they care about
+2. **Select the template**, match audience to format
+3. **Draft the communication**, Pyramid Principle, lead with the answer
+4. **Calibrate the detail**, right depth for the audience
+5. **Specify the ask**, every communication should have a clear "so what" for the reader
 
 **Shipwright Signature (required closing):**
-6. **Decision Frame** — recommended action or decision for the reader, trade-off, confidence with evidence quality (data freshness, metric reliability), owner, decision date, revisit trigger
-7. **Unknowns & Evidence Gaps** — metrics not yet available, risks not fully quantified, stakeholder context gaps
-8. **Pass/Fail Readiness** — PASS if communication has a clear bottom line, at least one supporting metric, and an explicit ask; FAIL if status is asserted without data or no ask is specified
-9. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+6. **Decision Frame**, recommended action or decision for the reader, trade-off, confidence with evidence quality (data freshness, metric reliability), owner, decision date, revisit trigger
+7. **Unknowns & Evidence Gaps**, metrics not yet available, risks not fully quantified, stakeholder context gaps
+8. **Pass/Fail Readiness**, PASS if communication has a clear bottom line, at least one supporting metric, and an explicit ask; FAIL if status is asserted without data or no ask is specified
+9. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid
 
-- **Burying the lead** — Put the most important thing first, not last
-- **Status without "so what"** — "We completed 12 tickets" is trivia without "which means we're on track to hit the Q2 target"
-- **Asymmetric reporting** — Report risks with the same rigor as wins; hiding bad news erodes trust
-- **No clear ask** — If you need a decision, state it explicitly with a deadline
-- **Same update for every audience** — What the CEO needs is different from what the engineering lead needs
+- **Burying the lead**, Put the most important thing first, not last
+- **Status without "so what"**, "We completed 12 tickets" is trivia without "which means we're on track to hit the Q2 target"
+- **Asymmetric reporting**, Report risks with the same rigor as wins; hiding bad news erodes trust
+- **No clear ask**, If you need a decision, state it explicitly with a deadline
+- **Same update for every audience**, What the CEO needs is different from what the engineering lead needs
 
 ## Weak vs. Strong Output
 
 **Weak:**
 > "The project is going well. We completed several tasks this sprint and are making good progress toward our goals."
 
-No status indicator, no metrics, no specifics, no ask — the reader learns nothing actionable.
+No status indicator, no metrics, no specifics, no ask, the reader learns nothing actionable.
 
 **Strong:**
 > "Status: At Risk. Activation rate dropped to 18% (target: 25%) after the onboarding redesign shipped 2 weeks ago. Root cause investigation underway. Decision needed by Friday: revert to previous flow or extend the current test 2 more weeks. Recommendation: extend, because week-2 cohort shows early recovery to 22%."

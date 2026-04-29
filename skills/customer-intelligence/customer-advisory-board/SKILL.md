@@ -36,9 +36,9 @@ Designs and prepares all materials for Customer Advisory Board sessions: agenda 
 ## CAB Session: [Date]
 
 ### Strategic Questions We Need Answered
-1. [Question — e.g., "How is AI changing your team's workflow, and where do you still struggle?"]
-2. [Question — e.g., "What would make you expand usage to additional teams?"]
-3. [Question — e.g., "How do you evaluate and buy tools in this category?"]
+1. [Question, e.g., "How is AI changing your team's workflow, and where do you still struggle?"]
+2. [Question, e.g., "What would make you expand usage to additional teams?"]
+3. [Question, e.g., "How do you evaluate and buy tools in this category?"]
 
 ### What This Session is NOT
 - A feature request collection session
@@ -57,10 +57,10 @@ We'll know this CAB was successful if:
 ### Step 2: Design the Agenda
 
 ```markdown
-## CAB Agenda — [Date, Time, Duration]
+## CAB Agenda, [Date, Time, Duration]
 
 ### Pre-Work (sent 1 week before)
-- [ ] Pre-read: [Topic context doc — 1-2 pages max]
+- [ ] Pre-read: [Topic context doc, 1-2 pages max]
 - [ ] Pre-survey: [3-5 questions to prime thinking and gather baseline data]
 
 ### Agenda
@@ -70,14 +70,14 @@ We'll know this CAB was successful if:
 | 0:00-0:10 | Welcome & ground rules | Presentation | [Host] | Set expectations |
 | 0:10-0:25 | Context setting | Brief presentation | [PM] | Share relevant trends/data |
 | 0:25-0:55 | Discussion 1: [Topic] | Facilitated discussion | [Facilitator] | Explore strategic question 1 |
-| 0:55-1:05 | Break | — | — | — |
+| 0:55-1:05 | Break |, |, |, |
 | 1:05-1:35 | Discussion 2: [Topic] | Small group exercise | [Facilitator] | Explore strategic question 2 |
 | 1:35-1:55 | Discussion 3: [Topic] | Open forum | [Facilitator] | Explore strategic question 3 |
 | 1:55-2:00 | Wrap-up & next steps | Closing | [Host] | Thank participants, preview next session |
 
 ### Ground Rules (shared at opening)
 1. This is a strategic conversation, not a support session
-2. All perspectives are valuable — we want disagreement
+2. All perspectives are valuable, we want disagreement
 3. Chatham House Rule: insights can be shared, attribution stays in the room
 4. We'll share a synthesis within [N] days
 5. We commit to reporting back on what we did with your input
@@ -120,7 +120,7 @@ For each discussion block:
 #### DO NOT Ask
 - Leading questions that pitch our roadmap
 - Yes/no questions (always open-ended)
-- "Would you use [feature X]?" (hypothetical — not valid signal)
+- "Would you use [feature X]?" (hypothetical, not valid signal)
 ```
 
 ### Step 4: Post-Session Synthesis
@@ -134,12 +134,12 @@ For each discussion block:
 
 ### Key Themes (ranked by strength of signal)
 
-#### Theme 1: [Assertion — not a label]
+#### Theme 1: [Assertion, not a label]
 **Strength:** [Strong / Moderate / Emerging]
 **Supporting voices:** [N] of [total] participants
 **Key quotes:**
-- "[Quote]" — [Participant, anonymized if needed]
-- "[Quote]" — [Participant]
+- "[Quote]", [Participant, anonymized if needed]
+- "[Quote]", [Participant]
 **Implication for product:** [What this means for our strategy]
 
 #### Theme 2: [Assertion]
@@ -149,7 +149,7 @@ For each discussion block:
 - [Surprise 1]: [Description and significance]
 
 ### Contradictions (where participants disagreed)
-- [Topic]: [View A] vs. [View B] — [what this tension tells us]
+- [Topic]: [View A] vs. [View B], [what this tension tells us]
 
 ### Validated Assumptions
 | Assumption | Validated? | Evidence |
@@ -178,30 +178,30 @@ We will share the following with CAB members by [date]:
 
 **Hypotheses vs. findings:**
 - **Findings:** Themes, validated assumptions, and participant sentiment from Post-Session Synthesis must be grounded in what participants actually said.
-- **Hypotheses:** Discussion Guide questions and anticipated themes may be speculative — label pre-session assumptions as "To be validated during session."
+- **Hypotheses:** Discussion Guide questions and anticipated themes may be speculative, label pre-session assumptions as "To be validated during session."
 
 ## Output Format
 
 Produce a CAB Preparation Package with:
-1. **Objectives & Success Criteria** — what we need to learn
-2. **Agenda** — timed, formatted, with facilitator assignments
-3. **Discussion Guides** — question flows with probes and facilitator notes
-4. **Pre-Work Materials** — pre-read and pre-survey
-5. **Synthesis Template** — ready-to-fill post-session document
+1. **Objectives & Success Criteria**, what we need to learn
+2. **Agenda**, timed, formatted, with facilitator assignments
+3. **Discussion Guides**, question flows with probes and facilitator notes
+4. **Pre-Work Materials**, pre-read and pre-survey
+5. **Synthesis Template**, ready-to-fill post-session document
 
 **Shipwright Signature (required closing):**
-6. **Decision Frame** — strategic insights surfaced and options they inform, trade-offs between competing member perspectives, confidence level with evidence quality, owner, decision date, revisit trigger
-7. **Unknowns & Evidence Gaps** — strategic questions not yet answered, segments or personas unrepresented in the CAB, assumptions still untested
-8. **Pass/Fail Readiness** — PASS if strategic questions are defined, agenda is timed with discussion guides, and synthesis template is ready (at Light depth: PASS if strategic questions are defined and at least one discussion guide is complete); FAIL if no strategic questions exist or the session is structured as a feature-request forum
-9. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+6. **Decision Frame**, strategic insights surfaced and options they inform, trade-offs between competing member perspectives, confidence level with evidence quality, owner, decision date, revisit trigger
+7. **Unknowns & Evidence Gaps**, strategic questions not yet answered, segments or personas unrepresented in the CAB, assumptions still untested
+8. **Pass/Fail Readiness**, PASS if strategic questions are defined, agenda is timed with discussion guides, and synthesis template is ready (at Light depth: PASS if strategic questions are defined and at least one discussion guide is complete); FAIL if no strategic questions exist or the session is structured as a feature-request forum
+9. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid
 
-- **No strategic questions** — Without clear learning objectives, CABs become unfocused
-- **Feature request forums** — Redirect tactfully: "That's great product feedback — let me capture that separately. For today, I'd love to understand the underlying need."
-- **Same voices dominate** — Use small group exercises and round-robins to hear from everyone
-- **No follow-through** — If you don't report back on what you did with their input, members disengage
-- **Inviting the wrong people** — CAB members should be strategic thinkers, not just your loudest customers
+- **No strategic questions**, Without clear learning objectives, CABs become unfocused
+- **Feature request forums**, Redirect tactfully: "That's great product feedback, let me capture that separately. For today, I'd love to understand the underlying need."
+- **Same voices dominate**, Use small group exercises and round-robins to hear from everyone
+- **No follow-through**, If you don't report back on what you did with their input, members disengage
+- **Inviting the wrong people**, CAB members should be strategic thinkers, not just your loudest customers
 
 ## Weak vs. Strong Output
 
@@ -211,6 +211,6 @@ Produce a CAB Preparation Package with:
 A label, not an insight. No strength of signal, no supporting evidence, no implication.
 
 **Strong:**
-> "Theme: Current reporting forces manual export-and-reformat cycles before exec review (Strong signal — 6 of 8 participants, unprompted). Implication: embedded executive summary views could reduce time-to-insight and strengthen the champion's internal case."
+> "Theme: Current reporting forces manual export-and-reformat cycles before exec review (Strong signal, 6 of 8 participants, unprompted). Implication: embedded executive summary views could reduce time-to-insight and strengthen the champion's internal case."
 
 Assertion-formatted theme, quantified signal strength, grounded in what participants said, with a clear product implication.

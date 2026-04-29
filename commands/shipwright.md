@@ -3,7 +3,7 @@ name: shipwright
 description: "Start here in Claude Code. Branded alias for the Shipwright orchestrator that routes plain-language PM requests to the right workflow, skill, or specialist."
 ---
 
-# /shipwright — Start Here
+# /shipwright, Start Here
 
 Use `/shipwright` as the default entrypoint after installing Shipwright in Claude Code.
 

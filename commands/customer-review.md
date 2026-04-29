@@ -3,7 +3,7 @@ name: customer-review
 description: "Run a comprehensive customer intelligence review: feedback triage, journey mapping, churn analysis, and executive briefing."
 ---
 
-# /customer-review — Customer Intelligence Workflow
+# /customer-review, Customer Intelligence Workflow
 
 Run this command to produce a comprehensive customer intelligence review that synthesizes feedback, maps the journey, analyzes retention, and produces an executive-ready briefing.
 

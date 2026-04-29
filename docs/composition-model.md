@@ -57,7 +57,7 @@ flowchart TD
     artifactB --> decisionFrame
 ```
 
-### Skill — atomic capability
+### Skill, atomic capability
 
 A skill is a single markdown file that teaches the AI one PM framework and produces one type of artifact.
 
@@ -70,7 +70,7 @@ A skill is a single markdown file that teaches the AI one PM framework and produ
 
 **Use directly:** `Read skills/strategy/swot-analysis/SKILL.md and run a SWOT on [topic].`
 
-### Agent — role + constraints
+### Agent, role + constraints
 
 An agent is a role definition that gives the AI a persona, a set of skills it can use, and explicit boundaries on what it will NOT do.
 
@@ -81,9 +81,9 @@ An agent is a role definition that gives the AI a persona, a set of skills it ca
 
 **Location:** `agents/<agent-name>.md`
 
-**Key principle:** Agents are separated by function — research, strategy, execution, customer intelligence, communication — so no single agent tries to do everything. This keeps the PM in the decision seat.
+**Key principle:** Agents are separated by function, research, strategy, execution, customer intelligence, communication, so no single agent tries to do everything. This keeps the PM in the decision seat.
 
-### Workflow — ordered skill chain
+### Workflow, ordered skill chain
 
 A workflow is a command file that chains 3-5 skills together in sequence, with PM checkpoints between steps.
 
@@ -94,14 +94,14 @@ A workflow is a command file that chains 3-5 skills together in sequence, with P
 
 **Location:** `commands/<workflow-name>.md`
 
-**Key principle:** Workflows encode a repeatable PM process. The sequencing is the value — a PRD that starts with a press release (step 1) produces a fundamentally different artifact than one that starts with requirements.
+**Key principle:** Workflows encode a repeatable PM process. The sequencing is the value, a PRD that starts with a press release (step 1) produces a fundamentally different artifact than one that starts with requirements.
 
-### Orchestra — agent routing + parallel execution
+### Orchestra, agent routing + parallel execution
 
 The orchestrator (`/start`) sits above workflows and agents. It routes work to the right place based on what the PM needs.
 
 **Properties:**
-- Routes, doesn't produce. The orchestrator never creates artifacts — it dispatches to agents and workflows.
+- Routes, doesn't produce. The orchestrator never creates artifacts, it dispatches to agents and workflows.
 - Parallel execution. When steps don't depend on each other, the orchestrator runs them in parallel.
 - Simplicity preference. It suggests the simplest approach that fits: one skill > one workflow > multi-agent orchestration.
 - Phased execution. When web-heavy research threatens the time budget, it splits research, synthesis, and packaging into separate phases.
@@ -134,7 +134,7 @@ stateDiagram-v2
     RequestInput --> SkillExecution: Rebuild from scratch
 ```
 
-**Gate check** runs the core and artifact-specific gates from [pass-fail.md](../evals/pass-fail.md). A single failed gate means the artifact is not done — no partial pass, no "good enough" override.
+**Gate check** runs the core and artifact-specific gates from [pass-fail.md](../evals/pass-fail.md). A single failed gate means the artifact is not done, no partial pass, no "good enough" override.
 
 **Recovery** is deterministic: each failed gate maps to a specific playbook in [recovery-playbooks.md](recovery-playbooks.md) with a trigger → action → expected correction pattern.
 
@@ -157,7 +157,7 @@ name: workflow-name
 description: "What this workflow produces."
 ---
 
-# /workflow-name — Workflow Title
+# /workflow-name, Workflow Title
 
 Brief purpose.
 
@@ -216,14 +216,14 @@ The `manifest.json` file maps workflows to agents via the `routing` section:
 
 ### Tracking parallel execution
 
-When the orchestrator dispatches multiple agents (in parallel or sequence), it emits an **execution tracker** — a markdown checklist that shows what's running, what's done, and what's blocked. This is not a database; it's a convention the orchestrator follows so the PM can see progress at a glance.
+When the orchestrator dispatches multiple agents (in parallel or sequence), it emits an **execution tracker**, a markdown checklist that shows what's running, what's done, and what's blocked. This is not a database; it's a convention the orchestrator follows so the PM can see progress at a glance.
 
 ```markdown
 ## Execution Plan
-- [x] Step 1: Discovery research (@discovery-researcher) — done (OST with 3 areas)
-- [x] Step 2: Competitive analysis (@discovery-researcher) — done, parallel with Step 1
-- [ ] Step 3: Strategy synthesis (@strategy-planner) — in progress, blocked on Steps 1, 2
-- [ ] Step 4: PRD (@execution-driver) — blocked on Step 3
+- [x] Step 1: Discovery research (@discovery-researcher), done (OST with 3 areas)
+- [x] Step 2: Competitive analysis (@discovery-researcher), done, parallel with Step 1
+- [ ] Step 3: Strategy synthesis (@strategy-planner), in progress, blocked on Steps 1, 2
+- [ ] Step 4: PRD (@execution-driver), blocked on Step 3
 ```
 
 **Rules:**
@@ -272,7 +272,7 @@ name: quarterly-review
 description: "End-of-quarter business review combining metrics, customer signals, and strategic reassessment."
 ---
 
-# /quarterly-review — Quarterly Business Review
+# /quarterly-review, Quarterly Business Review
 
 Produces a comprehensive quarterly review by analyzing metrics performance, synthesizing
 customer signals, and reassessing strategic bets.

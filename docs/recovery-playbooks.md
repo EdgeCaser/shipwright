@@ -147,7 +147,7 @@ If you ran `/challenge`, use Playbook 7 for `DEFEND` or `ESCALATE` verdicts. The
 
 1. Pause and review the escalated objection before sharing or acting on the artifact.
 2. Treat the escalated finding as a strong warning that the artifact's core recommendation may be wrong
-3. Read the finding that triggered ESCALATE — it should name the exact claim in doubt
+3. Read the finding that triggered ESCALATE, it should name the exact claim in doubt
 4. Determine whether the missing evidence exists or can be obtained:
    - If yes: supply it and re-run the originating skill or workflow with that evidence included
    - If no: downgrade the claim to a hypothesis and restate the recommendation accordingly

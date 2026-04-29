@@ -43,13 +43,13 @@ Translates product requirements (PRDs, user stories) into engineering-ready tech
 - Last updated: [date]
 
 ## Context
-**What we're building:** [1-2 sentences — from the PRD]
+**What we're building:** [1-2 sentences, from the PRD]
 **Why (business):** [Key metric we're moving and by how much]
-**Why (technical):** [Technical motivation — e.g., "Current system can't support X"]
+**Why (technical):** [Technical motivation, e.g., "Current system can't support X"]
 
 ## Scope
 **In scope:** [Specific capabilities this spec covers]
-**Out of scope:** [What's explicitly NOT covered — defer to future specs]
+**Out of scope:** [What's explicitly NOT covered, defer to future specs]
 **Assumptions:** [Technical assumptions we're making]
 ```
 
@@ -77,13 +77,13 @@ Translates product requirements (PRDs, user stories) into engineering-ready tech
 ### Architecture Decision Records (ADRs)
 For each significant choice:
 
-#### ADR 1: [Decision Title — e.g., "Use event-driven architecture for notifications"]
+#### ADR 1: [Decision Title, e.g., "Use event-driven architecture for notifications"]
 - **Context:** [Why this decision was needed]
 - **Options considered:**
-  - Option A: [Description] — Pros: [x] / Cons: [y]
-  - Option B: [Description] — Pros: [x] / Cons: [y]
+  - Option A: [Description], Pros: [x] / Cons: [y]
+  - Option B: [Description], Pros: [x] / Cons: [y]
 - **Decision:** [What we chose]
-- **Rationale:** [Why — trade-off analysis]
+- **Rationale:** [Why, trade-off analysis]
 - **Consequences:** [What this commits us to]
 ```
 
@@ -96,14 +96,14 @@ For each significant choice:
 
 #### POST /api/v2/[resource]
 **Purpose:** [What this endpoint does]
-**Authentication:** [Required — Bearer token / API key / etc.]
+**Authentication:** [Required, Bearer token / API key / etc.]
 **Rate limit:** [N requests per minute]
 
 **Request:**
 ```json
 {
-  "field_1": "string (required) — description",
-  "field_2": 123,              // integer (optional) — description
+  "field_1": "string (required), description",
+  "field_2": 123,              // integer (optional), description
   "field_3": {                 // object (required)
     "nested_field": "string"
   }
@@ -132,7 +132,7 @@ For each significant choice:
 ### Modified Endpoints
 | Endpoint | Change | Backward Compatible? |
 |---|---|---|
-| [existing endpoint] | [what changes] | [Yes / No — if no, migration plan required] |
+| [existing endpoint] | [what changes] | [Yes / No, if no, migration plan required] |
 ```
 
 ### Step 4: Data Model
@@ -146,14 +146,14 @@ For each significant choice:
 | Column | Type | Nullable | Default | Description |
 |---|---|---|---|---|
 | id | UUID | No | gen_random_uuid() | Primary key |
-| [field] | VARCHAR(255) | No | — | [description] |
+| [field] | VARCHAR(255) | No |, | [description] |
 | [field] | INTEGER | Yes | 0 | [description] |
 | created_at | TIMESTAMP | No | NOW() | Record creation time |
 | updated_at | TIMESTAMP | No | NOW() | Last modification time |
 
 **Indexes:**
-- `idx_[table]_[column]` on [column] — for [query pattern]
-- `idx_[table]_[col1]_[col2]` on ([col1], [col2]) — for [query pattern]
+- `idx_[table]_[column]` on [column], for [query pattern]
+- `idx_[table]_[col1]_[col2]` on ([col1], [col2]), for [query pattern]
 
 **Relationships:**
 - [table_name].[field] → [other_table].id (foreign key)
@@ -190,7 +190,7 @@ For each significant choice:
 
 ### Security
 - [ ] Authentication: [method]
-- [ ] Authorization: [RBAC / ABAC — describe permission model]
+- [ ] Authorization: [RBAC / ABAC, describe permission model]
 - [ ] Data encryption: At rest [method] / In transit [TLS version]
 - [ ] PII handling: [what PII is involved, how it's protected]
 - [ ] Audit logging: [what actions are logged]
@@ -254,33 +254,33 @@ For each significant choice:
 ## Output Format
 
 Produce a Technical Specification with:
-1. **Context & Scope** — what, why, boundaries
-2. **Architecture** — system design with ADRs for key decisions
-3. **API Contract** — endpoints, request/response schemas, errors
-4. **Data Model** — tables, relationships, migrations
-5. **Non-Functional Requirements** — performance, security, reliability
-6. **Rollout Plan** — feature flags, migration, rollback
+1. **Context & Scope**, what, why, boundaries
+2. **Architecture**, system design with ADRs for key decisions
+3. **API Contract**, endpoints, request/response schemas, errors
+4. **Data Model**, tables, relationships, migrations
+5. **Non-Functional Requirements**, performance, security, reliability
+6. **Rollout Plan**, feature flags, migration, rollback
 
 **Shipwright Signature (required closing):**
-7. **Decision Frame** — recommended architecture approach, trade-off, confidence with evidence quality, owner, decision date, revisit trigger
-8. **Unknowns & Evidence Gaps** — unvalidated performance targets, missing data volume estimates, untested migration paths
-9. **Pass/Fail Readiness** — PASS if architecture reviewed by tech lead and API contract validated against PRD requirements; FAIL if ADRs list no alternatives considered or rollback plan is absent (Light depth: rollback plan requirement is waived since Rollout & Migration is omitted at Light)
-10. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+7. **Decision Frame**, recommended architecture approach, trade-off, confidence with evidence quality, owner, decision date, revisit trigger
+8. **Unknowns & Evidence Gaps**, unvalidated performance targets, missing data volume estimates, untested migration paths
+9. **Pass/Fail Readiness**, PASS if architecture reviewed by tech lead and API contract validated against PRD requirements; FAIL if ADRs list no alternatives considered or rollback plan is absent (Light depth: rollback plan requirement is waived since Rollout & Migration is omitted at Light)
+10. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid
 
-- **Writing implementation details in the PRD** — The PRD says "what"; the tech spec says "how"
-- **No ADRs** — If you chose approach A over B, document why; future engineers will thank you
-- **Forgetting non-functionals** — Performance, security, and observability are requirements, not nice-to-haves
-- **No rollback plan** — Every deployment should be reversible
-- **PM writes tech spec alone** — Co-author with the tech lead; the PM ensures requirements fidelity, the engineer ensures technical feasibility
+- **Writing implementation details in the PRD**, The PRD says "what"; the tech spec says "how"
+- **No ADRs**, If you chose approach A over B, document why; future engineers will thank you
+- **Forgetting non-functionals**, Performance, security, and observability are requirements, not nice-to-haves
+- **No rollback plan**, Every deployment should be reversible
+- **PM writes tech spec alone**, Co-author with the tech lead; the PM ensures requirements fidelity, the engineer ensures technical feasibility
 
 ## Weak vs. Strong Output
 
 **Weak:**
 > "ADR: We will use a message queue for async processing."
 
-No alternatives considered, no trade-off analysis, no consequences stated — this is a statement, not a decision record.
+No alternatives considered, no trade-off analysis, no consequences stated, this is a statement, not a decision record.
 
 **Strong:**
 > "ADR: Use RabbitMQ over SQS for notification processing. SQS is simpler but lacks routing key support needed for per-tenant delivery rules. RabbitMQ adds operational overhead (cluster management) but supports the fan-out pattern required by 3 of 4 notification types. Consequence: team must maintain RabbitMQ infrastructure or migrate to managed CloudAMQP ($200/mo at projected volume)."

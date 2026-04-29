@@ -41,7 +41,7 @@ Both follow the same structure; the 6-pager goes deeper on each section.
 ### Narrative Structure
 
 ```markdown
-# [Title — Assertion, Not Question]
+# [Title, Assertion, Not Question]
 
 > **Example titles:**
 > - "We Should Build a Self-Serve Analytics Product for Mid-Market SaaS"
@@ -76,7 +76,7 @@ Both follow the same structure; the 6-pager goes deeper on each section.
 [Previous efforts, experiments, or approaches and their results]
 
 ### What's changed
-[Why the status quo is no longer tenable — new data, market shift, customer signal]
+[Why the status quo is no longer tenable, new data, market shift, customer signal]
 
 ---
 
@@ -84,13 +84,13 @@ Both follow the same structure; the 6-pager goes deeper on each section.
 
 [This is the core of the memo. Present your reasoning in a logical sequence. Each paragraph should build on the previous one.]
 
-### [Point 1 — Strongest argument]
+### [Point 1, Strongest argument]
 [Reasoning + evidence. Use data, customer quotes, competitive intel, or first-principles logic.]
 
-### [Point 2 — Supporting argument]
+### [Point 2, Supporting argument]
 [Reasoning + evidence.]
 
-### [Point 3 — Supporting argument or implication]
+### [Point 3, Supporting argument or implication]
 [Reasoning + evidence.]
 
 **Key data:**
@@ -107,9 +107,9 @@ Both follow the same structure; the 6-pager goes deeper on each section.
 [This is what separates a good memo from a pitch deck. Steel-man the strongest objections, then address them honestly.]
 
 ### Counterargument 1: "[Strongest objection]"
-[Present it fairly — as strongly as an opponent would.]
+[Present it fairly, as strongly as an opponent would.]
 
-**Response:** [Your rebuttal — with evidence or reasoning. If you can't fully rebut it, acknowledge the residual risk.]
+**Response:** [Your rebuttal, with evidence or reasoning. If you can't fully rebut it, acknowledge the residual risk.]
 
 ### Counterargument 2: "[Second strongest objection]"
 [Present it fairly.]
@@ -131,12 +131,12 @@ Both follow the same structure; the 6-pager goes deeper on each section.
 [State the recommendation clearly, including specific actions, timeline, investment, and success criteria.]
 
 ### What we should do
-[Specific action — not "explore" or "consider" but "invest $X in Y starting Z"]
+[Specific action, not "explore" or "consider" but "invest $X in Y starting Z"]
 
 ### What this requires
 - **Investment:** [Budget, headcount, opportunity cost]
 - **Timeline:** [Key milestones]
-- **Organizational changes:** [New team, new process, etc. — if any]
+- **Organizational changes:** [New team, new process, etc., if any]
 
 ### How we'll know it's working
 | Metric | Baseline | Target | Timeframe |
@@ -203,39 +203,39 @@ For 6-pagers, follow Amazon's reading meeting format:
 
 **Hypotheses vs. findings:**
 - **Findings:** Data in the Argument section and Background must cite verifiable sources.
-- **Hypotheses:** Forward-looking projections in the Recommendation section (targets, timelines, kill criteria thresholds) — must be labeled with underlying assumptions.
+- **Hypotheses:** Forward-looking projections in the Recommendation section (targets, timelines, kill criteria thresholds), must be labeled with underlying assumptions.
 
 ## Output Format
 
 Produce a Product Narrative with:
-1. **Thesis statement** — clear, specific, in the opening paragraph
-2. **Context** — background and what's changed
-3. **Argument** — logical, evidence-based reasoning
-4. **Counterarguments** — steel-manned and addressed
-5. **Recommendation** — specific action, investment, success criteria, kill criteria
+1. **Thesis statement**, clear, specific, in the opening paragraph
+2. **Context**, background and what's changed
+3. **Argument**, logical, evidence-based reasoning
+4. **Counterarguments**, steel-manned and addressed
+5. **Recommendation**, specific action, investment, success criteria, kill criteria
 
 **Shipwright Signature (required closing):**
-6. **Decision Frame** — recommended course of action, trade-off vs. alternatives considered, confidence level with evidence quality cited, decision owner, decision date, revisit trigger
-7. **Unknowns & Evidence Gaps** — untested assumptions in the argument, missing customer segments, unvalidated market sizing
-8. **Pass/Fail Readiness** — PASS if thesis is falsifiable, at least one counterargument is steel-manned, and kill criteria are defined; FAIL if the memo lacks a clear thesis or presents no counterarguments. **Light-depth exception:** At Light depth, PASS requires only a falsifiable thesis and a clear recommendation; counterarguments and kill criteria are not evaluated.
-9. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+6. **Decision Frame**, recommended course of action, trade-off vs. alternatives considered, confidence level with evidence quality cited, decision owner, decision date, revisit trigger
+7. **Unknowns & Evidence Gaps**, untested assumptions in the argument, missing customer segments, unvalidated market sizing
+8. **Pass/Fail Readiness**, PASS if thesis is falsifiable, at least one counterargument is steel-manned, and kill criteria are defined; FAIL if the memo lacks a clear thesis or presents no counterarguments. **Light-depth exception:** At Light depth, PASS requires only a falsifiable thesis and a clear recommendation; counterarguments and kill criteria are not evaluated.
+9. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid
 
-- **Memo as data dump** — A narrative makes an argument; a data dump presents information without a thesis
-- **Weak counterarguments** — If the reader can think of a stronger objection than you addressed, the memo fails
-- **No kill criteria** — Proposing a bet without pre-committed exit conditions invites sunk cost fallacy
-- **Bullet point soup** — Narratives require prose; bullets are a crutch that hides weak reasoning
-- **Memo too late** — Write the narrative BEFORE the decision, not after to rationalize what you already chose
+- **Memo as data dump**, A narrative makes an argument; a data dump presents information without a thesis
+- **Weak counterarguments**, If the reader can think of a stronger objection than you addressed, the memo fails
+- **No kill criteria**, Proposing a bet without pre-committed exit conditions invites sunk cost fallacy
+- **Bullet point soup**, Narratives require prose; bullets are a crutch that hides weak reasoning
+- **Memo too late**, Write the narrative BEFORE the decision, not after to rationalize what you already chose
 
 ## Weak vs. Strong Output
 
 **Weak:**
 > "Customers have expressed interest in self-serve analytics, and the market is growing, so we should build it."
 
-No specific data, no source, no quantified opportunity — this is an assertion dressed as an argument.
+No specific data, no source, no quantified opportunity, this is an assertion dressed as an argument.
 
 **Strong:**
 > "In 14 of 20 mid-market churn interviews (Q4 research deck, slide 12), customers cited 'waiting for an analyst to pull data' as a top-3 frustration. The self-serve BI market grew 34% YoY (Gartner, 2024). We estimate a $2.1M ARR expansion opportunity based on current mid-market seat count."
 
-Cited sources, specific sample size, quantified opportunity — a skeptical reader can verify every claim.
+Cited sources, specific sample size, quantified opportunity, a skeptical reader can verify every claim.

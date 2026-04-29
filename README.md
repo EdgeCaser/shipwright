@@ -4,7 +4,7 @@
 [![GitHub forks](https://img.shields.io/github/forks/EdgeCaser/shipwright)](https://github.com/EdgeCaser/shipwright/network/members)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**Write PRDs, run discovery cycles, plan launches, and facilitate strategy sessions — from your terminal.**
+**Write PRDs, run discovery cycles, plan launches, and facilitate strategy sessions, from your terminal.**
 
 Shipwright gives PMs a real operating system for product work: framework-backed skills, orchestrated workflows, quality gates that produce artifacts teams can execute, and a single-model decision analysis system for high-stakes questions.
 
@@ -107,7 +107,7 @@ If you are running directly from this repo in Codex, you do not need slash comma
 
 ## Decision Analysis
 
-For high-stakes decisions — governance, board-level, restructuring, pricing — Shipwright includes a decision analysis system that runs a structured Fast Mode analysis and returns a recommendation, confidence band, and uncertainty payload.
+For high-stakes decisions, governance, board-level, restructuring, pricing, Shipwright includes a decision analysis system that runs a structured Fast Mode analysis and returns a recommendation, confidence band, and uncertainty payload.
 
 **Fast Mode** runs a single structured analysis pass. It takes roughly 1-2 minutes.
 
@@ -151,8 +151,8 @@ Pass `--provider` once per available model family: `claude`, `gpt`, `gemini`. Wi
 ### Output
 
 Each run writes to `benchmarks/results/orchestrated/<scenario>/<run-id>/`:
-- `orchestration.json` — routing decisions and terminal state for every stage
-- `stage-1-fast/` — Fast Mode analysis with recommendation, confidence, and uncertainty payload
+- `orchestration.json`, routing decisions and terminal state for every stage
+- `stage-1-fast/`, Fast Mode analysis with recommendation, confidence, and uncertainty payload
 
 ### Session API
 
@@ -193,7 +193,7 @@ That preserves the `benchmarks/results/` and `benchmarks/telemetry/` layout unde
 
 ```bash
 cp shipwright/examples/CLAUDE.md.example your-project/CLAUDE.md
-# Fill in your product name, personas, metrics, and priorities — even rough answers help
+# Fill in your product name, personas, metrics, and priorities, even rough answers help
 ```
 
 Then open Claude Code in your project and run:
@@ -202,7 +202,7 @@ Then open Claude Code in your project and run:
 /shipwright I'm a PM at [company] working on [brief context]
 ```
 
-That's it. The orchestrator reads your CLAUDE.md, picks up your context, and routes you to the right workflow. `/shipwright` is the branded Claude Code entrypoint; `/start` still works as a backwards-compatible alias. If you skip the CLAUDE.md, Shipwright still works — but outputs will be generic instead of tailored to your product.
+That's it. The orchestrator reads your CLAUDE.md, picks up your context, and routes you to the right workflow. `/shipwright` is the branded Claude Code entrypoint; `/start` still works as a backwards-compatible alias. If you skip the CLAUDE.md, Shipwright still works, but outputs will be generic instead of tailored to your product.
 
 If you want a quick menu of common paths and direct commands inside Claude Code, run:
 
@@ -271,17 +271,17 @@ Recommendation: Lead the first discovery call with revenue cycle friction (docum
 accuracy, prior auth denial rate) before surfacing automation capabilities. Do not open with
 technology.
 Trade-off: A slower first meeting vs. a pitch that lands before the client has confirmed the pain.
-Confidence: High — revenue impact is quantifiable from published industry benchmarks, and
+Confidence: High, revenue impact is quantifiable from published industry benchmarks, and
 competitor capability gap is sourced from press releases and analyst reports.
 Decision owner/date: PM (2026-03-15). Revisit after first discovery call.
 
 ## Unknowns and Evidence Gaps
-- EHR platform(s) in use — determines integration path
-- Payer mix breakdown — affects whether the documented revenue gap is material at this client's scale
-- Whether any value-based contracts are already in place — changes the urgency framing
+- EHR platform(s) in use, determines integration path
+- Payer mix breakdown, affects whether the documented revenue gap is material at this client's scale
+- Whether any value-based contracts are already in place, changes the urgency framing
 
 ## Pass/Fail Readiness
-PASS — competitive claims are sourced, revenue impact is quantified, discovery entry points are
+PASS, competitive claims are sourced, revenue impact is quantified, discovery entry points are
 ranked by evidence quality, and unknowns are listed with resolution path (first call).
 FAIL condition: if competitive capability claims are taken from positioning pages only with no
 outcome data, or if revenue impact has no source.
@@ -292,7 +292,7 @@ outcome data, or if revenue impact has no source.
 If you installed with `scripts/sync.sh --install`, your project has a `shipwright-sync.sh` script. After pulling new changes in the Shipwright repo, run it from your project directory:
 
 ```bash
-bash shipwright-sync.sh          # interactive — shows what changed, asks before updating
+bash shipwright-sync.sh          # interactive, shows what changed, asks before updating
 bash shipwright-sync.sh --yes    # auto-update everything without prompting
 ```
 

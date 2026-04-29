@@ -48,7 +48,7 @@ Opportunities are unmet customer needs, pain points, or desires discovered throu
 **Format each opportunity as:**
 ```
 [Opportunity ID]: [Description of the customer need/pain]
-Evidence: [Source — interview, survey, data, observation]
+Evidence: [Source, interview, survey, data, observation]
 Frequency: [How often users encounter this]
 Severity: [How painful it is when they do]
 ```
@@ -60,7 +60,7 @@ Severity: [How painful it is when they do]
 
 ### Step 3: Generate Solution Ideas
 
-For each prioritized opportunity, brainstorm 3+ distinct solution approaches. Diversity of solutions is critical — avoid anchoring on the first idea.
+For each prioritized opportunity, brainstorm 3+ distinct solution approaches. Diversity of solutions is critical, avoid anchoring on the first idea.
 
 **Format each solution as:**
 ```
@@ -114,23 +114,23 @@ Cost: [Effort required]
 
 **Hypotheses vs. findings:**
 - **Findings:** Opportunities (Step 2) must cite specific evidence sources. Assumptions flagged as "High confidence" must have supporting data.
-- **Hypotheses:** Solutions (Step 3) and assumptions (Step 4) are inherently speculative — label confidence levels honestly and ensure every low-confidence assumption has a test designed in Step 5.
+- **Hypotheses:** Solutions (Step 3) and assumptions (Step 4) are inherently speculative, label confidence levels honestly and ensure every low-confidence assumption has a test designed in Step 5.
 
 ## Output Format
 
 Produce a structured markdown document with:
 
-1. **Desired Outcome** — the single measurable target
-2. **Opportunity Map** — hierarchical list of customer opportunities with evidence
-3. **Solution Space** — solutions mapped to opportunities
-4. **Assumption Register** — all assumptions with risk ratings
-5. **Experiment Backlog** — prioritized list of assumption tests
+1. **Desired Outcome**, the single measurable target
+2. **Opportunity Map**, hierarchical list of customer opportunities with evidence
+3. **Solution Space**, solutions mapped to opportunities
+4. **Assumption Register**, all assumptions with risk ratings
+5. **Experiment Backlog**, prioritized list of assumption tests
 
 **Shipwright Signature (required closing):**
-6. **Decision Frame** — Which opportunity-solution pair to test first, trade-off between assumption risk vs. experiment cost, confidence in opportunity prioritization with evidence quality, owner, decision date, revisit trigger
-7. **Unknowns & Evidence Gaps** — Opportunities with single-source evidence, assumption categories (desirability/viability/feasibility/usability) with no tests designed
-8. **Pass/Fail Readiness** — PASS if outcome is measurable, at least 2 opportunities have evidence, and each prioritized solution has its riskiest assumption identified with a test (at Light depth: PASS if outcome is measurable and at least 2 opportunities have evidence; solutions, assumptions, and tests not required); FAIL if opportunities lack evidence sources or no assumptions are surfaced (at Light depth: FAIL if outcome is not measurable or opportunities lack evidence sources)
-9. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+6. **Decision Frame**, Which opportunity-solution pair to test first, trade-off between assumption risk vs. experiment cost, confidence in opportunity prioritization with evidence quality, owner, decision date, revisit trigger
+7. **Unknowns & Evidence Gaps**, Opportunities with single-source evidence, assumption categories (desirability/viability/feasibility/usability) with no tests designed
+8. **Pass/Fail Readiness**, PASS if outcome is measurable, at least 2 opportunities have evidence, and each prioritized solution has its riskiest assumption identified with a test (at Light depth: PASS if outcome is measurable and at least 2 opportunities have evidence; solutions, assumptions, and tests not required); FAIL if opportunities lack evidence sources or no assumptions are surfaced (at Light depth: FAIL if outcome is not measurable or opportunities lack evidence sources)
+9. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 Include a visual tree summary at the top using indented markdown:
 
@@ -148,11 +148,11 @@ Outcome: [Desired outcome]
 
 ## Common Mistakes to Avoid
 
-- **Jumping to solutions** — Always start with outcomes and opportunities
-- **Single-solution thinking** — Generate at least 3 solutions per opportunity
-- **Untested assumptions** — Every solution should have its riskiest assumption identified
-- **Confusing outputs with outcomes** — "Ship feature X" is an output; "Reduce churn by 15%" is an outcome
-- **Skipping evidence** — Every opportunity needs a source; gut feelings aren't opportunities
+- **Jumping to solutions**, Always start with outcomes and opportunities
+- **Single-solution thinking**, Generate at least 3 solutions per opportunity
+- **Untested assumptions**, Every solution should have its riskiest assumption identified
+- **Confusing outputs with outcomes**, "Ship feature X" is an output; "Reduce churn by 15%" is an outcome
+- **Skipping evidence**, Every opportunity needs a source; gut feelings aren't opportunities
 
 ## Weak vs. Strong Output
 
@@ -160,10 +160,10 @@ Outcome: [Desired outcome]
 > Opportunity: "Users find onboarding confusing"
 > Evidence: Team discussion
 
-Vague pain description with no customer source — could mean anything and drives no specific solution.
+Vague pain description with no customer source, could mean anything and drives no specific solution.
 
 **Strong:**
 > Opportunity O3: "New users cannot locate their first workflow within 2 minutes of signup"
 > Evidence: 6/8 interview participants (P01, P02, P04, P05, P07, P08) abandoned onboarding at step 3; avg. time-to-first-action = 4.2 min (Mixpanel, Jan 2026)
 
-Specific, measurable, multi-source evidence with participant IDs — directly testable and prioritizable.
+Specific, measurable, multi-source evidence with participant IDs, directly testable and prioritizable.

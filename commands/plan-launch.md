@@ -3,7 +3,7 @@ name: plan-launch
 description: "Build a complete go-to-market launch plan: beachhead segment, ICP, messaging, competitive battlecard, and launch timeline."
 ---
 
-# /plan-launch — Go-to-Market Launch Workflow
+# /plan-launch, Go-to-Market Launch Workflow
 
 Run this command to produce a comprehensive launch plan for a new product or major feature release.
 
@@ -17,7 +17,7 @@ Ask the PM:
 - Who are the candidate target segments?
 - What evidence do we have about each segment's pain and willingness to pay?
 
-Score candidate segments and select the beachhead — the single segment you'll win first.
+Score candidate segments and select the beachhead, the single segment you'll win first.
 
 ### Step 2: Build the ICP
 Define the Ideal Customer Profile:

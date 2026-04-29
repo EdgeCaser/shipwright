@@ -34,10 +34,10 @@ Generates comprehensive preparation materials for customer discovery interviews 
 
 Every interview guide must follow Rob Fitzpatrick's rules:
 
-1. **Talk about their life, not your idea** — Ask about past behavior, not hypothetical future behavior
-2. **Ask about specifics, not generics** — "Walk me through the last time you..." not "Do you usually..."
-3. **Listen, don't pitch** — The interview is for learning, not selling
-4. **Seek disconfirming evidence** — Actively look for reasons your assumptions are wrong
+1. **Talk about their life, not your idea**, Ask about past behavior, not hypothetical future behavior
+2. **Ask about specifics, not generics**, "Walk me through the last time you..." not "Do you usually..."
+3. **Listen, don't pitch**, The interview is for learning, not selling
+4. **Seek disconfirming evidence**, Actively look for reasons your assumptions are wrong
 
 ### Interview Guide Generation
 
@@ -94,8 +94,8 @@ Generate a screener to qualify participants:
 ```markdown
 # Participant Screener
 ## Must-have criteria (all required):
-- [Criterion 1 — e.g., "Has performed [activity] in the past 30 days"]
-- [Criterion 2 — e.g., "Decision-maker or strong influencer for [domain]"]
+- [Criterion 1, e.g., "Has performed [activity] in the past 30 days"]
+- [Criterion 2, e.g., "Decision-maker or strong influencer for [domain]"]
 
 ## Nice-to-have criteria (at least 2 of N):
 - [Criterion A]
@@ -121,8 +121,8 @@ Generate a post-interview debrief template:
 ## Interviewer: [name]
 
 ### Key Quotes (verbatim)
-- "[Quote 1]" — context: [when they said this]
-- "[Quote 2]" — context: [when they said this]
+- "[Quote 1]", context: [when they said this]
+- "[Quote 2]", context: [when they said this]
 
 ### Observations
 - [Behavior observed or described]
@@ -151,28 +151,28 @@ Generate a post-interview debrief template:
 
 **Hypotheses vs. findings:**
 - **Findings:** Screener criteria and "DO NOT ASK" guardrails must reflect known anti-patterns or prior research.
-- **Hypotheses:** Interview questions are inherently hypothesis-driven — each Core Discovery theme should be labeled with the assumption it tests.
+- **Hypotheses:** Interview questions are inherently hypothesis-driven, each Core Discovery theme should be labeled with the assumption it tests.
 
 ## Output Format
 
 Produce three documents:
-1. **Interview Guide** — ready-to-use question flow
-2. **Screener** — recruitment qualification criteria
-3. **Debrief Template** — post-interview capture sheet
+1. **Interview Guide**, ready-to-use question flow
+2. **Screener**, recruitment qualification criteria
+3. **Debrief Template**, post-interview capture sheet
 
 **Shipwright Signature (required closing):**
-4. **Decision Frame** — Key assumptions the interview round will test, trade-off between breadth vs. depth of questioning, confidence in screener fit with evidence quality, owner, interview dates, revisit trigger
-5. **Unknowns & Evidence Gaps** — Segments not yet covered, assumptions with no interview questions mapped to them
-6. **Pass/Fail Readiness** — PASS if guide covers at least 3 Mom Test-compliant questions per discovery theme and screener filters to the target persona (at Light depth: PASS if guide covers at least 3 Mom Test-compliant questions per discovery theme; screener not required); FAIL if questions are leading, hypothetical, or persona is undefined
-7. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+4. **Decision Frame**, Key assumptions the interview round will test, trade-off between breadth vs. depth of questioning, confidence in screener fit with evidence quality, owner, interview dates, revisit trigger
+5. **Unknowns & Evidence Gaps**, Segments not yet covered, assumptions with no interview questions mapped to them
+6. **Pass/Fail Readiness**, PASS if guide covers at least 3 Mom Test-compliant questions per discovery theme and screener filters to the target persona (at Light depth: PASS if guide covers at least 3 Mom Test-compliant questions per discovery theme; screener not required); FAIL if questions are leading, hypothetical, or persona is undefined
+7. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid
 
-- **Asking "would you use X?"** — People can't reliably predict future behavior
-- **Not asking for specifics** — "Usually" and "generally" hide the truth; push for "last time"
-- **Talking more than listening** — The interviewer should speak < 30% of the time
-- **Skipping the debrief** — Insights decay fast; debrief within 24 hours
-- **Only interviewing fans** — Include churned users, non-users, and detractors
+- **Asking "would you use X?"**, People can't reliably predict future behavior
+- **Not asking for specifics**, "Usually" and "generally" hide the truth; push for "last time"
+- **Talking more than listening**, The interviewer should speak < 30% of the time
+- **Skipping the debrief**, Insights decay fast; debrief within 24 hours
+- **Only interviewing fans**, Include churned users, non-users, and detractors
 
 ## Weak vs. Strong Output
 

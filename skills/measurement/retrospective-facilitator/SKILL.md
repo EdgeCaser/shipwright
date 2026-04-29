@@ -27,15 +27,15 @@ Best for: Regular sprint retros. Simple and actionable.
 
 ```markdown
 ## Start (things we should begin doing)
-- [Suggestion] — Raised by: [name/role]
+- [Suggestion], Raised by: [name/role]
   - Why: [reasoning]
 
 ## Stop (things we should stop doing)
-- [Suggestion] — Raised by: [name/role]
+- [Suggestion], Raised by: [name/role]
   - Why: [reasoning]
 
 ## Continue (things that are working well)
-- [Observation] — Raised by: [name/role]
+- [Observation], Raised by: [name/role]
   - Evidence: [why this is working]
 ```
 
@@ -115,7 +115,7 @@ Best for: Emotional check-ins. Good when team morale needs attention.
 ### Ground Rules
 - Focus on processes and systems, not individuals
 - Assume positive intent
-- Be specific — "communication was bad" → "We didn't have a single source of truth for the API spec, which caused 3 misalignment bugs"
+- Be specific, "communication was bad" → "We didn't have a single source of truth for the API spec, which caused 3 misalignment bugs"
 - Everyone participates
 ```
 
@@ -131,8 +131,8 @@ For each format category, gather observations:
 ### Themes (clustered from raw observations)
 | Theme | Observations | Votes/Frequency |
 |---|---|---|
-| [Theme 1 — e.g., "Requirements clarity"] | [N] related items | [N] votes |
-| [Theme 2 — e.g., "Cross-team communication"] | [N] related items | [N] votes |
+| [Theme 1, e.g., "Requirements clarity"] | [N] related items | [N] votes |
+| [Theme 2, e.g., "Cross-team communication"] | [N] related items | [N] votes |
 | [Theme 3] | [N] | [N] |
 ```
 
@@ -192,39 +192,39 @@ For each prioritized theme (top 2-3 by votes):
 **Insufficient evidence:** If fewer than 3 participants contributed observations or no specific examples are provided (only vague sentiments), stop and recommend an async input collection round (survey or Slack thread) to gather concrete observations before running this skill. Themes derived from vague sentiments produce action items nobody acts on.
 
 **Hypotheses vs. findings:**
-- **Findings:** Observed events, measured outcomes, action item completion status — must reference what actually happened.
-- **Hypotheses:** Root cause explanations and proposed process changes — must be labeled as team-generated theories to test.
+- **Findings:** Observed events, measured outcomes, action item completion status, must reference what actually happened.
+- **Hypotheses:** Root cause explanations and proposed process changes, must be labeled as team-generated theories to test.
 
 ## Output Format
 
 Produce a Retrospective Report with:
-1. **Setup** — date, participants, format, scope
-2. **Observations** — gathered input using the chosen format
-3. **Themes** — clustered and prioritized
-4. **Discussion** — root causes and proposed actions for top themes
-5. **Action Items** — owned, dated, with success criteria
-6. **Previous Items Review** — accountability check
+1. **Setup**, date, participants, format, scope
+2. **Observations**, gathered input using the chosen format
+3. **Themes**, clustered and prioritized
+4. **Discussion**, root causes and proposed actions for top themes
+5. **Action Items**, owned, dated, with success criteria
+6. **Previous Items Review**, accountability check
 
 **Shipwright Signature (required closing):**
-7. **Decision Frame** — top process change recommendation, trade-off (effort to implement vs. expected improvement), confidence with evidence quality (number of corroborating observations, recurrence across retros), owner, decision date, revisit trigger
-8. **Unknowns & Evidence Gaps** — themes raised by only one person, root causes not yet validated, missing perspectives from absent team members
-9. **Pass/Fail Readiness** — PASS if at least 2 owned action items with due dates and success criteria exist; at Light depth, PASS if at least 2 owned action items with due dates exist (success criteria optional, theme consensus not evaluated since theme discussion is omitted); FAIL if action items are unowned
-10. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+7. **Decision Frame**, top process change recommendation, trade-off (effort to implement vs. expected improvement), confidence with evidence quality (number of corroborating observations, recurrence across retros), owner, decision date, revisit trigger
+8. **Unknowns & Evidence Gaps**, themes raised by only one person, root causes not yet validated, missing perspectives from absent team members
+9. **Pass/Fail Readiness**, PASS if at least 2 owned action items with due dates and success criteria exist; at Light depth, PASS if at least 2 owned action items with due dates exist (success criteria optional, theme consensus not evaluated since theme discussion is omitted); FAIL if action items are unowned
+10. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid
 
-- **No action items** — A retro without actions is just venting
-- **Unowned actions** — "The team will improve communication" means nobody will
-- **Never reviewing past actions** — Without follow-through, teams stop trusting retros
-- **Blame culture** — Focus on systems and processes, not individuals
-- **Always the same format** — Rotate formats to keep retros fresh and surface different insights
+- **No action items**, A retro without actions is just venting
+- **Unowned actions**, "The team will improve communication" means nobody will
+- **Never reviewing past actions**, Without follow-through, teams stop trusting retros
+- **Blame culture**, Focus on systems and processes, not individuals
+- **Always the same format**, Rotate formats to keep retros fresh and surface different insights
 
 ## Weak vs. Strong Output
 
 **Weak:**
 > "Action item: Improve communication. Owner: The team. Due: Ongoing."
 
-No specific behavior change, no individual owner, no deadline, no success criteria — this will never get done.
+No specific behavior change, no individual owner, no deadline, no success criteria, this will never get done.
 
 **Strong:**
 > "Action item: Create a shared #api-changes Slack channel and post breaking changes 48 hours before merge. Owner: Sarah (tech lead). Due: 2026-04-01. Success criteria: zero surprise API breakages in the next sprint."

@@ -135,11 +135,11 @@ What are the most important costs in our business model? Which key resources and
 
 **Acceptable evidence:** Internal revenue data, pricing pages, partnership agreements, customer interviews, published market sizing, team headcount or cost estimates.
 
-**Insufficient evidence:** If no customer segment data or revenue model exists, produce a partial artifact with unanswered sections marked `[TBD — requires: customer segment validation or revenue model data]` and flag the artifact as draft-only.
+**Insufficient evidence:** If no customer segment data or revenue model exists, produce a partial artifact with unanswered sections marked `[TBD, requires: customer segment validation or revenue model data]` and flag the artifact as draft-only.
 
 **Hypotheses vs. findings:**
 - **Findings:** Customer Segments (size, contribution), Revenue Streams (price points, model), Cost Structure (known fixed/variable costs) must be grounded in evidence.
-- **Hypotheses:** Key Partnerships, Channel effectiveness ratings, and growth trends may be speculative — must be labeled as assumptions.
+- **Hypotheses:** Key Partnerships, Channel effectiveness ratings, and growth trends may be speculative, must be labeled as assumptions.
 
 ## Output Format
 
@@ -149,10 +149,10 @@ Produce:
 3. **Stress Test** - the 3 weakest links in the model and what would need to be true for them to hold
 
 **Shipwright Signature (required closing):**
-4. **Decision Frame** — Which business model elements to commit to vs. experiment on, key trade-offs, confidence level with evidence quality, owner, decision date, revisit trigger
-5. **Unknowns & Evidence Gaps** — Unvalidated segment sizes, untested channel assumptions, unconfirmed partnership terms
-6. **Pass/Fail Readiness** — PASS if all 9 blocks have evidence-backed entries and dependencies are mapped (at Light depth: PASS if Customer Segments, Value Propositions, and Revenue Streams have evidence-backed entries — remaining blocks are deferred); FAIL if any included block relies entirely on assumptions with no supporting data
-7. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+4. **Decision Frame**, Which business model elements to commit to vs. experiment on, key trade-offs, confidence level with evidence quality, owner, decision date, revisit trigger
+5. **Unknowns & Evidence Gaps**, Unvalidated segment sizes, untested channel assumptions, unconfirmed partnership terms
+6. **Pass/Fail Readiness**, PASS if all 9 blocks have evidence-backed entries and dependencies are mapped (at Light depth: PASS if Customer Segments, Value Propositions, and Revenue Streams have evidence-backed entries, remaining blocks are deferred); FAIL if any included block relies entirely on assumptions with no supporting data
+7. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid
 
@@ -170,6 +170,6 @@ Produce:
 No segment specificity, no measurable outcome, indistinguishable from any other B2B product.
 
 **Strong:**
-> **Value Proposition (Mid-market SaaS, 100-500 employees):** Reduces monthly financial close from 12 days to 3 by automating inter-entity reconciliation — saving ~$40K/quarter in controller time.
+> **Value Proposition (Mid-market SaaS, 100-500 employees):** Reduces monthly financial close from 12 days to 3 by automating inter-entity reconciliation, saving ~$40K/quarter in controller time.
 
 Tied to a named segment, quantified outcome, and a specific mechanism that can be verified.

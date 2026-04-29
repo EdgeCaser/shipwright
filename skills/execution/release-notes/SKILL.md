@@ -63,7 +63,7 @@ Group changes into standard categories:
 - [Fixed]: [What was broken and what the fix means for users]
 
 ### Performance
-- [Area]: [What improved — include numbers if available]
+- [Area]: [What improved, include numbers if available]
 
 ### Breaking Changes
 - [Change]: [What stopped working and what to do instead]
@@ -87,10 +87,10 @@ Group changes into standard categories:
 
 ## Highlights
 
-### [Feature Name] — [Benefit headline]
+### [Feature Name], [Benefit headline]
 [2-3 sentences explaining what this enables for the user. Focus on the outcome, not the mechanism. Include a concrete example of when you'd use this.]
 
-### [Improvement Name] — [Benefit headline]
+### [Improvement Name], [Benefit headline]
 [1-2 sentences on what got better.]
 
 ## Fixes & Improvements
@@ -113,11 +113,11 @@ Different audience, different depth:
 
 ## For Support/CS Teams
 ### What customers will notice:
-- [Visible change 1 — with talking points for customer questions]
+- [Visible change 1, with talking points for customer questions]
 - [Visible change 2]
 
 ### Known issues still open:
-- [Issue] — Workaround: [steps]
+- [Issue], Workaround: [steps]
 
 ### FAQ for customer questions:
 Q: [Anticipated question]
@@ -125,7 +125,7 @@ A: [Suggested response]
 
 ## For Sales Teams
 ### New selling points:
-- [Feature] enables [use case] — relevant for [segment]
+- [Feature] enables [use case], relevant for [segment]
 
 ### Competitive implications:
 - [How this changes our competitive position]
@@ -135,7 +135,7 @@ A: [Suggested response]
 - [Migration steps, feature flags, rollback procedure]
 
 ### Monitoring:
-- [What to watch — metrics, alerts, dashboards]
+- [What to watch, metrics, alerts, dashboards]
 ```
 
 ### Step 5: Channel Adaptation
@@ -165,23 +165,23 @@ Adapt the same content for different channels:
 ## Output Format
 
 Produce:
-1. **Customer-Facing Release Notes** — polished, benefit-oriented
-2. **Internal Release Notes** — segmented by audience (Support, Sales, Eng)
-3. **Channel Variants** — adapted versions for email, blog, social, in-app
+1. **Customer-Facing Release Notes**, polished, benefit-oriented
+2. **Internal Release Notes**, segmented by audience (Support, Sales, Eng)
+3. **Channel Variants**, adapted versions for email, blog, social, in-app
 
 **Shipwright Signature (required closing):**
-4. **Decision Frame** — recommended communication priority and channel sequencing, trade-off, confidence with evidence quality, owner, decision date, revisit trigger
-5. **Unknowns & Evidence Gaps** — unconfirmed customer impact of changes, missing performance benchmarks, unclear migration paths for breaking changes
-6. **Pass/Fail Readiness** — PASS if every customer-facing change has a benefit statement and breaking changes have migration instructions (at Light depth: PASS if every change has a one-line benefit statement; breaking-change migration instructions are still required if any breaking changes exist); FAIL if breaking changes are undocumented or customer-facing notes use engineering jargon
-7. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+4. **Decision Frame**, recommended communication priority and channel sequencing, trade-off, confidence with evidence quality, owner, decision date, revisit trigger
+5. **Unknowns & Evidence Gaps**, unconfirmed customer impact of changes, missing performance benchmarks, unclear migration paths for breaking changes
+6. **Pass/Fail Readiness**, PASS if every customer-facing change has a benefit statement and breaking changes have migration instructions (at Light depth: PASS if every change has a one-line benefit statement; breaking-change migration instructions are still required if any breaking changes exist); FAIL if breaking changes are undocumented or customer-facing notes use engineering jargon
+7. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid
 
-- **Engineering jargon** — "Refactored the query layer" means nothing to customers; "Search is now 3x faster" does
-- **Listing every ticket** — Customers don't need to see "Fixed typo in tooltip." Curate.
-- **Burying breaking changes** — These need prominent placement and clear migration instructions
-- **No internal notes** — Support and sales teams get blindsided without a heads-up
-- **Inconsistent cadence** — Ship release notes with every release; silence erodes trust
+- **Engineering jargon**, "Refactored the query layer" means nothing to customers; "Search is now 3x faster" does
+- **Listing every ticket**, Customers don't need to see "Fixed typo in tooltip." Curate.
+- **Burying breaking changes**, These need prominent placement and clear migration instructions
+- **No internal notes**, Support and sales teams get blindsided without a heads-up
+- **Inconsistent cadence**, Ship release notes with every release; silence erodes trust
 
 ## Weak vs. Strong Output
 

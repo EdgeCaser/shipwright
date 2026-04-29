@@ -3,7 +3,7 @@ name: start
 description: "Launch the Shipwright orchestrator. Greets the PM, asks what they're working on, chooses Fast or Rigorous execution, and only builds a plan when the work actually needs one."
 ---
 
-# /start — Launch Shipwright
+# /start, Launch Shipwright
 
 Also available as `/shipwright`, the branded Claude Code entrypoint. For a menu of common paths and direct workflows, use `/shipwright-help`.
 
@@ -20,7 +20,7 @@ Read `CLAUDE.md` (if it exists) to understand the product, personas, metrics, an
 Present the user with:
 
 ```
-Welcome to Shipwright — your PM agent toolkit.
+Welcome to Shipwright, your PM agent toolkit.
 
 What are you trying to accomplish today? Describe it in plain language and I'll
 map out which skills, agents, and workflows can help.
@@ -35,16 +35,16 @@ Some examples:
 
 ### 3. Clarify (1-3 exchanges max)
 Ask targeted follow-ups to understand:
-- **What** — The deliverable or outcome needed
-- **Who** — The audience (exec, team, engineering, customers)
-- **When** — Timeline or urgency
-- **Context** — Existing research, data, or documents
-- **Scope** — How deep to go
+- **What**, The deliverable or outcome needed
+- **Who**, The audience (exec, team, engineering, customers)
+- **When**, Timeline or urgency
+- **Context**, Existing research, data, or documents
+- **Scope**, How deep to go
 
 Rules:
 - Ask at most 2-3 follow-up questions. Don't interrogate.
 - If the need is already clear, skip straight to mode selection.
-- Match the PM's energy — brief request = brief follow-up.
+- Match the PM's energy, brief request = brief follow-up.
 - Resolve the requested depth only after deciding whether the work is `Fast` or `Rigorous`: `Quick` for directional/gut-check asks, `Standard` by default, and `Deep` when the PM asks for thorough or exhaustive work.
 
 ### 4. Choose Execution Mode

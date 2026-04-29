@@ -1,4 +1,4 @@
-# Slack Mention Agent — Technical Spec
+# Slack Mention Agent, Technical Spec
 
 ## Overview
 
@@ -22,7 +22,7 @@ Slack workspace
 ### Why Socket Mode
 
 - No public URL or ngress tunnel required
-- Runs entirely local — ideal for a personal workspace
+- Runs entirely local, ideal for a personal workspace
 - Uses an App-Level Token (begins with `xapp-`) instead of exposing an HTTP endpoint
 - WebSocket connection initiated outbound from this service
 
@@ -31,7 +31,7 @@ Slack workspace
 - Inherits the user's existing MCP server config (Slack, etc.) without re-implementing auth
 - Handles tool orchestration, permissions, and context natively
 - Non-interactive mode (`-p` flag) accepts a prompt and runs to completion
-- The agent IS Claude Code — we're just giving it a trigger
+- The agent IS Claude Code, we're just giving it a trigger
 
 ## Slack App Setup
 
@@ -39,10 +39,10 @@ The Slack app needs these additional configurations beyond what the MCP connecto
 
 ### Required Scopes (Bot Token)
 
-- `app_mentions:read` — receive @mention events
-- `channels:history` — read messages in public channels (for thread context)
-- `chat:write` — post replies
-- `groups:history` — read messages in private channels (if needed)
+- `app_mentions:read`, receive @mention events
+- `channels:history`, read messages in public channels (for thread context)
+- `chat:write`, post replies
+- `groups:history`, read messages in private channels (if needed)
 
 ### Event Subscriptions
 
@@ -63,7 +63,7 @@ shipwright/
 ├── slack-agent/
 │   ├── package.json
 │   ├── src/
-│   │   ├── index.ts          # Entry point — Socket Mode connection
+│   │   ├── index.ts          # Entry point, Socket Mode connection
 │   │   ├── event-handler.ts  # Parses app_mention events, extracts context
 │   │   ├── claude-runner.ts  # Spawns claude CLI with prompt
 │   │   └── config.ts         # Environment/config management
@@ -111,7 +111,7 @@ interface AppMentionEvent {
 }
 ```
 
-Strip the bot's `<@USER_ID>` from the text to get the actual instruction. If `thread_ts` exists, the mention is inside a thread — the agent should read thread context before responding.
+Strip the bot's `<@USER_ID>` from the text to get the actual instruction. If `thread_ts` exists, the mention is inside a thread, the agent should read thread context before responding.
 
 ### 3. Claude CLI Invocation (`claude-runner.ts`)
 
@@ -233,24 +233,24 @@ Consider running as a background service via PM2 or a simple systemd unit if on 
 
 ## Known Risks & Limitations
 
-1. **Slack MCP OAuth token expiry** — The MCP OAuth token may expire. If Claude CLI fails to use Slack tools, the user needs to re-authenticate the MCP connection in an interactive Claude Code session.
+1. **Slack MCP OAuth token expiry**, The MCP OAuth token may expire. If Claude CLI fails to use Slack tools, the user needs to re-authenticate the MCP connection in an interactive Claude Code session.
 
-2. **Claude CLI availability** — The `claude` binary must be in PATH and authenticated. If the session expires, the agent will fail silently until re-authenticated.
+2. **Claude CLI availability**, The `claude` binary must be in PATH and authenticated. If the session expires, the agent will fail silently until re-authenticated.
 
-3. **No streaming** — The bot won't show typing indicators or partial responses. The reply appears all at once after Claude finishes.
+3. **No streaming**, The bot won't show typing indicators or partial responses. The reply appears all at once after Claude finishes.
 
-4. **Single-user** — This is designed for one person's workspace. The Claude CLI runs as the authenticated user with their MCP config.
+4. **Single-user**, This is designed for one person's workspace. The Claude CLI runs as the authenticated user with their MCP config.
 
-5. **MCP scope** — The Slack MCP tools available depend on which scopes were granted during OAuth. If the agent can't perform an action, the OAuth flow may need to be re-done with broader scopes.
+5. **MCP scope**, The Slack MCP tools available depend on which scopes were granted during OAuth. If the agent can't perform an action, the OAuth flow may need to be re-done with broader scopes.
 
-6. **Cost** — Every mention triggers a Claude API call. In a busy channel, this could add up. Consider adding a rate limit or allowlist of channels/users.
+6. **Cost**, Every mention triggers a Claude API call. In a busy channel, this could add up. Consider adding a rate limit or allowlist of channels/users.
 
 ## Future Enhancements
 
-- **Reaction-based triggers** — React with a specific emoji (e.g., 🤖) to trigger the agent on any message, not just @mentions
-- **Channel allowlist** — Only respond in specific channels
-- **User allowlist** — Only respond to specific users
-- **Persistent context** — Pass a CLAUDE.md or system prompt that gives the agent persona/instructions specific to your team
-- **Thread memory** — On follow-up mentions in the same thread, include prior thread context automatically
-- **Health check endpoint** — Simple HTTP server for monitoring uptime
-- **Webhook mode** — Alternative to Socket Mode if running on a server with a public URL
+- **Reaction-based triggers**, React with a specific emoji (e.g., 🤖) to trigger the agent on any message, not just @mentions
+- **Channel allowlist**, Only respond in specific channels
+- **User allowlist**, Only respond to specific users
+- **Persistent context**, Pass a CLAUDE.md or system prompt that gives the agent persona/instructions specific to your team
+- **Thread memory**, On follow-up mentions in the same thread, include prior thread context automatically
+- **Health check endpoint**, Simple HTTP server for monitoring uptime
+- **Webhook mode**, Alternative to Socket Mode if running on a server with a public URL

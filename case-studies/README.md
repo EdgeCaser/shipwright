@@ -1,7 +1,7 @@
 # Case Studies
 
 Real-world proof points from Shipwright in production. Each case study documents an actual
-engagement — what the PM needed to do, what Shipwright produced, how long it took, and what
+engagement, what the PM needed to do, what Shipwright produced, how long it took, and what
 happened as a result.
 
 These are distinct from [golden outputs](../examples/golden-outputs/), which show structured

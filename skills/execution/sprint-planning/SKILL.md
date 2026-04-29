@@ -116,7 +116,7 @@ We'll know we succeeded when [measurable result].
 ## Sprint [N] Agreement
 
 **Sprint Goal:** [outcome statement]
-**Duration:** [start] — [end]
+**Duration:** [start], [end]
 **Capacity:** [N] person-days
 
 **We commit to:**
@@ -126,7 +126,7 @@ We'll know we succeeded when [measurable result].
 - [Stretch story 1]
 
 **We will NOT do this sprint:**
-- [Explicitly deferred item] — Reason: [why]
+- [Explicitly deferred item], Reason: [why]
 
 **Definition of Done for this sprint:**
 - [ ] All committed stories meet their acceptance criteria
@@ -150,25 +150,25 @@ We'll know we succeeded when [measurable result].
 ## Output Format
 
 Produce a Sprint Plan with:
-1. **Sprint Goal** — outcome-oriented commitment
-2. **Capacity Plan** — team availability and allocation
-3. **Committed Scope** — stories with estimates, ordered by priority
-4. **Dependencies & Risks** — flagged and mitigated
-5. **Sprint Agreement** — what's in, what's stretch, what's out
+1. **Sprint Goal**, outcome-oriented commitment
+2. **Capacity Plan**, team availability and allocation
+3. **Committed Scope**, stories with estimates, ordered by priority
+4. **Dependencies & Risks**, flagged and mitigated
+5. **Sprint Agreement**, what's in, what's stretch, what's out
 
 **Shipwright Signature (required closing):**
-6. **Decision Frame** — sprint scope recommendation with capacity utilization rationale, trade-off, confidence with evidence quality, owner, decision date, revisit trigger
-7. **Unknowns & Evidence Gaps** — unconfirmed external dependencies, stories with low estimation confidence, untested capacity assumptions for new team members
-8. **Pass/Fail Readiness** — PASS if sprint goal is outcome-oriented, committed scope is within 85% capacity, and all dependencies have confirmed status (at Light depth: PASS if sprint goal is outcome-oriented and committed story list has estimates; capacity utilization check and dependency confirmation are not required); FAIL if no sprint goal exists or story list has no estimates
-9. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+6. **Decision Frame**, sprint scope recommendation with capacity utilization rationale, trade-off, confidence with evidence quality, owner, decision date, revisit trigger
+7. **Unknowns & Evidence Gaps**, unconfirmed external dependencies, stories with low estimation confidence, untested capacity assumptions for new team members
+8. **Pass/Fail Readiness**, PASS if sprint goal is outcome-oriented, committed scope is within 85% capacity, and all dependencies have confirmed status (at Light depth: PASS if sprint goal is outcome-oriented and committed story list has estimates; capacity utilization check and dependency confirmation are not required); FAIL if no sprint goal exists or story list has no estimates
+9. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid
 
-- **Overcommitting** — Leave 10-15% buffer; things always take longer than expected
-- **No sprint goal** — Without one, the sprint is just a random batch of work
-- **Ignoring tech debt** — Zero tech debt allocation leads to compounding slowdowns
-- **Hidden dependencies** — Surface cross-team deps before the sprint starts, not during
-- **100% utilization** — Teams at 100% have no capacity for the unexpected; target 80-85%
+- **Overcommitting**, Leave 10-15% buffer; things always take longer than expected
+- **No sprint goal**, Without one, the sprint is just a random batch of work
+- **Ignoring tech debt**, Zero tech debt allocation leads to compounding slowdowns
+- **Hidden dependencies**, Surface cross-team deps before the sprint starts, not during
+- **100% utilization**, Teams at 100% have no capacity for the unexpected; target 80-85%
 
 ## Weak vs. Strong Output
 

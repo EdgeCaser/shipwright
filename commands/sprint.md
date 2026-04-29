@@ -3,7 +3,7 @@ name: sprint
 description: "Prepare a complete sprint plan: goal, capacity, story selection, dependency check, and sprint agreement."
 ---
 
-# /sprint — Sprint Planning Workflow
+# /sprint, Sprint Planning Workflow
 
 Run this command to prepare for sprint planning with a structured, ready-to-discuss sprint plan.
 

@@ -3,7 +3,7 @@ name: write-prd
 description: "Generate a complete PRD using Amazon's Working Backwards method: press release, FAQ, then detailed requirements."
 ---
 
-# /write-prd — PRD Development Workflow
+# /write-prd, PRD Development Workflow
 
 Run this command to produce a full Product Requirements Document using the Working Backwards method.
 
@@ -27,7 +27,7 @@ Write a fictional press release announcing the finished product:
 - How it works (3-5 steps)
 - Customer quote (fictional)
 
-Review with the PM before proceeding. The press release is the alignment tool — if it doesn't feel right, the PRD won't either.
+Review with the PM before proceeding. The press release is the alignment tool, if it doesn't feel right, the PRD won't either.
 
 ### Step 3: Write the FAQ
 Customer FAQ (3-5 questions a customer would ask) and Internal FAQ covering:

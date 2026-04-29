@@ -75,7 +75,7 @@ Assess where you are before deciding where to go:
 
 ### Step 3: Strategic Bets
 
-A product strategy is a set of bets — informed choices about where to invest, grounded in your theory of how you win.
+A product strategy is a set of bets, informed choices about where to invest, grounded in your theory of how you win.
 
 **For each bet:**
 ```markdown
@@ -89,7 +89,7 @@ A product strategy is a set of bets — informed choices about where to invest, 
 ```
 
 **Rules:**
-- 2-4 major bets maximum — strategy is about focus
+- 2-4 major bets maximum, strategy is about focus
 - Each bet must have a falsifiable thesis
 - Include at least one "what would have to be true" assumption per bet
 - Assign kill criteria upfront to avoid sunk cost fallacy
@@ -101,13 +101,13 @@ Equally important as what you invest in:
 ```markdown
 ## Strategic Boundaries
 ### We will NOT:
-- [Decision 1] — Rationale: [why]
-- [Decision 2] — Rationale: [why]
-- [Decision 3] — Rationale: [why]
+- [Decision 1], Rationale: [why]
+- [Decision 2], Rationale: [why]
+- [Decision 3], Rationale: [why]
 
 ### We will DEFER:
-- [Item 1] — Revisit: [when/trigger]
-- [Item 2] — Revisit: [when/trigger]
+- [Item 1], Revisit: [when/trigger]
+- [Item 2], Revisit: [when/trigger]
 ```
 
 ### Step 5: Success Criteria & Review Cadence
@@ -122,7 +122,7 @@ Equally important as what you invest in:
 ## Review Cadence
 - Weekly: [What we check]
 - Monthly: [What we assess]
-- Quarterly: [Full strategy review — keep/adjust/kill each bet]
+- Quarterly: [Full strategy review, keep/adjust/kill each bet]
 ```
 
 ## Minimum Evidence Bar
@@ -135,37 +135,37 @@ Equally important as what you invest in:
 
 **Hypotheses vs. findings:**
 - **Findings:** Strategic Context (current metrics, market trajectory), customer satisfaction assessments
-- **Hypotheses:** Strategic Bets (theses are inherently speculative), kill criteria assumptions — must be labeled with "we believe" framing and falsifiability conditions
+- **Hypotheses:** Strategic Bets (theses are inherently speculative), kill criteria assumptions, must be labeled with "we believe" framing and falsifiability conditions
 
 ## Output Format
 
 Produce a Product Strategy Document with:
-1. **Product Vision** — aspirational north star
-2. **Strategic Context** — where we are today
-3. **Strategic Bets** — 2-4 focused bets with theses
-4. **Strategic Boundaries** — what we're not doing and why
-5. **Success Criteria** — metrics and review cadence
+1. **Product Vision**, aspirational north star
+2. **Strategic Context**, where we are today
+3. **Strategic Bets**, 2-4 focused bets with theses
+4. **Strategic Boundaries**, what we're not doing and why
+5. **Success Criteria**, metrics and review cadence
 
 **Shipwright Signature (required closing):**
-6. **Decision Frame** — Primary strategic bet recommendation with trade-off (focus vs. optionality), confidence with evidence quality, owner, decision date, revisit trigger
-7. **Unknowns & Evidence Gaps** — Unvalidated assumptions behind bets, missing customer evidence, market data gaps
-8. **Pass/Fail Readiness** — PASS if each bet has a falsifiable thesis, kill criteria, and at least one evidence-backed assumption (at Light depth: PASS if each bet has a falsifiable thesis — kill criteria and full assumption mapping are deferred); FAIL if bets lack customer grounding or kill criteria
-9. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+6. **Decision Frame**, Primary strategic bet recommendation with trade-off (focus vs. optionality), confidence with evidence quality, owner, decision date, revisit trigger
+7. **Unknowns & Evidence Gaps**, Unvalidated assumptions behind bets, missing customer evidence, market data gaps
+8. **Pass/Fail Readiness**, PASS if each bet has a falsifiable thesis, kill criteria, and at least one evidence-backed assumption (at Light depth: PASS if each bet has a falsifiable thesis, kill criteria and full assumption mapping are deferred); FAIL if bets lack customer grounding or kill criteria
+9. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid
 
-- **Strategy as a feature list** — A roadmap is not a strategy; a strategy explains *why* you're building what you're building
-- **Too many bets** — If everything is a priority, nothing is
-- **No kill criteria** — Without pre-committed exit conditions, every bet becomes permanent
-- **Vision too vague** — "Be the best platform" is not a vision; it needs a customer and a differentiated outcome
-- **Skipping "what we're NOT doing"** — The power of strategy is in the choices you make *against*
+- **Strategy as a feature list**, A roadmap is not a strategy; a strategy explains *why* you're building what you're building
+- **Too many bets**, If everything is a priority, nothing is
+- **No kill criteria**, Without pre-committed exit conditions, every bet becomes permanent
+- **Vision too vague**, "Be the best platform" is not a vision; it needs a customer and a differentiated outcome
+- **Skipping "what we're NOT doing"**, The power of strategy is in the choices you make *against*
 
 ## Weak vs. Strong Output
 
 **Weak:**
 > "Bet: Expand to mobile. Thesis: Mobile is growing so we should be there."
 
-No falsifiable claim, no evidence, no kill criteria — this is a wish, not a strategic bet.
+No falsifiable claim, no evidence, no kill criteria, this is a wish, not a strategic bet.
 
 **Strong:**
 > "Bet: Mobile-first onboarding. Thesis: We believe that shipping a mobile onboarding flow by Q3 will increase Day-7 retention from 35% to 50% because 62% of signups now originate on mobile devices (GA data, Feb 2026). Kill criteria: If Day-7 retention stays below 40% after 6 weeks post-launch, deprioritize and redirect to web activation."

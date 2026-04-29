@@ -3,9 +3,9 @@ name: tech-handoff
 description: "Complete handoff from strategy to engineering: PRD, technical spec, design review, epic breakdown, and user stories."
 ---
 
-# /tech-handoff — Strategy-to-Engineering Handoff Workflow
+# /tech-handoff, Strategy-to-Engineering Handoff Workflow
 
-Run this command to take an approved strategic initiative and produce everything engineering needs to start building. This is the most comprehensive workflow — it chains 5 skills into the full PM-to-engineering handoff.
+Run this command to take an approved strategic initiative and produce everything engineering needs to start building. This is the most comprehensive workflow, it chains 5 skills into the full PM-to-engineering handoff.
 
 ## Workflow Steps
 

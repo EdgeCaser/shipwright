@@ -54,11 +54,11 @@ the expected output format.
 ## Minimum Evidence Bar
 
 **Required inputs:** [what you need before starting]
-**Acceptable evidence:** [what counts — data, quotes, research]
+**Acceptable evidence:** [what counts, data, quotes, research]
 **Insufficient evidence:** If [condition], state "Insufficient evidence for [X]" and recommend [action].
 **Hypotheses vs. findings:**
 - **Findings:** [outputs that must be evidence-backed]
-- **Hypotheses:** [outputs allowed to be speculative — must be labeled]
+- **Hypotheses:** [outputs allowed to be speculative, must be labeled]
 
 ## Output Format
 What the skill should produce:
@@ -66,10 +66,10 @@ What the skill should produce:
 2. Artifact 2 (e.g., "Top 3 strategic actions")
 
 **Shipwright Signature (required closing):**
-3. **Decision Frame** — Recommendation, trade-off, confidence, owner, date, revisit trigger
-4. **Unknowns & Evidence Gaps** — What we don't know and how to resolve it
-5. **Pass/Fail Readiness** — Skill-specific pass/fail conditions
-6. **Recommended Next Artifact** — Next skill to run and why
+3. **Decision Frame**, Recommendation, trade-off, confidence, owner, date, revisit trigger
+4. **Unknowns & Evidence Gaps**, What we don't know and how to resolve it
+5. **Pass/Fail Readiness**, Skill-specific pass/fail conditions
+6. **Recommended Next Artifact**, Next skill to run and why
 
 ## Common Mistakes to Avoid
 - Anti-patterns the agent should watch for
@@ -80,12 +80,12 @@ What the skill should produce:
 **Weak:**
 > [vague, unsourced, generic example]
 
-[Why it's weak — 1 line]
+[Why it's weak, 1 line]
 
 **Strong:**
 > [specific, sourced, actionable example]
 
-[Why it's strong — 1 line]
+[Why it's strong, 1 line]
 ```
 
 ### What makes a good skill
@@ -94,7 +94,7 @@ What the skill should produce:
 - **Specific outputs.** The skill should produce something you can hand to your team or stakeholders, not vague advice.
 - **Evidence over assertion.** Templates should have columns for "evidence" or "source," not just opinions. The Minimum Evidence Bar section enforces this.
 - **Actionable.** Every item in the output should point toward a decision or next step.
-- **Proportional.** The Depth section must define when to go light vs. deep. Not every problem needs every section — ceremony should scale with stakes.
+- **Proportional.** The Depth section must define when to go light vs. deep. Not every problem needs every section, ceremony should scale with stakes.
 - **Signed.** Every output closes with the Shipwright Signature (Decision Frame, Unknowns, Pass/Fail, Next Artifact). This is what makes outputs recognizably Shipwright.
 
 ### Naming conventions

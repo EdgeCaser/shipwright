@@ -52,7 +52,7 @@ Read skills/strategy/swot-analysis/SKILL.md and run a SWOT analysis on [topic].
 
 Most PM work follows one of three patterns. Each path chains 3 workflows, where the output of one feeds the next.
 
-### Path 1: New Feature — from evidence to engineering handoff
+### Path 1: New Feature, from evidence to engineering handoff
 
 ```
 /discover  →  /write-prd  →  /tech-handoff
@@ -64,13 +64,13 @@ Most PM work follows one of three patterns. Each path chains 3 workflows, where 
 
 **What happens at each stage:**
 
-1. **`/discover`** (30-60 min) — Maps the opportunity space using an Opportunity Solution Tree, identifies assumptions, prioritizes by risk, and designs experiments. You'll push back on assumptions and decide which to validate.
-2. **`/write-prd`** (45-90 min) — Starts with a press release (forces customer-first thinking), drafts an FAQ (surfaces hard questions), writes user stories, then assembles the full PRD. You'll review each phase before moving on.
-3. **`/tech-handoff`** (90-180 min) — Takes the PRD and produces a technical spec, runs a 7-perspective design review, breaks the spec into epics, and writes stories with acceptance criteria.
+1. **`/discover`** (30-60 min), Maps the opportunity space using an Opportunity Solution Tree, identifies assumptions, prioritizes by risk, and designs experiments. You'll push back on assumptions and decide which to validate.
+2. **`/write-prd`** (45-90 min), Starts with a press release (forces customer-first thinking), drafts an FAQ (surfaces hard questions), writes user stories, then assembles the full PRD. You'll review each phase before moving on.
+3. **`/tech-handoff`** (90-180 min), Takes the PRD and produces a technical spec, runs a 7-perspective design review, breaks the spec into epics, and writes stories with acceptance criteria.
 
 **What you'll have at the end:** A discovery report, a Working Backwards PRD, a tech spec, a design review with verdicts, epics, and developer-ready stories.
 
-### Path 2: Quarterly Planning — from customer signals to OKRs
+### Path 2: Quarterly Planning, from customer signals to OKRs
 
 ```
 /customer-review  →  /strategy  →  /okrs
@@ -82,13 +82,13 @@ Most PM work follows one of three patterns. Each path chains 3 workflows, where 
 
 **What happens at each stage:**
 
-1. **`/customer-review`** (45-90 min) — Triages feedback, maps the customer journey, analyzes churn patterns, and produces an executive briefing. You'll validate whether the synthesis matches your intuition.
-2. **`/strategy`** (60-120 min) — Builds a product vision, defines 2-4 strategic bets with falsifiable theses and kill criteria, sets explicit boundaries ("what we're NOT doing"), and runs a pre-mortem.
-3. **`/okrs`** (30-60 min) — Drafts OKRs aligned to strategic bets, audits them against common anti-patterns (KRs as tasks, vague objectives, sandbagging), and checks alignment across teams.
+1. **`/customer-review`** (45-90 min), Triages feedback, maps the customer journey, analyzes churn patterns, and produces an executive briefing. You'll validate whether the synthesis matches your intuition.
+2. **`/strategy`** (60-120 min), Builds a product vision, defines 2-4 strategic bets with falsifiable theses and kill criteria, sets explicit boundaries ("what we're NOT doing"), and runs a pre-mortem.
+3. **`/okrs`** (30-60 min), Drafts OKRs aligned to strategic bets, audits them against common anti-patterns (KRs as tasks, vague objectives, sandbagging), and checks alignment across teams.
 
 **What you'll have at the end:** A customer intelligence report, a product strategy document with bets and boundaries, and audited OKRs with scoring criteria.
 
-### Path 3: Launch — from strategy to shipped sprint
+### Path 3: Launch, from strategy to shipped sprint
 
 ```
 /strategy  →  /plan-launch  →  /sprint
@@ -100,9 +100,9 @@ Most PM work follows one of three patterns. Each path chains 3 workflows, where 
 
 **What happens at each stage:**
 
-1. **`/strategy`** (60-120 min) — Locks in positioning, competitive differentiation, and strategic bets for the launch. You'll decide what success looks like.
-2. **`/plan-launch`** (60-90 min) — Builds the GTM strategy (beachhead, ICP, messaging), creates competitive battlecards, drafts positioning, and produces a launch timeline.
-3. **`/sprint`** (20-40 min) — Plans the execution sprint: goal, capacity, story selection, dependency mapping, and risk check.
+1. **`/strategy`** (60-120 min), Locks in positioning, competitive differentiation, and strategic bets for the launch. You'll decide what success looks like.
+2. **`/plan-launch`** (60-90 min), Builds the GTM strategy (beachhead, ICP, messaging), creates competitive battlecards, drafts positioning, and produces a launch timeline.
+3. **`/sprint`** (20-40 min), Plans the execution sprint: goal, capacity, story selection, dependency mapping, and risk check.
 
 **What you'll have at the end:** A strategy doc, a GTM launch plan with positioning and battlecards, and a sprint plan with stories and capacity allocation.
 

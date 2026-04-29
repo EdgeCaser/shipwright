@@ -43,11 +43,11 @@ Best for: Comparing initiatives of varying scope when you have reach data.
 RICE = (Reach × Impact × Confidence) / Effort
 
 **Impact Scale:**
-- 3 = Massive — step-change improvement
-- 2 = High — significant improvement
-- 1 = Medium — noticeable improvement
-- 0.5 = Low — minor improvement
-- 0.25 = Minimal — barely noticeable
+- 3 = Massive, step-change improvement
+- 2 = High, significant improvement
+- 1 = Medium, noticeable improvement
+- 0.5 = Low, minor improvement
+- 0.25 = Minimal, barely noticeable
 
 ### 2. ICE Scoring
 
@@ -75,8 +75,8 @@ Best for: Understanding which features delight vs. which are table stakes.
 ```markdown
 | Feature | Category | Rationale | Priority Implication |
 |---|---|---|---|
-| [Feature] | Must-Be | [Evidence] | Ship first — absence is a deal-breaker |
-| [Feature] | Attractive | [Evidence] | Invest selectively — high differentiation potential |
+| [Feature] | Must-Be | [Evidence] | Ship first, absence is a deal-breaker |
+| [Feature] | Attractive | [Evidence] | Invest selectively, high differentiation potential |
 ```
 
 ### 4. MoSCoW
@@ -85,16 +85,16 @@ Best for: Timeboxed releases when you need to negotiate scope.
 
 ```markdown
 ## Must Have (release is broken without these)
-- [Item] — Reason: [why it's non-negotiable]
+- [Item], Reason: [why it's non-negotiable]
 
 ## Should Have (important but not critical)
-- [Item] — Reason: [significant value, workaround exists]
+- [Item], Reason: [significant value, workaround exists]
 
 ## Could Have (nice to include if time permits)
-- [Item] — Reason: [incremental value]
+- [Item], Reason: [incremental value]
 
 ## Won't Have (explicitly out of scope for this release)
-- [Item] — Reason: [why it's deferred]
+- [Item], Reason: [why it's deferred]
 ```
 
 ### 5. Weighted Scoring
@@ -122,8 +122,8 @@ Best for: When different stakeholders value different criteria.
 2. **Gather** the list of items to prioritize
 3. **Score** each item using the chosen framework
 4. **Rank** by score, then review for sanity
-5. **Challenge** any scoring that seems off — "You rated confidence at 90% but mentioned you haven't validated demand. Should this be lower?"
-6. **Surface trade-offs** — "Items A and B are close in score but very different in risk profile. Here's what changes if assumptions shift."
+5. **Challenge** any scoring that seems off, "You rated confidence at 90% but mentioned you haven't validated demand. Should this be lower?"
+6. **Surface trade-offs**, "Items A and B are close in score but very different in risk profile. Here's what changes if assumptions shift."
 
 ## Minimum Evidence Bar
 
@@ -135,39 +135,39 @@ Best for: When different stakeholders value different criteria.
 
 **Hypotheses vs. findings:**
 - **Findings:** Final ranked order, scores backed by data (reach from analytics, effort from engineering estimates)
-- **Hypotheses:** Confidence percentages and impact ratings without direct validation — must be labeled with evidence source or "assumption"
+- **Hypotheses:** Confidence percentages and impact ratings without direct validation, must be labeled with evidence source or "assumption"
 
 ## Output Format
 
 Produce a Prioritization Report with:
-1. **Framework Used** — which method and why
-2. **Scored Backlog** — all items with scores, sorted by priority
-3. **Trade-Off Analysis** — close calls and what would change the ranking
-4. **Recommendation** — top 3-5 items to invest in, with rationale
-5. **Sensitivity Notes** — which scores are most uncertain
+1. **Framework Used**, which method and why
+2. **Scored Backlog**, all items with scores, sorted by priority
+3. **Trade-Off Analysis**, close calls and what would change the ranking
+4. **Recommendation**, top 3-5 items to invest in, with rationale
+5. **Sensitivity Notes**, which scores are most uncertain
 
 **Shipwright Signature (required closing):**
-6. **Decision Frame** — Top recommended investment with trade-off (speed vs. certainty, breadth vs. depth), confidence with evidence quality, owner, decision date, revisit trigger
-7. **Unknowns & Evidence Gaps** — Items scored with <50% confidence, assumptions that would change the ranking if wrong
-8. **Pass/Fail Readiness** — PASS if all items scored with stated evidence sources and top 3 have >60% confidence; FAIL if majority of scores are gut-feel with no supporting data
-9. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+6. **Decision Frame**, Top recommended investment with trade-off (speed vs. certainty, breadth vs. depth), confidence with evidence quality, owner, decision date, revisit trigger
+7. **Unknowns & Evidence Gaps**, Items scored with <50% confidence, assumptions that would change the ranking if wrong
+8. **Pass/Fail Readiness**, PASS if all items scored with stated evidence sources and top 3 have >60% confidence; FAIL if majority of scores are gut-feel with no supporting data
+9. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid
 
-- **Precision theater** — Don't debate whether something is a 7 or an 8; focus on the big gaps
-- **Ignoring confidence** — A high-impact, low-confidence item needs validation, not commitment
-- **Using one framework for everything** — RICE for roadmap planning, MoSCoW for release scoping, Kano for feature strategy
-- **Scoring in isolation** — Score as a team, not solo, to reduce individual bias
-- **Forgetting to re-prioritize** — Priorities change as you learn; rescore at least quarterly
+- **Precision theater**, Don't debate whether something is a 7 or an 8; focus on the big gaps
+- **Ignoring confidence**, A high-impact, low-confidence item needs validation, not commitment
+- **Using one framework for everything**, RICE for roadmap planning, MoSCoW for release scoping, Kano for feature strategy
+- **Scoring in isolation**, Score as a team, not solo, to reduce individual bias
+- **Forgetting to re-prioritize**, Priorities change as you learn; rescore at least quarterly
 
 ## Weak vs. Strong Output
 
 **Weak:**
 > "Impact: High. Confidence: High. This is a top priority."
 
-No evidence behind the scores — just adjectives restating the rating scale.
+No evidence behind the scores, just adjectives restating the rating scale.
 
 **Strong:**
-> "Impact: 2 (High) — based on 1,200 support tickets/month citing this workflow gap. Confidence: 70% — validated via 3 customer interviews but no quantitative A/B test yet."
+> "Impact: 2 (High), based on 1,200 support tickets/month citing this workflow gap. Confidence: 70%, validated via 3 customer interviews but no quantitative A/B test yet."
 
 Scores are anchored to specific evidence with explicit gaps called out.

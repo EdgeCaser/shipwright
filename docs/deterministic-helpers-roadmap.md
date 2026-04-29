@@ -42,14 +42,14 @@ Shipwright now has a collector-level research cache in `scripts/collect-research
 A new adapter module runs against the raw HTML body during page fetch, before it
 is discarded, and writes structured fields to `result.adapterData`:
 
-- **JSON-LD adapter** — extracts Product/SoftwareApplication/AggregateRating/Offer
+- **JSON-LD adapter**, extracts Product/SoftwareApplication/AggregateRating/Offer
   schema data from `<script type="application/ld+json">` blocks. Covers pricing
   pages, review aggregators, and product pages that use schema.org markup.
-- **npm adapter** — extracts weekly download count and version from npmjs.com
+- **npm adapter**, extracts weekly download count and version from npmjs.com
   package pages (server-rendered, stable structure).
-- **PyPI adapter** — extracts package name, latest version, and release date
+- **PyPI adapter**, extracts package name, latest version, and release date
   from pypi.org project pages (server-rendered, stable structure).
-- **crates.io adapter** — extracts crate name, latest version, and release date
+- **crates.io adapter**, extracts crate name, latest version, and release date
   via the official crates.io API because raw crate pages are JavaScript-dependent
   and scraping-restricted.
 
@@ -60,9 +60,9 @@ missing on a partial deployment, the collector continues without adapters (fail 
 
 A deterministic validator for Shipwright markdown artifacts:
 
-- `unsupported-dollar` — dollar figures in prose without a nearby citation marker
-- `unsupported-numeric` — percentage or large-number claims without citation
-- `missing-section` — expected section headings absent from the document
+- `unsupported-dollar`, dollar figures in prose without a nearby citation marker
+- `unsupported-numeric`, percentage or large-number claims without citation
+- `missing-section`, expected section headings absent from the document
 
 Citation shortcut: if the document has a `## Sources` / `## References` /
 `## Evidence` section, paragraph-level citation checks are skipped.
@@ -70,8 +70,8 @@ Citation shortcut: if the document has a `## Sources` / `## References` /
 CLI: `node scripts/validate-artifact.mjs path/to/artifact.md --expect-sections "Sources,Risks"`
 
 Wired into:
-- `adversarial-review/SKILL.md` — Pre-Check step before manual review begins
-- `artifact-quality-audit/SKILL.md` — Step 1b pre-pass to floor Correctness scoring
+- `adversarial-review/SKILL.md`, Pre-Check step before manual review begins
+- `artifact-quality-audit/SKILL.md`, Step 1b pre-pass to floor Correctness scoring
 
 ### Facts formatter (`scripts/format-facts.mjs`)
 
@@ -87,7 +87,7 @@ Groups facts by source domain, reconstructs pricing tuples from shared excerpts,
 resolves product identity, and annotates adapter-sourced fields with `[schema]`.
 
 Wired into:
-- `shipwright-research-brief/SKILL.md` — Step 3 of the retrieval workflow
+- `shipwright-research-brief/SKILL.md`, Step 3 of the retrieval workflow
 
 ### Pricing diff (`scripts/pricing-diff.mjs`)
 
@@ -101,9 +101,9 @@ node scripts/pricing-diff.mjs --dir path/to/comparison-set/
 ```
 
 Wired into:
-- `pricing-strategy/SKILL.md` — Step 5 (Competitive Pricing Analysis)
-- `competitive-landscape/SKILL.md` — Step 3 (Positioning Analysis)
-- `shipwright-research-brief/SKILL.md` — multi-competitor pricing requests
+- `pricing-strategy/SKILL.md`, Step 5 (Competitive Pricing Analysis)
+- `competitive-landscape/SKILL.md`, Step 3 (Positioning Analysis)
+- `shipwright-research-brief/SKILL.md`, multi-competitor pricing requests
 
 ### Request classifier (`scripts/classify-request.mjs`)
 
@@ -120,35 +120,35 @@ node scripts/classify-request.mjs --json "Series B funding in developer tools"
 ```
 
 Wired into:
-- `shipwright-research-brief/SKILL.md` — Step 1 of the retrieval workflow
+- `shipwright-research-brief/SKILL.md`, Step 1 of the retrieval workflow
 
 ## Remaining backlog
 
 If Shipwright continues investing in deterministic acceleration, the next
 highest-value additions are:
 
-1. **Checkpoint and resume support** for multi-phase runs — save phase outputs
+1. **Checkpoint and resume support** for multi-phase runs, save phase outputs
    so the system can restart from `research-complete` or `synthesis-complete`
    instead of rerunning the entire pipeline.
-2. **Additional source adapters** — extend the adapter pattern with:
+2. **Additional source adapters**, extend the adapter pattern with:
    - Stripe / GitHub pricing pages (investigate static-HTML structure; may require
      per-page field mapping)
    - G2 / Capterra product pages (currently rely on JSON-LD; add fallback text
      patterns for when schema is absent)
-3. **Contradiction detector** for the postflight validator — flag when the same
+3. **Contradiction detector** for the postflight validator, flag when the same
    metric appears with significantly different values in the same document.
    Deferred because reliable detection requires semantic context, not just regex.
-4. **Marketplace-style adapters** — many structured catalog and listing pages
+4. **Marketplace-style adapters**, many structured catalog and listing pages
    (app stores, software directories, developer marketplaces) follow stable
    patterns. Add adapters once a consistently server-rendered example is
    identified; the adapter pattern is already in place.
-5. **`marketplace_last_updated` field** — useful for currency-checking cached
+5. **`marketplace_last_updated` field**, useful for currency-checking cached
    listing data; add once a stable adapter target is confirmed.
-6. **Preflight classifier wiring into collect-research** — `classify-request.mjs`
+6. **Preflight classifier wiring into collect-research**, `classify-request.mjs`
    currently produces hints for the caller to use manually. A future iteration
    could have `collect-research.mjs` call it internally and auto-select `--mode`
    when none is specified, reducing required arguments for common queries.
-7. **Pricing diff HTML output** — `pricing-diff.mjs` currently outputs markdown.
+7. **Pricing diff HTML output**, `pricing-diff.mjs` currently outputs markdown.
    An `--html` flag could produce a self-contained table for pasting into
    slide decks or Notion pages.
 

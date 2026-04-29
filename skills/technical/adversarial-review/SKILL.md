@@ -41,7 +41,7 @@ Before reviewing manually, run the postflight validator if the artifact is avail
 node scripts/validate-artifact.mjs path/to/artifact.md
 ```
 
-The validator flags unsupported dollar figures and numeric claims without nearby citation markers, and checks for missing expected sections. Any flagged issues are automatically Evidence Integrity candidates — include them in the findings table in Step 3 rather than re-deriving them by hand. If the validator finds no issues, note that and proceed. This step is optional but saves review time on high-volume citation work.
+The validator flags unsupported dollar figures and numeric claims without nearby citation markers, and checks for missing expected sections. Any flagged issues are automatically Evidence Integrity candidates, include them in the findings table in Step 3 rather than re-deriving them by hand. If the validator finds no issues, note that and proceed. This step is optional but saves review time on high-volume citation work.
 
 ### Step 1: Define the Review Scope
 
@@ -226,9 +226,9 @@ In v1, the Challenge Report is conversation-native unless the PM explicitly asks
 
 Then close with the remaining Shipwright Signature elements:
 
-6. **Unknowns & Evidence Gaps** — Missing context, missing source evidence, or reviewer limitations that reduced confidence in the review itself
-7. **Pass/Fail Readiness** — PASS if findings are evidence-backed, severity is calibrated, and each finding includes a resolution condition; FAIL if critique is generic, theatrical, or unsupported
-8. **Recommended Next Artifact** — Which Shipwright skill or agent should engage next and why
+6. **Unknowns & Evidence Gaps**, Missing context, missing source evidence, or reviewer limitations that reduced confidence in the review itself
+7. **Pass/Fail Readiness**, PASS if findings are evidence-backed, severity is calibrated, and each finding includes a resolution condition; FAIL if critique is generic, theatrical, or unsupported
+8. **Recommended Next Artifact**, Which Shipwright skill or agent should engage next and why
 
 ## Common Mistakes to Avoid
 

@@ -16,11 +16,11 @@ Apply the 4 dimensions from the [universal rubric](rubric.md): Clarity, Complete
 |---|---|
 | **3 (Weak)** | No out-of-scope section. In-scope items are vague enough that scope could expand indefinitely. "Build a great onboarding experience" with no boundaries. |
 | **6 (Adequate)** | Out-of-scope section exists but is a simple list without rationale. "Out of scope: internationalization." Why? When would you revisit? Unknown. |
-| **9 (Strong)** | Every out-of-scope item has a rationale and a revisit trigger. "Out of scope: Azure integration — 89% of customers use AWS/GCP. Revisit when 3+ enterprise customers request it." In-scope items are bounded enough that an engineer can estimate. |
+| **9 (Strong)** | Every out-of-scope item has a rationale and a revisit trigger. "Out of scope: Azure integration, 89% of customers use AWS/GCP. Revisit when 3+ enterprise customers request it." In-scope items are bounded enough that an engineer can estimate. |
 
 ### 6. Evidence Grounding
 
-**What it measures:** Are decisions backed by data, customer evidence, or explicit reasoning — not just assertions?
+**What it measures:** Are decisions backed by data, customer evidence, or explicit reasoning, not just assertions?
 
 | Score | Anchor |
 |---|---|
@@ -32,7 +32,7 @@ Apply the 4 dimensions from the [universal rubric](rubric.md): Clarity, Complete
 
 The following excerpts show the same PRD section at two quality levels. The full golden output is in [examples/golden-outputs/prd.md](../examples/golden-outputs/prd.md).
 
-### Context & Motivation — scored 9/10
+### Context & Motivation, scored 9/10
 
 > **Customer evidence:** Q1 customer health reviews identified manual evidence collection as the #1 churn risk factor. 8/12 CAB members independently raised this as their top pain point. Support tickets related to "evidence upload" increased 34% QoQ.
 >
@@ -42,7 +42,7 @@ The following excerpts show the same PRD section at two quality levels. The full
 
 **Why 9/10:** Every claim cites a specific source (CAB, support tickets, pipeline data, win/loss). The opportunity cost is quantified with RICE scores. A reader can evaluate whether the evidence justifies the decision.
 
-### Context & Motivation — scored 6/10
+### Context & Motivation, scored 6/10
 
 > **Customer evidence:** Customers have told us that manual evidence collection is painful and time-consuming. Multiple customers have requested integrations with cloud providers.
 >
@@ -52,7 +52,7 @@ The following excerpts show the same PRD section at two quality levels. The full
 
 **Why 6/10:** The structure is correct (customer evidence, business case, opportunity cost are all present), but the content is vague. "Multiple customers" is not a number. "Improve competitive position" is not a metric. "Some other initiatives" is not a trade-off.
 
-### Goals & Success Metrics — scored 9/10
+### Goals & Success Metrics, scored 9/10
 
 > | Goal | Metric | Current | Target | Timeframe |
 > |---|---|---|---|---|
@@ -65,7 +65,7 @@ The following excerpts show the same PRD section at two quality levels. The full
 
 **Why 9/10:** Every metric has a baseline, a target, and a timeframe. Guardrail metrics define what must NOT get worse. A PM can look at this 8 weeks post-launch and know unambiguously whether the feature succeeded.
 
-### Goals & Success Metrics — scored 6/10
+### Goals & Success Metrics, scored 6/10
 
 > **Success Metrics:**
 > - Reduce evidence collection time by 70%

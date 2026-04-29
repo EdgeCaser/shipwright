@@ -96,16 +96,16 @@ Plot the highest-impact factors:
 ## Priority Matrix
 
 ### Act Now (High Impact × High Likelihood × Near)
-1. [Factor] — [recommended action]
+1. [Factor], [recommended action]
 
 ### Prepare (High Impact × Medium Likelihood × Mid)
-1. [Factor] — [contingency to develop]
+1. [Factor], [contingency to develop]
 
 ### Monitor (Medium Impact or Low Likelihood)
-1. [Factor] — [signal to watch for]
+1. [Factor], [signal to watch for]
 
 ### Acknowledge (Low Impact)
-1. [Factor] — [noted, no action needed]
+1. [Factor], [noted, no action needed]
 ```
 
 ## Minimum Evidence Bar
@@ -114,33 +114,33 @@ Plot the highest-impact factors:
 
 **Acceptable evidence:** Published regulation or pending legislation, government agency announcements, industry analyst reports, macroeconomic data (central bank rates, inflation indices), trade press, peer-reviewed research, company filings.
 
-**Insufficient evidence:** If a PESTEL dimension relies only on speculation with no published source or observable trend, produce a partial artifact with unsupported dimensions marked `[TBD — requires: published sources, regulatory filings, or industry data for this dimension]` and flag the artifact as draft-only.
+**Insufficient evidence:** If a PESTEL dimension relies only on speculation with no published source or observable trend, produce a partial artifact with unsupported dimensions marked `[TBD, requires: published sources, regulatory filings, or industry data for this dimension]` and flag the artifact as draft-only.
 
 **Hypotheses vs. findings:**
 - **Findings:** Factors scored High Impact or High Likelihood must cite a specific source, regulation, or data point.
-- **Hypotheses:** Medium/Low likelihood factors and long-timeframe trends may be directional — must be labeled as emerging signals, not established facts.
+- **Hypotheses:** Medium/Low likelihood factors and long-timeframe trends may be directional, must be labeled as emerging signals, not established facts.
 
 ## Output Format
 
 Produce a PESTEL report with:
-1. **Executive Summary** — top 3-5 macro factors that matter most
-2. **Dimension Analysis** — each PESTEL dimension with factors, scores, and implications
-3. **Priority Matrix** — categorized by urgency
-4. **Monitoring Plan** — signals to watch and review cadence
+1. **Executive Summary**, top 3-5 macro factors that matter most
+2. **Dimension Analysis**, each PESTEL dimension with factors, scores, and implications
+3. **Priority Matrix**, categorized by urgency
+4. **Monitoring Plan**, signals to watch and review cadence
 
 **Shipwright Signature (required closing):**
-5. **Decision Frame** — Which macro factors to act on vs. monitor, key trade-off, confidence with evidence quality, owner, decision date, revisit trigger
-6. **Unknowns & Evidence Gaps** — Pending legislation outcomes, unconfirmed regulatory timelines, emerging technology trajectories without consensus
-7. **Pass/Fail Readiness** — PASS if at least 4 dimensions have sourced factors and the Priority Matrix is populated (Act Now items required only if factors meet the High Impact × High Likelihood × Near-term threshold; if none qualify, explicit declaration is sufficient) (at Light depth: PASS if the 2-3 included dimensions have sourced factors — Priority Matrix is deferred); FAIL if factors are generic trends not tied to the specific product or market
-8. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+5. **Decision Frame**, Which macro factors to act on vs. monitor, key trade-off, confidence with evidence quality, owner, decision date, revisit trigger
+6. **Unknowns & Evidence Gaps**, Pending legislation outcomes, unconfirmed regulatory timelines, emerging technology trajectories without consensus
+7. **Pass/Fail Readiness**, PASS if at least 4 dimensions have sourced factors and the Priority Matrix is populated (Act Now items required only if factors meet the High Impact × High Likelihood × Near-term threshold; if none qualify, explicit declaration is sufficient) (at Light depth: PASS if the 2-3 included dimensions have sourced factors, Priority Matrix is deferred); FAIL if factors are generic trends not tied to the specific product or market
+8. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid
 
-- **Listing everything** — Focus on factors that could materially affect *your* product, not every macro trend
-- **No implications** — A factor without a "so what?" is trivia, not analysis
-- **Ignoring positive factors** — PESTEL isn't just risk; it surfaces tailwinds too
-- **Static analysis** — The macro environment shifts; build a monitoring plan, not a one-time document
-- **Confusing categories** — If a factor fits multiple categories, put it in the one most relevant to the action you'd take
+- **Listing everything**, Focus on factors that could materially affect *your* product, not every macro trend
+- **No implications**, A factor without a "so what?" is trivia, not analysis
+- **Ignoring positive factors**, PESTEL isn't just risk; it surfaces tailwinds too
+- **Static analysis**, The macro environment shifts; build a monitoring plan, not a one-time document
+- **Confusing categories**, If a factor fits multiple categories, put it in the one most relevant to the action you'd take
 
 ## Weak vs. Strong Output
 
@@ -150,6 +150,6 @@ Produce a PESTEL report with:
 No specificity on which AI development, no implication for this product, no actionable signal to monitor.
 
 **Strong:**
-> **Technological:** LLM inference costs dropped 90% in 18 months (GPT-4 $30/1M tokens → GPT-4o-mini $0.15/1M tokens, source: OpenAI pricing 2024). Impact: High. Likelihood: High (already happening). Implication: Competitors with larger engineering teams can now ship AI features at near-zero marginal cost — our 6-month head start on fine-tuned models is eroding.
+> **Technological:** LLM inference costs dropped 90% in 18 months (GPT-4 $30/1M tokens → GPT-4o-mini $0.15/1M tokens, source: OpenAI pricing 2024). Impact: High. Likelihood: High (already happening). Implication: Competitors with larger engineering teams can now ship AI features at near-zero marginal cost, our 6-month head start on fine-tuned models is eroding.
 
 Sourced data point, quantified trend, and a product-specific implication that drives action.

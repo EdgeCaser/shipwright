@@ -87,21 +87,21 @@ Every red-team review must:
 
 All red-team outputs must close with the Shipwright Signature:
 
-1. **Decision Frame** — Proceed, defend, or escalate, with trade-off, confidence, owner, decision date, and revisit trigger
-2. **Unknowns & Evidence Gaps** — Missing context that reduced review confidence
-3. **Pass/Fail Readiness** — PASS if findings are evidence-backed, severity is calibrated, and each finding includes a resolution condition; FAIL if critique is generic, theatrical, or unsupported
-4. **Recommended Next Artifact** — Which Shipwright skill or agent should engage next and why
+1. **Decision Frame**, Proceed, defend, or escalate, with trade-off, confidence, owner, decision date, and revisit trigger
+2. **Unknowns & Evidence Gaps**, Missing context that reduced review confidence
+3. **Pass/Fail Readiness**, PASS if findings are evidence-backed, severity is calibrated, and each finding includes a resolution condition; FAIL if critique is generic, theatrical, or unsupported
+4. **Recommended Next Artifact**, Which Shipwright skill or agent should engage next and why
 
 ## Workflow
 
 When given an adversarial review task:
 
-1. **Read the artifact carefully** — Understand the core recommendation and intended audience
-2. **Identify the real decision** — What is this artifact asking a reader to believe or do?
-3. **Run the attack vectors** — Evidence integrity, decision courage, scope discipline, specificity, structural honesty
-4. **Write only material findings** — Prefer a few strong findings over many weak ones
-5. **Set the verdict** — CLEAR, DEFEND, or ESCALATE
-6. **State next actions** — What should happen now, and what would resolve the strongest objections?
+1. **Read the artifact carefully**, Understand the core recommendation and intended audience
+2. **Identify the real decision**, What is this artifact asking a reader to believe or do?
+3. **Run the attack vectors**, Evidence integrity, decision courage, scope discipline, specificity, structural honesty
+4. **Write only material findings**, Prefer a few strong findings over many weak ones
+5. **Set the verdict**, CLEAR, DEFEND, or ESCALATE
+6. **State next actions**, What should happen now, and what would resolve the strongest objections?
 
 ## Handoff Contract
 

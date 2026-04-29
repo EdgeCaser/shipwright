@@ -40,17 +40,17 @@ Guides the drafting of Objectives and Key Results using John Doerr's "Measure Wh
 ### Step 1: Draft Objectives
 
 ```markdown
-## [Team / Individual] OKRs — [Quarter/Year]
+## [Team / Individual] OKRs, [Quarter/Year]
 
 ### Objective 1: [Inspirational, qualitative goal]
 
 **Quality checklist:**
-- [ ] Inspirational — Would the team be excited to achieve this?
-- [ ] Directional — Does this help decide what to work on (and what NOT to)?
-- [ ] Time-bound — Clear quarter or timeframe
-- [ ] Achievable-ish — Ambitious but not delusional
-- [ ] No metrics in the Objective — Metrics belong in Key Results
-- [ ] Starts with a verb — "Establish," "Deliver," "Transform," "Prove"
+- [ ] Inspirational, Would the team be excited to achieve this?
+- [ ] Directional, Does this help decide what to work on (and what NOT to)?
+- [ ] Time-bound, Clear quarter or timeframe
+- [ ] Achievable-ish, Ambitious but not delusional
+- [ ] No metrics in the Objective, Metrics belong in Key Results
+- [ ] Starts with a verb, "Establish," "Deliver," "Transform," "Prove"
 ```
 
 **Good Objectives:**
@@ -70,7 +70,7 @@ Guides the drafting of Objectives and Key Results using John Doerr's "Measure Wh
 
 **KR1:** [Metric] from [baseline] to [target]
 - Type: [Committed / Aspirational]
-- Measurement: [How we'll measure — tool, query, method]
+- Measurement: [How we'll measure, tool, query, method]
 - Current baseline: [value as of today]
 - Confidence (start of quarter): [X]%
 
@@ -88,13 +88,13 @@ Guides the drafting of Objectives and Key Results using John Doerr's "Measure Wh
 ```
 
 **Key Result quality checklist:**
-- [ ] Quantitative — Has a number
-- [ ] Measurable — We can actually track this metric today (or will instrument it in week 1)
-- [ ] Outcome-based — Measures results, not activities
-- [ ] Has a baseline — We know where we're starting from
-- [ ] Has a stretch target — Not sandbagged but not impossible
-- [ ] 3-5 KRs per Objective — More than 5 means you're not focused enough
-- [ ] Independent — Each KR measures something different
+- [ ] Quantitative, Has a number
+- [ ] Measurable, We can actually track this metric today (or will instrument it in week 1)
+- [ ] Outcome-based, Measures results, not activities
+- [ ] Has a baseline, We know where we're starting from
+- [ ] Has a stretch target, Not sandbagged but not impossible
+- [ ] 3-5 KRs per Objective, More than 5 means you're not focused enough
+- [ ] Independent, Each KR measures something different
 
 **Good Key Results:**
 - "Increase trial-to-paid conversion from 8% to 14%"
@@ -103,7 +103,7 @@ Guides the drafting of Objectives and Key Results using John Doerr's "Measure Wh
 
 **Bad Key Results:**
 - "Launch the onboarding redesign" (binary output, not a measurable outcome)
-- "Ship 15 features" (activity metric — tells you nothing about impact)
+- "Ship 15 features" (activity metric, tells you nothing about impact)
 - "Improve user experience" (not measurable)
 
 ### Step 3: Alignment Check
@@ -141,14 +141,14 @@ Run the OKRs through this anti-pattern checklist:
 
 | Anti-Pattern | Detected? | Example | Fix |
 |---|---|---|---|
-| **Sandbagging** — KRs you'll definitely hit | [Y/N] | [which KR] | Increase target to 70% confidence |
-| **Task masquerading as KR** — "Ship X" | [Y/N] | [which KR] | Rewrite as outcome: "X leads to [metric change]" |
-| **Too many OKRs** — > 3 objectives or > 5 KRs each | [Y/N] | — | Prioritize ruthlessly |
-| **No baseline** — Can't measure starting point | [Y/N] | [which KR] | Instrument in week 1 or choose different metric |
-| **Business-as-usual** — BAU work dressed as OKR | [Y/N] | [which KR] | OKRs are for change, not maintenance |
-| **All committed, no aspirational** — No stretch | [Y/N] | — | Add 1 aspirational objective |
-| **Orphan OKR** — Doesn't connect to anything above | [Y/N] | [which] | Align to company/team OKR or question its value |
-| **Metric without action** — Team can't influence it | [Y/N] | [which KR] | Choose a metric the team can directly move |
+| **Sandbagging**, KRs you'll definitely hit | [Y/N] | [which KR] | Increase target to 70% confidence |
+| **Task masquerading as KR**, "Ship X" | [Y/N] | [which KR] | Rewrite as outcome: "X leads to [metric change]" |
+| **Too many OKRs**, > 3 objectives or > 5 KRs each | [Y/N] |, | Prioritize ruthlessly |
+| **No baseline**, Can't measure starting point | [Y/N] | [which KR] | Instrument in week 1 or choose different metric |
+| **Business-as-usual**, BAU work dressed as OKR | [Y/N] | [which KR] | OKRs are for change, not maintenance |
+| **All committed, no aspirational**, No stretch | [Y/N] |, | Add 1 aspirational objective |
+| **Orphan OKR**, Doesn't connect to anything above | [Y/N] | [which] | Align to company/team OKR or question its value |
+| **Metric without action**, Team can't influence it | [Y/N] | [which KR] | Choose a metric the team can directly move |
 ```
 
 ### Step 5: Scoring & Check-In Template
@@ -158,7 +158,7 @@ Run the OKRs through this anti-pattern checklist:
 
 | Objective / KR | Start | Current | Target | Score (0-1.0) | On Track? | Action Needed |
 |---|---|---|---|---|---|---|
-| **Obj 1:** [name] | — | — | — | [avg of KRs] | — | — |
+| **Obj 1:** [name] |, |, |, | [avg of KRs] |, |, |
 | KR1: [metric] | [baseline] | [current] | [target] | [0.X] | [Yes/At Risk/No] | [action] |
 | KR2: [metric] | [baseline] | [current] | [target] | [0.X] | [Yes/At Risk/No] | [action] |
 
@@ -175,43 +175,43 @@ Run the OKRs through this anti-pattern checklist:
 
 **Acceptable evidence:** Existing dashboards, analytics tools, prior-quarter OKR scores, product strategy docs, company-level OKRs to cascade from, user research findings that inform outcome targets.
 
-**Insufficient evidence:** If a baseline metric cannot be sourced or estimated, produce a partial OKR document with affected Key Results marked `[TBD — requires: baseline instrumentation for <metric name> before target can be set]` and flag the artifact as draft-only.
+**Insufficient evidence:** If a baseline metric cannot be sourced or estimated, produce a partial OKR document with affected Key Results marked `[TBD, requires: baseline instrumentation for <metric name> before target can be set]` and flag the artifact as draft-only.
 
 **Hypotheses vs. findings:**
 - **Findings:** Baselines, current scores, and alignment relationships to company OKRs must be grounded in data.
-- **Hypotheses:** Targets and confidence levels are inherently forward-looking — label aspirational targets as such and note the assumptions behind stretch goals.
+- **Hypotheses:** Targets and confidence levels are inherently forward-looking, label aspirational targets as such and note the assumptions behind stretch goals.
 
 ## Output Format
 
 Produce an OKR Document with:
-1. **Objectives** — 2-3 per team, with quality checklists passed
-2. **Key Results** — 3-5 per objective, with baselines, targets, and measurement methods
-3. **Alignment Matrix** — vertical and horizontal alignment verified
-4. **Anti-Pattern Audit** — checklist results with fixes
-5. **Check-In Template** — ready for mid-quarter scoring
+1. **Objectives**, 2-3 per team, with quality checklists passed
+2. **Key Results**, 3-5 per objective, with baselines, targets, and measurement methods
+3. **Alignment Matrix**, vertical and horizontal alignment verified
+4. **Anti-Pattern Audit**, checklist results with fixes
+5. **Check-In Template**, ready for mid-quarter scoring
 
 **Shipwright Signature (required closing):**
-6. **Decision Frame** — Key trade-offs in objective selection (what you're pursuing vs. what you're deferring), confidence in each target based on baseline data quality, OKR owner, cycle dates, revisit trigger
-7. **Unknowns & Evidence Gaps** — KRs lacking baselines, metrics not yet instrumented, alignment relationships assumed but unconfirmed with partner teams
-8. **Pass/Fail Readiness** — PASS if every KR has a measurable target with a known or planned baseline; FAIL if any KR is binary ("ship X") or has no measurement method. (At Light depth, company-level alignment is not evaluated since the Alignment Check is omitted.)
-9. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+6. **Decision Frame**, Key trade-offs in objective selection (what you're pursuing vs. what you're deferring), confidence in each target based on baseline data quality, OKR owner, cycle dates, revisit trigger
+7. **Unknowns & Evidence Gaps**, KRs lacking baselines, metrics not yet instrumented, alignment relationships assumed but unconfirmed with partner teams
+8. **Pass/Fail Readiness**, PASS if every KR has a measurable target with a known or planned baseline; FAIL if any KR is binary ("ship X") or has no measurement method. (At Light depth, company-level alignment is not evaluated since the Alignment Check is omitted.)
+9. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid
 
-- **OKRs as task lists** — OKRs measure outcomes, not outputs. "Ship feature X" is a project, not an OKR
-- **Setting and forgetting** — Check in weekly, score mid-quarter, retrospect end-of-quarter
-- **All committed** — If every OKR is a 1.0 at end of quarter, you're not stretching
-- **No alignment discussion** — Write OKRs in isolation and you'll have conflicting priorities across teams
-- **Changing OKRs mid-quarter** — Resist the urge; OKRs are a commitment. If they need changing, it's a signal your planning needs work
+- **OKRs as task lists**, OKRs measure outcomes, not outputs. "Ship feature X" is a project, not an OKR
+- **Setting and forgetting**, Check in weekly, score mid-quarter, retrospect end-of-quarter
+- **All committed**, If every OKR is a 1.0 at end of quarter, you're not stretching
+- **No alignment discussion**, Write OKRs in isolation and you'll have conflicting priorities across teams
+- **Changing OKRs mid-quarter**, Resist the urge; OKRs are a commitment. If they need changing, it's a signal your planning needs work
 
 ## Weak vs. Strong Output
 
 **Weak:**
 > **KR2:** Improve onboarding completion rate (Committed)
 
-No baseline, no target, no measurement method — impossible to score at end of quarter.
+No baseline, no target, no measurement method, impossible to score at end of quarter.
 
 **Strong:**
 > **KR2:** Increase onboarding completion rate from 34% to 55% (Committed). Measurement: Amplitude funnel "Signup → First Dashboard Created," baseline pulled 2026-03-20. Confidence: 72%.
 
-Baseline sourced, target quantified, measurement tool named, confidence stated — can be scored objectively at check-in.
+Baseline sourced, target quantified, measurement tool named, confidence stated, can be scored objectively at check-in.

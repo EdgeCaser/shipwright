@@ -3,7 +3,7 @@ name: challenge
 description: "Run a red-team review against a Shipwright artifact and return a Challenge Report with verdict, findings, and resolution conditions."
 ---
 
-# /challenge — Adversarial Review
+# /challenge, Adversarial Review
 
 Run this command to pressure-test an existing artifact with Shipwright's red-team agent.
 

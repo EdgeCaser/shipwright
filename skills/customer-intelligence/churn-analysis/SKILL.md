@@ -36,7 +36,7 @@ Structures a systematic approach to diagnosing why users leave and designing sta
 ```markdown
 ## Churn Definition
 
-**Churn event:** [What counts as churn — e.g., "Account cancellation" or "No login in 30 days"]
+**Churn event:** [What counts as churn, e.g., "Account cancellation" or "No login in 30 days"]
 **Measurement period:** [Monthly / Quarterly]
 **Current rate:** [X]% [logo churn / revenue churn]
 
@@ -51,11 +51,11 @@ Structures a systematic approach to diagnosing why users leave and designing sta
 ### Churn Type Breakdown
 | Type | % of Total Churn | Trend | Controllable? |
 |---|---|---|---|
-| Voluntary — dissatisfied | [X]% | [trend] | Yes — product/experience fixes |
-| Voluntary — no longer need | [X]% | [trend] | Partially — positioning/expansion |
-| Voluntary — switched to competitor | [X]% | [trend] | Yes — competitive response |
-| Voluntary — budget/downsizing | [X]% | [trend] | No — external factor |
-| Involuntary — payment failure | [X]% | [trend] | Yes — dunning optimization |
+| Voluntary, dissatisfied | [X]% | [trend] | Yes, product/experience fixes |
+| Voluntary, no longer need | [X]% | [trend] | Partially, positioning/expansion |
+| Voluntary, switched to competitor | [X]% | [trend] | Yes, competitive response |
+| Voluntary, budget/downsizing | [X]% | [trend] | No, external factor |
+| Involuntary, payment failure | [X]% | [trend] | Yes, dunning optimization |
 ```
 
 ### Step 2: Identify Churn Predictors
@@ -130,7 +130,7 @@ Combine leading indicators into a churn risk score:
 |---|---|---|---|---|
 | Login drop (7+ days) | Re-engagement nudge | Email | Day 8 | "Here's what you missed + quick win" |
 | Feature adoption gap | In-app guidance | In-app | On next login | Contextual tooltip for unused key feature |
-| Support ticket spike | Proactive CS outreach | Call/Email | Within 24 hours | "I noticed X — can I help?" |
+| Support ticket spike | Proactive CS outreach | Call/Email | Within 24 hours | "I noticed X, can I help?" |
 | NPS detractor (0-6) | CS follow-up | Call | Within 48 hours | Understand issue, offer solution |
 | Usage decline (30-day) | Win-back campaign | Email | Day 30, 45, 60 | Escalating value reminders |
 
@@ -173,34 +173,34 @@ Combine leading indicators into a churn risk score:
 
 **Acceptable evidence:** Billing/subscription data, product usage analytics, exit survey responses, NPS detractor comments, win/loss interview transcripts, support ticket logs.
 
-**Insufficient evidence:** If you have churn rate numbers but zero qualitative data on why users left, state "Insufficient evidence for Root Cause Analysis" and produce a partial artifact with the churn metrics snapshot completed and root cause and intervention sections marked `[TBD — requires: exit surveys, churned-customer interviews, or support ticket analysis]`. Flag the artifact as draft-only.
+**Insufficient evidence:** If you have churn rate numbers but zero qualitative data on why users left, state "Insufficient evidence for Root Cause Analysis" and produce a partial artifact with the churn metrics snapshot completed and root cause and intervention sections marked `[TBD, requires: exit surveys, churned-customer interviews, or support ticket analysis]`. Flag the artifact as draft-only.
 
 **Hypotheses vs. findings:**
 - **Findings:** Churn rates, churn type breakdown, and leading indicator correlations must be grounded in data.
-- **Hypotheses:** Root cause attributions and predicted intervention effectiveness may be directional — label them "Hypothesis — pending validation" when sourced from fewer than 5 data points.
+- **Hypotheses:** Root cause attributions and predicted intervention effectiveness may be directional, label them "Hypothesis, pending validation" when sourced from fewer than 5 data points.
 
 ## Output Format
 
 Produce a Churn Analysis & Retention Playbook with:
-1. **Churn Metrics** — current rates, types, trends
-2. **Leading Indicators** — behavioral predictors and risk scoring
-3. **Root Cause Analysis** — categorized diagnosis with evidence
-4. **Retention Options** — framed intervention options across stages (prevention, intervention, save, recovery) with expected impact and trade-offs; does not prescribe which to implement
-5. **Measurement Plan** — metrics and review cadence
+1. **Churn Metrics**, current rates, types, trends
+2. **Leading Indicators**, behavioral predictors and risk scoring
+3. **Root Cause Analysis**, categorized diagnosis with evidence
+4. **Retention Options**, framed intervention options across stages (prevention, intervention, save, recovery) with expected impact and trade-offs; does not prescribe which to implement
+5. **Measurement Plan**, metrics and review cadence
 
 **Shipwright Signature (required closing):**
-6. **Decision Frame** — primary finding on churn drivers and framed retention options with expected churn impact, trade-offs (cost of intervention vs. cost of churn), confidence level with evidence quality, owner, decision date, revisit trigger
-7. **Unknowns & Evidence Gaps** — root causes with insufficient qualitative backing, segments with no exit data, untested intervention assumptions
-8. **Pass/Fail Readiness** — PASS if churn rate is quantified, top 3 root causes are evidence-backed, and at least one retention option is framed with expected impact (at Light depth: PASS if churn rate is quantified and top 3 root causes are identified with at least directional evidence); FAIL if churn definition is missing or root causes are assumed without data
-9. **Recommended Next Artifact** — Which Shipwright skill to run next and why
+6. **Decision Frame**, primary finding on churn drivers and framed retention options with expected churn impact, trade-offs (cost of intervention vs. cost of churn), confidence level with evidence quality, owner, decision date, revisit trigger
+7. **Unknowns & Evidence Gaps**, root causes with insufficient qualitative backing, segments with no exit data, untested intervention assumptions
+8. **Pass/Fail Readiness**, PASS if churn rate is quantified, top 3 root causes are evidence-backed, and at least one retention option is framed with expected impact (at Light depth: PASS if churn rate is quantified and top 3 root causes are identified with at least directional evidence); FAIL if churn definition is missing or root causes are assumed without data
+9. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid
 
-- **Treating all churn the same** — Voluntary vs. involuntary, satisfied vs. dissatisfied need different responses
-- **Only measuring logo churn** — Revenue churn matters more; losing one enterprise deal > losing 20 free accounts
-- **Intervention without diagnosis** — Offering discounts when the problem is usability wastes money and annoys users
-- **No prevention layer** — The best retention strategy is getting users to value fast, not saving them at cancellation
-- **Ignoring involuntary churn** — Payment failures are often 20-40% of total churn and are highly fixable with dunning optimization
+- **Treating all churn the same**, Voluntary vs. involuntary, satisfied vs. dissatisfied need different responses
+- **Only measuring logo churn**, Revenue churn matters more; losing one enterprise deal > losing 20 free accounts
+- **Intervention without diagnosis**, Offering discounts when the problem is usability wastes money and annoys users
+- **No prevention layer**, The best retention strategy is getting users to value fast, not saving them at cancellation
+- **Ignoring involuntary churn**, Payment failures are often 20-40% of total churn and are highly fixable with dunning optimization
 
 ## Weak vs. Strong Output
 
@@ -210,6 +210,6 @@ Produce a Churn Analysis & Retention Playbook with:
 Restates the churn problem instead of diagnosing it. No segmentation, no evidence, no actionable category.
 
 **Strong:**
-> "Root cause: 38% of Q3 churn cited 'missing integrations' in exit surveys (n=42), concentrated in Mid-Market segment. Top 3 requested integrations: Salesforce, HubSpot, Slack. Controllable — product investment required."
+> "Root cause: 38% of Q3 churn cited 'missing integrations' in exit surveys (n=42), concentrated in Mid-Market segment. Top 3 requested integrations: Salesforce, HubSpot, Slack. Controllable, product investment required."
 
 Specific category, quantified, sourced from named evidence, tied to a segment, and tagged as controllable.
