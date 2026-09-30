@@ -203,6 +203,16 @@ test('installer writes a managed instruction block into AGENTS.md and CLAUDE.md'
   }
   assert.equal((await installShipwright(dir)).changes.length, 0);
 });
+test('host instructions stay within the word budget and keep the required behaviors', async () => {
+  const text = await readFile(new URL('../docs/host-instructions.md', import.meta.url), 'utf8');
+  const words = text.split(/\s+/).filter(Boolean).length;
+  assert.ok(words <= 350, `host-instructions.md has ${words} words, budget is 350`);
+  for (const term of ['governance', 'publication', 'product_strategy', 'pricing', 'unclassified', 'UNCERTAINTY_DRIVERS',
+    'DISAMBIGUATION_QUESTIONS', 'NEEDED_EVIDENCE', 'RECOMMENDED_NEXT_ACTION', 'normal coding mode', 'em dashes (U+2014)', '{{HOST_DIR}}']) {
+    assert.ok(text.includes(term), term);
+  }
+  assert.ok(!text.includes('—'));
+});
 test('managed block keeps user content byte-for-byte and is replaced in place on re-install', async t => {
   const dir = await temporary(t);
   const before = 'Top notes\r\n\r\nKeep me  \n';
