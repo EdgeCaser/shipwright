@@ -7,9 +7,9 @@
  * no judge. For users who need a directional answer quickly and accept that the
  * output is provisional.
  *
- * This is a distinct execution path from the conflict harness (Rigor Mode).
+ * This is a distinct execution path from Rigor Mode.
  * Escalation from Fast to Rigor Mode regenerates from scratch — Fast Mode output
- * is not fed into the harness as a first-pass artifact.
+ * is not fed into Rigor Mode as a first-pass artifact.
  *
  * Usage:
  *   node scripts/run-fast-analysis.mjs \
@@ -349,7 +349,7 @@ export function validateFastAnalysis(value, scenarioId, runId) {
 }
 
 // ---------------------------------------------------------------------------
-// Turn runner (mirrors run-conflict-harness.mjs createShellTurnRunner)
+// Turn runner
 // ---------------------------------------------------------------------------
 
 export function createShellTurnRunner(options = {}) {

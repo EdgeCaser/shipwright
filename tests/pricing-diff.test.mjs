@@ -75,7 +75,8 @@ test('buildPricingDiff renders header and disclaimer', { concurrency: false }, (
   const pack = makePack('Acme', [{ name: 'Starter', price: '29' }]);
   const result = buildPricingDiff([pack]);
   assert.ok(result.includes('## Pricing Comparison'));
-  assert.ok(result.includes('verify against source evidence'));
+  assert.ok(result.includes('Verify against source evidence'));
+  assert.ok(!result.includes('—'), 'pricing output contains no em dash');
 });
 
 test('buildPricingDiff renders competitor name in table', { concurrency: false }, () => {

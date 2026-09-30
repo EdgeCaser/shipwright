@@ -42,9 +42,11 @@ export function pricingProductLabel(tuple, facts, fallback) {
   const host = url => { try { return new URL(url).hostname.replace(/^www\./, ''); } catch { return null; } };
   const ownHost = host(tuple.source_url);
   const priceHosts = new Set(valid.filter(fact => PRICING_FIELDS.has(fact.field)).map(fact => host(fact.source_url)));
-  // The caller's fallback is derived from identity facts, so they must share this host too.
+  // The caller's fallback is derived from identity facts. It applies only when one
+  // identity exists, on this host; otherwise a host label is the honest choice.
   const identity = valid.filter(fact => ['product_name', 'product', 'company'].includes(fact.field) && fact.value);
-  if (!identity.some(fact => fact.field === 'product_name')
+  if (identity.length > 0 && !identity.some(fact => fact.field === 'product_name')
+    && valuesOf(identity, 'product').size <= 1 && valuesOf(identity, 'company').size <= 1
     && identity.every(fact => host(fact.source_url) === ownHost)
     && priceHosts.size === 1 && priceHosts.has(ownHost)) return fallback;
   return ownHost || 'Unattributed';

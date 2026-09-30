@@ -15,8 +15,8 @@ const HIGH_STAKES_DECISION_RE = /\bshould\s+(?:we|i|the\s+(?:company|team|board)
 const SCENARIO_CLASS_PATTERNS = [
   { scenarioClass: 'governance', pattern: /\b(restructur\w*|acquir\w*|acquisition|merg(?:e|er|ing)|divest\w*|spin[- ]off|dissolv\w*|reorgani[sz]\w*|board\s+(?:vote|decision|approval))\b/i },
   { scenarioClass: 'publication', pattern: /\b(go\s+public|ipo|press\s+release|public\s+(?:statement|announcement)|publish\s+(?:the|our|a))\b/i },
-  { scenarioClass: 'product_strategy', pattern: /\b(kill|sunset|shut\s+down|pivot|build\s+vs\.?\s+buy|make\s+vs\.?\s+buy|bet\s+(?:the|our)\s+company)\b/i },
-  { scenarioClass: 'pricing', pattern: /\b(raise\s+(?:our\s+)?prices|lower\s+(?:our\s+)?prices|change\s+(?:our\s+)?pricing|reprice|price\s+increase|price\s+decrease)\b/i },
+  { scenarioClass: 'product_strategy', pattern: /\b(kill|sunset|shut\s+down|pivot|(?:build|make)\s+(?:vs\.?|versus|or)\s+buy|bet\s+(?:the|our)\s+company)\b/i },
+  { scenarioClass: 'pricing', pattern: /\b((?:raise|increase|lower|cut|reduce|change)\s+(?:(?:our|the|its|their)\s+)?(?:prices?|pricing)|reprice|price\s+(?:increase|decrease|change|cut|hike))\b/i },
 ];
 
 const ROUTE_RULES = [

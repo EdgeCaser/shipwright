@@ -60,8 +60,8 @@ function makeFastTurnRunner(overrides = {}) {
 }
 
 /**
- * Rigor (conflict harness) turn runner. Returns valid packets for all four
- * phases. Mirrors the signature expected by run-conflict-harness.mjs.
+ * Rigor Mode turn runner. Returns valid packets for all four
+ * phases.
  */
 function makeRigorTurnRunner(judgeOverrides = {}) {
   return async (options) => {

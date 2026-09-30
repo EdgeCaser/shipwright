@@ -58,7 +58,7 @@ export function buildPricingDiff(factsPacks) {
   const lines = [];
   lines.push('## Pricing Comparison');
   lines.push('');
-  lines.push('*Extracted from structured facts — verify against source evidence before citing.*');
+  lines.push('*Extracted from structured facts. Verify against source evidence before citing.*');
   lines.push('');
 
   // Main pricing table
@@ -144,11 +144,13 @@ function extractSourceSummary(factsPack) {
 }
 
 function resolveLabel(facts, meta) {
-  const products = [...new Set(facts.filter(fact => fact.field === 'product_name').map(fact => fact.value))];
-  if (products.length > 1) return products.join(' / ');
-  const get = (field) => facts.find((f) => f.field === field)?.value;
-  const name = get('product_name') || get('product') || get('company');
-  if (name) return name;
+  // Several named products are all shown; picking the first would misattribute the rest.
+  for (const field of ['product_name', 'product']) {
+    const names = [...new Set(facts.filter(fact => fact.field === field && fact.value).map(fact => fact.value))];
+    if (names.length > 0) return names.join(' / ');
+  }
+  const company = facts.find(fact => fact.field === 'company' && fact.value)?.value;
+  if (company) return company;
 
   // Fall back to domain from the first fact URL
   const firstUrl = facts[0]?.source_url;
@@ -176,10 +178,10 @@ function buildPricingTable(sources, { hasBilling, hasFree }) {
 
   for (const source of sources) {
     if (source.plans.length === 0) {
-      const row = [source.label, '—', '—'];
-      if (hasBilling) row.push('—');
-      if (hasFree) row.push(source.hasFreeEntry ? 'Yes' : '—');
-      row.push('—');
+      const row = [source.label, '-', '-'];
+      if (hasBilling) row.push('-');
+      if (hasFree) row.push(source.hasFreeEntry ? 'Yes' : '-');
+      row.push('-');
       rows.push(row);
       continue;
     }
@@ -192,8 +194,8 @@ function buildPricingTable(sources, { hasBilling, hasFree }) {
       const firstForProduct = i === 0 || productKey(plan) !== productKey(source.plans[i - 1]);
       const label = firstForProduct ? product : '';
       const price = formatPrice(plan.price, plan.currency);
-      const row = [label, plan.plan_name || '—', price];
-      if (hasBilling) row.push(plan.billing_period || '—');
+      const row = [label, plan.plan_name || '-', price];
+      if (hasBilling) row.push(plan.billing_period || '-');
       if (hasFree) {
         if (firstForProduct) {
           const productPlans = source.plans.filter(entry => productKey(entry) === productKey(plan));
@@ -217,8 +219,8 @@ function buildPricingTable(sources, { hasBilling, hasFree }) {
 function buildReviewTable(sources) {
   const rows = sources.map((s) => [
     s.label,
-    s.starRating ? `${s.starRating}★` : '—',
-    s.reviewCount ? formatNumber(s.reviewCount) : '—',
+    s.starRating ? `${s.starRating}★` : '-',
+    s.reviewCount ? formatNumber(s.reviewCount) : '-',
   ]);
 
   return [

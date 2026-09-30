@@ -82,7 +82,7 @@ The fingerprint check was also run after each intermediate full-suite run, with 
 
 - The C-01 and C-02 repairs were verified by the coordinator only. The reviewer did review and confirm the coordinator's CRLF fix during round 3.
 - Metric citation text containing numbers is treated as citation, not measurement (A-05).
-- A structured envelope whose JSON contains `-->` ends early; `docs/structured-artifacts.md` now tells producers to write `->` or escape it as `-->`.
+- A structured envelope whose JSON contains `-->` ends early; `docs/structured-artifacts.md` now tells producers to write `->` or escape it as `--\u003e`.
 - A code-span `<!--` whose `-->` falls in the same paragraph hides that paragraph's remaining text.
 - Deterministic tests do not establish live Claude or Codex host behavior; that acceptance pass is still separate.
 

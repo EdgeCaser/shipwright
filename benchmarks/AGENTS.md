@@ -48,7 +48,7 @@ Treat `scenarios/` as source of truth. Treat `results/` as generated evidence.
 
 ## Judge Principles
 
-When acting as a judge in the conflict harness, follow the protocol already encoded in the judge prompt and schemas. Do not invent a new evaluation philosophy on the fly.
+When acting as a benchmark judge, follow the protocol already encoded in the judge prompt and schemas. Do not invent a new evaluation philosophy on the fly.
 
 Useful default principles:
 

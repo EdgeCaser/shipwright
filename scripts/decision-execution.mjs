@@ -100,17 +100,17 @@ export async function executeFastAnalysisForSession(session, options = {}) {
 /**
  * Execute Rigor Mode for a session and return a normalized result.
  *
- * Rigor Mode requires the decision harness (cross-model conflict runner).
+ * Rigor Mode requires an optional multi-provider mode.
  * This function is a stub in the open-source Shipwright distribution.
  *
  * When options.turnRunner is provided (test/mock path), a minimal judge-only
  * execution runs and returns a normalized result. In production, no turnRunner
- * is supplied and the function throws, directing users to ShipwrightPlus.
+ * is supplied and the function throws, explaining that Rigor Mode is unavailable.
  */
 export async function executeRigorAnalysisForSession(session, options = {}) {
   if (!options.turnRunner) {
     throw new Error(
-      'Rigor Mode requires the Shipwright decision harness, which is not included in this distribution. ' +
+      'Rigor Mode is not included in this distribution. ' +
       'Fast Mode is available with a single provider.'
     );
   }

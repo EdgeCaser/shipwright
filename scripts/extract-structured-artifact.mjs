@@ -15,6 +15,24 @@ const SCHEMA_FILE_BY_TYPE = Object.freeze({
 
 const schemaCache = new Map();
 
+// Replace fenced code lines with spaces, keeping offsets and line numbers.
+// Pretty-printed envelope JSON never has a line starting with a fence marker.
+function maskFencedCode(text) {
+  let fence = null;
+  return text.split('\n').map(line => {
+    const marker = line.match(/^[ \t]*(?:(?:[-*+]|\d{1,9}[.)])[ \t]+)?(\x60{3,}|~{3,})(.*)$/);
+    if (fence) {
+      if (marker && marker[1][0] === fence[0] && marker[1].length >= fence.length && !marker[2].trim()) fence = null;
+      return line.replace(/[^\r]/g, ' ');
+    }
+    if (marker && (marker[1][0] === '~' || !marker[2].includes('\x60'))) {
+      fence = marker[1];
+      return line.replace(/[^\r]/g, ' ');
+    }
+    return line;
+  }).join('\n');
+}
+
 export function extractStructuredArtifact(text) {
   if (typeof text !== 'string' || text.length === 0) {
     return {
@@ -25,8 +43,10 @@ export function extractStructuredArtifact(text) {
     };
   }
 
-  const matches = [...text.matchAll(ARTIFACT_COMMENT_RE)];
-  const markers = [...text.matchAll(/<!--\s*shipwright:artifact\b/g)];
+  // A documented example of the envelope inside a code fence is not an envelope.
+  const searchable = maskFencedCode(text);
+  const matches = [...searchable.matchAll(ARTIFACT_COMMENT_RE)];
+  const markers = [...searchable.matchAll(/<!--\s*shipwright:artifact\b/g)];
   if (markers.length !== matches.length || matches.length > 1) {
     return { artifact: null, raw: null, startLine: 1,
       error: 'Expected exactly one complete shipwright:artifact block.' };

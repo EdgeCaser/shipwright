@@ -133,7 +133,7 @@ export function validateArtifact(text, options = {}) {
       issues.push({
         type: IssueType.INVALID_STRUCTURED_ARTIFACT,
         severity: Severity.ERROR,
-        message: `Structured artifact block contains invalid JSON: ${extracted.error}`,
+        message: `Structured artifact block is unusable: ${extracted.error}`,
         lineNumber: extracted.startLine,
         excerpt: truncateExcerpt(extracted.raw || '', 150),
       });
@@ -217,7 +217,7 @@ function finishValidation(issues, artifact, options) {
   const engineeringReasons = [...reasons];
   if (incompleteMetrics) engineeringReasons.push('Metric baseline or target is unresolved for engineering.');
   if (light) engineeringReasons.push('Light brief needs detailed requirements for engineering.');
-  if (artifact?.artifact_type === 'prd' && !/(?:^|\n)#{1,6}\s+(?:\d+\.\s*)?(?:Detailed Requirements|Product Requirements Document)\b/im
+  if (artifact?.artifact_type === 'prd' && !/(?:^|\n) {0,3}#{1,6}\s+(?:\d+\.\s*)?(?:Detailed Requirements|Product Requirements Document)\b/im
     .test(options.visibleText || '')) {
     engineeringReasons.push('Detailed requirements are missing for engineering handoff.');
   }
@@ -327,7 +327,11 @@ function normalizeProse(value) {
 // Outside a list, a line indented four spaces or a tab after a blank line or a
 // heading opens an indented code block, as Markdown renders it; it runs until a
 // less-indented non-blank line. Inside a list, indentation continues the item.
-function visibleMarkdown(text) {
+function columns(whitespace) {
+  return [...whitespace].reduce((width, character) => (character === '\t' ? width + 4 - (width % 4) : width + 1), 0);
+}
+
+export function visibleMarkdown(text) {
   let fence = null;
   let comment = false;
   let indentedCode = false;
@@ -343,8 +347,10 @@ function visibleMarkdown(text) {
       return line.slice(end + 3);
     }
     if (fence) {
-      const marker = line.match(/^\s*(\x60{3,}|~{3,})(.*)$/);
-      if (marker && marker[1][0] === fence[0] && marker[1].length >= fence.length && !marker[2].trim()) fence = null;
+      // A closer may be indented at most three columns past the fence's container.
+      const marker = line.match(/^([ \t]*)(\x60{3,}|~{3,})(.*)$/);
+      if (marker && columns(marker[1]) <= fence.base + 3 && marker[2][0] === fence.marker[0]
+        && marker[2].length >= fence.marker.length && !marker[3].trim()) fence = null;
       return '';
     }
     const codeIndent = /^(?: {4}|\t)/.test(line);
@@ -352,15 +358,19 @@ function visibleMarkdown(text) {
       if (blank || codeIndent) return '';
       indentedCode = false;
     }
-    if (/^ {0,3}(?:[-*+]|\d{1,9}[.)])(?:[ \t]|$)/.test(line)) inList = true;
+    const heading = /^ {0,3}#{1,6}(?:[ \t]|$)/.test(line);
+    const thematicBreak = /^ {0,3}([-*_])(?:[ \t]*\1){2,}[ \t]*$/.test(line);
+    if (heading || thematicBreak) inList = false;
+    else if (/^ {0,3}(?:[-*+]|\d{1,9}[.)])(?:[ \t]|$)/.test(line)) inList = true;
     else if (!blank && !/^[ \t]/.test(line) && previousBlank) inList = false;
     if (!blank && codeIndent && !inList && (previousBlank || previousHeading)) {
       indentedCode = true;
       return '';
     }
-    const opener = line.match(/^\s*(?:(?:[-*+]|\d{1,9}[.)])\s+)?(\x60{3,}|~{3,})(.*)$/);
-    if (opener && (opener[1][0] === '~' || !opener[2].includes('\x60'))) {
-      fence = opener[1];
+    const opener = line.match(/^([ \t]*)((?:(?:[-*+]|\d{1,9}[.)])[ \t]+)?)(\x60{3,}|~{3,})(.*)$/);
+    if (opener && (opener[3][0] === '~' || !opener[4].includes('\x60'))) {
+      const column = columns(opener[1] + opener[2]);
+      fence = { marker: opener[3], base: opener[2] || inList ? column : 0 };
       return '';
     }
     // A same-line close is left to the inline pass below.
@@ -1003,21 +1013,10 @@ function splitIntoParagraphs(text) {
   const paragraphs = [];
   let current = [];
   let startLine = 1;
-  let inCodeBlock = false;
 
+  // Input is visible text: fences and comments are already blank lines.
   for (let i = 0; i < lines.length; i += 1) {
     const line = lines[i];
-
-    if (/^```/.test(line)) {
-      inCodeBlock = !inCodeBlock;
-      if (inCodeBlock && current.length > 0) {
-        paragraphs.push({ content: current.join('\n'), startLine });
-        current = [];
-      }
-      continue;
-    }
-
-    if (inCodeBlock) continue;
 
     if (line.trim() === '') {
       if (current.length > 0) {
@@ -1163,7 +1162,9 @@ function collectFlagValues(argv, flagName) {
 // ---------------------------------------------------------------------------
 
 async function main(argv = process.argv.slice(2)) {
-  const filePath = argv.find((arg) => !arg.startsWith('--'));
+  // Skip the values of flags that take one, so the path may come after them.
+  const VALUE_FLAGS = new Set(['--expect-sections', '--artifact-type', '--related', '--format']);
+  const filePath = argv.find((arg, index) => !arg.startsWith('--') && !VALUE_FLAGS.has(argv[index - 1]));
   if (!filePath) {
     console.error('Usage: node scripts/validate-artifact.mjs <path-to-markdown> [--expect-sections "Section1,Section2"] [--expect-structured] [--artifact-type prd] [--related path] [--require-ready] [--format json]');
     process.exitCode = 1;
@@ -1221,7 +1222,7 @@ async function main(argv = process.argv.slice(2)) {
   } else {
     console.log(`\n${result.summary}\n`);
     for (const issue of result.issues) {
-      console.log(`[${issue.severity.toUpperCase()}] Line ${issue.lineNumber} — ${issue.type}`);
+      console.log(`[${issue.severity.toUpperCase()}] Line ${issue.lineNumber}: ${issue.type}`);
       console.log(`  ${issue.message}`);
       if (issue.excerpt) console.log(`  > ${issue.excerpt}`);
       console.log('');

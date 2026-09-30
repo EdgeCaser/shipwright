@@ -2019,15 +2019,16 @@ function normalizeBillingPeriod(input) {
     return `${match[1]}/${normalizePeriodToken(match[2])}`;
   }
 
-  match = lower.match(/\b(per\s+|\/\s*)(month|mo|year|yr|monthly|yearly|annually|annual)\b/);
+  // No word boundary before "/": the tail usually starts with it, as in "$29/month".
+  match = lower.match(/(?:\bper\s+|\/\s*)(month|mo|year|yr|monthly|yearly|annually|annual)\b/);
   if (match) {
-    return normalizePeriodToken(match[2]);
+    return normalizePeriodToken(match[1]);
   }
 
   if (/\bmonthly\b/.test(lower)) return 'month';
   if (/\b(yearly|annually|annual)\b/.test(lower)) return 'year';
-  if (/\bper user\b|\b\/user\b/.test(lower)) return 'user';
-  if (/\bper seat\b|\b\/seat\b/.test(lower)) return 'seat';
+  if (/\bper user\b|\/\s*user\b/.test(lower)) return 'user';
+  if (/\bper seat\b|\/\s*seat\b/.test(lower)) return 'seat';
 
   return '';
 }

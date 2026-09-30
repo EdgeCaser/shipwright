@@ -199,3 +199,37 @@ test('an identity from a page without prices does not label prices from another 
   assert.match(diff, /\| reviews\.example \| Enterprise \| \$99 \|/);
   assert.doesNotMatch(diff, /\| Alpha \| Enterprise/);
 });
+
+test('with no identity facts, a price is labelled by its own host, not the first fact host', () => {
+  const offer = { source_url: 'https://alpha.example/pricing', excerpt: 'Enterprise 99', confidence_hint: 'high', tuple_id: 't1' };
+  const facts = [
+    { field: 'star_rating', value: '4.5', source_url: 'https://reviews.example/alpha', excerpt: 'Rated 4.5', confidence_hint: 'medium' },
+    { ...offer, field: 'plan_name', value: 'Enterprise' },
+    { ...offer, field: 'price', value: '99' },
+  ];
+  assert.match(buildPricingDiff([{ meta: {}, facts }]), /\| alpha\.example \| Enterprise \| 99 \|/);
+});
+
+test('a price on a host that names several products is not given one of their names', () => {
+  const page = (slug, title, excerpt) => ({ url: `https://widgetco.example/${slug}`, title, extracted: { excerpt } });
+  const pack = extractFactsPack({ query: 'widgetco pricing', generatedAt: '2026-09-30T00:00:00Z', results: [
+    page('alpha', 'Alpha Pricing | WidgetCo', 'Starter $10'),
+    page('beta', 'Beta Pricing | WidgetCo', 'Team $20'),
+    page('cloud', '', 'Enterprise $99'),
+  ] });
+  const diff = buildPricingDiff([pack]);
+  assert.match(diff, /\| widgetco\.example \| Enterprise \| \$99 \|/);
+  assert.doesNotMatch(diff, /\| (?:Alpha|Beta) \| Enterprise/);
+  assert.match(formatFactsBlock(pack), /Alpha \/ Beta/);
+});
+
+test('slash billing notation keeps its billing period and confidence', () => {
+  for (const [excerpt, period] of [['Pro $29/month', 'month'], ['Pro $29/mo', 'month'],
+    ['Pro $290/year', 'year'], ['Pro $29 / month', 'month'], ['Pro $29/user/month', 'user/month']]) {
+    const pack = extractFactsPack({ generatedAt: '2026-09-30T00:00:00Z', results: [{
+      url: 'https://example.com/pricing', extracted: { excerpt } }] });
+    const [row] = reconstructPricingTuples(pack.facts);
+    assert.equal(row?.billing_period, period, excerpt);
+    assert.equal(row?.confidence, 'high', excerpt);
+  }
+});

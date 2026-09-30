@@ -8,7 +8,7 @@ Markdown is the human-readable artifact. When an automated consumer explicitly r
 -->
 ```
 
-The JSON must not contain the text `-->`, because it ends the comment early. Write an arrow as `->` or escape it inside a string as `-->`.
+The JSON must not contain the text `-->`, because it ends the comment early. Write an arrow as `->` or escape it inside a string as `--\u003e`.
 
 Read the schema before producing the payload:
 
@@ -18,7 +18,7 @@ Read the schema before producing the payload:
 | product-strategy-session | strategy | schemas/artifacts/strategy.schema.json |
 | adversarial-review | challenge-report | schemas/artifacts/challenge-report.schema.json |
 
-Use `schema_version: "2.0.0"`, lowercase `mode` (`fast` or `rigorous`), and lowercase depth (`light`, `standard`, `deep`; legacy `quick` means light). These workflow modes are unrelated to the optional decision CLI's separate multi-model harness.
+Use `schema_version: "2.0.0"`, lowercase `mode` (`fast` or `rigorous`), and lowercase depth (`light`, `standard`, `deep`; legacy `quick` means light). These workflow modes are unrelated to the optional decision CLI's separate analysis modes.
 
 ## Shared fields
 

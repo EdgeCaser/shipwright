@@ -15,7 +15,7 @@
  *   escalation_offered       — user was shown an escalation recommendation
  *   next_step_confirmed      — user confirmed escalation to Rigor Mode
  *   next_step_declined       — user declined escalation
- *   rigor_completed          — Rigor Mode (conflict harness) finished
+ *   rigor_completed          — Rigor Mode finished
  *   session_completed        — session reached a terminal state
  *   session_failed           — session execution step failed
  *   session_presented        — session state was fetched and presented

@@ -107,10 +107,12 @@ function productPrefix(tuple, domainFacts, identity) {
  * Prefers: product_name > product > company > domain
  */
 function resolveIdentity(domainFacts, domain) {
-  const products = [...new Set(domainFacts.filter(fact => fact.field === 'product_name').map(fact => fact.value))];
-  if (products.length > 1) return products.join(' / ');
-  const get = (field) => domainFacts.find((f) => f.field === field)?.value;
-  return get('product_name') || get('product') || get('company') || domain;
+  // Several named products are all shown; picking the first would misattribute the rest.
+  for (const field of ['product_name', 'product']) {
+    const names = [...new Set(domainFacts.filter(fact => fact.field === field && fact.value).map(fact => fact.value))];
+    if (names.length > 0) return names.join(' / ');
+  }
+  return domainFacts.find(fact => fact.field === 'company' && fact.value)?.value || domain;
 }
 
 /**
@@ -129,7 +131,7 @@ function renderBlock(meta, groups, allFacts) {
 
   // Header
   const query = meta.query ? `"${meta.query}"` : '(no query)';
-  lines.push(`Facts — ${query}`);
+  lines.push(`Facts: ${query}`);
 
   const coverageParts = [];
   if (meta.coverageHint) coverageParts.push(meta.coverageHint);

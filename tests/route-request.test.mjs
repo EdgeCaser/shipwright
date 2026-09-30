@@ -102,3 +102,17 @@ test('routeRequest auto-escalates when contradiction warning count crosses thres
   assert.ok(result.escalateReasons.includes('validator-contradictions'));
   assert.equal(result.autoEscalate, true);
 });
+
+test('common price-change and build-or-buy questions route to decision analysis', () => {
+  for (const [question, decisionClass] of [
+    ['Should we raise the price of the Pro plan?', 'pricing'],
+    ['Should we increase our prices next quarter?', 'pricing'],
+    ['Should we cut prices for SMB?', 'pricing'],
+    ['Should we build or buy a billing system?', 'product_strategy'],
+  ]) {
+    const result = routeRequest(question);
+    assert.equal(result.topRoute?.route, 'decision-analysis', question);
+    assert.equal(result.decisionClass, decisionClass, question);
+  }
+  assert.notEqual(routeRequest('Recommend packaging for our current prices').topRoute?.route, 'decision-analysis');
+});

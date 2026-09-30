@@ -6,7 +6,7 @@ import { spawnSync } from 'node:child_process';
 import test from 'node:test';
 
 import { extractStructuredArtifact, validateStructuredArtifact } from '../scripts/extract-structured-artifact.mjs';
-import { IssueType, Severity, validateArtifact } from '../scripts/validate-artifact.mjs';
+import { IssueType, Severity, validateArtifact, visibleMarkdown } from '../scripts/validate-artifact.mjs';
 
 const fixturePath = path.resolve('benchmarks/fixtures/prd-hidden-scope-creep/final-pass.md');
 const fixture = readFileSync(fixturePath, 'utf8');
@@ -256,6 +256,11 @@ for (const [name, wrap] of [
     assert.equal(requirements.valid, true);
     assert.equal(requirements.readiness.engineeringReady, false);
     assert.ok(requirements.readiness.engineeringReasons.some(reason => /Detailed requirements/.test(reason)));
+    // Assert on the scanner itself, after a paragraph that closes any list, so this cannot pass by accident.
+    const scanned = visibleMarkdown('Intro.\n\n' + wrap('## Detailed Requirements\n\nSupport teams can trigger handoff.')
+      + '\n\nAfter.\n');
+    assert.doesNotMatch(scanned, /Detailed Requirements|Support teams/);
+    assert.match(scanned, /Intro\.[\s\S]*After\./);
   });
 }
 
@@ -442,4 +447,66 @@ test('Light strategy cannot inherit the directional PRD exception for unknown me
   assert.equal(result.readiness.ready, false);
   assert.equal(result.readiness.engineeringReady, false);
   assert.ok(result.issues.some(issue => issue.type === IssueType.READINESS_FAILED));
+});
+
+test('a fence closes only at a closer within three columns of its container', () => {
+  const inside = visibleMarkdown('```markdown\n    ```\nOwner: Example\n```\n\nAfter.\n');
+  assert.doesNotMatch(inside, /Owner/);
+  assert.match(inside, /After\./);
+  const nested = visibleMarkdown('- Example:\n\n    ```\n    code line\n    ```\n\nAfter.\n');
+  assert.doesNotMatch(nested, /code line/);
+  assert.match(nested, /After\./);
+});
+
+test('a heading or thematic break ends a list before indented code', () => {
+  for (const separator of ['## Next\n\n', '\n* * *\n\n']) {
+    const scanned = visibleMarkdown('- item\n' + separator + '    Owner: hidden example\n\nAfter.\n');
+    assert.doesNotMatch(scanned, /hidden example/, separator);
+    assert.match(scanned, /After\./);
+  }
+});
+
+test('an inline triple-backtick span does not suppress later citation checks', () => {
+  for (const opener of ['```x``` is the flag.', '```js`x is literal.']) {
+    const types = validateArtifact(`${opener}\n\nRevenue was $5M last year.\n`).issues.map(issue => issue.type);
+    assert.ok(types.includes(IssueType.UNSUPPORTED_DOLLAR), opener);
+  }
+});
+
+test('a visible requirements heading may be indented up to three spaces', () => {
+  for (const indent of ['', '   ']) {
+    const text = variant(() => {}, visible => visible
+      + `\n${indent}## Detailed Requirements\n\nSupport teams can trigger handoff.\n`);
+    const result = validateArtifact(text, { relatedArtifacts: [related] });
+    assert.ok(!result.readiness.engineeringReasons.some(reason => /Detailed requirements/.test(reason)), JSON.stringify(indent));
+  }
+});
+
+test('the packaged escape for an arrow in envelope JSON produces a valid artifact', () => {
+  const doc = readFileSync(path.resolve('docs/structured-artifacts.md'), 'utf8');
+  const escape = doc.match(/escape it inside a string as `([^`]+)`/)?.[1];
+  assert.ok(escape && !escape.includes('>'), escape);
+  const artifact = structuredClone(extractStructuredArtifact(fixture).artifact);
+  artifact.decision_frame.revisit_trigger += ' (signup ARROW activation)';
+  const json = JSON.stringify(artifact, null, 2).replace('ARROW', escape);
+  const text = `${fixture.slice(0, fixture.indexOf('<!-- shipwright:artifact'))}<!-- shipwright:artifact\n${json}\n-->\n`;
+  assert.match(extractStructuredArtifact(text).artifact.decision_frame.revisit_trigger, /signup --> activation/);
+  assert.equal(validateArtifact(text).valid, true);
+});
+
+test('a fenced example of the envelope is documentation, not a second envelope', () => {
+  const example = '\nExample envelope:\n\n```text\n<!-- shipwright:artifact\n{ "example": true }\n-->\n```\n\n';
+  const withExample = fixture.replace('\n', '\n' + example);
+  assert.equal(validateArtifact(withExample).valid, true);
+  assert.equal(extractStructuredArtifact(withExample).artifact.artifact_type, 'prd');
+  const duplicate = fixture + fixture.slice(fixture.indexOf('<!-- shipwright:artifact'));
+  assert.equal(validateArtifact(duplicate).valid, false);
+});
+
+test('the validator CLI accepts the path before or after flags with values', () => {
+  for (const args of [['--artifact-type', 'prd', fixturePath], [fixturePath, '--artifact-type', 'prd'],
+    ['--format', 'json', fixturePath]]) {
+    const run = spawnSync(process.execPath, [path.resolve('scripts/validate-artifact.mjs'), ...args], { encoding: 'utf8' });
+    assert.equal(run.status, 0, args.join(' ') + run.stderr + run.stdout);
+  }
 });
