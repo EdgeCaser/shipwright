@@ -799,3 +799,11 @@ test('validator accepts an envelope that escapes the close', { concurrency: fals
 
   assert.ok(!result.issues.some(item => item.message.includes('Structured artifact block is unusable')));
 });
+
+test('validator keeps the plain JSON error when a stray --> follows in prose', { concurrency: false }, () => {
+  const text = buildStructuredMarkdown(createValidPrdArtifact()).replace('"schema_version"', ',, "schema_version"') + '\n\nprose --> here';
+  const issue = validateArtifact(text, { artifactType: 'prd' }).issues.find(item => item.message.includes('Structured artifact block is unusable'));
+
+  assert.ok(issue);
+  assert.doesNotMatch(issue.message, /before its end/);
+});

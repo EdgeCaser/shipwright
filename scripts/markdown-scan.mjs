@@ -128,9 +128,11 @@ export function visibleMarkdown(text) {
 // An envelope is JSON inside an HTML comment, so a `-->` inside a JSON string
 // ends the comment early. The scanner then sees the block cut short, with the
 // rest of the JSON left behind and a stray closer later on. `following` is the
-// text after the closer that ended the block. Returns the message to report in
+// text after the closer that ended the block and `block` the text before it. Returns the message to report in
 // place of the raw JSON error, or null when no early close is visible.
-export function describeEarlyCommentClose(jsonError, following) {
+export function describeEarlyCommentClose(jsonError, block, following) {
+  // A closer alone on its own line is the real end; only one that follows JSON text on its line is early.
+  if (/\n[ \t\r]*$/.test(block)) return null;
   const closer = following.indexOf('-->');
   if (closer < 0 || following.slice(0, closer).includes('<!--')) return null;
   return 'The envelope contains "-->" before its end, which closes the HTML comment early. '

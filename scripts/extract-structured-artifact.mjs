@@ -74,7 +74,7 @@ export function extractStructuredArtifact(text) {
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     const earlyClose = error instanceof SyntaxError
-      ? describeEarlyCommentClose(message, searchable.slice(match.index + match[0].length)) : null;
+      ? describeEarlyCommentClose(message, match[1] || '', searchable.slice(match.index + match[0].length)) : null;
     return {
       artifact: null,
       raw,

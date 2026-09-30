@@ -161,3 +161,11 @@ test('an envelope using the escaped close parses', { concurrency: false }, () =>
   assert.equal(result.error, null);
   assert.equal(result.artifact.metadata.title, 'Self-serve --> SSO PRD');
 });
+
+test('a stray --> in later prose does not hide the plain JSON error', { concurrency: false }, () => {
+  const result = extractStructuredArtifact('# t\n\n<!-- shipwright:artifact\n{"a":1,}\n-->\n\nprose --> here');
+
+  assert.equal(result.artifact, null);
+  assert.ok(result.error);
+  assert.doesNotMatch(result.error, /before its end/);
+});
