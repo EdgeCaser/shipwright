@@ -136,3 +136,91 @@ test('price decisions may name the plan or price before the noun', () => {
     assert.notEqual(routeRequest(question).topRoute?.route, 'decision-analysis', question);
   }
 });
+
+// [question, decision route expected, expected decisionClass]
+const DECISION_CORPUS = [
+  ['Should we acquire our largest competitor?', true, 'governance'],
+  ['Should we merge with Acme?', true, 'governance'],
+  ['Should we restructure the board?', true, 'governance'],
+  ['Should we divest the hardware line?', true, 'governance'],
+  ['Should we spin off the data team?', true, 'governance'],
+  ['Should I reorganize the product org?', true, 'governance'],
+  ['Should we go public next year?', true, 'publication'],
+  ['Should we file for an IPO?', true, 'publication'],
+  ['Should we issue a press release about the breach?', true, 'publication'],
+  ['Should the company make a public announcement about layoffs?', true, 'publication'],
+  ['Should we kill the legacy mobile app?', true, 'product_strategy'],
+  ['Should we sunset the v1 API?', true, 'product_strategy'],
+  ['Should we shut down the EU office?', true, 'product_strategy'],
+  ['Should we pivot to enterprise?', true, 'product_strategy'],
+  ['Should we bet the company on AI agents?', true, 'product_strategy'],
+  ['Should we build or buy a billing system?', true, 'product_strategy'],
+  ['Should we build vs buy our search?', true, 'product_strategy'],
+  ['Should we build versus buy analytics?', true, 'product_strategy'],
+  ['Should we buy vs build the CRM?', true, 'product_strategy'],
+  ['Should I buy or build a data pipeline?', true, 'product_strategy'],
+  ['Should we do a build-vs-buy review?', true, 'product_strategy'],
+  ['Should we raise prices?', true, 'pricing'],
+  ['Should we raise the price of the Pro plan?', true, 'pricing'],
+  ['Should we lower our price for students?', true, 'pricing'],
+  ['Should I cut pricing for startups?', true, 'pricing'],
+  ['Should we reprice the Team tier?', true, 'pricing'],
+  ['Should we approve the price increase?', true, 'pricing'],
+  ['Should we increase our subscription price?', true, 'pricing'],
+  ['Should we reduce prices in Europe?', true, 'pricing'],
+  ['Should we change pricing for annual plans?', true, 'pricing'],
+  ['Write a PRD for self-serve SSO', false, null],
+  ['Who owns pricing?', false, null],
+  ['Pricing page copy for the homepage', false, null],
+  ['What is our pricing strategy?', false, null],
+  ['Recommend packaging for our current prices', false, null],
+  ['Do competitive pricing research for payroll SaaS', false, null],
+  ['Raise prices by 10% and draft the customer email', false, null],
+  ['Should we change the pricing page headline?', false, null],
+  ['Should we announce the price increase by email?', false, null],
+  ['Should we reduce pricing page load time?', false, null],
+  ['Should we change who owns pricing?', false, null],
+  ['Should we reduce time spent on pricing?', false, null],
+  ['Should we ship the feature on Friday?', false, null],
+  ['Should we hire a VP of sales?', false, null],
+  ['Build or buy analysis for billing', false, null],
+  ['Competitive landscape of recent acquisitions', false, null],
+  ['Create a launch plan for the API expansion', false, null],
+  ['Sprint plan for the engineering team', false, null],
+  ['Is the price too high?', false, null],
+  ['Should we reconsider our pricing?', false, null],
+  ['Should we update the pricing page?', false, null],
+];
+
+test('phrase corpus: decision routing and scenario class', () => {
+  assert.ok(DECISION_CORPUS.length >= 50);
+  for (const [question, isDecision, decisionClass] of DECISION_CORPUS) {
+    const result = routeRequest(question);
+    assert.equal(result.topRoute?.route === 'decision-analysis', isDecision, question);
+    assert.equal(result.decisionClass, decisionClass, question);
+  }
+});
+
+test('should-questions on pricing or build-versus-buy with no class get MEDIUM and a clarification hint', () => {
+  for (const question of ['Should we reconsider our pricing?', 'Should we revisit pricing for enterprise?',
+    'Should we rethink the price of the add-on?', 'Should we go with usage-based pricing?',
+    'Should I look at our prices again?', 'Should we build versus buying a CDP?']) {
+    const result = routeRequest(question);
+    assert.equal(result.routeConfidence, 'MEDIUM', question);
+    assert.equal(result.decisionClass, null, question);
+    assert.equal(result.clarificationHints.length, 1, question);
+    assert.match(result.clarificationHints[0], /price change/, question);
+    assert.match(result.clarificationHints[0], /build-or-buy/, question);
+    assert.ok(!result.clarificationHints[0].includes(String.fromCharCode(0x2014)));
+  }
+});
+
+test('clarification fallback stays off for classified, non-should and unrelated questions', () => {
+  for (const question of ['Who owns pricing?', 'What is our pricing strategy?', 'Pricing page copy for the homepage',
+    'Is the price too high?', 'Recommend packaging for our current prices', 'Build or buy analysis for billing',
+    'Should we raise prices?', 'Should we build or buy a billing system?', 'Should we acquire a competitor?',
+    'Should we ship the feature on Friday?']) {
+    assert.deepEqual(routeRequest(question).clarificationHints, [], question);
+  }
+  assert.deepEqual(routeRequest('').clarificationHints, []);
+});

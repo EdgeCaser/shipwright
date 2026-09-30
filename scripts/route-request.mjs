@@ -12,10 +12,14 @@ const ENGINEERING_HANDOFF_RE = /\b(tech handoff|technical spec|hand off to engin
 
 // Decision analysis detection — high-stakes binary decision questions
 const HIGH_STAKES_DECISION_RE = /\bshould\s+(?:we|i|the\s+(?:company|team|board))\b/i;
+// A should-question that names pricing or build-versus-buy but matches no class below.
+const PRICING_MENTION_RE = /\b(?:prices?|pricing)\b/i;
+const BUILD_BUY_MENTION_RE = /\b(?:build|buy)(?:ing)?[\s-]+(?:vs\.?|versus|or)[\s-]+(?:build|buy)(?:ing)?\b/i;
+const CLARIFICATION_HINT = 'Tell me whether this is a price change (raise, lower or restructure prices) or a build-or-buy choice (build in-house versus buy or license). That detail lets me classify the decision.';
 const SCENARIO_CLASS_PATTERNS = [
   { scenarioClass: 'governance', pattern: /\b(restructur\w*|acquir\w*|acquisition|merg(?:e|er|ing)|divest\w*|spin[- ]off|dissolv\w*|reorgani[sz]\w*|board\s+(?:vote|decision|approval))\b/i },
   { scenarioClass: 'publication', pattern: /\b(go\s+public|ipo|press\s+release|public\s+(?:statement|announcement)|publish\s+(?:the|our|a))\b/i },
-  { scenarioClass: 'product_strategy', pattern: /\b(kill|sunset|shut\s+down|pivot|(?:build|make)\s+(?:vs\.?|versus|or)\s+buy|bet\s+(?:the|our)\s+company)\b/i },
+  { scenarioClass: 'product_strategy', pattern: /\b(kill|sunset|shut\s+down|pivot|(?:build|make)[\s-]+(?:vs\.?|versus|or)[\s-]+buy|buy[\s-]+(?:vs\.?|versus|or)[\s-]+build|bet\s+(?:the|our)\s+company)\b/i },
   // A price decision, not a pricing page, copy, ownership or announcement question.
   // Up to three modifiers may sit before the noun ("the Pro plan price").
   { scenarioClass: 'pricing', pattern: /\b((?:raise|increase|lower|cut|reduce|change)\s+(?:(?!(?:who|whom|that|which|how|what|when|where|why|to|for|on|of|about|with|by|time|spent|owns?|effort|work|process)\b)[\w$.-]+\s+){0,3}?(?:prices?|pricing)(?!\s+(?:page|pages|table|copy|headline|section|calculator|load|display|widget|email|announcement))|reprice|(?:make|do|approve|implement|adopt|go\s+ahead\s+with|proceed\s+with)\s+(?:a|the|this)\s+price\s+(?:increase|decrease|change|cut|hike))\b/i },
@@ -193,6 +197,12 @@ export function routeRequest(input, options = {}) {
     }
   }
 
+  // Decision-shaped pricing or build-vs-buy question with no matching class: ask for the missing detail.
+  const needsClassification = !scenarioClassMatch && !explicitRule && HIGH_STAKES_DECISION_RE.test(normalized)
+    && (PRICING_MENTION_RE.test(normalized) || BUILD_BUY_MENTION_RE.test(normalized));
+  const clarificationHints = needsClassification ? [CLARIFICATION_HINT] : [];
+  if (needsClassification) routeConfidence = 'MEDIUM';
+
   // Infer scenario class for high-stakes binary decision questions
   const decisionClass = winner?.route === 'decision-analysis'
     ? scenarioClassMatch?.scenarioClass || 'unclassified' : null;
@@ -205,6 +215,7 @@ export function routeRequest(input, options = {}) {
     autoEscalate: escalateReasons.length > 0,
     escalateReasons,
     decisionClass,
+    clarificationHints,
     matchedRoutes: matches.map((match) => ({
       route: match.route,
       kind: match.kind,
@@ -224,6 +235,7 @@ function buildEmptyResult(input) {
     autoEscalate: false,
     escalateReasons: [],
     decisionClass: null,
+    clarificationHints: [],
     matchedRoutes: [],
   };
 }
