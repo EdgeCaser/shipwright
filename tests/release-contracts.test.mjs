@@ -208,10 +208,11 @@ test('host instructions stay within the word budget and keep the required behavi
   const words = text.split(/\s+/).filter(Boolean).length;
   assert.ok(words <= 350, `host-instructions.md has ${words} words, budget is 350`);
   for (const term of ['governance', 'publication', 'product_strategy', 'pricing', 'unclassified', 'UNCERTAINTY_DRIVERS',
-    'DISAMBIGUATION_QUESTIONS', 'NEEDED_EVIDENCE', 'RECOMMENDED_NEXT_ACTION', 'normal coding mode', 'em dashes (U+2014)', '{{HOST_DIR}}']) {
+    'DISAMBIGUATION_QUESTIONS', 'NEEDED_EVIDENCE', 'RECOMMENDED_NEXT_ACTION', 'normal coding mode', 'em dashes (U+2014)', '{{HOST_DIR}}',
+    'End with the four closing blocks', 'give no verdict or labeled sections until it is answered']) {
     assert.ok(text.includes(term), term);
   }
-  assert.ok(!text.includes('—'));
+  assert.ok(!text.includes(String.fromCharCode(0x2014)));
 });
 test('managed block keeps user content byte-for-byte and is replaced in place on re-install', async t => {
   const dir = await temporary(t);
