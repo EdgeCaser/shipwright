@@ -256,3 +256,23 @@ test('PASS cannot hide missing business inputs behind nonempty placeholders', as
   const artifact = await fixture(); artifact.payload.success_metrics[0].baseline = 'TBD';
   assert.ok(has(validateArtifact(wrap(artifact)), IssueType.READINESS_FAILED));
 });
+
+test('documented test commands include TAP reporter and .tap destination', async () => {
+  const readme = await readFile(path.join(SOURCE_ROOT, 'README.md'), 'utf8');
+  const contributing = await readFile(path.join(SOURCE_ROOT, 'CONTRIBUTING.md'), 'utf8');
+  const tapPattern = /--test-reporter=tap/;
+  const tapDestPattern = /--test-reporter-destination=[^\s]*\.tap/;
+  const bareTestPattern = /node --test --test-concurrency=1 tests\/\*\.test\.mjs(?!.*--test-reporter=tap)/;
+  assert.ok(tapPattern.test(readme), 'README.md must contain --test-reporter=tap');
+  assert.ok(tapDestPattern.test(readme), 'README.md must contain --test-reporter-destination ending in .tap');
+  assert.ok(tapPattern.test(contributing), 'CONTRIBUTING.md must contain --test-reporter=tap');
+  assert.ok(tapDestPattern.test(contributing), 'CONTRIBUTING.md must contain --test-reporter-destination ending in .tap');
+  const readmeLines = readme.split('\n').filter(line => /node --test --test-concurrency=1 tests\/\*\.test\.mjs/.test(line));
+  const contributingLines = contributing.split('\n').filter(line => /node --test --test-concurrency=1 tests\/\*\.test\.mjs/.test(line));
+  for (const line of readmeLines) {
+    assert.ok(/--test-reporter=tap/.test(line), `README test command must include --test-reporter=tap: ${line}`);
+  }
+  for (const line of contributingLines) {
+    assert.ok(/--test-reporter=tap/.test(line), `CONTRIBUTING test command must include --test-reporter=tap: ${line}`);
+  }
+});

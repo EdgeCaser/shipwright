@@ -166,10 +166,10 @@ Before submitting a PR, run the repository checks first:
 Then run the Node test suite:
 
 ```bash
-node --test --test-concurrency=1 tests/*.test.mjs
+node --test --test-concurrency=1 --test-reporter=spec --test-reporter=tap --test-reporter-destination=stdout --test-reporter-destination=test-results.tap tests/*.test.mjs
 ```
 
-The validation script is Bash-based today. The Node test suite is the cross-platform check and should run cleanly on macOS and Windows as well.
+The TAP file records every test that started, so an unexplained suite abort can be traced. The validation script is Bash-based today. The Node test suite is the cross-platform check and should run cleanly on macOS and Windows as well.
 
 Then test your skill or workflow in a Claude Code session:
 
@@ -212,7 +212,7 @@ If you add a rubric, also update `manifest.json` to register it in the `evals` a
 1. Fork the repo
 2. Create a branch (`git checkout -b add-skill-name`)
 3. Add your files and update README.md + skills-map.md
-4. Run `./scripts/validate.sh`, then `node --test --test-concurrency=1 tests/*.test.mjs`, and test your changes
+4. Run `./scripts/validate.sh`, then `node --test --test-concurrency=1 --test-reporter=spec --test-reporter=tap --test-reporter-destination=stdout --test-reporter-destination=test-results.tap tests/*.test.mjs`, and test your changes. The TAP file records every test that started, so suite abort issues can be traced.
 5. Open a PR with a brief description of what the skill does and what framework it's based on
 
 That's it. Keep it focused, keep it grounded in real PM practice, and it'll get merged.

@@ -1,6 +1,7 @@
 import './helpers/isolate-outputs.mjs';
 import assert from 'node:assert/strict';
 import { mkdtemp, readFile, rm } from 'node:fs/promises';
+import { readFileSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
@@ -318,4 +319,22 @@ test('summary text output contains Session Funnel and Escalation Gate headings',
     process.stdout.write = originalWrite;
     await rm(root, { recursive: true, force: true });
   }
+});
+
+// ---------------------------------------------------------------------------
+// Regression test: developer tooling output contains no em dashes
+// ---------------------------------------------------------------------------
+
+test('telemetry.mjs source code contains no em dashes in string/template literals', () => {
+  const source = readFileSync(path.resolve('scripts/telemetry.mjs'), 'utf8');
+  const code = source.split('\n').filter(line => !/^\s*(?:\/\/|\*|\/\*)/.test(line));
+  const linesWithEmDash = code.filter(line => line.includes(String.fromCharCode(0x2014)));
+  assert.deepEqual(linesWithEmDash, [], 'telemetry.mjs contains em dashes in strings/templates');
+});
+
+test('run-fast-batch.mjs source code contains no em dashes in string/template literals', () => {
+  const source = readFileSync(path.resolve('scripts/run-fast-batch.mjs'), 'utf8');
+  const code = source.split('\n').filter(line => !/^\s*(?:\/\/|\*|\/\*)/.test(line));
+  const linesWithEmDash = code.filter(line => line.includes(String.fromCharCode(0x2014)));
+  assert.deepEqual(linesWithEmDash, [], 'run-fast-batch.mjs contains em dashes in strings/templates');
 });

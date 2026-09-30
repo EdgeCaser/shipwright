@@ -55,11 +55,11 @@ export async function runFastBatch(options = {}) {
     for (const agentId of agentIds) {
       completed += 1;
       const label = `[${completed}/${total}] ${scenario} + ${agentId}`;
-      process.stderr.write(`${label} — starting\n`);
+      process.stderr.write(`${label} - starting\n`);
 
       if (dryRun) {
         results.push(makeDryRunResult(scenario, agentId));
-        process.stderr.write(`${label} — skipped (dry run)\n`);
+        process.stderr.write(`${label} - skipped (dry run)\n`);
         continue;
       }
 
@@ -86,7 +86,7 @@ export async function runFastBatch(options = {}) {
           error: null,
         });
 
-        process.stderr.write(`${label} — ${run.status}, ux_state: ${run.ux_state}\n`);
+        process.stderr.write(`${label} - ${run.status}, ux_state: ${run.ux_state}\n`);
       } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
         results.push({
@@ -101,7 +101,7 @@ export async function runFastBatch(options = {}) {
           runId: null,
           error: message,
         });
-        process.stderr.write(`${label} — ERROR: ${message}\n`);
+        process.stderr.write(`${label} - ERROR: ${message}\n`);
       }
     }
   }
@@ -136,10 +136,10 @@ export function buildSummary(results) {
       r.scenario,
       r.agentId,
       r.status,
-      r.uxState || '—',
-      r.confidenceBand || '—',
-      r.needsHumanReview != null ? String(r.needsHumanReview) : '—',
-      r.hasUncertaintyPayload != null ? String(r.hasUncertaintyPayload) : '—',
+      r.uxState || 'n/a',
+      r.confidenceBand || 'n/a',
+      r.needsHumanReview != null ? String(r.needsHumanReview) : 'n/a',
+      r.hasUncertaintyPayload != null ? String(r.hasUncertaintyPayload) : 'n/a',
       '',
     ].join(' | '));
   }
@@ -165,7 +165,7 @@ export function buildSummary(results) {
 
       if (scenarioResults.some((r) => !r || r.status !== 'completed')) {
         const cells = scenarioResults.map((r) => r?.uxState || 'ERROR');
-        lines.push(`| ${scenario} | ${cells.join(' | ')} | — |`);
+        lines.push(`| ${scenario} | ${cells.join(' | ')} | n/a |`);
         continue;
       }
 
@@ -305,7 +305,7 @@ function makeDryRunResult(scenario, agentId) {
 }
 
 function pct(n, total) {
-  if (total === 0) return '—';
+  if (total === 0) return 'n/a';
   return `${((n / total) * 100).toFixed(0)}%`;
 }
 

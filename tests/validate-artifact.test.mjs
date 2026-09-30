@@ -5,6 +5,7 @@ import {
   IssueType,
   Severity,
   validateArtifact,
+  visibleMarkdown,
 } from '../scripts/validate-artifact.mjs';
 
 // ---------------------------------------------------------------------------
@@ -742,4 +743,59 @@ test('validateArtifact blocks readiness when critical challenge finding is defer
   assert.ok(issue);
   assert.equal(issue.severity, Severity.WARNING);
   assert.equal(readiness.ready, false);
+});
+
+// ---------------------------------------------------------------------------
+// Inline comments versus code spans
+// ---------------------------------------------------------------------------
+
+test('visibleMarkdown keeps a comment-looking code span visible', { concurrency: false }, () => {
+  const text = 'Use `<!-- x -->` to hide text. Then ``a <!-- y --> b`` end.';
+  assert.equal(visibleMarkdown(text), text);
+});
+
+test('visibleMarkdown lets a code span holding only an opener leave the rest visible', { concurrency: false }, () => {
+  const text = 'Write `<!--` to open one. ARR was $4M.\nNext line stays.';
+  assert.equal(visibleMarkdown(text), text);
+});
+
+test('visibleMarkdown still removes a real inline comment outside code spans', { concurrency: false }, () => {
+  const scanned = visibleMarkdown('Before <!-- hidden --> after `code`.\nSecond <!-- a\nb --> line.');
+  assert.equal(scanned, 'Before  after `code`.\nSecond \n line.');
+});
+
+test('visibleMarkdown does not treat unmatched backtick runs as code spans', { concurrency: false }, () => {
+  assert.equal(visibleMarkdown('One ` tick <!-- hidden --> here.'), 'One ` tick  here.');
+  assert.equal(visibleMarkdown('Two ``a` <!-- hidden --> here.'), 'Two ``a`  here.');
+});
+
+test('validator reports an early --> in the envelope as the cause', { concurrency: false }, () => {
+  const artifact = createValidPrdArtifact();
+  artifact.metadata.title = 'Self-serve --> SSO PRD';
+  const result = validateArtifact(buildStructuredMarkdown(artifact), { artifactType: 'prd' });
+  const issue = result.issues.find(item => item.message.includes('Structured artifact block is unusable'));
+
+  assert.ok(issue);
+  assert.match(issue.message, /contains "-->" before its end/);
+  assert.match(issue.message, /closes the HTML comment early/);
+  assert.ok(issue.message.includes('--\\u003e'));
+});
+
+test('validator keeps the plain JSON error when the envelope has no early -->', { concurrency: false }, () => {
+  const text = buildStructuredMarkdown(createValidPrdArtifact()).replace('"schema_version"', ',, "schema_version"');
+  const result = validateArtifact(text, { artifactType: 'prd' });
+  const issue = result.issues.find(item => item.message.includes('Structured artifact block is unusable'));
+
+  assert.ok(issue);
+  assert.doesNotMatch(issue.message, /before its end/);
+  assert.ok(!issue.message.includes('--\\u003e'));
+});
+
+test('validator accepts an envelope that escapes the close', { concurrency: false }, () => {
+  const artifact = createValidPrdArtifact();
+  artifact.metadata.title = 'Self-serve --> SSO PRD';
+  const text = buildStructuredMarkdown(artifact).replace('Self-serve -->', 'Self-serve --\\u003e');
+  const result = validateArtifact(text, { artifactType: 'prd' });
+
+  assert.ok(!result.issues.some(item => item.message.includes('Structured artifact block is unusable')));
 });

@@ -94,9 +94,11 @@ In Claude Code, start with `/shipwright` in a project copy. Plugin commands use 
 
 ```bash
 node scripts/validate-repository.mjs
-node --test --test-concurrency=1 tests/*.test.mjs
+node --test --test-concurrency=1 --test-reporter=spec --test-reporter=tap --test-reporter-destination=stdout --test-reporter-destination=test-results.tap tests/*.test.mjs
 node scripts/build-plugin.mjs dist/shipwright
 ```
+
+The TAP file records every test that started, so an unexplained suite abort can be traced.
 
 The output directory must be new. Submit the contents of the generated bundle: it contains flat skill directories, Claude and Codex manifests, and their local dependencies. Source skills remain grouped by category for maintenance. The bundle excludes local credentials, run outputs and internal review material.
 

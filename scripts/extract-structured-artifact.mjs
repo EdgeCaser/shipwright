@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { scanMarkdownLines } from './markdown-scan.mjs';
+import { describeEarlyCommentClose, scanMarkdownLines } from './markdown-scan.mjs';
 
 // An envelope starts its own line or directly follows another comment's closer,
 // which is still HTML. An inline mention in prose (for example in a code span)
@@ -72,10 +72,13 @@ export function extractStructuredArtifact(text) {
       startLine,
     };
   } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    const earlyClose = error instanceof SyntaxError
+      ? describeEarlyCommentClose(message, searchable.slice(match.index + match[0].length)) : null;
     return {
       artifact: null,
       raw,
-      error: error instanceof Error ? error.message : String(error),
+      error: earlyClose || message,
       startLine,
     };
   }

@@ -77,8 +77,63 @@ export function scanMarkdownLines(text) {
   });
 }
 
+// Removes inline comments from one paragraph. Code spans (matching backtick
+// runs) are skipped whole, so a comment marker inside one is literal text; an
+// unmatched run is literal. Whichever construct starts first wins.
+function stripInlineComments(paragraph) {
+  let out = '';
+  let i = 0;
+  while (i < paragraph.length) {
+    const character = paragraph[i];
+    if (character === '<' && paragraph.startsWith('<!--', i)) {
+      const end = paragraph.indexOf('-->', i + 4);
+      if (end >= 0) {
+        out += paragraph.slice(i, end + 3).replace(/[^\n]/g, '');
+        i = end + 3;
+        continue;
+      }
+    } else if (character === '\\') {
+      out += paragraph.slice(i, i + 2);
+      i += 2;
+      continue;
+    } else if (character === '`') {
+      let run = i;
+      while (paragraph[run] === '`') run++;
+      const length = run - i;
+      let close = -1;
+      for (let j = run; j < paragraph.length;) {
+        if (paragraph[j] !== '`') { j++; continue; }
+        let k = j;
+        while (paragraph[k] === '`') k++;
+        if (k - j === length) { close = k; break; }
+        j = k;
+      }
+      const stop = close >= 0 ? close : run;
+      out += paragraph.slice(i, stop);
+      i = stop;
+      continue;
+    }
+    out += character;
+    i++;
+  }
+  return out;
+}
+
 // Visible text with hidden comments and code examples blanked, preserving line numbers.
 export function visibleMarkdown(text) {
   const blocks = scanMarkdownLines(text).map(entry => entry.visible).join('\n');
-  return blocks.replace(/<!--(?:(?!\r?\n[ \t]*\r?\n)[\s\S])*?-->/g, hidden => hidden.replace(/[^\n]/g, ''));
+  return blocks.split(/(\r?\n[ \t]*\r?\n)/).map((part, index) => (index % 2 ? part : stripInlineComments(part))).join('');
+}
+
+// An envelope is JSON inside an HTML comment, so a `-->` inside a JSON string
+// ends the comment early. The scanner then sees the block cut short, with the
+// rest of the JSON left behind and a stray closer later on. `following` is the
+// text after the closer that ended the block. Returns the message to report in
+// place of the raw JSON error, or null when no early close is visible.
+export function describeEarlyCommentClose(jsonError, following) {
+  const closer = following.indexOf('-->');
+  if (closer < 0 || following.slice(0, closer).includes('<!--')) return null;
+  return 'The envelope contains "-->" before its end, which closes the HTML comment early. '
+    + 'Write it as --\\u003e inside JSON strings. '
+    + `(JSON error: ${jsonError})`;
 }

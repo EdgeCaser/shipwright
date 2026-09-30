@@ -122,3 +122,42 @@ test('getStructuredArtifactOutputPath swaps markdown extension for json', { conc
   const output = getStructuredArtifactOutputPath('/tmp/example/prd.md');
   assert.equal(output, path.resolve('/tmp/example/prd.json'));
 });
+
+test('an envelope with --> inside a JSON string reports the early comment close', { concurrency: false }, () => {
+  const artifact = createValidPrdArtifact();
+  artifact.metadata.title = 'Self-serve --> SSO PRD';
+  const result = extractStructuredArtifact(buildMarkdownWithArtifact(artifact));
+
+  assert.equal(result.artifact, null);
+  assert.match(result.error, /contains "-->" before its end/);
+  assert.match(result.error, /closes the HTML comment early/);
+  assert.ok(result.error.includes('--\\u003e'));
+  assert.match(result.error, /JSON error:/);
+});
+
+test('a broken envelope without --> keeps the plain JSON error', { concurrency: false }, () => {
+  const result = extractStructuredArtifact(`
+# Artifact
+
+<!-- shipwright:artifact
+{ "artifact_type": "prd", }
+-->
+
+Trailing prose.
+  `.trim());
+
+  assert.equal(result.artifact, null);
+  assert.ok(result.error);
+  assert.doesNotMatch(result.error, /before its end/);
+  assert.ok(!result.error.includes('--\\u003e'));
+});
+
+test('an envelope using the escaped close parses', { concurrency: false }, () => {
+  const artifact = createValidPrdArtifact();
+  artifact.metadata.title = 'Self-serve --> SSO PRD';
+  const escaped = buildMarkdownWithArtifact(artifact).replace('Self-serve -->', 'Self-serve --\\u003e');
+  const result = extractStructuredArtifact(escaped);
+
+  assert.equal(result.error, null);
+  assert.equal(result.artifact.metadata.title, 'Self-serve --> SSO PRD');
+});

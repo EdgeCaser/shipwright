@@ -388,7 +388,7 @@ function sortedEntries(obj) {
 }
 
 function pct(n, total) {
-  if (total === 0) return '—';
+  if (total === 0) return 'n/a';
   return `${((n / total) * 100).toFixed(0)}%`;
 }
 
