@@ -1,15 +1,17 @@
 ---
 name: pre-mortem
-description: "Runs a structured \"imagine this already failed\" exercise to surface risks, assumptions, and failure modes before a launch or major initiative begins. Based on Gary Klein's prospective hindsight research, which shows that imagining failure improves risk identification by 30%."
+description: "Runs a structured \"imagine this already failed\" exercise to surface risks, assumptions, and failure modes before a launch or major initiative begins. Based on Gary Klein's prospective hindsight research."
 category: execution
 default_depth: standard
 ---
 
 # Pre-Mortem Analysis
 
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+
 ## Description
 
-Runs a structured "imagine this already failed" exercise to surface risks, assumptions, and failure modes before a launch or major initiative begins. Based on Gary Klein's prospective hindsight research, which shows that imagining failure improves risk identification by 30%.
+Runs a structured "imagine this already failed" exercise to surface risks, assumptions, and failure modes before a launch or major initiative begins. Based on Gary Klein's prospective hindsight research.
 
 ## When to Use
 
@@ -159,7 +161,7 @@ Produce a Pre-Mortem Report with:
 **Shipwright Signature (required closing):**
 6. **Decision Frame**, go/no-go recommendation based on risk profile, trade-off, confidence with evidence quality, owner, decision date, revisit trigger
 7. **Unknowns & Evidence Gaps**, failure modes with low-confidence likelihood ratings, risks that need spike investigation, missing historical baselines
-8. **Pass/Fail Readiness**, PASS if top 3 risks have owned mitigations and kill criteria are pre-committed (at Light depth: PASS if top 5 risks are ranked by likelihood × impact with scores; mitigations and kill criteria are not required); FAIL if fewer than 3 risks are identified or risk scores lack both likelihood and impact ratings
+8. **Pass/Fail Readiness**, PASS if material risks are ranked with likelihood and impact, and Standard/Deep risks have owned mitigations and kill criteria. Light may omit mitigation detail. FAIL if asserted risks have no rationale or material risks are left unassessed; do not invent risks to meet a count.
 9. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid

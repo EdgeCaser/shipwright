@@ -7,6 +7,8 @@ default_depth: standard
 
 # Executive Briefing / One-Pager
 
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+
 ## Description
 
 Produces single-page executive briefings designed to secure alignment, approval, or resources from senior leadership. Uses the Situation-Complication-Resolution (SCR) framework and Pyramid Principle to deliver maximum impact in minimum reading time. Different from a status update, this is a persuasive artifact with a clear ask.

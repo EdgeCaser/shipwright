@@ -62,9 +62,9 @@ flowchart TD
 A skill is a single markdown file that teaches the AI one PM framework and produces one type of artifact.
 
 **Properties:**
-- Self-contained. A skill never references another skill, an agent, or a command.
+- Self-contained for its core task. Optional helpers and next-skill suggestions must have a fallback when unavailable.
 - Portable. Works in any AI tool that can read a markdown file.
-- Deterministic output. Each skill defines exactly what it produces (e.g., "a SWOT grid with cross-referenced strategic options").
+- Defined output contract. Each skill defines exactly what it produces (e.g., "a SWOT grid with cross-referenced strategic options").
 
 **Location:** `skills/<category>/<skill-name>/SKILL.md`
 
@@ -85,11 +85,11 @@ An agent is a role definition that gives the AI a persona, a set of skills it ca
 
 ### Workflow, ordered skill chain
 
-A workflow is a command file that chains 3-5 skills together in sequence, with PM checkpoints between steps.
+A workflow is a command file that chains the required skills together in sequence, with PM checkpoints between steps.
 
 **Properties:**
 - Sequential. Each step's output feeds the next step's input.
-- Interactive. Steps include "Ask the PM" prompts that pause for human input.
+- Interactive. Input checklists reuse known context and pause only for missing material decisions.
 - Composable from skills. Every step references a specific SKILL.md file.
 
 **Location:** `commands/<workflow-name>.md`
@@ -111,7 +111,7 @@ The orchestrator (`/start`) sits above workflows and agents. It routes work to t
 
 ## Quality gate lifecycle
 
-Every skill execution passes through a gate check before the artifact is considered done. The orchestrator and workflows enforce this cycle automatically; standalone skill use requires manual gate checks.
+Every skill execution passes through a gate check before the artifact is considered done. The orchestrator and workflows enforce this cycle automatically; standalone skills apply their own evidence bar and readiness conditions.
 
 ```mermaid
 stateDiagram-v2
@@ -138,7 +138,7 @@ stateDiagram-v2
 
 **Recovery** is deterministic: each failed gate maps to a specific playbook in [recovery-playbooks.md](recovery-playbooks.md) with a trigger → action → expected correction pattern.
 
-**Escalation** fires when the same gate fails on re-run. At that point the system stops iterating on wording and asks the PM for the missing input data, then rebuilds from scratch.
+**Escalation** fires when the same gate fails on re-run. At that point the system stops iterating on wording and asks the PM for the missing input data, then preserves useful work and repairs only what the new input changes.
 
 For the full list of failure patterns by agent, see [failure-modes.md](failure-modes.md).
 
@@ -164,7 +164,7 @@ Brief purpose.
 ## Workflow Steps
 
 ### Step 1: Step Name
-Read and apply the framework from `/skills/category/skill-name/SKILL.md`.
+Read and apply the framework from `skills/<category>/<skill-name>/SKILL.md`.
 
 Ask the PM:
 - [Context question]
@@ -173,7 +173,7 @@ Ask the PM:
 Produce [artifact name].
 
 ### Step 2: Step Name
-Using the output from Step 1, read and apply `/skills/category/other-skill/SKILL.md`.
+Using the output from Step 1, read and apply `skills/<category>/<other-skill>/SKILL.md`.
 
 [... more steps ...]
 
@@ -185,8 +185,8 @@ Produce a **[Document Name]** containing:
 ```
 
 **Rules:**
-- 3-5 steps. More than 5 means it should be split into two workflows.
-- Each step references one SKILL.md.
+- Use only the steps needed by the deliverable. Separate phases when dependencies or user decisions require it.
+- Several steps may apply the same skill; avoid repeating a full framework for each substep.
 - Include "Ask the PM" prompts where human judgment is needed.
 - Later steps should reference outputs from earlier steps.
 
@@ -280,7 +280,7 @@ customer signals, and reassessing strategic bets.
 ## Workflow Steps
 
 ### Step 1: Metrics Review
-Read and apply the framework from `/skills/measurement/metrics-dashboard/SKILL.md`.
+Read and apply the framework from `skills/measurement/metrics-dashboard/SKILL.md`.
 
 Ask the PM:
 - What were the North Star and input metric targets for this quarter?
@@ -289,7 +289,7 @@ Ask the PM:
 Produce a metrics scorecard with target vs. actual, trends, and areas of concern.
 
 ### Step 2: Customer Signal Synthesis
-Read and apply the framework from `/skills/customer-intelligence/feedback-triage/SKILL.md`.
+Read and apply the framework from `skills/customer-intelligence/feedback-triage/SKILL.md`.
 
 Using the metrics context from Step 1, synthesize customer feedback from the quarter.
 
@@ -299,7 +299,7 @@ Ask the PM:
 Produce a themed feedback summary with priority signals.
 
 ### Step 3: Retention Analysis
-Read and apply the framework from `/skills/customer-intelligence/churn-analysis/SKILL.md`.
+Read and apply the framework from `skills/customer-intelligence/churn-analysis/SKILL.md`.
 
 Using the signals from Step 2, analyze retention patterns.
 
@@ -310,7 +310,7 @@ Ask the PM:
 Produce a retention diagnosis with intervention recommendations.
 
 ### Step 4: Strategic Reassessment
-Read and apply the framework from `/skills/strategy/product-strategy-session/SKILL.md`.
+Read and apply the framework from `skills/strategy/product-strategy-session/SKILL.md`.
 
 Using the metrics scorecard (Step 1), customer signals (Step 2), and retention analysis (Step 3),
 reassess the current strategic bets.
@@ -336,7 +336,7 @@ Add routing to `manifest.json`:
 
 ```json
 "quarterly-review": {
-  "agents": ["customer-intelligence", "strategy-planner"],
+  "agents": ["execution-driver", "customer-intelligence", "strategy-planner"],
   "skills": ["metrics-dashboard", "feedback-triage", "churn-analysis", "product-strategy-session"]
 }
 ```

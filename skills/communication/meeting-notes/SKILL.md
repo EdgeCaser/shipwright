@@ -7,6 +7,8 @@ default_depth: standard
 
 # Meeting Notes & Action Items
 
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+
 ## Description
 
 Transforms raw meeting notes, transcripts, or recordings into structured summaries with decisions captured, action items assigned, open questions tracked, and parking lot items preserved. The single skill every PM uses daily.
@@ -26,7 +28,7 @@ Transforms raw meeting notes, transcripts, or recordings into structured summari
 | **Standard** | Regular planning, design review, or stakeholder sync | All sections |
 | **Deep** | High-stakes meeting (board, exec review, post-mortem) requiring full audit trail | All sections + verbatim quotes on key decisions, timestamped discussion notes, and explicit dissent record |
 
-**Omit rules:** At Light depth, skip Decisions table, Discussion Notes, Open Questions, and Parking Lot. Produce only the TL;DR summary and owned action items.
+**Omit rules:** At Light depth, skip detailed discussion notes and parking lot. Retain the TL;DR, actual decisions with attribution, and action items. If no decision was made, say so; do not invent owners or dates.
 
 ## Framework
 
@@ -172,7 +174,7 @@ Produce structured meeting notes with:
 **Shipwright Signature (required closing):**
 8. **Decision Frame**, key decision from this meeting, trade-offs discussed, confidence based on evidence cited in-room, decision owner, decision date, revisit trigger
 9. **Unknowns & Evidence Gaps**, questions raised but unanswered, data cited but not verified, absent stakeholders whose input is needed
-10. **Pass/Fail Readiness**, PASS if every action item has a single owner and due date and every decision has a named decision-maker; FAIL if any action item is unowned or any decision lacks attribution. **Light-depth exception:** At Light depth, PASS requires only that every action item has a single owner and due date; decision attribution is not evaluated.
+10. **Pass/Fail Readiness**, PASS if decisions are faithfully attributed and agreed actions have owners and dates. Mark missing attribution, ownership or dates as TBD and FAIL for action readiness; an informational meeting with no decisions or actions can PASS as an accurate record.
 11. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid

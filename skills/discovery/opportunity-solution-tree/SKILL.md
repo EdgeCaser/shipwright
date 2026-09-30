@@ -7,6 +7,8 @@ default_depth: standard
 
 # Opportunity Solution Tree
 
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+
 ## Description
 
 Guides the PM through Teresa Torres' Opportunity Solution Tree (OST) framework for continuous product discovery. Maps a desired outcome to customer opportunities, then to potential solutions, and finally to assumption tests and experiments.
@@ -106,11 +108,11 @@ Cost: [Effort required]
 
 ## Minimum Evidence Bar
 
-**Required inputs:** A measurable desired outcome and at least 2 customer opportunities with evidence sources.
+**Required inputs:** A measurable desired outcome and at least one customer opportunity with an evidence source. Comparing priorities requires multiple supported opportunities; do not invent alternatives to fill the tree.
 
 **Acceptable evidence:** Customer interview insights, user research synthesis themes, support ticket patterns, behavioral analytics, JTBD opportunity scores, or direct observation of user workarounds.
 
-**Insufficient evidence:** If fewer than 2 opportunities have any customer evidence, state "Insufficient evidence for opportunity prioritization" and stop and recommend running discovery-interview-prep to gather user evidence or feedback-triage to synthesize existing data before attempting this skill.
+**Insufficient evidence:** With no evidenced opportunities, return the outcome and evidence gaps, then recommend targeted discovery. With one opportunity, build a scoped branch and label comparative prioritization unavailable.
 
 **Hypotheses vs. findings:**
 - **Findings:** Opportunities (Step 2) must cite specific evidence sources. Assumptions flagged as "High confidence" must have supporting data.
@@ -129,7 +131,7 @@ Produce a structured markdown document with:
 **Shipwright Signature (required closing):**
 6. **Decision Frame**, Which opportunity-solution pair to test first, trade-off between assumption risk vs. experiment cost, confidence in opportunity prioritization with evidence quality, owner, decision date, revisit trigger
 7. **Unknowns & Evidence Gaps**, Opportunities with single-source evidence, assumption categories (desirability/viability/feasibility/usability) with no tests designed
-8. **Pass/Fail Readiness**, PASS if outcome is measurable, at least 2 opportunities have evidence, and each prioritized solution has its riskiest assumption identified with a test (at Light depth: PASS if outcome is measurable and at least 2 opportunities have evidence; solutions, assumptions, and tests not required); FAIL if opportunities lack evidence sources or no assumptions are surfaced (at Light depth: FAIL if outcome is not measurable or opportunities lack evidence sources)
+8. **Pass/Fail Readiness**, PASS if the outcome is measurable, each opportunity is evidenced, and each prioritized solution has a riskiest assumption and test. Light depth may omit solutions and tests. FAIL if the tree invents opportunities or implies unsupported prioritization.
 9. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 Include a visual tree summary at the top using indented markdown:

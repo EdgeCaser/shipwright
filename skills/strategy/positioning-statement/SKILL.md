@@ -7,6 +7,8 @@ default_depth: standard
 
 # Positioning Statement
 
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+
 ## Description
 
 Generates and critiques product positioning using April Dunford's "Obviously Awesome" methodology and Geoffrey Moore's classic positioning template. Helps PMs articulate who the product is for, what category it competes in, and why it wins.

@@ -11,7 +11,7 @@ import {
 // Citation anchor section
 // ---------------------------------------------------------------------------
 
-test('validateArtifact returns no issues when document has a Sources section', { concurrency: false }, () => {
+test('a Sources heading does not excuse an unlinked claim', { concurrency: false }, () => {
   const text = `
 # Market Analysis
 
@@ -23,14 +23,14 @@ The market is worth $4.5B and grew by 37% last year.
   `.trim();
 
   const { issues } = validateArtifact(text);
-  assert.equal(issues.length, 0, 'Sources section should suppress citation checks');
+  assert.ok(issues.some(issue => issue.type === IssueType.UNSUPPORTED_DOLLAR));
 });
 
 test('validateArtifact returns no issues when document has a References section', { concurrency: false }, () => {
   const text = `
 # Analysis
 
-Revenue reached $2.1B in FY25.
+Revenue reached $2.1B in FY25 [1].
 
 ## References
 
@@ -45,7 +45,7 @@ test('validateArtifact returns no issues when document has an Evidence section',
   const text = `
 # Competitive Brief
 
-Competitor grew 200% year-over-year.
+Competitor grew 200% year-over-year (source: supplied industry report).
 
 ## Evidence
 
@@ -96,7 +96,7 @@ test('validateArtifact does not flag dollar figure when "According to" is presen
   const text = `
 # Analysis
 
-According to Gartner, the market reached $6.7B in 2025.
+According to the supplied report (source: Gartner), the market reached $6.7B in 2025.
   `.trim();
 
   const { issues } = validateArtifact(text);
@@ -303,13 +303,13 @@ Revenue was $5.2B and growth was 42%.
 
 test('validateArtifact handles empty input gracefully', { concurrency: false }, () => {
   const { issues, summary } = validateArtifact('');
-  assert.equal(issues.length, 0);
+  assert.equal(issues[0].type, IssueType.EMPTY_ARTIFACT);
   assert.ok(summary.length > 0);
 });
 
 test('validateArtifact handles null input gracefully', { concurrency: false }, () => {
   const { issues } = validateArtifact(null);
-  assert.equal(issues.length, 0);
+  assert.equal(issues[0].type, IssueType.EMPTY_ARTIFACT);
 });
 
 test('validateArtifact summary reflects issue count', { concurrency: false }, () => {
@@ -328,7 +328,7 @@ test('validateArtifact returns "No issues found." summary for clean document wit
   const text = `
 # Report
 
-Revenue grew to $4.5B.
+Revenue grew to $4.5B [1].
 
 ## Sources
 
@@ -384,6 +384,7 @@ function createValidPrdArtifact() {
       confidence: 'medium',
       owner: 'PM',
       decision_date: '2026-04-02',
+      revisit_trigger: 'New customer evidence changes the recommendation.',
     },
     unknowns: ['Unknown admin demand'],
     pass_fail_readiness: {
@@ -450,6 +451,7 @@ function createRelatedStrategyArtifact(overrides = {}) {
       confidence: 'high',
       owner: 'PM',
       decision_date: '2026-04-02',
+      revisit_trigger: 'New customer evidence changes the recommendation.',
     },
     unknowns: [],
     pass_fail_readiness: {
@@ -525,6 +527,7 @@ function createChallengeReportArtifact() {
       confidence: 'high',
       owner: 'PM',
       decision_date: '2026-04-02',
+      revisit_trigger: 'New customer evidence changes the recommendation.',
     },
     unknowns: [],
     pass_fail_readiness: {

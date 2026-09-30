@@ -7,6 +7,8 @@ default_depth: standard
 
 # Feedback Triage & Taxonomy
 
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+
 ## Description
 
 Ingests raw customer feedback from multiple channels (support tickets, NPS responses, app store reviews, feature requests, sales call notes, social media) and produces a categorized, deduplicated, prioritized view of what customers are telling you. Turns noisy signal into actionable intelligence.
@@ -157,11 +159,11 @@ Score each cluster for action priority:
 
 ## Minimum Evidence Bar
 
-**Required inputs:** Raw feedback from at least two channels covering the analysis period, with enough volume to form meaningful clusters (minimum ~20 items for a useful triage). (At Light depth, a single channel with sufficient volume is acceptable.)
+**Required inputs:** Raw feedback for a defined period, with source/channel identifiers. Use the available sample; identify which channels and customer segments it represents.
 
 **Acceptable evidence:** Support tickets, NPS verbatims, app store reviews, feature request logs, sales call notes, social media mentions, community forum posts, churned-customer exit surveys.
 
-**Insufficient evidence:** If total feedback volume is below 20 items or comes from only one channel at Standard/Deep depth, state "Insufficient evidence for cross-channel triangulation" and stop. At Light depth, single-channel input is acceptable provided total volume is 20+ items. Recommend running a broader feedback collection effort or the Shipwright customer-journey-mapping skill to identify which channels to instrument before attempting this skill at Standard or Deep depth.
+**Insufficient evidence:** With no raw feedback, request it. Small or single-channel samples can support scoped triage; label limits and avoid cross-channel or population claims. Retain isolated high-severity reports separately instead of manufacturing clusters.
 
 **Hypotheses vs. findings:**
 - **Findings:** Cluster volumes, sentiment distributions, and trend directions must be grounded in the raw data.
@@ -179,7 +181,7 @@ Produce a Feedback Intelligence Report with:
 **Shipwright Signature (required closing):**
 6. **Decision Frame**, top clusters with response options (fix, build, investigate, or defer) and trade-offs between high-volume and high-revenue-impact items, confidence level with evidence quality, owner, decision date, revisit trigger
 7. **Unknowns & Evidence Gaps**, clusters with single-channel signal only, segments with no feedback representation, underlying needs inferred but not validated
-8. **Pass/Fail Readiness**, PASS if feedback is sourced from 2+ channels, clusters have 3+ independent items each, and priority scoring is applied (at Light depth: single-channel with 3+ items per cluster is acceptable, and priority scoring is not required); FAIL if clusters are based on fewer than 3 independent items or fewer than 20 total items
+8. **Pass/Fail Readiness**, PASS if every cluster links to independent source items, counts are deduplicated, sample limits are explicit, and priorities are justified (priority scoring optional at Light depth); FAIL if evidence is missing or the report generalizes beyond the sample. Singleton incidents may be reported as such.
 9. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid

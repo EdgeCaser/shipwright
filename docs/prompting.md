@@ -97,7 +97,7 @@ That's a legitimate routing prompt. The orchestrator can answer it.
 
 The prompt you type is the outer layer. Inside Shipwright, agents prompt other agents. The orchestrator (`agents/orchestrator.md`) dispatches specialist agents with structured prompts that name the role, the inputs, and the required output fields. The red-team agent (`agents/red-team.md`) is itself a prompt template with attack vectors and severity rubrics built in.
 
-This is the honest version of "does prompting matter?" Yes, and a *system* of prompts, with role constraints and pass/fail gates between them, beats a single clever prompt every time. The industry has been moving in this direction openly. Anthropic, OpenAI, and Google's developer guidance for 2026 all describe the shift from prompt engineering to **orchestration**: sub-agents as microservices, supervisors that route, structured tool use, evaluable outputs. Shipwright is one implementation of that shift, focused on PM and business work. Your prompt to Shipwright is one node in that system. Make it a good one and the rest compounds.
+Shipwright makes prompts and handoffs inspectable: role constraints, explicit evidence and readiness checks aim to reduce common errors. Superiority over a standalone prompt requires an independent comparison; the fixture suite does not establish it.
 
 ## See also
 

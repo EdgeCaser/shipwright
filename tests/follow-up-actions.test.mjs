@@ -34,7 +34,7 @@ function makeFastTurnRunner(overrides = {}) {
       confidence_band: overrides.confidence_band ?? 'high',
       needs_human_review: overrides.needs_human_review ?? false,
       summary: 'Re-analysis complete.',
-      key_reasoning: ['Revised context resolved prior ambiguity.'],
+      key_reasoning: ['Revised context resolved prior ambiguity.', 'The supplied cohort addresses the retention gap.'],
       ...overrides,
     };
     analysis.run_id = runId;
@@ -334,6 +334,7 @@ test('executeFollowUpAction gather_more_evidence returns fast_reanalysis mode', 
     });
 
     const result = await executeFollowUpAction(session, 'gather_more_evidence', {
+      additional_evidence: 'New supplied cohort: retention is stable over 90 days.',
       sessions_root: root,
       fast_turn_runner: makeFastTurnRunner({ confidence_band: 'high', needs_human_review: false }),
     });
@@ -362,11 +363,13 @@ test('gather_more_evidence uses original question when no uncertainty payload', 
     });
 
     const result = await executeFollowUpAction(session, 'gather_more_evidence', {
+      additional_evidence: 'New supplied cohort: retention is stable over 90 days.',
       sessions_root: root,
       fast_turn_runner: makeFastTurnRunner(),
     });
 
-    assert.equal(result.refined_question, 'Should we raise prices?');
+    assert.ok(result.refined_question.startsWith('Should we raise prices?'));
+    assert.ok(result.refined_question.includes('New supplied cohort'));
   } finally {
     await rm(root, { recursive: true, force: true });
   }
@@ -445,6 +448,7 @@ test('runFollowUpAction gather_more_evidence re-routes session via fast pipeline
 
     // Re-analysis comes back high confidence — should leave not_ready
     const result = await runFollowUpAction(sessionId, 'gather_more_evidence', {
+      additional_evidence: 'New supplied cohort: retention is stable over 90 days.',
       sessions_root: root,
       fast_turn_runner: makeFastTurnRunner({ confidence_band: 'high', needs_human_review: false }),
     });
@@ -470,6 +474,7 @@ test('runFollowUpAction marks session failed when action execution throws', asyn
 
     // Turnrunner throws to simulate execution failure
     const result = await runFollowUpAction(sessionId, 'gather_more_evidence', {
+      additional_evidence: 'New supplied cohort: retention is stable over 90 days.',
       sessions_root: root,
       fast_turn_runner: async () => { throw new Error('Simulated gather failure.'); },
     });

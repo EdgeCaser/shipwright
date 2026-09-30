@@ -7,6 +7,8 @@ default_depth: standard
 
 # PRD Development
 
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+
 ## Description
 
 Produces a comprehensive Product Requirements Document using Amazon's Working Backwards method: start with the press release, then FAQ, then detailed requirements. This approach forces clarity of thought by starting from the customer outcome and working backward to the requirements.
@@ -204,6 +206,8 @@ For every new or changed screen:
 
 ## Output Format
 
+When an automated handoff or benchmark explicitly requests structured output, also read `docs/structured-artifacts.md` and the matching schema from the Shipwright installation root. Append the validated envelope and keep it consistent with the visible artifact. Ordinary chat output needs no JSON duplicate.
+
 Produce a complete PRD with all three phases:
 1. **Press Release**, customer-facing narrative
 2. **FAQ**, customer and internal questions answered
@@ -212,7 +216,7 @@ Produce a complete PRD with all three phases:
 **Shipwright Signature (required closing):**
 4. **Decision Frame**, build/buy/partner recommendation, trade-off, confidence with evidence quality, owner, decision date, revisit trigger
 5. **Unknowns & Evidence Gaps**, unvalidated customer assumptions, missing technical feasibility data, untested pricing or GTM hypotheses
-6. **Pass/Fail Readiness**, PASS if problem is evidence-backed, success metrics have baselines and targets, and scope boundaries are explicit; at Light depth, PASS if problem is evidence-backed (prior PRD, launch data, or stakeholder alignment qualifies), scope boundaries are explicit, and at least one success metric is identified; FAIL if no customer evidence exists or success metrics lack baselines
+6. **Pass/Fail Readiness**, PASS if the problem is evidence-backed, success metrics have baselines and targets, and scope boundaries are explicit. At Light depth, a directional brief can PASS with an identified metric and explicit baseline/target gaps; it is not engineering-ready until those gaps and detailed requirements are resolved. FAIL if evidence or scope boundaries are absent.
 7. **Recommended Next Artifact**, Which Shipwright skill to run next and why. When the PRD includes UI work and section 5 still says `[TBD, requires: design mockups]`, name a design step (mockups or a UX flow review of the key flows and screen states) before `technical-spec`, so engineering does not spec against undefined screens
 
 ## Common Mistakes to Avoid

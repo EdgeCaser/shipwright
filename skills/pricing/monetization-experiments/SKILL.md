@@ -7,6 +7,8 @@ default_depth: standard
 
 # Monetization Experiment Design
 
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+
 ## Description
 
 Designs and evaluates pricing, packaging, and monetization experiments including free-to-paid conversion optimization, upsell trigger testing, plan structure changes, and price sensitivity tests. Applies experimentation rigor to the highest-leverage growth lever most teams are afraid to touch.
@@ -183,7 +185,7 @@ Stop the experiment immediately if:
 
 **Acceptable evidence:** Product analytics (conversion funnels, ARPU, churn cohorts), prior experiment results, customer support ticket themes around pricing, competitive pricing data, user research on upgrade friction.
 
-**Insufficient evidence:** If no baseline conversion rate or monetization metric exists, stop and recommend running conversion funnel instrumentation for 4-6 weeks before attempting this skill. Do not produce an experiment plan without a measurable baseline.
+**Insufficient evidence:** If a baseline is unavailable, return a measurement and experiment-design draft with the baseline and sample-size calculation blocked. Set collection duration from traffic, variability, business cycles and minimum detectable effect; do not prescribe an arbitrary waiting period.
 
 **Hypotheses vs. findings:**
 - **Findings:** Baseline metrics, sample size requirements, guardrail thresholds, and kill criteria must be grounded in actual data.
@@ -201,7 +203,7 @@ Produce a Monetization Experiment Plan with:
 **Shipwright Signature (required closing):**
 6. **Decision Frame**, Ship/iterate/kill recommendation, revenue vs. churn trade-off, confidence level with evidence quality, experiment owner, decision date, revisit trigger (e.g., metric drift post-rollout)
 7. **Unknowns & Evidence Gaps**, Segments not yet tested, long-term retention effects, price elasticity beyond tested range
-8. **Pass/Fail Readiness**, PASS if hypothesis is falsifiable, sample size is achievable within 8 weeks, and kill criteria are defined (at Light depth: PASS if hypothesis is falsifiable and kill criteria are defined, sample size check is deferred); FAIL if no baseline metric exists or guardrails are missing
+8. **Pass/Fail Readiness**, PASS for launch if the hypothesis is falsifiable, sample size is achievable within a justified precommitted duration, and guardrails and kill criteria are defined. Light depth may PASS as a concept with sample sizing explicitly deferred, never as a launch-ready experiment.
 9. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid

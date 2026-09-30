@@ -7,6 +7,8 @@ default_depth: standard
 
 # Business Model Canvas
 
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+
 ## Description
 
 Builds a full Business Model Canvas covering all 9 building blocks: Customer Segments, Value Propositions, Channels, Customer Relationships, Revenue Streams, Key Resources, Key Activities, Key Partnerships, and Cost Structure. More comprehensive than a Lean Canvas, better suited to established products or when you need to map the entire business system.

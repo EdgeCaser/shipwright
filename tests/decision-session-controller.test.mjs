@@ -266,7 +266,7 @@ test('startDecisionSession creates a session and completes for high-confidence p
   }
 });
 
-test('startDecisionSession enters awaiting_user_action for governance with 3 providers', async () => {
+test('installed providers without a rigor harness never offer an unavailable action', async () => {
   const root = await mkdtemp(path.join(os.tmpdir(), 'sw-ctrl-'));
   try {
     const result = await startDecisionSession({
@@ -277,10 +277,11 @@ test('startDecisionSession enters awaiting_user_action for governance with 3 pro
       fast_turn_runner: makeFastTurnRunner({ confidence_band: 'high', needs_human_review: false }),
     });
 
-    // Governance requires cross-family confirmation — should gate before completing
-    assert.equal(result.session.status, 'awaiting_user_action');
-    assert.equal(result.session.requires_user_confirmation, true);
-    assert.ok(result.session.recommended_next_mode);
+    // Provider names alone do not establish an executable review harness.
+    assert.equal(result.session.status, 'completed');
+    assert.equal(result.session.ux_state, 'not_ready');
+    assert.equal(result.session.requires_user_confirmation, false);
+    assert.equal(result.session.recommended_next_mode, null);
   } finally {
     await rm(root, { recursive: true, force: true });
   }
@@ -708,6 +709,7 @@ test('full confirm flow: session started → fast → awaiting → confirm → r
       scenario_class: 'governance',
       available_providers: ['claude', 'gpt', 'gemini'],
       sessions_root: root,
+      rigor_turn_runner: makeRigorTurnRunner(),
       fast_turn_runner: makeFastTurnRunner({ confidence_band: 'high', needs_human_review: false }),
     });
 
@@ -745,6 +747,7 @@ test('full decline flow: session started → fast → awaiting → decline → c
       scenario_class: 'governance',
       available_providers: ['claude', 'gpt', 'gemini'],
       sessions_root: root,
+      rigor_turn_runner: makeRigorTurnRunner(),
       fast_turn_runner: makeFastTurnRunner({ confidence_band: 'high', needs_human_review: false }),
     });
 

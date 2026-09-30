@@ -7,6 +7,8 @@ default_depth: standard
 
 # Competitive Battlecard
 
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+
 ## Description
 
 Creates sales-ready competitive battlecards with objection handling, win/loss patterns, feature comparison grids, and tactical talk tracks. Designed to be used in live sales conversations, deal reviews, and competitive displacement campaigns.

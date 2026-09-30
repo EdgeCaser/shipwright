@@ -280,6 +280,24 @@ export function route(input) {
   }
 }
 
+// Execution surfaces must distinguish installed providers from an installed harness.
+export function routeWithCapabilities(input) {
+  const result = route(input);
+  if (input.stage !== 'pre_run' && input.needs_human_review === true) {
+    return makeResult({ ux_state: UX_STATES.NOT_READY, ux_substate: UX_SUBSTATES.HUMAN_REVIEW_REQUIRED,
+      explanation: 'The analysis requires human judgment before acting. Additional model agreement does not grant that approval.',
+      follow_up_action: 'Escalate to human review' });
+  }
+  if (input.rigor_available !== true && ['double_panel', 'judge'].includes(result.recommended_next_mode)) {
+    return { ...result, recommended_next_mode: null, requires_user_confirmation: false,
+      recommended_provider_roles: null,
+      ux_state: result.ux_state === UX_STATES.PROVISIONAL ? UX_STATES.PROVISIONAL : UX_STATES.NOT_READY,
+      explanation: `${result.explanation} The automated multi-model harness is not included in this distribution.`,
+      follow_up_action: 'Gather the missing evidence or request human review' };
+  }
+  return result;
+}
+
 // ---------------------------------------------------------------------------
 // Stage routing handlers
 // ---------------------------------------------------------------------------

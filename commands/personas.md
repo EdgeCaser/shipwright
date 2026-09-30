@@ -5,6 +5,8 @@ description: "Build user personas from research data, interviews, or existing kn
 
 # /personas - User Persona Workshop
 
+Before executing, read `docs/workflow-contract.md` from this Shipwright installation. Resolve it relative to this file's parent installation root (or the plugin root), not the user's product directory. Its handoff, depth, evidence and authorization rules apply throughout.
+
 Run this command to build structured user personas grounded in evidence rather than assumptions.
 
 ## Workflow Steps
@@ -27,7 +29,7 @@ For each persona (aim for 2-4), produce a structured profile:
 - **Quote** - a real or representative quote that captures their mindset
 
 ### Step 3: Map Personas to Jobs-to-Be-Done
-Read and apply the framework from `/skills/discovery/jobs-to-be-done/SKILL.md`.
+Read and apply the framework from `skills/discovery/jobs-to-be-done/SKILL.md`.
 
 For each persona, identify their primary job-to-be-done and 2-3 outcome expectations.
 

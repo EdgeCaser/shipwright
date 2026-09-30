@@ -141,6 +141,7 @@ function validateAdminManifest(manifest) {
   validateProvenanceOverlay(manifest.provenance?.baseline, 'Baseline');
 
   const artifactIds = new Set();
+  const assignments = new Set();
   for (const assignment of manifest.assignments) {
     if (typeof assignment.scenario_id !== 'string' || assignment.scenario_id.trim().length === 0) {
       throw new Error('Admin manifest assignment is missing scenario_id.');
@@ -158,6 +159,9 @@ function validateAdminManifest(manifest) {
       throw new Error(`Admin manifest contains duplicate artifact_id "${assignment.artifact_id}".`);
     }
     artifactIds.add(assignment.artifact_id);
+    const tuple = `${assignment.scenario_id}:${assignment.origin}:${assignment.phase}`;
+    if (assignments.has(tuple)) throw new Error(`Duplicate scenario/origin/phase assignment: ${tuple}`);
+    assignments.add(tuple);
   }
 
   return manifest;
@@ -205,10 +209,10 @@ function validateReviewerResponses(reviewerResponses, reviewRunId) {
   const seenReviewers = new Set();
   for (const response of normalized) {
     validateReviewerResponse(response, reviewRunId);
-    if (seenReviewers.has(response.reviewer_id)) {
+    if (seenReviewers.has(response.reviewer_id.trim())) {
       throw new Error(`Duplicate reviewer_id "${response.reviewer_id}" in reviewer responses.`);
     }
-    seenReviewers.add(response.reviewer_id);
+    seenReviewers.add(response.reviewer_id.trim());
   }
 
   return normalized;

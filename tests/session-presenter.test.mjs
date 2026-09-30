@@ -110,13 +110,13 @@ test('buildAvailableActions returns only open_human_review for not_ready with no
   assert.deepEqual(buildAvailableActions(session), ['open_human_review']);
 });
 
-test('buildAvailableActions returns confirm_next_step for provisional with pending escalation', () => {
+test('buildAvailableActions hides confirmation the controller cannot accept', () => {
   const session = baseSession({
     status: 'completed',
     ux_state: 'provisional',
     recommended_next_mode: 'rigor',
   });
-  assert.deepEqual(buildAvailableActions(session), ['confirm_next_step']);
+  assert.deepEqual(buildAvailableActions(session), []);
 });
 
 test('buildAvailableActions returns empty array for completed provisional with no next step', () => {

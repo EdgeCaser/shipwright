@@ -5,7 +5,7 @@ import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
-const ARTIFACT_COMMENT_RE = /<!--\s*shipwright:artifact\s*([\s\S]*?)-->/;
+const ARTIFACT_COMMENT_RE = /<!--\s*shipwright:artifact\s*([\s\S]*?)-->/g;
 
 const SCHEMA_FILE_BY_TYPE = Object.freeze({
   prd: 'prd.schema.json',
@@ -25,7 +25,13 @@ export function extractStructuredArtifact(text) {
     };
   }
 
-  const match = ARTIFACT_COMMENT_RE.exec(text);
+  const matches = [...text.matchAll(ARTIFACT_COMMENT_RE)];
+  const markers = [...text.matchAll(/<!--\s*shipwright:artifact\b/g)];
+  if (markers.length !== matches.length || matches.length > 1) {
+    return { artifact: null, raw: null, startLine: 1,
+      error: 'Expected exactly one complete shipwright:artifact block.' };
+  }
+  const match = matches[0];
   if (!match) {
     return {
       artifact: null,
@@ -39,8 +45,12 @@ export function extractStructuredArtifact(text) {
   const startLine = text.slice(0, match.index).split('\n').length;
 
   try {
+    const artifact = JSON.parse(raw);
+    if (!artifact || typeof artifact !== 'object' || Array.isArray(artifact)) {
+      throw new Error('Structured artifact must be a JSON object.');
+    }
     return {
-      artifact: JSON.parse(raw),
+      artifact,
       raw,
       error: null,
       startLine,
@@ -117,7 +127,7 @@ export function validateStructuredArtifact(artifact, options = {}) {
   return { artifactType, schema, errors };
 }
 
-function validateValueAgainstSchema(value, schema, currentPath, errors) {
+export function validateValueAgainstSchema(value, schema, currentPath, errors) {
   if (!schema || typeof schema !== 'object') return;
 
   if ('type' in schema && !matchesSchemaType(value, schema.type)) {
@@ -134,6 +144,15 @@ function validateValueAgainstSchema(value, schema, currentPath, errors) {
       message: `Expected one of: ${schema.enum.join(', ')}.`,
     });
     return;
+  }
+
+  if (typeof value === 'string') {
+    if (typeof schema.minLength === 'number' && value.trim().length < schema.minLength) {
+      errors.push({ path: currentPath, message: `Expected at least ${schema.minLength} non-whitespace character(s).` });
+    }
+    if (schema.pattern && !new RegExp(schema.pattern).test(value)) {
+      errors.push({ path: currentPath, message: `Value does not match ${schema.pattern}.` });
+    }
   }
 
   if (schema.type === 'object') {
@@ -157,6 +176,9 @@ function validateValueAgainstSchema(value, schema, currentPath, errors) {
   }
 
   if (schema.type === 'array') {
+    if (typeof schema.maxItems === 'number' && value.length > schema.maxItems) {
+      errors.push({ path: currentPath, message: `Expected at most ${schema.maxItems} item(s).` });
+    }
     if (typeof schema.minItems === 'number' && value.length < schema.minItems) {
       errors.push({
         path: currentPath,

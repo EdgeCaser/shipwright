@@ -34,7 +34,8 @@ FAIL because the current recommendation is still under-evidenced.
     "tradeoff": "Slower monetization work now, lower reversal risk later.",
     "confidence": "medium",
     "owner": "PM",
-    "decision_date": "2026-04-02"
+    "decision_date": "2026-04-02",
+    "revisit_trigger": "New evidence changes the recommendation."
   },
   "unknowns": [
     "How sensitive mid-market buyers are to seat minimums."

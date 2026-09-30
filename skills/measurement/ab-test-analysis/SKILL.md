@@ -7,6 +7,8 @@ default_depth: standard
 
 # A/B Test Analysis
 
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+
 ## Description
 
 Evaluates experiment results for statistical significance, practical significance, segment effects, and next actions. Supports both frequentist and Bayesian interpretations. Helps PMs make ship/no-ship decisions with appropriate rigor.
@@ -26,7 +28,7 @@ Evaluates experiment results for statistical significance, practical significanc
 | **Standard** | Typical post-experiment review | All sections |
 | **Deep** | High-stakes launch decision, mixed signals, or multi-variant test | All sections + Bayesian credible intervals, long-term holdout plan, interaction effects between variants |
 
-**Omit rules:** At Light depth, skip Interpretation rigor checks, Segment Analysis, and Learnings. Produce only the results table and a ship/no-ship recommendation.
+**Omit rules:** At Light depth, condense Interpretation and omit Segment Analysis and Learnings. Retain experiment validity, uncertainty and guardrail checks before recommending an action.
 
 ## Framework
 
@@ -78,7 +80,7 @@ Evaluates experiment results for statistical significance, practical significanc
 
 ### Statistical Rigor Check
 - [ ] Sample size meets minimum detectable effect (MDE) requirements
-- [ ] Test ran for at least 1 full business cycle (7 days minimum)
+- [ ] Test met its prespecified duration and relevant business cycles
 - [ ] No sample ratio mismatch (SRM) detected
 - [ ] Novelty/primacy effects considered (check time-series trend)
 - [ ] Multiple comparison correction applied (if testing multiple variants/metrics)
@@ -155,7 +157,7 @@ Does the effect vary across important segments?
 
 **Acceptable evidence:** Raw metric values with confidence intervals, p-values or posterior probabilities, segment-level breakdowns, guardrail metric readings.
 
-**Insufficient evidence:** If sample size does not meet minimum detectable effect (MDE) requirements or the test ran fewer than 7 days, stop and recommend extending the test to reach the required sample size before running this skill. Do not produce a ship/no-ship recommendation on underpowered data.
+**Insufficient evidence:** When the planned sample, stopping rule or relevant business cycle has not been met, report uncertainty and mark the result inconclusive. Request missing inputs. Do not extend a fixed-horizon test solely to chase significance; specify a valid new design or planned stopping rule. Guardrail harm can justify a no-go even when the primary effect is inconclusive.
 
 **Hypotheses vs. findings:**
 - **Findings:** Effect classification (win/loss/inconclusive), statistical significance, guardrail status, must be grounded in provided data.
@@ -174,7 +176,7 @@ Produce an Experiment Analysis Report with:
 **Shipwright Signature (required closing):**
 7. **Decision Frame**, ship/no-ship/iterate recommendation, trade-off, confidence with evidence quality (sample size, test duration, SRM check), owner, decision date, revisit trigger
 8. **Unknowns & Evidence Gaps**, segments not tested, long-term effects unmeasured, novelty/primacy uncertainty
-9. **Pass/Fail Readiness**, PASS if primary metric has sufficient power and no guardrail degradation; FAIL if sample size below MDE or guardrails breached without mitigation
+9. **Pass/Fail Readiness**, PASS if validity, uncertainty, guardrails and limitations are assessed and the recommendation follows the evidence, including no-go or inconclusive outcomes; FAIL if checks are missing or the recommendation overstates the data
 10. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid

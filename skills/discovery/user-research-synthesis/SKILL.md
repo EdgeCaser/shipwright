@@ -7,6 +7,8 @@ default_depth: standard
 
 # User Research Synthesis
 
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+
 ## Description
 
 Transforms raw interview notes, survey responses, and observational data into structured insight cards using affinity mapping techniques. Produces themed findings with evidence trails so product decisions are traceable back to user evidence.
@@ -125,11 +127,11 @@ Assemble insight cards into a research readout:
 
 ## Minimum Evidence Bar
 
-**Required inputs:** Raw research data from at least 3 participants, interview transcripts, notes, survey responses, or observational records with participant identifiers.
+**Required inputs:** Research notes with source or participant identifiers and a defined research question. State sample size, recruitment limitations and missing segments.
 
 **Acceptable evidence:** Verbatim quotes, behavioral observations, timestamped session recordings, survey free-text responses, support ticket excerpts, or analytics event logs tied to specific users or segments.
 
-**Insufficient evidence:** If fewer than 3 participants or only a single data source is available, state "Insufficient evidence for theme-level synthesis" and stop and recommend completing additional interviews via discovery-interview-prep or supplementing with quantitative data before attempting this skill.
+**Insufficient evidence:** With no observations, request research notes. A small or single-source sample supports an explicitly scoped observation summary. Do not assert recurring themes without independent supporting observations; report no stable themes when appropriate.
 
 **Hypotheses vs. findings:**
 - **Findings:** Themes rated "Strong" (60%+ participants) and their insight card observations must be grounded in specific, cited evidence.
@@ -146,7 +148,7 @@ Produce:
 **Shipwright Signature (required closing):**
 5. **Decision Frame**, Top findings and their product implications, trade-off between acting on current evidence vs. gathering more data, confidence in themes with evidence quality and sample size, owner, decision date, revisit trigger
 6. **Unknowns & Evidence Gaps**, Segments not represented in the sample, themes with only counter-evidence, questions that emerged but were not explored
-7. **Pass/Fail Readiness**, PASS if at least 2 themes reach "Strong" or "Moderate" strength with multi-participant evidence and counter-evidence is documented (at Light depth: PASS if at least 2 theme clusters emerge with multi-participant evidence; insight cards and research summary not required); FAIL if themes are pre-defined rather than emergent or evidence trails are missing
+7. **Pass/Fail Readiness**, PASS if observations are traceable, interpretations and counter-evidence are distinguished, and conclusions fit the sample. A finding of no stable themes can PASS. FAIL if themes are invented or evidence trails are missing; Light depth may omit insight cards and the research summary.
 8. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid

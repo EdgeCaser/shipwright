@@ -2,29 +2,13 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import test from 'node:test';
+import { pluginFiles, SOURCE_ROOT } from '../scripts/build-plugin.mjs';
 
-const ROOT = process.cwd();
-const CANONICAL_COLLECTOR = path.join(ROOT, 'scripts/collect-research.mjs');
-const FALLBACK_COLLECTORS = [
-  path.join(ROOT, '.claude/scripts/collect-research.mjs'),
-  path.join(ROOT, '.codex/scripts/collect-research.mjs'),
-];
-
-test('fallback collect-research copies stay in sync with the canonical repo collector', { concurrency: false }, async () => {
-  const canonical = await readFile(CANONICAL_COLLECTOR, 'utf8');
-
-  for (const fallbackPath of FALLBACK_COLLECTORS) {
-    let fallback;
-    try {
-      fallback = await readFile(fallbackPath, 'utf8');
-    } catch (error) {
-      if (error.code === 'ENOENT') continue; // not installed locally — skip, not a violation
-      throw error;
-    }
-    assert.equal(
-      fallback,
-      canonical,
-      `${path.relative(ROOT, fallbackPath)} drifted from scripts/collect-research.mjs`,
-    );
+// Check the actual distributable, not ignored local installs that may be older.
+test('release collector and adapters match their canonical sources', async () => {
+  const files = await pluginFiles();
+  for (const name of ['collect-research', 'source-adapters']) {
+    const file = `scripts/${name}.mjs`;
+    assert.equal(files.get(file)?.toString('utf8'), await readFile(path.join(SOURCE_ROOT, file), 'utf8'));
   }
 });

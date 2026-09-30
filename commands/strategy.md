@@ -5,12 +5,14 @@ description: "Facilitate a product strategy session: vision, strategic context, 
 
 # /strategy, Product Strategy Workflow
 
+Before executing, read `docs/workflow-contract.md` from this Shipwright installation. Resolve it relative to this file's parent installation root (or the plugin root), not the user's product directory. Its handoff, depth, evidence and authorization rules apply throughout.
+
 Run this command to develop or refresh a product strategy through a structured workshop format.
 
 ## Workflow Steps
 
 ### Step 1: Establish Strategic Context
-Read and apply `/skills/strategy/product-strategy-session/SKILL.md`.
+Read and apply `skills/strategy/product-strategy-session/SKILL.md`.
 
 Gather context:
 - Check CLAUDE.md for existing product context
@@ -39,7 +41,7 @@ Define what the team is NOT doing:
 - Deferred items with revisit triggers
 
 ### Step 5: Run a Pre-Mortem
-Read and apply `/skills/execution/pre-mortem/SKILL.md`.
+Read and apply `skills/execution/pre-mortem/SKILL.md`.
 
 Imagine the strategy failed:
 - What went wrong? (customer, execution, market, technical failure modes)

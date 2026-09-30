@@ -40,7 +40,7 @@ test('runBenchmarkSuite evaluates the default benchmark fixture suite', { concur
 
   const pricingScenario = summary.results.find((result) => result.scenario_id === 'pricing-partial-data');
   assert.equal(pricingScenario.status, 'FAIL');
-  assert.equal(pricingScenario.final_pass.usable, true);
+  assert.equal(pricingScenario.final_pass.usable, false);
 
   const boardScenario = summary.results.find((result) => result.scenario_id === 'board-update-ambiguity');
   assert.ok(boardScenario.diagnostics.first_pass_issue_types.includes('unsupported-numeric'));
@@ -244,9 +244,9 @@ test('runBenchmarkScenario preserves diagnostic blind ratings for DNF scenarios'
   assert.equal(result.status, 'DNF');
   assert.equal(result.final_pass.usable, false);
   assert.equal(result.final_pass.time_to_first_usable_artifact_seconds, null);
-  assert.equal(result.first_pass.validator_error_count, 2);
-  assert.equal(result.final_pass.validator_error_count, 1);
-  assert.equal(result.delta.validator_error_count_change, -1);
+  assert.equal(result.first_pass.validator_error_count, 1);
+  assert.equal(result.final_pass.validator_error_count, 2);
+  assert.equal(result.delta.validator_error_count_change, 1);
   assert.equal(result.final_pass.blind_rating, 60);
   assert.equal(result.delta.blind_rating_change, 40);
 });
@@ -639,6 +639,7 @@ function basePrdArtifact() {
       confidence: 'medium',
       owner: 'PM',
       decision_date: '2026-04-02',
+      revisit_trigger: 'New customer evidence changes the recommendation.',
     },
     unknowns: ['Which edge case shows up first.'],
     pass_fail_readiness: {

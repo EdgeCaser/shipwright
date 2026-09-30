@@ -5,12 +5,14 @@ description: "Facilitate a structured retrospective and produce an action plan."
 
 # /retro - Retrospective Workflow
 
+Before executing, read `docs/workflow-contract.md` from this Shipwright installation. Resolve it relative to this file's parent installation root (or the plugin root), not the user's product directory. Its handoff, depth, evidence and authorization rules apply throughout.
+
 Run this command to facilitate a structured team retrospective and turn observations into committed actions.
 
 ## Workflow Steps
 
 ### Step 1: Choose Format
-Read and apply the framework from `/skills/measurement/retrospective-facilitator/SKILL.md`.
+Read and apply the framework from `skills/measurement/retrospective-facilitator/SKILL.md`.
 
 Ask the PM:
 - What are we retro-ing? (sprint, launch, incident, quarter)

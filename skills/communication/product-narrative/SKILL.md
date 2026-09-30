@@ -7,6 +7,8 @@ default_depth: standard
 
 # Product Narrative / Memo
 
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+
 ## Description
 
 Produces long-form persuasive product narratives in the style of Amazon's 6-pager or shorter 2-pager memos. Used for complex product decisions that require deep reasoning, multi-stakeholder alignment, and a permanent record of the thinking process. Unlike a one-pager (which is a pitch), a narrative is an argument.

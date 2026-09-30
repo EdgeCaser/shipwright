@@ -7,6 +7,8 @@ default_depth: standard
 
 # Design Review Facilitator
 
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+
 ## Description
 
 Runs a multi-stakeholder design review by evaluating a product proposal through 7 parallel perspectives: Engineering, Design, Executive, Legal/Compliance, Customer Voice, Devil's Advocate, and Sales/GTM. Produces a synthesized review with consensus points, tensions, blockers, and open questions.
@@ -307,7 +309,7 @@ Produce a Design Review Report with:
 **Shipwright Signature (required closing):**
 5. **Decision Frame**, approve/revise/reject recommendation, trade-off, confidence with evidence quality, owner, decision date, revisit trigger
 6. **Unknowns & Evidence Gaps**, unresolved tensions, missing stakeholder input, every `Not assessed` perspective with the input it needs, untested assumptions surfaced by Devil's Advocate
-7. **Pass/Fail Readiness**, PASS if no Critical blockers remain, all tensions have assigned owners, and every Green verdict cites what it checked; FAIL if any perspective is Red without a resolution plan, or if any Green verdict cites nothing. `Not assessed` perspectives do not block PASS but must appear in Unknowns & Evidence Gaps. At Light depth, PASS scopes to the 3 included perspectives only (Engineering, Customer Voice, Devil's Advocate).
+7. **Pass/Fail Readiness**, PASS for the review report if findings cite checks, tensions have owners or explicit ownership gaps, and the recommendation reflects blockers. Report proposal approval separately: any unresolved Critical blocker prevents approval. Not assessed perspectives remain evidence gaps; Light covers the three core perspectives only.
 8. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid

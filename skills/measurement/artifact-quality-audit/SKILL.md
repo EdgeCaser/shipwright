@@ -7,6 +7,8 @@ default_depth: standard
 
 # Artifact Quality Audit
 
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+
 ## Description
 
 Scores a set of Shipwright artifacts against the universal rubric dimensions (Clarity, Completeness, Actionability, Correctness), layers artifact-specific eval criteria when available, and compares scores across the set to detect quality drift. The output is a Quality Audit Report, a scoring artifact, not a review or rewrite.
@@ -131,7 +133,7 @@ Produce a **Quality Audit Report** with:
 **Shipwright Signature (required closing):**
 5. **Decision Frame**, Primary quality finding, trade-off (invest in fixing weakest dimension vs. maintain current trajectory), confidence with sample size caveat, owner, decision date, revisit trigger (next audit cycle)
 6. **Unknowns & Evidence Gaps**, Artifacts not included in the audit, dimensions not scored due to missing artifact-specific evals, sample size limitations
-7. **Pass/Fail Readiness**, PASS if at least 2 artifacts scored on all 4 universal dimensions with evidence-backed rationales and trend observations are present; FAIL if scores lack rationales or trends are asserted without cross-artifact comparison
+7. **Pass/Fail Readiness**, PASS if at least 2 artifacts scored on all 4 universal dimensions with evidence-backed rationales and trend observations are present (trend narrative is optional at Light depth); FAIL if scores lack rationales or trends are asserted without cross-artifact comparison
 8. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid

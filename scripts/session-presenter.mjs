@@ -113,10 +113,6 @@ export function buildAvailableActions(session) {
     return actions;
   }
 
-  if (session.ux_state === 'provisional' && session.recommended_next_mode) {
-    return ['confirm_next_step'];
-  }
-
   return [];
 }
 
@@ -210,7 +206,8 @@ async function loadJsonArtifact(ref) {
 }
 
 function extractUncertaintyPayload(artifactData) {
-  const source = artifactData.verdict || artifactData.analysis || null;
+  const artifact = artifactData.verdict || artifactData.analysis || null;
+  const source = artifact?.uncertainty_payload || artifact;
   if (!source) {
     return null;
   }

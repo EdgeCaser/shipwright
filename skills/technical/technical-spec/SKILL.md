@@ -7,6 +7,8 @@ default_depth: standard
 
 # Technical Spec Writing
 
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+
 ## Description
 
 Translates product requirements (PRDs, user stories) into engineering-ready technical specifications. Covers system architecture decisions, API contracts, data models, non-functional requirements, and migration plans. Bridges the gap between "what to build" (PM) and "how to build it" (engineering).
@@ -26,7 +28,7 @@ Translates product requirements (PRDs, user stories) into engineering-ready tech
 | **Standard** | Typical feature spanning multiple components | All sections |
 | **Deep** | Platform migration, new system, or multi-team coordination | All sections + load test plan, detailed ADRs per component, cross-service sequence diagrams, rollback rehearsal script |
 
-**Omit rules:** At Light depth, skip Non-Functional Requirements and Rollout & Migration. Produce only Context, Architecture (components table + one ADR), and API Contract.
+**Omit rules:** At Light depth, condense non-functional requirements and rollout detail. Retain material security, migration and rollback considerations alongside context, architecture and API contract. Mark irrelevant items N/A with rationale.
 
 ## Framework
 
@@ -273,7 +275,7 @@ Produce a Technical Specification with:
 **Shipwright Signature (required closing):**
 7. **Decision Frame**, recommended architecture approach, trade-off, confidence with evidence quality, owner, decision date, revisit trigger
 8. **Unknowns & Evidence Gaps**, unvalidated performance targets, missing data volume estimates, untested migration paths
-9. **Pass/Fail Readiness**, PASS if architecture reviewed by tech lead and API contract validated against PRD requirements; FAIL if ADRs list no alternatives considered, rollback plan is absent, or a codebase was available and Codebase Notes are empty (Light depth: rollback plan requirement is waived since Rollout & Migration is omitted at Light)
+9. **Pass/Fail Readiness**, PASS for engineering approval if the tech lead has reviewed the architecture, the API contract matches PRD requirements, and material security/rollback issues are resolved. FAIL for approval if review is missing, alternatives are unexamined, or material rollback needs are unanswered. A useful draft may be delivered with explicit blockers at any depth.
 10. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid

@@ -5,6 +5,8 @@ description: "Write a product narrative: Amazon-style 6-pager or executive one-p
 
 # /narrative - Product Narrative Workflow
 
+Before executing, read `docs/workflow-contract.md` from this Shipwright installation. Resolve it relative to this file's parent installation root (or the plugin root), not the user's product directory. Its handoff, depth, evidence and authorization rules apply throughout.
+
 Run this command to produce a structured written narrative for a product decision, proposal, or strategic recommendation.
 
 ## Workflow Steps
@@ -18,7 +20,7 @@ Ask the PM:
 If the audience is time-constrained or you need quick approval, use the executive briefing format. If the decision is complex and needs thorough reasoning, use the 6-pager.
 
 ### Step 2a: Executive Briefing (Short Form)
-Read and apply the framework from `/skills/communication/executive-briefing/SKILL.md`.
+Read and apply the framework from `skills/communication/executive-briefing/SKILL.md`.
 
 Produce a one-page SCR (Situation-Complication-Resolution) document:
 - Situation: what's happening
@@ -26,7 +28,7 @@ Produce a one-page SCR (Situation-Complication-Resolution) document:
 - Resolution: what you're proposing and what you need
 
 ### Step 2b: 6-Pager (Long Form)
-Read and apply the framework from `/skills/communication/product-narrative/SKILL.md`.
+Read and apply the framework from `skills/communication/product-narrative/SKILL.md`.
 
 Produce a full narrative memo:
 - Opening: the customer or business problem in concrete terms

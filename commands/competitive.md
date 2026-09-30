@@ -5,6 +5,8 @@ description: "Run competitive analysis in two phases: evidence first, then battl
 
 # /competitive - Competitive Intelligence Workflow
 
+Before executing, read `docs/workflow-contract.md` from this Shipwright installation. Resolve it relative to this file's parent installation root (or the plugin root), not the user's product directory. Its handoff, depth, evidence and authorization rules apply throughout.
+
 Run this command to produce a complete competitive analysis package: landscape overview, detailed battlecard, and positioning implications.
 
 When fresh external competitive evidence is needed, do not jump straight into recommendations. Start with a bounded evidence pass, then synthesize from that evidence.
@@ -14,7 +16,7 @@ When fresh external competitive evidence is needed, do not jump straight into re
 ### Phase 1: Evidence Basis
 
 ### Step 1: Define the Competitive Question
-Read and apply the framework from `/skills/discovery/competitive-landscape/SKILL.md`.
+Read and apply the framework from `skills/discovery/competitive-landscape/SKILL.md`.
 
 Ask the PM:
 - Who are the 3-5 competitors you track most closely?
@@ -29,7 +31,7 @@ Produce a short competitive brief covering:
 ### Step 2: Collect Competitive Evidence
 If fresh public-web evidence is required, use the local research collector first and only use interactive browsing for unresolved gaps.
 
-Using the same `/skills/discovery/competitive-landscape/SKILL.md` framework, gather the evidence basis for the in-scope competitors and alternatives.
+Using the same `skills/discovery/competitive-landscape/SKILL.md` framework, gather the evidence basis for the in-scope competitors and alternatives.
 
 Produce an evidence basis containing:
 - competitor positioning and segmentation
@@ -43,7 +45,7 @@ If the PM already has current competitive evidence, skip the public-web pass and
 ### Phase 2: Synthesis
 
 ### Step 3: Battlecard Creation
-Read and apply the framework from `/skills/gtm/competitive-battlecard/SKILL.md`.
+Read and apply the framework from `skills/gtm/competitive-battlecard/SKILL.md`.
 
 For the top 2-3 competitors, produce sales-ready battlecards with:
 - Their pitch vs. ours
@@ -52,7 +54,7 @@ For the top 2-3 competitors, produce sales-ready battlecards with:
 - Landmine questions to plant in buyer conversations
 
 ### Step 4: Positioning Review
-Read and apply the framework from `/skills/strategy/positioning-statement/SKILL.md`.
+Read and apply the framework from `skills/strategy/positioning-statement/SKILL.md`.
 
 Based on the evidence basis, review or draft positioning:
 - What category do we compete in (or should we redefine)?

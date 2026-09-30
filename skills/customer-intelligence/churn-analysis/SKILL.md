@@ -7,6 +7,8 @@ default_depth: standard
 
 # Churn Analysis & Retention Playbook
 
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+
 ## Description
 
 Structures a systematic approach to diagnosing why users leave and designing staged interventions to retain them. Combines quantitative churn metrics with qualitative exit research to produce actionable retention playbooks.
@@ -191,7 +193,7 @@ Produce a Churn Analysis & Retention Playbook with:
 **Shipwright Signature (required closing):**
 6. **Decision Frame**, primary finding on churn drivers and framed retention options with expected churn impact, trade-offs (cost of intervention vs. cost of churn), confidence level with evidence quality, owner, decision date, revisit trigger
 7. **Unknowns & Evidence Gaps**, root causes with insufficient qualitative backing, segments with no exit data, untested intervention assumptions
-8. **Pass/Fail Readiness**, PASS if churn rate is quantified, top 3 root causes are evidence-backed, and at least one retention option is framed with expected impact (at Light depth: PASS if churn rate is quantified and top 3 root causes are identified with at least directional evidence); FAIL if churn definition is missing or root causes are assumed without data
+8. **Pass/Fail Readiness**, PASS if churn is consistently defined and quantified, causal claims match available evidence, and uncertainty is explicit. A Light pulse may report causes unknown. Standard/Deep frame supported retention options; FAIL if correlation or an unsupported explanation is asserted as a root cause.
 9. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid

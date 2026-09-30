@@ -7,6 +7,8 @@ default_depth: standard
 
 # Competitive Landscape Analysis
 
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+
 ## Description
 
 Structures a comprehensive competitive analysis across positioning, feature parity, pricing, go-to-market, and market signals. Produces artifacts useful for strategy sessions, sales enablement, and investor updates.

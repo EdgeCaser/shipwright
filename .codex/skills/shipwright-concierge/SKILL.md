@@ -1,75 +1,33 @@
 ---
 name: shipwright-concierge
-description: "Use for plain-language PM, strategy, discovery, launch, pricing, and business-analysis requests in Codex when the user wants Shipwright-style output without slash commands."
+description: "Handle plain-language PM and business-analysis requests with Shipwright: research, PRDs, strategy, pricing, discovery, launch plans and decision analysis. Excludes software maintenance of Shipwright itself."
 ---
 
-# Shipwright Concierge for Codex
+# Shipwright Concierge
 
-This skill gives Codex a conversational Shipwright entry point. Use it when the user asks for PM or business work in plain English and expects Shipwright-quality structure without invoking Claude Code commands.
+Locate the Shipwright root from this skill's path: the ancestor containing `manifest.json` and `docs/workflow-contract.md`. In a checkout this is the repository root; in a copied install it is `.codex/`; in a plugin it is the plugin root. Read that workflow contract. Resolve referenced files and helpers from that root while keeping the working directory at the user's project.
 
-## What This Skill Does
+## Routing
 
-- routes the request to the smallest viable Shipwright framework or combination of frameworks
-- keeps public-web research bounded
-- requires the local research collector before interactive browsing when the helper is available
-- preserves Shipwright's evidence-first output style
+- A binary high-stakes question about acquisition, governance, publication, sunsetting, pivoting or a price change needs a verdict. Apply the inline decision-analysis protocol in `agents/orchestrator.md`. Do not replace the verdict with a strategy workshop or start another model CLI inside this session. A second opposing-position pass is a same-session stress test, not independent validation.
+- Choose one framework first. Consult `manifest.json` and `skills-map.md` for broader work. Optional `scripts/route-request.mjs` output is a routing hint, not evidence that required inputs exist.
+- For fresh web evidence, follow the research protocol in `docs/workflow-contract.md`: one primary query, `--mode auto`, facts first and then the evidence pack. Missing helper, runtime or credentials permits bounded browsing.
+- For a requested workflow, read `commands/<name>.md`. Reuse existing work. If delegation is unavailable, apply specialist roles sequentially in this session.
 
-## Routing Rules
+## Common mappings
 
-1. If the request clearly maps to one framework, use that framework directly.
-2. If the request spans multiple Shipwright areas, consult `manifest.json` and `skills-map.md`.
-3. Prefer one deliverable at a time instead of bundling research, synthesis, and packaging into one huge run.
+| Request | Initial skill name |
+|---|---|
+| Market sizing or viability | market-sizing |
+| Competitor research | competitive-landscape |
+| Pricing and packaging | pricing-strategy |
+| Build versus buy comparison | build-vs-buy-analysis |
+| Discovery | opportunity-solution-tree |
+| Customer feedback | feedback-triage |
+| Product strategy | product-strategy-session |
+| PRD | prd-development |
+| Prioritization | prioritization-advisor |
 
-## Common Mappings
+Find the named skill under `skills/`; source checkouts include category directories and distribution packages use flat skill directories.
 
-- business attractiveness or market viability:
-  - `skills/discovery/market-sizing/SKILL.md`
-  - `skills/discovery/competitive-landscape/SKILL.md`
-  - `skills/strategy/build-vs-buy-analysis/SKILL.md`
-- pricing:
-  - `skills/pricing/pricing-strategy/SKILL.md`
-  - `skills/strategy/build-vs-buy-analysis/SKILL.md`
-- customer/problem discovery:
-  - `skills/discovery/opportunity-solution-tree/SKILL.md`
-  - `skills/customer-intelligence/feedback-triage/SKILL.md`
-- product strategy:
-  - `skills/strategy/product-strategy-session/SKILL.md`
-  - `skills/strategy/prioritization-advisor/SKILL.md`
-
-## Public-Web Research Protocol
-
-If fresh public-web evidence is needed, follow this protocol in order:
-
-1. First run the local research collector if available:
-   - `node scripts/collect-research.mjs --query "<primary query>" --mode auto`
-   - otherwise `node .codex/scripts/collect-research.mjs --query "<primary query>" --mode auto`
-   - otherwise `node .claude/scripts/collect-research.mjs --query "<primary query>" --mode auto`
-   - Prefer the repo-level `scripts/collect-research.mjs` when available because it writes `facts.json`; the `.codex` and `.claude` copies are fallback collectors and may only emit the evidence pack.
-2. If `facts.json` exists alongside the evidence pack, read it first and use it as a structured shortcut before synthesizing from the full evidence pack.
-3. Interpret `facts.json` by `confidence_hint`:
-   - `high`: use directly for structured fields, tables, and summaries, while keeping source attribution.
-   - `medium`: treat as provisional; verify against the cited evidence pack entry before relying on it for a material claim, comparison, or recommendation.
-   - `low`: treat as a lead only; do not present it as settled unless corroborated from the evidence pack or another source.
-   - if `confidence_hint` is missing, treat it as `medium`.
-4. Read the generated `evidence.md` or `evidence.json`.
-5. Synthesize from that evidence pack first.
-6. Do not use `Web Search` before attempting the collector when the helper exists and a key is configured.
-7. Use interactive browsing only for unresolved gaps, collector failure, or `needs-interactive-followup`.
-8. If you must browse interactively, keep the queries gap-focused and limited.
-9. If the evidence pack was usable, do not replace it with a new broad raw-search pass.
-
-## Interaction Style
-
-- Ask at most 2 clarifying questions if the goal is unclear.
-- If the ask is already clear, proceed directly.
-- Return findings inline unless the user explicitly asks for a saved artifact.
-- When you used the collector, say so briefly in the answer or working trace.
-
-## Output Standard
-
-For substantial outputs, end with:
-
-- `Decision Frame`
-- `Unknowns & Evidence Gaps`
-- `Pass/Fail Readiness`
-- `Recommended Next Artifact`
+Ask at most two material clarifying questions when needed. Proceed when the request is clear. Return work inline unless a saved artifact was requested. Apply the skill's evidence bar and depth-aware readiness gate. Include the four signature elements once, with all six Decision Frame fields from `docs/output-standard.md`. Partial work remains explicitly FAIL; never invent evidence, approval, owners or dates to complete it.

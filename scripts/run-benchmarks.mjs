@@ -25,6 +25,11 @@ const CONTRADICTION_TYPES = new Set([
 const USABILITY_BLOCKING_WARNING_TYPES = new Set([
   IssueType.MISSING_SECTION,
   IssueType.MISSING_STRUCTURED_ARTIFACT,
+  IssueType.UNSUPPORTED_DOLLAR,
+  IssueType.UNSUPPORTED_NUMERIC,
+  IssueType.METRIC_CONTRADICTION,
+  IssueType.SEGMENT_CONTRADICTION,
+  IssueType.CHALLENGE_FINDING_UNRESOLVED,
 ]);
 
 const VALID_STATUSES = new Set(['PASS', 'FAIL', 'DNF']);
@@ -174,6 +179,16 @@ export function validateBenchmarkSuiteSummary(summary, options = {}) {
   for (const result of summary.results) {
     validateScenarioResult(result, label);
   }
+  mapResultsByScenarioId(summary.results, label);
+  const computed = buildBenchmarkSuiteSummary({ results: summary.results });
+  for (const field of ['mean_first_pass_blind_rating', 'mean_final_pass_blind_rating']) {
+    if (summary[field] !== computed[field]) throw new Error(`${label} ${field} does not match its results.`);
+  }
+  for (const status of VALID_STATUSES) {
+    if (summary.status_counts?.[status] !== computed.status_counts[status]) {
+      throw new Error(`${label} status_counts does not match its results.`);
+    }
+  }
 
   return summary;
 }
@@ -243,7 +258,9 @@ export function compareBenchmarkSuites(currentSummary, baselineSummary) {
       baselineResultsById,
     ),
     publishable_proof_ready:
-      summaryHasIndependentProvenance(current) && summaryHasIndependentProvenance(baseline),
+      current.results.length > 0 && summaryHasIndependentProvenance(current) && summaryHasIndependentProvenance(baseline)
+      && [...current.results, ...baseline.results].every(result =>
+        Number.isFinite(result.first_pass.blind_rating) && Number.isFinite(result.final_pass.blind_rating)),
     comparison_interpretation:
       current.threshold_policy.status === 'final' && baseline.threshold_policy.status === 'final'
         ? 'final'
@@ -327,6 +344,10 @@ export async function runBenchmarkSuite(options = {}) {
   const baselineSummary = options.baselineSummary || null;
 
   const scenarioFiles = await discoverScenarioFiles(scenarioDir);
+  const knownIds = new Set(scenarioFiles.map(file => path.basename(file, '.json')));
+  for (const id of scenarioIds) {
+    if (!knownIds.has(id)) throw new Error(`Unknown benchmark scenario: ${id}`);
+  }
   const selectedScenarioFiles = scenarioFiles.filter((filePath) => {
     if (scenarioIds.size === 0) return true;
     return scenarioIds.has(path.basename(filePath, '.json'));
@@ -497,7 +518,7 @@ function validatePassShape(pass, scenarioId, passKey, label) {
   if (
     pass.blind_rating !== null &&
     pass.blind_rating !== undefined &&
-    (!Number.isFinite(pass.blind_rating) || pass.blind_rating < 0)
+    (!Number.isFinite(pass.blind_rating) || pass.blind_rating < 0 || pass.blind_rating > 100)
   ) {
     throw new Error(`${label} has invalid ${passKey}.blind_rating for scenario "${scenarioId}".`);
   }
@@ -694,6 +715,8 @@ function computeBlindRating(blindReview, passKey) {
 }
 
 function deriveScenarioStatus(finalPass) {
+  if (finalPass.artifact?.pass_fail_readiness?.status === 'FAIL'
+    && finalPass.issues.every(issue => issue.type === IssueType.READINESS_FAILED)) return 'FAIL';
   if (!finalPass.usable) return 'DNF';
 
   const readinessStatus = finalPass.artifact?.pass_fail_readiness?.status;

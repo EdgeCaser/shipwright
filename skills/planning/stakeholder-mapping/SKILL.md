@@ -7,6 +7,8 @@ default_depth: standard
 
 # Stakeholder Mapping (Power × Interest)
 
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+
 ## Description
 
 Maps stakeholders on a Power × Interest grid, defines engagement strategies per quadrant, tracks alignment over time, and produces a communication plan. Ensures PMs invest their limited influence capital where it matters most.

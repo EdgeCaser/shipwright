@@ -7,6 +7,8 @@ default_depth: standard
 
 # API Product Design
 
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+
 ## Description
 
 For PMs who own APIs, platforms, or developer-facing products. Covers API endpoint design, developer experience (DX), versioning strategy, documentation standards, and developer onboarding. Treats the API as a product with its own personas, jobs-to-be-done, and success metrics.

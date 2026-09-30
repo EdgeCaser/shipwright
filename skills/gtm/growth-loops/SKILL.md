@@ -7,6 +7,8 @@ default_depth: standard
 
 # Growth Loops Identification
 
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+
 ## Description
 
 Maps acquisition, engagement, and monetization loops to identify self-reinforcing growth mechanisms. Moves beyond the linear funnel model to identify compounding loops where output from one cycle becomes input for the next. Based on Reforge's growth loops framework.

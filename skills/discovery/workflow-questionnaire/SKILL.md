@@ -7,6 +7,8 @@ default_depth: standard
 
 # Workflow Questionnaire
 
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+
 ## Description
 
 Generates constraint-aware questionnaires that map a prospect or customer's workflows, surface friction points, and identify where processes can be optimized or eliminated. Accepts a configurable lens (e.g., AI/automation readiness, tool consolidation, compliance gaps) that scopes every question toward a specific optimization angle, so the questionnaire discovers what you need, not everything there is to know.

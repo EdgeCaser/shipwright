@@ -34,7 +34,8 @@ FAIL because the evidence base is still weak.
     "tradeoff": "Potentially helpful workflow support, but evidence is still weak.",
     "confidence": "low",
     "owner": "PM",
-    "decision_date": "2026-04-02"
+    "decision_date": "2026-04-02",
+    "revisit_trigger": "New evidence changes the recommendation."
   },
   "unknowns": [
     "Which workflow problem matters most to account managers."

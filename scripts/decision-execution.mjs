@@ -26,8 +26,8 @@ const PROVIDER_COMMANDS = {
 };
 
 const PROVIDER_META = {
-  claude: { provider: 'anthropic', model: 'claude-max' },
-  gpt: { provider: 'openai', model: 'chatgpt-pro' },
+  claude: { provider: 'anthropic', model: 'provider-default (not captured)' },
+  gpt: { provider: 'openai', model: 'provider-default (not captured)' },
   gemini: { provider: 'google', model: 'gemini-2.5-flash' },
 };
 
@@ -61,6 +61,7 @@ export async function executeFastAnalysisForSession(session, options = {}) {
       runId: options.runId || null,
       scenarioClass: session.scenario_class || 'unclassified',
       availableProviders,
+      rigorAvailable: session.rigor_available === true,
       timeoutMs: options.timeoutMs,
       turnRunner: options.turnRunner,
     });

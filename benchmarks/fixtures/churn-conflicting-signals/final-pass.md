@@ -33,7 +33,8 @@ PASS because the pilot can be run without a broader strategy rewrite.
     "tradeoff": "Focused intervention now, but metric targets diverge from top-level strategy because the pilot targets a narrower segment.",
     "confidence": "high",
     "owner": "PM",
-    "decision_date": "2026-04-02"
+    "decision_date": "2026-04-02",
+    "revisit_trigger": "New evidence changes the recommendation."
   },
   "unknowns": [
     "Which intervention has the highest near-term retention effect."

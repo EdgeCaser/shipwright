@@ -5,6 +5,8 @@ description: "Produce a stakeholder status update: concise progress report with 
 
 # /status - Stakeholder Status Update
 
+Before executing, read `docs/workflow-contract.md` from this Shipwright installation. Resolve it relative to this file's parent installation root (or the plugin root), not the user's product directory. Its handoff, depth, evidence and authorization rules apply throughout.
+
 Run this command to produce a structured status update for stakeholders that leads with what matters most.
 
 ## Workflow Steps
@@ -20,7 +22,7 @@ Ask the PM:
 Also check for existing artifacts from recent Shipwright sessions (PRDs, OKRs, sprint plans, retros) that can inform the update.
 
 ### Step 2: Draft the Update
-Read and apply the framework from `/skills/measurement/stakeholder-communication/SKILL.md`.
+Read and apply the framework from `skills/measurement/stakeholder-communication/SKILL.md`.
 
 Structure the update in this order:
 1. **Progress against goals/OKRs** - what moved, by how much, on track or off

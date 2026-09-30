@@ -5,19 +5,21 @@ description: "Complete handoff from strategy to engineering: PRD, technical spec
 
 # /tech-handoff, Strategy-to-Engineering Handoff Workflow
 
+Before executing, read `docs/workflow-contract.md` from this Shipwright installation. Resolve it relative to this file's parent installation root (or the plugin root), not the user's product directory. Its handoff, depth, evidence and authorization rules apply throughout.
+
 Run this command to take an approved strategic initiative and produce everything engineering needs to start building. This is the most comprehensive workflow: it chains 5 skills, with a codebase grounding step between the PRD and the tech spec, into the full PM-to-engineering handoff.
 
 ## Workflow Steps
 
-### Step 1: PRD Development
-Read and apply `/skills/execution/prd-development/SKILL.md`.
+### Step 1: Reuse or Develop the PRD
+Read and apply `skills/execution/prd-development/SKILL.md`.
 
 Ask the PM:
 - What initiative are we handing off?
 - Is there an existing strategy document or brief?
 - Who are the key stakeholders and reviewers?
 
-Produce the full PRD using the Working Backwards method: press release, FAQ, detailed requirements with user stories and success metrics.
+If an existing PRD meets the input gates, reuse it. Otherwise produce the full PRD using the Working Backwards method: press release, FAQ, detailed requirements with user stories and success metrics.
 
 ### Step 2: Ground in the Codebase
 Before writing the tech spec, find out what already exists.
@@ -34,7 +36,7 @@ If no codebase is available:
 Do not write architecture against an imagined system when the real one is a directory away.
 
 ### Step 3: Technical Specification
-Read and apply `/skills/technical/technical-spec/SKILL.md`.
+Read and apply `skills/technical/technical-spec/SKILL.md`.
 
 Translate the PRD into an engineering-ready technical spec, grounded in the Codebase Notes from Step 2:
 - System architecture with ADRs for key decisions, referencing the existing components each decision builds on or replaces
@@ -44,16 +46,16 @@ Translate the PRD into an engineering-ready technical spec, grounded in the Code
 - Rollout and rollback plan
 
 ### Step 4: Design Review
-Read and apply `/skills/technical/design-review/SKILL.md`.
+Read and apply `skills/technical/design-review/SKILL.md`.
 
 Run the 7-perspective review on the combined PRD + tech spec:
 - Engineering, Design, Executive, Legal, Customer Voice, Devil's Advocate, Sales
 - Synthesize: consensus, tensions, blockers, open questions
 
-Surface any issues that need resolution before proceeding to breakdown.
+Resolve blockers before labeling the breakdown ready for engineering. Draft planning may continue with explicit unresolved dependencies. Reuse the PRD's stories in Step 6 and refine only what the technical review changed.
 
 ### Step 5: Epic Breakdown
-Read and apply `/skills/execution/epic-breakdown/SKILL.md`.
+Read and apply `skills/execution/epic-breakdown/SKILL.md`.
 
 Decompose the initiative into shippable epics:
 - Each with hypothesis, success metric, scope boundaries, and estimated effort
@@ -61,7 +63,7 @@ Decompose the initiative into shippable epics:
 - Validated against the breakdown checklist
 
 ### Step 6: User Story Writing
-Read and apply `/skills/execution/user-story-writing/SKILL.md`.
+Read and apply `skills/execution/user-story-writing/SKILL.md`.
 
 For the first 1-2 epics (the ones engineering will start on), produce complete user stories:
 - Story statements (As a / I want / So that)

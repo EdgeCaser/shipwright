@@ -7,6 +7,8 @@ default_depth: standard
 
 # Pricing Strategy Analyzer
 
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+
 ## Description
 
 Structures a comprehensive pricing analysis covering willingness-to-pay research design, pricing model comparison (per-seat, usage-based, flat-rate, freemium, hybrid), competitive pricing intelligence, price sensitivity testing, and packaging strategy. Helps PMs make pricing decisions grounded in data rather than gut feel.
@@ -200,7 +202,7 @@ The output is a ready-to-cite markdown table covering plan names, prices, billin
 
 **Acceptable evidence:** Van Westendorp or Gabor-Granger survey results, win/loss data citing price, competitive pricing pages, ARPU and conversion cohorts, customer interviews mentioning willingness-to-pay, usage data showing value metric correlation.
 
-**Insufficient evidence:** If no customer data, competitive data, or usage analytics exist: at Standard/Deep depth, stop and recommend running a Van Westendorp survey (minimum 30 respondents per segment) before attempting this skill; at Light depth, produce a partial artifact with price ranges and model comparisons marked `[TBD, requires: customer WTP data or competitive pricing intelligence]` and flag the artifact as hypothesis-only. Do not produce a Standard/Deep pricing recommendation without at least one evidence source.
+**Insufficient evidence:** With no customer, competitive or usage evidence, return a hypothesis-only model comparison and the smallest research step that could change the decision. Do not invent a price range. Choose WTP research method and sample needs for the segment and decision; no fixed respondent count guarantees reliable pricing.
 
 **Hypotheses vs. findings:**
 - **Findings:** Current state metrics, competitive pricing landscape, and value metric alignment scores must be grounded in evidence.
@@ -219,7 +221,7 @@ Produce a Pricing Strategy Document with:
 **Shipwright Signature (required closing):**
 7. **Decision Frame**, Recommended pricing model and price point, acquisition vs. revenue trade-off, confidence level with evidence quality, pricing owner, decision date, revisit trigger (e.g., competitive move, NRR shift)
 8. **Unknowns & Evidence Gaps**, WTP ranges not yet validated, segments not surveyed, competitive pricing behind sales walls
-9. **Pass/Fail Readiness**, PASS if value metric is identified, at least one model is evaluated with rationale, and a price range is defensible (at Light depth: PASS if value metric is identified and model recommendation has rationale, price range defensibility is deferred); FAIL if no customer or competitive evidence supports the recommendation
+9. **Pass/Fail Readiness**, PASS for a pricing recommendation if the value metric and model have evidence-backed rationale and the range is defensible. Light depth may PASS as a hypothesis-only model assessment with evidence gaps explicit; it is not approval to change prices.
 10. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid

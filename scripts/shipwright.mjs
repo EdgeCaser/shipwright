@@ -10,7 +10,7 @@
 
 import path from 'node:path';
 import {
-  route,
+  routeWithCapabilities as route,
   assessProviderAvailability,
   SCENARIO_CLASSES,
 } from './orchestrate.mjs';
@@ -75,7 +75,7 @@ const isMain = process.argv[1]
     const finalResult = sessionResult.session?.session_id
       ? await getDecisionSession(
         sessionResult.session.session_id,
-        args.outDir ? path.join(args.outDir, 'sessions') : undefined,
+        args.outDir ? path.join(args.outDir, 's') : undefined,
       )
       : sessionResult;
 

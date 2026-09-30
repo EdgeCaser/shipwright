@@ -7,6 +7,8 @@ default_depth: standard
 
 # Adversarial Review
 
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+
 ## Description
 
 Stress-tests a completed Shipwright artifact from an explicitly adversarial posture. The job is not to rewrite the artifact or prove superiority. The job is to find the places where the artifact may be wrong, weakly supported, too comfortable, too generic, or structurally misleading.
@@ -25,11 +27,11 @@ This skill produces a **Challenge Report**. A good Challenge Report creates usef
 
 | Scope | Use When | Sections to Include |
 |---|---|---|
-| **Light** | Time-sensitive review where you only want the highest-signal objections | Context + condensed Analysis (top 3 findings) + Decision Frame + condensed Risks and Open Questions + Action Plan + Unknowns & Evidence Gaps + Pass/Fail Readiness + Recommended Next Artifact |
+| **Light** | Time-sensitive review where you only want the highest-signal objections | Context + condensed Analysis (up to 3 material findings) + Decision Frame + condensed Risks and Open Questions + Action Plan + Unknowns & Evidence Gaps + Pass/Fail Readiness + Recommended Next Artifact |
 | **Standard** | Typical adversarial review of a completed artifact | All sections with a full 5-vector sweep |
 | **Deep** | High-stakes artifact where the PM wants maximum rigor before delivery | All sections + falsification criteria for each major challenged claim + "what evidence would change my mind" notes |
 
-**Omit rules:** At Light depth, do not attempt full coverage. Surface only the strongest 3 findings across all vectors, but still include the required closing signature elements. At Deep depth, do not rewrite the artifact or produce a replacement strategy; remain in review mode.
+**Omit rules:** At Light depth, do not attempt full coverage. Surface only the strongest findings, up to 3, across all vectors, but still include the required closing signature elements. At Deep depth, do not rewrite the artifact or produce a replacement strategy; remain in review mode.
 
 ## Framework
 
@@ -41,7 +43,7 @@ Before reviewing manually, run the postflight validator if the artifact is avail
 node scripts/validate-artifact.mjs path/to/artifact.md
 ```
 
-The validator flags unsupported dollar figures and numeric claims without nearby citation markers, and checks for missing expected sections. Any flagged issues are automatically Evidence Integrity candidates, include them in the findings table in Step 3 rather than re-deriving them by hand. If the validator finds no issues, note that and proceed. This step is optional but saves review time on high-volume citation work.
+The validator flags unsupported dollar figures and numeric claims without nearby citation markers, and checks for missing expected sections. Treat flags as review candidates. Verify each flag against the actual claim before including it; map it to the appropriate attack vector. If the validator finds no issues, note that and proceed. This step is optional but saves review time on high-volume citation work.
 
 ### Step 1: Define the Review Scope
 
@@ -145,9 +147,9 @@ Each finding must be specific enough that the author could respond to it directl
 Use this structure:
 
 ```markdown
-| Claim Challenged | Attack Vector | Severity | Why This Is Vulnerable | Question To Answer | What Would Resolve It |
-|---|---|---|---|---|---|
-| [specific claim] | [vector] | [Critical / Moderate / Minor] | [evidence-backed critique] | [one precise question] | [specific evidence or revision needed] |
+| Finding ID | Claim Challenged | Attack Vector | Severity | Why This Is Vulnerable | Question To Answer | What Would Resolve It |
+|---|---|---|---|---|---|---|
+| [stable report-specific ID] | [specific claim] | [vector] | [Critical / Moderate / Minor] | [evidence-backed critique] | [one precise question] | [specific evidence or revision needed] |
 ```
 
 Severity rules:
@@ -164,7 +166,7 @@ Use these verdicts:
 - **DEFEND:** The PM should decide whether to send findings back to the producing agent before treating the artifact as settled.
 - **ESCALATE:** A Critical integrity issue puts the artifact's core recommendation in doubt and PM attention is required.
 
-`DEFEND` is advisory in v1. It is not an automatic workflow state and does not automatically reopen the authoring agent.
+`DEFEND` requests a disposition of material findings. It is not an automatic workflow state and does not automatically reopen the authoring agent.
 
 ### Step 5: Close With Resolution Guidance
 
@@ -195,6 +197,8 @@ For Deep reviews, add:
 When in doubt, downgrade to hypothesis instead of overstating the critique.
 
 ## Output Format
+
+When an automated handoff or benchmark explicitly requests structured output, also read `docs/structured-artifacts.md` and the matching schema from the Shipwright installation root. Append the validated envelope and keep it consistent with the visible artifact. Ordinary chat output needs no JSON duplicate.
 
 Produce a **Challenge Report** containing:
 
@@ -229,6 +233,8 @@ Then close with the remaining Shipwright Signature elements:
 6. **Unknowns & Evidence Gaps**, Missing context, missing source evidence, or reviewer limitations that reduced confidence in the review itself
 7. **Pass/Fail Readiness**, PASS if findings are evidence-backed, severity is calibrated, and each finding includes a resolution condition; FAIL if critique is generic, theatrical, or unsupported
 8. **Recommended Next Artifact**, Which Shipwright skill or agent should engage next and why
+
+For machine handoffs, serialize `minor` for Minor severity and record all author responses by finding ID. Use `INSUFFICIENT_EVIDENCE` with FAIL for an incomplete review. A Critical finding requires ESCALATE.
 
 ## Common Mistakes to Avoid
 

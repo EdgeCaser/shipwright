@@ -5,6 +5,8 @@ description: "Build a complete pricing strategy in two phases: evidence first, t
 
 # /pricing, Pricing Strategy Workflow
 
+Before executing, read `docs/workflow-contract.md` from this Shipwright installation. Resolve it relative to this file's parent installation root (or the plugin root), not the user's product directory. Its handoff, depth, evidence and authorization rules apply throughout.
+
 Run this command to develop or evaluate a pricing strategy end-to-end.
 
 When fresh external pricing evidence is needed, do not jump straight into recommendations. Start with a bounded evidence pass, then synthesize the strategy from that evidence.
@@ -14,7 +16,7 @@ When fresh external pricing evidence is needed, do not jump straight into recomm
 ### Phase 1: Evidence Basis
 
 ### Step 1: Define the Pricing Decision
-Read and apply `/skills/pricing/pricing-strategy/SKILL.md`.
+Read and apply `skills/pricing/pricing-strategy/SKILL.md`.
 
 Ask the PM:
 - Is this pricing for a new product or a revision of existing pricing?
@@ -29,7 +31,7 @@ Produce a short decision brief covering:
 ### Step 2: Collect Pricing Evidence
 If fresh public-web evidence is required, use the local research collector first and only use interactive browsing for unresolved gaps.
 
-Read and apply `/skills/discovery/competitive-landscape/SKILL.md` with a pricing focus.
+Read and apply `skills/discovery/competitive-landscape/SKILL.md` with a pricing focus.
 
 Produce an evidence basis containing:
 - competitor pricing models and price points
@@ -63,7 +65,7 @@ Design a Van Westendorp or Gabor-Granger study to validate price points with tar
 Design tier structure with feature gating, upgrade triggers, and a free tier (if applicable).
 
 ### Step 8: Design Validation Experiment
-Read and apply `/skills/pricing/monetization-experiments/SKILL.md`.
+Read and apply `skills/pricing/monetization-experiments/SKILL.md`.
 
 Design a controlled experiment to test the pricing in-market: hypothesis, variants, metrics, guardrails, rollout plan.
 

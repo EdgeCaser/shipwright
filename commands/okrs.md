@@ -5,6 +5,8 @@ description: "Draft, review, and stress-test OKRs for a team or product area."
 
 # /okrs - OKR Authoring Workflow
 
+Before executing, read `docs/workflow-contract.md` from this Shipwright installation. Resolve it relative to this file's parent installation root (or the plugin root), not the user's product directory. Its handoff, depth, evidence and authorization rules apply throughout.
+
 Run this command to draft OKRs, check them for common anti-patterns, and produce a finalized set ready for review.
 
 ## Workflow Steps
@@ -17,7 +19,7 @@ Ask the PM:
 - Are there company-level OKRs these need to cascade from?
 
 ### Step 2: Draft OKRs
-Read and apply the framework from `/skills/planning/okr-authoring/SKILL.md`.
+Read and apply the framework from `skills/planning/okr-authoring/SKILL.md`.
 
 Draft 2-3 Objectives with 3-5 Key Results each. Ensure:
 - Objectives are qualitative and inspiring

@@ -5,12 +5,14 @@ description: "Run a full discovery cycle: brainstorm opportunities, identify ass
 
 # /discover, Full Discovery Workflow
 
-Run this command to execute a structured product discovery cycle. This chains four skills into a single end-to-end workflow.
+Before executing, read `docs/workflow-contract.md` from this Shipwright installation. Resolve it relative to this file's parent installation root (or the plugin root), not the user's product directory. Its handoff, depth, evidence and authorization rules apply throughout.
+
+Run this command to execute a structured product discovery cycle. This applies one opportunity-mapping framework through four stages.
 
 ## Workflow Steps
 
 ### Step 1: Opportunity Mapping
-Read and apply the framework from `/skills/discovery/opportunity-solution-tree/SKILL.md`.
+Read and apply the framework from `skills/discovery/opportunity-solution-tree/SKILL.md`.
 
 Ask the PM:
 - What is the desired outcome we're targeting?

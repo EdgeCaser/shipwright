@@ -33,7 +33,8 @@ PASS because the handoff is now aligned to strategy and challenge resolution is 
     "tradeoff": "Aligns to platform strategy now, but delays SMB-specific reuse until later.",
     "confidence": "high",
     "owner": "PM",
-    "decision_date": "2026-04-02"
+    "decision_date": "2026-04-02",
+    "revisit_trigger": "New evidence changes the recommendation."
   },
   "unknowns": [
     "Observability is not yet complete for every handoff branch."

@@ -35,7 +35,8 @@ The board draft says expansion pipeline coverage is 42% above plan and should re
     "tradeoff": "Preserves strategic consistency, but delays a sharper board narrative.",
     "confidence": "medium",
     "owner": "PM",
-    "decision_date": "2026-04-02"
+    "decision_date": "2026-04-02",
+    "revisit_trigger": "New evidence changes the recommendation."
   },
   "unknowns": [
     "Segment demand quality is not yet stable enough for a sharper commitment."

@@ -34,7 +34,8 @@ PASS because the first release now contains its automation boundary and keeps op
     "tradeoff": "Delivers faster operator value now by deferring production planning and negotiation automation to later phases.",
     "confidence": "high",
     "owner": "PM",
-    "decision_date": "2026-04-02"
+    "decision_date": "2026-04-02",
+    "revisit_trigger": "New evidence changes the recommendation."
   },
   "unknowns": [
     "Approval override policy still needs a dedicated follow-up decision record.",

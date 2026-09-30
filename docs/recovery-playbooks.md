@@ -1,169 +1,26 @@
-# Recovery Playbooks
+# Recovery playbooks
 
-This is the operational layer for failure modes. Most playbooks apply when outputs fail quality checks. Playbook 7 applies to optional adversarial review verdicts from `/challenge`.
+Use the shared execution and handoff rules in `docs/workflow-contract.md`. Repair the affected section once, then recheck the failed gate. Preserve sound work. If the gate still fails, return the useful partial artifact with FAIL, missing evidence and one next action. Resume when new evidence or a user decision arrives.
 
-Each playbook is deterministic: trigger -> action -> expected correction.
+| Failure | Repair | Recheck |
+|---|---|---|
+| Unsupported research | Trace each material claim to supplied/retrieved evidence; remove unsupported claims or label assumptions. Do not start a new research workflow if a citation repair suffices. | Sources actually support the claims; qualifiers survive synthesis. |
+| Vague PRD | Resolve scope, metric definitions and material requirements. Keep unknown baselines, owners and dates explicit. | The selected depth's PRD gates; engineering readiness requires the full handoff checks. |
+| Unfalsifiable strategy | Clarify the bet, supporting assumptions, boundary and kill criteria. | At most four supported bets; no manufactured alternatives. |
+| Weak design review | Re-examine omitted checks at the selected depth (three core perspectives for Light, seven for Standard/Deep). | Every verdict cites what was checked. An evidenced all-clear is valid. |
+| Overstated experiment | Recheck validity, uncertainty, guardrails and the precommitted analysis plan. | The recommendation follows the data; do not extend repeatedly until significance appears. |
+| Missing structure | Add missing required content and signature elements without replacing the skill's native body. | One Decision Frame and one set of closing elements; no invented commitments. |
+| Prose/JSON mismatch | Correct the representation that contradicts the evidence; preserve IDs and explain changes. | Compare both representations, then run the deterministic validator. |
 
-## How to use
+## Challenge findings
 
-1. Run `evals/pass-fail.md` checks on the artifact
-2. Identify the failed gate(s)
-3. Apply the matching playbook below
-4. Re-run pass/fail checks
+A review report's PASS evaluates the review's quality. Its verdict evaluates the reviewed artifact:
 
-If you ran `/challenge`, use Playbook 7 for `DEFEND` or `ESCALATE` verdicts. These are advisory review outcomes, not pass/fail gate failures.
+- CLEAR: no material unresolved findings; document residual limits.
+- DEFEND: author/PM must disposition the material findings before treating the artifact as settled.
+- ESCALATE: a Critical finding needs PM attention before relying on the recommendation.
+- INSUFFICIENT_EVIDENCE: return the incomplete review with FAIL and the missing inputs.
 
----
+When revision is requested, pass the original artifact and all findings with IDs, severity, evidence and resolution conditions. Reuse the known producer, or select the role matching the artifact. Do not add a second permission step for an already-authorized revision. A review-only request does not by itself authorize contacting others or editing the source document.
 
-## Playbook 1: Weak or fabricated research
-
-**Trigger:** Claims are unsourced, generic, or not traceable to provided data.
-
-**Action:**
-
-1. Re-run discovery with strict evidence constraints:
-   ```
-   Only use evidence from the materials I provided. For every claim, include source.
-   If evidence is missing, write "No data available".
-   ```
-2. Run `skills/discovery/user-research-synthesis/SKILL.md`
-3. Require a table: claim | source | confidence
-
-**Expected correction:** Evidence-backed findings, explicit unknowns, fewer fabricated insights.
-
----
-
-## Playbook 2: PRD is vague or non-actionable
-
-**Trigger:** Missing baselines/targets, no out-of-scope rationale, open questions without owners.
-
-**Action:**
-
-1. Re-run `skills/execution/prd-development/SKILL.md` with constraints:
-   ```
-   Enforce numeric metrics with baseline, target, timeframe.
-   Every out-of-scope item needs rationale + revisit trigger.
-   Every open question must have owner + due date.
-   Include the required Decision Frame block.
-   ```
-2. Validate against `evals/prd.md` and `evals/pass-fail.md`
-
-**Expected correction:** Decision-ready PRD with scope discipline and accountable follow-through.
-
----
-
-## Playbook 3: Strategy is generic or unfalsifiable
-
-**Trigger:** Too many bets, no kill criteria, no hard "not doing" decisions.
-
-**Action:**
-
-1. Re-run `skills/strategy/product-strategy-session/SKILL.md` with constraints:
-   ```
-   Max 4 strategic bets.
-   Each bet requires thesis, assumptions, success metric, and kill criteria.
-   Include explicit "We will NOT" decisions with rationale.
-   Include the required Decision Frame block.
-   ```
-2. Validate against `evals/strategy.md` and `evals/pass-fail.md`
-
-**Expected correction:** Focused, falsifiable strategy with visible trade-offs.
-
----
-
-## Playbook 4: Design review lacks rigor
-
-**Trigger:** All-green verdicts, weak devil's advocate, no blockers/tensions.
-
-**Action:**
-
-1. Re-run `skills/technical/design-review/SKILL.md` with constraints:
-   ```
-   Keep all 7 perspectives.
-   Devil's Advocate must challenge at least 2 assumptions.
-   Synthesis must separate Blockers vs Recommendations.
-   Include a tension table with owner and resolution date.
-   Include the required Decision Frame block.
-   ```
-2. Validate against `evals/design-review.md` and `evals/pass-fail.md`
-
-**Expected correction:** Credible multi-perspective review with actionable conflict resolution.
-
----
-
-## Playbook 5: A/B analysis over-claims results
-
-**Trigger:** "Ship" recommendation without statistical power, guardrail failure ignored.
-
-**Action:**
-
-1. Re-run `skills/measurement/ab-test-analysis/SKILL.md` with constraints:
-   ```
-   State power explicitly.
-   If any guardrail degrades, default recommendation cannot be "Ship" without mitigation.
-   Require segment analysis caveats for low-power segments.
-   Include the required Decision Frame block.
-   ```
-2. Validate against `evals/pass-fail.md`
-
-**Expected correction:** Statistically honest decision with explicit risk handling.
-
----
-
-## Playbook 6: Output structure drifts from Shipwright signature
-
-**Trigger:** Missing top-level sections or inconsistent decision formatting.
-
-**Action:**
-
-1. Reformat using `docs/output-standard.md` required section order
-2. Add missing `Decision Frame` block
-3. Add owner/date to every action item
-
-**Expected correction:** Distinctive, recognizable Shipwright artifact.
-
----
-
-## Playbook 7: Red-team returns DEFEND or ESCALATE
-
-**Trigger:** `/challenge` produces a Challenge Report with verdict `DEFEND` or `ESCALATE`.
-
-**Important:** In v1, red-team verdicts are advisory. They do not automatically block delivery, reopen workflows, or replace pass/fail gates. They surface objections for the PM to consider and optionally route back for revision.
-
-**Action for DEFEND:**
-
-1. Read each finding in the Challenge Report
-2. Decide which findings are worth routing back (not all DEFEND findings require revision)
-3. If a producing Shipwright agent is known, pass both the original artifact and the findings verbatim to that agent:
-   ```
-   Here is the original artifact and a Challenge Report with findings.
-   Respond to each finding directly. Do not summarize or selectively filter.
-   For each finding: accept it and revise, dispute it with evidence, or flag it as out of scope with rationale.
-   ```
-4. If no producing agent is known, suggest the most likely agent based on artifact type (e.g., `execution-driver` for PRDs, `strategy-planner` for strategy docs, `discovery-researcher` for research artifacts). Let the PM confirm or override before dispatching.
-5. If you revise the artifact, re-run `/challenge` at the same depth to confirm the material findings are resolved
-
-**Action for ESCALATE:**
-
-1. Pause and review the escalated objection before sharing or acting on the artifact.
-2. Treat the escalated finding as a strong warning that the artifact's core recommendation may be wrong
-3. Read the finding that triggered ESCALATE, it should name the exact claim in doubt
-4. Determine whether the missing evidence exists or can be obtained:
-   - If yes: supply it and re-run the originating skill or workflow with that evidence included
-   - If no: downgrade the claim to a hypothesis and restate the recommendation accordingly
-5. If you revise the artifact, re-run `/challenge` at Standard or Deep depth to confirm the Critical finding is resolved
-6. If the PM chooses not to revise, document that decision explicitly and treat the remaining objection as accepted risk rather than silently ignoring it
-
-**Expected correction:** Artifact with resolved findings and a cleaner Challenge Report verdict, or an explicitly scoped-down recommendation where evidence does not support the original claim. If the PM accepts the risk instead of revising, the decision is documented rather than treated as implicit approval.
-
----
-
-## Escalation rule
-
-If an artifact fails the same gate twice:
-
-- Stop iterating on wording
-- Request missing input data from the PM
-- Re-run the skill from scratch with explicit constraints
-
-Do not "polish" a structurally weak artifact. Rebuild it with better inputs.
+Record each finding as resolved, waived by an explicitly authorized human, or deferred. A Critical finding remains a readiness blocker until resolved or explicitly waived with an owner and rationale. Do not suppress it in a downstream summary. Re-review only changed claims and unresolved findings; an unchanged artifact needs no duplicate full review.

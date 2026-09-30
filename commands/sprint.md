@@ -5,12 +5,14 @@ description: "Prepare a complete sprint plan: goal, capacity, story selection, d
 
 # /sprint, Sprint Planning Workflow
 
+Before executing, read `docs/workflow-contract.md` from this Shipwright installation. Resolve it relative to this file's parent installation root (or the plugin root), not the user's product directory. Its handoff, depth, evidence and authorization rules apply throughout.
+
 Run this command to prepare for sprint planning with a structured, ready-to-discuss sprint plan.
 
 ## Workflow Steps
 
 ### Step 1: Define the Sprint Goal
-Read and apply `/skills/execution/sprint-planning/SKILL.md`.
+Read and apply `skills/execution/sprint-planning/SKILL.md`.
 
 Ask the PM:
 - What's the most important outcome for this sprint?

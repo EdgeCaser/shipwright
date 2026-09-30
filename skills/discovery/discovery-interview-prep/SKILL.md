@@ -7,6 +7,8 @@ default_depth: standard
 
 # Discovery Interview Prep
 
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+
 ## Description
 
 Generates comprehensive preparation materials for customer discovery interviews including interview guides, screener criteria, and debrief templates. Grounded in the Jobs-to-Be-Done methodology and "The Mom Test" principles.

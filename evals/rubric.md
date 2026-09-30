@@ -68,3 +68,7 @@ This rubric applies to any artifact produced by a Shipwright skill or workflow. 
 | 6-7 | Adequate. Usable internally but needs tightening before sharing widely. |
 | 4-5 | Weak. Has structural issues beyond polish. Identify the low-scoring dimension and rework that section. |
 | 1-3 | Not usable. Framework was likely misapplied or insufficient context was provided. Re-run with better inputs. |
+
+## Scoring boundaries
+
+Score against the selected depth and intended use. Do not penalize discovery for framing evidence and options rather than committing product resources. Explicit unknowns are preferable to invented data. A high score never overrides a failed readiness gate. This authoring rubric uses 1-10; the separate benchmark blind-review protocol uses four different 1-5 dimensions. Do not mix or compare the raw scales.

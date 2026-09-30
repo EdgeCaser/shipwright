@@ -11,7 +11,7 @@ const ENGINEERING_HANDOFF_RE = /\b(tech handoff|technical spec|hand off to engin
 // Decision analysis detection — high-stakes binary decision questions
 const HIGH_STAKES_DECISION_RE = /\bshould\s+(?:we|i|the\s+(?:company|team|board))\b/i;
 const SCENARIO_CLASS_PATTERNS = [
-  { scenarioClass: 'governance', pattern: /\b(restructur|acqui(?:re|sition)|merger|divest|spin[- ]off|dissolv|reorgani[sz]|board\s+(?:vote|decision|approval))\b/i },
+  { scenarioClass: 'governance', pattern: /\b(restructur\w*|acquir\w*|acquisition|merg(?:e|er|ing)|divest\w*|spin[- ]off|dissolv\w*|reorgani[sz]\w*|board\s+(?:vote|decision|approval))\b/i },
   { scenarioClass: 'publication', pattern: /\b(go\s+public|ipo|press\s+release|public\s+(?:statement|announcement)|publish\s+(?:the|our|a))\b/i },
   { scenarioClass: 'product_strategy', pattern: /\b(kill|sunset|shut\s+down|pivot|build\s+vs\.?\s+buy|make\s+vs\.?\s+buy|bet\s+(?:the|our)\s+company)\b/i },
   { scenarioClass: 'pricing', pattern: /\b(raise\s+(?:our\s+)?prices|lower\s+(?:our\s+)?prices|change\s+(?:our\s+)?pricing|reprice|price\s+increase|price\s+decrease)\b/i },
@@ -26,7 +26,7 @@ const ROUTE_RULES = [
       /\brun[- ](?:a[- ])?(?:fast|rigorous?)[- ](?:mode[- ])?analysis\b/i,
       /\bshipwright[- ]analysis\b/i,
     ],
-    keywords: ['restructure', 'acquisition', 'divestiture', 'merger', 'governance decision'],
+    keywords: ['governance decision'],
   },
   {
     route: 'write-prd',
@@ -125,6 +125,11 @@ const ROUTE_RULES = [
     keywords: ['memo', 'narrative', 'briefing', 'one-pager'],
   },
   {
+    route: 'quality-check', kind: 'workflow',
+    exactPatterns: [/\bquality[- ]check\b/i, /\bartifact audit\b/i],
+    keywords: ['quality check', 'quality audit'],
+  },
+  {
     route: 'release-notes',
     kind: 'skill',
     exactPatterns: [/\brelease notes\b/i, /\bchangelog\b/i],
@@ -147,8 +152,23 @@ export function routeRequest(input, options = {}) {
   }
 
   const normalized = text.toLowerCase();
+  // Explicit commands are authoritative, including at the start of the input.
+  const explicit = /^\/(?:shipwright:)?([a-z-]+)(?=\s|$)/i.exec(text)?.[1];
   const matches = PREPARED_ROUTE_RULES.map((rule) => matchRule(rule, normalized))
     .filter((result) => result.score > 0 || result.exactMatch);
+  const explicitRule = PREPARED_ROUTE_RULES.find(rule => rule.route === explicit);
+  if (explicitRule) {
+    const found = matches.find(match => match.route === explicit);
+    if (found) { found.sortScore += 1000; found.exactMatch = true; }
+    else matches.push({ ...matchRule(explicitRule, normalized), exactMatch: true, sortScore: 1000 });
+  }
+  const scenarioClassMatch = HIGH_STAKES_DECISION_RE.test(normalized)
+    ? SCENARIO_CLASS_PATTERNS.find(({ pattern }) => pattern.test(normalized)) : null;
+  if (scenarioClassMatch && !explicitRule) {
+    const decision = matches.find(match => match.route === 'decision-analysis');
+    if (decision) { decision.sortScore += 1000; decision.exactMatch = true; }
+    else matches.push({ route: 'decision-analysis', kind: 'analysis', exactMatch: true, keywordHits: [], sortScore: 1000 });
+  }
   matches.sort((a, b) => b.sortScore - a.sortScore || a.route.localeCompare(b.route));
 
   const winner = matches[0] || null;
@@ -170,12 +190,8 @@ export function routeRequest(input, options = {}) {
   }
 
   // Infer scenario class for high-stakes binary decision questions
-  const isDecisionQuestion = HIGH_STAKES_DECISION_RE.test(normalized);
-  const scenarioClassMatch = isDecisionQuestion
-    ? SCENARIO_CLASS_PATTERNS.find(({ pattern }) => pattern.test(normalized))
-    : null;
-  const decisionClass = scenarioClassMatch?.scenarioClass
-    || (winner?.route === 'decision-analysis' ? 'unclassified' : null);
+  const decisionClass = winner?.route === 'decision-analysis'
+    ? scenarioClassMatch?.scenarioClass || 'unclassified' : null;
 
   return {
     input: text,

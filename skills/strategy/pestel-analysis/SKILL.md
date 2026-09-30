@@ -7,6 +7,8 @@ default_depth: standard
 
 # PESTEL Analysis
 
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+
 ## Description
 
 Scans the macro environment across Political, Economic, Social, Technological, Environmental, and Legal dimensions to identify strategic risks and tailwinds. Produces a structured assessment useful for strategy documents, investor updates, and risk registers.

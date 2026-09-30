@@ -48,6 +48,9 @@ import {
 // ---------------------------------------------------------------------------
 
 export const IssueType = Object.freeze({
+  EMPTY_ARTIFACT: 'empty-artifact',
+  READINESS_FAILED: 'readiness-failed',
+  INVALID_RELATED_ARTIFACT: 'invalid-related-artifact',
   UNSUPPORTED_DOLLAR: 'unsupported-dollar',
   UNSUPPORTED_NUMERIC: 'unsupported-numeric',
   MISSING_SECTION: 'missing-section',
@@ -93,8 +96,10 @@ export const Severity = Object.freeze({
  * @returns {{ issues: ValidationIssue[], summary: string, artifact: object | null }}
  */
 export function validateArtifact(text, options = {}) {
-  if (!text || typeof text !== 'string') {
-    return { issues: [], summary: 'No content to validate.', artifact: null };
+  if (typeof text !== 'string' || !text.trim()) {
+    const issues = [{ type: IssueType.EMPTY_ARTIFACT, severity: Severity.ERROR,
+      message: 'Artifact content is empty.', lineNumber: 1, excerpt: '' }];
+    return { issues, summary: buildSummary(issues), artifact: null };
   }
 
   const {
@@ -107,8 +112,7 @@ export function validateArtifact(text, options = {}) {
 
   const issues = [];
 
-  const hasCitationAnchor = detectCitationAnchorSection(text);
-  if (checkCitations && !hasCitationAnchor) {
+  if (checkCitations) {
     issues.push(...checkUnsupportedDollarFigures(text));
     issues.push(...checkUnsupportedNumericClaims(text));
   }
@@ -131,10 +135,10 @@ export function validateArtifact(text, options = {}) {
         lineNumber: extracted.startLine,
         excerpt: truncateExcerpt(extracted.raw || '', 150),
       });
-    } else if (!extracted.artifact && expectStructured) {
+    } else if (!extracted.artifact && (expectStructured || artifactType)) {
       issues.push({
         type: IssueType.MISSING_STRUCTURED_ARTIFACT,
-        severity: Severity.WARNING,
+        severity: Severity.ERROR,
         message: 'Expected a structured artifact block, but none was found.',
         lineNumber: 1,
         excerpt: '',
@@ -153,13 +157,24 @@ export function validateArtifact(text, options = {}) {
         });
       }
 
-      issues.push(
+      // Semantic checks assume a schema-valid shape. Never crash on malformed input.
+      const validRelated = [];
+      for (const related of relatedArtifacts) {
+        const result = validateStructuredArtifact(related);
+        if (result.errors.length) {
+          issues.push({ type: IssueType.INVALID_RELATED_ARTIFACT, severity: Severity.ERROR,
+            message: `Related artifact is invalid: ${result.errors.map(e => `${e.path}: ${e.message}`).join('; ')}`,
+            lineNumber: extracted.startLine, excerpt: '' });
+        } else validRelated.push(related);
+      }
+      if (validation.errors.length === 0) issues.push(
         ...checkDecisionFrameContract(extracted.artifact, extracted.startLine),
         ...checkPassFailContract(extracted.artifact, extracted.startLine),
         ...checkEvidenceContract(extracted.artifact, extracted.startLine),
-        ...checkMetricContradictions(extracted.artifact, relatedArtifacts, extracted.startLine),
-        ...checkSegmentContradictions(extracted.artifact, relatedArtifacts, extracted.startLine),
-        ...checkChallengePropagation(extracted.artifact, relatedArtifacts, extracted.startLine),
+        ...checkInternalConsistency(extracted.artifact, extracted.startLine),
+        ...checkMetricContradictions(extracted.artifact, validRelated, extracted.startLine),
+        ...checkSegmentContradictions(extracted.artifact, validRelated, extracted.startLine),
+        ...checkChallengePropagation(extracted.artifact, validRelated, extracted.startLine),
       );
     }
   }
@@ -170,12 +185,6 @@ export function validateArtifact(text, options = {}) {
 // ---------------------------------------------------------------------------
 // Detectors
 // ---------------------------------------------------------------------------
-
-function detectCitationAnchorSection(text) {
-  return /^#{1,4}\s*(sources?|references?|evidence|footnotes?|citations?|bibliography)\s*$/im.test(
-    text,
-  );
-}
 
 function checkUnsupportedDollarFigures(text) {
   const issues = [];
@@ -258,6 +267,13 @@ function checkDecisionFrameContract(artifact, lineNumber) {
   ];
 
   const decisionFrame = artifact?.decision_frame || {};
+  if (decisionFrame.decision_date) {
+    const date = new Date(`${decisionFrame.decision_date}T00:00:00Z`);
+    if (!Number.isFinite(date.getTime()) || date.toISOString().slice(0, 10) !== decisionFrame.decision_date) {
+      issues.push({ type: IssueType.MISSING_DECISION_FIELD, severity: Severity.ERROR,
+        message: 'decision_date must be a real calendar date (YYYY-MM-DD).', lineNumber, excerpt: '' });
+    }
+  }
   for (const [field, message] of fields) {
     if (typeof decisionFrame[field] === 'string' && decisionFrame[field].trim().length > 0) continue;
     issues.push({
@@ -275,6 +291,25 @@ function checkDecisionFrameContract(artifact, lineNumber) {
 function checkPassFailContract(artifact, lineNumber) {
   const readiness = artifact?.pass_fail_readiness || {};
   const issues = [];
+
+  if (readiness.status === 'PASS') {
+    const requiredValues = [...Object.values(artifact.decision_frame || {})];
+    const metrics = artifact.artifact_type === 'prd' ? artifact.payload.success_metrics
+      : artifact.artifact_type === 'strategy' ? artifact.payload.bets.map(bet => bet.success_metric) : [];
+    for (const metric of metrics || []) requiredValues.push(metric.baseline, metric.target);
+    if (requiredValues.some(value => typeof value === 'string'
+      && /^\s*(?:\[?TBD\b|unknown\s*$|unmeasured\s*$|not measured\s*$|not tracked\s*$|\[requires:)/i.test(value))) {
+      issues.push({ type: IssueType.READINESS_FAILED, severity: Severity.ERROR,
+        message: 'PASS contains unresolved placeholders in decision fields or metric baselines/targets.',
+        lineNumber, excerpt: '' });
+    }
+  }
+
+  if (readiness.status === 'FAIL' || artifact?.metadata?.status === 'exploratory-draft') {
+    issues.push({ type: IssueType.READINESS_FAILED, severity: Severity.ERROR,
+      message: 'Artifact is marked FAIL or exploratory-draft; it is not ready for downstream use.',
+      lineNumber, excerpt: '' });
+  }
 
   if (!['PASS', 'FAIL'].includes(readiness.status)) {
     issues.push({
@@ -302,8 +337,15 @@ function checkPassFailContract(artifact, lineNumber) {
 function checkEvidenceContract(artifact, lineNumber) {
   const issues = [];
   const evidence = Array.isArray(artifact?.evidence) ? artifact.evidence : [];
-  const evidenceIds = new Set(evidence.map((item) => item?.evidence_id).filter(Boolean));
-  const supportsIndex = buildEvidenceSupportIndex(evidence);
+  const factualEvidence = evidence.filter(item => item.kind !== 'assumption');
+  const evidenceIds = new Set(factualEvidence.map((item) => item.evidence_id));
+  const supportsIndex = buildEvidenceSupportIndex(factualEvidence);
+  const allIds = new Set();
+  for (const item of evidence) {
+    if (allIds.has(item.evidence_id)) issues.push({ type: IssueType.MISSING_EVIDENCE, severity: Severity.ERROR,
+      message: `Duplicate evidence ID: ${item.evidence_id}.`, lineNumber, excerpt: '' });
+    allIds.add(item.evidence_id);
+  }
   const isExploratory = artifact?.metadata?.status === 'exploratory-draft';
 
   if (!isExploratory && evidence.length === 0) {
@@ -318,6 +360,10 @@ function checkEvidenceContract(artifact, lineNumber) {
   }
 
   for (const claim of collectRequiredClaims(artifact)) {
+    for (const id of claim.evidenceIds) {
+      if (!allIds.has(id)) issues.push({ type: IssueType.MISSING_EVIDENCE, severity: Severity.ERROR,
+        message: `Unknown evidence ID "${id}" for ${claim.label}.`, lineNumber, excerpt: '' });
+    }
     if (claimHasEvidence(claim, supportsIndex, evidenceIds)) continue;
     if (claimAllowsAssumption(claim)) continue;
 
@@ -333,6 +379,33 @@ function checkEvidenceContract(artifact, lineNumber) {
   return issues;
 }
 
+function checkInternalConsistency(artifact, lineNumber) {
+  const issues = [];
+  const fail = message => issues.push({ type: IssueType.INVALID_STRUCTURED_ARTIFACT,
+    severity: Severity.ERROR, message, lineNumber, excerpt: '' });
+  for (const [items, key] of [
+    [artifact.payload.success_metrics, 'metric_id'], [artifact.payload.bets, 'bet_id'],
+    [artifact.payload.findings, 'finding_id'], [artifact.challenge_resolution, 'finding_id'],
+  ]) {
+    if (!Array.isArray(items)) continue;
+    const ids = new Set();
+    for (const item of items) {
+      if (ids.has(item[key])) fail(`Duplicate ${key}: ${item[key]}.`);
+      ids.add(item[key]);
+    }
+  }
+  if (artifact.artifact_type === 'challenge-report') {
+    const { findings, verdict } = artifact.payload;
+    if (findings.some(finding => finding.severity === 'critical') && verdict !== 'ESCALATE') {
+      fail('Critical challenge findings require the ESCALATE verdict.');
+    }
+    if (verdict === 'CLEAR' && findings.some(finding => ['critical', 'moderate'].includes(finding.severity))) {
+      fail('CLEAR cannot coexist with Critical or Moderate challenge findings.');
+    }
+  }
+  return issues;
+}
+
 function checkMetricContradictions(artifact, relatedArtifacts, lineNumber) {
   const issues = [];
   const currentMetrics = extractMetrics(artifact);
@@ -344,6 +417,9 @@ function checkMetricContradictions(artifact, relatedArtifacts, lineNumber) {
     for (const currentMetric of currentMetrics) {
       for (const otherMetric of relatedMetrics) {
         if (currentMetric.key !== otherMetric.key) continue;
+        // Shared IDs cannot make different cohorts or measurement windows comparable.
+        if (['segment', 'unit', 'timeframe'].some(field => currentMetric[field] && otherMetric[field]
+          && currentMetric[field] !== otherMetric[field])) continue;
         const signature = `${currentMetric.key}:${related?.metadata?.title || related?.artifact_type || 'related'}`;
         if (seen.has(signature)) continue;
 
@@ -429,7 +505,7 @@ function checkChallengePropagation(artifact, relatedArtifacts, lineNumber) {
         continue;
       }
 
-      if (resolution.state === 'waived' && (!resolution.waiver_reason || !resolution.owner)) {
+      if (resolution.state === 'waived' && (!resolution.waiver_reason?.trim() || !resolution.owner?.trim())) {
         issues.push({
           type: IssueType.CHALLENGE_FINDING_UNRESOLVED,
           severity: Severity.ERROR,
@@ -603,7 +679,7 @@ function compareMetricValue(currentMetric, otherMetric, field) {
 }
 
 function isRateMetric(...metrics) {
-  return metrics.some((metric) => /\b(percent|percentage|%)\b/i.test(metric?.unit || ''));
+  return metrics.some((metric) => /%|\b(percent|percentage)\b/i.test(metric?.unit || ''));
 }
 
 function hasContradictionExplanation(metric) {
@@ -617,7 +693,8 @@ function parseComparableNumber(value) {
   const normalized = value.replace(/,/g, '').replace(/%/g, '').trim();
   if (!normalized) return null;
 
-  const parsed = Number.parseFloat(normalized);
+  // Do not silently turn "10-20", "30 days" or "1M" into a different number.
+  const parsed = Number(normalized);
   return Number.isFinite(parsed) ? parsed : null;
 }
 
@@ -696,8 +773,6 @@ function isExemptParagraph(content) {
   if (firstLine.startsWith('|')) return true;
   if (/^#{1,6}\s/.test(firstLine)) return true;
   if (firstLine.startsWith('<!--')) return true;
-  if (content.trim().length < 60) return true;
-
   return false;
 }
 
@@ -706,7 +781,6 @@ function hasCitationMarker(paragraph) {
   if (/\[\d+\]/.test(paragraph)) return true;
   if (/\((?:source|via|from|see|ref)\s*:/i.test(paragraph)) return true;
   if (/\[[^\]]+\]\(https?:\/\//.test(paragraph)) return true;
-  if (/\baccording to\b/i.test(paragraph)) return true;
   return false;
 }
 
@@ -716,7 +790,6 @@ function isClaimContext(content, matchIndex) {
 
   const lastNewline = before.lastIndexOf('\n');
   const lineStart = before.slice(lastNewline + 1).trimStart();
-  if (/^[-*+]\s/.test(lineStart)) return false;
   if (/^\|/.test(lineStart)) return false;
 
   const context = (before.slice(-120) + after).toLowerCase();

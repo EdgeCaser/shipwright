@@ -7,6 +7,8 @@ default_depth: standard
 
 # Market Sizing (TAM / SAM / SOM)
 
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+
 ## Description
 
 Walks through both top-down and bottom-up market sizing methodologies with explicit assumption tracking. Produces investor-ready estimates with transparent reasoning.
@@ -26,7 +28,7 @@ Walks through both top-down and bottom-up market sizing methodologies with expli
 | **Standard** | Business case or investor deck preparation | All sections |
 | **Deep** | Board-level investment decision or new market entry | All sections + scenario modeling (bull/base/bear), sensitivity analysis on top 3 assumptions, comparable company benchmarks |
 
-**Omit rules:** At Light depth, skip Bottom-Up Sizing, Triangulation, and Assumption Register. Produce only a top-down TAM/SAM/SOM with source citations.
+**Omit rules:** At Light depth, skip Bottom-Up Sizing, Triangulation, and the full Assumption Register. Retain citations, calculation steps and inline assumptions for each TAM/SAM/SOM estimate.
 
 ## Key Definitions
 

@@ -7,6 +7,8 @@ default_depth: standard
 
 # Sprint Planning Support
 
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+
 ## Description
 
 Helps PMs scope sprints, draft sprint goals tied to product outcomes, flag dependency risks, and balance capacity across new work, tech debt, and bug fixes. Grounded in Scrum methodology with practical adaptations for product-led teams.
@@ -26,7 +28,7 @@ Helps PMs scope sprints, draft sprint goals tied to product outcomes, flag depen
 | **Standard** | Regular sprint with new scope and cross-team touchpoints | All sections |
 | **Deep** | Sprint with hard deadline, major dependencies, or team composition changes | All sections + individual capacity risk flags, contingency scope ladder (cut list priority order), daily stand-up focus prompts |
 
-**Omit rules:** At Light depth, skip Capacity Planning and Dependency & Risk Check. Produce only a sprint goal statement and a committed story list with estimates.
+**Omit rules:** At Light depth, condense capacity and dependency analysis. Produce the goal and estimated story list. Label scope proposed until the team confirms capacity and material dependencies; an estimate alone is not a commitment.
 
 ## Framework
 
@@ -159,7 +161,7 @@ Produce a Sprint Plan with:
 **Shipwright Signature (required closing):**
 6. **Decision Frame**, sprint scope recommendation with capacity utilization rationale, trade-off, confidence with evidence quality, owner, decision date, revisit trigger
 7. **Unknowns & Evidence Gaps**, unconfirmed external dependencies, stories with low estimation confidence, untested capacity assumptions for new team members
-8. **Pass/Fail Readiness**, PASS if sprint goal is outcome-oriented, committed scope is within 85% capacity, and all dependencies have confirmed status (at Light depth: PASS if sprint goal is outcome-oriented and committed story list has estimates; capacity utilization check and dependency confirmation are not required); FAIL if no sprint goal exists or story list has no estimates
+8. **Pass/Fail Readiness**, PASS for commitment if the goal is outcome-oriented, estimates fit the agreed capacity with an explicit buffer, and material dependencies are confirmed. A Light proposal may list unresolved checks but must not claim committed scope. FAIL for commitment when those checks are missing.
 9. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid

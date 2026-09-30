@@ -5,12 +5,14 @@ description: "Design a metrics framework: North Star, input metrics, guardrails,
 
 # /metrics - Metrics Framework Workflow
 
+Before executing, read `docs/workflow-contract.md` from this Shipwright installation. Resolve it relative to this file's parent installation root (or the plugin root), not the user's product directory. Its handoff, depth, evidence and authorization rules apply throughout.
+
 Run this command to build a complete metrics architecture from North Star down to operational dashboards.
 
 ## Workflow Steps
 
 ### Step 1: Define the North Star
-Read and apply the framework from `/skills/measurement/metrics-dashboard/SKILL.md`.
+Read and apply the framework from `skills/measurement/metrics-dashboard/SKILL.md`.
 
 Ask the PM:
 - What is the single metric that best captures the value your product delivers to customers?

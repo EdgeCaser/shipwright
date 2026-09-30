@@ -2,7 +2,7 @@
 
 import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import { createHash } from 'node:crypto';
+import { createHash, randomBytes } from 'node:crypto';
 import { pathToFileURL } from 'node:url';
 
 import { loadBenchmarkScenario } from './run-benchmarks.mjs';
@@ -24,7 +24,7 @@ export async function prepareBlindReviewBundle(options = {}) {
   const baselineScenarioDir = path.resolve(
     options.baselineScenarioDir || DEFAULT_BASELINE_SCENARIO_DIR,
   );
-  const seed = options.seed || 'shipwright-v2-proof-content';
+  const seed = options.seed || randomBytes(32).toString('hex');
   const generatedAt = options.generatedAt || new Date().toISOString();
   const reviewRunId =
     options.reviewRunId || `review-run-${generatedAt.replace(/[:.]/g, '-')}`;
@@ -128,8 +128,10 @@ export async function prepareBlindReviewBundle(options = {}) {
   const markdown = renderReviewPacketMarkdown(packet);
 
   if (options.outDir) {
-    const outDir = path.resolve(options.outDir);
+    const root = path.resolve(options.outDir);
+    const outDir = path.join(root, 'reviewer');
     await mkdir(outDir, { recursive: true });
+    await mkdir(path.join(root, 'admin'), { recursive: true });
     await writeFile(
       path.join(outDir, 'review-packet.json'),
       `${JSON.stringify(packet, null, 2)}\n`,
@@ -141,7 +143,7 @@ export async function prepareBlindReviewBundle(options = {}) {
       'utf8',
     );
     await writeFile(
-      path.join(outDir, 'admin-manifest.json'),
+      path.join(root, 'admin', 'admin-manifest.json'),
       `${JSON.stringify(adminManifest, null, 2)}\n`,
       'utf8',
     );
@@ -336,7 +338,7 @@ async function main(argv = process.argv.slice(2)) {
       DEFAULT_BASELINE_SCENARIO_DIR,
     ),
     reviewRunId: readFlagValue(argv, '--review-run-id', null),
-    seed: readFlagValue(argv, '--seed', 'shipwright-v2-proof-content'),
+    seed: readFlagValue(argv, '--seed', null),
   });
 }
 

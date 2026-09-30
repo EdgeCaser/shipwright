@@ -7,6 +7,8 @@ default_depth: standard
 
 # Customer Advisory Board (CAB) Prep
 
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+
 ## Description
 
 Designs and prepares all materials for Customer Advisory Board sessions: agenda design, discussion guides, pre-read materials, facilitation notes, and post-session synthesis templates. Ensures CAB meetings produce actionable strategic input rather than devolving into feature request sessions.

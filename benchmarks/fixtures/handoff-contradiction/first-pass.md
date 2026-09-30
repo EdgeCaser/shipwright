@@ -33,7 +33,8 @@ PASS because the handoff can proceed while follow-up risk remains explicit.
     "tradeoff": "Moves faster on a smaller segment, but risks drifting from platform strategy and challenge findings.",
     "confidence": "medium",
     "owner": "PM",
-    "decision_date": "2026-04-02"
+    "decision_date": "2026-04-02",
+    "revisit_trigger": "New evidence changes the recommendation."
   },
   "unknowns": [
     "Observability is not yet complete for every handoff branch."

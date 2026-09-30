@@ -34,7 +34,8 @@ PASS because the hidden scope is now contained.
     "tradeoff": "Keeps v1 shippable now by explicitly excluding manager routing.",
     "confidence": "high",
     "owner": "PM",
-    "decision_date": "2026-04-02"
+    "decision_date": "2026-04-02",
+    "revisit_trigger": "New evidence changes the recommendation."
   },
   "unknowns": [
     "Manager routing remains a separate follow-up initiative."

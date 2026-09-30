@@ -30,7 +30,7 @@ Apply the 4 dimensions from the [universal rubric](rubric.md): Clarity, Complete
 | **6 (Adequate)** | Tensions exist but are described vaguely. "Engineering and UX have different views on timeline", what specifically do they disagree about? Resolution owners are missing. |
 | **9 (Strong)** | Tensions are described with both sides quoted. "Engineering says 10+2 weeks; Legal says contracts must be updated first (unknown timeline). Resolution: PM + Legal scope contract changes and parallelize." Each tension has an owner and a path to resolution. |
 
-**Common failure mode:** Conflating "recommendation" with "blocker." A design review that lists 10 recommendations and 0 blockers is either reviewing a perfect proposal or not being honest about severity. Expect at least 1 blocker or 1 high-severity tension in any meaningful review.
+**Common failure mode:** Conflating "recommendation" with "blocker." A design review that lists 10 recommendations and 0 blockers is either reviewing a perfect proposal or not being honest about severity. A well-supported all-clear review is valid; never manufacture a blocker to meet a quota.
 
 ## Scored example: 9/10 vs. 6/10
 

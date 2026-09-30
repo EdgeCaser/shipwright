@@ -5,6 +5,8 @@ description: "Start here in Claude Code. Branded alias for the Shipwright orches
 
 # /shipwright, Start Here
 
+Before executing, read `docs/workflow-contract.md` from this Shipwright installation. Resolve it relative to this file's parent installation root (or the plugin root), not the user's product directory. Its handoff, depth, evidence and authorization rules apply throughout.
+
 Use `/shipwright` as the default entrypoint after installing Shipwright in Claude Code.
 
 This command is a branded alias for `/start`. Before responding:

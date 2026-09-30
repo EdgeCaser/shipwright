@@ -14,6 +14,10 @@ export function computeBlindRatingFromRaters(raters, passKey) {
   if (normalizedRaters.length < MIN_REVIEWERS) {
     throw new Error(`Blind review requires at least ${MIN_REVIEWERS} raters.`);
   }
+  const ids = normalizedRaters.map(rater => rater?.rater_id);
+  if (ids.some(id => typeof id !== 'string' || !id.trim()) || new Set(ids.map(id => id.trim())).size !== ids.length) {
+    throw new Error('Blind review requires distinct, non-empty rater_id values.');
+  }
 
   let total = 0;
   for (const rater of normalizedRaters) {

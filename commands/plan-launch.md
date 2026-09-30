@@ -5,12 +5,14 @@ description: "Build a complete go-to-market launch plan: beachhead segment, ICP,
 
 # /plan-launch, Go-to-Market Launch Workflow
 
+Before executing, read `docs/workflow-contract.md` from this Shipwright installation. Resolve it relative to this file's parent installation root (or the plugin root), not the user's product directory. Its handoff, depth, evidence and authorization rules apply throughout.
+
 Run this command to produce a comprehensive launch plan for a new product or major feature release.
 
 ## Workflow Steps
 
 ### Step 1: Define the Beachhead
-Read and apply `/skills/gtm/go-to-market-strategy/SKILL.md`.
+Read and apply `skills/gtm/go-to-market-strategy/SKILL.md`.
 
 Ask the PM:
 - What are we launching?
@@ -26,7 +28,7 @@ Define the Ideal Customer Profile:
 - Qualification criteria (must-haves and disqualifiers)
 
 ### Step 3: Craft Messaging
-Read and apply `/skills/strategy/positioning-statement/SKILL.md`.
+Read and apply `skills/strategy/positioning-statement/SKILL.md`.
 
 Build the messaging framework:
 - Positioning statement (Moore's template)
@@ -34,7 +36,7 @@ Build the messaging framework:
 - Proof points (metrics, social proof, case studies)
 
 ### Step 4: Competitive Battlecard
-Read and apply `/skills/gtm/competitive-battlecard/SKILL.md`.
+Read and apply `skills/gtm/competitive-battlecard/SKILL.md`.
 
 For the top 1-2 competitors the sales team will encounter:
 - Quick reference (3 advantages, 2 honest weaknesses)

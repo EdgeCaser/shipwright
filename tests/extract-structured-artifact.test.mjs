@@ -38,6 +38,7 @@ function createValidPrdArtifact() {
       confidence: 'medium',
       owner: 'PM',
       decision_date: '2026-04-02',
+      revisit_trigger: 'New customer evidence changes the recommendation.',
     },
     unknowns: ['Unknown admin demand'],
     pass_fail_readiness: {

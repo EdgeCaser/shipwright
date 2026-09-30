@@ -7,6 +7,8 @@ default_depth: standard
 
 # Retrospective Facilitator
 
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+
 ## Description
 
 Runs structured team retrospectives using proven formats (Start/Stop/Continue, 4Ls, Sailboat, Mad/Sad/Glad). Produces an action item list with owners, due dates, and follow-up mechanisms to ensure retro outcomes actually lead to change.
@@ -189,7 +191,7 @@ For each prioritized theme (top 2-3 by votes):
 
 **Acceptable evidence:** Participant observations, sprint velocity data, incident timelines, user feedback excerpts, previous retro action item status.
 
-**Insufficient evidence:** If fewer than 3 participants contributed observations or no specific examples are provided (only vague sentiments), stop and recommend an async input collection round (survey or Slack thread) to gather concrete observations before running this skill. Themes derived from vague sentiments produce action items nobody acts on.
+**Insufficient evidence:** With no concrete observations, request examples. Small teams and uneven participation can still run a scoped retrospective; disclose whose perspective is missing and avoid claiming team consensus.
 
 **Hypotheses vs. findings:**
 - **Findings:** Observed events, measured outcomes, action item completion status, must reference what actually happened.
@@ -208,7 +210,7 @@ Produce a Retrospective Report with:
 **Shipwright Signature (required closing):**
 7. **Decision Frame**, top process change recommendation, trade-off (effort to implement vs. expected improvement), confidence with evidence quality (number of corroborating observations, recurrence across retros), owner, decision date, revisit trigger
 8. **Unknowns & Evidence Gaps**, themes raised by only one person, root causes not yet validated, missing perspectives from absent team members
-9. **Pass/Fail Readiness**, PASS if at least 2 owned action items with due dates and success criteria exist; at Light depth, PASS if at least 2 owned action items with due dates exist (success criteria optional, theme consensus not evaluated since theme discussion is omitted); FAIL if action items are unowned
+9. **Pass/Fail Readiness**, PASS if observations are traceable and each agreed action has an owner and due date, plus success criteria at Standard/Deep depth. Zero or one action is valid when the findings warrant it; do not invent actions or consensus. FAIL if agreed actions are unowned or evidence is missing.
 10. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid

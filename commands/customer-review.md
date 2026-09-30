@@ -5,12 +5,14 @@ description: "Run a comprehensive customer intelligence review: feedback triage,
 
 # /customer-review, Customer Intelligence Workflow
 
+Before executing, read `docs/workflow-contract.md` from this Shipwright installation. Resolve it relative to this file's parent installation root (or the plugin root), not the user's product directory. Its handoff, depth, evidence and authorization rules apply throughout.
+
 Run this command to produce a comprehensive customer intelligence review that synthesizes feedback, maps the journey, analyzes retention, and produces an executive-ready briefing.
 
 ## Workflow Steps
 
 ### Step 1: Feedback Triage
-Read and apply `/skills/customer-intelligence/feedback-triage/SKILL.md`.
+Read and apply `skills/customer-intelligence/feedback-triage/SKILL.md`.
 
 Ask the PM:
 - What time period should we cover?
@@ -20,7 +22,7 @@ Ask the PM:
 Ingest, normalize, deduplicate, and cluster all available feedback into a prioritized taxonomy.
 
 ### Step 2: Customer Journey Mapping
-Read and apply `/skills/customer-intelligence/customer-journey-mapping/SKILL.md`.
+Read and apply `skills/customer-intelligence/customer-journey-mapping/SKILL.md`.
 
 Using the feedback clusters, map where pain concentrates across the customer journey:
 - Which stages have the most friction?
@@ -28,7 +30,7 @@ Using the feedback clusters, map where pain concentrates across the customer jou
 - What are the moments of truth?
 
 ### Step 3: Churn Analysis
-Read and apply `/skills/customer-intelligence/churn-analysis/SKILL.md`.
+Read and apply `skills/customer-intelligence/churn-analysis/SKILL.md`.
 
 Analyze retention patterns:
 - What are the leading indicators of churn?
@@ -42,12 +44,13 @@ Cross-reference findings from feedback, journey, and churn analysis:
 - What's getting worse? What's getting better?
 
 ### Step 5: Executive Briefing
-Read and apply `/skills/communication/executive-briefing/SKILL.md`.
+Pass the evidence and its limitations to cross-functional-liaison using the handoff envelope. Preserve research findings as findings; frame product actions as options requiring PM judgment.
+Read and apply `skills/communication/executive-briefing/SKILL.md`.
 
 Produce a one-page executive summary using the SCR framework:
 - Situation: Customer intelligence overview
 - Complication: Top risks and emerging patterns
-- Resolution: Recommended actions
+- Resolution: Evidence-backed findings and next investigation or decision needed
 
 ## Output
 

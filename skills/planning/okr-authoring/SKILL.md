@@ -7,6 +7,8 @@ default_depth: standard
 
 # OKR Authoring & Alignment
 
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+
 ## Description
 
 Guides the drafting of Objectives and Key Results using John Doerr's "Measure What Matters" methodology. Covers cascading OKRs from company to team to individual, alignment checking across teams, common anti-patterns, and mid-cycle check-ins.

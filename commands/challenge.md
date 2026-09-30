@@ -5,6 +5,8 @@ description: "Run a red-team review against a Shipwright artifact and return a C
 
 # /challenge, Adversarial Review
 
+Before executing, read `docs/workflow-contract.md` from this Shipwright installation. Resolve it relative to this file's parent installation root (or the plugin root), not the user's product directory. Its handoff, depth, evidence and authorization rules apply throughout.
+
 Run this command to pressure-test an existing artifact with Shipwright's red-team agent.
 
 ## Workflow Steps
@@ -22,9 +24,7 @@ Do not guess by reading the most recent file in the working directory. The artif
 
 ### Step 2: Set the Review Depth
 
-If the PM has not already specified depth, ask:
-
-- Do you want Light, Standard, or Deep review?
+Default to Standard; infer Light for a spot-check and Deep when the user requests a thorough review. Do not ask solely to choose a default.
 
 Use:
 
@@ -34,7 +34,7 @@ Use:
 
 ### Step 3: Dispatch Red-Team
 
-Read and apply `/skills/technical/adversarial-review/SKILL.md`.
+Read and apply `skills/technical/adversarial-review/SKILL.md`.
 
 Dispatch `@red-team` with:
 
@@ -52,6 +52,9 @@ Return a complete **Challenge Report** with:
 3. Decision Frame
 4. Risks and Open Questions
 5. Action Plan
+6. Unknowns & Evidence Gaps
+7. Pass/Fail Readiness
+8. Recommended Next Artifact
 
 ### Step 5: Ask for Next Action
 
@@ -67,6 +70,6 @@ If the PM says yes but no producing agent is known, suggest the most likely agen
 
 Produce a **Challenge Report** that:
 
-1. States a verdict: `CLEAR`, `DEFEND`, or `ESCALATE`
+1. States a verdict: `CLEAR`, `DEFEND`, `ESCALATE`, or `INSUFFICIENT_EVIDENCE`
 2. Lists evidence-backed findings with severity and resolution conditions
 3. Makes the next action obvious for the PM

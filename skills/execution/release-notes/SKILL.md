@@ -7,6 +7,8 @@ default_depth: standard
 
 # Release Notes Generator
 
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+
 ## Description
 
 Transforms Jira/Linear tickets, changelogs, and commit histories into polished, customer-facing release notes. Supports segmentation by audience (end users, admins, developers) and tone calibration for different channels.

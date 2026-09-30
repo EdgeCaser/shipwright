@@ -32,7 +32,7 @@ node scripts/run-benchmarks.mjs --out benchmarks/results/latest.json --format js
 node scripts/run-benchmarks.mjs --publish --out benchmarks/results/publish-ready.json --format json
 node scripts/run-benchmarks.mjs --publish --baseline benchmarks/baselines/example.json --out benchmarks/results/compared.json --format json
 node scripts/prepare-blind-review.mjs --out-dir benchmarks/reviews/runs/example
-node scripts/compile-blind-review.mjs --current-summary benchmarks/results/current-pre-review.json --baseline-summary benchmarks/baselines/strong-prompt-v1/suite-summary-pre-review.json --admin-manifest benchmarks/reviews/runs/example/admin-manifest.json --reviews-dir benchmarks/reviews/runs/example/responses --current-out benchmarks/results/current-reviewed.json --baseline-out benchmarks/baselines/strong-prompt-v1/suite-summary-reviewed.json
+node scripts/compile-blind-review.mjs --current-summary benchmarks/results/current-pre-review.json --baseline-summary benchmarks/baselines/strong-prompt-v1/suite-summary-pre-review.json --admin-manifest benchmarks/reviews/runs/example/admin/admin-manifest.json --reviews-dir benchmarks/reviews/runs/example/responses --current-out benchmarks/results/current-reviewed.json --baseline-out benchmarks/baselines/strong-prompt-v1/suite-summary-reviewed.json
 ```
 
 ## Scenario Shape
@@ -76,3 +76,5 @@ node scripts/compile-blind-review.mjs --current-summary benchmarks/results/curre
   ]
 }
 ```
+
+Only share the generated `reviewer/` folder with raters. Keep `admin/` private; it contains the random assignment seed and condition mapping. Fixed `--seed` values are for reproducible tests and must not be disclosed to reviewers. Review visible prose for accidental condition labels before distribution; stripping the JSON comment alone does not guarantee blinding.

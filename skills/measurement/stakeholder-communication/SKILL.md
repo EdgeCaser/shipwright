@@ -7,6 +7,8 @@ default_depth: standard
 
 # Stakeholder Communication
 
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+
 ## Description
 
 Drafts status updates, steering committee decks, and executive summaries calibrated to audience seniority and information needs. Uses the Pyramid Principle (lead with the answer) and adapts depth, tone, and format by stakeholder type.
@@ -207,7 +209,7 @@ Produce the appropriate communication document based on the audience:
 **Shipwright Signature (required closing):**
 6. **Decision Frame**, recommended action or decision for the reader, trade-off, confidence with evidence quality (data freshness, metric reliability), owner, decision date, revisit trigger
 7. **Unknowns & Evidence Gaps**, metrics not yet available, risks not fully quantified, stakeholder context gaps
-8. **Pass/Fail Readiness**, PASS if communication has a clear bottom line, at least one supporting metric, and an explicit ask; FAIL if status is asserted without data or no ask is specified
+8. **Pass/Fail Readiness**, PASS if the message has a clear conclusion supported by traceable metrics or factual milestones and a clear requested action, including explicit no action needed for informational updates; FAIL if factual status is unsupported or a needed decision is unclear.
 9. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid

@@ -1404,18 +1404,9 @@ function countWords(input) {
   return input.split(/\s+/).filter(Boolean).length;
 }
 
-async function fetchWithTimeout(url, options, timeoutMs) {
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), timeoutMs);
-
-  try {
-    return await fetch(url, {
-      ...options,
-      signal: controller.signal,
-    });
-  } finally {
-    clearTimeout(timeout);
-  }
+export async function fetchWithTimeout(url, options, timeoutMs) {
+  // Keep the deadline active through body consumption, not just response headers.
+  return fetch(url, { ...options, signal: AbortSignal.timeout(timeoutMs) });
 }
 
 async function readJson(response) {

@@ -7,6 +7,8 @@ default_depth: standard
 
 # User Story Writing
 
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+
 ## Description
 
 Generates user stories with acceptance criteria, edge cases, and definition of done. Supports splitting epics into right-sized stories using the INVEST criteria. Based on Mike Cohn's user story methodology.

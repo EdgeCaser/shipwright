@@ -14,7 +14,7 @@ Every Shipwright artifact should be:
 
 ## Required output pattern
 
-For core artifacts (PRD, Strategy, Design Review, A/B Analysis), follow this section order:
+Use the selected skill's Output Format for the body. This optional organization works for longer core artifacts (PRD, Strategy, Design Review, A/B Analysis):
 
 1. `## Context`
 2. `## Analysis`
@@ -22,7 +22,7 @@ For core artifacts (PRD, Strategy, Design Review, A/B Analysis), follow this sec
 4. `## Risks and Open Questions`
 5. `## Action Plan`
 
-Each section can contain artifact-specific sub-sections, but this top-level structure should remain stable.
+Do not force this wrapper onto a skill's native template or a short communication. Required content and the four signature elements matter; top-level heading order does not. Use explicit headings for the signature when a validator requests them.
 
 ## Required skill sections
 
@@ -54,11 +54,11 @@ Every core artifact must include this block verbatim:
 - **Revisit Trigger:** [specific condition that would change this decision]
 ```
 
-If any line is missing, the artifact is not ship-ready.
+If any field is missing, the artifact is not ship-ready. Unknown owners or dates remain `[TBD, requires: ...]`; proposed assignments are labeled proposed. Do not invent a commitment or approval to fill the template.
 
 ## Shipwright Signature (required closing)
 
-Every skill output must close with four signature elements, numbered as a continuation of the skill's Output Format list:
+Every substantial output includes these four elements once. Put them at the end unless the skill already places the Decision Frame earlier; then close with the remaining three. Numbering in Output Format is an authoring checklist, not mandatory heading syntax:
 
 - **Decision Frame**, Recommendation (or primary finding for discovery skills), trade-off, confidence with evidence quality, owner, decision date, revisit trigger
 - **Unknowns & Evidence Gaps**, What we don't know and what evidence would resolve it

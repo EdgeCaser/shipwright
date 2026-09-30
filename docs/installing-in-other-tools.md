@@ -1,190 +1,38 @@
-# Installing Shipwright in Other AI Coding Agents
+# Installing Shipwright
 
-Shipwright's skills are plain markdown files. They work in any AI coding agent that reads skill files from a known directory. Here's how to set it up in each tool.
+## Complete project install (Claude Code and Codex)
 
-## Claude Code
-
-This is Shipwright's primary target.
-
-**Recommended: script install**
+Use Node.js 22+ from a source checkout. The destination must be an existing project directory:
 
 ```bash
-bash shipwright/scripts/sync.sh --install your-project/
+node /path/to/shipwright/scripts/install.mjs /path/to/your-project
+node /path/to/shipwright/scripts/install.mjs /path/to/your-project --apply
 ```
 
-This copies skills, agents, commands, docs, and evals into `your-project/.claude/`, and installs a `shipwright-sync.sh` script for pulling future updates. To check for updates later:
+Preview first, then apply. Both hosts receive flat `skills/<name>/SKILL.md` folders plus the docs, agents, commands, schemas and runtime helpers referenced by those skills. The installer does not overwrite root `AGENTS.md`, `CLAUDE.md`, unrelated files or locally changed installed files. It records hashes in `.shipwright-install.json`; conflicts stop the whole update before writes. Retired files are reported, never deleted automatically.
+
+Put project-relative paths or `*` patterns in `.shipwright-ignore` to preserve selected installed files. The installer's check output lists changes, conflicts, exclusions and retired files. An older copy without ownership metadata is treated as unowned: back it up or explicitly exclude conflicts before migrating.
+
+`bash scripts/sync.sh --install PROJECT` remains a compatibility wrapper. The installed `bash shipwright-sync.sh` checks for updates, and `--yes` applies them. It reads the saved source checkout path; it does not pull Git changes or contact a service.
+
+Restart/reload your host to discover skills. In Claude project copies use `/shipwright`; a plugin uses the plugin namespace, such as `/shipwright:shipwright`. In Codex use the `shipwright-concierge` skill or a matching plain-language PM request. Native Claude agent/command registration is host-specific; the Codex concierge executes those workflows in the current session when appropriate.
+
+## Directory/plugin distribution
 
 ```bash
-cd your-project/
-bash shipwright-sync.sh          # interactive, review changes before applying
-bash shipwright-sync.sh --yes    # auto-update without prompts
+node scripts/build-plugin.mjs dist/shipwright
 ```
 
-It also installs the optional Shipwright output style to `.claude/output-styles/shipwright.md`, so you can enable it inside Claude Code with `/output-style shipwright`.
+Build into a new directory. The resulting bundle includes 46 frameworks and two routing/research entry skills, `.claude-plugin/plugin.json`, `.codex-plugin/plugin.json`, local dependencies and public docs. Package the contents of this folder so manifests are at the plugin root. Use this bundle for submission, not a partial copy of category folders.
 
-**Alternative: manual copy**
+The generated flat layout follows the [Codex plugin layout](https://developers.openai.com/plugins/build/plugins) and [Claude conversion guidance](https://developers.openai.com/plugins/guides/submit-claude-plugin). Host activation still needs the observed checks in `docs/shipwright-v2-proof-runbook.md`.
 
-```bash
-cp -r shipwright/skills/ your-project/.claude/skills/
-cp -r shipwright/agents/ your-project/.claude/agents/
-cp -r shipwright/commands/ your-project/.claude/commands/
-mkdir -p your-project/.claude/output-styles/
-cp shipwright/output-styles/shipwright.md your-project/.claude/output-styles/
-```
+## Other tools
 
-Or install as a plugin (see [Quick Start](../README.md#quick-start) in the README).
+For an agent that can read local Markdown, keep the complete bundle together and ask it to read `skills/<name>/SKILL.md`. Resolve supporting paths from the bundle's `manifest.json`, not the product project's current directory. Automatic discovery and native commands vary by host; they are not guaranteed by plain Markdown compatibility.
 
-## Cursor
+The PM frameworks can run without Node. Node is needed for the collector and deterministic validators; if unavailable, follow the documented evidence/tool fallback and explicitly mark automated checks unrun. Do not claim a helper ran when it did not.
 
-Cursor reads skills from `.cursor/skills/`:
+## Research credentials
 
-```bash
-mkdir -p your-project/.cursor/skills/
-cp -r shipwright/skills/ your-project/.cursor/skills/
-```
-
-Commands and agents are Claude Code-specific features. In Cursor, reference skills directly by telling the agent to read a skill file:
-
-```
-Read .cursor/skills/execution/prd-development/SKILL.md and use that framework to write a PRD for [feature].
-```
-
-## OpenAI Codex CLI
-
-Codex reads from `.codex/skills/`:
-
-```bash
-mkdir -p your-project/.codex/skills/
-cp -r shipwright/skills/ your-project/.codex/skills/
-```
-
-If you want Shipwright's local research helper in Codex too, also copy:
-
-```bash
-mkdir -p your-project/.codex/scripts/
-cp -r shipwright/scripts/ your-project/.codex/scripts/
-```
-
-For the most conversational experience, also copy `shipwright/AGENTS.md` into the project root or merge its Shipwright section into your existing project `AGENTS.md`. That lets plain-language Codex prompts route through Shipwright guidance without requiring slash commands.
-
-Once those files are present, you have two ways to use Shipwright in Codex:
-
-- Conversational mode: ask in plain English and let `AGENTS.md` steer Codex
-- Explicit mode: reference a specific skill path when you want an exact framework
-
-Examples:
-
-```text
-Help me assess whether a bird flock simulation engine is an attractive business.
-```
-
-```text
-Read .codex/skills/discovery/market-sizing/SKILL.md and .codex/skills/discovery/competitive-landscape/SKILL.md, then assess whether a bird flock simulation engine is an attractive business.
-```
-
-## Gemini CLI
-
-Gemini CLI reads from `.gemini/skills/`:
-
-```bash
-mkdir -p your-project/.gemini/skills/
-cp -r shipwright/skills/ your-project/.gemini/skills/
-```
-
-## OpenCode
-
-OpenCode reads from `.opencode/skills/`:
-
-```bash
-mkdir -p your-project/.opencode/skills/
-cp -r shipwright/skills/ your-project/.opencode/skills/
-```
-
-## Kiro
-
-Kiro reads from `.kiro/skills/`:
-
-```bash
-mkdir -p your-project/.kiro/skills/
-cp -r shipwright/skills/ your-project/.kiro/skills/
-```
-
-## What works everywhere vs. Claude Code only
-
-| Feature | All tools | Claude Code only |
-|---|---|---|
-| Skills (SKILL.md files) | Yes | Yes |
-| Commands (/discover, /sprint, etc.) | No | Yes |
-| Agents (@discovery-researcher, etc.) | No | Yes |
-| Orchestrator (`/shipwright` or `/start`) | No | Yes |
-| Start menu (`/shipwright-help`) | No | Yes |
-| Output styles (`/output-style shipwright`) | No | Yes |
-| Evaluation rubrics (evals/) | Yes | Yes |
-| Pass/fail quality gates | Yes | Yes |
-| MCP integrations | Varies by tool | Yes |
-
-Codex note: repository `AGENTS.md` plus `.codex/skills/` can still provide a conversational Shipwright experience, but that is a Codex-native instruction layer, not the Claude Code `/shipwright` or `/start` orchestrator.
-
-## Standalone mode (any tool)
-
-Skills are the core value. Each SKILL.md contains the full framework, output format, and common mistakes. You don't need commands, agents, or the orchestrator to get value from Shipwright.
-
-### How to use a skill directly
-
-Point your AI agent at the skill file and tell it what you need:
-
-```
-Read .cursor/skills/execution/prd-development/SKILL.md and use that framework to write a PRD for [feature].
-```
-
-Replace the path prefix with whatever your tool uses (`.cursor/skills/`, `.codex/skills/`, `.gemini/skills/`, etc.).
-
-### Five things you can do with one skill
-
-| Want to... | Skill | Prompt |
-|---|---|---|
-| Write a PRD | `execution/prd-development` | `Read [path]/SKILL.md and write a PRD for [feature].` |
-| Run a SWOT | `strategy/swot-analysis` | `Read [path]/SKILL.md and run a SWOT analysis on [topic].` |
-| Plan a sprint | `execution/sprint-planning` | `Read [path]/SKILL.md and plan the next sprint.` |
-| Triage feedback | `customer-intelligence/feedback-triage` | `Read [path]/SKILL.md and triage this feedback: [paste feedback].` |
-| Write an exec briefing | `communication/executive-briefing` | `Read [path]/SKILL.md and write a briefing for [topic].` |
-
-### Chaining skills manually
-
-Commands like `/discover` chain 4 skills together automatically. In non-Claude tools, chain them manually:
-
-```
-First, read [path]/discovery/opportunity-solution-tree/SKILL.md and map
-the opportunity space for [problem area].
-
-Then, read [path]/strategy/prioritization-advisor/SKILL.md and score
-the opportunities using RICE.
-```
-
-This produces the same output as a workflow, you're just sequencing it yourself instead of letting a command file do it.
-
-### Evaluating standalone output
-
-After generating an artifact, use the evaluation rubrics:
-
-```
-Read evals/prd.md and score the PRD you just wrote. Be honest about weaknesses.
-```
-
-The rubrics work in any tool. They don't depend on agents or commands.
-
-For binary quality gating:
-
-```
-Read evals/pass-fail.md and tell me PASS or FAIL for this artifact.
-If FAIL, list failed gates and exact fixes.
-```
-
-For consistent output signature, use [docs/output-standard.md](output-standard.md).
-
-## Tips for non-Claude tools
-
-- **Be explicit.** In Claude Code, the orchestrator routes to the right skill automatically. In other tools, tell the agent which skill file to use.
-- **Use AGENTS when the tool supports it.** In Codex, a project-level `AGENTS.md` is the best way to make plain-language prompts feel conversational without having to name a skill every time.
-- **Provide product context.** Copy the `CLAUDE.md.example` template and fill it in. Most AI coding agents read a context file from the project root. Rename it if needed (some tools use `CONTEXT.md` or similar), but the product context format works the same way.
-- **Use the composition model.** If you want to build your own multi-step processes, read [docs/composition-model.md](composition-model.md) for the mental model behind how skills, workflows, and agents relate.
+The collector uses supported keys from the environment or the user's project `.env`. Keep the helper's working directory in that project while invoking the helper by its absolute installed path. Never include credentials in a release bundle or display them in an artifact. Missing keys allow a bounded interactive-research fallback.

@@ -270,3 +270,12 @@ async function writeReviewerResponses(reviewsDir) {
     'utf8',
   );
 }
+
+test('compileBlindReview rejects conflicting assignments for the same condition and phase', () => {
+  const adminManifest = buildAdminManifest();
+  adminManifest.assignments.push({ ...adminManifest.assignments[0], artifact_id: 'different-id-same-slot' });
+  assert.throws(() => compileBlindReview({
+    currentSummary: buildSyntheticSummary(), baselineSummary: buildSyntheticSummary(), adminManifest,
+    reviewerResponses: [],
+  }), /Duplicate scenario\/origin\/phase/);
+});

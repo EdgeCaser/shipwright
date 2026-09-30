@@ -27,7 +27,7 @@ import {
   executeRigorAnalysisForSession,
 } from './decision-execution.mjs';
 import {
-  route,
+  routeWithCapabilities as route,
   assessProviderAvailability,
   resolveScenarioClass,
 } from './orchestrate.mjs';
@@ -79,6 +79,7 @@ export async function startDecisionSession(input = {}) {
   });
 
   session = await updateSession(session.session_id, {
+    rigor_available: Boolean(input.rigor_turn_runner),
     scenario_path: input.scenario_path || null,
     latest_routing_input: null,
     latest_execution_mode: null,
@@ -178,6 +179,7 @@ export async function declineNextStep(sessionId, options = {}) {
 
   const routingInput = session.latest_routing_input || {};
   const declinedResult = route({
+    rigor_available: session.rigor_available === true,
     scenario_class: session.scenario_class,
     stage: session.stage,
     ...routingInput,
@@ -315,6 +317,7 @@ export async function runFollowUpAction(sessionId, action, options = {}) {
 
 async function applyFastResult(session, fastResult, sessionsRoot) {
   const routingResult = route({
+    rigor_available: session.rigor_available === true,
     scenario_class: session.scenario_class,
     stage: fastResult.stage,
     ...fastResult.routing_input,
@@ -392,6 +395,7 @@ async function applyFastResult(session, fastResult, sessionsRoot) {
 
 async function applyRigorResult(session, rigorResult, sessionsRoot) {
   const routingResult = route({
+    rigor_available: session.rigor_available === true,
     scenario_class: session.scenario_class,
     stage: rigorResult.stage,
     ...rigorResult.routing_input,

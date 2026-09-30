@@ -116,27 +116,7 @@ If the user asks in plain English, route silently. Do not force them to speak in
 
 ## Public-Web Research Protocol
 
-When fresh public-web evidence is needed, this protocol is mandatory:
-
-1. If one of these exists and a supported search API key is configured, run the local collector first:
-   - `scripts/collect-research.mjs`
-   - `.codex/scripts/collect-research.mjs`
-   - `.claude/scripts/collect-research.mjs`
-2. Start with one primary query and `--mode auto`.
-3. If `facts.json` exists, read it before the full evidence pack and use it as the structured shortcut.
-4. Read the generated `evidence.md` or `evidence.json` and synthesize from that pack first.
-5. Before using interactive browsing, shell out to the collector with an actual command, for example:
-   - `node scripts/collect-research.mjs --query "<primary query>" --mode auto`
-6. Interactive web search is allowed only if at least one of these is true:
-   - the collector script does not exist
-   - no supported API key is configured
-   - the collector errors or times out
-   - the evidence pack explicitly reports `needs-interactive-followup`
-   - you can name a specific unresolved gap after reading the evidence pack and any `facts.json` sidecar
-7. If interactive web search becomes necessary, keep it to the unresolved gaps only. Do not restart the whole research pass.
-8. Do not start with a broad fan-out of raw web searches when the collector is available.
-9. If the collector produced a usable evidence pack with `Status: complete`, do not do raw `Web Search` as a substitute for reading it.
-10. In a substantial research answer, mention that you used the local evidence pack when you did.
+When fresh public-web evidence is needed, read the research protocol in `docs/workflow-contract.md` from the Shipwright installation root. Run the installed collector with one primary query and `--mode auto` when Node and the helper are available. It checks project `.env` itself; never print credentials. Read `facts.json` if present, then the evidence pack. Missing runtime/helper/credentials or a failed collector permits bounded browsing. Name the unresolved gap before additional searching. Extraction confidence is not source truth. Mention the local evidence pack when it was used.
 
 ## Bounded Execution
 

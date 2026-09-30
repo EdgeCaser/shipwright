@@ -34,7 +34,8 @@ FAIL until the approval and scope boundaries are contained.
     "tradeoff": "Creates a more impressive first release, but blurs human approval boundaries and expands scope beyond a safe first phase.",
     "confidence": "medium",
     "owner": "PM",
-    "decision_date": "2026-04-02"
+    "decision_date": "2026-04-02",
+    "revisit_trigger": "New evidence changes the recommendation."
   },
   "unknowns": [
     "Approval override ownership is not yet explicit.",

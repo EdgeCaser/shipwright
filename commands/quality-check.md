@@ -5,6 +5,8 @@ description: "Score recent Shipwright artifacts against core rubric dimensions t
 
 # /quality-check, Artifact Quality Audit
 
+Before executing, read `docs/workflow-contract.md` from this Shipwright installation. Resolve it relative to this file's parent installation root (or the plugin root), not the user's product directory. Its handoff, depth, evidence and authorization rules apply throughout.
+
 Run this command to review recent Shipwright artifacts and track whether output quality is trending up, down, or holding steady.
 
 ## Workflow Steps
@@ -26,7 +28,7 @@ Confirm the final list before scoring.
 
 ### Step 2: Score Each Artifact
 
-Read and apply `/skills/measurement/artifact-quality-audit/SKILL.md`. Use the universal 4 dimensions (Clarity, Completeness, Actionability, Correctness) with the anchored scale:
+Read and apply `skills/measurement/artifact-quality-audit/SKILL.md`. Use the universal 4 dimensions (Clarity, Completeness, Actionability, Correctness) with the anchored scale:
 
 - **3** = weak, significant gaps or confusion
 - **6** = adequate, meets the bar, no major issues

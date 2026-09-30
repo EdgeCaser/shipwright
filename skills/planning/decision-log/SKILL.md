@@ -7,6 +7,8 @@ default_depth: standard
 
 # Decision Log / Product Decision Record (PDR)
 
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+
 ## Description
 
 Captures product decisions in a structured, searchable format inspired by Architecture Decision Records (ADRs). Documents the context, options considered, decision made, and consequences, creating institutional memory that prevents relitigating settled decisions and helps new team members understand why things are the way they are.

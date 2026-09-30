@@ -7,6 +7,8 @@ default_depth: standard
 
 # Lean Canvas / Business Model
 
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+
 ## Description
 
 Builds a one-page Lean Canvas capturing the core business model: problem, solution, key metrics, unfair advantage, channels, customer segments, and cost/revenue structure. Based on Ash Maurya's adaptation of the Business Model Canvas for startups.

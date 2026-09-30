@@ -20,6 +20,9 @@ jobs:
         with:
           node-version: 22
 
+      - name: Validate repository contracts
+        run: node scripts/validate-repository.mjs
+
       - name: Run Node test suite
         shell: bash
         run: node --test --test-concurrency=1 tests/*.test.mjs

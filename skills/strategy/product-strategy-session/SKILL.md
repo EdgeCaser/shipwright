@@ -7,6 +7,8 @@ default_depth: standard
 
 # Product Strategy Session
 
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+
 ## Description
 
 Facilitates a structured product strategy workshop covering vision, positioning, strategic bets, and success criteria. Inspired by Marty Cagan's "Inspired" and "Empowered" frameworks for product-led organizations.
@@ -26,7 +28,7 @@ Facilitates a structured product strategy workshop covering vision, positioning,
 | **Standard** | Quarterly or annual strategy cycle | All sections |
 | **Deep** | New product launch, pivot, or board-level strategy review | All sections + competitor bet mapping, assumption stress-test per bet, scenario analysis (base/bull/bear) |
 
-**Omit rules:** At Light depth, skip Strategic Context, What We're NOT Doing, and Success Criteria & Review Cadence. Produce only the vision statement and bet theses.
+**Omit rules:** At Light depth, condense Strategic Context and review cadence. Retain the vision, falsifiable bet theses, key assumptions, scope boundaries and kill criteria; do not imply investment approval from an alignment sketch.
 
 ## Framework
 
@@ -139,6 +141,8 @@ Equally important as what you invest in:
 
 ## Output Format
 
+When an automated handoff or benchmark explicitly requests structured output, also read `docs/structured-artifacts.md` and the matching schema from the Shipwright installation root. Append the validated envelope and keep it consistent with the visible artifact. Ordinary chat output needs no JSON duplicate.
+
 Produce a Product Strategy Document with:
 1. **Product Vision**, aspirational north star
 2. **Strategic Context**, where we are today
@@ -149,7 +153,7 @@ Produce a Product Strategy Document with:
 **Shipwright Signature (required closing):**
 6. **Decision Frame**, Primary strategic bet recommendation with trade-off (focus vs. optionality), confidence with evidence quality, owner, decision date, revisit trigger
 7. **Unknowns & Evidence Gaps**, Unvalidated assumptions behind bets, missing customer evidence, market data gaps
-8. **Pass/Fail Readiness**, PASS if each bet has a falsifiable thesis, kill criteria, and at least one evidence-backed assumption (at Light depth: PASS if each bet has a falsifiable thesis, kill criteria and full assumption mapping are deferred); FAIL if bets lack customer grounding or kill criteria
+8. **Pass/Fail Readiness**, PASS if bets have falsifiable theses, explicit boundaries, evidence-backed assumptions and kill criteria. Light depth may condense the evidence and cadence; FAIL if customer grounding or kill criteria are missing.
 9. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid

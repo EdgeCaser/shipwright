@@ -33,7 +33,8 @@ FAIL because the data is still incomplete for approval.
     "tradeoff": "Protects credibility with sales and finance at the cost of slower monetization work.",
     "confidence": "high",
     "owner": "PM",
-    "decision_date": "2026-04-02"
+    "decision_date": "2026-04-02",
+    "revisit_trigger": "New evidence changes the recommendation."
   },
   "unknowns": [
     "We still need more interview coverage before revisiting approval."

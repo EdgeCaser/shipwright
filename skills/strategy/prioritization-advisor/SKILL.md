@@ -7,6 +7,8 @@ default_depth: standard
 
 # Prioritization Advisor
 
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+
 ## Description
 
 Applies structured prioritization frameworks (RICE, ICE, Kano, MoSCoW, Weighted Scoring) to a feature backlog or initiative list. Helps PMs make transparent, defensible prioritization decisions by making trade-offs explicit.
@@ -28,7 +30,9 @@ Applies structured prioritization frameworks (RICE, ICE, Kano, MoSCoW, Weighted 
 
 **Omit rules:** At Light depth, skip Challenge, Surface Trade-Offs, Sensitivity Notes, and Trade-Off Analysis. Produce only a scored and ranked list with the chosen framework.
 
-## Available Frameworks
+## Framework
+
+### Available Frameworks
 
 ### 1. RICE Scoring
 
@@ -127,11 +131,11 @@ Best for: When different stakeholders value different criteria.
 
 ## Minimum Evidence Bar
 
-**Required inputs:** A list of at least 3 items to prioritize and enough context to estimate scoring dimensions (reach, impact, effort, or equivalent).
+**Required inputs:** At least two items to compare and evidence or explicitly labeled estimates for the chosen scoring dimensions.
 
 **Acceptable evidence:** Usage analytics, customer feedback, stakeholder requests with business rationale, engineering estimates, prior experiment results.
 
-**Insufficient evidence:** If fewer than 3 items are provided or no context exists for any scoring dimension, stop and recommend gathering usage data or stakeholder input before attempting this skill. Do not produce a prioritized list without scorable context.
+**Insufficient evidence:** If fewer than 2 items are provided or no context exists for any scoring dimension, stop and recommend gathering usage data or stakeholder input before attempting this skill. Do not produce a prioritized list without scorable context.
 
 **Hypotheses vs. findings:**
 - **Findings:** Final ranked order, scores backed by data (reach from analytics, effort from engineering estimates)
@@ -149,7 +153,7 @@ Produce a Prioritization Report with:
 **Shipwright Signature (required closing):**
 6. **Decision Frame**, Top recommended investment with trade-off (speed vs. certainty, breadth vs. depth), confidence with evidence quality, owner, decision date, revisit trigger
 7. **Unknowns & Evidence Gaps**, Items scored with <50% confidence, assumptions that would change the ranking if wrong
-8. **Pass/Fail Readiness**, PASS if all items scored with stated evidence sources and top 3 have >60% confidence; FAIL if majority of scores are gut-feel with no supporting data
+8. **Pass/Fail Readiness**, PASS if scores state their evidence or assumptions, uncertainty is honest, and the recommendation explains tradeoffs. Low confidence must lead to a provisional ranking and a targeted validation step, never inflated scores; FAIL if unsupported estimates are presented as facts.
 9. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid

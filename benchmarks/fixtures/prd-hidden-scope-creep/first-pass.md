@@ -30,7 +30,8 @@ FAIL until the scope challenge is resolved.
     "tradeoff": "Faster operator value now, but unresolved routing scope can spill into engineering work.",
     "confidence": "medium",
     "owner": "PM",
-    "decision_date": "2026-04-02"
+    "decision_date": "2026-04-02",
+    "revisit_trigger": "New evidence changes the recommendation."
   },
   "unknowns": [
     "Manager routing behavior is still unclear.",

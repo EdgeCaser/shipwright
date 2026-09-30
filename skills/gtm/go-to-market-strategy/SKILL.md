@@ -7,6 +7,8 @@ default_depth: standard
 
 # Go-to-Market Strategy
 
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+
 ## Description
 
 Builds a comprehensive GTM plan covering beachhead segment selection, ideal customer profile, messaging, channel strategy, launch timeline, and success metrics. Based on Geoffrey Moore's market adoption lifecycle and modern PLG/sales-led hybrid approaches.

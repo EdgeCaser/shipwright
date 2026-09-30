@@ -5,6 +5,8 @@ description: "Generate a complete PRD using Amazon's Working Backwards method: p
 
 # /write-prd, PRD Development Workflow
 
+Before executing, read `docs/workflow-contract.md` from this Shipwright installation. Resolve it relative to this file's parent installation root (or the plugin root), not the user's product directory. Its handoff, depth, evidence and authorization rules apply throughout.
+
 Run this command to produce a full Product Requirements Document using the Working Backwards method.
 
 ## Workflow Steps
@@ -17,7 +19,7 @@ Ask the PM for:
 - Any existing strategic context? (Check CLAUDE.md for product context)
 
 ### Step 2: Write the Press Release
-Read and apply `/skills/execution/prd-development/SKILL.md`.
+Read and apply `skills/execution/prd-development/SKILL.md`.
 
 Write a fictional press release announcing the finished product:
 - Headline (customer-centric)
@@ -25,7 +27,7 @@ Write a fictional press release announcing the finished product:
 - Problem statement (from customer's perspective)
 - Solution description (experience, not implementation)
 - How it works (3-5 steps)
-- Customer quote (fictional)
+- Customer quote (sourced verbatim, or `[TBD, requires: customer quote]`)
 
 Review with the PM before proceeding. The press release is the alignment tool, if it doesn't feel right, the PRD won't either.
 
@@ -37,7 +39,7 @@ Customer FAQ (3-5 questions a customer would ask) and Internal FAQ covering:
 - What are the biggest risks?
 
 ### Step 4: Write User Stories
-Read and apply `/skills/execution/user-story-writing/SKILL.md`.
+Read and apply `skills/execution/user-story-writing/SKILL.md`.
 
 For each persona, generate user stories with:
 - Story statement (As a / I want / So that)

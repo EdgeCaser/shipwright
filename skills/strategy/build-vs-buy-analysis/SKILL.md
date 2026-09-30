@@ -7,6 +7,8 @@ default_depth: standard
 
 # Build-vs-Buy Analysis
 
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+
 ## Description
 
 Evaluates whether to build a capability in-house, buy/license from a vendor, integrate via API, adopt open-source, or partner. Produces a total-cost-of-ownership comparison anchored to strategic fit, not just sticker price, with explicit kill criteria for revisiting the decision.
@@ -151,7 +153,7 @@ Commit to one path. Avoid "let's build a prototype and see" unless you define wh
 
 ## Minimum Evidence Bar
 
-**Required inputs:** A clearly defined capability gap (Step 1) with must-have requirements, at least two options with real pricing or engineering estimates (not "it would probably take a few months"), and enough context to assess core vs. context.
+**Required inputs:** A capability gap, must-have requirements and candidate options. A decision to spend or build requires real pricing and engineering estimates for at least two options; Light directional fit analysis may explicitly defer those numbers.
 
 **Acceptable evidence:** Vendor pricing pages or quotes, engineering estimates from the team that would build it, reference customer case studies, open-source project health metrics (GitHub stars alone are insufficient, look at commit frequency, maintainer count, issue response time), prior experience with similar build/buy decisions at the company.
 
@@ -174,7 +176,7 @@ Produce a Build-vs-Buy Decision Brief with:
 **Shipwright Signature (required closing):**
 7. **Decision Frame**, Recommended path with primary trade-off (cost vs. control, speed vs. flexibility), confidence level with evidence quality, decision owner, decision date, revisit trigger
 8. **Unknowns & Evidence Gaps**, Missing vendor quotes, unvalidated engineering estimates, untested scaling assumptions, vendor roadmap items taken on faith
-9. **Pass/Fail Readiness**, PASS if TCO includes real numbers (not placeholders) for at least two options and core-vs-context determination is evidence-backed; FAIL if cost comparison relies on guesses or the core-vs-context call is asserted without rationale
+9. **Pass/Fail Readiness**, PASS for a spending/build decision if comparable TCO uses sourced prices and estimates for at least two options and strategic fit is justified. Light depth may PASS only as a directional fit assessment with cost gaps explicit; it cannot authorize procurement or engineering commitment.
 10. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid

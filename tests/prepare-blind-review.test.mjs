@@ -167,3 +167,22 @@ function assignmentOrigin(adminManifest, phase, blindedLabel) {
       assignment.phase === phase && assignment.blinded_label === blindedLabel,
   ).origin;
 }
+
+test('review bundles use private random seeds and separate reviewer/admin directories', { concurrency: false }, async () => {
+  const rootDir = await mkdtemp(path.join(os.tmpdir(), 'shipwright-blinding-'));
+  const currentScenarioDir = path.join(rootDir, 'current/scenarios');
+  const baselineScenarioDir = path.join(rootDir, 'baseline/scenarios');
+  for (const directory of [currentScenarioDir, baselineScenarioDir]) {
+    await writeScenario(rootDir, directory, { id: 's', title: 'Neutral title', firstPassText: '# Analysis', finalPassText: '# Analysis revised' });
+  }
+  const output = path.join(rootDir, 'output');
+  const first = await prepareBlindReviewBundle({ currentScenarioDir, baselineScenarioDir, outDir: output });
+  const second = await prepareBlindReviewBundle({ currentScenarioDir, baselineScenarioDir });
+  assert.notEqual(first.adminManifest.seed, second.adminManifest.seed);
+  assert.equal(first.adminManifest.seed.length, 64);
+  const { readFile } = await import('node:fs/promises');
+  const packet = await readFile(path.join(output, 'reviewer/review-packet.json'), 'utf8');
+  assert.ok(!packet.includes(first.adminManifest.seed));
+  await readFile(path.join(output, 'admin/admin-manifest.json'));
+  await assert.rejects(readFile(path.join(output, 'reviewer/admin-manifest.json')), { code: 'ENOENT' });
+});

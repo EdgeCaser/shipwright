@@ -12,9 +12,9 @@ Under the hood, Shipwright includes 46 skills, 7 agents (6 specialists plus the 
 
 The skills are plain markdown files, so they're compatible with any AI coding tool that reads skill files (Cursor, Codex, Gemini CLI, and others). Agents, commands, and the Claude Code helper commands (`/shipwright`, `/start`, and `/shipwright-help`) are Claude Code-specific. This repo also includes a Codex-native bridge via [AGENTS.md](AGENTS.md) so plain-language prompts in Codex can still route through Shipwright's bounded research and framework selection.
 
-## Why this beats raw AI
+## What Shipwright adds
 
-Shipwright is not "better prompting." It is a quality system around prompting.
+Shipwright adds explicit evidence, output and handoff contracts. The fixture tests check those contracts; they do not establish that Shipwright outperforms another prompting approach.
 
 | Dimension | Raw AI prompting | Shipwright |
 |---|---|---|
@@ -26,7 +26,9 @@ Shipwright is not "better prompting." It is a quality system around prompting.
 | **Recovery path** | Ad hoc rewrites | Deterministic [recovery playbooks](docs/recovery-playbooks.md) |
 | **Handoff quality** | Varies by prompt quality | Repeatable workflows with role constraints and checks ([prompting guide](docs/prompting.md)) |
 
-## Demo
+## Illustrative example
+
+The following is a synthetic example, not a recorded customer result.
 
 A PM wrote a PRD recommending enterprise expansion as the top priority. Before sending it to engineering, they ran `/challenge` to pressure-test it.
 
@@ -43,7 +45,7 @@ A PM wrote a PRD recommending enterprise expansion as the top priority. Before s
 | "Minimal incremental engineering cost" | Structural Honesty | Critical | SSO, audit logging, and SLA requirements are listed in the appendix but not reflected in the cost estimate or timeline. | Reconcile appendix requirements with the effort estimate or scope them out explicitly. |
 | "Self-serve onboarding will scale to enterprise" | Decision Courage | Moderate | The PRD hedges with "may require some customization" but doesn't commit to whether enterprise onboarding is self-serve or high-touch. | Make the call: self-serve with guardrails, or dedicated onboarding. State the trade-off. |
 
-**Verdict: DEFEND.** The enterprise thesis may still be right, but the cost estimate contradicts the appendix and the growth claim lacks product-specific evidence. The PM should route findings back before treating the PRD as settled.
+**Verdict: ESCALATE.** The enterprise thesis may still be right, but the cost estimate contradicts the appendix and the growth claim lacks product-specific evidence. The PM should route findings back before treating the PRD as settled.
 
 The PM sent findings back to the producing agent, which revised the cost section and downgraded the growth claim to a hypothesis. A second `/challenge` pass returned `CLEAR`.
 
@@ -75,41 +77,36 @@ Each path chains 3 workflows; run them in separate sessions or back-to-back. For
 
 ## Quick Start
 
-### 1) Install
+### Install into a project
 
-**Option A: Plugin install (recommended)**
+Requires Node.js 22 or newer. From a source checkout:
+
 ```bash
-claude plugin marketplace add EdgeCaser/shipwright
-claude plugin install shipwright@shipwright
+node scripts/install.mjs /path/to/your-project
+node scripts/install.mjs /path/to/your-project --apply
 ```
 
-**Option B: Script install (recommended for manual)**
+The first command previews changes. The second installs the complete bundle into `.claude/` and `.codex/`. Existing root instructions, unrelated files and locally modified installed files are preserved. A conflict stops the installation before any file changes; `.shipwright-ignore` supports explicit exclusions. Repeat these commands after updating the source checkout.
+
+In Claude Code, start with `/shipwright` in a project copy. Plugin commands use `/shipwright:shipwright`. In Codex, invoke `shipwright-concierge` or ask a PM question; the skill routes to the relevant framework. Restart or reload the host after installing so it discovers the new skills. No source-repo working directory is required.
+
+### Build a directory-submission bundle
+
 ```bash
-git clone https://github.com/EdgeCaser/shipwright.git
-bash shipwright/scripts/sync.sh --install your-project/
+node scripts/validate-repository.mjs
+node --test --test-concurrency=1 tests/*.test.mjs
+node scripts/build-plugin.mjs dist/shipwright
 ```
 
-This copies all skills, agents, commands, docs, and evals into `your-project/.claude/`, and drops a `shipwright-sync.sh` script you can re-run later to pull updates.
+The output directory must be new. Submit the contents of the generated bundle: it contains flat skill directories, Claude and Codex manifests, and their local dependencies. Source skills remain grouped by category for maintenance. The bundle excludes local credentials, run outputs and internal review material.
 
-**Option C: Manual install**
-```bash
-git clone https://github.com/EdgeCaser/shipwright.git
-cp -r shipwright/skills/ your-project/.claude/skills/
-cp -r shipwright/agents/ your-project/.claude/agents/
-cp -r shipwright/commands/ your-project/.claude/commands/
-mkdir -p your-project/.claude/scripts/
-cp -r shipwright/scripts/ your-project/.claude/scripts/
-```
-
-Using a different tool? See the [cross-tool install guide](docs/installing-in-other-tools.md).
-
-If you are running directly from this repo in Codex, you do not need slash commands. The project-level [AGENTS.md](AGENTS.md) tells Codex to treat plain-language PM prompts as Shipwright work and to use the local research collector before broad interactive browsing when it is available.
+See [installation details](docs/installing-in-other-tools.md) and the [live release checks](docs/shipwright-v2-proof-runbook.md). Building and validating the bundle does not submit it to either directory.
 
 ## Decision Analysis
 
 For high-stakes decisions, governance, board-level, restructuring, pricing, Shipwright includes a decision analysis system that runs a structured Fast Mode analysis and returns a recommendation, confidence band, and uncertainty payload.
 
-**Fast Mode** runs a single structured analysis pass. It takes roughly 1-2 minutes.
+**Fast Mode** runs a single structured analysis pass. Duration depends on the selected provider. In an existing Claude/Codex session, the skills perform this inline; the optional CLI below is for source-checkout integrations.
 
 You declare the scenario class; the system applies the corresponding routing policy. Governance and publication-class questions are flagged when confidence is insufficient, returning an explicit uncertainty payload and recommended next actions rather than a false-confident answer.
 
@@ -136,23 +133,16 @@ node scripts/shipwright.mjs \
 
 ### Scenario classes
 
-| Class | Default path | Cross-family required |
-|---|---|---|
-| `governance` | fast pass, escalation flagged on low confidence | yes |
-| `publication` | fast pass, escalation flagged on low confidence | yes |
-| `pricing` | single analysis | no |
-| `product_strategy` | single analysis | no |
-| `unclassified` | single analysis | no |
+| Class | Behavior |
+|---|---|
+| `governance`, `publication` | Fast pass followed by an optional opposing-position stress test in chat; not independently verified consensus |
+| `pricing`, `product_strategy`, `unclassified` | Fast directional analysis with uncertainty and review needs stated |
 
-### Providers
+### Providers and output
 
-Pass `--provider` once per available model family: `claude`, `gpt`, `gemini`. With one provider, analysis is single-pass and marked provisional. With two or more, Shipwright can give a Fast Mode result with honest escalation guidance when confidence is insufficient.
+The optional CLI accepts `claude`, `gpt` and `gemini` provider labels. Listing multiple installed providers does not enable an independent review harness. That harness is not included; results requiring it remain not ready. A human-review flag must be preserved regardless of model confidence.
 
-### Output
-
-Each run writes to `benchmarks/results/orchestrated/<scenario>/<run-id>/`:
-- `orchestration.json`, routing decisions and terminal state for every stage
-- `stage-1-fast/`, Fast Mode analysis with recommendation, confidence, and uncertainty payload
+CLI sessions write to `benchmarks/sessions/` and Fast runs to `benchmarks/results/fast-analysis/` by default. With `--out-dir DIR`, sessions use `DIR/s` and Fast runs use `DIR/f`.
 
 ### Session API
 
@@ -161,20 +151,20 @@ The decision analysis system exposes a session-based API for building product su
 ```javascript
 import { handleDecisionSessionRequest } from './scripts/decision-session-service.mjs';
 
-// Create a session
-const { body } = await handleDecisionSessionRequest({
+const result = await handleDecisionSessionRequest({
   method: 'POST', path: '/decision-sessions',
-  body: { question: '...', scenario_class: 'governance', providers: ['claude', 'gpt', 'gemini'] }
+  body: { question: 'Should we change pricing?', scenario_class: 'pricing', available_providers: ['claude'] }
 }, options);
 
-// Confirm next step (e.g. gather more evidence, create follow-up brief)
-await handleDecisionSessionRequest({
-  method: 'POST', path: `/decision-sessions/${body.session_id}/next-step`,
-  body: { confirm: true }
-}, options);
+if (result.ok && result.data.session.ux_state === 'not_ready') {
+  await handleDecisionSessionRequest({
+    method: 'POST', path: `/decision-sessions/${result.data.session.session_id}/follow-up`,
+    body: { action: 'create_follow_up_brief' }
+  }, options);
+}
 ```
 
-Follow-up actions for `not_ready` sessions: `gather_more_evidence` (re-runs Fast Mode with a refined question), `create_follow_up_brief` (writes a markdown brief for human review), `open_human_review` (flags the session and returns a review request payload).
+Follow-up actions: `gather_more_evidence` creates a collection brief unless `additional_evidence` is supplied, in which case it re-analyzes that input; `create_follow_up_brief` writes a review brief; `open_human_review` records a request without contacting anyone. Optional integrations with an actual review harness can use `/confirm` and `/decline` only when the session offers that action.
 
 ### Telemetry
 

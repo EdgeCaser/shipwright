@@ -5,6 +5,8 @@ description: "Show the Shipwright start menu for Claude Code: common paths, dire
 
 # /shipwright-help, Start Menu
 
+Before executing, read `docs/workflow-contract.md` from this Shipwright installation. Resolve it relative to this file's parent installation root (or the plugin root), not the user's product directory. Its handoff, depth, evidence and authorization rules apply throughout.
+
 Use this command when you want a compact menu of what Shipwright can do inside Claude Code.
 
 When invoked, respond with a concise guide that includes:
