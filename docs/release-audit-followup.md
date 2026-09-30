@@ -125,7 +125,7 @@ Earlier files in `benchmarks/results/` were generated before this validator spli
 - The remediation note says an earlier full run failed two controller tests and a later rerun passed. This re-review ran only the final tree. Do not cite the intermediate failure as something this review reproduced.
 - Do not run live model CLIs, search providers, or `scripts/collect-research.mjs` for this patch. Do not install into a real project. The existing disposable-project test is the install check.
 - Do not touch `benchmarks/results/` or `benchmarks/telemetry/`.
-- Public repo. Packaged files stay free of the internal tooling names. No em dashes in shipped skills, commands, or README text.
+- Public repo. Packaged files stay free of internal tooling names. No em dashes in shipped skills, commands, or README text.
 - `docs/independent-release-audit.md` stays as the historical record. Point corrections at this file.
 - Directory submission still waits on a separate observed Claude and Codex acceptance pass. Fixture replay does not measure model output. `engineeringReady` does not grant human approval. The installer is still not crash-transactional, and retired files are still reported rather than deleted. Those limits are documented and do not need another code change in this patch.
 
