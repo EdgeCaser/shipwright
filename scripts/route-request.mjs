@@ -16,8 +16,9 @@ const SCENARIO_CLASS_PATTERNS = [
   { scenarioClass: 'governance', pattern: /\b(restructur\w*|acquir\w*|acquisition|merg(?:e|er|ing)|divest\w*|spin[- ]off|dissolv\w*|reorgani[sz]\w*|board\s+(?:vote|decision|approval))\b/i },
   { scenarioClass: 'publication', pattern: /\b(go\s+public|ipo|press\s+release|public\s+(?:statement|announcement)|publish\s+(?:the|our|a))\b/i },
   { scenarioClass: 'product_strategy', pattern: /\b(kill|sunset|shut\s+down|pivot|(?:build|make)\s+(?:vs\.?|versus|or)\s+buy|bet\s+(?:the|our)\s+company)\b/i },
-  // A price decision, not a pricing page, copy or announcement question.
-  { scenarioClass: 'pricing', pattern: /\b((?:raise|increase|lower|cut|reduce|change)\s+(?:(?:our|the|its|their)\s+)?(?:prices?|pricing)(?!\s+(?:page|pages|table|copy|headline|section|calculator|load|display|widget|email|announcement))|reprice|(?:make|do|approve|implement|adopt|go\s+ahead\s+with|proceed\s+with)\s+(?:a|the|this)\s+price\s+(?:increase|decrease|change|cut|hike))\b/i },
+  // A price decision, not a pricing page, copy, ownership or announcement question.
+  // Up to three modifiers may sit before the noun ("the Pro plan price").
+  { scenarioClass: 'pricing', pattern: /\b((?:raise|increase|lower|cut|reduce|change)\s+(?:(?!(?:who|whom|that|which|how|what|when|where|why|to|for|on|of|about|with|by|time|spent|owns?|effort|work|process)\b)[\w$.-]+\s+){0,3}?(?:prices?|pricing)(?!\s+(?:page|pages|table|copy|headline|section|calculator|load|display|widget|email|announcement))|reprice|(?:make|do|approve|implement|adopt|go\s+ahead\s+with|proceed\s+with)\s+(?:a|the|this)\s+price\s+(?:increase|decrease|change|cut|hike))\b/i },
 ];
 
 const ROUTE_RULES = [

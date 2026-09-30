@@ -66,7 +66,7 @@ Every accepted repair has a test that was ablation-checked: with the fix reverte
 
 The suite grew from 488 to 501 tests during the review. Nine are new test functions across `tests/audit-validation.test.mjs`, `tests/pricing-tuples.test.mjs` and `tests/redline-session.test.mjs`. Four are new cases in existing parameterized loops: two confidence contradictions and two hidden-fence forms.
 
-## Final verification
+## Verification at the end of the first review
 
 | Check | Result |
 |---|---|
@@ -78,7 +78,7 @@ The suite grew from 488 to 501 tests during the review. Nine are new test functi
 
 The fingerprint check was also run after each intermediate full-suite run, with the same result. No live model or search provider, credential, real-project installation, publication, commit or push was used.
 
-## Remaining limits
+## Limits at the end of the first review
 
 - The C-01 and C-02 repairs were verified by the coordinator only. The reviewer did review and confirm the coordinator's CRLF fix during round 3.
 - Metric citation text containing numbers is treated as citation, not measurement (A-05).
@@ -94,3 +94,77 @@ The fingerprint check was also run after each intermediate full-suite run, with 
 - **One unexplained suite abort.** One full run stopped after four tests in the first file, `archive-generated-outputs`, with exit code 1 and no error text. Five later full runs passed completely. It has not been reproduced.
 
 These changes went to the second red-line review below.
+
+# Second red-line review
+
+At the user's request, a new fresh-context Claude subagent reviewed the whole repository at `30b5d8f`, read-only, under the same rules. The coordinator reproduced every finding before deciding on it. Each round's repairs were committed after a full passing run: `2e3bd99`, `3ff74d4`, and the commit that carries this section.
+
+**Outcome: stopped at the three-round limit, not by agreement.** Round 3 reported three P3 findings, all accepted and repaired after the reviewer's last report. Those repairs, and a regression the existing suite caught while making them, have had no independent re-review.
+
+## Round 1: 14 findings, all accepted
+
+| ID | Sev | Finding | Repair |
+|---|---|---|---|
+| D-01 | P3 | With no identity facts, the pack label came from the first fact's host, so a price on alpha.example showed as reviews.example. | The fallback needs at least one identity fact; otherwise the price's own host labels it. |
+| D-02 | P2 | Two page titles on one host named two products; a third, untitled page's price took the first product's name. | The fallback needs exactly one distinct product and company on the price's host. Identity headings join several products instead of picking the first. |
+| D-03 | P2 | `$29/month`, `/mo`, `/year` and ` / month` lost their billing period and dropped to medium confidence. Pre-existing. | The slash form no longer needs a word boundary. |
+| D-04 | P3 | A fence closer indented four or more spaces ended a column-0 fence. | A closer counts only within three columns of its container. |
+| D-05 | P3 | A list followed by a heading, or a `* * *` break, left list state on, so real indented code counted as visible. | Headings and breaks end lists; a break is not a list marker. |
+| D-06 | P3 | A line starting with ```` ``` ```` in prose, an inline span, silently dropped all later citation warnings. | The citation splitter trusts already-visible text. |
+| D-07 | P3 | Two hidden-content test halves passed whether or not the feature existed. A visible requirements heading indented one to three spaces caused a false NOT READY. | Tests assert on the scanner directly. The readiness heading allows up to three spaces. |
+| D-08 | P3 | The packaged doc's escape for an arrow had been written as a literal arrow by the coordinator's edit tool, so following it produced invalid JSON. | Correct escape, and a test that follows the doc's own text. |
+| D-09 | P3 | A fenced example of the envelope made a correct artifact invalid, under a misleading "invalid JSON" message. | Markers inside code are ignored; the message says the block is unusable. |
+| D-10 | P3 | The handoff was stale at `30b5d8f`. | Refreshed below and in `SESSION_HANDOFF.md`. |
+| D-11 | P3 | "Raise the price of the Pro plan", "increase our prices" and "build or buy" missed decision routing. | Wider verb and build-or-buy patterns. |
+| D-12 | Improvement | Pricing and facts output, which artifacts cite, used em dashes. | Hyphens, colons and full stops. |
+| D-13 | P3, policy | Public code, tests and a packaged doc described internal, unreleased tooling. | Reworded to describe Rigor Mode as not included. Historical audit and review records were left as written. Git history still contains the old wording; removing it would need a history rewrite and force push. |
+| D-14 | Improvement | The validator CLI took a flag's value as the file path. | Values of known flags are skipped. |
+
+## Round 2: 4 findings, all accepted
+
+The reviewer answered two coordinator questions. User-facing decision explanations fall under the em-dash rule; batch progress lines and telemetry placeholders are developer tooling and do not. The fence-base approximation has no reachable effect on closers.
+
+| ID | Sev | Finding | Repair |
+|---|---|---|---|
+| E-01 | P2 | Regression from D-09. The envelope mask used its own fence rules, so some code examples before the envelope hid it. With default flags, a contradicting artifact then passed with exit 0. | One shared scanner, `scripts/markdown-scan.mjs` (packaged), classifies lines for both the validator and the extractor. An envelope found only inside code now produces a warning. |
+| E-02 | P3 | Regression from D-05. A heading or break nested in a list item hid the item's text. | Only a column-0 heading or break ends a list. |
+| E-03 | P3 | Regression from D-11. "Change the pricing page headline" and similar questions routed as price decisions. | Page, copy and announcement words are excluded; the noun form needs a decision verb. |
+| E-04 | Improvement | Seven decision explanations shown to users used em dashes, two with the "not just X" construction. | Rewritten; a source test guards it. |
+
+## Round 3: 3 findings, all accepted, repaired without re-review
+
+| ID | Sev | Finding | Repair |
+|---|---|---|---|
+| F-01 | P3 | CRLF input defeated the D-05 thematic-break rule. | The scanner classifies each line without its trailing carriage return. |
+| F-02 | P3 | An inline-code mention of the envelope marker made a correct artifact invalid. Pre-existing. | A marker counts only at line start or directly after another comment's closer. The contract doc now says the envelope starts its own line. |
+| F-03 | P3 | "Raise the Pro plan price", "raise Pro prices" and similar phrasings missed decision routing. | Up to three modifiers may precede the noun. |
+
+The first F-02 repair accepted markers only at line start. The existing contract test for duplicate envelopes then failed, because `--><!-- shipwright:artifact` on one line went uncounted. Markdown treats text after a comment's closer as HTML, so the rule now also accepts a marker directly after `-->`. While widening F-03, the coordinator found two new false positives, "change who owns pricing" and "reduce time spent on pricing", and excluded connective and effort words from the modifier slot. Both are covered by tests.
+
+## Regression coverage, second review
+
+Every accepted code repair has a test that fails when the repair is reverted. The coordinator ran 22 ablations across the three rounds. Two scripted ablations were mangled by shell quoting at first and were redone from script files until the target test failed. Each commit was preceded by a full run with the TAP reporter enabled.
+
+## Current verification
+
+| Check | Result |
+|---|---|
+| Full suite | 522 passed, 0 failed, 0 skipped, 0 cancelled |
+| Repository validation | 0 errors; 46 skills, 7 agents, 17 workflows |
+| `git diff --check` | clean |
+| Benchmark results and telemetry | 4,113 files, identical hashes, none added |
+| System temp folder | no entries added by the full run |
+| Fresh plugin bundle (reviewer, round 3 at `3ff74d4`) | 122 files; `markdown-scan.mjs` resolves; bundled validator exits 0 on the fixture |
+
+The unexplained suite abort from the first review did not recur in any later full run. The reviewer ran that file six times in isolation without failure and found no mechanism in it.
+
+## Current limits
+
+- Round-3 repairs (F-01, F-02, F-03) and the two follow-on corrections were verified by the coordinator only.
+- Metric citation text containing numbers is treated as citation, not measurement (A-05).
+- A structured envelope whose JSON contains `-->` ends early; the packaged doc tells producers how to escape it.
+- A code-span `<!--` whose `-->` falls in the same paragraph hides that paragraph's remaining text.
+- Routing is keyword-based. It covers the listed decision phrasings and the tested negatives, not every paraphrase.
+- Developer tooling output (batch progress lines, telemetry placeholders) still uses em dashes.
+- Deterministic tests do not establish live Claude or Codex host behavior; that acceptance pass is still separate.
+- `dist/shipwright`, a local gitignored build, is stale; rebuild before any directory submission.

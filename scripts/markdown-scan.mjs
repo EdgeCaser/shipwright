@@ -26,13 +26,15 @@ export function scanMarkdownLines(text) {
   let inList = false;
   let previousBlank = true;
   let previousHeading = false;
-  const scan = line => {
+  const scan = raw => {
+    // Classify without a trailing carriage return, so CRLF input reads like LF.
+    const line = raw.replace(/\r$/, '');
     const blank = !line.trim();
     if (comment) {
       const end = line.indexOf('-->');
       if (end < 0) return { kind: 'comment', visible: '' };
       comment = false;
-      return { kind: 'comment', visible: line.slice(end + 3) };
+      return { kind: 'comment', visible: raw.slice(end + 3) };
     }
     if (fence) {
       const marker = line.match(/^([ \t]*)(\x60{3,}|~{3,})(.*)$/);
@@ -65,7 +67,7 @@ export function scanMarkdownLines(text) {
       comment = true;
       return { kind: 'comment', visible: '' };
     }
-    return { kind: 'visible', visible: line };
+    return { kind: 'visible', visible: raw };
   };
   return text.split('\n').map(line => {
     const entry = scan(line);

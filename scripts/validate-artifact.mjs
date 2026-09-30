@@ -131,7 +131,7 @@ export function validateArtifact(text, options = {}) {
   // An envelope that sits only inside a code example is documentation, but if it
   // was meant to be the artifact's contract, skipping every check silently is worse.
   if (!extracted.artifact && !extracted.error && !expectStructured && !artifactType) {
-    const inCode = text.split('\n').findIndex(line => /<!--\s*shipwright:artifact\b/.test(line));
+    const inCode = text.split('\n').findIndex(line => /^ {0,3}<!--\s*shipwright:artifact\b/.test(line));
     if (inCode >= 0) {
       issues.push({
         type: IssueType.MISSING_STRUCTURED_ARTIFACT,

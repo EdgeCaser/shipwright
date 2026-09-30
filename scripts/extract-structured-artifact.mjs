@@ -6,7 +6,11 @@ import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { scanMarkdownLines } from './markdown-scan.mjs';
 
-const ARTIFACT_COMMENT_RE = /<!--\s*shipwright:artifact\s*([\s\S]*?)-->/g;
+// An envelope starts its own line or directly follows another comment's closer,
+// which is still HTML. An inline mention in prose (for example in a code span)
+// is not an envelope.
+const ENVELOPE_START = String.raw`(?<=^[ \t]{0,3}|-->[ \t]*)<!--\s*shipwright:artifact`;
+const ARTIFACT_COMMENT_RE = new RegExp(`${ENVELOPE_START}\\s*([\\s\\S]*?)-->`, 'gm');
 
 const SCHEMA_FILE_BY_TYPE = Object.freeze({
   prd: 'prd.schema.json',
@@ -38,7 +42,7 @@ export function extractStructuredArtifact(text) {
   // A documented example of the envelope inside a code fence is not an envelope.
   const searchable = maskFencedCode(text);
   const matches = [...searchable.matchAll(ARTIFACT_COMMENT_RE)];
-  const markers = [...searchable.matchAll(/<!--\s*shipwright:artifact\b/g)];
+  const markers = [...searchable.matchAll(new RegExp(`${ENVELOPE_START}\\b`, 'gm'))];
   if (markers.length !== matches.length || matches.length > 1) {
     return { artifact: null, raw: null, startLine: 1,
       error: 'Expected exactly one complete shipwright:artifact block.' };

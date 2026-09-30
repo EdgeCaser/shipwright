@@ -553,6 +553,23 @@ test('a heading or break inside a list item keeps the item text visible', () => 
   }
 });
 
+test('CRLF line endings do not change how breaks and lists are read', () => {
+  const lf = '- item\n\n* * *\n\n    Owner: hidden example\n\nAfter.\n';
+  for (const text of [lf, lf.replace(/\n/g, '\r\n')]) {
+    const scanned = visibleMarkdown(text);
+    assert.doesNotMatch(scanned, /hidden example/, JSON.stringify(text.slice(0, 12)));
+    assert.match(scanned, /After\./);
+  }
+});
+
+test('an inline mention of the envelope marker is prose, not an envelope', () => {
+  const mention = 'Consumers parse the `<!-- shipwright:artifact` block at the end.';
+  assert.equal(validateArtifact(fixture.replace('\n', `\n\n${mention}\n`)).valid, true);
+  const prose = validateArtifact(`# Notes\n\n${mention}\n`);
+  assert.equal(prose.valid, true);
+  assert.ok(!prose.issues.some(issue => issue.type === IssueType.MISSING_STRUCTURED_ARTIFACT));
+});
+
 test('user-facing decision explanations contain no em dash', () => {
   const source = readFileSync(path.resolve('scripts/orchestrate.mjs'), 'utf8');
   const code = source.split('\n').filter(line => !/^\s*(?:\/\/|\*|\/\*)/.test(line));

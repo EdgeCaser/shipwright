@@ -125,3 +125,14 @@ test('pricing page, copy and announcement questions are not price decisions', ()
   }
   assert.equal(routeRequest('Should we approve the price increase?').decisionClass, 'pricing');
 });
+
+test('price decisions may name the plan or price before the noun', () => {
+  for (const question of ['Should we raise the Pro plan price?', 'Should we raise Pro prices?',
+    'Should we increase our subscription price?', 'Should we raise the monthly price to $12?',
+    'Should we lower the entry price?']) {
+    assert.equal(routeRequest(question).decisionClass, 'pricing', question);
+  }
+  for (const question of ['Should we change who owns pricing?', 'Should we reduce time spent on pricing?']) {
+    assert.notEqual(routeRequest(question).topRoute?.route, 'decision-analysis', question);
+  }
+});

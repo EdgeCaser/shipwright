@@ -1,6 +1,6 @@
 # Structured artifact handoffs
 
-Markdown is the human-readable artifact. When an automated consumer explicitly requests structured output, append exactly one HTML comment containing a JSON object:
+Markdown is the human-readable artifact. When an automated consumer explicitly requests structured output, append exactly one HTML comment containing a JSON object. The comment must start its own line:
 
 ```text
 <!-- shipwright:artifact
