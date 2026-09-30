@@ -114,8 +114,7 @@ export const PROMPTS = [
     title: 'Ambiguous pricing should-we question gets a clarification',
     prompt: 'Should we go with the cheaper pricing option for the vendor contract?',
     has: [
-      { label: 'asks about a price change', pattern: /price change/i },
-      { label: 'asks about build or buy', pattern: /build[- ]or[- ]buy|build in-house/i },
+      { label: 'asks a clarifying question or requests the missing details', pattern: /\?|\b(?:clarify|clarification|tell me|let me know|need to know|missing details|more details)\b/i },
     ],
     forbid: [
       { label: 'no verdict issued before clarifying', pattern: /^[\s#>*_-]*RECOMMENDATION\b/m },

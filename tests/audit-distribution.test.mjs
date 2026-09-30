@@ -77,7 +77,7 @@ test('the Node installer preflights conflicts and applies a disposable update wi
   await writeFile(guide, `${await readFile(guide, 'utf8')}\nDisposable update marker one.\n`);
   await execFileAsync(process.execPath, [installer, project, '--apply']);
   assert.match(await readFile(path.join(project, '.claude', 'README.md'), 'utf8'), /Disposable update marker one/);
-  assert.equal(await readFile(path.join(project, 'AGENTS.md'), 'utf8'), 'Project-owned instructions');
+  assert.ok((await readFile(path.join(project, 'AGENTS.md'), 'utf8')).startsWith('Project-owned instructions\n\n<!-- shipwright:begin -->'));
 
   const localReadme = path.join(project, '.codex', 'README.md');
   await writeFile(localReadme, 'Project customization');

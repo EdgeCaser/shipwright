@@ -98,7 +98,7 @@ const GOOD = {
   'governance-decision': `Scenario class: governance.\n${DECISION}\n${CLOSING}\nThis class benefits from a stress-test. Want me to argue the opposing position?`,
   'pricing-decision': `Scenario class: pricing.\n${DECISION}\n${CLOSING}`,
   'build-vs-buy-decision': `Scenario class: product_strategy.\n${DECISION}\n${CLOSING}`,
-  'ambiguous-pricing-decision': 'Tell me whether this is a price change or a build-or-buy choice. That detail lets me classify the decision.',
+  'ambiguous-pricing-decision': 'Which decision is this: a contract price change, or a choice between vendors? Tell me the contract term and the alternatives so I can classify the decision.',
   'coding-question': 'Here is a debounce:\n```js\nfunction debounce(fn, ms) { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; }\n```\nclearTimeout cancels the pending call so only the last one fires.',
   'structured-prd-artifact': prdTranscript(),
 };
@@ -178,7 +178,9 @@ test('--check fails for a missing transcript and an unreadable directory', async
 test('grading catches behavior failures and validator failures', () => {
   const byId = id => PROMPTS.find(entry => entry.id === id);
   assert.match(gradeTranscript(byId('governance-decision'), GOOD['governance-decision'].replace('stress-test', 'review')).failures.join(), /stress-test offer/);
-  assert.match(gradeTranscript(byId('ambiguous-pricing-decision'), `RECOMMENDATION\nGo.\nprice change build-or-buy`).failures.join(), /no verdict issued/);
+  assert.match(gradeTranscript(byId('ambiguous-pricing-decision'), `RECOMMENDATION\nGo.\nWhich option?`).failures.join(), /no verdict issued/);
+  assert.match(gradeTranscript(byId('ambiguous-pricing-decision'), 'Take the cheaper option.').failures.join(), /clarifying question/);
+  assert.equal(gradeTranscript(byId('ambiguous-pricing-decision'), GOOD['ambiguous-pricing-decision']).pass, true);
   assert.match(gradeTranscript(byId('coding-question'), GOOD['coding-question'] + '\n## Decision Frame').failures.join(), /Decision Frame/);
   const broken = GOOD['structured-prd-artifact'].replace('"schema_version": "2.0.0"', ',, "schema_version": "2.0.0"');
   assert.match(gradeTranscript(byId('structured-prd-artifact'), broken).failures.join(), /validator failed/);

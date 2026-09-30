@@ -178,12 +178,51 @@ test('installer preserves root instructions and local additions, and blocks conf
   await writeFile(path.join(dir, '.codex/skills/local/SKILL.md'), 'Local skill');
   await installShipwright(dir, { apply: true });
   assert.equal((await installShipwright(dir)).changes.length, 0);
-  assert.equal(await readFile(path.join(dir, 'AGENTS.md'), 'utf8'), 'Existing project instructions');
+  assert.ok((await readFile(path.join(dir, 'AGENTS.md'), 'utf8')).startsWith('Existing project instructions'));
   assert.equal(await readFile(path.join(dir, '.codex/skills/local/SKILL.md'), 'utf8'), 'Local skill');
   const owned = path.join(dir, '.codex/docs/output-standard.md');
   await writeFile(owned, 'User customizations');
   await assert.rejects(installShipwright(dir, { apply: true }), /no files changed/);
   assert.equal(await readFile(owned, 'utf8'), 'User customizations');
+});
+test('installer writes a managed instruction block into AGENTS.md and CLAUDE.md', async t => {
+  const dir = await temporary(t);
+  const preview = await installShipwright(dir);
+  assert.ok(preview.changes.includes('AGENTS.md') && preview.changes.includes('CLAUDE.md'));
+  await assert.rejects(readFile(path.join(dir, 'AGENTS.md')), { code: 'ENOENT' });
+  await assert.rejects(readFile(path.join(dir, 'CLAUDE.md')), { code: 'ENOENT' });
+  await installShipwright(dir, { apply: true });
+  for (const [file, host] of [['AGENTS.md', '.codex'], ['CLAUDE.md', '.claude']]) {
+    const text = await readFile(path.join(dir, file), 'utf8');
+    assert.ok(text.startsWith('<!-- shipwright:begin -->') && text.trimEnd().endsWith('<!-- shipwright:end -->'));
+    for (const label of ['RECOMMENDATION', 'CONFIDENCE', 'NEEDS_HUMAN_REVIEW', 'SUMMARY', 'KEY_REASONING', 'stress-test',
+      'Decision Frame', 'Unknowns & Evidence Gaps', 'Pass/Fail Readiness', 'Recommended Next Artifact']) assert.ok(text.includes(label), label);
+    assert.ok(text.includes(host + '/skills/pricing-strategy/SKILL.md'));
+    assert.doesNotMatch(text, /\{\{|\u2014/);
+  }
+  assert.equal((await installShipwright(dir)).changes.length, 0);
+});
+test('managed block keeps user content byte-for-byte and is replaced in place on re-install', async t => {
+  const dir = await temporary(t);
+  const before = 'Top notes\r\n\r\nKeep me  \n';
+  const after = '\nTrailing user text without newline';
+  await writeFile(path.join(dir, 'CLAUDE.md'), before);
+  await installShipwright(dir, { apply: true });
+  const first = await readFile(path.join(dir, 'CLAUDE.md'), 'utf8');
+  assert.ok(first.startsWith(before));
+  const stale = first.replace('Decision analysis routing', 'STALE HEADING') + after;
+  await writeFile(path.join(dir, 'CLAUDE.md'), stale);
+  await installShipwright(dir, { apply: true });
+  const second = await readFile(path.join(dir, 'CLAUDE.md'), 'utf8');
+  assert.equal(second, first + after);
+  assert.equal(second.split('<!-- shipwright:begin -->').length, 2);
+  assert.ok(!second.includes('STALE HEADING'));
+});
+test('malformed block markers stop the install before anything is written', async t => {
+  const dir = await temporary(t);
+  await writeFile(path.join(dir, 'AGENTS.md'), 'x\n<!-- shipwright:begin -->\nno end');
+  await assert.rejects(installShipwright(dir, { apply: true }), /Malformed Shipwright block/);
+  await assert.rejects(readFile(path.join(dir, '.shipwright-install.json')), { code: 'ENOENT' });
 });
 test('installer refuses to claim pre-existing unowned files', async t => {
   const dir = await temporary(t);

@@ -19,6 +19,28 @@ async function rejectLinks(root, relative) {
   }
 }
 
+export const BLOCK_BEGIN = '<!-- shipwright:begin -->';
+export const BLOCK_END = '<!-- shipwright:end -->';
+// Host instruction files that carry the managed block, with the host directory each one points at.
+const HOST_BLOCKS = [['AGENTS.md', '.codex'], ['CLAUDE.md', '.claude']];
+
+export function managedBlock(template, hostDir) {
+  const body = template.toString('utf8').replace(/\r\n/g, '\n').replace(/\{\{HOST_DIR\}\}/g, hostDir).trim();
+  return [BLOCK_BEGIN, '<!-- Managed by Shipwright install. Edits inside this block are replaced on the next install. -->', body, BLOCK_END].join('\n');
+}
+
+// Replaces an existing managed block in place, or appends one. Content outside the block is never touched.
+export function applyManagedBlock(existing, block) {
+  if (existing === null || existing === '') return block + '\n';
+  const begin = existing.indexOf(BLOCK_BEGIN);
+  const end = existing.indexOf(BLOCK_END);
+  if (begin === -1 && end === -1) return existing + (existing.endsWith('\n') ? '\n' : '\n\n') + block + '\n';
+  if (begin === -1 || end < begin || existing.indexOf(BLOCK_BEGIN, begin + 1) !== -1) {
+    throw new Error('Malformed Shipwright block markers; fix or remove them and re-run the install.');
+  }
+  return existing.slice(0, begin) + block + existing.slice(end + BLOCK_END.length);
+}
+
 export async function installShipwright(destination, { source = SOURCE_ROOT, apply = false } = {}) {
   const root = await realpath(path.resolve(destination));
   if (root === await realpath(source)) throw new Error('Install into a separate project, not the Shipwright source repository.');
@@ -53,6 +75,17 @@ export async function installShipwright(destination, { source = SOURCE_ROOT, app
     if (!existing || hash(existing) !== desiredHash) changes.push(relative);
     hashes[relative] = desiredHash;
   }
+  const template = files.get('docs/host-instructions.md');
+  if (!template) throw new Error('Package is missing docs/host-instructions.md.');
+  const blockWrites = new Map();
+  for (const [relative, hostDir] of HOST_BLOCKS) {
+    if (ignorePatterns.some(pattern => pattern.test(relative))) { preserved.push(relative); continue; }
+    await rejectLinks(root, relative);
+    const raw = await readOptional(path.join(root, relative));
+    const before = raw === null ? null : raw.toString('utf8');
+    const after = applyManagedBlock(before, managedBlock(template, hostDir));
+    if (after !== before) { changes.push(relative); blockWrites.set(relative, after); }
+  }
   // Retired files are reported, never deleted: local additions and edits remain intact.
   const retired = Object.keys(prior.hashes || {}).filter(relative => !targets.has(relative));
   if (apply && conflicts.length) throw new Error(`Installation conflicts; no files changed. Preserve or relocate these files, or list them in .shipwright-ignore: ${conflicts.join(', ')}`);
@@ -61,7 +94,7 @@ export async function installShipwright(destination, { source = SOURCE_ROOT, app
       await rejectLinks(root, relative);
       const target = path.join(root, relative);
       await mkdir(path.dirname(target), { recursive: true });
-      await writeFile(target, targets.get(relative));
+      await writeFile(target, blockWrites.has(relative) ? blockWrites.get(relative) : targets.get(relative));
     }
     await writeFile(path.join(root, recordName), JSON.stringify({ version: 1, source: path.resolve(source), hashes }, null, 2) + '\n');
   }

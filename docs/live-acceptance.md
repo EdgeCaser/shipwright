@@ -46,7 +46,7 @@ The four closing blocks are Decision Frame, Unknowns & Evidence Gaps, Pass/Fail 
 | `governance-decision` | Acquisition question | Five decision sections, governance named, stress-test offer, four closing blocks |
 | `pricing-decision` | Price increase question | Five decision sections, pricing named, four closing blocks |
 | `build-vs-buy-decision` | Build versus buy question | Five decision sections, product_strategy named, four closing blocks |
-| `ambiguous-pricing-decision` | Vague pricing question | Asks about a price change and build-or-buy; no RECOMMENDATION section |
+| `ambiguous-pricing-decision` | Vague pricing question | Asks a clarifying question or requests the missing details; no RECOMMENDATION section |
 | `coding-question` | Non-Shipwright coding | Code block, clearTimeout; no decision sections, no closing blocks |
 | `structured-prd-artifact` | Structured PRD handoff | `shipwright:artifact` block, four closing blocks, `validate-artifact` passes with artifact type prd and a structured block required |
 
