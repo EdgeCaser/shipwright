@@ -37,6 +37,9 @@
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { visibleMarkdown } from './markdown-scan.mjs';
+
+export { visibleMarkdown };
 
 import {
   extractStructuredArtifact,
@@ -125,6 +128,20 @@ export function validateArtifact(text, options = {}) {
   }
 
   const extracted = extractStructuredArtifact(text);
+  // An envelope that sits only inside a code example is documentation, but if it
+  // was meant to be the artifact's contract, skipping every check silently is worse.
+  if (!extracted.artifact && !extracted.error && !expectStructured && !artifactType) {
+    const inCode = text.split('\n').findIndex(line => /<!--\s*shipwright:artifact\b/.test(line));
+    if (inCode >= 0) {
+      issues.push({
+        type: IssueType.MISSING_STRUCTURED_ARTIFACT,
+        severity: Severity.WARNING,
+        message: 'A shipwright:artifact block appears only inside a code example, so no contract checks ran.',
+        lineNumber: inCode + 1,
+        excerpt: '',
+      });
+    }
+  }
   const shouldCheckStructured =
     expectStructured || Boolean(artifactType) || Boolean(extracted.artifact) || Boolean(extracted.error);
 
@@ -315,78 +332,6 @@ function checkVisibleContract(visible, artifact) {
 
 function normalizeProse(value) {
   return String(value).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
-}
-
-// Ignore hidden comments and fenced examples while preserving source line numbers.
-// One line scan decides block structure, so whichever starts first wins: `<!--`
-// inside a fence is code, and a fence marker inside a comment is hidden.
-// A comment that starts a line opens an HTML block that runs to its closing
-// marker, or to the end of the document when unclosed. An inline comment must
-// close within its paragraph; otherwise `<!--` renders as text (for example in
-// a code span). Fences may be indented or open on a list-item line.
-// Outside a list, a line indented four spaces or a tab after a blank line or a
-// heading opens an indented code block, as Markdown renders it; it runs until a
-// less-indented non-blank line. Inside a list, indentation continues the item.
-function columns(whitespace) {
-  return [...whitespace].reduce((width, character) => (character === '\t' ? width + 4 - (width % 4) : width + 1), 0);
-}
-
-export function visibleMarkdown(text) {
-  let fence = null;
-  let comment = false;
-  let indentedCode = false;
-  let inList = false;
-  let previousBlank = true;
-  let previousHeading = false;
-  const scan = line => {
-    const blank = !line.trim();
-    if (comment) {
-      const end = line.indexOf('-->');
-      if (end < 0) return '';
-      comment = false;
-      return line.slice(end + 3);
-    }
-    if (fence) {
-      // A closer may be indented at most three columns past the fence's container.
-      const marker = line.match(/^([ \t]*)(\x60{3,}|~{3,})(.*)$/);
-      if (marker && columns(marker[1]) <= fence.base + 3 && marker[2][0] === fence.marker[0]
-        && marker[2].length >= fence.marker.length && !marker[3].trim()) fence = null;
-      return '';
-    }
-    const codeIndent = /^(?: {4}|\t)/.test(line);
-    if (indentedCode) {
-      if (blank || codeIndent) return '';
-      indentedCode = false;
-    }
-    const heading = /^ {0,3}#{1,6}(?:[ \t]|$)/.test(line);
-    const thematicBreak = /^ {0,3}([-*_])(?:[ \t]*\1){2,}[ \t]*$/.test(line);
-    if (heading || thematicBreak) inList = false;
-    else if (/^ {0,3}(?:[-*+]|\d{1,9}[.)])(?:[ \t]|$)/.test(line)) inList = true;
-    else if (!blank && !/^[ \t]/.test(line) && previousBlank) inList = false;
-    if (!blank && codeIndent && !inList && (previousBlank || previousHeading)) {
-      indentedCode = true;
-      return '';
-    }
-    const opener = line.match(/^([ \t]*)((?:(?:[-*+]|\d{1,9}[.)])[ \t]+)?)(\x60{3,}|~{3,})(.*)$/);
-    if (opener && (opener[3][0] === '~' || !opener[4].includes('\x60'))) {
-      const column = columns(opener[1] + opener[2]);
-      fence = { marker: opener[3], base: opener[2] || inList ? column : 0 };
-      return '';
-    }
-    // A same-line close is left to the inline pass below.
-    if (/^ {0,3}<!--/.test(line) && !line.slice(line.indexOf('<!--') + 4).includes('-->')) {
-      comment = true;
-      return '';
-    }
-    return line;
-  };
-  const blocks = text.split('\n').map(line => {
-    const visible = scan(line);
-    previousBlank = !line.trim();
-    previousHeading = /^ {0,3}#{1,6}(?:[ \t]|$)/.test(line);
-    return visible;
-  }).join('\n');
-  return blocks.replace(/<!--(?:(?!\r?\n[ \t]*\r?\n)[\s\S])*?-->/g, hidden => hidden.replace(/[^\n]/g, ''));
 }
 
 function substantivelyMatches(visible, structured) {

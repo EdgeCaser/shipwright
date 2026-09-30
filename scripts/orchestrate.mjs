@@ -363,7 +363,7 @@ function routePreRun({ scenarioClass, pa, input }) {
     requires_user_confirmation: false,
     recommended_provider_roles: suggestProviderRoles(pa, 'single'),
     explanation: scenarioClass.provisional
-      ? `Starting with a single analysis. Note: ${scenarioClass.label} policy is provisional — defaults have not been calibrated beyond governance.`
+      ? `Starting with a single analysis. Note: ${scenarioClass.label} policy is provisional. Its defaults are calibrated only for governance.`
       : 'Starting with a single analysis.',
     follow_up_action: 'Run single analysis',
   });
@@ -477,7 +477,7 @@ function routePostDouble({ scenarioClass, confidence, pa, needsReview, panelAgre
       requires_user_confirmation: true,
       recommended_provider_roles: suggestProviderRoles(pa, 'judge'),
       explanation: needsReview
-        ? 'The panel converged but flagged human review (single-family). A third-family judge should confirm the flag before routing to human — a single-family review flag is not sufficient to escalate.'
+        ? 'The panel converged but flagged human review, and the flag is single-family. A third-family judge should confirm it before it goes to a human, because a single-family flag is not enough to escalate.'
         : 'The panel converged on direction but at least one model returned low confidence. A judge can evaluate whether the agreement is substantive.',
       follow_up_action: pa.can_run_third_family_judge ? 'Escalate to a judge' : null,
     });
@@ -514,7 +514,7 @@ function routePostDouble({ scenarioClass, confidence, pa, needsReview, panelAgre
       ux_substate: UX_SUBSTATES.LIMITED_PROVIDER_AVAILABILITY,
       recommended_next_mode: null,
       requires_user_confirmation: false,
-      explanation: 'The panel disagreed and no third judge family is available. This is not just low confidence — the system found no stable direction with the providers currently available. Treat as unresolved and route to evidence gathering or human review.',
+      explanation: 'The panel disagreed and no third judge family is available. The available providers found no stable direction. Treat the question as unresolved and gather evidence or route it to human review.',
       follow_up_action: 'Gather more evidence or add a third provider',
     });
   }
@@ -526,7 +526,7 @@ function routePostDouble({ scenarioClass, confidence, pa, needsReview, panelAgre
       ux_substate: UX_SUBSTATES.DIRECTIONALLY_INCOHERENT,
       recommended_next_mode: null,
       requires_user_confirmation: false,
-      explanation: 'The models did not converge on a stable direction. This is not a close call between two options — it is a sign that the current evidence and framing do not support a reliable adjudication.',
+      explanation: 'The models did not converge on a stable direction. The current evidence and framing do not support a reliable answer.',
       follow_up_action: 'Reframe the question or gather clarifying evidence',
     });
   }
@@ -537,7 +537,7 @@ function routePostDouble({ scenarioClass, confidence, pa, needsReview, panelAgre
     ux_substate: UX_SUBSTATES.NEEDS_MORE_EVIDENCE,
     recommended_next_mode: pa.can_run_third_family_judge ? 'judge' : null,
     requires_user_confirmation: true,
-    explanation: 'Double panel completed. Panel agreement status is unclear — escalating to judge is recommended if a third provider is available.',
+    explanation: 'Double panel completed. Panel agreement is unclear. If a third provider is available, escalate to a judge.',
     follow_up_action: pa.can_run_third_family_judge ? 'Escalate to a judge' : 'Gather more evidence',
   });
 }
@@ -563,7 +563,7 @@ function routePostJudge({ scenarioClass, confidence, pa, needsReview, panelAgree
       ux_substate: UX_SUBSTATES.HUMAN_REVIEW_REQUIRED,
       recommended_next_mode: null,
       requires_user_confirmation: false,
-      explanation: 'Multiple judge families independently flagged this for human review. No further model pass will resolve this — the flag is cross-family confirmed. Route to a human decision-maker.',
+      explanation: 'Multiple judge families independently flagged this for human review, so the flag is cross-family confirmed. Another model pass will not resolve it. Route it to a human decision-maker.',
       follow_up_action: 'Escalate to human review',
     });
   }
@@ -639,7 +639,7 @@ function buildWeaknessReason(confidence, needsReview, hasUncertaintyPayload, cro
   if (needsReview) {
     reasons.push(crossFamilyReviewConfirmed
       ? 'Multiple judge families flagged this for human review.'
-      : 'The model flagged this for human review (single-family — needs confirmation).');
+      : 'The model flagged this for human review. The flag comes from one model family and needs confirmation.');
   }
   if (hasUncertaintyPayload) reasons.push('An uncertainty payload was emitted.');
   return reasons.join(' ');

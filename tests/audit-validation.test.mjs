@@ -510,3 +510,51 @@ test('the validator CLI accepts the path before or after flags with values', () 
     assert.equal(run.status, 0, args.join(' ') + run.stderr + run.stdout);
   }
 });
+
+test('code examples before the envelope never hide it from contract checks', () => {
+  const contradiction = fixture.replace(/^Confidence:.*$/m, 'Confidence: low.');
+  const directory = mkdtempSync(path.join(tmpdir(), 'shipwright-envelope-'));
+  try {
+    for (const [name, example] of [
+      ['comment with a fence marker', '<!-- draft\n```\n-->\n'],
+      ['indented closer inside a fence', '```markdown\n    ```\nstill code\n```\n'],
+      ['indented code line', 'Intro.\n\n    ```\n\nAfter.\n'],
+    ]) {
+      const correct = fixture.replace('\n', '\n\n' + example + '\n');
+      assert.equal(extractStructuredArtifact(correct).artifact?.artifact_type, 'prd', name);
+      assert.equal(validateArtifact(correct, { expectStructured: true }).valid, true, name);
+      // The default CLI must still see the contract and fail a contradiction.
+      const file = path.join(directory, 'artifact.md');
+      writeFileSync(file, contradiction.replace('\n', '\n\n' + example + '\n'));
+      const run = spawnSync(process.execPath, [path.resolve('scripts/validate-artifact.mjs'), file], { encoding: 'utf8' });
+      assert.equal(run.status, 1, name + run.stdout);
+      assert.match(run.stdout, /prose-json-mismatch/, name);
+    }
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
+});
+
+test('an envelope found only inside a code example is reported, not silently skipped', () => {
+  const envelope = fixture.slice(fixture.indexOf('<!-- shipwright:artifact'));
+  const text = `# Notes\n\n\`\`\`markdown\n${envelope}\`\`\`\n`;
+  const result = validateArtifact(text);
+  assert.equal(result.valid, true);
+  assert.ok(result.issues.some(issue => issue.type === IssueType.MISSING_STRUCTURED_ARTIFACT
+    && issue.severity === Severity.WARNING));
+  assert.ok(!validateArtifact(fixture).issues.some(issue => issue.type === IssueType.MISSING_STRUCTURED_ARTIFACT));
+});
+
+test('a heading or break inside a list item keeps the item text visible', () => {
+  for (const nested of ['  ## Detail', '  ***']) {
+    const text = `Intro.\n\n- Findings\n\n${nested}\n\n    ARR was $4M in 2025.\n`;
+    assert.match(visibleMarkdown(text), /ARR was \$4M/, nested);
+    assert.ok(validateArtifact(text).issues.some(issue => issue.type === IssueType.UNSUPPORTED_DOLLAR), nested);
+  }
+});
+
+test('user-facing decision explanations contain no em dash', () => {
+  const source = readFileSync(path.resolve('scripts/orchestrate.mjs'), 'utf8');
+  const code = source.split('\n').filter(line => !/^\s*(?:\/\/|\*|\/\*)/.test(line));
+  assert.deepEqual(code.filter(line => line.includes('—')), []);
+});

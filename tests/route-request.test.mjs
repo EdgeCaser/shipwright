@@ -116,3 +116,12 @@ test('common price-change and build-or-buy questions route to decision analysis'
   }
   assert.notEqual(routeRequest('Recommend packaging for our current prices').topRoute?.route, 'decision-analysis');
 });
+
+test('pricing page, copy and announcement questions are not price decisions', () => {
+  for (const question of ['Should we change the pricing page headline?',
+    'Should we announce the price change by email or in-app?', 'Should we reduce pricing page load time?',
+    'Should we announce the price increase by email?']) {
+    assert.notEqual(routeRequest(question).topRoute?.route, 'decision-analysis', question);
+  }
+  assert.equal(routeRequest('Should we approve the price increase?').decisionClass, 'pricing');
+});

@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs';
 import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { scanMarkdownLines } from './markdown-scan.mjs';
 
 const ARTIFACT_COMMENT_RE = /<!--\s*shipwright:artifact\s*([\s\S]*?)-->/g;
 
@@ -15,22 +16,13 @@ const SCHEMA_FILE_BY_TYPE = Object.freeze({
 
 const schemaCache = new Map();
 
-// Replace fenced code lines with spaces, keeping offsets and line numbers.
-// Pretty-printed envelope JSON never has a line starting with a fence marker.
+// Replace code-example lines with spaces, keeping offsets and line numbers. The
+// validator's own scanner decides what is code, so the two never disagree.
+// Comment lines stay, because the envelope itself is a comment.
 function maskFencedCode(text) {
-  let fence = null;
-  return text.split('\n').map(line => {
-    const marker = line.match(/^[ \t]*(?:(?:[-*+]|\d{1,9}[.)])[ \t]+)?(\x60{3,}|~{3,})(.*)$/);
-    if (fence) {
-      if (marker && marker[1][0] === fence[0] && marker[1].length >= fence.length && !marker[2].trim()) fence = null;
-      return line.replace(/[^\r]/g, ' ');
-    }
-    if (marker && (marker[1][0] === '~' || !marker[2].includes('\x60'))) {
-      fence = marker[1];
-      return line.replace(/[^\r]/g, ' ');
-    }
-    return line;
-  }).join('\n');
+  const lines = text.split('\n');
+  return scanMarkdownLines(text).map(({ kind }, index) => (kind === 'fence' || kind === 'code'
+    ? lines[index].replace(/[^\r]/g, ' ') : lines[index])).join('\n');
 }
 
 export function extractStructuredArtifact(text) {
