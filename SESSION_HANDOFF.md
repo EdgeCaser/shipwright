@@ -17,9 +17,9 @@ The round-3 repairs of the second review (CRLF thematic breaks, inline marker me
 
 Planned work items 1 to 9 are done, in local commits `da2ba01`, `f2e5309`, `1d67c4b`, `2b28af0` and `f59d0c2` (item 7, approved by the user), plus `dist/shipwright` rebuilt at `3ec22c0` (123 files, 48 skills). Live-acceptance follow-ups are `2e719be` (installer writes the behavior rules) and `1793ea6` (no-em-dash rule, `--uninstall`). Details, the third review round (one finding, R1, accepted and fixed) and current limits are in `docs/adversarial-review-2026-09-30.md` under "Planned-work follow-up".
 
-Latest full verification, run before the last commit: 570 tests passed, with none failed, skipped or cancelled. Repository validation reports zero errors (46 skills, seven agents, 17 workflows). `git diff --check` is clean. All 4,113 benchmark output files are unchanged and none were added. The final run added nothing to the system temp folder.
+Latest full verification, run before the last commit: 572 tests passed, with none failed, skipped or cancelled. Repository validation reports zero errors (46 skills, seven agents, 17 workflows). `git diff --check` is clean. All 4,113 benchmark output files are unchanged and none were added. The final run added nothing to the system temp folder.
 
-Nothing is pushed.
+Pushed to `origin/main` on 2026-09-30 (through `5489d02`); CI passes on ubuntu, macos and windows. Before the push, the unpushed commits were rewritten locally to replace internal-tooling wording in four review docs and one commit message; `docs/independent-release-audit.md` was left unchanged at the user's direction and still has two generic mentions. The pre-rewrite history is on local branch `backup/pre-scrub-2026-09-30`. The first push failed macOS CI: every CLI's entry guard silently exited when run through a symlinked path; fixed in `c80236a` and `5489d02`.
 
 User decisions (2026-09-30):
 - `docs/astra-redline-review.md` is approved for the public repo.
