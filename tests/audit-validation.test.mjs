@@ -264,16 +264,20 @@ for (const [name, wrap] of [
   });
 }
 
-test('metric comparison separates numeric values from attached citations', () => {
+test('metric value cells hold only the value and sources live in the Source column', () => {
+  const row = (baseline, source = '(source: audit-2026)') => variant(() => {}, visible => visible
+    .replace('| 42 | 65 | percent | 30 days | (source: support-workflow-audit) |',
+      `| ${baseline} | 65 | percent | 30 days | ${source} |`));
+  for (const cell of ['42', '42.0']) assert.equal(validateArtifact(row(cell)).valid, true, cell);
   for (const cell of ['42 [1]', '42[1]', '42 [audit 2026](https://example.com/reports/2026)',
-    '42 (source: audit-2026)', '[42](https://example.com/reports/2026)']) {
-    const text = variant(() => {}, visible => visible.replace('| 42 | 65 |', `| ${cell} | 65 |`));
-    assert.equal(validateArtifact(text).valid, true, cell);
+    '42 (source: audit-2026)', '[42](https://example.com/reports/2026)', '42 or 142 [1]', '142 [1]']) {
+    const result = validateArtifact(row(cell));
+    assert.equal(result.valid, false, cell);
+    assert.ok(result.issues.some(issue => /move the source to the Source column/.test(issue.message)), cell);
   }
-  for (const cell of ['142 [1]', '42 or 142 [1]', '[142](https://example.com/reports/2026)']) {
-    const text = variant(() => {}, visible => visible.replace('| 42 | 65 |', `| ${cell} | 65 |`));
-    assert.equal(validateArtifact(text).valid, false, cell);
-  }
+  // The A-05 case: citation text that contains numbers is accepted in the Source column.
+  const a05 = validateArtifact(row('42', '[baseline was 142](https://example.com/reports/2026)'));
+  assert.equal(a05.valid, true);
 });
 
 for (const column of ['Source', 'Citation', 'Reference']) {

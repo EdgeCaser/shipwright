@@ -320,8 +320,16 @@ function checkVisibleContract(visible, artifact) {
     if (!metric || typeof metric !== 'object' || Array.isArray(metric)) continue;
     const row = findMetricRow(lines, metric);
     if (!row) { fail(`Visible success metric "${metric.name}" is missing a field-labeled row.`); continue; }
+    if (!row.hasSource) {
+      fail(`Visible success metric "${metric.name}" is in a table with no Source column. Add a Source column and put citations there.`, row.lineNumber);
+    }
     for (const field of ['baseline', 'target', 'unit', 'timeframe', 'segment']) {
       if (metric[field] === undefined) continue;
+      if ((field === 'baseline' || field === 'target') && typeof row.fields[field] === 'string'
+        && row.fields[field].trim() && !isMetricValueOnly(row.fields[field])) {
+        fail(`Visible metric "${metric.name}" ${field} cell holds more than a value ("${row.fields[field].trim()}"). Keep only the value in the cell and move the source to the Source column.`, row.lineNumber);
+        continue;
+      }
       if (!metricValueMatches(row.fields[field], metric[field])) {
         fail(`Visible metric "${metric.name}" ${field} disagrees with JSON.`, row.lineNumber);
       }
@@ -344,12 +352,25 @@ function substantivelyMatches(visible, structured) {
   return shared >= 1 && shared / Math.min(a.size, b.size) >= 0.35;
 }
 
+// A metric value cell holds a value and nothing else: a number with optional
+// currency, comparator, percent or magnitude suffix, range and short unit, or an
+// explicit placeholder. Sources belong in the Source column.
+const METRIC_NUMBER = String.raw`[$\u20ac\u00a3]?\d[\d,]*(?:\.\d+)?(?:%|[kKmMbB]\b|x\b)?`;
+const METRIC_NOT_CITE = String.raw`(?!(?:per|source|via|from|see|ref|according|cited|est)\b)`;
+const METRIC_UNIT = String.raw`(?:\s+` + METRIC_NOT_CITE + String.raw`[A-Za-z][A-Za-z/%.]*(?:\s+` + METRIC_NOT_CITE + String.raw`[A-Za-z][A-Za-z/]*)?)?`;
+const METRIC_VALUE_RE = new RegExp(
+  String.raw`^(?:<=|>=|<|>|\u2264|\u2265|~|\u2248|\u00b1|\+|-|(?:under|over|about|approx\.?|at least|at most)\s+)?`
+  + METRIC_NUMBER + String.raw`(?:\s*(?:-|\u2013|to)\s*` + METRIC_NUMBER + ')?' + METRIC_UNIT + '$', 'iu');
+const METRIC_PLACEHOLDER_RE = /^(?:TBD|unknown|unmeasured|not measured|not tracked|\[(?:TBD|requires:)[^\][]*\])$/i;
+
+function isMetricValueOnly(text) {
+  const cell = String(text).trim();
+  return METRIC_PLACEHOLDER_RE.test(cell) || METRIC_VALUE_RE.test(cell);
+}
+
 function metricValueMatches(text, value) {
   if (typeof text !== 'string' || !text.trim()) return false;
-  // Remove attached citations, retaining the displayed value of a linked metric.
-  text = text.replace(/\s+(?:\[[^\]]+\]\(https?:\/\/[^)]+\)|\((?:source|via|from|see|ref)\s*:[^)]*\))(?=\s|$)/gi, '')
-    .replace(/\[\d+\](?!\()/g, '')
-    .replace(/\[([^\]]+)\]\(https?:\/\/[^)]+\)/gi, '$1').trim();
+  text = text.trim();
   if (isPlaceholder(value)) return /\b(?:TBD|unknown|unmeasured|not measured|not tracked)\b/i.test(text);
   if (/\b(?:TBD|unknown|unmeasured|not measured|not tracked)\b/i.test(text)) return false;
   const numericValue = typeof value === 'number' ? value
@@ -383,7 +404,9 @@ function findMetricRow(lines, metric) {
         const column = aliases.map(alias => columns[alias]).find(value => value !== undefined);
         return column === undefined ? undefined : cells[column];
       };
-      return { lineNumber: row + 1, fields: {
+      return { lineNumber: row + 1,
+        hasSource: headers.some(header => /^(?:source|sources|citation|citations|reference|references)$/.test(header)),
+        fields: {
         baseline: columnValue('baseline', 'current'),
         target: columnValue('target'),
         unit: columnValue('unit'),

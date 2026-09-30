@@ -624,6 +624,55 @@ test('validateArtifact errors when required evidence linkage is missing', { conc
   assert.ok(issues.some((issue) => issue.type === IssueType.MISSING_EVIDENCE));
 });
 
+function metricTableIssues(mutate) {
+  const artifact = createValidPrdArtifact();
+  const text = mutate(buildStructuredMarkdown(artifact));
+  return validateArtifact(text, { expectStructured: true, artifactType: 'prd' }).issues
+    .filter(issue => issue.type === IssueType.PROSE_JSON_MISMATCH);
+}
+
+test('validateArtifact accepts value-only metric cells with a Source column', { concurrency: false }, () => {
+  assert.deepEqual(metricTableIssues(text => text), []);
+  for (const cell of ['12', '12%', '$12', '<12', '>=12', '10-14', '10 to 14', '1.2M', '12 hours']) {
+    const issues = metricTableIssues(text => text.replace('| 12 | 20 |', `| ${cell} | 20 |`));
+    assert.ok(!issues.some(issue => /more than a value/.test(issue.message)), cell);
+  }
+});
+
+test('validateArtifact rejects citation text in a metric value cell', { concurrency: false }, () => {
+  for (const cell of ['12% (Gartner 2025)', '12 (source: Gartner 2025)', '12 [1]', '12 per Gartner 2025',
+    '12 https://example.com/report', '[12](https://example.com/report)']) {
+    const issues = metricTableIssues(text => text.replace('| 12 | 20 |', `| ${cell} | 20 |`));
+    const hit = issues.find(issue => /baseline cell holds more than a value/.test(issue.message));
+    assert.ok(hit, cell);
+    assert.match(hit.message, /Activation Rate/);
+    assert.match(hit.message, /move the source to the Source column/);
+  }
+  const target = metricTableIssues(text => text.replace('| 12 | 20 |', '| 12 | 20 (Gartner 2025) |'));
+  assert.ok(target.some(issue => /target cell holds more than a value/.test(issue.message)));
+});
+
+test('validateArtifact requires a Source column on the metric table', { concurrency: false }, () => {
+  const issues = metricTableIssues(text => text
+    .replace('| Timeframe | Source |', '| Timeframe |')
+    .replace('|---|---|---|---|---|---|---|', '|---|---|---|---|---|---|')
+    .replace(' | (source: customer-interviews) |', ' |'));
+  assert.ok(issues.some(issue => /no Source column/.test(issue.message)));
+});
+
+test('validateArtifact allows explicit placeholders in metric value cells', { concurrency: false }, () => {
+  const artifact = createValidPrdArtifact();
+  artifact.payload.success_metrics[0].baseline = 'TBD';
+  const text = buildStructuredMarkdown(artifact);
+  const issues = validateArtifact(text, { expectStructured: true, artifactType: 'prd' }).issues
+    .filter(issue => issue.type === IssueType.PROSE_JSON_MISMATCH);
+  assert.deepEqual(issues, []);
+  artifact.payload.success_metrics[0].baseline = '[TBD, requires: analytics export]';
+  const bracketed = validateArtifact(buildStructuredMarkdown(artifact), { expectStructured: true, artifactType: 'prd' }).issues
+    .filter(issue => issue.type === IssueType.PROSE_JSON_MISMATCH);
+  assert.deepEqual(bracketed, []);
+});
+
 test('validateArtifact warns on metric contradiction against related artifact', { concurrency: false }, () => {
   const artifact = createValidPrdArtifact();
   const related = createRelatedStrategyArtifact();

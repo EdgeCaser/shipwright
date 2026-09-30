@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Changed
+
+- **Breaking contract change, PRD metric tables**: the visible metric table needs a Source column (Source, Citation or Reference), and the Baseline/Current and Target cells hold only the value (a number with optional unit, percent, currency, comparator or range, or an explicit placeholder such as TBD). Citations, links and "(source: ...)" notes in a value cell now fail validation with a message to move the source to the Source column. The old rule that stripped attached citations before comparing numbers is removed, which closes known limit A-05 (citation text containing numbers was treated as citation, not measurement). Existing PRDs with sources inside value cells must be revised. Updated prd-development, docs/structured-artifacts.md, the golden PRD example and the PRD eval example.
+
 ## v2.3.0 - 2026-09-29
 
 ### Changed
