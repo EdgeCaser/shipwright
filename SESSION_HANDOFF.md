@@ -15,9 +15,9 @@ The round-3 repairs of the second review (CRLF thematic breaks, inline marker me
 
 ## Next
 
-Planned work items 1 to 9 are done, in local commits `da2ba01`, `f2e5309`, `1d67c4b`, `2b28af0` and `f59d0c2` (item 7, approved by the user), plus `dist/shipwright` rebuilt at `1793ea6` (123 files, 48 skills). Live-acceptance follow-ups are `2e719be` (installer writes the behavior rules) and `1793ea6` (no-em-dash rule, `--uninstall`). Details, the third review round (one finding, R1, accepted and fixed) and current limits are in `docs/adversarial-review-2026-09-30.md` under "Planned-work follow-up".
+Planned work items 1 to 9 are done, in local commits `da2ba01`, `f2e5309`, `1d67c4b`, `2b28af0` and `f59d0c2` (item 7, approved by the user), plus `dist/shipwright` rebuilt at `3ec22c0` (123 files, 48 skills). Live-acceptance follow-ups are `2e719be` (installer writes the behavior rules) and `1793ea6` (no-em-dash rule, `--uninstall`). Details, the third review round (one finding, R1, accepted and fixed) and current limits are in `docs/adversarial-review-2026-09-30.md` under "Planned-work follow-up".
 
-Latest full verification, run before the last commit: 569 tests passed, with none failed, skipped or cancelled. Repository validation reports zero errors (46 skills, seven agents, 17 workflows). `git diff --check` is clean. All 4,113 benchmark output files are unchanged and none were added. The final run added nothing to the system temp folder.
+Latest full verification, run before the last commit: 570 tests passed, with none failed, skipped or cancelled. Repository validation reports zero errors (46 skills, seven agents, 17 workflows). `git diff --check` is clean. All 4,113 benchmark output files are unchanged and none were added. The final run added nothing to the system temp folder.
 
 Nothing is pushed.
 
@@ -39,11 +39,14 @@ Second live run, after `2e719be` (installer writes the behavior rules into a mar
 
 Third Codex run, after `1793ea6` (no-em-dash rule in the installed block, plus `install.mjs --uninstall`): 10 of 10. Uninstall preview and apply on that disposable install removed every installed file and the managed block, kept nothing, refused nothing, and left `.git` and the `.shipwright/research` evidence packs that the Codex sessions wrote by running the research collector.
 
+Block trim and re-runs. The installed block went from 638 to 284 words (`3345b60`); a test holds it under 350. Run 4 on the trimmed block: Codex 10 of 10, Claude 7 of 10 (two decision answers without closing blocks, one verdict on an unclear question). The trim had cut the line that applies closing blocks to decisions, and the old block had quoted the vendor-pricing acceptance prompt word for word as its clarification example, so the earlier Claude 10 of 10 on that check was partly taught to the test. `3ec22c0` restored both rules in general wording (308 words). Run 5: Claude 10 of 10, Codex 9 of 10 (one em dash in one transcript; runs 3 and 4 had none, so one run per version cannot separate this from noise). Claude runs 4 and 5 used `--setting-sources project,local`; whether that excludes the maintainer's global CLAUDE.md was never confirmed.
+
 ## Remaining
 
-1. Optionally re-run the Claude host after `1793ea6` and with a neutral global configuration; both Claude runs loaded the maintainer's global voice rules, and the second passed 10 of 10 before the em dash rule existed.
-2. The installed block is about 620 words and loads in every session in an installed project. Trimming it is possible, but re-run live acceptance after any trim.
-3. Rebuild `dist/shipwright` again if anything packaged changes after `1793ea6`.
+1. Confirm whether `claude -p --setting-sources project,local` excludes the user-level CLAUDE.md (a one-line probe from the install dir).
+2. Acceptance runs once per version; a rate claim (for example em dash slips) needs several runs per host.
+3. The acceptance prompts are fixed and known; keep host-instruction wording free of them so passes stay meaningful.
+4. Rebuild `dist/shipwright` again if anything packaged changes after `3ec22c0`.
 
 ## Working rules learned
 

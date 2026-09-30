@@ -173,12 +173,12 @@ The reviewer did not re-check the ablations; the coordinator's record above cove
 
 | Check | Result |
 |---|---|
-| Full suite | 569 passed, 0 failed, 0 skipped, 0 cancelled |
+| Full suite | 570 passed, 0 failed, 0 skipped, 0 cancelled |
 | Repository validation | 0 errors; 46 skills, 7 agents, 17 workflows |
 | `git diff --check` | clean |
 | Benchmark results and telemetry | 4,113 files, identical hashes, none added |
 | System temp folder | no entries added by the batch D and final runs; batch B and C runs coincided with empty GUID-named `.tmp` files that also appear between runs and match no code in the repo |
-| Plugin bundle `dist/shipwright` | rebuilt at `1793ea6`: 123 files, 48 skills |
+| Plugin bundle `dist/shipwright` | rebuilt at `3ec22c0`: 123 files, 48 skills |
 
 The unexplained suite abort from the first review did not recur. The documented suite command now writes a TAP file, so a recurrence leaves a record of the last test that started.
 
@@ -187,7 +187,7 @@ The unexplained suite abort from the first review did not recur. The documented 
 - Round-3 repairs (F-01, F-02, F-03) of the second review and the two follow-on corrections were verified by the coordinator only.
 - A-05 is closed by item 7 (`f59d0c2`, approved breaking change): PRD metric tables need a Source column and value cells hold only a value or placeholder. A citation-like word after a number ("40 Gartner") still passes as a unit; "40% per Gartner" is rejected.
 - Routing is keyword-based. The corpus covers 51 phrasings, not every paraphrase. The clarification fallback is literal: "Should we update the pricing page?" also gets the hint.
-- Live acceptance, first run: Claude 4 of 10, Codex 0 of 10; installed projects did not receive the behavior rules. After `2e719be` fixed that: Claude 10 of 10; Codex passed every content condition and failed only the em dash check on all 10. After `1793ea6` added a no-em-dash rule to the installed block: Codex 10 of 10. The Claude host was not re-run after that change.
+- Live acceptance, first run: Claude 4 of 10, Codex 0 of 10; installed projects did not receive the behavior rules. After `2e719be` fixed that: Claude 10 of 10; Codex passed every content condition and failed only the em dash check on all 10. After `1793ea6` added a no-em-dash rule to the installed block: Codex 10 of 10. After trimming the block to 308 words (`3345b60`, `3ec22c0`): Claude 10 of 10, Codex 9 of 10 (one em dash). One run per version; the earlier block had quoted an acceptance prompt, which the current wording avoids.
 - `install.mjs --uninstall` deletes only hash-matching installed files and refuses record paths outside the project; both guards were ablated and their tests failed.
 
 The user's decisions on these limits are in `SESSION_HANDOFF.md`.
