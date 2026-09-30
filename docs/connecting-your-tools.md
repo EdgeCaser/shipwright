@@ -118,6 +118,8 @@ What it does:
 - writes `facts.json` with sparse, source-attributed pricing, product, review, date, and package-registry facts when they can be extracted deterministically
 - uses structured-source adapters for npm, PyPI, and crates.io package metadata when available
 - in v1, `facts.json` emits only `high` and `medium` `confidence_hint` values
+
+Pricing facts include a `tuple_id` for the source offer or extracted text line. Keep it with `source_url` when joining plan, price, currency, and billing period. Structured offers also retain `product_id` and their own product name when supplied; unnamed products stay explicit. The formatting helpers omit ambiguous groups and older flattened adapter pricing that lacks offer identity. Re-extract from the evidence or source to recover those associations; do not infer them from shared excerpts.
 - caches canonical evidence packs under `.shipwright/cache/research/v1/`
 - escalates automatically from the primary query to broader subqueries and then to gap-only follow-up recommendations when needed
 

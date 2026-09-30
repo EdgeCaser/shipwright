@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
-import { mkdir, mkdtemp, writeFile } from 'node:fs/promises';
-import os from 'node:os';
+import { mkdir, writeFile } from 'node:fs/promises';
+import { temporaryDirectory } from './helpers/temp-dirs.mjs';
 import path from 'node:path';
 import test from 'node:test';
 
@@ -23,7 +23,7 @@ Body.
 });
 
 test('prepareBlindReviewBundle creates blinded packet, manifest, and template', { concurrency: false }, async () => {
-  const rootDir = await mkdtemp(path.join(os.tmpdir(), 'shipwright-proof-content-'));
+  const rootDir = await temporaryDirectory('shipwright-proof-content-');
   const currentScenarioDir = path.join(rootDir, 'current', 'scenarios');
   const baselineScenarioDir = path.join(rootDir, 'baseline', 'scenarios');
   await writeScenario(rootDir, currentScenarioDir, {
@@ -76,7 +76,7 @@ test('prepareBlindReviewBundle creates blinded packet, manifest, and template', 
 });
 
 test('prepareBlindReviewBundle rejects mismatched scenario ids', { concurrency: false }, async () => {
-  const rootDir = await mkdtemp(path.join(os.tmpdir(), 'shipwright-proof-content-'));
+  const rootDir = await temporaryDirectory('shipwright-proof-content-');
   const currentScenarioDir = path.join(rootDir, 'current', 'scenarios');
   const baselineScenarioDir = path.join(rootDir, 'baseline', 'scenarios');
   await writeScenario(rootDir, currentScenarioDir, {
@@ -103,7 +103,7 @@ test('prepareBlindReviewBundle rejects mismatched scenario ids', { concurrency: 
 });
 
 test('prepareBlindReviewBundle gives a clear error when the baseline scenario directory is missing', { concurrency: false }, async () => {
-  const rootDir = await mkdtemp(path.join(os.tmpdir(), 'shipwright-proof-content-'));
+  const rootDir = await temporaryDirectory('shipwright-proof-content-');
   const currentScenarioDir = path.join(rootDir, 'current', 'scenarios');
   const missingBaselineScenarioDir = path.join(rootDir, 'missing-baseline', 'scenarios');
   await writeScenario(rootDir, currentScenarioDir, {
@@ -169,7 +169,7 @@ function assignmentOrigin(adminManifest, phase, blindedLabel) {
 }
 
 test('review bundles use private random seeds and separate reviewer/admin directories', { concurrency: false }, async () => {
-  const rootDir = await mkdtemp(path.join(os.tmpdir(), 'shipwright-blinding-'));
+  const rootDir = await temporaryDirectory('shipwright-blinding-');
   const currentScenarioDir = path.join(rootDir, 'current/scenarios');
   const baselineScenarioDir = path.join(rootDir, 'baseline/scenarios');
   for (const directory of [currentScenarioDir, baselineScenarioDir]) {

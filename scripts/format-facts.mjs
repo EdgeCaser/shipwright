@@ -5,7 +5,7 @@
  *
  * Converts a facts.json pack into a compact structured block suitable for
  * direct prompt injection or human review. Groups facts by source domain,
- * reconstructs pricing tuples from shared excerpts, and produces a concise
+ * reconstructs pricing tuples from source and offer identity, and produces a concise
  * summary that fits in roughly 300-500 tokens for a typical research run.
  *
  * Usage (CLI):
@@ -33,6 +33,7 @@
 import { readFile } from 'node:fs/promises';
 import { pathToFileURL } from 'node:url';
 import path from 'node:path';
+import { pricingProductLabel, reconstructPricingTuples } from './pricing-tuples.mjs';
 
 // ---------------------------------------------------------------------------
 // Public API
@@ -72,9 +73,8 @@ export function formatFactsBlock(factsPack, options = {}) {
 // ---------------------------------------------------------------------------
 
 /**
- * Group facts by source domain. Within each group, reconstruct pricing
- * tuples by matching facts that share the same excerpt (they came from
- * the same extracted text line).
+ * Group facts by source domain. Pricing reconstruction separately preserves
+ * each source URL and offer identity within these display groups.
  */
 function groupFactsByDomain(facts) {
   const domainMap = new Map();
@@ -96,36 +96,10 @@ function groupFactsByDomain(facts) {
   return Array.from(domainMap.values());
 }
 
-/**
- * Reconstruct pricing tuples from a set of facts by grouping
- * plan_name / price / currency / billing_period facts that share
- * the same excerpt (i.e., were extracted from the same source line).
- *
- * Returns an array of tuples: { plan_name?, price?, currency?, billing_period?, confidence }
- */
-function reconstructPricingTuples(domainFacts) {
-  const PRICING_FIELDS = new Set(['plan_name', 'price', 'currency', 'billing_period']);
-  const priceFacts = domainFacts.filter((f) => PRICING_FIELDS.has(f.field));
-
-  const byExcerpt = new Map();
-  for (const fact of priceFacts) {
-    const key = fact.excerpt || '__no_excerpt__';
-    if (!byExcerpt.has(key)) byExcerpt.set(key, { _confidence: 'high' });
-    const group = byExcerpt.get(key);
-    group[fact.field] = fact.value;
-    // Downgrade confidence to medium if any field is medium
-    if (fact.confidence_hint === 'medium') group._confidence = 'medium';
-  }
-
-  return Array.from(byExcerpt.values())
-    .filter((g) => g.price) // only include tuples that have a price
-    .map(({ plan_name, price, currency, billing_period, _confidence }) => ({
-      plan_name,
-      price,
-      currency,
-      billing_period,
-      confidence: _confidence,
-    }));
+// The group heading already names its single product; repeat only a different product.
+function productPrefix(tuple, domainFacts, identity) {
+  const product = pricingProductLabel(tuple, domainFacts, '');
+  return product === identity ? '' : product;
 }
 
 /**
@@ -133,6 +107,8 @@ function reconstructPricingTuples(domainFacts) {
  * Prefers: product_name > product > company > domain
  */
 function resolveIdentity(domainFacts, domain) {
+  const products = [...new Set(domainFacts.filter(fact => fact.field === 'product_name').map(fact => fact.value))];
+  if (products.length > 1) return products.join(' / ');
   const get = (field) => domainFacts.find((f) => f.field === field)?.value;
   return get('product_name') || get('product') || get('company') || domain;
 }
@@ -187,7 +163,8 @@ function renderBlock(meta, groups, allFacts) {
     // Pricing tuples
     const tuples = reconstructPricingTuples(domainFacts);
     for (const tuple of tuples) {
-      const label = tuple.plan_name ? `${tuple.plan_name}: ` : '';
+      const name = [productPrefix(tuple, domainFacts, identity), tuple.plan_name].filter(Boolean).join(' / ');
+      const label = name ? `${name}: ` : '';
       const price = formatPrice(tuple.price, tuple.currency);
       const billing = tuple.billing_period ? `/${tuple.billing_period}` : '';
       const conf = tuple.confidence === 'medium' ? ' [medium]' : '';
@@ -260,7 +237,7 @@ function renderMarkdown(meta, groups, allFacts) {
     // Pricing
     const tuples = reconstructPricingTuples(domainFacts);
     for (const tuple of tuples) {
-      const label = tuple.plan_name || 'Plan';
+      const label = [productPrefix(tuple, domainFacts, identity), tuple.plan_name].filter(Boolean).join(' / ') || 'Plan';
       const price = formatPrice(tuple.price, tuple.currency);
       const billing = tuple.billing_period ? `/${tuple.billing_period}` : '';
       const conf = tuple.confidence === 'medium' ? ' *(medium confidence)*' : '';

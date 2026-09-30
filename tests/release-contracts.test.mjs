@@ -1,3 +1,4 @@
+import './helpers/isolate-outputs.mjs';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { readFile, writeFile, mkdtemp, rm, mkdir, cp } from 'node:fs/promises';
@@ -164,9 +165,13 @@ test('release allowlist flattens all skills and includes their local dependencie
   const validation = installedValidator.validateArtifact(visibleFixture);
   assert.equal(validation.valid, true, JSON.stringify(validation.issues));
   assert.equal(validation.artifact.metadata.status, 'draft');
+  const installedFormatter = await import(pathToFileURL(path.join(output, 'scripts/format-facts.mjs')));
+  const installedDiff = await import(pathToFileURL(path.join(output, 'scripts/pricing-diff.mjs')));
+  assert.match(installedFormatter.formatFactsBlock({ facts: [] }), /no facts extracted/);
+  assert.match(installedDiff.buildPricingDiff([]), /No facts packs/);
   await assert.rejects(buildPlugin(output), /new directory/);
 });
-test('installer preserves root instructions and local additions, and blocks modified-file overwrite atomically', async t => {
+test('installer preserves root instructions and local additions, and blocks conflicts before writing', async t => {
   const dir = await temporary(t);
   await writeFile(path.join(dir, 'AGENTS.md'), 'Existing project instructions');
   await mkdir(path.join(dir, '.codex/skills/local'), { recursive: true });

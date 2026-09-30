@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
-import { mkdir, mkdtemp, readFile, writeFile } from 'node:fs/promises';
-import os from 'node:os';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { temporaryDirectory } from './helpers/temp-dirs.mjs';
 import path from 'node:path';
 import test from 'node:test';
 
@@ -90,7 +90,7 @@ test('compileBlindReview validates summary inputs at the API boundary', () => {
 });
 
 test('compileBlindReviewFromFiles writes compiled summaries and aggregate output', { concurrency: false }, async () => {
-  const rootDir = await mkdtemp(path.join(os.tmpdir(), 'shipwright-proof-content-'));
+  const rootDir = await temporaryDirectory('shipwright-proof-content-');
   const currentPath = path.join(rootDir, 'current-summary.json');
   const baselinePath = path.join(rootDir, 'baseline-summary.json');
   const adminManifestPath = path.join(rootDir, 'admin-manifest.json');

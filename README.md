@@ -170,6 +170,8 @@ Follow-up actions: `gather_more_evidence` creates a collection brief unless `add
 
 Run `node scripts/telemetry.mjs` to see a summary of confidence distributions, escalation funnel, and terminal states across all runs. The log lives at `benchmarks/telemetry/events.jsonl`.
 
+Set `SHIPWRIGHT_OUTPUT_ROOT` to redirect default decision session, Fast/Rigor run, and telemetry output under another directory. The session tests set this to a disposable directory so mocked results stay out of user benchmark output.
+
 If you're working from a OneDrive-synced repo on Windows, you can move generated outputs to a short local root after a run:
 
 ```bash

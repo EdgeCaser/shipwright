@@ -57,7 +57,7 @@ test('packaged guidance resolves helpers from the installed root and accurately 
   assert.doesNotMatch(agent, /install.*provider|add.*provider/i);
 });
 
-test('the Node installer applies a disposable update atomically without Bash', async t => {
+test('the Node installer preflights conflicts and applies a disposable update without Bash', async t => {
   const root = await mkdtemp(path.join(os.tmpdir(), 'shipwright-portable-update-'));
   const source = path.join(root, 'source');
   const project = path.join(root, 'project');

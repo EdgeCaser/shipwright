@@ -30,6 +30,7 @@
 import { access, readFile, readdir } from 'node:fs/promises';
 import { pathToFileURL } from 'node:url';
 import path from 'node:path';
+import { pricingProductLabel, reconstructPricingTuples } from './pricing-tuples.mjs';
 
 // ---------------------------------------------------------------------------
 // Public API
@@ -105,14 +106,16 @@ export function buildPricingDiff(factsPacks) {
 function extractSourceSummary(factsPack) {
   if (!factsPack || !Array.isArray(factsPack.facts)) return null;
 
-  const facts = factsPack.facts;
+  // Malformed entries carry no evidence; skip them instead of failing the comparison.
+  const facts = factsPack.facts.filter(fact => fact && typeof fact === 'object' && !Array.isArray(fact));
   const meta = factsPack.meta || {};
 
   // Determine label: prefer company/product name, fall back to domain from first fact
   const label = resolveLabel(facts, meta);
 
   // Reconstruct pricing tuples
-  const plans = reconstructPricingTuples(facts);
+  const plans = reconstructPricingTuples(facts)
+    .map(plan => ({ ...plan, product_label: pricingProductLabel(plan, facts, label) }));
 
   // Check for free entry (price = 0 or explicit "free" plan name)
   const hasFreeEntry = plans.some(
@@ -141,6 +144,8 @@ function extractSourceSummary(factsPack) {
 }
 
 function resolveLabel(facts, meta) {
+  const products = [...new Set(facts.filter(fact => fact.field === 'product_name').map(fact => fact.value))];
+  if (products.length > 1) return products.join(' / ');
   const get = (field) => facts.find((f) => f.field === field)?.value;
   const name = get('product_name') || get('product') || get('company');
   if (name) return name;
@@ -154,34 +159,6 @@ function resolveLabel(facts, meta) {
   }
 
   return meta.query ? `"${meta.query.slice(0, 30)}"` : 'Unknown';
-}
-
-// ---------------------------------------------------------------------------
-// Pricing tuple reconstruction (same logic as format-facts.mjs)
-// ---------------------------------------------------------------------------
-
-function reconstructPricingTuples(facts) {
-  const PRICING_FIELDS = new Set(['plan_name', 'price', 'currency', 'billing_period']);
-  const priceFacts = facts.filter((f) => PRICING_FIELDS.has(f.field));
-
-  const byExcerpt = new Map();
-  for (const fact of priceFacts) {
-    const key = fact.excerpt || '__no_excerpt__';
-    if (!byExcerpt.has(key)) byExcerpt.set(key, { _confidence: 'high' });
-    const group = byExcerpt.get(key);
-    group[fact.field] = fact.value;
-    if (fact.confidence_hint === 'medium') group._confidence = 'medium';
-  }
-
-  return Array.from(byExcerpt.values())
-    .filter((g) => g.price)
-    .map(({ plan_name, price, currency, billing_period, _confidence }) => ({
-      plan_name: plan_name || '',
-      price,
-      currency: currency || '',
-      billing_period: billing_period || '',
-      confidence: _confidence,
-    }));
 }
 
 // ---------------------------------------------------------------------------
@@ -207,15 +184,20 @@ function buildPricingTable(sources, { hasBilling, hasFree }) {
       continue;
     }
 
+    // Rows sharing a displayed product share one free-tier value; distinct unnamed products stay separate.
+    const productKey = entry => (entry.product_label === 'Unnamed product' ? entry.product_id : entry.product_label);
     for (let i = 0; i < source.plans.length; i += 1) {
       const plan = source.plans[i];
-      const label = i === 0 ? source.label : '';
+      const product = plan.product_label;
+      const firstForProduct = i === 0 || productKey(plan) !== productKey(source.plans[i - 1]);
+      const label = firstForProduct ? product : '';
       const price = formatPrice(plan.price, plan.currency);
       const row = [label, plan.plan_name || '—', price];
       if (hasBilling) row.push(plan.billing_period || '—');
       if (hasFree) {
-        if (i === 0) {
-          row.push(source.hasFreeEntry ? 'Yes' : 'No');
+        if (firstForProduct) {
+          const productPlans = source.plans.filter(entry => productKey(entry) === productKey(plan));
+          row.push(productPlans.some(entry => entry.price === '0' || /\bfree\b/i.test(entry.plan_name)) ? 'Yes' : 'No');
         } else {
           row.push('');
         }

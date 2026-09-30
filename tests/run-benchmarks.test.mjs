@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
-import { mkdir, mkdtemp, writeFile, rm } from 'node:fs/promises';
-import os from 'node:os';
+import { mkdir, writeFile, rm } from 'node:fs/promises';
+import { temporaryDirectory } from './helpers/temp-dirs.mjs';
 import path from 'node:path';
 import test from 'node:test';
 
@@ -116,7 +116,7 @@ test('runBenchmarkSuite filters to requested scenario ids', { concurrency: false
 });
 
 test('runBenchmarkSuite publish mode fails when blind ratings are missing', { concurrency: false }, async () => {
-  const rootDir = await mkdtemp(path.join(os.tmpdir(), 'shipwright-benchmarks-'));
+  const rootDir = await temporaryDirectory('shipwright-benchmarks-');
   await writeScenarioFixture(rootDir, {
     id: 'publish-missing-ratings',
     artifactType: 'prd',
@@ -139,7 +139,7 @@ test('runBenchmarkSuite publish mode fails when blind ratings are missing', { co
 });
 
 test('runBenchmarkSuite supports single-arm publish mode without a baseline', { concurrency: false }, async () => {
-  const rootDir = await mkdtemp(path.join(os.tmpdir(), 'shipwright-benchmarks-'));
+  const rootDir = await temporaryDirectory('shipwright-benchmarks-');
   await writeScenarioFixture(rootDir, {
     id: 'single-arm-publish',
     artifactType: 'prd',
@@ -176,7 +176,7 @@ test('runBenchmarkSuite supports single-arm publish mode without a baseline', { 
 });
 
 test('runBenchmarkScenario normalizes blind ratings and computes deltas', { concurrency: false }, async () => {
-  const rootDir = await mkdtemp(path.join(os.tmpdir(), 'shipwright-benchmarks-'));
+  const rootDir = await temporaryDirectory('shipwright-benchmarks-');
   const scenarioFile = await writeScenarioFixture(rootDir, {
     id: 'blind-rating-normalization',
     artifactType: 'prd',
@@ -213,7 +213,7 @@ test('runBenchmarkScenario normalizes blind ratings and computes deltas', { conc
 });
 
 test('runBenchmarkScenario preserves diagnostic blind ratings for DNF scenarios', { concurrency: false }, async () => {
-  const rootDir = await mkdtemp(path.join(os.tmpdir(), 'shipwright-benchmarks-'));
+  const rootDir = await temporaryDirectory('shipwright-benchmarks-');
   const firstArtifact = basePrdArtifact();
   firstArtifact.evidence = [];
   firstArtifact.payload.customer_evidence_ids = [];
@@ -261,7 +261,7 @@ test('runBenchmarkScenario preserves diagnostic blind ratings for DNF scenarios'
 });
 
 test('benchmark separates a valid directional Light PASS from engineering readiness', async t => {
-  const rootDir = await mkdtemp(path.join(os.tmpdir(), 'shipwright-benchmarks-'));
+  const rootDir = await temporaryDirectory('shipwright-benchmarks-');
   t.after(() => rm(rootDir, { recursive: true, force: true }));
   const artifact = basePrdArtifact();
   artifact.depth = 'light';
@@ -280,7 +280,7 @@ test('benchmark separates a valid directional Light PASS from engineering readin
 });
 
 test('benchmark reports honest FAIL separately from invalid contracts', async t => {
-  const rootDir = await mkdtemp(path.join(os.tmpdir(), 'shipwright-benchmarks-'));
+  const rootDir = await temporaryDirectory('shipwright-benchmarks-');
   t.after(() => rm(rootDir, { recursive: true, force: true }));
   const artifact = basePrdArtifact();
   artifact.pass_fail_readiness = { status: 'FAIL', reason: 'Baseline collection is incomplete.' };
@@ -450,7 +450,7 @@ test('compareBenchmarkSuites rejects mismatched scenario ids with a useful error
 });
 
 test('loadBenchmarkScenario rejects scenarios missing id', { concurrency: false }, async () => {
-  const rootDir = await mkdtemp(path.join(os.tmpdir(), 'shipwright-benchmarks-'));
+  const rootDir = await temporaryDirectory('shipwright-benchmarks-');
   const scenarioPath = path.join(rootDir, 'missing-id.json');
   await writeFile(
     scenarioPath,
@@ -472,7 +472,7 @@ test('loadBenchmarkScenario rejects scenarios missing id', { concurrency: false 
 });
 
 test('loadBenchmarkScenario rejects scenarios missing first-pass fixture path', { concurrency: false }, async () => {
-  const rootDir = await mkdtemp(path.join(os.tmpdir(), 'shipwright-benchmarks-'));
+  const rootDir = await temporaryDirectory('shipwright-benchmarks-');
   const scenarioPath = path.join(rootDir, 'missing-first-pass.json');
   await writeFile(
     scenarioPath,
@@ -494,7 +494,7 @@ test('loadBenchmarkScenario rejects scenarios missing first-pass fixture path', 
 });
 
 test('loadBenchmarkSuiteSummary rejects pre-schema baseline summaries without provenance metadata', { concurrency: false }, async () => {
-  const rootDir = await mkdtemp(path.join(os.tmpdir(), 'shipwright-benchmarks-'));
+  const rootDir = await temporaryDirectory('shipwright-benchmarks-');
   const summaryPath = path.join(rootDir, 'baseline-summary.json');
   await writeFile(
     summaryPath,
@@ -538,7 +538,7 @@ test('loadBenchmarkSuiteSummary rejects pre-schema baseline summaries without pr
 });
 
 test('loadBenchmarkSuiteSummary rejects pre-schema baseline summaries without threshold policy metadata', { concurrency: false }, async () => {
-  const rootDir = await mkdtemp(path.join(os.tmpdir(), 'shipwright-benchmarks-'));
+  const rootDir = await temporaryDirectory('shipwright-benchmarks-');
   const summaryPath = path.join(rootDir, 'baseline-summary.json');
   await writeFile(
     summaryPath,

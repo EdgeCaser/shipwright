@@ -34,6 +34,12 @@ See https://example.com. Conversion was 62% last quarter.`;
   assert.ok(result.issues.every(issue => issue.severity === Severity.WARNING));
 });
 
+test('claims after the structured envelope still receive citation checks', () => {
+  const result = validateArtifact(fixture + '\nARR was $4M. Conversion was 62%.\n');
+  assert.ok(result.issues.some(issue => issue.type === IssueType.UNSUPPORTED_DOLLAR));
+  assert.ok(result.issues.some(issue => issue.type === IssueType.UNSUPPORTED_NUMERIC));
+});
+
 test('visible Decision Frame and approved status cannot be supplied by hidden JSON alone', () => {
   const text = variant(
     artifact => { artifact.metadata.status = 'approved'; },
@@ -113,6 +119,21 @@ test('metric table binds baseline and target to their own columns and metric', (
   }
 });
 
+test('metric IDs match complete labels rather than longer identifiers', () => {
+  for (const [label, valid] of [
+    ['M10: Abandonment', false], ['m1-other: Abandonment', false], ['m1_extra: Abandonment', false],
+    ['M1: Activation', true], ['Activation (m1)', true], ['Activation', true],
+  ]) {
+    const text = variant(artifact => {
+      const metric = artifact.payload.success_metrics[0];
+      for (const entry of artifact.evidence) entry.supports = entry.supports.map(id => id === metric.metric_id ? 'm1' : id);
+      metric.metric_id = 'm1';
+      metric.name = 'Activation';
+    }, visible => visible.replace('| workflow handoff completion rate |', '| ' + label + ' |'));
+    assert.equal(validateArtifact(text).valid, valid, label);
+  }
+});
+
 test('paraphrase is accepted but opposite recommendation is rejected', () => {
   const equivalent = variant(() => {}, visible => visible.replace(
     'Recommendation: Ship a limited workflow handoff release for support teams.',
@@ -126,6 +147,153 @@ test('paraphrase is accepted but opposite recommendation is rejected', () => {
   ));
   assert.ok(validateArtifact(opposite, { artifactType: 'prd' }).issues
     .some(issue => issue.type === IssueType.PROSE_JSON_MISMATCH && issue.message.includes('recommendation')));
+});
+
+for (const [field, structured, visible] of [
+  ['confidence', 'high', 'highly uncertain'],
+  ['confidence', 'high', 'not high'],
+  ['confidence', 'high', 'high not confirmed'],
+  ['confidence', 'high', 'High is not warranted yet'],
+  ['owner', 'Alex Kim', 'Alex Kimball'],
+  ['decision_date', '2026-04-02', 'not 2026-04-02'],
+]) {
+  test(`visible ${field} rejects false agreement: ${visible}`, () => {
+    const label = field === 'decision_date' ? 'Decision date' : field;
+    const text = variant(artifact => { artifact.decision_frame[field] = structured; },
+      markdown => markdown.replace(new RegExp(`^${label}:.*$`, 'im'), `${label}: ${visible}`));
+    const result = validateArtifact(text);
+    assert.equal(result.valid, false);
+    assert.ok(result.issues.some(issue => issue.type === IssueType.PROSE_JSON_MISMATCH
+      && issue.message.includes(field)));
+  });
+}
+
+test('visible exact owner/date and explained confidence retain case and formatting tolerance', () => {
+  const text = variant(artifact => { artifact.decision_frame.owner = 'Alex Kim'; }, markdown => markdown
+    .replace(/^Owner:.*$/m, '**Owner:** ALEX KIM')
+    .replace(/^Decision date:.*$/m, '**Decision Date:** 2026-04-02')
+    .replace(/^Confidence:.*$/m, '**Confidence:** High, based on the support workflow audit.'));
+  assert.equal(validateArtifact(text).valid, true);
+});
+
+test('an agreeing confidence level may be explained with "no" or "not"', () => {
+  for (const explained of ['High, because no segment-level baseline exists yet.',
+    'High. Not all regions were sampled.', 'High (no blocking evidence gaps).']) {
+    const text = variant(() => {}, markdown => markdown.replace(/^Confidence:.*$/m, `Confidence: ${explained}`));
+    assert.equal(validateArtifact(text).valid, true, explained);
+  }
+});
+
+test('an inline code span containing a comment opener does not hide later claims', () => {
+  const text = 'Authors mark drafts with `<!--` markers.\n\nARR was $4M and conversion was 62% last quarter.\n';
+  const types = validateArtifact(text).issues.map(issue => issue.type);
+  assert.ok(types.includes(IssueType.UNSUPPORTED_DOLLAR));
+  assert.ok(types.includes(IssueType.UNSUPPORTED_NUMERIC));
+  const blockComment = validateArtifact('Intro.\n\n<!-- unfinished draft\nARR was $4M.\n');
+  assert.ok(!blockComment.issues.some(issue => issue.type === IssueType.UNSUPPORTED_DOLLAR));
+  const laterCloser = validateArtifact(text + '\nFlow: signup --> activation.\n');
+  assert.ok(laterCloser.issues.some(issue => issue.type === IssueType.UNSUPPORTED_DOLLAR));
+  const crlf = validateArtifact((text + '\nFlow: signup --> activation.\n').replace(/\n/g, '\r\n'));
+  assert.ok(crlf.issues.some(issue => issue.type === IssueType.UNSUPPORTED_DOLLAR));
+  const inlineClosed = validateArtifact('A note <!-- hidden $4M --> ends here.\n');
+  assert.ok(!inlineClosed.issues.some(issue => issue.type === IssueType.UNSUPPORTED_DOLLAR));
+  // The opener must not pair with the structured envelope's closer and hide a correct contract.
+  const correct = variant(() => {}, visible => visible.replace('\n', '\nDrafts use `<!--` markers.\n'));
+  assert.equal(validateArtifact(correct).valid, true);
+});
+
+test('indented text continues a list item or paragraph instead of becoming hidden code', () => {
+  const claims = 'ARR was $4M and conversion was 62% last quarter.';
+  for (const text of [`Findings:\n\n- Pricing\n\n    ${claims}\n`, `Findings:\n\n1. Pricing\n    ${claims}\n`,
+    `Findings continue\n    ${claims}\n`]) {
+    const types = validateArtifact(text).issues.map(issue => issue.type);
+    assert.ok(types.includes(IssueType.UNSUPPORTED_DOLLAR), text);
+  }
+  const code = validateArtifact(`## Example\n\n    ${claims}\n\nDone.\n`).issues.map(issue => issue.type);
+  assert.ok(!code.includes(IssueType.UNSUPPORTED_DOLLAR));
+  const afterList = validateArtifact(`- Pricing\n\nClosing paragraph.\n\n    ${claims}\n`).issues.map(issue => issue.type);
+  assert.ok(!afterList.includes(IssueType.UNSUPPORTED_DOLLAR));
+});
+
+test('a comment opener inside a fence is code, and a fence marker inside a comment is hidden', () => {
+  const claims = 'ARR was $4M and conversion was 62% last quarter.\n';
+  const example = 'Example:\n\n```html\n<!-- start a hidden note\n```\n\n';
+  const types = validateArtifact(example + claims).issues.map(issue => issue.type);
+  assert.ok(types.includes(IssueType.UNSUPPORTED_DOLLAR));
+  const correct = variant(() => {}, visible => visible.replace('\n', '\n' + example));
+  assert.equal(validateArtifact(correct).valid, true);
+  const commentedFence = validateArtifact('<!-- draft\n```\n-->\n\n' + claims).issues.map(issue => issue.type);
+  assert.ok(commentedFence.includes(IssueType.UNSUPPORTED_DOLLAR));
+});
+
+test('confidence compares the stated level before the explanation', () => {
+  const text = variant(() => {}, markdown => markdown.replace(/^Confidence:.*$/m,
+    'Confidence: low (high uncertainty).'));
+  const result = validateArtifact(text);
+  assert.equal(result.valid, false);
+  assert.ok(result.issues.some(issue => issue.type === IssueType.PROSE_JSON_MISMATCH
+    && issue.message.includes('confidence')));
+});
+
+for (const [name, wrap] of [
+  ['HTML comment', text => `<!-- hidden draft\n${text}\n-->`],
+  ['backtick example', text => '```markdown\n' + text + '\n```'],
+  ['tilde example', text => '~~~markdown\n' + text + '\n~~~'],
+  ['list-nested example', text => '- Example:\n\n    ```markdown\n' + text + '\n    ```'],
+  ['list-item fence', text => '- ```markdown\n' + text.replace(/^/gm, '  ') + '\n  ```'],
+  ['indented code block', text => text.replace(/^(?=.)/gm, '    ')],
+]) {
+  test(`${name} cannot supply visible contract fields or engineering requirements`, () => {
+    const hiddenContract = variant(() => {}, visible => wrap(visible)
+      + '\n# No contract is visible\n');
+    const result = validateArtifact(hiddenContract, { relatedArtifacts: [related] });
+    assert.equal(result.valid, false);
+    assert.equal(result.readiness.engineeringReady, false);
+    assert.ok(result.issues.some(issue => issue.type === IssueType.PROSE_JSON_MISMATCH));
+    const hiddenRequirements = variant(() => {}, visible => visible
+      + '\n' + wrap('## Detailed Requirements\n\nSupport teams can trigger handoff.') + '\n');
+    const requirements = validateArtifact(hiddenRequirements, { relatedArtifacts: [related] });
+    assert.equal(requirements.valid, true);
+    assert.equal(requirements.readiness.engineeringReady, false);
+    assert.ok(requirements.readiness.engineeringReasons.some(reason => /Detailed requirements/.test(reason)));
+  });
+}
+
+test('metric comparison separates numeric values from attached citations', () => {
+  for (const cell of ['42 [1]', '42[1]', '42 [audit 2026](https://example.com/reports/2026)',
+    '42 (source: audit-2026)', '[42](https://example.com/reports/2026)']) {
+    const text = variant(() => {}, visible => visible.replace('| 42 | 65 |', `| ${cell} | 65 |`));
+    assert.equal(validateArtifact(text).valid, true, cell);
+  }
+  for (const cell of ['142 [1]', '42 or 142 [1]', '[142](https://example.com/reports/2026)']) {
+    const text = variant(() => {}, visible => visible.replace('| 42 | 65 |', `| ${cell} | 65 |`));
+    assert.equal(validateArtifact(text).valid, false, cell);
+  }
+});
+
+for (const column of ['Source', 'Citation', 'Reference']) {
+  for (const protocol of ['http', 'https']) {
+    test(`bare ${protocol} URL in ${column} sources only its table row`, () => {
+      const result = validateArtifact(`| Plan | Price | ${column} |\n|---|---|---|\n| Pro | $49 | ${protocol}://example.com/pricing |\n| Enterprise | $99 | |`);
+      const warnings = result.issues.filter(issue => issue.type === IssueType.UNSUPPORTED_DOLLAR);
+      assert.equal(warnings.length, 1);
+      assert.match(warnings[0].excerpt, /\$99/);
+    });
+  }
+}
+
+test('bare URL in a Notes column does not source the price in another cell', () => {
+  for (const extraSource of ['', ' | Source']) {
+    const result = validateArtifact(`| Plan | Price | Notes${extraSource} |\n|---|---|---${extraSource ? '|---' : ''}|\n| Pro | $49 | https://example.com/pricing${extraSource ? ' | ' : ''} |`);
+    assert.ok(result.issues.some(issue => issue.type === IssueType.UNSUPPORTED_DOLLAR));
+  }
+});
+
+test('case-study index describes reported outcomes without claiming verified proof', () => {
+  const index = readFileSync(path.resolve('case-studies/README.md'), 'utf8');
+  assert.match(index, /unverified/i);
+  assert.match(index, /reported outcomes/i);
+  assert.doesNotMatch(index, /\breal (?:problems|stakes|outcomes)\b|\bproof\b|\bproduction evidence\b/i);
 });
 
 test('Minor deferral remains informational while Critical deferral blocks readiness without a related report', () => {
@@ -197,6 +365,27 @@ test('malformed resolution shapes yield schema errors instead of throwing', () =
     assert.ok(validateStructuredArtifact(artifact).errors.length > 0);
   }
 });
+
+for (const [scenario, collection] of [
+  ['prd-hidden-scope-creep', 'success_metrics'],
+  ['board-update-ambiguity', 'bets'],
+]) {
+  test(`malformed ${collection} entries return contract errors and unready results`, () => {
+    const original = readFileSync(path.resolve(`benchmarks/fixtures/${scenario}/final-pass.md`), 'utf8');
+    const artifact = extractStructuredArtifact(original).artifact;
+    for (const entry of [null, false, 7, 'invalid', []]) {
+      artifact.payload[collection] = [entry];
+      const text = original.slice(0, original.indexOf('<!-- shipwright:artifact'))
+        + `<!-- shipwright:artifact\n${JSON.stringify(artifact)}\n-->`;
+      const result = validateArtifact(text);
+      assert.equal(result.valid, false);
+      assert.equal(result.readiness.ready, false);
+      assert.equal(result.readiness.engineeringReady, false);
+      assert.ok(result.issues.some(issue => issue.type === IssueType.INVALID_STRUCTURED_ARTIFACT
+        && issue.message.includes(`payload.${collection}[0]`)));
+    }
+  });
+}
 
 test('numeric strings and timeframe cells cannot match a different value by substring', () => {
   for (const [field, value, from, to] of [

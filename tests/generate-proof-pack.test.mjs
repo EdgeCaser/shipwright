@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
-import { mkdtemp, writeFile } from 'node:fs/promises';
-import os from 'node:os';
+import { writeFile } from 'node:fs/promises';
+import { temporaryDirectory } from './helpers/temp-dirs.mjs';
 import path from 'node:path';
 import test from 'node:test';
 
@@ -105,7 +105,7 @@ test('generateProofPack allows publishable final comparisons when provenance and
 });
 
 test('generateProofPackFromFiles supports single-arm reports', { concurrency: false }, async () => {
-  const rootDir = await mkdtemp(path.join(os.tmpdir(), 'shipwright-proof-pack-'));
+  const rootDir = await temporaryDirectory('shipwright-proof-pack-');
   const currentPath = path.join(rootDir, 'current-summary.json');
   await writeFile(
     currentPath,
@@ -119,7 +119,7 @@ test('generateProofPackFromFiles supports single-arm reports', { concurrency: fa
 });
 
 test('generateProofPackFromFiles rejects pre-schema baseline summaries with actionable errors', { concurrency: false }, async () => {
-  const rootDir = await mkdtemp(path.join(os.tmpdir(), 'shipwright-proof-pack-'));
+  const rootDir = await temporaryDirectory('shipwright-proof-pack-');
   const currentPath = path.join(rootDir, 'current-summary.json');
   const baselinePath = path.join(rootDir, 'baseline-summary.json');
 

@@ -8,6 +8,8 @@ Markdown is the human-readable artifact. When an automated consumer explicitly r
 -->
 ```
 
+The JSON must not contain the text `-->`, because it ends the comment early. Write an arrow as `->` or escape it inside a string as `-->`.
+
 Read the schema before producing the payload:
 
 | Producer | artifact_type | Schema |
@@ -55,5 +57,7 @@ The validator returns separate `valid` and `readiness` results. The default CLI 
 The validator compares the six visible Decision Frame fields and PASS/FAIL status with JSON. Start the visible Pass/Fail Readiness section with its actual PASS or FAIL verdict, then explain it. For PRDs, put metric name, segment, baseline/current, target, unit, and timeframe in a labeled Markdown table so it can compare each value. Equivalent wording can pass free-text checks, but deterministic comparison cannot prove semantic equivalence or source truth. It flags likely citation gaps in prose and table rows and cross-artifact contradictions. Human review must verify source references, approval and waiver provenance, and substantive meaning.
 
 ## Existing artifacts
+
+Visible checks ignore HTML comments and fenced code examples, including fences inside list items. A comment that starts a line outside a fence hides everything to its closing marker, or the rest of the document when unclosed; an inline comment must close within its paragraph, so a literal `<!--` in a code span stays visible. Fences may also open on a list-item line. Outside a list, a block indented four spaces after a blank line or heading is treated as code, as Markdown renders it; inside a list, indentation continues the item and stays visible. Confidence starts with its declared `low`, `medium`, or `high` value, which must not be immediately negated; the explanation after it may use "no" or "not"; owner and decision date match their complete normalized values. Metric cells may attach citation markers without treating citation numbers as measurements.
 
 The v2 contract now enforces fields that older validators left unchecked, including revisit triggers, nonblank values and metric baselines/targets. Existing artifacts must be revalidated before reuse. Add missing fields only from actual evidence or explicit decisions; preserve FAIL for unresolved gaps. Never auto-fill legacy artifacts merely to make validation pass. The test fixtures are synthetic examples, not production migrations.

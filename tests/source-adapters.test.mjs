@@ -202,7 +202,7 @@ test('applySourceAdapter rejects star rating > 5', { concurrency: false }, () =>
 // JSON-LD adapter — deduplication
 // ---------------------------------------------------------------------------
 
-test('applySourceAdapter deduplicates identical field+value pairs', { concurrency: false }, () => {
+test('applySourceAdapter retains identical values belonging to distinct offers', { concurrency: false }, () => {
   const html = `
     <script type="application/ld+json">
       {
@@ -220,7 +220,8 @@ test('applySourceAdapter deduplicates identical field+value pairs', { concurrenc
 
   assert.ok(result);
   const priceFields = result.fields.filter((f) => f.field === 'price' && f.value === '29');
-  assert.equal(priceFields.length, 1, 'duplicate price fields should be deduped');
+  assert.equal(priceFields.length, 2, 'both offers retain their price');
+  assert.equal(new Set(priceFields.map(field => field.tuple_id)).size, 2);
 });
 
 // ---------------------------------------------------------------------------

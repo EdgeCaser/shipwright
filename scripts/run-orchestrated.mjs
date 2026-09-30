@@ -25,7 +25,7 @@ import {
 } from './decision-session-controller.mjs';
 
 const DEFAULT_SCENARIO_DIR = path.resolve('benchmarks', 'scenarios');
-const DEFAULT_OUT_DIR = path.resolve('benchmarks', 'results', 'orchestrated');
+const DEFAULT_OUT_DIR = path.resolve(process.env.SHIPWRIGHT_OUTPUT_ROOT || 'benchmarks', 'results', 'orchestrated');
 
 /**
  * Run an orchestrated analysis on a scenario.

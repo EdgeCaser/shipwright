@@ -112,6 +112,7 @@ export function validateArtifact(text, options = {}) {
   } = options;
 
   const issues = [];
+  const visibleText = visibleMarkdown(text);
 
   if (checkCitations) {
     issues.push(...checkUnsupportedDollarFigures(text));
@@ -119,7 +120,7 @@ export function validateArtifact(text, options = {}) {
   }
 
   for (const section of expectSections) {
-    const issue = checkMissingSection(text, section);
+    const issue = checkMissingSection(visibleText, section);
     if (issue) issues.push(issue);
   }
 
@@ -172,7 +173,7 @@ export function validateArtifact(text, options = {}) {
         && extracted.artifact?.pass_fail_readiness && typeof extracted.artifact.pass_fail_readiness === 'object'
         && (!('payload' in extracted.artifact) || typeof extracted.artifact.payload === 'object')) {
         issues.push(...checkVisibleContract(
-          text.replace(/<!--\s*shipwright:artifact[\s\S]*?-->/, ''), extracted.artifact,
+          visibleText, extracted.artifact,
         ));
       }
       if (validation.errors.length === 0) issues.push(
@@ -188,7 +189,7 @@ export function validateArtifact(text, options = {}) {
   }
 
   return finishValidation(issues, extracted.artifact || null, {
-    ...options, visibleText: text.replace(/<!--\s*shipwright:artifact[\s\S]*?-->/, ''),
+    ...options, visibleText,
   });
 }
 
@@ -202,7 +203,7 @@ function finishValidation(issues, artifact, options) {
   const metrics = artifact?.artifact_type === 'prd'
     ? (Array.isArray(artifact.payload?.success_metrics) ? artifact.payload.success_metrics : [])
     : artifact?.artifact_type === 'strategy'
-      ? (Array.isArray(artifact.payload?.bets) ? artifact.payload.bets.map(bet => bet.success_metric) : []) : [];
+      ? (Array.isArray(artifact.payload?.bets) ? artifact.payload.bets.map(bet => bet?.success_metric) : []) : [];
   const incompleteMetrics = metrics.some(metric => isPlaceholder(metric?.baseline) || isPlaceholder(metric?.target));
   const light = artifact?.artifact_type === 'prd' && ['light', 'quick'].includes(artifact?.depth);
   if (incompleteMetrics && !light) reasons.push('Metric baseline or target is unresolved.');
@@ -276,7 +277,14 @@ function checkVisibleContract(visible, artifact) {
     const value = match.replace(/\*\*/g, '').replace(/^\s*(?:[-*]\s*)?[^:]+:\s*/, '').trim();
     if (!value) { fail(`Visible Decision Frame has an empty ${key}.`, decision.lineNumber); continue; }
     if (key === 'confidence' || key === 'decision_date' || key === 'owner') {
-      if (!normalizeProse(value).includes(normalizeProse(String(artifact.decision_frame[key])))) {
+      const normalized = normalizeProse(value);
+      const expected = normalizeProse(String(artifact.decision_frame[key]));
+      const matches = key === 'confidence'
+        // The level leads and is not itself negated; a later explanation may say "no" or "not".
+        ? normalized.match(/^(low|medium|high)\b/)?.[1] === expected
+          && !/^(?:low|medium|high)\s+(?:(?:is|confidence)\s+)?(?:not|no|never)\b/i.test(value)
+        : normalized === expected && !/^(?:not|no|never)\b/.test(normalized);
+      if (!matches) {
         fail(`Visible Decision Frame ${key} disagrees with JSON.`, decision.lineNumber);
       }
     } else if (!substantivelyMatches(value, artifact.decision_frame[key])) {
@@ -291,6 +299,8 @@ function checkVisibleContract(visible, artifact) {
   }
   for (const metric of (artifact.artifact_type === 'prd' && Array.isArray(artifact.payload?.success_metrics)
     ? artifact.payload.success_metrics : [])) {
+    // Schema errors already identify malformed entries; comparison needs an object.
+    if (!metric || typeof metric !== 'object' || Array.isArray(metric)) continue;
     const row = findMetricRow(lines, metric);
     if (!row) { fail(`Visible success metric "${metric.name}" is missing a field-labeled row.`); continue; }
     for (const field of ['baseline', 'target', 'unit', 'timeframe', 'segment']) {
@@ -307,6 +317,68 @@ function normalizeProse(value) {
   return String(value).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
 }
 
+// Ignore hidden comments and fenced examples while preserving source line numbers.
+// One line scan decides block structure, so whichever starts first wins: `<!--`
+// inside a fence is code, and a fence marker inside a comment is hidden.
+// A comment that starts a line opens an HTML block that runs to its closing
+// marker, or to the end of the document when unclosed. An inline comment must
+// close within its paragraph; otherwise `<!--` renders as text (for example in
+// a code span). Fences may be indented or open on a list-item line.
+// Outside a list, a line indented four spaces or a tab after a blank line or a
+// heading opens an indented code block, as Markdown renders it; it runs until a
+// less-indented non-blank line. Inside a list, indentation continues the item.
+function visibleMarkdown(text) {
+  let fence = null;
+  let comment = false;
+  let indentedCode = false;
+  let inList = false;
+  let previousBlank = true;
+  let previousHeading = false;
+  const scan = line => {
+    const blank = !line.trim();
+    if (comment) {
+      const end = line.indexOf('-->');
+      if (end < 0) return '';
+      comment = false;
+      return line.slice(end + 3);
+    }
+    if (fence) {
+      const marker = line.match(/^\s*(\x60{3,}|~{3,})(.*)$/);
+      if (marker && marker[1][0] === fence[0] && marker[1].length >= fence.length && !marker[2].trim()) fence = null;
+      return '';
+    }
+    const codeIndent = /^(?: {4}|\t)/.test(line);
+    if (indentedCode) {
+      if (blank || codeIndent) return '';
+      indentedCode = false;
+    }
+    if (/^ {0,3}(?:[-*+]|\d{1,9}[.)])(?:[ \t]|$)/.test(line)) inList = true;
+    else if (!blank && !/^[ \t]/.test(line) && previousBlank) inList = false;
+    if (!blank && codeIndent && !inList && (previousBlank || previousHeading)) {
+      indentedCode = true;
+      return '';
+    }
+    const opener = line.match(/^\s*(?:(?:[-*+]|\d{1,9}[.)])\s+)?(\x60{3,}|~{3,})(.*)$/);
+    if (opener && (opener[1][0] === '~' || !opener[2].includes('\x60'))) {
+      fence = opener[1];
+      return '';
+    }
+    // A same-line close is left to the inline pass below.
+    if (/^ {0,3}<!--/.test(line) && !line.slice(line.indexOf('<!--') + 4).includes('-->')) {
+      comment = true;
+      return '';
+    }
+    return line;
+  };
+  const blocks = text.split('\n').map(line => {
+    const visible = scan(line);
+    previousBlank = !line.trim();
+    previousHeading = /^ {0,3}#{1,6}(?:[ \t]|$)/.test(line);
+    return visible;
+  }).join('\n');
+  return blocks.replace(/<!--(?:(?!\r?\n[ \t]*\r?\n)[\s\S])*?-->/g, hidden => hidden.replace(/[^\n]/g, ''));
+}
+
 function substantivelyMatches(visible, structured) {
   const negated = value => /\b(?:do not|don't|never|avoid|reject|stop|cancel)\b/i.test(value);
   if (negated(visible) !== negated(structured)) return false;
@@ -319,6 +391,10 @@ function substantivelyMatches(visible, structured) {
 
 function metricValueMatches(text, value) {
   if (typeof text !== 'string' || !text.trim()) return false;
+  // Remove attached citations, retaining the displayed value of a linked metric.
+  text = text.replace(/\s+(?:\[[^\]]+\]\(https?:\/\/[^)]+\)|\((?:source|via|from|see|ref)\s*:[^)]*\))(?=\s|$)/gi, '')
+    .replace(/\[\d+\](?!\()/g, '')
+    .replace(/\[([^\]]+)\]\(https?:\/\/[^)]+\)/gi, '$1').trim();
   if (isPlaceholder(value)) return /\b(?:TBD|unknown|unmeasured|not measured|not tracked)\b/i.test(text);
   if (/\b(?:TBD|unknown|unmeasured|not measured|not tracked)\b/i.test(text)) return false;
   const numericValue = typeof value === 'number' ? value
@@ -343,7 +419,11 @@ function findMetricRow(lines, metric) {
       if (/^\s*\|?\s*:?-{2,}/.test(lines[row])) continue;
       const cells = lines[row].split('|').slice(1, -1).map(cell => cell.trim());
       const name = normalizeProse(cells[metricColumn] || '');
-      if (name !== normalizeProse(metric.name) && !name.includes(normalizeProse(metric.metric_id))) continue;
+      const id = typeof metric.metric_id === 'string' && metric.metric_id.trim()
+        ? metric.metric_id.trim().replace(/[.*+?^{}()|[\]\\$]/g, '\\$&') : null;
+      const idMatches = id && new RegExp('(^|[^\\p{L}\\p{N}_-])' + id + '(?=$|[^\\p{L}\\p{N}_-])', 'iu')
+        .test(cells[metricColumn] || '');
+      if (name !== normalizeProse(metric.name) && !idMatches) continue;
       const columnValue = (...aliases) => {
         const column = aliases.map(alias => columns[alias]).find(value => value !== undefined);
         return column === undefined ? undefined : cells[column];
@@ -959,7 +1039,7 @@ function splitIntoParagraphs(text) {
 }
 
 function splitIntoClaims(text) {
-  const visible = text.split(/<!--\s*shipwright:artifact\b/)[0];
+  const visible = visibleMarkdown(text);
   const claims = [];
   let inSources = false;
   for (const paragraph of splitIntoParagraphs(visible)) {
@@ -980,7 +1060,9 @@ function splitIntoClaims(text) {
         if (/^\s*\|?\s*:?-{2,}/.test(rows[rowIndex])) continue;
         const cells = rows[rowIndex].split('|').slice(1, -1).map(cell => cell.trim());
         const sourceIndex = headers.findIndex(header => /^(?:source|citation|reference)$/.test(header));
-        const source = sourceIndex >= 0 && hasCitationMarker(cells[sourceIndex] || '');
+        const sourceCell = cells[sourceIndex] || '';
+        const source = sourceIndex >= 0
+          && (hasCitationMarker(sourceCell) || /\bhttps?:\/\/\S+/i.test(sourceCell));
         for (let cellIndex = 0; cellIndex < cells.length; cellIndex += 1) {
           if (cellIndex === sourceIndex) continue;
           claims.push({ content: cells[cellIndex], startLine: paragraph.startLine + rowIndex, table: true, source });

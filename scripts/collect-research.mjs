@@ -1651,7 +1651,7 @@ function extractAdapterFacts(result, sourceUrl, observedAt) {
   const adapterLabel = adapterData.adapterName || 'adapter';
 
   return adapterData.fields
-    .map(({ field, value, confidence }) =>
+    .map(({ field, value, confidence, tuple_id, product_id }) =>
       createFact({
         field,
         value: String(value),
@@ -1659,6 +1659,8 @@ function extractAdapterFacts(result, sourceUrl, observedAt) {
         excerpt: `Structured data extracted by ${adapterLabel} adapter.`,
         observedAt,
         confidenceHint: confidence || 'medium',
+        tupleId: tuple_id,
+        productId: product_id,
       }),
     )
     .filter(Boolean);
@@ -1932,6 +1934,7 @@ function extractPriceFactsFromLine(line, sourceUrl, observedAt) {
   const billingPeriod = normalizeBillingPeriod(tail);
   const confidenceHint = billingPeriod ? 'high' : 'medium';
   const excerpt = truncate(line, 180);
+  const tupleId = 'text-' + createHash('sha256').update(line).digest('hex');
   const facts = [];
 
   if (planName) {
@@ -1976,7 +1979,7 @@ function extractPriceFactsFromLine(line, sourceUrl, observedAt) {
     }));
   }
 
-  return facts.filter(Boolean);
+  return facts.filter(Boolean).map(fact => ({ ...fact, tuple_id: tupleId }));
 }
 
 function hasAmbiguousPriceContext(line) {
@@ -2144,6 +2147,8 @@ function createFact({
   excerpt,
   observedAt,
   confidenceHint,
+  tupleId,
+  productId,
 }) {
   if (!field || !value || !sourceUrl) return null;
 
@@ -2154,6 +2159,8 @@ function createFact({
     excerpt: truncate(cleanInlineText(excerpt || ''), 180),
     observed_at: observedAt,
     confidence_hint: confidenceHint || 'medium',
+    ...(tupleId ? { tuple_id: tupleId } : {}),
+    ...(productId ? { product_id: productId } : {}),
   };
 }
 
@@ -2167,6 +2174,7 @@ function dedupeFacts(facts) {
       fact.field,
       fact.value,
       fact.source_url,
+      fact.tuple_id || (['plan_name', 'price', 'currency', 'billing_period'].includes(fact.field) ? fact.excerpt : ''),
     ].join('::');
 
     if (seen.has(key)) continue;

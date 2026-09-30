@@ -20,7 +20,7 @@ import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { buildRunId } from './path-ids.mjs';
 
-const DEFAULT_SESSIONS_ROOT = path.resolve('benchmarks', 'results', 'sessions');
+const DEFAULT_SESSIONS_ROOT = path.resolve(process.env.SHIPWRIGHT_OUTPUT_ROOT || 'benchmarks', 'results', 'sessions');
 const SESSION_FILENAME = 'session.json';
 const EVENTS_FILENAME = 'events.jsonl';
 
@@ -57,7 +57,7 @@ export async function createSession(input = {}) {
 
   const sessionId = input.session_id || generateSessionId(input.scenario_id);
   const sessionsRoot = resolveSessionsRoot(input.sessions_root);
-  const sessionDir = path.join(sessionsRoot, sessionId);
+  const sessionDir = getSessionDirectory(sessionId, sessionsRoot);
   const now = new Date().toISOString();
 
   const session = {
@@ -135,6 +135,7 @@ export async function updateSession(sessionId, patch = {}, sessionsRoot) {
   const next = {
     ...current,
     ...patch,
+    session_id: sessionId,
     artifacts: patch.artifacts
       ? { ...(current.artifacts || {}), ...patch.artifacts }
       : (current.artifacts || {}),
@@ -165,7 +166,7 @@ export async function appendSessionEvent(sessionId, event = {}, sessionsRoot) {
   }
 
   const root = resolveSessionsRoot(sessionsRoot);
-  const sessionDir = path.join(root, sessionId);
+  const sessionDir = getSessionDirectory(sessionId, root);
   await mkdir(sessionDir, { recursive: true });
 
   const record = {
@@ -238,6 +239,10 @@ export async function getSessionEvents(sessionId, sessionsRoot) {
  */
 export function getSessionDirectory(sessionId, sessionsRoot) {
   validateRequiredString(sessionId, 'sessionId');
+  if (!/^[a-z0-9][a-z0-9_-]*$/i.test(sessionId)
+    || /^(?:con|prn|aux|nul|com[0-9]|lpt[0-9])$/i.test(sessionId)) {
+    throw new Error('sessionId must be a safe directory name (letters, numbers, underscores or hyphens).');
+  }
   return path.join(resolveSessionsRoot(sessionsRoot), sessionId);
 }
 
@@ -250,11 +255,11 @@ function resolveSessionsRoot(explicitRoot) {
 }
 
 function getSessionFilePath(sessionId, sessionsRoot) {
-  return path.join(resolveSessionsRoot(sessionsRoot), sessionId, SESSION_FILENAME);
+  return path.join(getSessionDirectory(sessionId, sessionsRoot), SESSION_FILENAME);
 }
 
 function getEventsFilePath(sessionId, sessionsRoot) {
-  return path.join(resolveSessionsRoot(sessionsRoot), sessionId, EVENTS_FILENAME);
+  return path.join(getSessionDirectory(sessionId, sessionsRoot), EVENTS_FILENAME);
 }
 
 function normalizeObject(value) {

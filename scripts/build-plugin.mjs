@@ -33,7 +33,7 @@ export async function pluginFiles(root = SOURCE_ROOT) {
   // Public operational docs only; internal review exchanges and outreach are excluded.
   for (const name of [...manifest.docs, 'workflow-contract', 'structured-artifacts', 'plugin-guide']) await add(`docs/${name}.md`);
   for (const entry of ['collect-research', 'source-adapters', 'classify-request', 'format-facts',
-    'pricing-diff', 'extract-structured-artifact', 'validate-artifact', 'route-request']) await add(`scripts/${entry}.mjs`);
+    'pricing-diff', 'pricing-tuples', 'extract-structured-artifact', 'validate-artifact', 'route-request']) await add(`scripts/${entry}.mjs`);
   for (const file of ['manifest.json', 'skills-map.md', 'LICENSE', '.claude-plugin/plugin.json']) await add(file);
   // The source README documents checkout-only development tools. A directory install needs
   // a guide whose links and commands are valid inside this bundle.

@@ -46,7 +46,7 @@ import path from 'node:path';
 // Config
 // ---------------------------------------------------------------------------
 
-const DEFAULT_LOG_PATH = path.resolve('benchmarks', 'telemetry', 'events.jsonl');
+const DEFAULT_LOG_PATH = path.resolve(process.env.SHIPWRIGHT_OUTPUT_ROOT || 'benchmarks', 'telemetry', 'events.jsonl');
 
 // ---------------------------------------------------------------------------
 // Emit

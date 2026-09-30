@@ -81,6 +81,7 @@ export async function startDecisionSession(input = {}) {
   session = await updateSession(session.session_id, {
     rigor_available: Boolean(input.rigor_turn_runner),
     scenario_path: input.scenario_path || null,
+    evidence_history: input.evidence_history || [],
     latest_routing_input: null,
     latest_execution_mode: null,
   }, input.sessions_root);
@@ -228,6 +229,13 @@ export async function retrySessionStep(sessionId, options = {}) {
     throw new Error('Session is not in failed state.');
   }
 
+  if (session.latest_execution_mode === 'follow_up' && session.pending_follow_up) {
+    return runFollowUpAction(sessionId, session.pending_follow_up.action, {
+      ...options,
+      additional_evidence: session.pending_follow_up.additional_evidence,
+    });
+  }
+
   if (session.latest_execution_mode === 'rigor') {
     // Re-open the awaiting gate so confirmNextStep can run rigor again.
     await updateSession(sessionId, {
@@ -248,6 +256,8 @@ export async function retrySessionStep(sessionId, options = {}) {
     agent_id: options.agent_id,
     fast_out_dir: options.fast_out_dir,
     fast_turn_runner: options.fast_turn_runner,
+    rigor_turn_runner: options.rigor_turn_runner,
+    evidence_history: session.evidence_history || [],
     auto_confirm: false,
   });
 }
@@ -272,6 +282,7 @@ export async function runFollowUpAction(sessionId, action, options = {}) {
     let updatedSession = await updateSession(session.session_id, {
       last_follow_up_action: action,
       follow_up_action: action,
+      pending_follow_up: { action, additional_evidence: options.additional_evidence || null },
     }, options.sessions_root);
 
     const actionResult = await executeFollowUpAction(updatedSession, action, options);
@@ -280,12 +291,16 @@ export async function runFollowUpAction(sessionId, action, options = {}) {
       // Re-route through the full fast pipeline so ux_state and status reflect
       // the new confidence band rather than the stale not_ready state.
       updatedSession = await applyFastResult(updatedSession, actionResult.fast_result, options.sessions_root);
+      updatedSession = await updateSession(updatedSession.session_id, {
+        ...(actionResult.session_patch || {}), pending_follow_up: null,
+      }, options.sessions_root);
     } else {
       // For brief_generated and review_requested, apply the action patch and
       // mark completed — the session stays not_ready until human resolves it.
       updatedSession = await updateSession(updatedSession.session_id, {
         status: 'completed',
         ...(actionResult.session_patch || {}),
+        pending_follow_up: null,
       }, options.sessions_root);
     }
 

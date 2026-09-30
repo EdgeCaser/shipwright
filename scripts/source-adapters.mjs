@@ -32,7 +32,7 @@
 /**
  * @typedef {Object} AdapterResult
  * @property {string} adapterName - Which adapter produced this result
- * @property {AdapterField[]} fields - Extracted fields (deduplicated by field+value)
+ * @property {AdapterField[]} fields - Extracted fields (deduplicated within each offer)
  */
 
 // ---------------------------------------------------------------------------
@@ -133,6 +133,7 @@ function extractJsonLdAdapter(_url, html) {
   if (blobs.length === 0) return null;
 
   const fields = [];
+  let productIndex = 0;
 
   for (const blob of blobs) {
     // Expand @graph into individual items, but also include the wrapper blob
@@ -146,7 +147,7 @@ function extractJsonLdAdapter(_url, html) {
       const types = normalizeJsonLdTypes(item['@type']);
 
       if (isProductLikeType(types)) {
-        extractProductFields(item, fields);
+        extractProductFields(item, fields, 'json-ld-product-' + productIndex++);
       }
 
       // AggregateRating can appear standalone or embedded inside a Product.
@@ -168,7 +169,7 @@ function isProductLikeType(types) {
   );
 }
 
-function extractProductFields(item, fields) {
+function extractProductFields(item, fields, productId) {
   if (item.name) {
     fields.push({
       field: 'product_name',
@@ -178,8 +179,12 @@ function extractProductFields(item, fields) {
   }
 
   const offers = [].concat(item.offers || []);
-  for (const offer of offers) {
-    extractOfferFields(offer, fields);
+  for (const [offerIndex, offer] of offers.entries()) {
+    const offerFields = [];
+    extractOfferFields(offer, offerFields);
+    const tuple_id = productId + '-offer-' + offerIndex;
+    if (item.name) offerFields.push({ field: 'product_name', value: String(item.name).trim(), confidence: 'high' });
+    fields.push(...offerFields.map(field => ({ ...field, tuple_id, product_id: productId })));
   }
 
   if (item.aggregateRating) {
@@ -546,14 +551,14 @@ function normalizeAdapterDate(value) {
 }
 
 /**
- * Deduplicate adapter fields by field+value key, keeping first occurrence.
+ * Deduplicate fields within each offer, keeping first occurrence.
  */
 function dedupeAdapterFields(fields) {
   const seen = new Set();
   const result = [];
 
   for (const field of fields) {
-    const key = `${field.field}::${field.value}`;
+    const key = JSON.stringify([field.tuple_id || '', field.field, field.value]);
     if (!seen.has(key)) {
       seen.add(key);
       result.push(field);

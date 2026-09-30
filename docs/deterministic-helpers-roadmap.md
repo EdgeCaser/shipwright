@@ -83,7 +83,7 @@ node scripts/format-facts.mjs path/to/facts.json
 node scripts/format-facts.mjs path/to/facts.json --format markdown
 ```
 
-Groups facts by source domain, reconstructs pricing tuples from shared excerpts,
+Groups facts by source domain, reconstructs pricing tuples by source and offer identity,
 resolves product identity, and annotates adapter-sourced fields with `[schema]`.
 
 Wired into:

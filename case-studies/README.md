@@ -5,7 +5,7 @@ outcome, but do not provide independently checkable evidence of an engagement or
 
 These are distinct from [golden outputs](../examples/golden-outputs/), which show structured
 before/after comparisons on fictional product contexts. Case studies are messier and more
-specific: real problems, real stakes, real outcomes.
+specific: reported problems, reported stakes, reported outcomes.
 
 Company names are not used.
 
