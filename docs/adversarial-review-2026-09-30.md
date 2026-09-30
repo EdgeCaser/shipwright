@@ -168,3 +168,5 @@ The unexplained suite abort from the first review did not recur in any later ful
 - Developer tooling output (batch progress lines, telemetry placeholders) still uses em dashes.
 - Deterministic tests do not establish live Claude or Codex host behavior; that acceptance pass is still separate.
 - `dist/shipwright`, a local gitignored build, is stale; rebuild before any directory submission.
+
+The user's decisions on these limits and the ordered plan to address them are in `SESSION_HANDOFF.md` under "Planned work".
