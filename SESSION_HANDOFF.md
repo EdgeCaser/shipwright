@@ -15,9 +15,9 @@ The round-3 repairs of the second review (CRLF thematic breaks, inline marker me
 
 ## Next
 
-Planned work items 1 to 9 are done, in local commits `da2ba01`, `f2e5309`, `1d67c4b`, `2b28af0` and `f59d0c2` (item 7, approved by the user), plus `dist/shipwright` rebuilt at `f59d0c2` (122 files, 48 skills). Details, the third review round (one finding, R1, accepted and fixed) and current limits are in `docs/adversarial-review-2026-09-30.md` under "Planned-work follow-up".
+Planned work items 1 to 9 are done, in local commits `da2ba01`, `f2e5309`, `1d67c4b`, `2b28af0` and `f59d0c2` (item 7, approved by the user), plus `dist/shipwright` rebuilt at `2e719be` (123 files, 48 skills). The installer fix from the first live run is `2e719be`. Details, the third review round (one finding, R1, accepted and fixed) and current limits are in `docs/adversarial-review-2026-09-30.md` under "Planned-work follow-up".
 
-Latest full verification, run before the last commit: 556 tests passed, with none failed, skipped or cancelled. Repository validation reports zero errors (46 skills, seven agents, 17 workflows). `git diff --check` is clean. All 4,113 benchmark output files are unchanged and none were added. The final run added nothing to the system temp folder.
+Latest full verification, run before the last commit: 559 tests passed, with none failed, skipped or cancelled. Repository validation reports zero errors (46 skills, seven agents, 17 workflows). `git diff --check` is clean. All 4,113 benchmark output files are unchanged and none were added. The final run added nothing to the system temp folder.
 
 Nothing is pushed.
 
@@ -35,12 +35,14 @@ Live acceptance, 2026-09-30, run once per host from disposable installs (242 fil
 - The ambiguous-pricing check is wrong: the prompt is about a vendor contract, yet the check also requires a build-or-buy question. Both hosts asked sensible clarifying questions.
 - The Claude sessions loaded the maintainer's global instructions, whose voice rules discourage fronted labels; that confounds the label checks on that host.
 
+Second live run, after `2e719be` (installer writes the behavior rules into a marked block in the target `AGENTS.md` and `CLAUDE.md`; vendor-pricing check fixed): Claude Code passed 10 of 10. Codex met every content condition on all 10 prompts and failed only the em dash check (1 to 5 em dashes per transcript, 20 in total), so it scores 0 of 10 as graded and 10 of 10 on content.
+
 ## Remaining
 
-1. Ship the decision-routing rules to installed projects for both hosts, so a "should we" question gets the labeled decision format outside this repo.
-2. Fix the acceptance harness: drop the build-or-buy requirement from the ambiguous vendor-pricing check, and decide whether generated output must avoid em dashes (if yes, say so in the shipped instructions).
-3. Re-run live acceptance with a neutral global configuration for the Claude host.
-4. Rebuild `dist/shipwright` again if anything packaged changes after `f59d0c2`.
+1. Decide whether generated output must avoid em dashes. If yes, add that rule to `docs/host-instructions.md` and re-run Codex; if no, drop the check from `scripts/live-acceptance.mjs`.
+2. Optionally re-run the Claude host with a neutral global configuration; the maintainer's global voice rules loaded in both Claude runs.
+3. No uninstall path exists, so the managed block in a target's `AGENTS.md` and `CLAUDE.md` stays until removed by hand.
+4. Rebuild `dist/shipwright` again if anything packaged changes after `2e719be`.
 
 ## Working rules learned
 
