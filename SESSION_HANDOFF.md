@@ -15,26 +15,26 @@ The round-3 repairs of the second review (CRLF thematic breaks, inline marker me
 
 ## Next
 
-Latest full verification, run before the last commit: 522 tests passed, with none failed, skipped or cancelled. Repository validation reports zero errors (46 skills, seven agents, 17 workflows). `git diff --check` is clean. All 4,113 benchmark output files are unchanged, none were added, and the run added nothing to the system temp folder.
+Planned work items 1 to 6, 8 and 9 are done, in local commits `da2ba01`, `f2e5309`, `1d67c4b` and `2b28af0`, plus a rebuilt `dist/shipwright` (122 files, 48 skills). Details, the third review round (one finding, R1, accepted and fixed) and current limits are in `docs/adversarial-review-2026-09-30.md` under "Planned-work follow-up".
+
+Latest full verification, run before the last commit: 552 tests passed, with none failed, skipped or cancelled. Repository validation reports zero errors (46 skills, seven agents, 17 workflows). `git diff --check` is clean. All 4,113 benchmark output files are unchanged and none were added. The final run added nothing to the system temp folder.
 
 Nothing is pushed.
 
 User decisions (2026-09-30):
 - `docs/astra-redline-review.md` is approved for the public repo.
 - No history rewrite. Older internal-tooling wording is already on public `origin/main`; the current tree is clean. Do not force-push.
-- Rebuild `dist/shipwright` only after all planned changes below are done.
+- Review finding R1 accepted and fixed; no further review rounds.
 
-## Planned work, in order
+## Remaining
 
-1. Sweep em dashes from developer tooling output (`scripts/run-fast-batch.mjs`, `scripts/telemetry.mjs` progress lines and placeholders); add a source test like the orchestrate one.
-2. Make the documented full-suite command capture a TAP report, so a recurrence of the unexplained abort leaves a diagnostic.
-3. Mask inline code spans before the inline-comment pass in `scripts/markdown-scan.mjs` `visibleMarkdown` (visible text only; block comments and the envelope are already classified by the line scan).
-4. When envelope JSON fails to parse and the block contains an early `-->`, report that cause and the `--\u003e` escape instead of the raw JSON error.
-5. One focused independent review round covering the diff from `3ff74d4` to the end of items 1-4.
-6. Routing: a table-driven phrase corpus test (about 50 positive and negative questions), and a fallback so a "should we" question that mentions pricing or build versus buy but matches no decision class gets MEDIUM confidence and a clarification hint.
-7. Optional, only on user approval: require PRD metric cells to hold only the value, with sources in a Source column (breaking contract change).
-8. Live Claude and Codex acceptance: write a script (disposable install, about ten prompts, written pass conditions); running it needs user authorization for live sessions.
-9. Rebuild `dist/shipwright`.
+1. Item 7, only on user approval: require PRD metric cells to hold only the value, with sources in a Source column (breaking contract change).
+2. Live Claude and Codex acceptance: `node scripts/live-acceptance.mjs --plan`, then `--check <dir>` on saved transcripts. Running live sessions needs user authorization. See `docs/live-acceptance.md`.
+3. Rebuild `dist/shipwright` again if anything packaged changes after `2b28af0`.
+
+## Working rules learned
+
+- Parallel subagents in one worktree must never run `git checkout`, `restore` or `stash` for ablation; save and restore their own file copies instead. One reset wiped another agent's edits this session.
 
 ## Do not commit
 

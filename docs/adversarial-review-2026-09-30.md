@@ -145,28 +145,48 @@ The first F-02 repair accepted markers only at line start. The existing contract
 
 Every accepted code repair has a test that fails when the repair is reverted. The coordinator ran 22 ablations across the three rounds. Two scripted ablations were mangled by shell quoting at first and were redone from script files until the target test failed. Each commit was preceded by a full run with the TAP reporter enabled.
 
+# Planned-work follow-up
+
+Items 1 to 6, 8 and 9 of the plan in `SESSION_HANDOFF.md` were done in five local commits. Item 7 (PRD metric cells) was not started; it waits for the user's approval.
+
+| Batch | Commit | Work | Tests added |
+|---|---|---|---|
+| A | `da2ba01` | Tooling em dashes removed (10 output strings in `run-fast-batch.mjs` and `telemetry.mjs`); README and CONTRIBUTING suite command writes a TAP report; `visibleMarkdown` skips inline code spans before removing inline comments; a broken envelope with an early `-->` names that cause and the escape | 13 |
+| B | `f2e5309` | Review finding R1, below | 2 |
+| C | `1d67c4b` | 51-row routing corpus (30 decision, 21 not); "buy vs build", "buy or build" and hyphenated forms now route; a "should we" question about pricing or build-or-buy that matches no class gets MEDIUM and a clarification hint | 3 |
+| D | `2b28af0` | `scripts/live-acceptance.mjs` and `docs/live-acceptance.md`: ten prompts with written pass conditions, offline grading of saved transcripts; no live session was run. Not packaged | 12 |
+| E | none | `dist/shipwright` rebuilt from `2b28af0` (122 files, 48 skills; `markdown-scan.mjs` present) | 0 |
+
+Every code change has a test that fails when the change is reverted: ten ablation runs, all from script files. One caveat: of the four code-span tests, only the one with a whole comment inside a span fails on the old scanner; the other three are guards that already passed.
+
+During batch A, seven files were reset to `HEAD` at once, apparently by the item 1 subagent, which then re-applied only its own edits. That wiped the item 3 and item 4 edits. They were restored from the item 4 agent's saved copies, the lost tests were re-added and re-ablated, and later briefs forbade `git checkout`, `restore` and `stash`.
+
+## Third review round, `3ff74d4..da2ba01`
+
+One fresh read-only reviewer, one round, scoped to `git diff 3ff74d4..da2ba01`. It reported one reproduced finding and checked code-span masking, the envelope lookbehind, pricing routing, em dashes in output strings and internal-tooling references without finding a defect.
+
+- R1 (low, accepted, fixed in `f2e5309`): a malformed envelope was blamed on an early `-->` whenever unrelated prose with `-->` followed it. Reproduction: `<!-- shipwright:artifact` then `{"a":1,}` then `-->` on its own line, then `prose --> here`. The early-close cause now applies only when the closer that ended the block follows JSON text on the same line. Both new tests fail on the previous code.
+
+The reviewer did not re-check the ablations; the coordinator's record above covers them.
+
 ## Current verification
 
 | Check | Result |
 |---|---|
-| Full suite | 522 passed, 0 failed, 0 skipped, 0 cancelled |
+| Full suite | 552 passed, 0 failed, 0 skipped, 0 cancelled |
 | Repository validation | 0 errors; 46 skills, 7 agents, 17 workflows |
 | `git diff --check` | clean |
 | Benchmark results and telemetry | 4,113 files, identical hashes, none added |
-| System temp folder | no entries added by the full run |
-| Fresh plugin bundle (reviewer, round 3 at `3ff74d4`) | 122 files; `markdown-scan.mjs` resolves; bundled validator exits 0 on the fixture |
+| System temp folder | no entries added by the batch D and final runs; batch B and C runs coincided with empty GUID-named `.tmp` files that also appear between runs and match no code in the repo |
+| Plugin bundle `dist/shipwright` | rebuilt at `2b28af0`: 122 files, 48 skills |
 
-The unexplained suite abort from the first review did not recur in any later full run. The reviewer ran that file six times in isolation without failure and found no mechanism in it.
+The unexplained suite abort from the first review did not recur. The documented suite command now writes a TAP file, so a recurrence leaves a record of the last test that started.
 
 ## Current limits
 
-- Round-3 repairs (F-01, F-02, F-03) and the two follow-on corrections were verified by the coordinator only.
-- Metric citation text containing numbers is treated as citation, not measurement (A-05).
-- A structured envelope whose JSON contains `-->` ends early; the packaged doc tells producers how to escape it.
-- A code-span `<!--` whose `-->` falls in the same paragraph hides that paragraph's remaining text.
-- Routing is keyword-based. It covers the listed decision phrasings and the tested negatives, not every paraphrase.
-- Developer tooling output (batch progress lines, telemetry placeholders) still uses em dashes.
-- Deterministic tests do not establish live Claude or Codex host behavior; that acceptance pass is still separate.
-- `dist/shipwright`, a local gitignored build, is stale; rebuild before any directory submission.
+- Round-3 repairs (F-01, F-02, F-03) of the second review and the two follow-on corrections were verified by the coordinator only.
+- Metric citation text containing numbers is treated as citation, not measurement (A-05). Plan item 7 would change this and is a breaking contract change; it needs the user's approval.
+- Routing is keyword-based. The corpus covers 51 phrasings, not every paraphrase. The clarification fallback is literal: "Should we update the pricing page?" also gets the hint.
+- Live Claude and Codex behavior is untested. The acceptance plan exists; running it needs the user's authorization.
 
-The user's decisions on these limits and the ordered plan to address them are in `SESSION_HANDOFF.md` under "Planned work".
+The user's decisions on these limits are in `SESSION_HANDOFF.md`.
