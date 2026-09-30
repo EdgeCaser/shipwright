@@ -147,7 +147,7 @@ Every accepted code repair has a test that fails when the repair is reverted. Th
 
 # Planned-work follow-up
 
-Items 1 to 6, 8 and 9 of the plan in `SESSION_HANDOFF.md` were done in five local commits. Item 7 (PRD metric cells) was not started; it waits for the user's approval.
+Items 1 to 6, 8 and 9 of the plan in `SESSION_HANDOFF.md` were done in five local commits. Item 7 (value-only PRD metric cells with a Source column) was approved later and landed in `f59d0c2` with 4 new tests and one rewritten; they fail against the previous validator.
 
 | Batch | Commit | Work | Tests added |
 |---|---|---|---|
@@ -173,20 +173,20 @@ The reviewer did not re-check the ablations; the coordinator's record above cove
 
 | Check | Result |
 |---|---|
-| Full suite | 552 passed, 0 failed, 0 skipped, 0 cancelled |
+| Full suite | 556 passed, 0 failed, 0 skipped, 0 cancelled |
 | Repository validation | 0 errors; 46 skills, 7 agents, 17 workflows |
 | `git diff --check` | clean |
 | Benchmark results and telemetry | 4,113 files, identical hashes, none added |
 | System temp folder | no entries added by the batch D and final runs; batch B and C runs coincided with empty GUID-named `.tmp` files that also appear between runs and match no code in the repo |
-| Plugin bundle `dist/shipwright` | rebuilt at `2b28af0`: 122 files, 48 skills |
+| Plugin bundle `dist/shipwright` | rebuilt at `f59d0c2`: 122 files, 48 skills |
 
 The unexplained suite abort from the first review did not recur. The documented suite command now writes a TAP file, so a recurrence leaves a record of the last test that started.
 
 ## Current limits
 
 - Round-3 repairs (F-01, F-02, F-03) of the second review and the two follow-on corrections were verified by the coordinator only.
-- Metric citation text containing numbers is treated as citation, not measurement (A-05). Plan item 7 would change this and is a breaking contract change; it needs the user's approval.
+- A-05 is closed by item 7 (`f59d0c2`, approved breaking change): PRD metric tables need a Source column and value cells hold only a value or placeholder. A citation-like word after a number ("40 Gartner") still passes as a unit; "40% per Gartner" is rejected.
 - Routing is keyword-based. The corpus covers 51 phrasings, not every paraphrase. The clarification fallback is literal: "Should we update the pricing page?" also gets the hint.
-- Live Claude and Codex behavior is untested. The acceptance plan exists; running it needs the user's authorization.
+- Live acceptance ran once per host: Claude 4 of 10, Codex 0 of 10. Details and causes are in `SESSION_HANDOFF.md`; the largest gap is that installed projects do not receive the decision-routing rules.
 
 The user's decisions on these limits are in `SESSION_HANDOFF.md`.
