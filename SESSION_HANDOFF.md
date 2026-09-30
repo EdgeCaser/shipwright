@@ -15,9 +15,9 @@ The round-3 repairs of the second review (CRLF thematic breaks, inline marker me
 
 ## Next
 
-Planned work items 1 to 9 are done, in local commits `da2ba01`, `f2e5309`, `1d67c4b`, `2b28af0` and `f59d0c2` (item 7, approved by the user), plus `dist/shipwright` rebuilt at `2e719be` (123 files, 48 skills). The installer fix from the first live run is `2e719be`. Details, the third review round (one finding, R1, accepted and fixed) and current limits are in `docs/adversarial-review-2026-09-30.md` under "Planned-work follow-up".
+Planned work items 1 to 9 are done, in local commits `da2ba01`, `f2e5309`, `1d67c4b`, `2b28af0` and `f59d0c2` (item 7, approved by the user), plus `dist/shipwright` rebuilt at `1793ea6` (123 files, 48 skills). Live-acceptance follow-ups are `2e719be` (installer writes the behavior rules) and `1793ea6` (no-em-dash rule, `--uninstall`). Details, the third review round (one finding, R1, accepted and fixed) and current limits are in `docs/adversarial-review-2026-09-30.md` under "Planned-work follow-up".
 
-Latest full verification, run before the last commit: 559 tests passed, with none failed, skipped or cancelled. Repository validation reports zero errors (46 skills, seven agents, 17 workflows). `git diff --check` is clean. All 4,113 benchmark output files are unchanged and none were added. The final run added nothing to the system temp folder.
+Latest full verification, run before the last commit: 569 tests passed, with none failed, skipped or cancelled. Repository validation reports zero errors (46 skills, seven agents, 17 workflows). `git diff --check` is clean. All 4,113 benchmark output files are unchanged and none were added. The final run added nothing to the system temp folder.
 
 Nothing is pushed.
 
@@ -26,7 +26,7 @@ User decisions (2026-09-30):
 - No history rewrite. Older internal-tooling wording is already on public `origin/main`; the current tree is clean. Do not force-push.
 - Review finding R1 accepted and fixed; no further review rounds.
 - Item 7 (value-only PRD metric cells, Source column) approved and done.
-- Live acceptance run authorized and done once per host.
+- Live acceptance run authorized. Generated output must avoid em dashes (2026-09-30). `--uninstall` approved and added.
 
 Live acceptance, 2026-09-30, run once per host from disposable installs (242 files each) under the session scratch folder, graded with `node scripts/live-acceptance.mjs --check`: Claude Code 2.1.285 passed 4 of 10 (prd-draft, competitive-landscape, coding-question, structured-prd-artifact); codex-cli 0.159.2 passed 0 of 10. What the failures show:
 - Neither host produced the labeled decision format (RECOMMENDATION, CONFIDENCE, NEEDS_HUMAN_REVIEW and the rest) for the three "should we" prompts. The decision-routing rules live in the repo's `AGENTS.md`; the installer does not put them in the target project for either host. Codex still named the governance class, low confidence and human review, in prose.
@@ -37,12 +37,13 @@ Live acceptance, 2026-09-30, run once per host from disposable installs (242 fil
 
 Second live run, after `2e719be` (installer writes the behavior rules into a marked block in the target `AGENTS.md` and `CLAUDE.md`; vendor-pricing check fixed): Claude Code passed 10 of 10. Codex met every content condition on all 10 prompts and failed only the em dash check (1 to 5 em dashes per transcript, 20 in total), so it scores 0 of 10 as graded and 10 of 10 on content.
 
+Third Codex run, after `1793ea6` (no-em-dash rule in the installed block, plus `install.mjs --uninstall`): 10 of 10. Uninstall preview and apply on that disposable install removed every installed file and the managed block, kept nothing, refused nothing, and left `.git` and the `.shipwright/research` evidence packs that the Codex sessions wrote by running the research collector.
+
 ## Remaining
 
-1. Decide whether generated output must avoid em dashes. If yes, add that rule to `docs/host-instructions.md` and re-run Codex; if no, drop the check from `scripts/live-acceptance.mjs`.
-2. Optionally re-run the Claude host with a neutral global configuration; the maintainer's global voice rules loaded in both Claude runs.
-3. No uninstall path exists, so the managed block in a target's `AGENTS.md` and `CLAUDE.md` stays until removed by hand.
-4. Rebuild `dist/shipwright` again if anything packaged changes after `2e719be`.
+1. Optionally re-run the Claude host after `1793ea6` and with a neutral global configuration; both Claude runs loaded the maintainer's global voice rules, and the second passed 10 of 10 before the em dash rule existed.
+2. The installed block is about 620 words and loads in every session in an installed project. Trimming it is possible, but re-run live acceptance after any trim.
+3. Rebuild `dist/shipwright` again if anything packaged changes after `1793ea6`.
 
 ## Working rules learned
 
