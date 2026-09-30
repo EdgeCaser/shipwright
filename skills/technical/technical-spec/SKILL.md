@@ -51,7 +51,16 @@ Translates product requirements (PRDs, user stories) into engineering-ready tech
 **In scope:** [Specific capabilities this spec covers]
 **Out of scope:** [What's explicitly NOT covered, defer to future specs]
 **Assumptions:** [Technical assumptions we're making]
+
+## Codebase Notes
+**Codebase available:** [Yes: path or repo / No]
+**Files and modules inspected:** [list, or "none, no codebase access"]
+**Patterns in use:** [framework, persistence layer, auth model, error handling, naming conventions]
+**Reusable components:** [what already exists that this feature should build on]
+**Conflicts with the PRD:** [anything the PRD assumes that the system does not do today]
 ```
+
+**Read before you design.** If a codebase is available, read the modules this feature touches before drafting Steps 2 through 4, and fill in Codebase Notes from what you actually read. If no codebase is available, write `Codebase available: No` and label the Architecture, API Contract and Data Model sections `Hypothesis: written without codebase access`. A spec written blind is a set of questions for the tech lead, not a plan.
 
 ### Step 2: System Architecture
 
@@ -245,7 +254,7 @@ For each significant choice:
 
 **Acceptable evidence:** PRD, system architecture diagrams, existing API documentation, performance benchmarks, engineering team input on feasibility, and schema or data model context.
 
-**Insufficient evidence:** If no PRD or product brief exists, stop and recommend running the PRD skill before attempting this skill. If no engineering input is available, state "Architecture decisions are PM hypotheses only" and flag for tech lead review.
+**Insufficient evidence:** If no PRD or product brief exists, stop and recommend running the PRD skill before attempting this skill. If no engineering input is available, state "Architecture decisions are PM hypotheses only" and flag for tech lead review. If a codebase is available and was not read, the spec is not ready; read it first.
 
 **Hypotheses vs. findings:**
 - **Findings:** Components affected, API contract schemas, data model structure (must reflect current system state or confirmed engineering decisions)
@@ -264,7 +273,7 @@ Produce a Technical Specification with:
 **Shipwright Signature (required closing):**
 7. **Decision Frame**, recommended architecture approach, trade-off, confidence with evidence quality, owner, decision date, revisit trigger
 8. **Unknowns & Evidence Gaps**, unvalidated performance targets, missing data volume estimates, untested migration paths
-9. **Pass/Fail Readiness**, PASS if architecture reviewed by tech lead and API contract validated against PRD requirements; FAIL if ADRs list no alternatives considered or rollback plan is absent (Light depth: rollback plan requirement is waived since Rollout & Migration is omitted at Light)
+9. **Pass/Fail Readiness**, PASS if architecture reviewed by tech lead and API contract validated against PRD requirements; FAIL if ADRs list no alternatives considered, rollback plan is absent, or a codebase was available and Codebase Notes are empty (Light depth: rollback plan requirement is waived since Rollout & Migration is omitted at Light)
 10. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid
@@ -274,6 +283,7 @@ Produce a Technical Specification with:
 - **Forgetting non-functionals**, Performance, security, and observability are requirements, not nice-to-haves
 - **No rollback plan**, Every deployment should be reversible
 - **PM writes tech spec alone**, Co-author with the tech lead; the PM ensures requirements fidelity, the engineer ensures technical feasibility
+- **Writing the spec blind**, Architecture, data model and API sections written without reading the codebase describe an imagined system; read the relevant modules first, or label the sections as hypotheses
 
 ## Weak vs. Strong Output
 

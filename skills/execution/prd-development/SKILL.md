@@ -34,6 +34,8 @@ Produces a comprehensive Product Requirements Document using Amazon's Working Ba
 
 Before writing requirements, write a fictional press release announcing the finished product. This forces you to think from the customer's perspective.
 
+The launch is imagined. The quotes are not. Every quote in the press release must come from a real, named source (interview, support ticket, sales call, memo, review). If no sourced quote exists, leave the slot as `[TBD, requires: ...]`. Invented quotes get copied into decks and sales material as if they were real.
+
 ```markdown
 # Internal Press Release: [Feature/Product Name]
 
@@ -53,13 +55,13 @@ Before writing requirements, write a fictional press release announcing the fini
 [How does the product solve this problem? Focus on the experience, not the implementation.]
 
 ## Quote from Leadership
-"[Why this matters to the company and to customers]"
+"[Real quote from the sponsor or a named leader, with source and date. If none exists yet: [TBD, requires: sponsor quote from kickoff, strategy memo, or approval note]. Do not write one on their behalf.]"
 
 ## How It Works
 [3-5 bullet points describing the customer experience, step by step]
 
 ## Customer Quote
-"[A quote from a fictional happy customer that captures the value]"
+"[Real quote from a customer interview, support ticket, sales call, or review that shows the pain or the value, with source and date. If none exists: [TBD, requires: customer interview or support ticket quote]. Never invent a customer or a quote.]"
 
 ## Call to Action
 [What should the reader do next?]
@@ -148,9 +150,23 @@ A: [T-shirt size and breakdown]
 - [Item that may come later]
 
 ## 5. Design & UX Requirements
-- [Link to designs / wireframes]
-- [Key interaction patterns]
-- [Accessibility requirements]
+
+### Key Flows
+For each primary user flow (usually 2-4):
+- **[Flow name]:** [Entry point] > [step] > [step] > [success outcome]
+  - Screens touched: [list]
+  - Decision points: [where the user chooses, branches, or can go wrong]
+
+### Screen States
+For every new or changed screen:
+| Screen | Empty | Loading | Error | No permission | Success |
+|---|---|---|---|---|---|
+| [Screen] | [what shows before any data exists] | [skeleton, spinner, or progressive load] | [message and recovery action] | [what a user without access sees] | [confirmation and next action] |
+
+### Interaction & Accessibility
+- [Key interaction patterns, and which existing design-system components they reuse]
+- [Accessibility requirements: keyboard, screen reader, contrast, focus order]
+- Designs: [link to mockups if they exist; otherwise [TBD, requires: design mockups]. Until mockups exist, the flows and states above are the design brief.]
 
 ## 6. Technical Considerations
 - [API changes needed]
@@ -197,7 +213,7 @@ Produce a complete PRD with all three phases:
 4. **Decision Frame**, build/buy/partner recommendation, trade-off, confidence with evidence quality, owner, decision date, revisit trigger
 5. **Unknowns & Evidence Gaps**, unvalidated customer assumptions, missing technical feasibility data, untested pricing or GTM hypotheses
 6. **Pass/Fail Readiness**, PASS if problem is evidence-backed, success metrics have baselines and targets, and scope boundaries are explicit; at Light depth, PASS if problem is evidence-backed (prior PRD, launch data, or stakeholder alignment qualifies), scope boundaries are explicit, and at least one success metric is identified; FAIL if no customer evidence exists or success metrics lack baselines
-7. **Recommended Next Artifact**, Which Shipwright skill to run next and why
+7. **Recommended Next Artifact**, Which Shipwright skill to run next and why. When the PRD includes UI work and section 5 still says `[TBD, requires: design mockups]`, name a design step (mockups or a UX flow review of the key flows and screen states) before `technical-spec`, so engineering does not spec against undefined screens
 
 ## Common Mistakes to Avoid
 
@@ -206,6 +222,8 @@ Produce a complete PRD with all three phases:
 - **Missing "out of scope"**, Scope creep starts when boundaries aren't explicit
 - **Writing for engineers only**, A good PRD is readable by design, marketing, and leadership too
 - **Treating the PRD as final**, It's a living document; update it as you learn
+- **Inventing quotes**, A made-up leadership or customer quote is not evidence and will be reused as if it were; use a sourced quote or a `[TBD, requires: ...]` placeholder
+- **UX section as a link placeholder**, "[Link to designs]" gives engineering nothing to build; spell out the key flows and the empty, loading, error and permission states per screen
 
 ## Weak vs. Strong Output
 

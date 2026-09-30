@@ -2,18 +2,24 @@
 
 Last updated: 2026-09-29
 
-## Open work: feature-skill fixes
+## Done this session: feature-skill fixes
 
-A review of the feature-design skills (`prd-development`, `design-review`, `/tech-handoff`) turned up four content problems. Fix them here first; Ian has other copies to port to afterward.
+All four content problems from the review are fixed in the working tree. Ian asked to see the PRD and design-review diffs before the commit, so the commit and push happen after his approval.
 
-1. **PRD template asks for invented quotes.** `skills/execution/prd-development/SKILL.md:55` (Quote from Leadership) and `:61` (Customer Quote, "a fictional happy customer"). This contradicts `AGENTS.md:154` ("Do not invent customer quotes") and the skill's own Minimum Evidence Bar. Invented quotes also get lifted into decks later. Either require a real sourced quote with a `[TBD, requires: ...]` fallback, or drop both sections.
-2. **Design review pushes the model to manufacture findings.** `skills/technical/design-review/SKILL.md:292` says all-green verdicts mean the review wasn't rigorous, and `:295` says to simulate the legal perspective when there is no legal team. With one model playing seven reviewers, these produce plausible invented concerns and invented compliance findings. Suggested direction: an all-green result must cite what was checked; perspectives with no real input get marked "not assessed" rather than simulated. Also consider saying plainly that the seven perspectives are one model's views and are correlated.
-3. **`/tech-handoff` never looks at the codebase.** `commands/tech-handoff.md` goes PRD, tech spec, design review, epics, stories with no step that reads the target repo. Architecture, data model and API contracts get written blind. Add a step before the tech spec: if a codebase is available, read the relevant modules and ground the spec in existing patterns; if not, label architecture sections as hypotheses. Check `skills/technical/technical-spec/SKILL.md` for the same gap.
-4. **UX is a placeholder.** PRD section 5 is essentially "[Link to designs]". No skill produces flows or screen states. Minimum fix: section 5 asks for key flows plus empty, loading, error and permission states per screen, and the Recommended Next Artifact can point to a design or UI step when there is UI work.
+1. **Invented quotes.** `skills/execution/prd-development/SKILL.md` Quote from Leadership and Customer Quote now require a real sourced quote with date, or `[TBD, requires: ...]`. A rule above the template says the launch is imagined but the quotes are not. Two new Common Mistakes entries.
+2. **Manufactured findings.** `skills/technical/design-review/SKILL.md` Step 2 has two rules: cite what you checked, and mark perspectives with no real input `Not assessed` rather than simulating them. A paragraph says that one model running seven perspectives produces correlated views. Each perspective gained a `Checked against` line and `Not assessed` as a verdict option. The Synthesis gained a Coverage block. Overall Verdict table gained a third column. Pass/Fail fails any Green that cites nothing. The two Common Mistakes that pushed toward manufactured Yellows and simulated Legal are replaced.
+3. **Blind tech spec.** `commands/tech-handoff.md` gained Step 2 "Ground in the Codebase" (steps renumbered to 6). `skills/technical/technical-spec/SKILL.md` gained a Codebase Notes block in Step 1, a read-before-you-design rule, a new Insufficient Evidence sentence, a FAIL condition, and a Common Mistakes entry.
+4. **UX placeholder.** PRD section 5 now asks for key flows plus per-screen empty, loading, error, no-permission and success states, and points to design as the next step when UI work has no mockups.
 
-## Also do
+Also: version bumped 2.0.0 to 2.3.0 in `.claude-plugin/plugin.json` and `marketplace.json` (CHANGELOG was already at 2.2.0), CHANGELOG entry added.
 
-- Bump `version` in `.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json` (both still `2.0.0`). Claude Code only refreshes a plugin cache when the version changes, which is why Ian's installed copy is stuck on July content.
+Checks run: `bash scripts/validate.sh` all pass; `node --test tests/*.test.mjs` 377 pass. No em dashes in touched files. No benchmark scenario covers these three skills directly, so no benchmark run applies.
+
+## Left
+
+- Commit and push after Ian approves the PRD and design-review wording.
+- `examples/golden-outputs/prd.md` still has a Customer Quote with no source line. It is a synthetic example for a fictional company, so it does not violate the new rule in spirit, but it no longer models the template. Optional follow-up: add a source line to it.
+- The same fixes are ported and committed in Ian's other copy.
 
 ## Constraints for this repo
 

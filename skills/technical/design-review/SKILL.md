@@ -50,7 +50,12 @@ Runs a multi-stakeholder design review by evaluating a product proposal through 
 
 ### Step 2: Run 7 Parallel Perspectives
 
-Evaluate the document from each stakeholder perspective:
+Evaluate the document from each stakeholder perspective. Two rules apply to every perspective:
+
+- **Cite what you checked.** Every verdict, Green included, lists the sections of the document and the evidence it was checked against. A Green with no cited checks is an unassessed perspective, not a clean one.
+- **Do not simulate input you do not have.** If a perspective has no real input (no legal team or compliance documentation, no sales data, no customer research), mark its verdict `Not assessed` and state what input would be needed. Do not invent concerns, findings or requirements to fill the slot.
+
+When one model runs all seven perspectives, they are one reviewer's views organized under seven headings, not seven independent opinions. Their agreement is correlated and is weaker evidence than agreement between real stakeholders. Say so in the Synthesis, and treat the output as preparation for the human review, not a replacement for it.
 
 ```markdown
 ## Perspective Reviews
@@ -75,7 +80,9 @@ Evaluate the document from each stakeholder perspective:
 - Engineering assessment: [revised estimate if different]
 - Delta rationale: [why the difference]
 
-**Verdict:** [Green: Feasible as-is / Yellow: Feasible with changes / Red: Needs rethink]
+**Checked against:** [Sections of the document reviewed, and the evidence used: estimates, architecture docs, prior incidents]
+
+**Verdict:** [Green: Feasible as-is / Yellow: Feasible with changes / Red: Needs rethink / Not assessed: no engineering input, needs (what)]
 
 ---
 
@@ -99,7 +106,9 @@ Evaluate the document from each stakeholder perspective:
 **Concerns:**
 - [Concern 1]: [Description, UX risk]
 
-**Verdict:** [Green / Yellow / Red]
+**Checked against:** [Sections reviewed and evidence used]
+
+**Verdict:** [Green / Yellow / Red / Not assessed: no input for this perspective, needs (what)]
 
 ---
 
@@ -119,7 +128,9 @@ Evaluate the document from each stakeholder perspective:
 **Concerns:**
 - [Concern 1]: [Strategic risk]
 
-**Verdict:** [Green / Yellow / Red]
+**Checked against:** [Sections reviewed and evidence used]
+
+**Verdict:** [Green / Yellow / Red / Not assessed: no input for this perspective, needs (what)]
 
 ---
 
@@ -142,7 +153,9 @@ Evaluate the document from each stakeholder perspective:
 **Concerns:**
 - [Concern 1]: [Legal/compliance risk]
 
-**Verdict:** [Green / Yellow / Red]
+**Checked against:** [Privacy policy, DPA, contract terms, or regulatory guidance actually consulted. If none, this perspective is Not assessed.]
+
+**Verdict:** [Green / Yellow / Red / Not assessed: no legal or compliance input, needs (what)]
 
 ---
 
@@ -167,7 +180,9 @@ Evaluate the document from each stakeholder perspective:
 **Concerns:**
 - [Concern 1]: [Adoption or demand risk]
 
-**Verdict:** [Green / Yellow / Red]
+**Checked against:** [Sections reviewed and evidence used]
+
+**Verdict:** [Green / Yellow / Red / Not assessed: no input for this perspective, needs (what)]
 
 ---
 
@@ -190,7 +205,9 @@ Evaluate the document from each stakeholder perspective:
 **Kill Case:** Under what conditions should we NOT build this?
 - [Condition 1]
 
-**Verdict:** [Green / Yellow / Red]
+**Checked against:** [Sections reviewed and evidence used]
+
+**Verdict:** [Green / Yellow / Red / Not assessed: no input for this perspective, needs (what)]
 
 ---
 
@@ -214,7 +231,9 @@ Evaluate the document from each stakeholder perspective:
 **Concerns:**
 - [Concern 1]: [GTM risk]
 
-**Verdict:** [Green / Yellow / Red]
+**Checked against:** [Sections reviewed and evidence used]
+
+**Verdict:** [Green / Yellow / Red / Not assessed: no input for this perspective, needs (what)]
 ```
 
 ### Step 3: Synthesize the Review
@@ -246,16 +265,21 @@ Evaluate the document from each stakeholder perspective:
 |---|---|---|
 | [Question] | [Name] | [Date] |
 
+### Coverage
+- **Reviewed by:** [Named stakeholders who contributed, or "one model, all perspectives"]
+- **Not assessed:** [Perspectives with no real input, and the input each needs before it can be]
+- **Correlation note:** [If one model produced every perspective, say so here; consensus between them is not independent agreement]
+
 ### Overall Verdict
-| Perspective | Verdict |
-|---|---|
-| Engineering | [Green/Yellow/Red] |
-| Design | [Green/Yellow/Red] |
-| Executive | [Green/Yellow/Red] |
-| Legal | [Green/Yellow/Red] |
-| Customer | [Green/Yellow/Red] |
-| Devil's Advocate | [Green/Yellow/Red] |
-| Sales | [Green/Yellow/Red] |
+| Perspective | Verdict | Checked against |
+|---|---|---|
+| Engineering | [Green/Yellow/Red/Not assessed] | [what was checked] |
+| Design | [Green/Yellow/Red/Not assessed] | [what was checked] |
+| Executive | [Green/Yellow/Red/Not assessed] | [what was checked] |
+| Legal | [Green/Yellow/Red/Not assessed] | [what was checked] |
+| Customer | [Green/Yellow/Red/Not assessed] | [what was checked] |
+| Devil's Advocate | [Green/Yellow/Red/Not assessed] | [what was checked] |
+| Sales | [Green/Yellow/Red/Not assessed] | [what was checked] |
 
 **Recommendation:** [Approve / Approve with changes / Revise and re-review / Reject]
 ```
@@ -282,17 +306,18 @@ Produce a Design Review Report with:
 
 **Shipwright Signature (required closing):**
 5. **Decision Frame**, approve/revise/reject recommendation, trade-off, confidence with evidence quality, owner, decision date, revisit trigger
-6. **Unknowns & Evidence Gaps**, unresolved tensions, missing stakeholder input, untested assumptions surfaced by Devil's Advocate
-7. **Pass/Fail Readiness**, PASS if no Critical blockers remain and all tensions have assigned owners; FAIL if any perspective is Red without a resolution plan. At Light depth, PASS scopes to the 3 included perspectives only (Engineering, Customer Voice, Devil's Advocate).
+6. **Unknowns & Evidence Gaps**, unresolved tensions, missing stakeholder input, every `Not assessed` perspective with the input it needs, untested assumptions surfaced by Devil's Advocate
+7. **Pass/Fail Readiness**, PASS if no Critical blockers remain, all tensions have assigned owners, and every Green verdict cites what it checked; FAIL if any perspective is Red without a resolution plan, or if any Green verdict cites nothing. `Not assessed` perspectives do not block PASS but must appear in Unknowns & Evidence Gaps. At Light depth, PASS scopes to the 3 included perspectives only (Engineering, Customer Voice, Devil's Advocate).
 8. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid
 
 - **Skipping the Devil's Advocate**, This is the most valuable perspective; don't cut it for time
-- **All green verdicts**, If every perspective says "Green," you probably weren't rigorous enough
+- **Green verdicts that cite nothing**, An all-Green review is a legitimate outcome when each perspective shows what it checked and against what evidence. A Green with no cited checks is a perspective that was skipped, not one that passed. Do not manufacture Yellows to look rigorous
 - **No resolution owners for tensions**, Identified tensions without owners become permanent ambiguity
 - **Review too late**, Run design reviews before significant engineering investment, not after
-- **Missing perspectives**, Even if you don't have a legal team, simulate the legal perspective
+- **Simulating a perspective with no input**, If there is no legal team, no compliance documentation and no regulatory context, mark Legal `Not assessed` and name the input needed. Invented compliance findings are worse than an honest gap, because they get acted on
+- **Presenting seven headings as seven opinions**, One model writing all perspectives produces correlated views; state this in Coverage so consensus is not mistaken for independent stakeholder agreement
 
 ## Weak vs. Strong Output
 

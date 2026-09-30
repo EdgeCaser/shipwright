@@ -1,5 +1,16 @@
 # Changelog
 
+## v2.3.0 - 2026-09-29
+
+### Changed
+
+- **prd-development**: press release quotes must be sourced. The Quote from Leadership and Customer Quote slots now require a real quote with source and date, or a `[TBD, requires: ...]` placeholder. The template no longer asks for a quote from a fictional customer.
+- **prd-development**: section 5 (Design & UX Requirements) now asks for key flows and, per screen, the empty, loading, error, no-permission and success states. Recommended Next Artifact points to a design step when UI work has no mockups yet.
+- **design-review**: every verdict cites what it checked, perspectives with no real input are marked `Not assessed` instead of simulated, and the Synthesis gains a Coverage block that states when one model produced all seven perspectives. Pass/Fail Readiness fails a Green verdict that cites nothing.
+- **technical-spec**: adds a Codebase Notes block and a read-before-you-design rule; architecture, API and data model sections are labeled as hypotheses when no codebase was read.
+- **/tech-handoff**: adds a codebase grounding step between the PRD and the tech spec.
+- Plugin version bumped so installed copies refresh.
+
 ## v2.2.0 - 2026-04-15
 
 ### Added
