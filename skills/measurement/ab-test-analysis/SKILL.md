@@ -52,7 +52,7 @@ Evaluates experiment results for statistical significance, practical significanc
 ### Primary Metric: [Name]
 | Variant | Value | Change vs. Control | Confidence | Significant? |
 |---|---|---|---|---|
-| Control | [value] |, |, |, |
+| Control | [value] | | | |
 | Treatment | [value] | [+/- X%] | [95% CI: lower, upper] | [Yes / No] |
 
 **Statistical significance:** [p-value] (threshold: p < 0.05)

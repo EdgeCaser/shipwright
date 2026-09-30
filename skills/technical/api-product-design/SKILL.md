@@ -91,7 +91,7 @@ For each resource:
 | per_page | integer | 20 | Items per page (max 100) |
 | sort | string | "created_at" | Sort field |
 | order | string | "desc" | Sort direction (asc/desc) |
-| filter[status] | string |, | Filter by status |
+| filter[status] | string | | Filter by status |
 
 **Response Schema:**
 ```json

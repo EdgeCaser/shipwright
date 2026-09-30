@@ -155,7 +155,7 @@ For each significant choice:
 | Column | Type | Nullable | Default | Description |
 |---|---|---|---|---|
 | id | UUID | No | gen_random_uuid() | Primary key |
-| [field] | VARCHAR(255) | No |, | [description] |
+| [field] | VARCHAR(255) | No | | [description] |
 | [field] | INTEGER | Yes | 0 | [description] |
 | created_at | TIMESTAMP | No | NOW() | Record creation time |
 | updated_at | TIMESTAMP | No | NOW() | Last modification time |

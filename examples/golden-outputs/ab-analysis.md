@@ -69,7 +69,7 @@ The 12% activation lift will compound over time and likely improve retention, wh
 
 | Variant | Activation Rate | Change vs. Control | 95% CI | Significant? |
 |---|---|---|---|---|
-| Control (email sequence) | 38.2% (65/170) |, |, |, |
+| Control (email sequence) | 38.2% (65/170) | | | |
 | Treatment (checklist) | 42.9% (73/170) | +12.3% relative (+4.7pp absolute) | [-1.8pp, +11.2pp] | No |
 
 **Statistical significance:** p = 0.14 (threshold: p < 0.05)

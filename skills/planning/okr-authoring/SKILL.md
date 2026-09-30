@@ -143,10 +143,10 @@ Run the OKRs through this anti-pattern checklist:
 |---|---|---|---|
 | **Sandbagging**, KRs you'll definitely hit | [Y/N] | [which KR] | Increase target to 70% confidence |
 | **Task masquerading as KR**, "Ship X" | [Y/N] | [which KR] | Rewrite as outcome: "X leads to [metric change]" |
-| **Too many OKRs**, > 3 objectives or > 5 KRs each | [Y/N] |, | Prioritize ruthlessly |
+| **Too many OKRs**, > 3 objectives or > 5 KRs each | [Y/N] | | Prioritize ruthlessly |
 | **No baseline**, Can't measure starting point | [Y/N] | [which KR] | Instrument in week 1 or choose different metric |
 | **Business-as-usual**, BAU work dressed as OKR | [Y/N] | [which KR] | OKRs are for change, not maintenance |
-| **All committed, no aspirational**, No stretch | [Y/N] |, | Add 1 aspirational objective |
+| **All committed, no aspirational**, No stretch | [Y/N] | | Add 1 aspirational objective |
 | **Orphan OKR**, Doesn't connect to anything above | [Y/N] | [which] | Align to company/team OKR or question its value |
 | **Metric without action**, Team can't influence it | [Y/N] | [which KR] | Choose a metric the team can directly move |
 ```
@@ -158,7 +158,7 @@ Run the OKRs through this anti-pattern checklist:
 
 | Objective / KR | Start | Current | Target | Score (0-1.0) | On Track? | Action Needed |
 |---|---|---|---|---|---|---|
-| **Obj 1:** [name] |, |, |, | [avg of KRs] |, |, |
+| **Obj 1:** [name] | | | | [avg of KRs] | | |
 | KR1: [metric] | [baseline] | [current] | [target] | [0.X] | [Yes/At Risk/No] | [action] |
 | KR2: [metric] | [baseline] | [current] | [target] | [0.X] | [Yes/At Risk/No] | [action] |
 

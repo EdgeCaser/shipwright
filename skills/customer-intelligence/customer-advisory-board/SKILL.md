@@ -70,7 +70,7 @@ We'll know this CAB was successful if:
 | 0:00-0:10 | Welcome & ground rules | Presentation | [Host] | Set expectations |
 | 0:10-0:25 | Context setting | Brief presentation | [PM] | Share relevant trends/data |
 | 0:25-0:55 | Discussion 1: [Topic] | Facilitated discussion | [Facilitator] | Explore strategic question 1 |
-| 0:55-1:05 | Break |, |, |, |
+| 0:55-1:05 | Break | | | |
 | 1:05-1:35 | Discussion 2: [Topic] | Small group exercise | [Facilitator] | Explore strategic question 2 |
 | 1:35-1:55 | Discussion 3: [Topic] | Open forum | [Facilitator] | Explore strategic question 3 |
 | 1:55-2:00 | Wrap-up & next steps | Closing | [Host] | Thank participants, preview next session |
