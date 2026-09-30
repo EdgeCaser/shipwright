@@ -88,6 +88,15 @@ node scripts/install.mjs /path/to/your-project --apply
 
 The first command previews changes. The second installs the complete bundle into `.claude/` and `.codex/`. Existing root instructions, unrelated files and locally modified installed files are preserved. A conflict stops the installation before any file changes; `.shipwright-ignore` supports explicit exclusions. Repeat these commands after updating the source checkout.
 
+To remove an installation, run the same installer with `--uninstall`. It previews by default and removes with `--apply`:
+
+```bash
+node scripts/install.mjs /path/to/your-project --uninstall
+node scripts/install.mjs /path/to/your-project --uninstall --apply
+```
+
+Uninstall deletes only files listed in `.shipwright-install.json` whose content still matches what was installed. Edited files are kept and reported. It removes the managed block from `AGENTS.md` and `CLAUDE.md` and leaves the rest of those files as it was, deleting one only if the installer created it and nothing else is in it. Directories the installer created are removed if empty. The install record is removed last. Records from older installs do not list created directories or block details, so uninstall removes empty parent directories of the files it removed and may leave a blank line where the block was.
+
 In Claude Code, start with `/shipwright` in a project copy. Plugin commands use `/shipwright:shipwright`. In Codex, invoke `shipwright-concierge` or ask a PM question; the skill routes to the relevant framework. Restart or reload the host after installing so it discovers the new skills. No source-repo working directory is required.
 
 ### Build a directory-submission bundle

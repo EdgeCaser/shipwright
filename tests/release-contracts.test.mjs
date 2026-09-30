@@ -12,7 +12,8 @@ import { runFastAnalysis, validateFastAnalysis } from '../scripts/run-fast-analy
 import { computeBlindRatingFromRaters } from '../scripts/blind-review-utils.mjs';
 import { buildBenchmarkSuiteSummary, validateBenchmarkSuiteSummary, runBenchmarkSuite } from '../scripts/run-benchmarks.mjs';
 import { buildPlugin, pluginFiles, SOURCE_ROOT } from '../scripts/build-plugin.mjs';
-import { installShipwright } from '../scripts/install.mjs';
+import { createHash } from 'node:crypto';
+import { installShipwright, uninstallShipwright } from '../scripts/install.mjs';
 import { validateRepository } from '../scripts/validate-repository.mjs';
 import { executeFollowUpAction } from '../scripts/follow-up-actions.mjs';
 import { createSession } from '../scripts/session-store.mjs';
@@ -314,4 +315,137 @@ test('documented test commands include TAP reporter and .tap destination', async
   for (const line of contributingLines) {
     assert.ok(/--test-reporter=tap/.test(line), `CONTRIBUTING test command must include --test-reporter=tap: ${line}`);
   }
+});
+
+const EM_DASH = String.fromCharCode(0x2014);
+const exists = file => readFile(file).then(() => true, () => false);
+async function tree(dir, base = dir) {
+  const { readdir } = await import('node:fs/promises');
+  const out = [];
+  for (const entry of await readdir(dir, { withFileTypes: true })) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) out.push(...await tree(full, base));
+    else out.push(path.relative(base, full).split(path.sep).join('/'));
+  }
+  return out.sort();
+}
+
+test('installed block tells the model not to use em dashes', async t => {
+  const dir = await temporary(t);
+  await installShipwright(dir, { apply: true });
+  for (const file of ['AGENTS.md', 'CLAUDE.md']) {
+    const text = await readFile(path.join(dir, file), 'utf8');
+    assert.match(text, /must not use em dashes \(U\+2014\)/);
+    assert.ok(!text.includes(EM_DASH));
+  }
+});
+test('uninstall preview lists removals and writes nothing', async t => {
+  const dir = await temporary(t);
+  await writeFile(path.join(dir, 'AGENTS.md'), 'Mine\n');
+  await installShipwright(dir, { apply: true });
+  const snapshot = await tree(dir);
+  const agents = await readFile(path.join(dir, 'AGENTS.md'), 'utf8');
+  const preview = await uninstallShipwright(dir);
+  assert.equal(preview.applied, false);
+  assert.ok(preview.removed.includes('.codex/docs/output-standard.md'));
+  assert.deepEqual(preview.blocksRemoved, ['AGENTS.md', 'CLAUDE.md']);
+  assert.ok(preview.dirsRemoved.includes('.claude') && preview.dirsRemoved.includes('.codex'));
+  assert.deepEqual(await tree(dir), snapshot);
+  assert.equal(await readFile(path.join(dir, 'AGENTS.md'), 'utf8'), agents);
+});
+test('uninstall apply removes installed files, dirs, blocks and the record, and keeps user content exactly', async t => {
+  const dir = await temporary(t);
+  const mine = 'Top notes\r\n\r\nKeep me  \n';
+  const noNewline = 'No trailing newline';
+  await writeFile(path.join(dir, 'AGENTS.md'), mine);
+  await writeFile(path.join(dir, 'CLAUDE.md'), noNewline);
+  await writeFile(path.join(dir, 'unrelated.txt'), 'other');
+  await installShipwright(dir, { apply: true });
+  const result = await uninstallShipwright(dir, { apply: true });
+  assert.equal(result.applied, true);
+  assert.deepEqual(result.kept, []);
+  assert.deepEqual(result.refused, []);
+  assert.equal(await readFile(path.join(dir, 'AGENTS.md'), 'utf8'), mine);
+  assert.equal(await readFile(path.join(dir, 'CLAUDE.md'), 'utf8'), noNewline);
+  assert.deepEqual(await tree(dir), ['AGENTS.md', 'CLAUDE.md', 'unrelated.txt']);
+  await assert.rejects(readFile(path.join(dir, '.shipwright-install.json')), { code: 'ENOENT' });
+});
+test('uninstall deletes AGENTS.md and CLAUDE.md the installer created, and leaves an empty project dir', async t => {
+  const dir = await temporary(t);
+  await installShipwright(dir, { apply: true });
+  await uninstallShipwright(dir, { apply: true });
+  assert.deepEqual(await tree(dir), []);
+  // A file that only had the block but was user-created before install is kept, empty.
+  await writeFile(path.join(dir, 'AGENTS.md'), '');
+  await installShipwright(dir, { apply: true });
+  await uninstallShipwright(dir, { apply: true });
+  assert.equal(await readFile(path.join(dir, 'AGENTS.md'), 'utf8'), '');
+  assert.equal(await exists(path.join(dir, 'CLAUDE.md')), false);
+});
+test('uninstall keeps created instruction files that gained user content after install', async t => {
+  const dir = await temporary(t);
+  await installShipwright(dir, { apply: true });
+  const text = await readFile(path.join(dir, 'CLAUDE.md'), 'utf8');
+  await writeFile(path.join(dir, 'CLAUDE.md'), 'Added later\n\n' + text);
+  await uninstallShipwright(dir, { apply: true });
+  assert.equal(await readFile(path.join(dir, 'CLAUDE.md'), 'utf8'), 'Added later\n\n');
+});
+test('uninstall keeps and reports a modified installed file', async t => {
+  const dir = await temporary(t);
+  await installShipwright(dir, { apply: true });
+  const owned = path.join(dir, '.codex/docs/output-standard.md');
+  await writeFile(owned, 'User customizations');
+  const result = await uninstallShipwright(dir, { apply: true });
+  assert.ok(result.kept.some(entry => entry.path === '.codex/docs/output-standard.md' && /modified/.test(entry.reason)));
+  assert.ok(!result.removed.includes('.codex/docs/output-standard.md'));
+  assert.equal(await readFile(owned, 'utf8'), 'User customizations');
+  assert.ok(!result.dirsRemoved.includes('.codex') && !result.dirsRemoved.includes('.codex/docs'));
+  assert.equal(await exists(path.join(dir, '.codex/README.md')), false);
+});
+test('uninstall keeps a user-added file and the directories that hold it', async t => {
+  const dir = await temporary(t);
+  await installShipwright(dir, { apply: true });
+  await mkdir(path.join(dir, '.claude/skills/local'), { recursive: true });
+  await writeFile(path.join(dir, '.claude/skills/local/SKILL.md'), 'Local skill');
+  await uninstallShipwright(dir, { apply: true });
+  assert.deepEqual(await tree(dir), ['.claude/skills/local/SKILL.md']);
+});
+test('uninstall without hashes reports files as unverifiable and deletes nothing', async t => {
+  const dir = await temporary(t);
+  await installShipwright(dir, { apply: true });
+  const recordPath = path.join(dir, '.shipwright-install.json');
+  const record = JSON.parse(await readFile(recordPath, 'utf8'));
+  const legacy = Object.fromEntries(Object.keys(record.hashes).map(key => [key, null]));
+  await writeFile(recordPath, JSON.stringify({ version: 1, source: record.source, hashes: legacy }));
+  const before = await tree(dir);
+  const result = await uninstallShipwright(dir, { apply: true });
+  assert.deepEqual(result.removed, []);
+  assert.ok(result.kept.length > 0 && result.kept.every(entry => /unverifiable/.test(entry.reason)));
+  assert.deepEqual((await tree(dir)).filter(file => file !== '.shipwright-install.json' && !/^(AGENTS|CLAUDE)\.md$/.test(file)),
+    before.filter(file => file !== '.shipwright-install.json' && !/^(AGENTS|CLAUDE)\.md$/.test(file)));
+});
+test('uninstall refuses tampered record paths that escape the project', async t => {
+  const dir = await temporary(t);
+  const project = path.join(dir, 'project'); const other = path.join(dir, 'other');
+  await mkdir(project); await mkdir(other);
+  const outside = path.join(dir, 'outside.txt'); const linked = path.join(other, 'victim.txt');
+  await writeFile(outside, 'keep'); await writeFile(linked, 'keep');
+  const { symlink } = await import('node:fs/promises');
+  await symlink(other, path.join(project, 'jump'), process.platform === 'win32' ? 'junction' : 'dir');
+  const sha = text => createHash('sha256').update(text).digest('hex');
+  const hashes = { '../outside.txt': sha('keep'), 'jump/victim.txt': sha('keep'), [outside.split(path.sep).join('/')]: sha('keep') };
+  await writeFile(path.join(project, '.shipwright-install.json'), JSON.stringify({ version: 1, hashes, dirs: ['..', 'jump'] }));
+  const result = await uninstallShipwright(project, { apply: true });
+  assert.deepEqual(result.removed, []);
+  assert.ok(result.refused.includes('../outside.txt') && result.refused.includes('jump/victim.txt'));
+  assert.equal(await readFile(outside, 'utf8'), 'keep');
+  assert.equal(await readFile(linked, 'utf8'), 'keep');
+});
+test('uninstall errors without an install record and refuses the source repository', async t => {
+  const dir = await temporary(t);
+  await assert.rejects(uninstallShipwright(dir, { apply: true }), /No Shipwright install record/);
+  await assert.rejects(uninstallShipwright(SOURCE_ROOT), /not the Shipwright source repository/);
+  const { execFile } = await import('node:child_process');
+  const code = await new Promise(resolve => execFile(process.execPath, [path.join(SOURCE_ROOT, 'scripts/install.mjs'), dir, '--uninstall'], error => resolve(error?.code ?? 0)));
+  assert.equal(code, 1);
 });

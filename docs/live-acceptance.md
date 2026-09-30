@@ -21,6 +21,8 @@ To check the installer step without any agent, run `node scripts/live-acceptance
 2. Reload the host in that directory so it finds the skills.
 3. Run each command from the plan. The commands redirect the reply to `<id>.md` in the transcript folder. If you use the interactive UI instead, paste the full reply into that file.
 
+When you are done, `node scripts/install.mjs <workdir> --uninstall --apply` removes the installed files from the workdir, or delete the disposable directory.
+
 ## Check
 
 ```text

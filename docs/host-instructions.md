@@ -65,4 +65,6 @@ Every substantial Shipwright artifact ends with these four blocks, each substant
 - `Pass/Fail Readiness`: what conditions make the recommendation actionable now
 - `Recommended Next Artifact`: the specific next memo, analysis, plan or experiment
 
+Generated output must not use em dashes (U+2014). Use a comma, colon, parentheses or a separate sentence instead.
+
 Details are in `{{HOST_DIR}}/docs/output-standard.md`.
