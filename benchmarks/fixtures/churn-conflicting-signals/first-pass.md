@@ -2,7 +2,18 @@
 
 ## Decision Frame
 
-Recommendation: run a churn rescue pilot for high-risk accounts.
+Recommendation: Run a churn rescue pilot for high-risk accounts.
+Trade-off: Focused intervention now, but metric targets may diverge from top-level strategy.
+Confidence: medium
+Owner: PM
+Decision Date: 2026-04-02
+Revisit Trigger: New evidence changes the recommendation.
+
+## Success Metrics
+
+| Metric ID | Metric | Segment | Baseline | Target | Unit | Timeframe | Source |
+|---|---|---|---|---|---|---|---|
+| metric-retention | gross retention improvement | high-risk accounts | 1 | 12 | percent | 90 days | (source: retention-cohort-analysis) |
 
 ## Unknowns & Evidence Gaps
 
@@ -24,7 +35,7 @@ PASS because the pilot can be run without a broader strategy rewrite.
   "depth": "standard",
   "metadata": {
     "title": "PRD: Churn Rescue Pilot",
-    "status": "approved",
+    "status": "draft",
     "authors": ["Shipwright"],
     "updated_at": "2026-04-02"
   },

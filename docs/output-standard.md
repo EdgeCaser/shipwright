@@ -69,7 +69,7 @@ The four elements are structurally invariant, every output includes all four. Bu
 
 ### Pass/Fail gates must be depth-aware
 
-Pass/Fail Readiness conditions must account for the Depth setting. If a skill's Light depth explicitly permits fewer sections or lighter criteria (e.g., 2 acceptance criteria instead of 3), the Pass/Fail gate must not fail a Light-mode output for meeting Light-mode rules. Write gates as: "PASS if [standard criteria]; at Light depth, PASS if [lighter criteria]."
+Pass/Fail Readiness conditions must account for the Depth setting. If a skill's Light depth explicitly permits fewer sections or narrower coverage, the Pass/Fail gate must not fail a Light-mode output for meeting Light-mode rules. Use evidence and scope coverage, not arbitrary item counts. Write gates as: "PASS if [standard criteria]; at Light depth, PASS if [lighter criteria]." A Light PRD PASS is directional; an engineering handoff requires the engineering readiness gate and cannot rely on directional PASS alone.
 
 ### Recommendation boundary by category
 

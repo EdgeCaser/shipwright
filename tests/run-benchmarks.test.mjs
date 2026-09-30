@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { mkdir, mkdtemp, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, writeFile, rm } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
@@ -33,10 +33,17 @@ test('runBenchmarkSuite evaluates the default benchmark fixture suite', { concur
 
   assert.equal(summary.scenario_count, 7);
   assert.deepEqual(summary.status_counts, {
-    PASS: 5,
+    PASS: 4,
     FAIL: 1,
-    DNF: 1,
+    DNF: 2,
   });
+
+  // The historical handoff fixture claims a waiver without a human decision
+  // record. Preserve it as a negative regression; do not manufacture approval.
+  const handoffScenario = summary.results.find(result => result.scenario_id === 'handoff-contradiction');
+  assert.equal(handoffScenario.status, 'DNF');
+  assert.equal(handoffScenario.final_pass.valid, false);
+  assert.ok(handoffScenario.diagnostics.final_pass_issue_types.includes('invalid-structured-artifact'));
 
   const pricingScenario = summary.results.find((result) => result.scenario_id === 'pricing-partial-data');
   assert.equal(pricingScenario.status, 'FAIL');
@@ -244,11 +251,49 @@ test('runBenchmarkScenario preserves diagnostic blind ratings for DNF scenarios'
   assert.equal(result.status, 'DNF');
   assert.equal(result.final_pass.usable, false);
   assert.equal(result.final_pass.time_to_first_usable_artifact_seconds, null);
-  assert.equal(result.first_pass.validator_error_count, 1);
-  assert.equal(result.final_pass.validator_error_count, 2);
-  assert.equal(result.delta.validator_error_count_change, 1);
+  // The missing owner is reported in both the envelope and visible frame.
+  assert.equal(result.first_pass.validator_error_count, 2);
+  // Missing evidence is a contract error; the honest FAIL is readiness only.
+  assert.equal(result.final_pass.validator_error_count, 1);
+  assert.equal(result.delta.validator_error_count_change, -1);
   assert.equal(result.final_pass.blind_rating, 60);
   assert.equal(result.delta.blind_rating_change, 40);
+});
+
+test('benchmark separates a valid directional Light PASS from engineering readiness', async t => {
+  const rootDir = await mkdtemp(path.join(os.tmpdir(), 'shipwright-benchmarks-'));
+  t.after(() => rm(rootDir, { recursive: true, force: true }));
+  const artifact = basePrdArtifact();
+  artifact.depth = 'light';
+  artifact.payload.success_metrics[0].baseline = '[TBD, requires: analytics export]';
+  artifact.unknowns = ['Baseline requires an analytics export before engineering handoff.'];
+  const scenarioFile = await writeScenarioFixture(rootDir, {
+    id: 'directional-light', artifactType: 'prd', firstArtifact: artifact, finalArtifact: artifact,
+    runMetadata: { time_to_first_usable_artifact_seconds: 300, revision_count: 0 }, blindReview: null,
+  });
+  const result = await runBenchmarkScenario(scenarioFile);
+  assert.equal(result.status, 'PASS');
+  assert.equal(result.final_pass.valid, true);
+  assert.equal(result.final_pass.usable, true);
+  assert.equal(result.final_pass.readiness.ready, true);
+  assert.equal(result.final_pass.readiness.engineeringReady, false);
+});
+
+test('benchmark reports honest FAIL separately from invalid contracts', async t => {
+  const rootDir = await mkdtemp(path.join(os.tmpdir(), 'shipwright-benchmarks-'));
+  t.after(() => rm(rootDir, { recursive: true, force: true }));
+  const artifact = basePrdArtifact();
+  artifact.pass_fail_readiness = { status: 'FAIL', reason: 'Baseline collection is incomplete.' };
+  artifact.payload.success_metrics[0].baseline = '[TBD, requires: analytics export]';
+  const scenarioFile = await writeScenarioFixture(rootDir, {
+    id: 'honest-fail', artifactType: 'prd', firstArtifact: artifact, finalArtifact: artifact,
+    runMetadata: { time_to_first_usable_artifact_seconds: null, revision_count: 0 }, blindReview: null,
+  });
+  const result = await runBenchmarkScenario(scenarioFile);
+  assert.equal(result.status, 'FAIL');
+  assert.equal(result.final_pass.valid, true);
+  assert.equal(result.final_pass.usable, false);
+  assert.equal(result.final_pass.validator_error_count, 0);
 });
 
 test('compareBenchmarkSuites flags materially worse first pass at the blind-rating threshold', { concurrency: false }, () => {
@@ -629,7 +674,7 @@ function basePrdArtifact() {
     depth: 'standard',
     metadata: {
       title: 'PRD: Test Artifact',
-      status: 'approved',
+      status: 'draft',
       authors: ['Shipwright'],
       updated_at: '2026-04-02',
     },
@@ -693,6 +738,17 @@ function renderArtifactMarkdown(artifact) {
 ## Decision Frame
 
 Recommendation: ${artifact.decision_frame.recommendation}
+Trade-off: ${artifact.decision_frame.tradeoff}
+Confidence: ${artifact.decision_frame.confidence}
+Owner: ${artifact.decision_frame.owner}
+Decision Date: ${artifact.decision_frame.decision_date}
+Revisit Trigger: ${artifact.decision_frame.revisit_trigger}
+
+## Metrics
+
+| Metric ID | Metric | Segment | Baseline | Target | Unit | Timeframe | Source |
+|---|---|---|---|---|---|---|---|
+${artifact.payload.success_metrics.map(metric => `| ${metric.metric_id} | ${metric.name} | ${metric.segment} | ${metric.baseline} | ${metric.target} | ${metric.unit} | ${metric.timeframe} | (source: test-source) |`).join('\n')}
 
 ## Unknowns & Evidence Gaps
 

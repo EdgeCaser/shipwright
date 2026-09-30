@@ -279,9 +279,10 @@ test('installed providers without a rigor harness never offer an unavailable act
 
     // Provider names alone do not establish an executable review harness.
     assert.equal(result.session.status, 'completed');
-    assert.equal(result.session.ux_state, 'not_ready');
+    assert.equal(result.session.ux_state, 'provisional');
     assert.equal(result.session.requires_user_confirmation, false);
     assert.equal(result.session.recommended_next_mode, null);
+    assert.doesNotMatch(`${result.session.explanation} ${result.session.follow_up_action}`, /add .*provider|third provider/i);
   } finally {
     await rm(root, { recursive: true, force: true });
   }
@@ -531,8 +532,10 @@ test('declineNextStep transitions session to completed with user_declined_escala
     const result = await declineNextStep(session.session_id, { sessions_root: root });
 
     assert.equal(result.session.status, 'completed');
+    assert.equal(result.session.ux_state, 'not_ready');
     assert.equal(result.session.ux_substate, 'user_declined_escalation');
     assert.equal(result.session.requires_user_confirmation, false);
+    assert.equal(result.session.recommended_next_mode, null);
   } finally {
     await rm(root, { recursive: true, force: true });
   }

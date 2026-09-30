@@ -16,6 +16,50 @@ test('routeRequest auto-escalates research-heavy asks', { concurrency: false }, 
   assert.ok(result.escalateReasons.includes('external-research-required'));
 });
 
+test('product subjects do not become external readers', () => {
+  for (const prompt of ['Write a PRD for customer onboarding', 'Write a PRD for the customer onboarding flow']) {
+    const result = routeRequest(prompt);
+    assert.deepEqual(result.topRoute, { route: 'write-prd', kind: 'workflow' });
+    assert.equal(result.routeConfidence, 'HIGH');
+    assert.equal(result.autoEscalate, false);
+    assert.ok(!result.blockers.includes('audience-outside-product'));
+  }
+  const sprint = routeRequest('Sprint plan for the engineering team');
+  assert.ok(!sprint.blockers.includes('audience-outside-product'));
+  assert.equal(sprint.autoEscalate, false);
+});
+
+test('supplied prices and packaging route to pricing without external research', () => {
+  for (const prompt of ['Here are our prices; recommend packaging', 'Pricing page copy from the numbers I pasted']) {
+    const result = routeRequest(prompt);
+    assert.deepEqual(result.topRoute, { route: 'pricing', kind: 'workflow' });
+    assert.ok(!result.blockers.includes('external-research-required'));
+    assert.equal(result.autoEscalate, false);
+  }
+});
+
+test('explicit fresh competitor lookup still requires external research with supplied data', () => {
+  for (const prompt of [
+    'Here are our prices; look up current competitor prices and recommend packaging',
+    'Look up competitor prices for our packaging decision',
+  ]) {
+    const result = routeRequest(prompt);
+    assert.ok(result.blockers.includes('external-research-required'));
+    assert.ok(result.escalateReasons.includes('external-research-required'));
+  }
+});
+
+test('explicit customer and engineering readers escalate communication artifacts', () => {
+  for (const prompt of [
+    'Draft a status update to customers about the delay',
+    'Prepare a presentation for engineering leadership',
+  ]) {
+    const result = routeRequest(prompt);
+    assert.ok(result.blockers.includes('audience-outside-product'));
+    assert.ok(result.escalateReasons.includes('stakeholder-audience-outside-product'));
+  }
+});
+
 test('routeRequest lowers confidence when no deterministic winner exists', { concurrency: false }, () => {
   const result = routeRequest('Help me with something for next quarter');
   assert.equal(result.routeConfidence, 'LOW');

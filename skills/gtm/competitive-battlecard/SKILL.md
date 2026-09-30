@@ -165,7 +165,7 @@ Produce a Competitive Battlecard with:
 **Shipwright Signature (required closing):**
 8. **Decision Frame**, recommended competitive positioning stance, trade-off acknowledged, confidence level with source quality, owner (product marketing or sales enablement), decision date, revisit trigger (competitor launch or pricing change)
 9. **Unknowns & Evidence Gaps**, unverified feature claims, missing win/loss data, pricing tiers not yet confirmed
-10. **Pass/Fail Readiness**, PASS if Quick Reference, Feature Comparison, and at least 3 objection handlers are evidence-backed; FAIL if feature ratings are unverified or no win/loss patterns exist. **Light-depth exception:** At Light depth, PASS requires only an evidence-backed Quick Reference and Feature Comparison; win/loss patterns and objection handlers are not evaluated.
+10. **Pass/Fail Readiness**, PASS if the Quick Reference, Feature Comparison, and every included objection handler are evidence-backed. Cover each material objection supported by win/loss or customer evidence; do not invent handlers where no objection evidence exists, and name that evidence gap. FAIL if feature ratings are unverified or no win/loss patterns exist. **Light-depth exception:** At Light depth, PASS requires only an evidence-backed Quick Reference and Feature Comparison; win/loss patterns and objection handlers are not evaluated.
 11. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid

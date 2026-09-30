@@ -50,14 +50,17 @@ Runs a multi-stakeholder design review by evaluating a product proposal through 
 - **Timeline:** [When the review needs to be complete]
 ```
 
-### Step 2: Run 7 Parallel Perspectives
+### Step 2: Run the Selected Perspectives
 
 Evaluate the document from each stakeholder perspective. Two rules apply to every perspective:
 
 - **Cite what you checked.** Every verdict, Green included, lists the sections of the document and the evidence it was checked against. A Green with no cited checks is an unassessed perspective, not a clean one.
 - **Do not simulate input you do not have.** If a perspective has no real input (no legal team or compliance documentation, no sales data, no customer research), mark its verdict `Not assessed` and state what input would be needed. Do not invent concerns, findings or requirements to fill the slot.
 
-When one model runs all seven perspectives, they are one reviewer's views organized under seven headings, not seven independent opinions. Their agreement is correlated and is weaker evidence than agreement between real stakeholders. Say so in the Synthesis, and treat the output as preparation for the human review, not a replacement for it.
+At Light depth, use only Engineering, Customer Voice, and Devil's Advocate. At Standard and
+Deep depth, use all seven perspectives. When one model runs several perspectives, they are one
+reviewer's views organized under headings, not independent opinions. Say so in the Synthesis and
+treat the output as preparation for human review.
 
 ```markdown
 ## Perspective Reviews
@@ -272,7 +275,7 @@ When one model runs all seven perspectives, they are one reviewer's views organi
 - **Not assessed:** [Perspectives with no real input, and the input each needs before it can be]
 - **Correlation note:** [If one model produced every perspective, say so here; consensus between them is not independent agreement]
 
-### Overall Verdict
+### Overall Verdict (Standard and Deep)
 | Perspective | Verdict | Checked against |
 |---|---|---|
 | Engineering | [Green/Yellow/Red/Not assessed] | [what was checked] |
@@ -282,6 +285,19 @@ When one model runs all seven perspectives, they are one reviewer's views organi
 | Customer | [Green/Yellow/Red/Not assessed] | [what was checked] |
 | Devil's Advocate | [Green/Yellow/Red/Not assessed] | [what was checked] |
 | Sales | [Green/Yellow/Red/Not assessed] | [what was checked] |
+
+**Recommendation:** [Approve / Approve with changes / Revise and re-review / Reject]
+```
+
+At Light depth, replace the seven-row overall-verdict table with this three-row table:
+
+```markdown
+### Overall Verdict (Light)
+| Perspective | Verdict | Checked against |
+|---|---|---|
+| Engineering | [Green/Yellow/Red/Not assessed] | [what was checked] |
+| Customer | [Green/Yellow/Red/Not assessed] | [what was checked] |
+| Devil's Advocate | [Green/Yellow/Red/Not assessed] | [what was checked] |
 
 **Recommendation:** [Approve / Approve with changes / Revise and re-review / Reject]
 ```
@@ -302,7 +318,7 @@ When one model runs all seven perspectives, they are one reviewer's views organi
 
 Produce a Design Review Report with:
 1. **Review Setup**, document under review, scope, constraints
-2. **7 Perspective Reviews**, each with assessment, concerns, and verdict
+2. **Perspective Reviews**, with Engineering, Customer Voice, and Devil's Advocate at Light depth; all seven perspectives at Standard and Deep depth
 3. **Synthesis**, consensus, tensions, blockers, recommendations, open questions
 4. **Overall Verdict**, go/no-go recommendation
 

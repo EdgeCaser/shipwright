@@ -2,7 +2,18 @@
 
 ## Decision Frame
 
-Recommendation: ship a bounded Phase 1 focused on WhatsApp intake, deterministic quote drafting, consistent artifact storage, tentative calendar holds, and human approval before any pricing commitment or send.
+Recommendation: Ship a bounded Phase 1 for intake, deterministic quote drafting, calendar holds, and human approval before any commitment.
+Trade-off: Delivers faster operator value now by deferring production planning and negotiation automation to later phases.
+Confidence: high
+Owner: PM
+Decision Date: 2026-04-02
+Revisit Trigger: New evidence changes the recommendation.
+
+## Success Metrics
+
+| Metric ID | Metric | Segment | Baseline | Target | Unit | Timeframe | Source |
+|---|---|---|---|---|---|---|---|
+| metric-quote-turnaround | draft quote turnaround time | event sales leads | 6 | 1 | hours | 7 days | (source: event-automation-phase-1-spec) |
 
 ## Unknowns & Evidence Gaps
 
@@ -25,7 +36,7 @@ PASS because the first release now contains its automation boundary and keeps op
   "depth": "standard",
   "metadata": {
     "title": "PRD: Event Automation Platform Phase 1",
-    "status": "approved",
+    "status": "draft",
     "authors": ["Shipwright"],
     "updated_at": "2026-04-02"
   },

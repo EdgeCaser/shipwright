@@ -20,7 +20,9 @@ Use `schema_version: "2.0.0"`, lowercase `mode` (`fast` or `rigorous`), and lowe
 
 ## Shared fields
 
-Include metadata, all six Decision Frame fields, unknowns, PASS/FAIL with reason, evidence entries and the type-specific payload. A reviewable draft can PASS its artifact gates while remaining metadata.status=draft; PASS does not grant human approval. Evidence-insufficient exploratory drafts remain FAIL. Do not put placeholders in fields and report readiness as PASS.
+Include metadata, all six Decision Frame fields, unknowns, PASS/FAIL with reason, evidence entries and the type-specific payload. A reviewable draft can PASS its artifact gates while remaining metadata.status=draft; PASS does not grant human approval. Evidence-insufficient exploratory drafts remain FAIL. A Light PRD may PASS directionally with an identified metric and explicit baseline/target gaps, but it is not ready for engineering. A well-formed FAIL is a valid, unready artifact.
+
+`metadata.status=approved` requires `metadata.approval_record` with `human_identity` (a named person's full name or email), `decision_ref` (URL, located file, or namespaced decision/ticket ID), and `decided_at` (timestamp). These fields make the decision traceable; an authored record does not prove authenticity. Verify the source before relying on the approval. Do not synthesize one.
 
 Every evidence entry has a unique `evidence_id`, `kind`, `source_ref`, lowercase confidence, and `supports` IDs. Link the recommendation with `decision_frame.recommendation`. Claims also use explicit evidence IDs. All references must resolve. Evidence of kind `assumption` does not substantiate a factual claim; mark the consuming claim as an assumption or hypothesis. Preserve claim, metric and finding IDs across revisions. A source reference must identify the actual supplied document, passage or URL.
 
@@ -33,20 +35,24 @@ Use verdict `CLEAR`, `DEFEND`, `ESCALATE`, or `INSUFFICIENT_EVIDENCE`. Severity 
 The revised PRD/strategy records every related finding in `challenge_resolution`, using its original ID:
 
 - `resolved`: note the actual revision and where it appears.
-- `waived`: include the explicit human waiver, `waiver_reason` and `owner`; the agent cannot grant itself a waiver.
-- `deferred`: retain the finding and explain the dependency. A deferred Critical finding blocks readiness.
+- `waived`: include `waiver_reason`, `owner`, and `human_decision` with the same three provenance fields as an approval record; the agent cannot grant itself a waiver.
+- `deferred`: retain the finding, its original severity, and the dependency. A deferred Critical finding blocks readiness; a Minor deferral is informational.
 
-Do not merge unrelated reports with colliding IDs. Namespace IDs by report when first created. Pass the full review and original artifact to the author, then check all resolution conditions.
+Do not merge unrelated reports with colliding IDs. Namespace IDs by report when first created. Record severity in each resolution so validation without a related report cannot hide a Critical finding. Engineering handoff requires the related challenge report to verify recorded resolutions. Pass the full review and original artifact to the author, then check all resolution conditions.
 
 ## Validate at the boundary
 
 From the user's project, run the helper by its absolute installed path:
 
 ```bash
-node /path/to/shipwright/scripts/validate-artifact.mjs artifact.md --artifact-type prd --expect-structured --related strategy.json --related challenge-report.json
+node "/path/to/shipwright/scripts/validate-artifact.mjs" "artifact.md" --artifact-type prd --expect-structured --related "strategy.json" --related "challenge-report.json" --require-ready
 ```
 
-The validator rejects malformed envelopes, missing contract fields and evidence links. It flags likely citation gaps and cross-artifact contradictions. It cannot establish source truth, identify every contradiction, or prove the prose matches the JSON. A human/model semantic pass must compare both representations. Fix discrepancies before handing off; never use a clean hidden payload to excuse a defective visible artifact.
+The validator returns separate `valid` and `readiness` results. The default CLI exits 0 for warnings, informational findings, and well-formed unready drafts; exits 1 for invalid contracts or visible/JSON mismatch; and exits 2 with `--require-ready` when a valid artifact is not ready for engineering. JSON output includes `readiness.ready` for the declared artifact use and `readiness.engineeringReady` for handoff.
+
+`engineeringReady` checks deterministic prerequisites, not authorization or human approval. A complete draft can meet those prerequisites while remaining a draft. Verify the referenced human decisions and any required initiative approval before treating the handoff as approved; a successful CLI exit never supplies that approval.
+
+The validator compares the six visible Decision Frame fields and PASS/FAIL status with JSON. Start the visible Pass/Fail Readiness section with its actual PASS or FAIL verdict, then explain it. For PRDs, put metric name, segment, baseline/current, target, unit, and timeframe in a labeled Markdown table so it can compare each value. Equivalent wording can pass free-text checks, but deterministic comparison cannot prove semantic equivalence or source truth. It flags likely citation gaps in prose and table rows and cross-artifact contradictions. Human review must verify source references, approval and waiver provenance, and substantive meaning.
 
 ## Existing artifacts
 

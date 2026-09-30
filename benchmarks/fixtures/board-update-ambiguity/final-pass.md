@@ -2,7 +2,12 @@
 
 ## Decision Frame
 
-Recommendation: keep the current investment plan while evidence is still incomplete.
+Recommendation: Keep the current investment plan while evidence remains mixed.
+Trade-off: Preserves strategic consistency, but delays a sharper board narrative.
+Confidence: medium
+Owner: PM
+Decision Date: 2026-04-02
+Revisit Trigger: New evidence changes the recommendation.
 
 ## Unknowns & Evidence Gaps
 
@@ -30,7 +35,7 @@ The board draft says expansion pipeline coverage is 42% above plan and should re
   "depth": "light",
   "metadata": {
     "title": "Strategy: Board Update Under Ambiguity",
-    "status": "approved",
+    "status": "draft",
     "authors": ["Shipwright"],
     "updated_at": "2026-04-02"
   },

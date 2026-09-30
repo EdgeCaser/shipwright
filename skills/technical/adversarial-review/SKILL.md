@@ -37,13 +37,19 @@ This skill produces a **Challenge Report**. A good Challenge Report creates usef
 
 ### Pre-Check: Run the Deterministic Validator
 
-Before reviewing manually, run the postflight validator if the artifact is available as a file:
+Before reviewing manually, find the nearest ancestor containing `manifest.json`. If the artifact
+is available as a file, run the postflight validator by its absolute installed path:
 
 ```bash
-node scripts/validate-artifact.mjs path/to/artifact.md
+node "<absolute-shipwright-root>/scripts/validate-artifact.mjs" path/to/artifact.md
 ```
 
 The validator flags unsupported dollar figures and numeric claims without nearby citation markers, and checks for missing expected sections. Treat flags as review candidates. Verify each flag against the actual claim before including it; map it to the appropriate attack vector. If the validator finds no issues, note that and proceed. This step is optional but saves review time on high-volume citation work.
+
+The review itself can assess a valid draft that is not ready for engineering. When this report is
+used for an engineering handoff, provide it to the handoff validator as `--related
+<challenge-report-path>` and let that boundary use `--require-ready`; do not treat an unready
+draft as malformed or force it to PASS.
 
 ### Step 1: Define the Review Scope
 

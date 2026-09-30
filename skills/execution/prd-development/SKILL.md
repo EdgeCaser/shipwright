@@ -208,7 +208,9 @@ For every new or changed screen:
 
 When an automated handoff or benchmark explicitly requests structured output, also read `docs/structured-artifacts.md` and the matching schema from the Shipwright installation root. Append the validated envelope and keep it consistent with the visible artifact. Ordinary chat output needs no JSON duplicate.
 
-Produce a complete PRD with all three phases:
+At **Light** depth, produce the 1-page brief from the Depth table: problem, proposed solution, identified success metric with explicit baseline/target gaps, scope in/out, and open questions. Do not require the full press release, FAQ, or detailed requirements. A Light PASS means the brief is directionally usable; it does not authorize engineering handoff.
+
+At **Standard** and **Deep** depth, produce a complete PRD with all three phases:
 1. **Press Release**, customer-facing narrative
 2. **FAQ**, customer and internal questions answered
 3. **Detailed Requirements**, full specification
@@ -216,7 +218,7 @@ Produce a complete PRD with all three phases:
 **Shipwright Signature (required closing):**
 4. **Decision Frame**, build/buy/partner recommendation, trade-off, confidence with evidence quality, owner, decision date, revisit trigger
 5. **Unknowns & Evidence Gaps**, unvalidated customer assumptions, missing technical feasibility data, untested pricing or GTM hypotheses
-6. **Pass/Fail Readiness**, PASS if the problem is evidence-backed, success metrics have baselines and targets, and scope boundaries are explicit. At Light depth, a directional brief can PASS with an identified metric and explicit baseline/target gaps; it is not engineering-ready until those gaps and detailed requirements are resolved. FAIL if evidence or scope boundaries are absent.
+6. **Pass/Fail Readiness**, PASS if the problem is evidence-backed, success metrics have baselines and targets, and scope boundaries are explicit. At Light depth, a directional brief can PASS with an identified metric and explicit baseline/target gaps; it is not engineering-ready until those gaps and detailed requirements are resolved. FAIL if evidence or scope boundaries are absent. A well-formed FAIL is an honest unreadiness result, not a broken artifact.
 7. **Recommended Next Artifact**, Which Shipwright skill to run next and why. When the PRD includes UI work and section 5 still says `[TBD, requires: design mockups]`, name a design step (mockups or a UX flow review of the key flows and screen states) before `technical-spec`, so engineering does not spec against undefined screens
 
 ## Common Mistakes to Avoid

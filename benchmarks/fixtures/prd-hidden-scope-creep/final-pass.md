@@ -2,7 +2,18 @@
 
 ## Decision Frame
 
-Recommendation: ship the workflow handoff improvement with a limited rollout.
+Recommendation: Ship a limited workflow handoff release for support teams.
+Tradeoff: Keeps v1 shippable now by explicitly excluding manager routing.
+Confidence: high, based on the support workflow audit.
+Owner: PM
+Decision date: 2026-04-02
+Revisit trigger: New evidence changes the recommendation.
+
+## Goals & Success Metrics
+
+| Metric | Segment | Baseline | Target | Unit | Timeframe | Source |
+|---|---|---|---|---|---|---|
+| workflow handoff completion rate | mid-market support teams | 42 | 65 | percent | 30 days | (source: support-workflow-audit) |
 
 ## Unknowns & Evidence Gaps
 
@@ -11,7 +22,7 @@ Recommendation: ship the workflow handoff improvement with a limited rollout.
 
 ## Pass/Fail Readiness
 
-PASS because the hidden scope is now contained.
+PASS because the critical scope finding has been resolved and v1 boundaries are explicit.
 
 ## Recommended Next Artifact
 
@@ -25,7 +36,7 @@ PASS because the hidden scope is now contained.
   "depth": "standard",
   "metadata": {
     "title": "PRD: Team Inbox Workflow Handoff",
-    "status": "approved",
+    "status": "draft",
     "authors": ["Shipwright"],
     "updated_at": "2026-04-02"
   },
@@ -61,6 +72,7 @@ PASS because the hidden scope is now contained.
     {
       "finding_id": "finding-scope-creep",
       "state": "resolved",
+      "severity": "critical",
       "note": "Manager routing is explicitly marked out of scope for v1."
     }
   ],

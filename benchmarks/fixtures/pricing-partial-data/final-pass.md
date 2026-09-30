@@ -2,7 +2,12 @@
 
 ## Decision Frame
 
-Recommendation: hold the packaging change until evidence improves.
+Recommendation: Hold the packaging change until willingness-to-pay evidence improves.
+Trade-off: Protects credibility with sales and finance at the cost of slower monetization work.
+Confidence: high
+Owner: PM
+Decision Date: 2026-04-02
+Revisit Trigger: New evidence changes the recommendation.
 
 ## Unknowns & Evidence Gaps
 
@@ -24,7 +29,7 @@ FAIL because the data is still incomplete for approval.
   "depth": "standard",
   "metadata": {
     "title": "Strategy: Pricing Reset with Partial Data",
-    "status": "approved",
+    "status": "draft",
     "authors": ["Shipwright"],
     "updated_at": "2026-04-02"
   },

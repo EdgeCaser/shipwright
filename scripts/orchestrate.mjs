@@ -266,7 +266,7 @@ export function route(input) {
     case 'post_judge':
       return routePostJudge({
         scenarioClass, confidence, pa, needsReview,
-        panelAgreement, hasUncertaintyPayload, crossFamilyReviewConfirmed, input,
+        panelAgreement, crossFamilyReviewConfirmed, input,
       });
 
     default:
@@ -283,17 +283,40 @@ export function route(input) {
 // Execution surfaces must distinguish installed providers from an installed harness.
 export function routeWithCapabilities(input) {
   const result = route(input);
-  if (input.stage !== 'pre_run' && input.needs_human_review === true) {
+  const stage = input.stage || 'pre_run';
+  if (stage !== 'pre_run' && input.needs_human_review === true) {
     return makeResult({ ux_state: UX_STATES.NOT_READY, ux_substate: UX_SUBSTATES.HUMAN_REVIEW_REQUIRED,
       explanation: 'The analysis requires human judgment before acting. Additional model agreement does not grant that approval.',
       follow_up_action: 'Escalate to human review' });
   }
-  if (input.rigor_available !== true && ['double_panel', 'judge'].includes(result.recommended_next_mode)) {
-    return { ...result, recommended_next_mode: null, requires_user_confirmation: false,
-      recommended_provider_roles: null,
+  if (input.rigor_available !== true && stage !== 'pre_run') {
+    if (stage === 'post_single' && input.confidence_band === 'high') {
+      return makeResult({
+        ux_state: UX_STATES.PROVISIONAL,
+        ux_substate: input.user_declined_escalation
+          ? UX_SUBSTATES.USER_DECLINED_ESCALATION : UX_SUBSTATES.SINGLE_RUN_ACCEPTABLE,
+        explanation: resolveScenarioClass(input.scenario_class).cross_family_required
+          ? 'The fast analysis has high confidence, but this class calls for independent review before a final decision. The automated rigor runner is unavailable, so treat this result as provisional.'
+          : 'The fast analysis has high confidence. Treat this single analysis as provisional.',
+        follow_up_action: resolveScenarioClass(input.scenario_class).cross_family_required
+          ? 'Request independent human review before a final decision' : null,
+      });
+    }
+    return makeResult({
       ux_state: result.ux_state === UX_STATES.PROVISIONAL ? UX_STATES.PROVISIONAL : UX_STATES.NOT_READY,
-      explanation: `${result.explanation} The automated multi-model harness is not included in this distribution.`,
-      follow_up_action: 'Gather the missing evidence or request human review' };
+      ux_substate: input.user_declined_escalation
+        ? UX_SUBSTATES.USER_DECLINED_ESCALATION
+        : result.ux_state === UX_STATES.PROVISIONAL
+          ? result.ux_substate : UX_SUBSTATES.NEEDS_MORE_EVIDENCE,
+      explanation: input.user_declined_escalation
+        ? 'Escalation was declined. The available analysis does not support a decision yet.'
+        : result.ux_state === UX_STATES.PROVISIONAL
+        ? 'The available analysis is provisional. The automated rigor runner is unavailable.'
+        : 'The available analysis does not support a decision yet. The automated rigor runner is unavailable.',
+      follow_up_action: result.ux_state === UX_STATES.PROVISIONAL
+        ? 'Request independent review before a final decision'
+        : 'Gather the missing evidence or request human review',
+    });
   }
   return result;
 }
@@ -347,7 +370,7 @@ function routePreRun({ scenarioClass, pa, input }) {
 }
 
 function routePostSingle({ scenarioClass, confidence, pa, needsReview, hasUncertaintyPayload, userDeclined, crossFamilyReviewConfirmed, input }) {
-  const isWeak = confidence.below_threshold || needsReview || hasUncertaintyPayload;
+  const isWeak = confidence.below_threshold || needsReview;
 
   // Strong single result — provisional
   if (!isWeak && !userDeclined) {
@@ -519,7 +542,7 @@ function routePostDouble({ scenarioClass, confidence, pa, needsReview, panelAgre
   });
 }
 
-function routePostJudge({ scenarioClass, confidence, pa, needsReview, panelAgreement, hasUncertaintyPayload, crossFamilyReviewConfirmed }) {
+function routePostJudge({ scenarioClass, confidence, pa, needsReview, panelAgreement, crossFamilyReviewConfirmed }) {
   // Judge disagrees with both panel models — directionally incoherent
   if (panelAgreement === 'directionally_incoherent') {
     return makeResult({
@@ -545,8 +568,8 @@ function routePostJudge({ scenarioClass, confidence, pa, needsReview, panelAgree
     });
   }
 
-  // Judge returned low confidence, unconfirmed review flag, or uncertainty payload → gather more evidence
-  const isUnresolved = confidence.below_threshold || needsReview || hasUncertaintyPayload;
+  // An uncertainty payload may accompany a high-confidence verdict; it does not lower confidence.
+  const isUnresolved = confidence.below_threshold || needsReview;
   if (isUnresolved) {
     return makeResult({
       ux_state: UX_STATES.NOT_READY,

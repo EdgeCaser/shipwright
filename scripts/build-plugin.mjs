@@ -29,12 +29,15 @@ export async function pluginFiles(root = SOURCE_ROOT) {
   for (const name of ['shipwright-concierge', 'shipwright-research-brief']) {
     await add(`.codex/skills/${name}/SKILL.md`, `skills/${name}/SKILL.md`);
   }
-  for (const dir of ['commands', 'agents', 'evals', 'schemas', 'output-styles']) await addTree(dir);
+  for (const dir of ['commands', 'agents', 'evals', 'schemas', 'output-styles', 'examples/golden-outputs']) await addTree(dir);
   // Public operational docs only; internal review exchanges and outreach are excluded.
-  for (const name of [...manifest.docs, 'workflow-contract', 'structured-artifacts']) await add(`docs/${name}.md`);
+  for (const name of [...manifest.docs, 'workflow-contract', 'structured-artifacts', 'plugin-guide']) await add(`docs/${name}.md`);
   for (const entry of ['collect-research', 'source-adapters', 'classify-request', 'format-facts',
     'pricing-diff', 'extract-structured-artifact', 'validate-artifact', 'route-request']) await add(`scripts/${entry}.mjs`);
-  for (const file of ['manifest.json', 'skills-map.md', 'LICENSE', 'README.md', '.claude-plugin/plugin.json']) await add(file);
+  for (const file of ['manifest.json', 'skills-map.md', 'LICENSE', '.claude-plugin/plugin.json']) await add(file);
+  // The source README documents checkout-only development tools. A directory install needs
+  // a guide whose links and commands are valid inside this bundle.
+  await add('docs/plugin-guide.md', 'README.md');
   const plugin = JSON.parse(files.get('.claude-plugin/plugin.json'));
   files.set('.codex-plugin/plugin.json', Buffer.from(JSON.stringify({ name: plugin.name, version: plugin.version,
     description: 'Evidence-backed product management skills and workflows.', skills: './skills/',

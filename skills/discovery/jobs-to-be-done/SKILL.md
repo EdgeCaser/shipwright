@@ -166,7 +166,7 @@ When I [context], I want to [goal], So I can [outcome].
 **Shipwright Signature (required closing):**
 8. **Decision Frame**, Top underserved opportunities worth pursuing, trade-off between breadth of jobs vs. depth of scoring, confidence in opportunity scores with evidence quality, owner, decision date, revisit trigger
 9. **Unknowns & Evidence Gaps**, Job steps with no customer evidence, outcomes scored on assumption rather than data
-10. **Pass/Fail Readiness**, PASS if core job statement is solution-agnostic with at least 3 scored outcomes backed by evidence (at Light depth: PASS if core job statement is solution-agnostic with functional, emotional, and social layers articulated; outcome scoring not required); FAIL if job statements contain product/feature names or all scores are assumed
+10. **Pass/Fail Readiness**, PASS if the core job statement is solution-agnostic and every scored outcome is backed by evidence. At Light depth, PASS requires the functional, emotional, and social layers; outcome scoring is not required. Do not invent outcomes to make a list longer: if evidence does not identify a material outcome, record that gap and avoid a prioritized-outcome recommendation. FAIL if job statements contain product or feature names, or all scores are assumed.
 11. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid

@@ -1,9 +1,12 @@
-# Case Study: Prospect Reframe to Deal in Under Ten Minutes
+# Usage Illustration: Prospect Reframe to Deal
+
+> This is an anonymized, unverified account. It illustrates a reported workflow; it is not
+> independently checkable evidence of a customer engagement, timing, or commercial outcome.
 
 **Context:** Pre-revenue B2B data platform, signing design partners  
 **Workflow used:** `/start` → discovery research → prospect framing → pilot strategy  
-**Time:** Under 10 minutes  
-**Outcome:** Deal signed
+**Reported time:** Under 10 minutes
+**Reported outcome:** Deal signed
 
 ---
 
@@ -69,11 +72,11 @@ The use cases were immediately recognized as relevant. The prospect didn't need 
 that the problem existed, they already knew their renewal and expansion motions were manual
 and reactive. Shipwright had named the pain correctly before the meeting started.
 
-The deal was signed.
+The reported outcome was that the deal was signed.
 
 ---
 
-## Why this is a Shipwright proof point
+## What this illustration is intended to show
 
 The reframe was not obvious. The platform's standard pitch language, consumer subscriptions,
 onboarding behavior, free-to-paid conversion, didn't map cleanly to the prospect's vocabulary.
@@ -86,7 +89,7 @@ Shipwright did this because it had full product context (CLAUDE.md), a structure
 process, and pilot templates grounded in the platform's actual offer. The output wasn't a
 summary, it was a usable artifact.
 
-**Time comparison:**
+**Illustrative time comparison (not measured):**
 
 | Task | Manual estimate | Shipwright |
 |---|---|---|
@@ -103,8 +106,7 @@ The founder's time was spent in the meeting, not preparing for it.
 
 ## What this demonstrates
 
-- Shipwright produces **decision-ready outputs**, not research summaries. The framing was usable
-  directly in a client conversation without editing.
+- Shipwright can produce a decision-ready framing artifact when the supplied context is specific.
 - **Product context is leverage.** CLAUDE.md carries the product's pilot templates, personas,
   and positioning constraints into every session. The quality of the output depends on the
   quality of the context, and Shipwright compounds it.

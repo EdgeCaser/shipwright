@@ -160,7 +160,10 @@ test('release allowlist flattens all skills and includes their local dependencie
     }
   }
   const installedValidator = await import(pathToFileURL(path.join(output, 'scripts/validate-artifact.mjs')));
-  assert.equal(installedValidator.validateArtifact(wrap(await fixture())).issues.filter(i => i.severity === 'error').length, 0);
+  const visibleFixture = await readFile(path.join(SOURCE_ROOT, 'benchmarks/fixtures/prd-hidden-scope-creep/final-pass.md'), 'utf8');
+  const validation = installedValidator.validateArtifact(visibleFixture);
+  assert.equal(validation.valid, true, JSON.stringify(validation.issues));
+  assert.equal(validation.artifact.metadata.status, 'draft');
   await assert.rejects(buildPlugin(output), /new directory/);
 });
 test('installer preserves root instructions and local additions, and blocks modified-file overwrite atomically', async t => {

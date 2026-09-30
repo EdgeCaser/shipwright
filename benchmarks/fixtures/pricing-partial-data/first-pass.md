@@ -2,7 +2,12 @@
 
 ## Decision Frame
 
-Recommendation: hold the packaging change until evidence improves.
+Recommendation: Hold the packaging change until willingness-to-pay evidence improves.
+Trade-off: Slower monetization work now, lower reversal risk later.
+Confidence: medium
+Owner: PM
+Decision Date: 2026-04-02
+Revisit Trigger: New evidence changes the recommendation.
 
 ## Unknowns & Evidence Gaps
 

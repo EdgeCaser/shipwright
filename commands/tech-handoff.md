@@ -48,11 +48,30 @@ Translate the PRD into an engineering-ready technical spec, grounded in the Code
 ### Step 4: Design Review
 Read and apply `skills/technical/design-review/SKILL.md`.
 
-Run the 7-perspective review on the combined PRD + tech spec:
-- Engineering, Design, Executive, Legal, Customer Voice, Devil's Advocate, Sales
+Run the design review at the selected depth on the combined PRD + tech spec. At Light depth,
+cover Engineering, Customer Voice, and Devil's Advocate. At Standard and Deep depth, cover all
+seven perspectives: Engineering, Design, Executive, Legal, Customer Voice, Devil's Advocate,
+and Sales. Mark a perspective `Not assessed` when the needed input is unavailable.
 - Synthesize: consensus, tensions, blockers, open questions
 
 Resolve blockers before labeling the breakdown ready for engineering. Draft planning may continue with explicit unresolved dependencies. Reuse the PRD's stories in Step 6 and refine only what the technical review changed.
+
+Before delivering the package to engineering, the handoff PRD must meet the Standard or Deep
+engineering conditions; a Light PRD is directional only. Request its structured PRD envelope,
+then locate the installed Shipwright root and run:
+
+```text
+node "<absolute-shipwright-root>/scripts/validate-artifact.mjs" "<prd-path>" --artifact-type prd --expect-structured --require-ready --related "<challenge-report-path>"
+```
+
+Supply every referenced challenge report with `--related` so unresolved review findings are part
+of the readiness check. Use the technical-spec skill's semantic gates for the technical spec; it
+does not use the structured PRD validator. A valid but unready PRD may remain in draft planning;
+it is not an engineering delivery.
+
+The readiness flag checks deterministic prerequisites and does not grant human approval. A
+complete draft can pass it. Preserve the draft status and verify the actual initiative approval
+and any required human decisions before representing this package as an approved handoff.
 
 ### Step 5: Epic Breakdown
 Read and apply `skills/execution/epic-breakdown/SKILL.md`.
@@ -74,9 +93,9 @@ For the first 1-2 epics (the ones engineering will start on), produce complete u
 ## Output
 
 Produce a **Tech Handoff Package** containing:
-1. PRD (press release + FAQ + detailed requirements)
+1. PRD (the selected-depth PRD output)
 2. Technical Specification (Codebase Notes, architecture, API, data model, NFRs), with architecture sections labeled as hypotheses if no codebase was available
-3. Design Review Report (7-perspective synthesis)
+3. Design Review Report (the selected-depth perspective synthesis)
 4. Epic Breakdown (sequenced with hypotheses and metrics)
 5. User Stories (for first 1-2 epics, with full acceptance criteria)
 

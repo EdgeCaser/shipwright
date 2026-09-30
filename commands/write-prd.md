@@ -12,7 +12,8 @@ Run this command to produce a full Product Requirements Document using the Worki
 ## Workflow Steps
 
 ### Step 1: Gather Context
-Ask the PM for:
+Use the problem statement, customer context, and evidence already supplied. Ask at most two
+targeted questions only when a missing decision would materially change the PRD:
 - What problem are we solving?
 - Who is the target customer/persona?
 - What evidence supports this need? (interviews, data, requests)
@@ -29,7 +30,8 @@ Write a fictional press release announcing the finished product:
 - How it works (3-5 steps)
 - Customer quote (sourced verbatim, or `[TBD, requires: customer quote]`)
 
-Review with the PM before proceeding. The press release is the alignment tool, if it doesn't feel right, the PRD won't either.
+Use the press release to test the product narrative, then continue to the complete PRD. Mark
+unresolved assumptions and questions in the artifact rather than pausing the workflow.
 
 ### Step 3: Write the FAQ
 Customer FAQ (3-5 questions a customer would ask) and Internal FAQ covering:
@@ -60,7 +62,8 @@ Assemble the full PRD with all sections:
 
 ## Output
 
-Produce a complete **PRD document** ready for stakeholder review, containing:
+Produce a complete **PRD document** ready for stakeholder review at the selected depth. At Light
+depth, follow the PRD skill's one-page brief omit rules. At Standard or Deep depth, include:
 1. Press Release
 2. FAQ (Customer + Internal)
 3. Detailed Requirements with User Stories

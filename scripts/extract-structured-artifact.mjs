@@ -124,7 +124,45 @@ export function validateStructuredArtifact(artifact, options = {}) {
   }
 
   validateValueAgainstSchema(artifact, schema, '$', errors);
+  if (artifact?.metadata?.status === 'approved') {
+    validateHumanDecision(artifact.metadata.approval_record, '$.metadata.approval_record', errors);
+  }
+  for (const [index, resolution] of (Array.isArray(artifact.challenge_resolution) ? artifact.challenge_resolution : []).entries()) {
+    if (resolution?.state === 'waived') {
+      if (typeof resolution.owner !== 'string' || !resolution.owner.trim()) {
+        errors.push({ path: `$.challenge_resolution[${index}].owner`, message: 'Waiver owner is required.' });
+      }
+      if (typeof resolution.waiver_reason !== 'string' || !resolution.waiver_reason.trim()) {
+        errors.push({ path: `$.challenge_resolution[${index}].waiver_reason`, message: 'Waiver reason is required.' });
+      }
+      validateHumanDecision(resolution.human_decision, `$.challenge_resolution[${index}].human_decision`, errors);
+    }
+  }
   return { artifactType, schema, errors };
+}
+
+function validateHumanDecision(record, recordPath, errors) {
+  if (!record || typeof record !== 'object' || Array.isArray(record)) {
+    errors.push({ path: recordPath, message: 'A traceable human decision record is required.' });
+    return;
+  }
+  for (const field of ['human_identity', 'decision_ref', 'decided_at']) {
+    if (typeof record[field] !== 'string' || !record[field].trim()) {
+      errors.push({ path: `${recordPath}.${field}`, message: 'A nonempty provenance value is required.' });
+    }
+  }
+  if (typeof record.human_identity === 'string' && !(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(record.human_identity)
+    || /^[\p{L}][\p{L}.'-]+(?:\s+[\p{L}][\p{L}.'-]+)+$/u.test(record.human_identity))) {
+    errors.push({ path: `${recordPath}.human_identity`, message: 'Name a specific human (full name or email).' });
+  }
+  if (typeof record.decision_ref === 'string' && !(/^(?:https?:\/\/\S+|[^\s]+[\\/][^\s]+(?:#\S+|:\d+)|[A-Z][A-Z0-9]+-\d+)$/i
+    .test(record.decision_ref.trim()))) {
+    errors.push({ path: `${recordPath}.decision_ref`, message: 'Reference a URL, located file, or namespaced decision/ticket ID.' });
+  }
+  if (typeof record.decided_at === 'string' && (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(record.decided_at)
+    || !Number.isFinite(Date.parse(record.decided_at)))) {
+    errors.push({ path: `${recordPath}.decided_at`, message: 'Expected a valid timestamp.' });
+  }
 }
 
 export function validateValueAgainstSchema(value, schema, currentPath, errors) {

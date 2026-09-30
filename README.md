@@ -140,7 +140,7 @@ node scripts/shipwright.mjs \
 
 ### Providers and output
 
-The optional CLI accepts `claude`, `gpt` and `gemini` provider labels. Listing multiple installed providers does not enable an independent review harness. That harness is not included; results requiring it remain not ready. A human-review flag must be preserved regardless of model confidence.
+The optional CLI accepts `claude`, `gpt` and `gemini` provider labels. Listing multiple installed providers does not add a second automated model review. A human-review flag must be preserved regardless of model confidence.
 
 CLI sessions write to `benchmarks/sessions/` and Fast runs to `benchmarks/results/fast-analysis/` by default. With `--out-dir DIR`, sessions use `DIR/s` and Fast runs use `DIR/f`.
 
@@ -164,7 +164,7 @@ if (result.ok && result.data.session.ux_state === 'not_ready') {
 }
 ```
 
-Follow-up actions: `gather_more_evidence` creates a collection brief unless `additional_evidence` is supplied, in which case it re-analyzes that input; `create_follow_up_brief` writes a review brief; `open_human_review` records a request without contacting anyone. Optional integrations with an actual review harness can use `/confirm` and `/decline` only when the session offers that action.
+Follow-up actions: `gather_more_evidence` creates a collection brief unless `additional_evidence` is supplied, in which case it re-analyzes that input; `create_follow_up_brief` writes a review brief; `open_human_review` records a request without contacting anyone. `/confirm` and `/decline` are available only when a session explicitly offers them.
 
 ### Telemetry
 
@@ -244,7 +244,7 @@ Use standalone mode for one framework and one question. Move up to workflows whe
 
 Want proof before adoption? Start here:
 
-- [Case studies](case-studies/) for real-world proof points from production use
+- [Case studies](case-studies/) for anonymized, unverified usage illustrations
 - [Golden outputs](examples/golden-outputs/) for side-by-side baseline vs Shipwright comparisons
 - [Pass/fail gates](evals/pass-fail.md) for binary readiness checks
 - [Eval rubrics](evals/) for scored quality dimensions
@@ -279,14 +279,16 @@ outcome data, or if revenue impact has no source.
 
 ## Keeping Your Install Up to Date
 
-If you installed with `scripts/sync.sh --install`, your project has a `shipwright-sync.sh` script. After pulling new changes in the Shipwright repo, run it from your project directory:
+After pulling new changes in the Shipwright repo, use the portable Node installer from the source checkout:
 
-```bash
-bash shipwright-sync.sh          # interactive, shows what changed, asks before updating
-bash shipwright-sync.sh --yes    # auto-update everything without prompting
+```text
+node "<absolute-source-root>/scripts/install.mjs" "<project-path>"
+node "<absolute-source-root>/scripts/install.mjs" "<project-path>" --apply
 ```
 
-The sync script compares every file against the Shipwright source and reports what's changed, what's new, and what's been removed. You can update all at once or file-by-file with diffs.
+The preview reports changes and conflicts. The apply command updates only files previously installed
+by Shipwright that have not been locally changed. `scripts/sync.sh` remains a Bash compatibility
+wrapper; the Node installer works on Windows, macOS, and Linux.
 
 ## Slack Agent
 

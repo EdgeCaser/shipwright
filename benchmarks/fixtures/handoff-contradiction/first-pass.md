@@ -2,7 +2,18 @@
 
 ## Decision Frame
 
-Recommendation: ship the first platform handoff artifact for self-serve SMB teams.
+Recommendation: Ship the first platform handoff artifact for self-serve SMB teams.
+Trade-off: Moves faster on a smaller segment, but risks drifting from platform strategy and challenge findings.
+Confidence: medium
+Owner: PM
+Decision Date: 2026-04-02
+Revisit Trigger: New evidence changes the recommendation.
+
+## Success Metrics
+
+| Metric ID | Metric | Segment | Baseline | Target | Unit | Timeframe | Source |
+|---|---|---|---|---|---|---|---|
+| metric-platform-success | handoff success rate | smb self-serve | 71 | 85 | percent | 30 days | (source: platform-handoff-design) |
 
 ## Unknowns & Evidence Gaps
 
@@ -24,7 +35,7 @@ PASS because the handoff can proceed while follow-up risk remains explicit.
   "depth": "standard",
   "metadata": {
     "title": "PRD: Platform Handoff Alignment",
-    "status": "approved",
+    "status": "draft",
     "authors": ["Shipwright"],
     "updated_at": "2026-04-02"
   },

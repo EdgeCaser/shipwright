@@ -103,7 +103,7 @@ According to the supplied report (source: Gartner), the market reached $6.7B in 
   assert.equal(issues.filter((i) => i.type === IssueType.UNSUPPORTED_DOLLAR).length, 0);
 });
 
-test('validateArtifact does not flag dollar figures in table rows', { concurrency: false }, () => {
+test('validateArtifact flags unsourced dollar figures in pricing table rows', { concurrency: false }, () => {
   const text = `
 # Pricing Comparison
 
@@ -117,8 +117,8 @@ test('validateArtifact does not flag dollar figures in table rows', { concurrenc
   const { issues } = validateArtifact(text);
   assert.equal(
     issues.filter((i) => i.type === IssueType.UNSUPPORTED_DOLLAR).length,
-    0,
-    'table rows are exempt from citation checks',
+    3,
+    'each unsourced pricing row needs a claim-local source',
   );
 });
 
@@ -360,6 +360,25 @@ function buildStructuredMarkdown(artifact) {
 
 Body copy here.
 
+## Decision Frame
+
+Recommendation: ${artifact.decision_frame.recommendation}
+Tradeoff: ${artifact.decision_frame.tradeoff}
+Confidence: ${artifact.decision_frame.confidence}
+Owner: ${artifact.decision_frame.owner}
+Decision date: ${artifact.decision_frame.decision_date}
+Revisit trigger: ${artifact.decision_frame.revisit_trigger}
+
+## Pass/Fail Readiness
+
+${artifact.pass_fail_readiness.status}: ${artifact.pass_fail_readiness.reason}
+
+${artifact.artifact_type === 'prd' ? `## Goals & Success Metrics
+
+| Metric | Segment | Baseline | Target | Unit | Timeframe | Source |
+|---|---|---|---|---|---|---|
+${artifact.payload.success_metrics.map(metric => `| ${metric.name} | ${metric.segment} | ${metric.baseline} | ${metric.target} | ${metric.unit} | ${metric.timeframe} | (source: customer-interviews) |`).join('\n')}` : ''}
+
 <!-- shipwright:artifact
 ${JSON.stringify(artifact, null, 2)}
 -->
@@ -441,7 +460,7 @@ function createRelatedStrategyArtifact(overrides = {}) {
     depth: 'standard',
     metadata: {
       title: 'Mid-market strategy',
-      status: 'approved',
+      status: 'draft',
       authors: ['PM'],
       updated_at: '2026-04-02',
     },
@@ -517,7 +536,7 @@ function createChallengeReportArtifact() {
     depth: 'standard',
     metadata: {
       title: 'Challenge report',
-      status: 'approved',
+      status: 'draft',
       authors: ['Red-team'],
       updated_at: '2026-04-02',
     },
@@ -634,11 +653,11 @@ test('validateArtifact warns on segment contradiction against related strategy',
   assert.ok(issues.some((issue) => issue.type === IssueType.SEGMENT_CONTRADICTION));
 });
 
-test('validateArtifact errors when critical challenge finding has no resolution state', { concurrency: false }, () => {
+test('validateArtifact blocks readiness when critical challenge finding has no resolution state', { concurrency: false }, () => {
   const artifact = createValidPrdArtifact();
   const challenge = createChallengeReportArtifact();
 
-  const { issues } = validateArtifact(buildStructuredMarkdown(artifact), {
+  const { issues, readiness, valid } = validateArtifact(buildStructuredMarkdown(artifact), {
     expectStructured: true,
     artifactType: 'prd',
     relatedArtifacts: [challenge],
@@ -646,7 +665,9 @@ test('validateArtifact errors when critical challenge finding has no resolution 
 
   const issue = issues.find((entry) => entry.type === IssueType.CHALLENGE_FINDING_UNRESOLVED);
   assert.ok(issue);
-  assert.equal(issue.severity, Severity.ERROR);
+  assert.equal(issue.severity, Severity.WARNING);
+  assert.equal(valid, true);
+  assert.equal(readiness.ready, false);
 });
 
 test('validateArtifact accepts resolved challenge finding state', { concurrency: false }, () => {
@@ -672,7 +693,7 @@ test('validateArtifact accepts resolved challenge finding state', { concurrency:
   );
 });
 
-test('validateArtifact errors when waived challenge finding omits waiver metadata', { concurrency: false }, () => {
+test('validateArtifact rejects waiver without a human decision record', { concurrency: false }, () => {
   const artifact = createValidPrdArtifact();
   artifact.challenge_resolution = [
     {
@@ -690,14 +711,14 @@ test('validateArtifact errors when waived challenge finding omits waiver metadat
   });
 
   const issue = issues.find((entry) =>
-    entry.type === IssueType.CHALLENGE_FINDING_UNRESOLVED &&
-    entry.message.includes('waiver_reason and owner'),
+    entry.type === IssueType.INVALID_STRUCTURED_ARTIFACT &&
+    entry.message.includes('human_decision'),
   );
   assert.ok(issue);
   assert.equal(issue.severity, Severity.ERROR);
 });
 
-test('validateArtifact errors when critical challenge finding is deferred', { concurrency: false }, () => {
+test('validateArtifact blocks readiness when critical challenge finding is deferred', { concurrency: false }, () => {
   const artifact = createValidPrdArtifact();
   artifact.challenge_resolution = [
     {
@@ -708,7 +729,7 @@ test('validateArtifact errors when critical challenge finding is deferred', { co
   ];
 
   const challenge = createChallengeReportArtifact();
-  const { issues } = validateArtifact(buildStructuredMarkdown(artifact), {
+  const { issues, readiness } = validateArtifact(buildStructuredMarkdown(artifact), {
     expectStructured: true,
     artifactType: 'prd',
     relatedArtifacts: [challenge],
@@ -719,5 +740,6 @@ test('validateArtifact errors when critical challenge finding is deferred', { co
     entry.message.includes('still deferred'),
   );
   assert.ok(issue);
-  assert.equal(issue.severity, Severity.ERROR);
+  assert.equal(issue.severity, Severity.WARNING);
+  assert.equal(readiness.ready, false);
 });

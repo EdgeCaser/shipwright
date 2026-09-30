@@ -54,7 +54,7 @@ These are engineering-handoff requirements. A Light directional brief follows th
 - **PASS**: All core gates pass and all artifact-specific gates pass
 - **FAIL**: Any required gate fails
 
-No partial pass. A partial artifact may be useful, but must retain FAIL and cannot be handed off as approved. A completed review can PASS while its reviewed artifact remains blocked.
+PASS applies to the selected depth and intended use. A Light directional PRD can PASS its scoped gate while engineering readiness remains false. An artifact that fails its applicable gate must retain FAIL and cannot be handed off as approved. A completed review can PASS while its reviewed artifact remains blocked.
 
 ## Repair workflow
 
@@ -74,4 +74,4 @@ Return: PASS or FAIL, failed gates, and exact fixes required.
 
 ## Deterministic checks versus semantic review
 
-The CLI checks a subset: envelope structure, evidence links, likely citation gaps, and selected cross-document conflicts. It does not verify source truth, all action ownership, guardrail adequacy, or prose/JSON agreement. Passing the CLI never substitutes for these gates. Scoring is useful for improvement or requested evaluation; it need not add a separate pass to every small task.
+The CLI separates contract validity from readiness. It checks envelope structure, evidence links, likely citation gaps, required visible fields, selected visible/structured signatures and cross-document conflicts. It does not verify source truth, human decision authenticity, all action ownership, guardrail adequacy, or complete semantic agreement. Use `--require-ready` on a requested structured handoff to enforce the separate engineering readiness gate; default exit 0 can still contain warnings or an honest FAIL. Passing the CLI never substitutes for these gates. Scoring is useful for improvement or requested evaluation; it need not add a separate pass to every small task.

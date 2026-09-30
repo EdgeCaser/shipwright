@@ -294,12 +294,16 @@ export async function runBenchmarkScenario(scenario) {
     scenario_id: scenarioRecord.id,
     status: deriveScenarioStatus(finalPass),
     first_pass: {
+      valid: firstPass.valid,
+      readiness: firstPass.readiness,
       usable: firstPass.usable,
       validator_error_count: firstPass.validator_error_count,
       contradiction_count: firstPass.contradiction_count,
       blind_rating: firstPass.blind_rating,
     },
     final_pass: {
+      valid: finalPass.valid,
+      readiness: finalPass.readiness,
       usable: finalPass.usable,
       time_to_first_usable_artifact_seconds: finalPass.usable
         ? normalizeTimeToFirstUsable(
@@ -668,7 +672,9 @@ async function evaluateScenarioPass(scenario, passKey, relatedArtifacts, blindRe
   return {
     issues: validation.issues,
     artifact: validation.artifact,
-    usable: isArtifactUsable(validation.issues),
+    valid: validation.valid,
+    readiness: validation.readiness,
+    usable: isArtifactUsable(validation),
     validator_error_count: validation.issues.filter(
       (issue) => issue.severity === Severity.ERROR,
     ).length,
@@ -690,10 +696,11 @@ function buildValidationOptions(scenario, relatedArtifacts) {
   };
 }
 
-function isArtifactUsable(issues) {
-  for (const issue of issues) {
+function isArtifactUsable(validation) {
+  if (!validation.valid || !validation.readiness.ready) return false;
+  for (const issue of validation.issues) {
     if (issue.severity === Severity.ERROR) return false;
-    if (USABILITY_BLOCKING_WARNING_TYPES.has(issue.type)) return false;
+    if (issue.severity === Severity.WARNING && USABILITY_BLOCKING_WARNING_TYPES.has(issue.type)) return false;
   }
   return true;
 }
@@ -715,8 +722,7 @@ function computeBlindRating(blindReview, passKey) {
 }
 
 function deriveScenarioStatus(finalPass) {
-  if (finalPass.artifact?.pass_fail_readiness?.status === 'FAIL'
-    && finalPass.issues.every(issue => issue.type === IssueType.READINESS_FAILED)) return 'FAIL';
+  if (finalPass.valid && !finalPass.readiness.ready) return 'FAIL';
   if (!finalPass.usable) return 'DNF';
 
   const readinessStatus = finalPass.artifact?.pass_fail_readiness?.status;

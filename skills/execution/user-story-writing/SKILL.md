@@ -172,7 +172,7 @@ For each user story, produce:
 **Shipwright Signature (required closing):**
 6. **Decision Frame**, story readiness recommendation (ready for sprint / needs grooming / needs split), trade-off, confidence with evidence quality, owner, decision date, revisit trigger
 7. **Unknowns & Evidence Gaps**, undefined edge case behaviors, missing design specs, unconfirmed performance thresholds
-8. **Pass/Fail Readiness**, PASS if story meets INVEST criteria, has 3+ acceptance criteria (at Light depth: 2+), and persona is evidence-based; FAIL if persona is generic ("a user"), acceptance criteria are untestable, or story is too large for one sprint
+8. **Pass/Fail Readiness**, PASS if the story meets INVEST criteria, the acceptance criteria cover the intended behavior and material stated boundaries or error paths, and the persona is evidence-based. At Light depth, cover the main behavior and any material error path without inventing edge cases. FAIL if the persona is generic ("a user"), acceptance criteria are untestable, or the story is too large for one sprint.
 9. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid

@@ -2,7 +2,18 @@
 
 ## Decision Frame
 
-Recommendation: ship the workflow handoff improvement with a limited rollout.
+Recommendation: Ship a limited workflow handoff release for support teams.
+Tradeoff: Faster operator value now, but unresolved routing scope can spill into engineering work.
+Confidence: medium, based on the support workflow audit.
+Owner: PM
+Decision date: 2026-04-02
+Revisit trigger: New evidence changes the recommendation.
+
+## Goals & Success Metrics
+
+| Metric | Segment | Baseline | Target | Unit | Timeframe | Source |
+|---|---|---|---|---|---|---|
+| workflow handoff completion rate | mid-market support teams | 42 | 65 | percent | 30 days | (source: support-workflow-audit) |
 
 ## Unknowns & Evidence Gaps
 

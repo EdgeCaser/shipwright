@@ -52,10 +52,11 @@ If the PM has not specified artifacts, offer to review the last 3-5 from the cur
 
 ### Step 1b: Run the Deterministic Pre-Pass
 
-Before scoring manually, run the postflight validator on each artifact file:
+Before scoring manually, locate the nearest Shipwright installation root containing
+`manifest.json` and run the postflight validator on each artifact file by its absolute installed path:
 
 ```bash
-node scripts/validate-artifact.mjs path/to/artifact.md
+node "<absolute-shipwright-root>/scripts/validate-artifact.mjs" path/to/artifact.md
 ```
 
 The validator produces machine-generated issue counts for unsupported claims and missing sections. Use these counts as a floor for the **Correctness** dimension, an artifact flagged for multiple unsupported dollar figures cannot score above 6 on Correctness without PM-reviewed justification. If the artifact has a `## Sources` / `## References` / `## Evidence` section, citation checks are skipped and that penalty does not apply. Record the validator output alongside each artifact in the audit set.
@@ -112,7 +113,7 @@ Each recommendation must be specific (name the dimension, the agent/workflow, an
 
 ## Minimum Evidence Bar
 
-**Required inputs:** At least 2 completed Shipwright artifacts to compare. Single-artifact scoring is possible but produces no trend data, note this limitation explicitly.
+**Required inputs:** One or more completed Shipwright artifacts. A single-artifact audit scores the artifact and records that it cannot support trend findings; a comparison needs enough comparable artifacts to support the trend claimed.
 
 **Acceptable evidence:** The artifacts themselves, plus any source materials or context that informed them.
 
@@ -133,7 +134,7 @@ Produce a **Quality Audit Report** with:
 **Shipwright Signature (required closing):**
 5. **Decision Frame**, Primary quality finding, trade-off (invest in fixing weakest dimension vs. maintain current trajectory), confidence with sample size caveat, owner, decision date, revisit trigger (next audit cycle)
 6. **Unknowns & Evidence Gaps**, Artifacts not included in the audit, dimensions not scored due to missing artifact-specific evals, sample size limitations
-7. **Pass/Fail Readiness**, PASS if at least 2 artifacts scored on all 4 universal dimensions with evidence-backed rationales and trend observations are present (trend narrative is optional at Light depth); FAIL if scores lack rationales or trends are asserted without cross-artifact comparison
+7. **Pass/Fail Readiness**, PASS if every reviewed artifact is scored on all 4 universal dimensions with evidence-backed rationales, and any trend claim is supported by comparable artifacts. A single-artifact audit may PASS without a trend claim when it states that limitation. FAIL if scores lack rationales or trends are asserted without cross-artifact comparison.
 8. **Recommended Next Artifact**, Which Shipwright skill to run next and why
 
 ## Common Mistakes to Avoid

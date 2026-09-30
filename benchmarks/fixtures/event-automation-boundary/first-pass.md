@@ -2,7 +2,18 @@
 
 ## Decision Frame
 
-Recommendation: ship a broad Phase 1 that covers intake, quote drafting, calendar holds, and downstream operational planning from the same assistant flow.
+Recommendation: Ship a broad Phase 1 that covers intake, quote drafting, calendar holds, and operational planning in one assistant-led release.
+Trade-off: Creates a more impressive first release, but blurs human approval boundaries and expands scope beyond a safe first phase.
+Confidence: medium
+Owner: PM
+Decision Date: 2026-04-02
+Revisit Trigger: New evidence changes the recommendation.
+
+## Success Metrics
+
+| Metric ID | Metric | Segment | Baseline | Target | Unit | Timeframe | Source |
+|---|---|---|---|---|---|---|---|
+| metric-quote-turnaround | draft quote turnaround time | event sales leads | 6 | 1 | hours | 7 days | (source: event-automation-phase-1-spec) |
 
 ## Unknowns & Evidence Gaps
 

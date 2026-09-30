@@ -2,7 +2,18 @@
 
 ## Decision Frame
 
-Recommendation: build an insight feed for account managers.
+Recommendation: Build an insight feed for account managers.
+Trade-off: Potentially helpful workflow support, but evidence is still weak.
+Confidence: low
+Owner: PM
+Decision Date: 2026-04-02
+Revisit Trigger: New evidence changes the recommendation.
+
+## Success Metrics
+
+| Metric ID | Metric | Segment | Baseline | Target | Unit | Timeframe | Source |
+|---|---|---|---|---|---|---|---|
+| metric-dau | weekly active account managers | account managers | 0 | 35 | percent | 30 days | Not supplied |
 
 ## Unknowns & Evidence Gaps
 

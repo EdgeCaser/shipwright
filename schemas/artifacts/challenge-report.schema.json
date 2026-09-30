@@ -81,8 +81,19 @@
         "updated_at": {
           "type": "string",
           "minLength": 1
+        },
+        "approval_record": {
+          "type": "object",
+          "required": ["human_identity", "decision_ref", "decided_at"],
+          "properties": {
+            "human_identity": { "type": "string", "minLength": 1 },
+            "decision_ref": { "type": "string", "minLength": 1 },
+            "decided_at": { "type": "string", "minLength": 1, "pattern": "^\\d{4}-\\d{2}-\\d{2}T" }
+          }
         }
-      }
+      },
+      "if": { "properties": { "status": { "const": "approved" } } },
+      "then": { "required": ["approval_record"] }
     },
     "decision_frame": {
       "type": "object",
@@ -119,7 +130,7 @@
         "decision_date": {
           "type": "string",
           "minLength": 1,
-          "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          "pattern": "^(?:\\d{4}-\\d{2}-\\d{2}|\\[TBD, requires: [^\\]]+\\])$"
         },
         "revisit_trigger": {
           "type": "string",

@@ -33,6 +33,8 @@ Consumers check these inputs before working. Do not silently convert an assumpti
 
 Raw PM notes and data are valid starting inputs. They need no upstream PASS label; assess them against the selected skill's evidence bar. A FAIL artifact can support an explicitly exploratory analysis, repair or review, but cannot become an approved engineering handoff or be presented as settled.
 
+Validity and readiness are separate checks. A valid FAIL records missing inputs; do not repair it merely to change its status. A Light PRD PASS permits directional discussion only, with explicit measurement gaps. Before engineering handoff, use the installed validator's `--require-ready` gate and supply all related challenge reports. Default validation exits 0 for valid drafts (including readiness failures, warnings and informational deferrals), 1 for contract errors, and the explicit readiness gate exits 2 for a valid artifact that is not engineering-ready. Read the reported issues even when the exit code is 0.
+
 ## Output and authority
 
 Use the skill's body format and one set of the four signature elements. The Decision Frame includes all six fields in `docs/output-standard.md`. Missing ownership or dates stay `[TBD, requires: ...]`; proposed assignments are labeled proposed. Never invent stakeholder approval, named owners, dates, statistics, customer quotes, or completed actions. A Working Backwards press release is a proposed future narrative. Customer quotes must be sourced or left as TBD; future claims must be labeled proposed and cannot count as evidence.
@@ -40,6 +42,8 @@ Use the skill's body format and one set of the four signature elements. The Deci
 Research agents may recommend evidence collection and frame options. Strategic product commitments belong to the PM, supported by strategy/execution analysis. A review's PASS evaluates review quality; CLEAR/DEFEND/ESCALATE evaluates the reviewed artifact. They are separate judgments.
 
 For automated PRD, strategy or Challenge Report handoffs, explicitly request the envelope in `docs/structured-artifacts.md`. Ordinary chat outputs need no duplicate JSON. Never demand an envelope from a producer that was asked only for prose; request it or perform a traceable conversion first.
+
+Approval and waivers require traceable human decision records, not a model-authored approval label. Retain the human identity, decision reference and timestamp from the actual record. A well-formed record is not proof of authenticity: verify its source before relying on the decision. Visible required fields, readiness and metric signatures must agree with the structured payload; equivalent paraphrases are acceptable, and semantic review remains necessary beyond deterministic checks.
 
 ## Trust and actions
 

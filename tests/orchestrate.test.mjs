@@ -3,6 +3,7 @@ import test from 'node:test';
 
 import {
   route,
+  routeWithCapabilities,
   assessProviderAvailability,
   normalizeConfidence,
   resolveScenarioClass,
@@ -292,7 +293,7 @@ test('post_single: needs_human_review true + 3 providers → more_rigor_recommen
   assert.equal(r.ux_substate, UX_SUBSTATES.DOUBLE_PANEL_RECOMMENDED);
 });
 
-test('post_single: uncertainty_payload_present + 3 providers → more_rigor_recommended', () => {
+test('post_single: high confidence with uncertainty payload remains provisional', () => {
   const r = route(baseInput({
     scenario_class: 'pricing',
     stage: 'post_single',
@@ -301,8 +302,66 @@ test('post_single: uncertainty_payload_present + 3 providers → more_rigor_reco
     uncertainty_payload_present: true,
     provider_availability: pa(['claude', 'gpt', 'gemini']),
   }));
-  assert.equal(r.ux_state, UX_STATES.MORE_RIGOR_RECOMMENDED);
-  assert.equal(r.ux_substate, UX_SUBSTATES.DOUBLE_PANEL_RECOMMENDED);
+  assert.equal(r.ux_state, UX_STATES.PROVISIONAL);
+  assert.equal(r.ux_substate, UX_SUBSTATES.SINGLE_RUN_ACCEPTABLE);
+});
+
+test('capability route keeps high confidence with uncertainty payload provisional for one provider', () => {
+  const r = routeWithCapabilities(baseInput({
+    scenario_class: 'pricing',
+    stage: 'post_single',
+    confidence_band: 'high',
+    needs_human_review: false,
+    uncertainty_payload_present: true,
+    provider_availability: pa(['claude']),
+    rigor_available: false,
+  }));
+  assert.equal(r.ux_state, UX_STATES.PROVISIONAL);
+  assert.equal(r.recommended_next_mode, null);
+  assert.doesNotMatch(`${r.explanation} ${r.follow_up_action}`, /below the confidence threshold|add a (?:third|second) provider/i);
+});
+
+test('one-provider governance with missing rigor runner stays provisional without provider-install advice', () => {
+  const r = routeWithCapabilities(baseInput({
+    scenario_class: 'governance',
+    stage: 'post_single',
+    confidence_band: 'high',
+    needs_human_review: false,
+    provider_availability: pa(['claude']),
+    rigor_available: false,
+  }));
+  assert.equal(r.ux_state, UX_STATES.PROVISIONAL);
+  assert.equal(r.recommended_next_mode, null);
+  assert.match(r.follow_up_action, /human review/i);
+  assert.doesNotMatch(`${r.explanation} ${r.follow_up_action}`, /add .*provider|third provider/i);
+});
+
+test('missing rigor runner leaves a human-review flag not ready even at high confidence', () => {
+  const r = routeWithCapabilities(baseInput({
+    scenario_class: 'pricing',
+    stage: 'post_single',
+    confidence_band: 'high',
+    needs_human_review: true,
+    uncertainty_payload_present: true,
+    provider_availability: pa(['claude']),
+    rigor_available: false,
+  }));
+  assert.equal(r.ux_state, UX_STATES.NOT_READY);
+  assert.equal(r.ux_substate, UX_SUBSTATES.HUMAN_REVIEW_REQUIRED);
+  assert.match(r.follow_up_action, /human review/i);
+});
+
+test('missing rigor runner does not suggest more providers for a low-confidence result', () => {
+  const r = routeWithCapabilities(baseInput({
+    scenario_class: 'governance',
+    stage: 'post_single',
+    confidence_band: 'low',
+    needs_human_review: false,
+    provider_availability: pa(['claude']),
+    rigor_available: false,
+  }));
+  assert.equal(r.ux_state, UX_STATES.NOT_READY);
+  assert.doesNotMatch(`${r.explanation} ${r.follow_up_action}`, /add .*provider|third provider/i);
 });
 
 test('post_single: user_declined_escalation with weak result → not_ready / user_declined_escalation', () => {
@@ -505,7 +564,7 @@ test('post_judge: needs_human_review → not_ready / needs_more_evidence', () =>
   assert.equal(r.ux_substate, UX_SUBSTATES.NEEDS_MORE_EVIDENCE);
 });
 
-test('post_judge: uncertainty_payload_present → not_ready / needs_more_evidence', () => {
+test('post_judge: high confidence with uncertainty payload remains provisional', () => {
   const r = route(baseInput({
     scenario_class: 'governance',
     stage: 'post_judge',
@@ -515,8 +574,8 @@ test('post_judge: uncertainty_payload_present → not_ready / needs_more_evidenc
     panel_agreement: 'converged',
     provider_availability: pa(['claude', 'gpt', 'gemini']),
   }));
-  assert.equal(r.ux_state, UX_STATES.NOT_READY);
-  assert.equal(r.ux_substate, UX_SUBSTATES.NEEDS_MORE_EVIDENCE);
+  assert.equal(r.ux_state, UX_STATES.PROVISIONAL);
+  assert.equal(r.ux_substate, null);
 });
 
 test('post_judge: clean verdict → provisional, no next mode', () => {

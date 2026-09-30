@@ -62,6 +62,7 @@ export const IssueType = Object.freeze({
   METRIC_CONTRADICTION: 'metric-contradiction',
   SEGMENT_CONTRADICTION: 'segment-contradiction',
   CHALLENGE_FINDING_UNRESOLVED: 'challenge-finding-unresolved',
+  PROSE_JSON_MISMATCH: 'prose-json-mismatch',
 });
 
 export const Severity = Object.freeze({
@@ -99,7 +100,7 @@ export function validateArtifact(text, options = {}) {
   if (typeof text !== 'string' || !text.trim()) {
     const issues = [{ type: IssueType.EMPTY_ARTIFACT, severity: Severity.ERROR,
       message: 'Artifact content is empty.', lineNumber: 1, excerpt: '' }];
-    return { issues, summary: buildSummary(issues), artifact: null };
+    return finishValidation(issues, null, options);
   }
 
   const {
@@ -167,6 +168,13 @@ export function validateArtifact(text, options = {}) {
             lineNumber: extracted.startLine, excerpt: '' });
         } else validRelated.push(related);
       }
+      if (extracted.artifact?.decision_frame && typeof extracted.artifact.decision_frame === 'object'
+        && extracted.artifact?.pass_fail_readiness && typeof extracted.artifact.pass_fail_readiness === 'object'
+        && (!('payload' in extracted.artifact) || typeof extracted.artifact.payload === 'object')) {
+        issues.push(...checkVisibleContract(
+          text.replace(/<!--\s*shipwright:artifact[\s\S]*?-->/, ''), extracted.artifact,
+        ));
+      }
       if (validation.errors.length === 0) issues.push(
         ...checkDecisionFrameContract(extracted.artifact, extracted.startLine),
         ...checkPassFailContract(extracted.artifact, extracted.startLine),
@@ -179,7 +187,177 @@ export function validateArtifact(text, options = {}) {
     }
   }
 
-  return { issues, summary: buildSummary(issues), artifact: extracted.artifact || null };
+  return finishValidation(issues, extracted.artifact || null, {
+    ...options, visibleText: text.replace(/<!--\s*shipwright:artifact[\s\S]*?-->/, ''),
+  });
+}
+
+function finishValidation(issues, artifact, options) {
+  const valid = !issues.some(issue => issue.severity === Severity.ERROR);
+  const reasons = [];
+  const status = artifact?.pass_fail_readiness?.status || null;
+  if (!artifact) reasons.push('No structured artifact was validated.');
+  if (status !== 'PASS') reasons.push('Artifact declares FAIL or has no PASS readiness.');
+  if (artifact?.metadata?.status === 'exploratory-draft') reasons.push('Exploratory draft.');
+  const metrics = artifact?.artifact_type === 'prd'
+    ? (Array.isArray(artifact.payload?.success_metrics) ? artifact.payload.success_metrics : [])
+    : artifact?.artifact_type === 'strategy'
+      ? (Array.isArray(artifact.payload?.bets) ? artifact.payload.bets.map(bet => bet.success_metric) : []) : [];
+  const incompleteMetrics = metrics.some(metric => isPlaceholder(metric?.baseline) || isPlaceholder(metric?.target));
+  const light = artifact?.artifact_type === 'prd' && ['light', 'quick'].includes(artifact?.depth);
+  if (incompleteMetrics && !light) reasons.push('Metric baseline or target is unresolved.');
+  if (Object.values(artifact?.decision_frame || {}).some(isPlaceholder)) {
+    reasons.push('Decision Frame contains an unresolved placeholder.');
+  }
+  if (issues.some(issue => issue.type === IssueType.CHALLENGE_FINDING_UNRESOLVED
+    && issue.severity !== Severity.INFO)) reasons.push('Challenge findings block readiness.');
+  if (!valid) reasons.push('Contract or visible artifact has errors.');
+  const ready = reasons.length === 0;
+  const engineeringReasons = [...reasons];
+  if (incompleteMetrics) engineeringReasons.push('Metric baseline or target is unresolved for engineering.');
+  if (light) engineeringReasons.push('Light brief needs detailed requirements for engineering.');
+  if (artifact?.artifact_type === 'prd' && !/(?:^|\n)#{1,6}\s+(?:\d+\.\s*)?(?:Detailed Requirements|Product Requirements Document)\b/im
+    .test(options.visibleText || '')) {
+    engineeringReasons.push('Detailed requirements are missing for engineering handoff.');
+  }
+  if (issues.some(issue => issue.severity === Severity.WARNING)) {
+    engineeringReasons.push('Validation warnings need review before engineering handoff.');
+  }
+  const reviewFindings = (options.relatedArtifacts || [])
+    .filter(related => related?.artifact_type === 'challenge-report')
+    .flatMap(related => Array.isArray(related.payload?.findings) ? related.payload.findings : []);
+  const resolutions = Array.isArray(artifact?.challenge_resolution) ? artifact.challenge_resolution : [];
+  for (const resolution of resolutions) {
+    if (!reviewFindings.some(finding => finding?.finding_id === resolution?.finding_id)) {
+      engineeringReasons.push(`Related challenge report is required to verify resolution ${resolution?.finding_id}.`);
+    }
+  }
+  for (const finding of reviewFindings) {
+    if (!resolutions.some(resolution => resolution?.finding_id === finding?.finding_id)) {
+      engineeringReasons.push(`Challenge finding ${finding?.finding_id} needs a recorded disposition.`);
+    }
+  }
+  return { issues, summary: buildSummary(issues), artifact, valid,
+    readiness: { status, ready, engineeringReady: engineeringReasons.length === 0,
+      reasons: [...new Set(reasons)], engineeringReasons: [...new Set(engineeringReasons)] } };
+}
+
+function isPlaceholder(value) {
+  return typeof value === 'string' && /^(?:\[?TBD\b|unknown\b|unmeasured\b|not measured\b|not tracked\b|\[requires:)/i.test(value.trim());
+}
+
+function checkVisibleContract(visible, artifact) {
+  const issues = [];
+  const fail = (message, lineNumber = 1) => issues.push({
+    type: IssueType.PROSE_JSON_MISMATCH, severity: Severity.ERROR,
+    message, lineNumber, excerpt: '',
+  });
+  const lines = visible.split('\n');
+  const section = (name) => {
+    const heading = new RegExp(`^#{1,6}\\s+${name}\\s*$`, 'i');
+    const start = lines.findIndex(line => heading.test(line.trim()));
+    if (start < 0) return { text: '', lineNumber: 1 };
+    const end = lines.findIndex((line, index) => index > start && /^#{1,6}\s+/.test(line.trim()));
+    return { text: lines.slice(start + 1, end < 0 ? undefined : end).join('\n'), lineNumber: start + 1 };
+  };
+  const decision = section('Decision Frame');
+  if (!decision.text.trim()) fail('Visible Decision Frame is missing or empty.', decision.lineNumber);
+  const labels = [
+    ['recommendation', /recommendation/i],
+    ['tradeoff', /trade[ -]?off/i],
+    ['confidence', /confidence/i],
+    ['owner', /owner/i],
+    ['decision_date', /decision[ _-]?date/i],
+    ['revisit_trigger', /revisit[ _-]?trigger/i],
+  ];
+  for (const [key, label] of labels) {
+    const match = decision.text.split('\n').find(line => new RegExp(`^\\s*(?:[-*]\\s*)?(?:${label.source})\\s*:`, 'i').test(line.replace(/\*\*/g, '')));
+    if (!match) { fail(`Visible Decision Frame is missing ${key}.`, decision.lineNumber); continue; }
+    const value = match.replace(/\*\*/g, '').replace(/^\s*(?:[-*]\s*)?[^:]+:\s*/, '').trim();
+    if (!value) { fail(`Visible Decision Frame has an empty ${key}.`, decision.lineNumber); continue; }
+    if (key === 'confidence' || key === 'decision_date' || key === 'owner') {
+      if (!normalizeProse(value).includes(normalizeProse(String(artifact.decision_frame[key])))) {
+        fail(`Visible Decision Frame ${key} disagrees with JSON.`, decision.lineNumber);
+      }
+    } else if (!substantivelyMatches(value, artifact.decision_frame[key])) {
+      fail(`Visible Decision Frame ${key} differs materially from JSON.`, decision.lineNumber);
+    }
+  }
+  const readiness = section('Pass/Fail Readiness');
+  const verdictLine = readiness.text.split('\n').find(line => line.trim())?.replace(/\*\*/g, '').trim() || '';
+  const visibleVerdict = verdictLine.match(/^(?:[-*]\s*)?(?:(?:status|readiness)\s*:\s*)?(PASS|FAIL)\b/i)?.[1]?.toUpperCase();
+  if (visibleVerdict !== artifact.pass_fail_readiness.status) {
+    fail('Visible Pass/Fail Readiness disagrees with JSON.', readiness.lineNumber);
+  }
+  for (const metric of (artifact.artifact_type === 'prd' && Array.isArray(artifact.payload?.success_metrics)
+    ? artifact.payload.success_metrics : [])) {
+    const row = findMetricRow(lines, metric);
+    if (!row) { fail(`Visible success metric "${metric.name}" is missing a field-labeled row.`); continue; }
+    for (const field of ['baseline', 'target', 'unit', 'timeframe', 'segment']) {
+      if (metric[field] === undefined) continue;
+      if (!metricValueMatches(row.fields[field], metric[field])) {
+        fail(`Visible metric "${metric.name}" ${field} disagrees with JSON.`, row.lineNumber);
+      }
+    }
+  }
+  return issues;
+}
+
+function normalizeProse(value) {
+  return String(value).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+}
+
+function substantivelyMatches(visible, structured) {
+  const negated = value => /\b(?:do not|don't|never|avoid|reject|stop|cancel)\b/i.test(value);
+  if (negated(visible) !== negated(structured)) return false;
+  const a = new Set(normalizeProse(visible).split(' ').filter(word => word.length > 3));
+  const b = new Set(normalizeProse(structured).split(' ').filter(word => word.length > 3));
+  if (a.size === 0 || b.size === 0) return false;
+  const shared = [...a].filter(word => b.has(word)).length;
+  return shared >= 1 && shared / Math.min(a.size, b.size) >= 0.35;
+}
+
+function metricValueMatches(text, value) {
+  if (typeof text !== 'string' || !text.trim()) return false;
+  if (isPlaceholder(value)) return /\b(?:TBD|unknown|unmeasured|not measured|not tracked)\b/i.test(text);
+  if (/\b(?:TBD|unknown|unmeasured|not measured|not tracked)\b/i.test(text)) return false;
+  const numericValue = typeof value === 'number' ? value
+    : typeof value === 'string' && /^[+-]?\d[\d,]*(?:\.\d+)?%?$/.test(value.trim())
+      ? Number(value.replace(/[,%]/g, '')) : null;
+  if (numericValue !== null) {
+    const numbers = text.match(/[+-]?\d[\d,]*(?:\.\d+)?/g) || [];
+    return numbers.length === 1 && Number(numbers[0].replace(/,/g, '')) === numericValue;
+  }
+  return normalizeProse(text) === normalizeProse(value);
+}
+
+function findMetricRow(lines, metric) {
+  for (let index = 0; index < lines.length; index += 1) {
+    if (!/^\s*\|/.test(lines[index])) continue;
+    const headers = lines[index].split('|').slice(1, -1).map(cell => normalizeProse(cell));
+    if (!headers.some(header => /^(metric|success metric|goal|name)$/.test(header))) continue;
+    const columns = Object.fromEntries(headers.map((header, column) => [header, column]));
+    const metricColumn = columns.metric ?? columns['success metric'] ?? columns.goal ?? columns.name;
+    const end = lines.findIndex((line, next) => next > index && !/^\s*\|/.test(line));
+    for (let row = index + 1; row < (end < 0 ? lines.length : end); row += 1) {
+      if (/^\s*\|?\s*:?-{2,}/.test(lines[row])) continue;
+      const cells = lines[row].split('|').slice(1, -1).map(cell => cell.trim());
+      const name = normalizeProse(cells[metricColumn] || '');
+      if (name !== normalizeProse(metric.name) && !name.includes(normalizeProse(metric.metric_id))) continue;
+      const columnValue = (...aliases) => {
+        const column = aliases.map(alias => columns[alias]).find(value => value !== undefined);
+        return column === undefined ? undefined : cells[column];
+      };
+      return { lineNumber: row + 1, fields: {
+        baseline: columnValue('baseline', 'current'),
+        target: columnValue('target'),
+        unit: columnValue('unit'),
+        timeframe: columnValue('timeframe', 'time frame', 'window'),
+        segment: columnValue('segment', 'cohort'),
+      } };
+    }
+  }
+  return null;
 }
 
 // ---------------------------------------------------------------------------
@@ -189,15 +367,14 @@ export function validateArtifact(text, options = {}) {
 function checkUnsupportedDollarFigures(text) {
   const issues = [];
 
-  for (const { content, startLine } of splitIntoParagraphs(text)) {
-    if (isExemptParagraph(content)) continue;
-    if (hasCitationMarker(content)) continue;
+  for (const { content, startLine, table, source } of splitIntoClaims(text)) {
+    if (hasCitationMarker(content) || source) continue;
 
     const dollarPattern = /\$\s*(\d{1,3}(?:,\d{3})*(?:\.\d+)?)\s*(?:[BMKbmk](?:illion)?)?/g;
     let matched = false;
 
     for (const match of content.matchAll(dollarPattern)) {
-      if (!isClaimContext(content, match.index ?? 0)) continue;
+      if (!table && !isClaimContext(content, match.index ?? 0)) continue;
       matched = true;
       break;
     }
@@ -206,7 +383,7 @@ function checkUnsupportedDollarFigures(text) {
       issues.push({
         type: IssueType.UNSUPPORTED_DOLLAR,
         severity: Severity.WARNING,
-        message: 'Dollar figure in prose without a nearby citation marker.',
+        message: 'Dollar figure without a claim-local citation marker.',
         lineNumber: startLine,
         excerpt: truncateExcerpt(content, 150),
       });
@@ -219,23 +396,22 @@ function checkUnsupportedDollarFigures(text) {
 function checkUnsupportedNumericClaims(text) {
   const issues = [];
 
-  for (const { content, startLine } of splitIntoParagraphs(text)) {
-    if (isExemptParagraph(content)) continue;
-    if (hasCitationMarker(content)) continue;
+  for (const { content, startLine, table, source } of splitIntoClaims(text)) {
+    if (hasCitationMarker(content) || source) continue;
 
     const hasPercent = /\b\d{1,3}(?:\.\d+)?\s*%/.test(content);
     const hasLargeNumber =
       /\b\d+(?:\.\d+)?\s*(?:million|billion|trillion)\b/i.test(content);
 
     if (!hasPercent && !hasLargeNumber) continue;
-    if (!hasVerbPhrase(content)) continue;
+    if (!table && !hasVerbPhrase(content)) continue;
 
     issues.push({
       type: IssueType.UNSUPPORTED_NUMERIC,
       severity: Severity.WARNING,
       message: hasPercent
-        ? 'Percentage claim in prose without a nearby citation marker.'
-        : 'Large numeric claim in prose without a nearby citation marker.',
+        ? 'Percentage claim without a claim-local citation marker.'
+        : 'Large numeric claim without a claim-local citation marker.',
       lineNumber: startLine,
       excerpt: truncateExcerpt(content, 150),
     });
@@ -267,7 +443,7 @@ function checkDecisionFrameContract(artifact, lineNumber) {
   ];
 
   const decisionFrame = artifact?.decision_frame || {};
-  if (decisionFrame.decision_date) {
+  if (decisionFrame.decision_date && !isPlaceholder(decisionFrame.decision_date)) {
     const date = new Date(`${decisionFrame.decision_date}T00:00:00Z`);
     if (!Number.isFinite(date.getTime()) || date.toISOString().slice(0, 10) !== decisionFrame.decision_date) {
       issues.push({ type: IssueType.MISSING_DECISION_FIELD, severity: Severity.ERROR,
@@ -296,17 +472,19 @@ function checkPassFailContract(artifact, lineNumber) {
     const requiredValues = [...Object.values(artifact.decision_frame || {})];
     const metrics = artifact.artifact_type === 'prd' ? artifact.payload.success_metrics
       : artifact.artifact_type === 'strategy' ? artifact.payload.bets.map(bet => bet.success_metric) : [];
-    for (const metric of metrics || []) requiredValues.push(metric.baseline, metric.target);
-    if (requiredValues.some(value => typeof value === 'string'
-      && /^\s*(?:\[?TBD\b|unknown\s*$|unmeasured\s*$|not measured\s*$|not tracked\s*$|\[requires:)/i.test(value))) {
-      issues.push({ type: IssueType.READINESS_FAILED, severity: Severity.ERROR,
+    const directionalPrd = artifact.artifact_type === 'prd' && ['light', 'quick'].includes(artifact.depth);
+    if (!directionalPrd) {
+      for (const metric of metrics || []) requiredValues.push(metric.baseline, metric.target);
+    }
+    if (requiredValues.some(isPlaceholder)) {
+      issues.push({ type: IssueType.READINESS_FAILED, severity: Severity.WARNING,
         message: 'PASS contains unresolved placeholders in decision fields or metric baselines/targets.',
         lineNumber, excerpt: '' });
     }
   }
 
   if (readiness.status === 'FAIL' || artifact?.metadata?.status === 'exploratory-draft') {
-    issues.push({ type: IssueType.READINESS_FAILED, severity: Severity.ERROR,
+    issues.push({ type: IssueType.READINESS_FAILED, severity: Severity.INFO,
       message: 'Artifact is marked FAIL or exploratory-draft; it is not ready for downstream use.',
       lineNumber, excerpt: '' });
   }
@@ -480,11 +658,43 @@ function checkSegmentContradictions(artifact, relatedArtifacts, lineNumber) {
 
 function checkChallengePropagation(artifact, relatedArtifacts, lineNumber) {
   const issues = [];
+  const resolutions = Array.isArray(artifact?.challenge_resolution) ? artifact.challenge_resolution : [];
   const resolutionMap = new Map(
-    (Array.isArray(artifact?.challenge_resolution) ? artifact.challenge_resolution : [])
+    resolutions
       .filter((item) => item && item.finding_id)
       .map((item) => [item.finding_id, item]),
   );
+  const reportedFindings = new Map();
+  for (const related of relatedArtifacts || []) {
+    if (related?.artifact_type !== 'challenge-report') continue;
+    for (const finding of related?.payload?.findings || []) {
+      if (reportedFindings.has(finding.finding_id)) {
+        issues.push({ type: IssueType.INVALID_RELATED_ARTIFACT, severity: Severity.ERROR,
+          message: `Related challenge reports collide on finding ID "${finding.finding_id}".`, lineNumber, excerpt: '' });
+      }
+      reportedFindings.set(finding.finding_id, finding);
+    }
+  }
+  for (const resolution of resolutions) {
+    const relatedFinding = reportedFindings.get(resolution.finding_id);
+    if (relatedFinding && resolution.severity && resolution.severity !== relatedFinding.severity) {
+      issues.push({ type: IssueType.INVALID_STRUCTURED_ARTIFACT, severity: Severity.ERROR,
+        message: `Challenge finding "${resolution.finding_id}" severity disagrees with related report.`,
+        lineNumber, excerpt: '' });
+    }
+    const severity = resolution.severity || relatedFinding?.severity;
+    if (!severity) {
+      issues.push({ type: IssueType.CHALLENGE_FINDING_UNRESOLVED, severity: Severity.WARNING,
+        message: `Challenge finding "${resolution.finding_id}" has no verifiable severity.`,
+        lineNumber, excerpt: '' });
+    }
+    if (resolution.state === 'deferred') {
+      issues.push({ type: IssueType.CHALLENGE_FINDING_UNRESOLVED,
+        severity: severity === 'critical' ? Severity.WARNING : Severity.INFO,
+        message: `Challenge finding "${resolution.finding_id}" is still deferred.`,
+        lineNumber, excerpt: '' });
+    }
+  }
 
   for (const related of relatedArtifacts || []) {
     if (related?.artifact_type !== 'challenge-report') continue;
@@ -492,7 +702,7 @@ function checkChallengePropagation(artifact, relatedArtifacts, lineNumber) {
 
     for (const finding of findings) {
       const resolution = resolutionMap.get(finding.finding_id);
-      const severity = severityForChallengeFinding(finding?.severity, resolution?.state);
+      const severity = finding?.severity === 'critical' ? Severity.WARNING : Severity.INFO;
 
       if (!resolution) {
         issues.push({
@@ -505,25 +715,6 @@ function checkChallengePropagation(artifact, relatedArtifacts, lineNumber) {
         continue;
       }
 
-      if (resolution.state === 'waived' && (!resolution.waiver_reason?.trim() || !resolution.owner?.trim())) {
-        issues.push({
-          type: IssueType.CHALLENGE_FINDING_UNRESOLVED,
-          severity: Severity.ERROR,
-          message: `Waived challenge finding "${finding.finding_id}" must include waiver_reason and owner.`,
-          lineNumber,
-          excerpt: '',
-        });
-      }
-
-      if (resolution.state === 'deferred') {
-        issues.push({
-          type: IssueType.CHALLENGE_FINDING_UNRESOLVED,
-          severity,
-          message: `Challenge finding "${finding.finding_id}" is still deferred.`,
-          lineNumber,
-          excerpt: '',
-        });
-      }
     }
   }
 
@@ -767,30 +958,57 @@ function splitIntoParagraphs(text) {
   return paragraphs;
 }
 
-function isExemptParagraph(content) {
-  const firstLine = (content.split('\n')[0] || '').trimStart();
-
-  if (firstLine.startsWith('|')) return true;
-  if (/^#{1,6}\s/.test(firstLine)) return true;
-  if (firstLine.startsWith('<!--')) return true;
-  return false;
+function splitIntoClaims(text) {
+  const visible = text.split(/<!--\s*shipwright:artifact\b/)[0];
+  const claims = [];
+  let inSources = false;
+  for (const paragraph of splitIntoParagraphs(visible)) {
+    const lines = paragraph.content.split('\n');
+    if (/^#{1,6}\s+(?:Sources|References|Evidence)\s*$/i.test(lines[0].trim())) {
+      inSources = true;
+      continue;
+    }
+    if (/^#{1,6}\s+/.test(lines[0].trim())) {
+      inSources = false;
+      continue;
+    }
+    if (inSources || /^<!--/.test(lines[0].trim())) continue;
+    if (lines[0].trim().startsWith('|')) {
+      const rows = lines.filter(line => line.trim().startsWith('|'));
+      const headers = rows[0]?.split('|').slice(1, -1).map(cell => cell.trim().toLowerCase()) || [];
+      for (let rowIndex = 1; rowIndex < rows.length; rowIndex += 1) {
+        if (/^\s*\|?\s*:?-{2,}/.test(rows[rowIndex])) continue;
+        const cells = rows[rowIndex].split('|').slice(1, -1).map(cell => cell.trim());
+        const sourceIndex = headers.findIndex(header => /^(?:source|citation|reference)$/.test(header));
+        const source = sourceIndex >= 0 && hasCitationMarker(cells[sourceIndex] || '');
+        for (let cellIndex = 0; cellIndex < cells.length; cellIndex += 1) {
+          if (cellIndex === sourceIndex) continue;
+          claims.push({ content: cells[cellIndex], startLine: paragraph.startLine + rowIndex, table: true, source });
+        }
+      }
+      continue;
+    }
+    for (const line of lines) {
+      const lineNumber = paragraph.startLine + lines.indexOf(line);
+      for (const sentence of line.split(/(?<=[.!?])\s+(?=[A-Z0-9])/)) {
+        if (sentence.trim()) claims.push({ content: sentence, startLine: lineNumber, table: false, source: false });
+      }
+    }
+  }
+  return claims;
 }
 
-function hasCitationMarker(paragraph) {
-  if (/https?:\/\/\S+/.test(paragraph)) return true;
-  if (/\[\d+\]/.test(paragraph)) return true;
-  if (/\((?:source|via|from|see|ref)\s*:/i.test(paragraph)) return true;
-  if (/\[[^\]]+\]\(https?:\/\//.test(paragraph)) return true;
+function hasCitationMarker(claim) {
+  if (/\[\d+\]/.test(claim)) return true;
+  if (/\((?:source|via|from|see|ref)\s*:/i.test(claim)) return true;
+  if (/\[[^\]]+\]\(https?:\/\//.test(claim)) return true;
+  if (/\b(?:according to|per|source:|ref:|see)\s+https?:\/\/\S+/i.test(claim)) return true;
   return false;
 }
 
 function isClaimContext(content, matchIndex) {
   const before = content.slice(Math.max(0, matchIndex - 200), matchIndex);
   const after = content.slice(matchIndex, Math.min(content.length, matchIndex + 100));
-
-  const lastNewline = before.lastIndexOf('\n');
-  const lineStart = before.slice(lastNewline + 1).trimStart();
-  if (/^\|/.test(lineStart)) return false;
 
   const context = (before.slice(-120) + after).toLowerCase();
   return /\b(?:is|are|was|were|has|have|grew|shows?|increased?|decreased?|reached?|represents?|estimated|worth|valued?|raised?|grew to|stands at|sits at)\b/.test(
@@ -865,7 +1083,7 @@ function collectFlagValues(argv, flagName) {
 async function main(argv = process.argv.slice(2)) {
   const filePath = argv.find((arg) => !arg.startsWith('--'));
   if (!filePath) {
-    console.error('Usage: node scripts/validate-artifact.mjs <path-to-markdown> [--expect-sections "Section1,Section2"] [--expect-structured] [--artifact-type prd] [--related path] [--format json]');
+    console.error('Usage: node scripts/validate-artifact.mjs <path-to-markdown> [--expect-sections "Section1,Section2"] [--expect-structured] [--artifact-type prd] [--related path] [--require-ready] [--format json]');
     process.exitCode = 1;
     return;
   }
@@ -880,6 +1098,7 @@ async function main(argv = process.argv.slice(2)) {
   }
 
   const expectStructured = argv.includes('--expect-structured');
+  const requireReady = argv.includes('--require-ready');
   const formatFlag = argv.findIndex((arg) => arg === '--format');
   const outputFormat = formatFlag !== -1 && argv[formatFlag + 1] ? argv[formatFlag + 1] : 'text';
   const artifactTypeFlag = argv.findIndex((arg) => arg === '--artifact-type');
@@ -912,9 +1131,11 @@ async function main(argv = process.argv.slice(2)) {
   });
 
   if (outputFormat === 'json') {
-    console.log(JSON.stringify({ issues: result.issues, summary: result.summary }, null, 2));
+    console.log(JSON.stringify({ issues: result.issues, summary: result.summary,
+      valid: result.valid, readiness: result.readiness }, null, 2));
   } else if (result.issues.length === 0) {
-    console.log('OK: No issues found.');
+    console.log(requireReady && !result.readiness.engineeringReady
+      ? 'Contract valid; engineering handoff is NOT READY.' : 'OK: No issues found.');
   } else {
     console.log(`\n${result.summary}\n`);
     for (const issue of result.issues) {
@@ -925,9 +1146,13 @@ async function main(argv = process.argv.slice(2)) {
     }
   }
 
-  if (result.issues.length > 0) {
-    process.exitCode = 1;
+  if (outputFormat !== 'json' && requireReady && !result.readiness.engineeringReady) {
+    console.log('Engineering readiness blockers:');
+    for (const reason of result.readiness.engineeringReasons) console.log(`  - ${reason}`);
   }
+
+  if (!result.valid) process.exitCode = 1;
+  else if (requireReady && !result.readiness.engineeringReady) process.exitCode = 2;
 }
 
 function isDirectRun() {

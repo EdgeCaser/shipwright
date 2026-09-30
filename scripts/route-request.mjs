@@ -3,8 +3,10 @@
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
-const RESEARCH_SIGNALS = ['market', 'tam', 'sam', 'som', 'pricing', 'competitive', 'competitor', 'research'];
-const AUDIENCE_OUTSIDE_PRODUCT_RE = /\b(board|leadership|executive|exec|ceo|vp|sales|customer|engineering)\b/i;
+const RESEARCH_SIGNALS = ['market', 'tam', 'sam', 'som', 'pricing', 'price', 'prices', 'package', 'packaging', 'competitive', 'competitor', 'research'];
+const AUDIENCE_OUTSIDE_PRODUCT_RE = /\b(?:for|to)\s+(?:(?:the|our|a|an)\s+)?(?:board|leadership|executives?|execs?|ceo|vp|sales)(?:\s+(?:team|review|meeting|presentation|briefing|update))?\b|\b(?:board|leadership|executive|sales)[- ]facing\b|\b(?:status update|update|presentation|briefing|announcement|message|email)\s+(?:for|to)\s+(?:(?:the|our)\s+)?(?:customers?|engineering(?:\s+(?:team|leadership))?)\b/i;
+const SUPPLIED_EVIDENCE_RE = /\b(?:here (?:are|is)|i (?:pasted|provided|attached)|we (?:pasted|provided|attached)|from (?:the|our|these|this) (?:numbers|data|figures|prices|evidence|notes|research)|using (?:the|our|these|this) (?:numbers|data|figures|prices|evidence|notes|research)|based on (?:the|our|these|this) (?:numbers|data|figures|prices|evidence|notes|research)|supplied|provided|attached|pasted|our (?:current )?prices)\b/i;
+const FRESH_EXTERNAL_RE = /\b(?:latest|up[- ]to[- ]date|external|public[- ]web|browse|look up|search (?:the )?web|industry benchmarks?|market benchmarks?|current (?:market|competitor)|new (?:market|competitor) data)\b/i;
 const BUDGET_OR_ROADMAP_RE = /\b(budget|headcount|roadmap|approve|approval|funding)\b/i;
 const ENGINEERING_HANDOFF_RE = /\b(tech handoff|technical spec|hand off to engineering|engineering handoff)\b/i;
 
@@ -49,8 +51,8 @@ const ROUTE_RULES = [
   {
     route: 'pricing',
     kind: 'workflow',
-    exactPatterns: [/\b\/pricing\b/i, /\bpricing strategy\b/i],
-    keywords: ['pricing', 'package', 'plans', 'monetization'],
+    exactPatterns: [/\b\/pricing\b/i, /\bpricing strategy\b/i, /\brecommend packaging\b/i],
+    keywords: ['pricing', 'price', 'prices', 'package', 'packaging', 'plans', 'monetization'],
   },
   {
     route: 'competitive',
@@ -244,7 +246,8 @@ function matchRule(rule, normalizedInput) {
 function detectRequestSignals(input, winner, options) {
   const contradictionWarningCount = Number(options.contradictionWarningCount || 0);
   return {
-    requiresExternalResearch: hasAnyKeyword(input, RESEARCH_SIGNALS),
+    requiresExternalResearch: hasAnyKeyword(input, RESEARCH_SIGNALS)
+      && (FRESH_EXTERNAL_RE.test(input) || !SUPPLIED_EVIDENCE_RE.test(input)),
     multiStepDependency: winner ? winner.route === 'plan-launch' || winner.route === 'tech-handoff' : false,
     missingMandatoryInput: Array.isArray(options.missingInputs) && options.missingInputs.length > 0,
     audienceOutsideProduct: AUDIENCE_OUTSIDE_PRODUCT_RE.test(input),

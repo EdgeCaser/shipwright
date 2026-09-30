@@ -51,23 +51,27 @@ Rules:
 
 ### 4. Choose Execution Mode
 
-If the installed routing helper is available and routing is ambiguous, optionally run:
+If the installed routing helper is available and routing is ambiguous, locate the nearest
+Shipwright installation root containing `manifest.json` and optionally run:
 
 ```bash
-node scripts/route-request.mjs "<user request>" --format json
+node "<absolute-shipwright-root>/scripts/route-request.mjs" "<user request>" --format json
 ```
+
+Do not run the helper when the PM gave an explicit command or named artifact that already selects
+the workflow.
 
 Routing rule:
 
-- If `routeConfidence = HIGH` and `autoEscalate = false`, use **Fast** mode and route directly.
-- Otherwise use **Rigorous** mode and build a plan.
+- A clear single-framework request with adequate supplied inputs and no escalation condition below uses **Fast** mode. When the optional helper ran, `routeConfidence = HIGH` and `autoEscalate = false` supports this route.
+- Use **Rigorous** mode for the escalation conditions below or unresolved scope/dependencies. Skipping an unnecessary or unavailable helper alone does not require escalation.
 
 Always use Rigorous mode when:
 
 - fresh public-web research is required
 - the artifact recommends budget, headcount, or roadmap choices
 - the output is an engineering handoff artifact or directly feeds one
-- the audience includes leadership, board, sales, customers, or engineering outside product
+- the audience is explicitly external (for example, "for the board" or "to sales")
 - the task spans multiple workflows or agents
 
 ### 5A. Direct Fast Route
@@ -121,10 +125,10 @@ If you built a Rigorous plan, proceed within the requested scope. Ask only when 
 
 If you routed directly in Fast mode, execute immediately.
 
-1. Dispatch specialist agents using the Agent tool with detailed prompts
-2. Run independent steps in parallel where possible
-3. Chain dependent steps sequentially, passing outputs forward
-4. Report back as each agent completes, sharing artifacts and summaries
+1. Delegate specialist work only when the current host supports an agent tool and delegation is authorized.
+2. Otherwise complete the workflow in the current session.
+3. Run independent delegated steps in parallel where possible.
+4. Chain dependent steps sequentially and report the completed artifacts.
 
 ## Routing Quick Reference
 
