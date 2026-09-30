@@ -2,7 +2,8 @@
 import { createHash } from 'node:crypto';
 import { readFile, writeFile, mkdir, lstat, realpath, readdir, rm, rmdir } from 'node:fs/promises';
 import path from 'node:path';
-import { pathToFileURL } from 'node:url';
+import { fileURLToPath } from 'node:url';
+import { realpathSync } from 'node:fs';
 import { pluginFiles, SOURCE_ROOT } from './build-plugin.mjs';
 
 const hash = data => createHash('sha256').update(data).digest('hex');
@@ -207,7 +208,15 @@ export async function uninstallShipwright(destination, { source = SOURCE_ROOT, a
   return { applied: apply, removed, blocksRemoved, dirsRemoved, kept, refused };
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) {
+function isDirectRun() {
+  try {
+    return realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url));
+  } catch {
+    return false;
+  }
+}
+
+if (process.argv[1] && isDirectRun()) {
   const args = process.argv.slice(2);
   const dest = args.find(arg => !arg.startsWith('--')) || process.cwd();
   if (args.includes('--uninstall')) {

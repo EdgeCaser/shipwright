@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 import { mkdir, readFile, readdir, writeFile, lstat } from 'node:fs/promises';
 import path from 'node:path';
-import { fileURLToPath, pathToFileURL } from 'node:url';
+import { fileURLToPath } from 'node:url';
+import { realpathSync } from 'node:fs';
 
 export const SOURCE_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -64,7 +65,15 @@ export async function buildPlugin(outDir, root = SOURCE_ROOT) {
   return { destination, files: files.size, skills: [...files.keys()].filter(p => /^skills\/[^/]+\/SKILL.md$/.test(p)).length };
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) {
+function isDirectRun() {
+  try {
+    return realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url));
+  } catch {
+    return false;
+  }
+}
+
+if (process.argv[1] && isDirectRun()) {
   if (!process.argv[2]) throw new Error('Usage: node scripts/build-plugin.mjs <new-output-directory>');
   console.log(JSON.stringify(await buildPlugin(process.argv[2]), null, 2));
 }

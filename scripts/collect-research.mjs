@@ -3,7 +3,8 @@
 import { createHash } from 'crypto';
 import { mkdir, readFile, rm, stat, writeFile } from 'fs/promises';
 import path from 'path';
-import { pathToFileURL } from 'url';
+import { fileURLToPath } from 'url';
+import { realpathSync } from 'fs';
 
 const HELP_TEXT = `Shipwright research collector
 
@@ -2315,7 +2316,11 @@ function escapePipes(value) {
 
 function isDirectRun() {
   if (!process.argv[1]) return false;
-  return import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href;
+  try {
+    return realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url));
+  } catch {
+    return false;
+  }
 }
 
 if (isDirectRun()) {

@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 import { readFile, readdir, access } from 'node:fs/promises';
 import path from 'node:path';
-import { fileURLToPath, pathToFileURL } from 'node:url';
+import { fileURLToPath } from 'node:url';
+import { realpathSync } from 'node:fs';
 
 export async function validateRepository(root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')) {
   const errors = [];
@@ -77,7 +78,15 @@ async function walk(dir) {
   return files;
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) {
+function isDirectRun() {
+  try {
+    return realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url));
+  } catch {
+    return false;
+  }
+}
+
+if (process.argv[1] && isDirectRun()) {
   const result = await validateRepository(process.argv[2]);
   console.log(JSON.stringify(result, null, 2));
   process.exitCode = result.errors.length ? 1 : 0;

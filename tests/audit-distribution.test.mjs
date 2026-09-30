@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { cp, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { cp, mkdir, mkdtemp, readdir, readFile, rm, symlink, unlink, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { execFile } from 'node:child_process';
@@ -131,4 +131,30 @@ test('Light design review and evidence gates do not impose unsupported numeric q
   }
   const audit = files.get('skills/artifact-quality-audit/SKILL.md')?.toString('utf8') || '';
   assert.match(audit, /A single-artifact audit may PASS without a trend claim/);
+});
+
+test('CLI entry guards run when the script is reached through a directory link', async t => {
+  const root = await mkdtemp(path.join(os.tmpdir(), 'shipwright-symlink-'));
+  const link = path.join(root, 'scripts-link');
+  // The link points at the real scripts directory: remove the link itself before deleting the temp root.
+  t.after(async () => {
+    await unlink(link).catch(() => {});
+    await rm(root, { recursive: true, force: true });
+  });
+  await symlink(path.join(SOURCE_ROOT, 'scripts'), link, process.platform === 'win32' ? 'junction' : 'dir');
+
+  const project = path.join(root, 'project');
+  await mkdir(project);
+  await execFileAsync(process.execPath, [path.join(link, 'install.mjs'), project, '--apply']);
+  assert.match(await readFile(path.join(project, '.claude', 'README.md'), 'utf8'), /^# Shipwright Plugin Guide/m);
+
+  const routed = await execFileAsync(process.execPath, [path.join(link, 'route-request.mjs'), 'size the market for a pricing tool', '--format', 'json']);
+  assert.ok(JSON.parse(routed.stdout).topRoute);
+});
+
+test('no script uses the symlink-blind CLI entry guard', async () => {
+  const dir = path.join(SOURCE_ROOT, 'scripts');
+  for (const name of (await readdir(dir)).filter(file => file.endsWith('.mjs'))) {
+    assert.doesNotMatch(await readFile(path.join(dir, name), 'utf8'), /import\.meta\.url === pathToFileURL\(/, name);
+  }
 });

@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
 import path from 'node:path';
-import { pathToFileURL } from 'node:url';
+import { fileURLToPath } from 'node:url';
+import { realpathSync } from 'node:fs';
 
 const RESEARCH_SIGNALS = ['market', 'tam', 'sam', 'som', 'pricing', 'price', 'prices', 'package', 'packaging', 'competitive', 'competitor', 'research'];
 const AUDIENCE_OUTSIDE_PRODUCT_RE = /\b(?:for|to)\s+(?:(?:the|our|a|an)\s+)?(?:board|leadership|executives?|execs?|ceo|vp|sales)(?:\s+(?:team|review|meeting|presentation|briefing|update))?\b|\b(?:board|leadership|executive|sales)[- ]facing\b|\b(?:status update|update|presentation|briefing|announcement|message|email)\s+(?:for|to)\s+(?:(?:the|our)\s+)?(?:customers?|engineering(?:\s+(?:team|leadership))?)\b/i;
@@ -362,7 +363,11 @@ async function main(argv = process.argv.slice(2)) {
 
 function isDirectRun() {
   if (!process.argv[1]) return false;
-  return import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href;
+  try {
+    return realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url));
+  } catch {
+    return false;
+  }
 }
 
 if (isDirectRun()) {

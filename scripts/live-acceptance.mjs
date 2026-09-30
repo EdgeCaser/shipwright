@@ -15,7 +15,8 @@
 import { readFile, readdir, mkdtemp, mkdir, rm } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
-import { fileURLToPath, pathToFileURL } from 'node:url';
+import { fileURLToPath } from 'node:url';
+import { realpathSync } from 'node:fs';
 import { validateArtifact } from './validate-artifact.mjs';
 import { installShipwright } from './install.mjs';
 
@@ -295,7 +296,15 @@ export async function main(argv = process.argv.slice(2), env = process.env) {
   return { code: 0, stderr: '', stdout: buildPlan({ agent: options.agent, workdir: options.workdir ? path.resolve(options.workdir) : undefined, out: options.out ? path.resolve(options.out) : undefined }) + '\n' };
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) {
+function isDirectRun() {
+  try {
+    return realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url));
+  } catch {
+    return false;
+  }
+}
+
+if (process.argv[1] && isDirectRun()) {
   const { code, stdout, stderr } = await main();
   if (stdout) process.stdout.write(stdout);
   if (stderr) process.stderr.write(stderr);

@@ -6,7 +6,8 @@ import { existsSync } from 'node:fs';
 import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
-import { pathToFileURL } from 'node:url';
+import { fileURLToPath } from 'node:url';
+import { realpathSync } from 'node:fs';
 
 import {
   DEFAULT_SCENARIO_DIR,
@@ -624,7 +625,11 @@ function assertVarianceWithinLimit(actual, maxVariance) {
 
 function isDirectRun() {
   if (!process.argv[1]) return false;
-  return import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href;
+  try {
+    return realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url));
+  } catch {
+    return false;
+  }
 }
 
 if (isDirectRun()) {

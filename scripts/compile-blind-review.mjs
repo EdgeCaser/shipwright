@@ -2,7 +2,8 @@
 
 import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import { pathToFileURL } from 'node:url';
+import { fileURLToPath } from 'node:url';
+import { realpathSync } from 'node:fs';
 
 import {
   buildBenchmarkSuiteSummary,
@@ -422,7 +423,11 @@ async function main(argv = process.argv.slice(2)) {
 
 function isDirectRun() {
   if (!process.argv[1]) return false;
-  return import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href;
+  try {
+    return realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url));
+  } catch {
+    return false;
+  }
 }
 
 if (isDirectRun()) {
