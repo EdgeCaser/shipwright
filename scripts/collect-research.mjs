@@ -5,6 +5,7 @@ import { mkdir, readFile, rm, stat, writeFile } from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { realpathSync } from 'fs';
+import { fetchPublicSource } from './public-source-fetch.mjs';
 
 const HELP_TEXT = `Shipwright research collector
 
@@ -19,9 +20,14 @@ The collector uses an internal escalation ladder:
 
 Usage:
   node scripts/collect-research.mjs --query "mid-market AI support pricing"
+  node scripts/collect-research.mjs --url "https://public.example/pricing"
 
 Options:
-  --query <text>              Required. Search query to run.
+  --query <text>              Search query, or optional label when --url is supplied.
+  --url <url>                 Capture a known public HTTP(S) page directly; repeatable.
+                               Direct URL mode does not require a search provider.
+                               Up to 8 URLs, 3 concurrent fetches, 30s and 1 MiB
+                               per page; at most 4 redirects are followed.
   --provider <name>           brave | tavily | auto (default: auto)
   --mode <name>               standard | auto | deep (default: auto)
   --max-results <n>           Search results to collect in the first pass (default: 5)
@@ -60,6 +66,8 @@ Behavior:
   Loads .env from the current working directory if present.
   If no provider is configured, still writes a fallback evidence pack with
   'needs-interactive-followup' instead of failing.
+  Direct URL mode checks each destination and redirect, limits response size,
+  and retains only successful HTML/plain-text pages as primary passages.
   Source adapters run automatically when source-adapters.mjs is co-located.
   If the adapter module is missing, the collector continues without adapters.
 `;
@@ -80,6 +88,8 @@ const DEFAULTS = {
 const CACHE_VERSION = 'v1';
 const CACHE_ROOT = path.join('.shipwright', 'cache', 'research', CACHE_VERSION);
 const MAX_PRIMARY_CONTEXT_CHARS = 20000;
+const MAX_DIRECT_URLS = 8;
+const MAX_DIRECT_TIMEOUT_MS = 30000;
 
 // ---------------------------------------------------------------------------
 // Lazy source-adapter loader
@@ -107,6 +117,7 @@ async function getAdapters() {
 function createDefaultArgs() {
   return {
     query: '',
+    urls: [],
     provider: DEFAULTS.provider,
     mode: DEFAULTS.mode,
     maxResults: DEFAULTS.maxResults,
@@ -127,6 +138,7 @@ function normalizeArgs(input = {}) {
   return {
     ...createDefaultArgs(),
     ...input,
+    urls: Array.isArray(input.urls) ? input.urls : [],
   };
 }
 
@@ -190,13 +202,22 @@ export async function collectResearch(rawArgs, options = {}) {
     return clearResearchCache({ cwd, logger });
   }
 
-  if (!args.query) {
-    throw new Error('Missing required --query. Run with --help for usage.');
+  if (!args.query && args.urls.length === 0) {
+    throw new Error('Missing --query or --url. Run with --help for usage.');
+  }
+  if (args.urls.length > MAX_DIRECT_URLS) {
+    throw new Error(`Direct URL capture accepts at most ${MAX_DIRECT_URLS} URLs per run.`);
+  }
+  if (args.urls.some((url) => typeof url !== 'string' || !url.trim())) {
+    throw new Error('Each --url must be a nonblank URL.');
   }
 
   await loadDotenv(path.resolve(cwd, '.env'));
 
-  const providerPlan = resolveProviderPlan(args.provider);
+  const directMode = args.urls.length > 0;
+  const providerPlan = directMode
+    ? { providers: [], providerStatus: 'direct-url', providerNote: 'Known public URLs supplied directly.' }
+    : resolveProviderPlan(args.provider);
   const cacheKey = buildCacheKey(args, providerPlan);
   const cacheState = await resolveCacheState({
     cacheKey,
@@ -218,7 +239,9 @@ export async function collectResearch(rawArgs, options = {}) {
       ageMs: cacheState.ageMs,
     });
   } else {
-    const basePack = await runEscalatingResearch(args, providerPlan, { now });
+    const basePack = directMode
+      ? await runDirectUrlResearch(args, { now, publicSourceFetch: options.publicSourceFetch })
+      : await runEscalatingResearch(args, providerPlan, { now });
     pack = await finalizeCollectedPack({
       basePack,
       cacheKey,
@@ -230,7 +253,7 @@ export async function collectResearch(rawArgs, options = {}) {
     });
   }
 
-  const output = resolveOutputPaths(args.query, args.outDir, cwd);
+  const output = resolveOutputPaths(args.query || 'direct URL capture', args.outDir, cwd);
   await writePackFiles(output.outDir, pack, { artifactNow: now });
 
   return {
@@ -298,6 +321,7 @@ function normalizeCacheQuery(query) {
 function createCacheFingerprint(args, providerPlan) {
   return {
     query: normalizeCacheQuery(args.query),
+    urls: args.urls.map((url) => String(url)),
     providerRequest: args.provider,
     providers: [...(providerPlan.providers || [])],
     mode: args.mode,
@@ -577,6 +601,92 @@ function logCollectionSummary(result, logger) {
   logger.log(`Facts: ${factsPathLabel}`);
 }
 
+async function runDirectUrlResearch(args, options = {}) {
+  const generatedAt = resolveNow(options.now).toISOString();
+  const publicSourceFetch = options.publicSourceFetch || fetchPublicSource;
+  const requestedUrls = unique(args.urls.map((url) => String(url)));
+  const timeoutMs = Math.min(args.timeoutMs, MAX_DIRECT_TIMEOUT_MS);
+  const concurrency = Math.min(args.concurrency, 3);
+  const results = await mapLimit(requestedUrls, Math.min(concurrency, requestedUrls.length),
+    async (url, index) => {
+      const fetched = await publicSourceFetch(url, { timeoutMs });
+      const extracted = fetched.ok
+        ? extractPage(fetched.body, fetched.contentType, args.excerptChars)
+        : { title: '', description: '', excerpt: '', wordCount: 0 };
+      const primarySource = fetched.ok ? buildPrimarySource({
+        url: fetched.finalUrl,
+        body: fetched.body,
+        contentType: fetched.contentType,
+        retrievedAt: new Date().toISOString(),
+        excerptChars: args.excerptChars,
+      }) : null;
+      return {
+        rank: index + 1,
+        title: extracted.title || fetched.finalUrl || url,
+        url,
+        site: extractDomain(fetched.finalUrl || url),
+        searchSnippet: '',
+        published: '',
+        retrieval: { method: 'direct-url', requestedUrl: url },
+        fetched: {
+          ok: fetched.ok,
+          ...(fetched.status ? { status: fetched.status } : {}),
+          finalUrl: fetched.finalUrl,
+          contentType: fetched.contentType || '',
+          redirects: fetched.redirects,
+          bytesRead: fetched.bytesRead || 0,
+          maxBytes: fetched.maxBytes,
+          ...(fetched.error ? { error: fetched.error } : {}),
+        },
+        extracted,
+        ...(primarySource ? { primarySource } : {}),
+      };
+    });
+  const captured = results.filter((result) => result.primarySource).length;
+  const coverage = {
+    totalResults: results.length,
+    successfulFetches: results.filter((result) => result.fetched.ok).length,
+    usableSources: captured,
+    uniqueDomains: new Set(results.filter((result) => result.primarySource)
+      .map((result) => extractDomain(result.fetched.finalUrl))).size,
+    thinCoverage: captured < requestedUrls.length,
+  };
+  const complete = captured === requestedUrls.length;
+  return {
+    generatedAt,
+    query: args.query || '',
+    mode: 'direct-url',
+    providerRequest: 'none',
+    providerStatus: 'direct-url',
+    providerNote: 'Known public URLs supplied directly; no search provider was used.',
+    providersAttempted: [],
+    budget: {
+      maxResults: requestedUrls.length,
+      maxPages: requestedUrls.length,
+      concurrency,
+      timeoutMs,
+      maxBytesPerPage: 1024 * 1024,
+      maxRedirectsPerPage: 4,
+    },
+    escalation: {
+      status: complete ? 'complete' : 'needs-interactive-followup',
+      nextAction: complete
+        ? 'All supplied URLs yielded bounded primary passages; inspect applicability before using claims.'
+        : 'Inspect failed URL statuses and supply a public HTML/text source for remaining gaps.',
+      suggestedInteractiveQueries: [],
+      coverage,
+      stages: [{
+        level: 'L0', strategy: 'direct-url', provider: 'none', queries: [],
+        candidateCount: requestedUrls.length, fetchedCount: results.length,
+        usableSourcesAfterStage: captured,
+        successfulFetchesAfterStage: coverage.successfulFetches,
+        uniqueDomainsAfterStage: coverage.uniqueDomains,
+      }],
+    },
+    results,
+  };
+}
+
 async function runEscalatingResearch(args, providerPlan, options = {}) {
   const generatedAt = resolveNow(options.now).toISOString();
   const initialMaxPages = resolveMaxPages(args);
@@ -794,6 +904,9 @@ function parseArgs(argv) {
     switch (token) {
       case '--query':
         args.query = argv[++i] || '';
+        break;
+      case '--url':
+        args.urls.push(argv[++i] || '');
         break;
       case '--provider':
         args.provider = argv[++i] || DEFAULTS.provider;

@@ -3,12 +3,16 @@
 // its quotes with the actual source and final artifact.
 
 const INPUT_KINDS = new Set(['supplied', 'assumption', 'proposal', 'unknown']);
-const CALCULATION_KINDS = new Set(['ratio', 'conditional_revenue', 'scoped_claim', 'unresolved']);
+const CALCULATION_KINDS = new Set(['ratio', 'conditional_revenue', 'break_even_retention', 'scoped_claim', 'unresolved']);
 const PERIOD_KINDS = new Set(['window', 'point', 'unknown']);
-const RATIO_METRICS = new Set(['generic', 'conversion_rate', 'renewal_rate']);
+const RATIO_METRICS = new Set(['generic', 'conversion_rate', 'renewal_rate', 'revenue_retention_rate']);
+const MEASURES = new Set(['revenue', 'customers', 'seats']);
+const LIFECYCLES = new Set(['acquisition', 'renewal', 'unknown']);
+const RETENTION_BASES = new Set(['revenue', 'customers', 'seats', 'unknown']);
+const SOURCE_FIELDS = ['kind', 'quote', 'value', 'unit', 'population', 'period', 'role', 'studyDesign', 'measure', 'lifecycle'];
 
-export const inputHelp = `Input record: {inputs:[{id,kind:"supplied|assumption|proposal|unknown",quote,value,unit,population,period:{kind:"window|point|unknown",value},role,studyDesign,presentedAs}],calculations:[{id,kind:"ratio|conditional_revenue|scoped_claim|unresolved",refs:{...inputIds},metric,result,targetPopulation,targetPeriod,presentedAs,artifactQuotes:["exact final excerpt"]}]}.
-Example: {"inputs":[{"id":"purchases","kind":"supplied","quote":"40 bought","value":40,"unit":"count","population":"new prospects","period":{"kind":"window","value":"pilot month"},"role":"purchasers","studyDesign":"descriptive"},{"id":"exposed","kind":"supplied","quote":"200 saw the offer","value":200,"unit":"count","population":"new prospects","period":{"kind":"window","value":"pilot month"},"role":"eligible_exposures","studyDesign":"descriptive"}],"calculations":[{"id":"conversion","kind":"ratio","metric":"conversion_rate","refs":{"numerator":"purchases","denominator":"exposed"},"result":0.2,"artifactQuotes":["40 of 200 exposed prospects bought (20%)."]}]}. Unknowns remain unknown; cite canonical input IDs in refs. Exact artifact quote presence and source truth require separate review.`;
+export const inputHelp = `Input record: {inputs:[{id,kind:"supplied|assumption|proposal|unknown",quote,value,unit,population,period:{kind:"window|point|unknown",value},role,studyDesign,measure:"revenue|customers|seats",lifecycle:"acquisition|renewal|unknown",presentedAs}],calculations:[{id,kind:"ratio|conditional_revenue|break_even_retention|scoped_claim|unresolved",refs:{...inputIds},metric,result,targetPopulation,targetPeriod,presentedAs,decisionUse:"illustration|operating_threshold",retentionBasis:"revenue|customers|seats|unknown",comparison:{counterfactual:"no_change",horizon:"one year"},artifactQuotes:["exact final excerpt"]}]}.
+Example: {"inputs":[{"id":"purchases","kind":"supplied","quote":"40 bought","value":40,"unit":"count","population":"new prospects","period":{"kind":"window","value":"pilot month"},"role":"purchasers","studyDesign":"descriptive"},{"id":"exposed","kind":"supplied","quote":"200 saw the offer","value":200,"unit":"count","population":"new prospects","period":{"kind":"window","value":"pilot month"},"role":"eligible_exposures","studyDesign":"descriptive"}],"calculations":[{"id":"conversion","kind":"ratio","metric":"conversion_rate","refs":{"numerator":"purchases","denominator":"exposed"},"result":0.2,"artifactQuotes":["40 of 200 exposed prospects bought (20%)."]}]}. For a customer or seat illustration of revenue, refs.equalValueAssumption points to a labeled assumption input with role equal_value_assumption and value true. It does not authorize an operating threshold: use revenue retention for that. An operating threshold also needs refs.baselineCounterfactual pointing to supplied, numeric no-change revenue for the same eligible renewal population and future window, with role baseline_counterfactual, measure revenue and lifecycle renewal. Unknowns remain unknown; cite canonical input IDs in refs. Exact artifact quote presence and source truth require separate review.`;
 
 const object = value => value !== null && typeof value === 'object' && !Array.isArray(value);
 const nonempty = value => typeof value === 'string' && value.trim().length > 0;
@@ -16,7 +20,7 @@ const finite = value => typeof value === 'number' && Number.isFinite(value);
 const inputValue = value => finite(value) || nonempty(value) || typeof value === 'boolean';
 const samePeriod = (a, b) => a?.kind === b?.kind && a?.value === b?.value;
 
-export function reconcileInputs(record) {
+export function reconcileInputs(record, { snapshot } = {}) {
   const issues = [];
   const add = (code, id, severity, message) => issues.push({ code, id, severity, message });
   if (!object(record)) {
@@ -27,6 +31,15 @@ export function reconcileInputs(record) {
   if (!Array.isArray(record.calculations)) add('invalid-calculations', 'calculations', 'error', 'calculations must be an array.');
   if (!Array.isArray(record.inputs) || !Array.isArray(record.calculations)) return issues;
 
+  const snapshotInputs = snapshot?.version === 1 && Array.isArray(snapshot.inputs)
+    ? new Map(snapshot.inputs.filter(input => object(input) && nonempty(input.id)).map(input => [input.id, input]))
+    : null;
+  if (snapshot !== undefined && !snapshotInputs) {
+    add('invalid-input-snapshot', 'snapshot', 'error', 'The pre-draft snapshot needs version 1 and canonical inputs.');
+  } else if (record.version === 2 && !snapshotInputs) {
+    add('missing-input-snapshot', 'snapshot', 'warning', 'Version 2 input reconciliation needs a pre-draft snapshot to verify supplied inputs.');
+  }
+
   const inputs = new Map();
   for (const [index, input] of record.inputs.entries()) {
     const id = nonempty(input?.id) ? input.id : `inputs[${index}]`;
@@ -36,6 +49,7 @@ export function reconcileInputs(record) {
     }
     if (inputs.has(id)) add('duplicate-input-id', id, 'error', 'Input IDs must be unique.');
     else inputs.set(id, input);
+    if (snapshotInputs) checkSnapshotInput(input, snapshotInputs, id, add);
     if (!INPUT_KINDS.has(input.kind)) add('invalid-input-kind', id, 'error', 'Input kind must be supplied, assumption, proposal or unknown.');
     if (!nonempty(input.quote)) add('missing-input-quote', id, 'error', 'Preserve the original wording or an explicit missing-input description in quote.');
     if (input.kind === 'unknown') {
@@ -65,6 +79,12 @@ export function reconcileInputs(record) {
       add('false-supplied-status', id, 'error', 'An assumption, proposal or unknown cannot be presented as supplied.');
     } else if (['assumption', 'proposal'].includes(input.kind) && input.presentedAs === undefined) {
       add('unlabeled-input', id, 'warning', 'Record how this assumption or proposal is labeled in the final artifact.');
+    }
+    if (input.measure !== undefined && !MEASURES.has(input.measure)) {
+      add('invalid-measure', id, 'error', 'measure must be revenue, customers or seats.');
+    }
+    if (input.lifecycle !== undefined && !LIFECYCLES.has(input.lifecycle)) {
+      add('invalid-lifecycle', id, 'error', 'lifecycle must be acquisition, renewal or unknown.');
     }
   }
 
@@ -112,13 +132,17 @@ export function reconcileInputs(record) {
     if (calculation.result !== undefined && !finite(calculation.result)) {
       add('invalid-result', id, 'error', 'result must be a finite number.');
     }
+    if (calculation.decisionUse !== undefined
+      && !['illustration', 'operating_threshold'].includes(calculation.decisionUse)) {
+      add('invalid-decision-use', id, 'error', 'decisionUse must be illustration or operating_threshold.');
+    }
     if (calculation.kind === 'unresolved') {
       add('unresolved-calculation', id, 'warning', 'Keep this calculation or claim unresolved until its missing inputs are supplied.');
       if (calculation.result !== undefined) add('unresolved-has-result', id, 'error', 'An unresolved calculation cannot report a result.');
       continue;
     }
     if (calculation.kind === 'ratio') {
-      if (!RATIO_METRICS.has(calculation.metric)) add('invalid-ratio-metric', id, 'error', 'ratio metric must be generic, conversion_rate or renewal_rate.');
+      if (!RATIO_METRICS.has(calculation.metric)) add('invalid-ratio-metric', id, 'error', 'ratio metric must be generic, conversion_rate, renewal_rate or revenue_retention_rate.');
       for (const role of ['numerator', 'denominator']) if (!Object.hasOwn(calculation.refs, role)) {
         add('missing-ref', id, 'error', `ratio needs a ${role} input ID.`);
       }
@@ -134,8 +158,13 @@ export function reconcileInputs(record) {
         add('conditional-only', id, 'error', 'Revenue arithmetic is conditional on its inputs, not an observed forecast or causal effect.');
       }
       if (refs.baselineRevenue && refs.priceMultiplier && refs.retentionMultiplier) {
-        checkConditionalRevenue(calculation, refs, id, add);
+        checkConditionalRevenue(calculation, refs, id, add, record.version);
       }
+    } else if (calculation.kind === 'break_even_retention') {
+      if (!Object.hasOwn(calculation.refs, 'priceMultiplier')) {
+        add('missing-ref', id, 'error', 'break_even_retention needs a priceMultiplier input ID.');
+      }
+      if (refs.priceMultiplier) checkBreakEvenRetention(calculation, refs, id, add);
     } else if (calculation.kind === 'scoped_claim' && !Object.hasOwn(calculation.refs, 'evidence')) {
       add('missing-ref', id, 'error', 'scoped_claim needs an evidence input ID.');
     }
@@ -172,6 +201,7 @@ function checkRatio(calculation, refs, id, add) {
   const roles = {
     conversion_rate: ['purchasers', 'eligible_exposures'],
     renewal_rate: ['renewed', 'eligible_renewals'],
+    revenue_retention_rate: ['retained_revenue', 'eligible_revenue'],
   };
   const expected = roles[calculation.metric];
   if (expected && (numerator.role !== expected[0] || denominator.role !== expected[1])) {
@@ -180,7 +210,18 @@ function checkRatio(calculation, refs, id, add) {
   if (numerator.unit !== denominator.unit || !nonempty(numerator.unit)) {
     add('ratio-unit-mismatch', id, 'error', 'Ratio numerator and denominator must have the same known unit.');
   }
-  if (expected && numerator.unit !== 'count') add('ratio-unit-mismatch', id, 'error', `${calculation.metric} needs counts.`);
+  if (['conversion_rate', 'renewal_rate'].includes(calculation.metric) && numerator.unit !== 'count') {
+    add('ratio-unit-mismatch', id, 'error', `${calculation.metric} needs counts.`);
+  }
+  if (calculation.metric === 'revenue_retention_rate'
+    && (!/^[A-Z]{3}$/.test(numerator.unit || '') || numerator.measure !== 'revenue'
+      || denominator.measure !== 'revenue')) {
+    add('ratio-unit-mismatch', id, 'error', 'revenue_retention_rate needs same-currency revenue, not customer or seat counts.');
+  }
+  if (['renewal_rate', 'revenue_retention_rate'].includes(calculation.metric)
+    && [numerator, denominator].some(input => input.lifecycle === 'acquisition')) {
+    add('renewal-evidence-mismatch', id, 'error', 'Acquisition evidence cannot establish a renewal rate.');
+  }
   if (nonempty(numerator.population) && nonempty(denominator.population)
     && numerator.population !== denominator.population) {
     add('population-mismatch', id, 'error', 'Ratio numerator and denominator cover different populations.');
@@ -205,8 +246,23 @@ function checkRatio(calculation, refs, id, add) {
   checkResult(calculation, numerator.value / denominator.value, id, add);
 }
 
-function checkConditionalRevenue(calculation, refs, id, add) {
+function checkConditionalRevenue(calculation, refs, id, add, version) {
   const { baselineRevenue, priceMultiplier, retentionMultiplier } = refs;
+  if (['customers', 'seats'].includes(retentionMultiplier.measure)) {
+    checkEqualValueAssumption(refs, id, add, 'error');
+    if (calculation.decisionUse === 'operating_threshold') {
+      add('unsupported-operating-weighting', id, 'error',
+        'An equal-value assumption cannot turn customer or seat retention into an operating revenue threshold.');
+    }
+  } else if (calculation.decisionUse === 'operating_threshold' && retentionMultiplier.measure !== 'revenue') {
+    add('unresolved-retention-basis', id, 'error', 'An operating revenue threshold needs a revenue retention basis.');
+  } else if ((calculation.decisionUse || version === 2) && retentionMultiplier.measure === undefined) {
+    add('unresolved-retention-basis', id, 'warning', 'Declare whether retained value is revenue, customers or seats.');
+  }
+  if (version === 2 && calculation.decisionUse === undefined) {
+    add('unresolved-decision-use', id, 'warning', 'Declare whether this calculation is an illustration or an operating threshold.');
+  }
+  if (calculation.decisionUse === 'operating_threshold') checkCounterfactual(calculation, refs, id, add);
   if (!/^[A-Z]{3}$/.test(baselineRevenue.unit || '')) {
     add('revenue-unit-mismatch', id, 'error', 'baselineRevenue needs a three-letter currency unit.');
   }
@@ -240,6 +296,103 @@ function checkConditionalRevenue(calculation, refs, id, add) {
     return;
   }
   checkResult(calculation, baselineRevenue.value * priceMultiplier.value * retentionMultiplier.value, id, add);
+}
+
+function checkBreakEvenRetention(calculation, refs, id, add) {
+  const { priceMultiplier } = refs;
+  const operating = calculation.decisionUse === 'operating_threshold';
+  const severity = operating ? 'error' : 'warning';
+  if (priceMultiplier.unit !== 'multiplier') {
+    add('revenue-unit-mismatch', id, 'error', 'priceMultiplier must use unit multiplier.');
+  }
+  if (!RETENTION_BASES.has(calculation.retentionBasis)) {
+    add('unresolved-retention-basis', id, severity, 'Declare whether the break-even rate retains revenue, customers or seats.');
+  } else if (calculation.retentionBasis === 'unknown') {
+    add('unresolved-retention-basis', id, severity, 'The retention basis is unknown; keep the rate illustrative.');
+  } else if (['customers', 'seats'].includes(calculation.retentionBasis)) {
+    checkEqualValueAssumption(refs, id, add, severity);
+    if (operating) {
+      add('unsupported-operating-weighting', id, 'error',
+        'An equal-value assumption cannot turn a customer or seat rate into an operating revenue threshold.');
+    }
+  }
+  if (calculation.presentedAs !== 'conditional') {
+    add('conditional-only', id, 'error', 'A break-even rate from price arithmetic is conditional, not an observed forecast.');
+  }
+  if (operating) checkCounterfactual(calculation, refs, id, add);
+  else if (!refs.baselineCounterfactual) {
+    add('unresolved-counterfactual', id, 'warning', 'This price-only break-even rate does not establish a same-horizon operating baseline.');
+  }
+  if (priceMultiplier.kind === 'unknown') return;
+  if (!finite(priceMultiplier.value) || priceMultiplier.value <= 0) {
+    add(calculation.result === undefined ? 'unresolved-calculation' : 'invalid-revenue-values',
+      id, calculation.result === undefined ? 'warning' : 'error',
+      'A break-even rate needs a positive numeric price multiplier.');
+    return;
+  }
+  checkResult(calculation, 1 / priceMultiplier.value, id, add);
+}
+
+function checkEqualValueAssumption(refs, id, add, severity) {
+  const assumption = refs.equalValueAssumption;
+  if (!assumption || assumption.kind !== 'assumption' || assumption.role !== 'equal_value_assumption'
+    || assumption.value !== true || assumption.presentedAs !== 'assumption') {
+    add('unsupported-weighting', id, severity,
+      'A customer or seat rate cannot stand for revenue retention without a labeled equal-value assumption.');
+  }
+}
+
+function checkCounterfactual(calculation, refs, id, add) {
+  const baseline = refs.baselineCounterfactual;
+  if (calculation.comparison?.counterfactual !== 'no_change'
+    || !nonempty(calculation.comparison?.horizon)) {
+    add('unresolved-counterfactual', id, 'error', 'An operating threshold needs an explicit no-change comparison over the same horizon.');
+  }
+  if (!baseline) {
+    add('unresolved-counterfactual', id, 'error', 'Reference a canonical same-horizon baselineCounterfactual input.');
+    return;
+  }
+  if (baseline.kind !== 'supplied' || !finite(baseline.value)) {
+    add('unresolved-counterfactual', id, 'error', 'An operating threshold needs a supplied, numeric no-change baseline.');
+  }
+  if (!/^[A-Z]{3}$/.test(baseline.unit || '') || baseline.measure !== 'revenue') {
+    add('counterfactual-measure-mismatch', id, 'error', 'The no-change baseline must measure revenue in a currency.');
+  }
+  if (baseline.role !== 'baseline_counterfactual') {
+    add('counterfactual-role-mismatch', id, 'error', 'The baseline reference must be a no-change revenue counterfactual.');
+  }
+  if (baseline.lifecycle !== 'renewal') {
+    add('renewal-evidence-mismatch', id, 'error', 'Acquisition or unclassified observations do not establish a renewal baseline.');
+  }
+  if (!nonempty(calculation.targetPopulation) || baseline.population !== calculation.targetPopulation) {
+    add('population-mismatch', id, 'error', 'The no-change baseline and operating threshold need the same eligible renewal population.');
+  }
+  if (!object(calculation.targetPeriod) || calculation.targetPeriod.kind !== 'window'
+    || !object(baseline.period) || !samePeriod(baseline.period, calculation.targetPeriod)) {
+    add('period-mismatch', id, 'error', 'The no-change baseline and scenario must cover the same future window.');
+  }
+  if (refs.retentionMultiplier && refs.retentionMultiplier.lifecycle === 'acquisition') {
+    add('renewal-evidence-mismatch', id, 'error', 'Acquisition observations cannot establish renewal retention.');
+  }
+}
+
+function checkSnapshotInput(input, snapshotInputs, id, add) {
+  const original = snapshotInputs.get(id);
+  if (input.kind === 'supplied' && !original) {
+    add('unsnapshotted-supplied-input', id, 'error', 'A supplied input must use a canonical ID from the pre-draft snapshot.');
+    return;
+  }
+  if (!original) return;
+  if (original.kind === 'supplied' && input.kind !== 'supplied') {
+    add('supplied-status-changed', id, 'error', 'A canonical supplied input cannot be relabeled after drafting.');
+  }
+  if (input.kind === 'supplied' || original.kind === 'supplied') {
+    for (const field of SOURCE_FIELDS) {
+      if (JSON.stringify(input[field]) !== JSON.stringify(original[field])) {
+        add('snapshot-input-mismatch', id, 'error', `The supplied ${field} differs from its pre-draft snapshot.`);
+      }
+    }
+  }
 }
 
 function checkResult(calculation, expected, id, add) {

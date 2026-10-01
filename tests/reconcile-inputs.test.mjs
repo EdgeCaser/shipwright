@@ -191,3 +191,152 @@ test('renewal rate requires renewed over eligible renewals', () => {
     targetPopulation: 'renewing schools' })] };
   assert.deepEqual(reconcileInputs(record), []);
 });
+
+test('revenue retention uses retained and eligible revenue, not customer or seat counts', () => {
+  const record = { inputs: [
+    input('retained', 80, 'retained_revenue', { unit: 'USD', measure: 'revenue',
+      lifecycle: 'renewal', population: 'renewing customers' }),
+    input('eligible', 100, 'eligible_revenue', { unit: 'USD', measure: 'revenue',
+      lifecycle: 'renewal', population: 'renewing customers' }),
+  ], calculations: [ratio({ id: 'revenue-retention', metric: 'revenue_retention_rate',
+    refs: { numerator: 'retained', denominator: 'eligible' }, result: 0.8,
+    targetPopulation: 'renewing customers' })] };
+  assert.deepEqual(reconcileInputs(record), []);
+  record.inputs[0].unit = 'count';
+  record.inputs[0].measure = 'seats';
+  assert.ok(codes(record).includes('ratio-unit-mismatch'));
+  record.inputs[0].unit = 'USD';
+  record.inputs[0].measure = 'revenue';
+  record.inputs[0].lifecycle = 'acquisition';
+  assert.ok(codes(record).includes('renewal-evidence-mismatch'));
+});
+
+test('a pre-draft snapshot prevents supplied inputs from changing cohort, wording or status', () => {
+  const record = conversion();
+  const snapshot = { version: 1, requestText: 'Pilot evidence',
+    inputs: structuredClone(record.inputs), behaviors: [] };
+  assert.deepEqual(reconcileInputs(record, { snapshot }), []);
+  record.inputs[1].population = 'renewing partners';
+  record.inputs[1].quote = '640 partners renew';
+  assert.ok(codesFromSnapshot(record, snapshot).includes('snapshot-input-mismatch'));
+  record.inputs[1].kind = 'assumption';
+  assert.ok(codesFromSnapshot(record, snapshot).includes('supplied-status-changed'));
+  record.inputs[1].id = 'invented';
+  record.inputs[1].kind = 'supplied';
+  assert.ok(codesFromSnapshot(record, snapshot).includes('unsnapshotted-supplied-input'));
+});
+
+test('a customer break-even percentage is arithmetic, but not revenue retention without equal value', () => {
+  const record = {
+    inputs: [
+      { id: 'price', kind: 'assumption', quote: 'Assume the new price is 1.176470588 times the old price',
+        value: 1 / 0.85, unit: 'multiplier', role: 'price_multiplier', presentedAs: 'assumption' },
+      { id: 'all', kind: 'supplied', quote: '640 partners in total', value: 640, unit: 'count',
+        measure: 'customers', lifecycle: 'renewal', role: 'all_customers', population: 'all partners',
+        period: window('next year') },
+    ],
+    calculations: [{ id: 'threshold', kind: 'break_even_retention',
+      refs: { priceMultiplier: 'price' }, retentionBasis: 'customers',
+      decisionUse: 'illustration', presentedAs: 'conditional', result: 0.85,
+      artifactQuotes: ['85% would be the arithmetic break-even under equal values.'] }],
+  };
+  const found = codes(record);
+  assert.ok(found.includes('unsupported-weighting'));
+  assert.ok(found.includes('unresolved-counterfactual'));
+  assert.equal(found.includes('arithmetic-mismatch'), false);
+  record.calculations[0].decisionUse = 'operating_threshold';
+  assert.ok(reconcileInputs(record).some(issue => issue.code === 'unsupported-weighting' && issue.severity === 'error'));
+  assert.ok(codes(record).includes('unresolved-counterfactual'));
+});
+
+test('an explicit equal-value assumption supports a conditional customer illustration', () => {
+  const record = { inputs: [
+    { id: 'price', kind: 'assumption', quote: 'Assume price multiplier 1.25',
+      value: 1.25, unit: 'multiplier', presentedAs: 'assumption' },
+    { id: 'equal', kind: 'assumption', quote: 'Assume each customer contributes equal revenue',
+      value: true, role: 'equal_value_assumption', presentedAs: 'assumption' },
+  ], calculations: [{ id: 'threshold', kind: 'break_even_retention',
+    refs: { priceMultiplier: 'price', equalValueAssumption: 'equal' },
+    retentionBasis: 'customers', decisionUse: 'illustration', presentedAs: 'conditional',
+    result: 0.8, artifactQuotes: ['With equal customer revenue, 80% is the arithmetic break-even.'] }] };
+  assert.equal(codes(record).includes('unsupported-weighting'), false);
+  assert.ok(codes(record).includes('unresolved-counterfactual'));
+});
+
+test('seat retention cannot silently stand in for retained revenue', () => {
+  const record = { inputs: [
+    input('baseline', 1000, 'revenue', { unit: 'USD', measure: 'revenue', population: 'renewing customers' }),
+    input('price', 1.1, 'price_multiplier', { kind: 'assumption', unit: 'multiplier',
+      presentedAs: 'assumption', population: undefined }),
+    input('retention', 0.9, 'retention_multiplier', { kind: 'assumption', unit: 'multiplier',
+      measure: 'seats', population: 'renewing customers', presentedAs: 'assumption' }),
+  ], calculations: [{ id: 'revenue', kind: 'conditional_revenue',
+    refs: { baselineRevenue: 'baseline', priceMultiplier: 'price', retentionMultiplier: 'retention' },
+    targetPopulation: 'renewing customers', presentedAs: 'conditional', result: 990,
+    artifactQuotes: ['At 90% seat retention, revenue would be $990.'] }] };
+  assert.ok(codes(record).includes('unsupported-weighting'));
+  record.inputs.push({ id: 'equal', kind: 'assumption', quote: 'Assume equal revenue per seat',
+    value: true, role: 'equal_value_assumption', presentedAs: 'assumption' });
+  record.calculations[0].refs.equalValueAssumption = 'equal';
+  assert.equal(codes(record).includes('unsupported-weighting'), false);
+  record.calculations[0].decisionUse = 'operating_threshold';
+  assert.ok(codes(record).includes('unsupported-operating-weighting'));
+});
+
+test('an operating break-even needs renewal revenue for the same population and future window', () => {
+  const record = { inputs: [
+    { id: 'price', kind: 'assumption', quote: 'Assume price multiplier 1.25',
+      value: 1.25, unit: 'multiplier', presentedAs: 'assumption' },
+    { id: 'baseline', kind: 'supplied', quote: 'No-change renewal revenue is $1000 next year',
+      value: 1000, unit: 'USD', measure: 'revenue', lifecycle: 'renewal',
+      role: 'baseline_counterfactual', population: 'eligible renewals', period: window('next year') },
+  ], calculations: [{ id: 'threshold', kind: 'break_even_retention',
+    refs: { priceMultiplier: 'price', baselineCounterfactual: 'baseline' },
+    retentionBasis: 'revenue', decisionUse: 'operating_threshold', presentedAs: 'conditional',
+    targetPopulation: 'eligible renewals', targetPeriod: window('next year'),
+    comparison: { counterfactual: 'no_change', horizon: 'one year' }, result: 0.8,
+    artifactQuotes: ['On this no-change revenue baseline, 80% retained revenue breaks even.'] }] };
+  assert.deepEqual(reconcileInputs(record), []);
+  record.inputs[1].period = window('previous year');
+  assert.ok(codes(record).includes('period-mismatch'));
+  record.inputs[1].period = window('next year');
+  record.inputs[1].lifecycle = 'acquisition';
+  assert.ok(codes(record).includes('renewal-evidence-mismatch'));
+  record.inputs[1].lifecycle = 'renewal';
+  record.inputs[1].population = 'all customers';
+  assert.ok(codes(record).includes('population-mismatch'));
+  record.inputs[1].population = 'eligible renewals';
+  record.calculations[0].retentionBasis = 'customers';
+  record.inputs.push({ id: 'equal', kind: 'assumption', quote: 'Assume equal customer value',
+    value: true, role: 'equal_value_assumption', presentedAs: 'assumption' });
+  record.calculations[0].refs.equalValueAssumption = 'equal';
+  assert.ok(codes(record).includes('unsupported-operating-weighting'));
+});
+
+test('a version 2 input record reports a missing snapshot without rejecting useful arithmetic', () => {
+  const record = conversion({ version: 2 });
+  const found = reconcileInputs(record);
+  assert.ok(found.some(issue => issue.code === 'missing-input-snapshot' && issue.severity === 'warning'));
+  assert.equal(found.some(issue => issue.severity === 'error'), false);
+});
+
+test('version 2 conditional revenue warns when measure and decision use are undeclared', () => {
+  const record = { version: 2, inputs: [
+    input('baseline', 1000, 'revenue', { unit: 'USD', population: 'renewing customers' }),
+    input('price', 1.1, 'price_multiplier', { kind: 'assumption', unit: 'multiplier',
+      presentedAs: 'assumption', population: undefined }),
+    input('retention', 0.9, 'retention_multiplier', { kind: 'assumption', unit: 'multiplier',
+      population: 'renewing customers', presentedAs: 'assumption' }),
+  ], calculations: [{ id: 'revenue', kind: 'conditional_revenue',
+    refs: { baselineRevenue: 'baseline', priceMultiplier: 'price', retentionMultiplier: 'retention' },
+    targetPopulation: 'renewing customers', presentedAs: 'conditional', result: 990,
+    artifactQuotes: ['Under these assumptions, revenue would be $990.'] }] };
+  const found = codes(record);
+  assert.ok(found.includes('unresolved-retention-basis'));
+  assert.ok(found.includes('unresolved-decision-use'));
+  assert.equal(reconcileInputs(record).some(issue => issue.severity === 'error'), false);
+});
+
+function codesFromSnapshot(record, snapshot) {
+  return reconcileInputs(record, { snapshot }).map(issue => issue.code);
+}

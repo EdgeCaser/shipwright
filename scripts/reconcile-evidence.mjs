@@ -23,6 +23,11 @@ Primary passages need a URL, retrieval time, nonblank passage, and nonblank
 context. Generated summaries may be retained as leads but cannot alone verify
 a claim. Each claim has an id, exact excerpts from the final artifact in
 artifactQuotes, sourceIds, and support: verified or unresolved.
+When a source rule depends on case inputs or an incorporated definition, put
+prerequisites:{requiredInputIds:[...],definitionSourceIds:[...]} on that source.
+Verified claims must link those definitions and carry all required input IDs
+through applicability. This checks declared dependencies, not whether an
+author found every dependency in the original page.
 Applicability claims list every known required input ID and say whether the
 final conclusion is conditional. Unknown, assumed, or proposed inputs cannot
 support an unconditional case-specific conclusion.
@@ -45,7 +50,15 @@ explicitly unresolved support; they do not by themselves fail artifact
 readiness. Text inclusion and matching structured fields do not prove semantic
 entailment, authentic primary authority, or complete claim/requirement coverage.
 The primary-passage kind means fetched page text; it does not authenticate who
-published that text.`;
+published that text. For multi-plan comparisons, use comparisonTuples with one
+claim tuple per cited source row and comparison:{status:'established'|'unknown',
+finalQuote:'exact final comparative excerpt',unknownFields:[...]}.
+For each source row, renderedTuples has sourceTupleId and fieldQuotes: exact
+excerpts from artifactQuotes for provider, plan, feature, price, currency,
+unit, and billingCadence. Include a qualifier excerpt when present. An unknown
+field needs an explicit artifact excerpt and unknown status. The finalQuote
+may refer to table rows represented by those excerpts. These text anchors
+cannot certify the comparison's meaning or prove a paraphrase is faithful.`;
 
 function isRecord(value) {
   return value !== null && typeof value === 'object' && !Array.isArray(value);
@@ -74,7 +87,7 @@ function sameValue(a, b) {
   return String(a).trim().toLowerCase() === String(b).trim().toLowerCase();
 }
 
-export function reconcileEvidence(record) {
+export function reconcileEvidence(record, options = {}) {
   const issues = [];
   const add = (code, id, severity, message) => issues.push({ code, id, severity, message });
   if (!isRecord(record)) {
@@ -106,6 +119,20 @@ export function reconcileEvidence(record) {
     }
   }
 
+  const frozenInputs = Array.isArray(options.snapshot?.inputs)
+    ? new Map(options.snapshot.inputs.filter((item) => hasText(item?.id)).map((item) => [item.id, item]))
+    : null;
+  if (frozenInputs) {
+    for (const [id, input] of inputs) {
+      const frozen = frozenInputs.get(id);
+      if ((!frozen && input.kind === 'supplied') ||
+          (frozen && (frozen.kind !== input.kind ||
+            (input.kind === 'supplied' && !Object.is(frozen.value, input.value))))) {
+        add('snapshot-input-mismatch', id, 'error', 'Evidence input differs from the frozen request snapshot.');
+      }
+    }
+  }
+
   const sources = new Map();
   const tuples = new Map();
   for (const [index, source] of lists.evidenceSources.entries()) {
@@ -123,6 +150,16 @@ export function reconcileEvidence(record) {
           'Primary source needs URL, retrievedAt, passage, and context.');
       } else if (!source.context.replace(/\s+/g, ' ').includes(source.passage.replace(/\s+/g, ' '))) {
         add('passage-outside-context', id, 'error', 'Passage must occur in source context.');
+      }
+    }
+    if (source.prerequisites !== undefined) {
+      const prerequisites = source.prerequisites;
+      if (!isRecord(prerequisites) || !Array.isArray(prerequisites.requiredInputIds) ||
+          !Array.isArray(prerequisites.definitionSourceIds) ||
+          prerequisites.requiredInputIds.some((value) => !hasText(value)) ||
+          prerequisites.definitionSourceIds.some((value) => !hasText(value))) {
+        add('source-prerequisites-invalid', id, 'error',
+          'Source prerequisites need requiredInputIds and definitionSourceIds arrays.');
       }
     }
     if (source.competitorTuples !== undefined && !Array.isArray(source.competitorTuples)) {
@@ -156,6 +193,30 @@ export function reconcileEvidence(record) {
     }
   }
 
+  function collectPrerequisites(sourceId, visited = new Set()) {
+    if (visited.has(sourceId)) return { inputs: new Set(), definitions: new Set() };
+    visited.add(sourceId);
+    const source = sources.get(sourceId);
+    const declarations = source?.prerequisites;
+    const required = {
+      inputs: new Set(Array.isArray(declarations?.requiredInputIds) ? declarations.requiredInputIds : []),
+      definitions: new Set(Array.isArray(declarations?.definitionSourceIds) ? declarations.definitionSourceIds : []),
+    };
+    for (const definitionId of required.definitions) {
+      if (!sources.has(definitionId)) {
+        add('definition-reference-missing', sourceId, 'error', `Unknown definition source id: ${definitionId}.`);
+        continue;
+      }
+      if (sources.get(definitionId).kind !== 'primary-passage') {
+        add('definition-not-primary', sourceId, 'error', `Definition source ${definitionId} must be a primary passage.`);
+      }
+      const nested = collectPrerequisites(definitionId, visited);
+      for (const inputId of nested.inputs) required.inputs.add(inputId);
+      for (const nestedId of nested.definitions) required.definitions.add(nestedId);
+    }
+    return required;
+  }
+
   const claimIds = new Set();
   for (const [index, claim] of lists.evidenceClaims.entries()) {
     const id = hasText(claim?.id) ? claim.id : `evidenceClaims[${index}]`;
@@ -187,6 +248,27 @@ export function reconcileEvidence(record) {
       add('support-unresolved', id, 'warning', 'Claim support is explicitly unresolved.');
     }
 
+    if (claim.support === 'verified') {
+      const required = { inputs: new Set(), definitions: new Set() };
+      for (const sourceId of sourceIds) {
+        const sourceRequired = collectPrerequisites(sourceId);
+        for (const inputId of sourceRequired.inputs) required.inputs.add(inputId);
+        for (const definitionId of sourceRequired.definitions) required.definitions.add(definitionId);
+      }
+      for (const definitionId of required.definitions) {
+        if (!sourceIds.includes(definitionId)) {
+          add('source-definition-unlinked', id, 'error',
+            `Verified claim must reference incorporated definition source ${definitionId}.`);
+        }
+      }
+      for (const inputId of required.inputs) {
+        if (!claim.applicability?.requiredInputIds?.includes(inputId)) {
+          add('source-prerequisite-omitted', id, 'error',
+            `Verified claim omits source-declared required case input ${inputId}.`);
+        }
+      }
+    }
+
     if (claim.applicability !== undefined) {
       const applicability = claim.applicability;
       if (!isRecord(applicability) || !Array.isArray(applicability.requiredInputIds) ||
@@ -209,10 +291,19 @@ export function reconcileEvidence(record) {
       }
     }
 
-    if (claim.competitorTuple !== undefined) {
-      const reported = claim.competitorTuple;
+    const comparisonTuples = claim.comparisonTuples;
+    if (comparisonTuples !== undefined &&
+        (!Array.isArray(comparisonTuples) || comparisonTuples.length < 2)) {
+      add('comparison-tuples-invalid', id, 'error', 'comparisonTuples needs at least two source-linked tuples.');
+    }
+    const reportedTuples = [
+      ...(claim.competitorTuple !== undefined ? [claim.competitorTuple] : []),
+      ...(Array.isArray(comparisonTuples) ? comparisonTuples : []),
+    ];
+    const comparisonSources = new Map();
+    for (const reported of reportedTuples) {
       if (!isRecord(reported) || !hasText(reported.sourceTupleId)) {
-        add('claim-tuple-invalid', id, 'error', 'Claim competitorTuple needs sourceTupleId.');
+        add('claim-tuple-invalid', id, 'error', 'Claim tuple needs sourceTupleId.');
         continue;
       }
       const sourceEntry = tuples.get(reported.sourceTupleId);
@@ -223,6 +314,11 @@ export function reconcileEvidence(record) {
       if (!sourceIds.includes(sourceEntry.sourceId)) {
         add('tuple-source-unlinked', id, 'error', 'Claim must reference the source that holds its tuple.');
       }
+      if (comparisonSources.has(reported.sourceTupleId)) {
+        add('comparison-tuple-duplicate', id, 'error',
+          `Source tuple ${reported.sourceTupleId} is repeated in the claim.`);
+      }
+      comparisonSources.set(reported.sourceTupleId, sourceEntry.tuple);
       for (const field of TUPLE_FIELDS) {
         if (!(field in reported) || !validTupleField(field, reported[field], true)) {
           add('claim-tuple-field-invalid', id, 'error', `Claim tuple needs scalar ${field}; use null for an unknown field.`);
@@ -247,6 +343,69 @@ export function reconcileEvidence(record) {
       }
       if (sourceEntry.tuple.completeness === 'partial') {
         add('tuple-partial', id, 'warning', 'Source tuple has explicitly unknown fields.');
+      }
+    }
+    if (comparisonTuples !== undefined) {
+      const comparison = claim.comparison;
+      if (!isRecord(comparison) || !['established', 'unknown'].includes(comparison.status) ||
+          !hasText(comparison.finalQuote) || !Array.isArray(comparison.unknownFields) ||
+          comparison.unknownFields.some((field) => !TUPLE_FIELDS.includes(field)) ||
+          !Array.isArray(comparison.renderedTuples)) {
+        add('comparison-invalid', id, 'error',
+          'Comparison needs status, exact finalQuote, unknownFields, and renderedTuples.');
+      } else {
+        if (!claim.artifactQuotes?.includes(comparison.finalQuote)) {
+          add('comparison-final-quote-missing', id, 'error',
+            'The final comparative excerpt must be listed in artifactQuotes.');
+        }
+        const artifactQuotes = Array.isArray(claim.artifactQuotes) ? claim.artifactQuotes : [];
+        const renderedById = new Map(comparison.renderedTuples
+          .filter((row) => hasText(row?.sourceTupleId))
+          .map((row) => [row.sourceTupleId, row]));
+        const sourceUnknownFields = new Set();
+        for (const [tupleId, tuple] of comparisonSources) {
+          const rendered = renderedById.get(tupleId);
+          if (!isRecord(rendered?.fieldQuotes)) {
+            add('comparison-rendered-row-missing', id, 'error',
+              `Comparison needs rendered field excerpts for source tuple ${tupleId}.`);
+            continue;
+          }
+          for (const field of TUPLE_FIELDS) {
+            if (tuple[field] === null) sourceUnknownFields.add(field);
+            const excerpt = rendered.fieldQuotes[field];
+            if (!hasText(excerpt) || !artifactQuotes.some((quote) => quote.includes(excerpt))) {
+              add('comparison-field-quote-missing', id, 'error',
+                `Artifact excerpts need a ${field} anchor for source tuple ${tupleId}.`);
+            }
+          }
+          if (hasText(tuple.qualifier) &&
+              (!hasText(rendered.qualifierQuote) ||
+                !artifactQuotes.some((quote) => quote.includes(rendered.qualifierQuote)))) {
+            add('comparison-condition-quote-missing', id, 'error',
+              'Artifact excerpts need an anchor for each source condition.');
+          }
+        }
+        for (const field of sourceUnknownFields) {
+          if (!comparison.unknownFields.includes(field)) {
+            add('comparison-unknown-omitted', id, 'error',
+              `Comparison must mark ${field} as unknown.`);
+          }
+        }
+        for (const field of comparison.unknownFields) {
+          if (!sourceUnknownFields.has(field)) {
+            add('comparison-unknown-unbacked', id, 'error',
+              `Comparison marks ${field} unknown although all cited rows provide it.`);
+          }
+        }
+        if (sourceUnknownFields.size > 0 && comparison.status !== 'unknown') {
+          add('comparison-status-overstated', id, 'error',
+            'Unknown source dimensions require unknown comparison status.');
+        }
+        if (comparison.status === 'unknown' && sourceUnknownFields.size === 0 &&
+            comparison.unknownFields.length === 0) {
+          add('comparison-unknown-unexplained', id, 'error',
+            'Unknown comparison status needs an identified unknown field.');
+        }
       }
     }
   }

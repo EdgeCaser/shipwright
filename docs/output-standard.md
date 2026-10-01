@@ -110,7 +110,7 @@ The following patterns indicate non-signature output:
 
 Use `evals/pass-fail.md` for binary gating and `evals/*.md` for scoring depth.
 
-For substantial decisions, comparisons and PRDs with material evidence claims, calculations or promises, run the installed local helper described in `docs/artifact-reconciliation.md`. It binds explicit records to the final draft's hash and checks declared relationships. Follow it with a separate source-and-summary reading and ordinary artifact validation after the last rewrite. Report unresolved support explicitly; do not equate machine consistency with factual correctness, readiness or human approval.
+For substantial decisions, comparisons and PRDs with material evidence claims, calculations or promises, follow `docs/artifact-reconciliation.md` before drafting. Capture original passages and canonical inputs first; preserve revisions with reasons. Final reconciliation binds that history and explicit records to the draft and reports unmapped visible text for inspection. Follow it with a source-and-summary reading and ordinary artifact validation after the last rewrite. Report unresolved support explicitly. Neither hashes, consistent records nor the author's review authenticate inputs, establish factual correctness or grant readiness or human approval.
 
 - **Pass/fail first** to block weak artifacts
 - **Rubric score second** to improve strong artifacts

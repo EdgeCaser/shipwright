@@ -34,6 +34,41 @@ test('non-text response does not become a primary passage', () => {
   }), null);
 });
 
+test('direct URL capture works without search provider and retains final source identity', { concurrency: false }, async (t) => {
+  const cwd = await createTempDir(t);
+  const fetchedUrls = [];
+  const result = await collectResearch({
+    urls: ['https://example.com/start', 'https://example.com/file.pdf'],
+    mode: 'auto', outDir: 'direct-output', cacheTtlHours: 24,
+  }, {
+    cwd, now: new Date('2026-04-01T00:00:00Z'), logger: NOOP_LOGGER,
+    publicSourceFetch: async (url) => {
+      fetchedUrls.push(url);
+      if (url.endsWith('.pdf')) return {
+        ok: false, requestedUrl: url, finalUrl: url, redirects: [],
+        status: 200, contentType: 'application/pdf', maxBytes: 1024 * 1024,
+        error: 'unsupported-content-type',
+      };
+      return {
+        ok: true, requestedUrl: url, finalUrl: 'https://example.com/pricing',
+        redirects: [{ from: url, to: 'https://example.com/pricing', status: 301 }],
+        status: 200, contentType: 'text/html', maxBytes: 1024 * 1024,
+        bytesRead: 120, body: '<html><title>Pricing</title><body><h2>Plan</h2><table><tr><th>Price</th></tr><tr><td>$8 per seat/month billed annually</td></tr></table></body></html>',
+      };
+    },
+  });
+  assert.deepEqual(fetchedUrls, ['https://example.com/start', 'https://example.com/file.pdf']);
+  assert.equal(result.pack.providerStatus, 'direct-url');
+  assert.equal(result.pack.escalation.status, 'needs-interactive-followup');
+  assert.equal(result.pack.results[0].primarySource.url, 'https://example.com/pricing');
+  assert.match(result.pack.results[0].primarySource.context, /Plan\nPrice\n\$8/);
+  assert.equal(result.pack.results[0].fetched.redirects.length, 1);
+  assert.equal(result.pack.results[1].primarySource, undefined);
+  assert.equal(result.pack.results[1].fetched.error, 'unsupported-content-type');
+  const saved = JSON.parse(await readFile(result.jsonPath, 'utf8'));
+  assert.equal(saved.results[0].primarySource.url, 'https://example.com/pricing');
+});
+
 const NOOP_LOGGER = {
   log() {},
   warn() {},

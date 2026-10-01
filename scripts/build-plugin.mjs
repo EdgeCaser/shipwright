@@ -35,7 +35,7 @@ export async function pluginFiles(root = SOURCE_ROOT) {
   for (const name of [...manifest.docs, 'workflow-contract', 'structured-artifacts', 'plugin-guide', 'artifact-reconciliation']) await add(`docs/${name}.md`);
   for (const entry of ['collect-research', 'source-adapters', 'classify-request', 'format-facts',
     'pricing-diff', 'pricing-tuples', 'markdown-scan', 'extract-structured-artifact', 'validate-artifact', 'route-request',
-    'reconcile-artifact', 'reconcile-evidence', 'reconcile-inputs', 'reconcile-behavior']) await add(`scripts/${entry}.mjs`);
+    'reconcile-artifact', 'reconcile-evidence', 'reconcile-inputs', 'reconcile-behavior', 'capture-inputs', 'public-source-fetch']) await add(`scripts/${entry}.mjs`);
   for (const file of ['manifest.json', 'skills-map.md', 'LICENSE', '.claude-plugin/plugin.json']) await add(file);
   // The source README documents checkout-only development tools. A directory install needs
   // a guide whose links and commands are valid inside this bundle.
