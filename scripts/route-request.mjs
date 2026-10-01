@@ -17,10 +17,13 @@ const HIGH_STAKES_DECISION_RE = /\bshould\s+(?:we|i|the\s+(?:company|team|board)
 const PRICING_MENTION_RE = /\b(?:prices?|pricing)\b/i;
 const BUILD_BUY_MENTION_RE = /\b(?:build|buy)(?:ing)?[\s-]+(?:vs\.?|versus|or)[\s-]+(?:build|buy)(?:ing)?\b/i;
 const CLARIFICATION_HINT = 'Tell me whether this is a price change (raise, lower or restructure prices) or a build-or-buy choice (build in-house versus buy or license). That detail lets me classify the decision.';
+const RUNTIME_SHUTDOWN_RE = /\b(?:kill|shut\s+down)\b[^?!.]*\b(?:process|thread|worker|background|daemon|timeout|deployment|restart|reboot|crash)\b/i;
+const EXPLICIT_BUSINESS_OBJECT_RE = /\b(?:product(?:\s+line)?|business|division)\b/i;
 const SCENARIO_CLASS_PATTERNS = [
   { scenarioClass: 'governance', pattern: /\b(restructur\w*|acquir\w*|acquisition|merg(?:e|er|ing)|divest\w*|spin[- ]off|dissolv\w*|reorgani[sz]\w*|board\s+(?:vote|decision|approval))\b/i },
-  { scenarioClass: 'publication', pattern: /\b(go\s+public|ipo|press\s+release|public\s+(?:statement|announcement)|publish\s+(?:the|our|a))\b/i },
-  { scenarioClass: 'product_strategy', pattern: /\b(kill|sunset|shut\s+down|pivot|(?:build|make)[\s-]+(?:vs\.?|versus|or)[\s-]+buy|buy[\s-]+(?:vs\.?|versus|or)[\s-]+build|bet\s+(?:the|our)\s+company)\b/i },
+  { scenarioClass: 'publication', pattern: /\b(go\s+public|ipo|press\s+release|public\s+(?:statement|announcement)|publish\s+(?:(?:the|our|a)\s+)?(?:public\s+(?:statement|announcement)|press\s+release))\b/i },
+  // Destructive verbs need an organizational or product object. A worker process or document is not a product verdict.
+  { scenarioClass: 'product_strategy', pattern: /\b(?:kill|sunset|shut\s+down)\s+(?:[\w-]+\s+){0,4}(?:product(?:\s+line)?|app|application|feature|service|api|platform|business|division|office|team)\b|\b(pivot|(?:build|make)[\s-]+(?:vs\.?|versus|or)[\s-]+buy|buy[\s-]+(?:vs\.?|versus|or)[\s-]+build|bet\s+(?:the|our)\s+company)\b/i },
   // A price decision, not a pricing page, copy, ownership or announcement question.
   // Up to three modifiers may sit before the noun ("the Pro plan price").
   { scenarioClass: 'pricing', pattern: /\b((?:raise|increase|lower|cut|reduce|change)\s+(?:(?!(?:who|whom|that|which|how|what|when|where|why|to|for|on|of|about|with|by|time|spent|owns?|effort|work|process)\b)[\w$.-]+\s+){0,3}?(?:prices?|pricing)(?!\s+(?:page|pages|table|copy|headline|section|calculator|load|display|widget|email|announcement))|reprice|(?:make|do|approve|implement|adopt|go\s+ahead\s+with|proceed\s+with)\s+(?:a|the|this)\s+price\s+(?:increase|decrease|change|cut|hike))\b/i },
@@ -172,7 +175,9 @@ export function routeRequest(input, options = {}) {
     else matches.push({ ...matchRule(explicitRule, normalized), exactMatch: true, sortScore: 1000 });
   }
   const scenarioClassMatch = HIGH_STAKES_DECISION_RE.test(normalized)
-    ? SCENARIO_CLASS_PATTERNS.find(({ pattern }) => pattern.test(normalized)) : null;
+    ? SCENARIO_CLASS_PATTERNS.find(({ scenarioClass, pattern }) => pattern.test(normalized) &&
+      !(scenarioClass === 'product_strategy' && RUNTIME_SHUTDOWN_RE.test(normalized) &&
+        !EXPLICIT_BUSINESS_OBJECT_RE.test(normalized))) : null;
   if (scenarioClassMatch && !explicitRule) {
     const decision = matches.find(match => match.route === 'decision-analysis');
     if (decision) { decision.sortScore += 1000; decision.exactMatch = true; }

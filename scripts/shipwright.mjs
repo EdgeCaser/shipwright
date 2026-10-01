@@ -188,7 +188,7 @@ function slugify(text) {
 
 function printHelp() {
   process.stdout.write(`
-Shipwright — PM decision analysis
+Shipwright - PM decision analysis
 
 Usage:
   node scripts/shipwright.mjs --question "Your question here" [options]

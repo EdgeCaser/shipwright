@@ -156,6 +156,19 @@ test('--check fails with a clear reason for a missing closing block', async () =
   await rm(dir, { recursive: true, force: true });
 });
 
+test('sentence-case closing headings keep their meaning and section boundaries', () => {
+  const entry = PROMPTS.find(item => item.id === 'pricing-framework');
+  const text = GOOD[entry.id]
+    .replace('Unknowns & Evidence Gaps', 'Unknowns and evidence gaps')
+    .replace('Pass/Fail Readiness', 'Pass/Fail readiness')
+    .replace('Recommended Next Artifact', 'Recommended next artifact');
+  assert.equal(gradeTranscript(entry, text).pass, true);
+  const empty = text.replace('Admin demand is unmeasured.', '');
+  assert.ok(gradeTranscript(entry, empty).failures.includes('empty closing block: Unknowns & Evidence Gaps'));
+  const coding = PROMPTS.find(item => item.id === 'coding-question');
+  assert.ok(gradeTranscript(coding, GOOD[coding.id] + '\n' + text).failures.includes('forbidden: no Unknowns & Evidence Gaps block'));
+});
+
 test('--check fails when an em dash is present', async () => {
   const dir = await temporaryDirectory('shipwright-live-dash-');
   await writeTranscripts(dir, { 'market-sizing': GOOD['market-sizing'] + `\nA point ${EM_DASH} made.` });
@@ -185,6 +198,29 @@ test('grading catches behavior failures and validator failures', () => {
   const broken = GOOD['structured-prd-artifact'].replace('"schema_version": "2.0.0"', ',, "schema_version": "2.0.0"');
   assert.match(gradeTranscript(byId('structured-prd-artifact'), broken).failures.join(), /validator failed/);
   assert.equal(gradeTranscript(byId('structured-prd-artifact'), GOOD['structured-prd-artifact']).pass, true);
+});
+
+test('decision sections need answers under their headings', () => {
+  const governance = PROMPTS.find(entry => entry.id === 'governance-decision');
+  const labelsOnly = `governance\nRECOMMENDATION\nCONFIDENCE\nNEEDS_HUMAN_REVIEW\nSUMMARY\nKEY_REASONING\nDecision Frame\nUnknowns & Evidence Gaps\nPass/Fail Readiness\nRecommended Next Artifact\nstress-test`;
+  assert.equal(gradeTranscript(governance, labelsOnly).pass, false);
+  assert.match(gradeTranscript(governance, labelsOnly).failures.join(), /empty RECOMMENDATION section/);
+  const buried = GOOD['governance-decision'].replace('RECOMMENDATION\nDo not proceed yet.', 'Our RECOMMENDATION is clear.\nDo not proceed yet.');
+  assert.match(gradeTranscript(governance, buried).failures.join(), /missing RECOMMENDATION section/);
+  const borrowed = GOOD['governance-decision'].replace('SUMMARY\nOverlap is high and integration cost is unknown.', 'SUMMARY\n## Notes\nOverlap is high and integration cost is unknown.');
+  assert.match(gradeTranscript(governance, borrowed).failures.join(), /empty SUMMARY section/);
+  const prefix = GOOD['governance-decision'].replace('RECOMMENDATION\nDo not proceed yet.', 'RECOMMENDATIONary\nDo not proceed yet.');
+  assert.match(gradeTranscript(governance, prefix).failures.join(), /missing RECOMMENDATION section/);
+});
+
+test('clarification answer cannot include a verdict before its question', () => {
+  const ambiguous = PROMPTS.find(entry => entry.id === 'ambiguous-pricing-decision');
+  for (const verdict of [
+    'Take the cheaper vendor now; sign the contract today. Which option should we choose?',
+    'We should sign the cheaper vendor contract today. Which option should we choose?',
+    'The cheaper vendor is the right choice. Which option should we choose?',
+  ]) assert.match(gradeTranscript(ambiguous, verdict).failures.join(), /no verdict issued/, verdict);
+  assert.equal(gradeTranscript(ambiguous, GOOD['ambiguous-pricing-decision']).pass, true);
 });
 
 test('--live refuses without the env var and only points at the operator with it', async () => {

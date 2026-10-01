@@ -54,10 +54,10 @@ The following excerpts show the same PRD section at two quality levels. The full
 
 ### Goals & Success Metrics, scored 9/10
 
-> | Goal | Metric | Current | Target | Timeframe | Source |
-> |---|---|---|---|---|---|
-> | Automate evidence collection | % controls with auto-collected evidence | 0% | 60% | 8 weeks post-launch | Product analytics |
-> | Reduce audit prep time | Time to first framework completion | 47 days | 30 days | Q3 2026 | Customer interviews |
+> | Goal | Metric | Segment | Current | Target | Unit | Timeframe | Source |
+> |---|---|---|---|---|---|---|---|
+> | Automate evidence collection | % controls with auto-collected evidence | enterprise teams | 0 | 60 | % | 8 weeks post-launch | Product analytics |
+> | Reduce audit prep time | Time to first framework completion | enterprise teams | 47 | 30 | days | Q3 2026 | Customer interviews |
 >
 > **Guardrail metrics:**
 > - Evidence mapping accuracy must stay above 95%

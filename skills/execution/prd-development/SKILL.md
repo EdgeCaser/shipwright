@@ -119,12 +119,12 @@ A: [T-shirt size and breakdown]
 - Opportunity cost: [what we're NOT doing to do this]
 
 ## 2. Goals & Success Metrics
-| Goal | Metric | Current | Target | Timeframe | Source |
-|---|---|---|---|---|---|
-| [Goal 1] | [metric] | [baseline value] | [target value] | [when] | [where the baseline came from] |
-| [Goal 2] | [metric] | [baseline value] | [target value] | [when] | [where the baseline came from] |
+| Goal | Metric | Segment | Current | Target | Unit | Timeframe | Source |
+|---|---|---|---|---|---|---|---|
+| [Goal 1] | [metric] | [customer group] | [baseline value] | [target value] | [%, days, $, or count] | [when] | [where the baseline came from] |
+| [Goal 2] | [metric] | [customer group] | [baseline value] | [target value] | [%, days, $, or count] | [when] | [where the baseline came from] |
 
-Current and Target hold only the value: a number with an optional unit, percent, currency, comparator or range, or an explicit placeholder such as TBD. Put every citation, link and "(source: ...)" note in the Source column. The validator rejects source text inside a value cell and requires the Source column.
+Current and Target hold only the value: a number, comparator, range, or an explicit placeholder such as TBD. Label the customer group in Segment, put the measurement label in Unit, and put every citation, link and "(source: ...)" note in the Source column. The validator rejects source text inside a value cell and requires Segment, Unit, and Source columns for structured metrics.
 
 **Guardrail metrics** (must NOT get worse):
 - [metric] must stay above [threshold]

@@ -1,4 +1,6 @@
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
 import test from 'node:test';
 
 import {
@@ -637,6 +639,36 @@ test('validateArtifact accepts value-only metric cells with a Source column', { 
     const issues = metricTableIssues(text => text.replace('| 12 | 20 |', `| ${cell} | 20 |`));
     assert.ok(!issues.some(issue => /more than a value/.test(issue.message)), cell);
   }
+});
+
+test('validateArtifact accepts the shipped PRD metric table contract', { concurrency: false }, () => {
+  const artifact = createValidPrdArtifact();
+  const skill = readFileSync(path.resolve('skills/execution/prd-development/SKILL.md'), 'utf8');
+  const headers = skill.match(/^\| Goal \|[^\n]+\|$/m)?.[0].split('|').slice(1, -1).map(cell => cell.trim());
+  assert.deepEqual(headers, ['Goal', 'Metric', 'Segment', 'Current', 'Target', 'Unit', 'Timeframe', 'Source']);
+  const metric = artifact.payload.success_metrics[0];
+  const values = {
+    Goal: 'Improve activation',
+    Metric: metric.name,
+    Segment: metric.segment,
+    Current: metric.baseline,
+    Target: metric.target,
+    Unit: metric.unit,
+    Timeframe: metric.timeframe,
+    Source: '(source: customer-interviews)',
+  };
+  const shippedTable = [
+    `| ${headers.join(' | ')} |`,
+    `|${headers.map(() => '---').join('|')}|`,
+    `| ${headers.map(header => values[header]).join(' | ')} |`,
+  ].join('\n');
+  const text = buildStructuredMarkdown(artifact).replace(
+    /\| Metric \| Segment \| Baseline \| Target \| Unit \| Timeframe \| Source \|\n\|---\|---\|---\|---\|---\|---\|---\|\n\| Activation Rate \| mid-market \| 12 \| 20 \| % \| quarterly \| \(source: customer-interviews\) \|/,
+    shippedTable,
+  );
+
+  const result = validateArtifact(text, { expectStructured: true, artifactType: 'prd' });
+  assert.equal(result.valid, true, result.issues.map(issue => issue.message).join('\n'));
 });
 
 test('validateArtifact rejects citation text in a metric value cell', { concurrency: false }, () => {

@@ -146,11 +146,11 @@ A: L-sized initiative. ~10 weeks with 2 engineers. Breakdown: AWS integration (3
 
 ## 2. Goals & Success Metrics
 
-| Goal | Metric | Current | Target | Timeframe | Source |
-|---|---|---|---|---|---|
-| Automate evidence collection | % of controls with auto-collected evidence (for customers using 2+ integrations) | 0% | 60% | 8 weeks post-launch | Product analytics, current manual flow |
-| Reduce audit prep time | Time to first framework completion | 47 days | 30 days | Q3 2026 | Customer interviews and support tickets |
-| Improve retention | Net revenue retention | 108% | 112% | Q4 2026 | Finance dashboard |
+| Goal | Metric | Segment | Current | Target | Unit | Timeframe | Source |
+|---|---|---|---|---|---|---|---|
+| Automate evidence collection | % of controls with auto-collected evidence (for customers using 2+ integrations) | customers with 2+ integrations | 0 | 60 | % | 8 weeks post-launch | Product analytics, current manual flow |
+| Reduce audit prep time | Time to first framework completion | compliance teams | 47 | 30 | days | Q3 2026 | Customer interviews and support tickets |
+| Improve retention | Net revenue retention | enterprise customers | 108 | 112 | % | Q4 2026 | Finance dashboard |
 
 **Guardrail metrics (must NOT get worse):**
 - Evidence mapping accuracy must stay above 95% (measured by auditor rejection rate)

@@ -25,14 +25,43 @@ const EM_DASH = String.fromCharCode(0x2014);
 const SOURCE_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 const CLOSING_BLOCKS = [
-  { label: 'Decision Frame', pattern: /Decision Frame/i },
-  { label: 'Unknowns & Evidence Gaps', pattern: /Unknowns\s*(?:&|and)\s*Evidence Gaps/i },
-  { label: 'Pass/Fail Readiness', pattern: /Pass\s*\/\s*Fail Readiness/i },
-  { label: 'Recommended Next Artifact', pattern: /Recommended Next Artifact/i },
+  { label: 'Decision Frame', heading: 'Decision Frame' },
+  { label: 'Unknowns & Evidence Gaps', heading: 'Unknowns\\s*(?:&|and)\\s*Evidence Gaps' },
+  { label: 'Pass/Fail Readiness', heading: 'Pass\\s*\\/\\s*Fail Readiness' },
+  { label: 'Recommended Next Artifact', heading: 'Recommended Next Artifact' },
 ];
 
-const label = name => ({ label: `${name} section`, pattern: new RegExp(`^[\\s#>*_-]*${name}\\b`, 'm') });
+const label = name => ({ label: `${name} section`, heading: name });
 const DECISION_SECTIONS = ['RECOMMENDATION', 'CONFIDENCE', 'NEEDS_HUMAN_REVIEW', 'SUMMARY', 'KEY_REASONING'].map(label);
+const ALL_SECTION_HEADINGS = [...DECISION_SECTIONS, ...CLOSING_BLOCKS].map(item => item.heading).join('|');
+
+function headingMatch(text, heading, ignoreCase = false) {
+  const pattern = new RegExp(`^[ \\t]{0,3}(?:#{1,6}[ \\t]+)?(?:\\*\\*)?(${heading})(?=[ \\t:]|\\*\\*|$)(?:\\*\\*)?[ \\t]*:?[ \\t]*(.*)$`, ignoreCase ? 'im' : 'm');
+  return pattern.exec(text);
+}
+
+function sectionBody(text, heading, ignoreCase = false) {
+  const match = headingMatch(text, heading, ignoreCase);
+  if (!match) return null;
+  const rest = text.slice(match.index + match[0].length);
+  const next = headingMatch(rest, ALL_SECTION_HEADINGS);
+  const nextClosing = headingMatch(rest, CLOSING_BLOCKS.map(item => item.heading).join('|'), true);
+  const otherHeading = /^[ \t]{0,3}#{1,6}[ \t]+\S/gm.exec(rest);
+  const end = Math.min(next?.index ?? rest.length, nextClosing?.index ?? rest.length, otherHeading?.index ?? rest.length);
+  const body = `${match[2]}\n${rest.slice(0, end)}`
+    .split(/<!--\s*shipwright:artifact/i, 1)[0]
+    .replace(/^[ \\t]*#{1,6}[ \\t]+.*$/gm, '')
+    .trim();
+  return body;
+}
+
+function substantive(body, name) {
+  if (!body || /^(?:n\/?a|none|tbd|todo|\.\.\.|-+)\.?$/i.test(body)) return false;
+  if (name === 'CONFIDENCE') return /\b(?:high|medium|low)\b/i.test(body);
+  if (name === 'NEEDS_HUMAN_REVIEW') return /\b(?:yes|no)\b/i.test(body);
+  if (name === 'KEY_REASONING') return /^(?:[-*]|\d+[.)])\s+\S+(?:\s+\S+){2,}/m.test(body);
+  return (body.match(/\b[\w'-]+\b/g) || []).length >= (name === 'SUMMARY' ? 5 : 3);
+}
 
 // Each prompt avoids double quotes, dollar signs and backticks so it is safe inside a double-quoted shell argument.
 export const PROMPTS = [
@@ -131,7 +160,7 @@ export const PROMPTS = [
     ],
     forbid: [
       { label: 'no Shipwright decision sections', pattern: /^[\s#>*_-]*(?:RECOMMENDATION|NEEDS_HUMAN_REVIEW)\b/m },
-      ...CLOSING_BLOCKS.map(block => ({ label: `no ${block.label} block`, pattern: block.pattern })),
+      ...CLOSING_BLOCKS.map(block => ({ label: `no ${block.label} block`, heading: block.heading })),
     ],
   },
   {
@@ -174,11 +203,29 @@ export function describeConditions(entry) {
 export function gradeTranscript(entry, text) {
   const failures = [];
   if (!text || text.trim().length < 40) failures.push('transcript is empty or too short');
-  for (const item of entry.has || []) if (!item.pattern.test(text)) failures.push(`missing ${item.label}`);
-  if (entry.closing) {
-    for (const block of CLOSING_BLOCKS) if (!block.pattern.test(text)) failures.push(`missing closing block: ${block.label}`);
+  for (const item of entry.has || []) {
+    if (item.heading) {
+      const name = item.label.replace(/ section$/, '');
+      const body = sectionBody(text, item.heading);
+      if (body === null) failures.push(`missing ${item.label}`);
+      else if (!substantive(body, name)) failures.push(`empty ${item.label}`);
+    } else if (!item.pattern.test(text)) failures.push(`missing ${item.label}`);
   }
-  for (const item of entry.forbid || []) if (item.pattern.test(text)) failures.push(`forbidden: ${item.label}`);
+  if (entry.closing) {
+    for (const block of CLOSING_BLOCKS) {
+      const body = sectionBody(text, block.heading, true);
+      if (body === null) failures.push(`missing closing block: ${block.label}`);
+      else if (!substantive(body, block.label)) failures.push(`empty closing block: ${block.label}`);
+    }
+  }
+  for (const item of entry.forbid || []) {
+    if (item.heading ? headingMatch(text, item.heading, true) : item.pattern.test(text)) failures.push(`forbidden: ${item.label}`);
+  }
+  if (entry.id === 'ambiguous-pricing-decision' && (
+    /(?:^|[.!?]\s+)(?:I\s+(?:recommend|advise)|we\s+(?:recommend|advise)|(?:you|we|I)\s+should|(?:please\s+)?(?:take|sign|choose|select|pick|buy|adopt|approve|commit\s+to|proceed\s+with|go\s+with))\b/i.test(text) ||
+    /\b(?:is|would\s+be)\s+(?:the\s+)?(?:right|best|recommended)\s+(?:choice|option)\b/i.test(text))) {
+    failures.push('forbidden: no verdict issued before clarifying');
+  }
   const dashAt = text.indexOf(EM_DASH);
   if (dashAt >= 0) failures.push(`em dash present at offset ${dashAt}`);
   if (entry.validator) {

@@ -27,19 +27,40 @@ const HOST_BLOCKS = [['AGENTS.md', '.codex'], ['CLAUDE.md', '.claude']];
 
 export function managedBlock(template, hostDir) {
   const body = template.toString('utf8').replace(/\r\n/g, '\n').replace(/\{\{HOST_DIR\}\}/g, hostDir).trim();
-  return [BLOCK_BEGIN, '<!-- Managed by Shipwright install. Edits inside this block are replaced on the next install. -->', body, BLOCK_END].join('\n');
+  return [BLOCK_BEGIN, '<!-- Managed by Shipwright install. Edits inside this block prevent reinstall and are preserved on uninstall. -->', body, BLOCK_END].join('\n');
+}
+
+function blockRange(text, action) {
+  const begin = text.indexOf(BLOCK_BEGIN);
+  const end = text.indexOf(BLOCK_END);
+  if (begin === -1 && end === -1) return null;
+  if (begin === -1 || end < begin || text.indexOf(BLOCK_BEGIN, begin + BLOCK_BEGIN.length) !== -1 ||
+      text.indexOf(BLOCK_END, end + BLOCK_END.length) !== -1) {
+    throw new Error(`Malformed Shipwright block markers; fix or remove them and re-run the ${action}.`);
+  }
+  return { begin, end: end + BLOCK_END.length };
+}
+
+function installedPaths(files) {
+  const paths = new Set(['.shipwright-source', 'shipwright-sync.sh']);
+  for (const relative of files.keys()) {
+    if (relative.startsWith('.')) continue;
+    for (const host of ['.claude', '.codex']) paths.add(`${host}/${relative}`);
+  }
+  return paths;
+}
+
+function validBlockInfo(info) {
+  return info && typeof info === 'object' && typeof info.created === 'boolean' &&
+    ['', '\n', '\n\n'].includes(info.added) && (!info.created || info.added === '');
 }
 
 // Replaces an existing managed block in place, or appends one. Content outside the block is never touched.
 export function applyManagedBlock(existing, block) {
   if (existing === null || existing === '') return block + '\n';
-  const begin = existing.indexOf(BLOCK_BEGIN);
-  const end = existing.indexOf(BLOCK_END);
-  if (begin === -1 && end === -1) return existing + (existing.endsWith('\n') ? '\n' : '\n\n') + block + '\n';
-  if (begin === -1 || end < begin || existing.indexOf(BLOCK_BEGIN, begin + 1) !== -1) {
-    throw new Error('Malformed Shipwright block markers; fix or remove them and re-run the install.');
-  }
-  return existing.slice(0, begin) + block + existing.slice(end + BLOCK_END.length);
+  const range = blockRange(existing, 'install');
+  if (!range) return existing + (existing.endsWith('\n') ? '\n' : '\n\n') + block + '\n';
+  return existing.slice(0, range.begin) + block + existing.slice(range.end);
 }
 
 export async function installShipwright(destination, { source = SOURCE_ROOT, apply = false } = {}) {
@@ -59,6 +80,10 @@ export async function installShipwright(destination, { source = SOURCE_ROOT, app
   await rejectLinks(root, recordName);
   const priorRaw = await readOptional(path.join(root, recordName));
   const prior = priorRaw ? JSON.parse(priorRaw) : { hashes: {} };
+  if (!prior || typeof prior !== 'object' || !prior.hashes || typeof prior.hashes !== 'object' ||
+      Array.isArray(prior.hashes) || Object.keys(prior.hashes).some(relative => !targets.has(relative))) {
+    throw new Error('The install record has unowned paths or malformed hashes. No files changed.');
+  }
   const ignoreText = (await readOptional(path.join(root, '.shipwright-ignore')))?.toString('utf8') || '';
   const ignorePatterns = ignoreText.split(/\r?\n/).map(line => line.replace(/#.*$/, '').trim()).filter(Boolean)
     .map(pattern => new RegExp('^' + pattern.split('*').map(part => part.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('.*') + '$'));
@@ -85,12 +110,21 @@ export async function installShipwright(destination, { source = SOURCE_ROOT, app
     await rejectLinks(root, relative);
     const raw = await readOptional(path.join(root, relative));
     const before = raw === null ? null : raw.toString('utf8');
-    const after = applyManagedBlock(before, managedBlock(template, hostDir));
+    const range = before === null ? null : blockRange(before, 'install');
+    const info = blocks[relative];
+    if (info && !validBlockInfo(info)) { conflicts.push(relative); continue; }
+    if (range && (!info || typeof info.hash !== 'string' || hash(before.slice(range.begin, range.end)) !== info.hash)) {
+      conflicts.push(relative);
+      continue;
+    }
+    const block = managedBlock(template, hostDir);
+    const after = applyManagedBlock(before, block);
     if (!blocks[relative]) {
       // Remembers whether the installer created this file and what it appended, so uninstall can reverse it exactly.
       const hasMarkers = before !== null && before.includes(BLOCK_BEGIN);
       if (!hasMarkers) blocks[relative] = { created: before === null, added: !before ? '' : (before.endsWith('\n') ? '\n' : '\n\n') };
     }
+    if (blocks[relative]) blocks[relative].hash = hash(block);
     if (after !== before) { changes.push(relative); blockWrites.set(relative, after); }
   }
   // Retired files are reported, never deleted: local additions and edits remain intact.
@@ -117,14 +151,10 @@ const RECORD_NAME = '.shipwright-install.json';
 
 // Removes a managed block and reverses the separator the installer added. Returns null when no block is present.
 export function removeManagedBlock(text, info) {
-  const begin = text.indexOf(BLOCK_BEGIN);
-  const end = text.indexOf(BLOCK_END);
-  if (begin === -1 && end === -1) return null;
-  if (begin === -1 || end < begin || text.indexOf(BLOCK_BEGIN, begin + 1) !== -1) {
-    throw new Error('Malformed Shipwright block markers; fix or remove them and re-run the uninstall.');
-  }
-  const before = text.slice(0, begin);
-  const after = text.slice(end + BLOCK_END.length);
+  const range = blockRange(text, 'uninstall');
+  if (!range) return null;
+  const before = text.slice(0, range.begin);
+  const after = text.slice(range.end);
   if (after === '\n' && typeof info?.added === 'string' && before.endsWith(info.added)) {
     return before.slice(0, before.length - info.added.length);
   }
@@ -140,7 +170,21 @@ export async function uninstallShipwright(destination, { source = SOURCE_ROOT, a
   let record;
   try { record = JSON.parse(raw); } catch { throw new Error(`The install record in ${root} is not valid JSON. Nothing was removed.`); }
   if (!record || typeof record !== 'object') throw new Error('The install record is malformed. Nothing was removed.');
-  const hashes = record.hashes && typeof record.hashes === 'object' ? record.hashes : {};
+  if (!record.hashes || typeof record.hashes !== 'object' || Array.isArray(record.hashes)) {
+    throw new Error('The install record has malformed hashes. Nothing was removed.');
+  }
+  const hashes = record.hashes;
+  const files = await pluginFiles(source);
+  const owned = installedPaths(files);
+  // The record is not an authority for content: it can be edited alongside a user file.
+  const trustedHashes = new Map([
+    ['.shipwright-source', hash(Buffer.from(path.resolve(source) + '\n'))],
+    ['shipwright-sync.sh', hash(await readFile(path.join(source, 'scripts/sync.sh')))],
+  ]);
+  for (const [relative, data] of files) {
+    if (relative.startsWith('.')) continue;
+    for (const host of ['.claude', '.codex']) trustedHashes.set(`${host}/${relative}`, hash(data));
+  }
   const inside = relative => {
     if (typeof relative !== 'string' || !relative || path.isAbsolute(relative) || relative.includes('\\') || relative.split('/').includes('..')) return null;
     const full = path.resolve(root, relative);
@@ -156,23 +200,34 @@ export async function uninstallShipwright(destination, { source = SOURCE_ROOT, a
   const removed = [], kept = [], refused = [], blocksRemoved = [], dirsRemoved = [];
   const removeSet = new Set();
   for (const [relative, expected] of Object.entries(hashes)) {
+    if (!owned.has(relative)) { refused.push(relative); continue; }
     const full = await safe(relative);
     if (!full) { refused.push(relative); continue; }
     const existing = await readOptional(full).catch(() => null);
     if (existing === null) continue;
     if (typeof expected !== 'string') { kept.push({ path: relative, reason: 'unverifiable, no recorded hash' }); continue; }
+    if (expected !== trustedHashes.get(relative)) { refused.push(relative); continue; }
     if (hash(existing) !== expected) { kept.push({ path: relative, reason: 'modified since install' }); continue; }
     removed.push(relative);
     removeSet.add(full);
   }
   const blockPlans = [];
-  for (const [relative] of HOST_BLOCKS) {
+  for (const [relative, hostDir] of HOST_BLOCKS) {
     const full = await safe(relative);
     if (!full) { refused.push(relative); continue; }
     const existing = await readOptional(full);
     if (existing === null) continue;
     const info = record.blocks?.[relative];
-    const text = removeManagedBlock(existing.toString('utf8'), info);
+    const original = existing.toString('utf8');
+    const range = blockRange(original, 'uninstall');
+    if (!range) continue;
+    if (info && !validBlockInfo(info)) { refused.push(relative); continue; }
+    if (!info || info.hash !== hash(managedBlock(files.get('docs/host-instructions.md'), hostDir)) ||
+        hash(original.slice(range.begin, range.end)) !== info.hash) {
+      kept.push({ path: relative, reason: 'modified or unverifiable managed block' });
+      continue;
+    }
+    const text = removeManagedBlock(original, info);
     if (text === null) continue;
     blocksRemoved.push(relative);
     blockPlans.push({ full, text, deleteFile: text === '' && info?.created === true });
@@ -180,7 +235,14 @@ export async function uninstallShipwright(destination, { source = SOURCE_ROOT, a
   // Directories: those the installer created (older records: parents of removed files), removed only if nothing else is left in them.
   const candidates = new Set();
   if (Array.isArray(record.dirs)) {
-    for (const relative of record.dirs) { if (await safe(relative)) candidates.add(relative); else refused.push(relative); }
+    const ownedDirs = new Set();
+    for (const relative of owned) {
+      for (let dir = path.posix.dirname(relative); dir !== '.'; dir = path.posix.dirname(dir)) ownedDirs.add(dir);
+    }
+    for (const relative of record.dirs) {
+      if (typeof relative === 'string' && ownedDirs.has(relative) && await safe(relative)) candidates.add(relative);
+      else refused.push(relative);
+    }
   } else {
     for (const relative of removed) {
       for (let dir = path.posix.dirname(relative); dir !== '.'; dir = path.posix.dirname(dir)) candidates.add(dir);
@@ -196,16 +258,17 @@ export async function uninstallShipwright(destination, { source = SOURCE_ROOT, a
       removeSet.add(full);
     }
   }
-  if (apply) {
+  // Any refused record entry blocks every write. A kept edit leaves the record for a later retry.
+  if (apply && refused.length === 0) {
     for (const relative of removed) await rm(path.join(root, relative), { force: true });
     for (const plan of blockPlans) {
       if (plan.deleteFile) await rm(plan.full, { force: true });
       else await writeFile(plan.full, plan.text);
     }
     for (const relative of dirsRemoved) await rmdir(path.join(root, relative));
-    await rm(path.join(root, RECORD_NAME), { force: true });
+    if (kept.length === 0) await rm(path.join(root, RECORD_NAME), { force: true });
   }
-  return { applied: apply, removed, blocksRemoved, dirsRemoved, kept, refused };
+  return { applied: apply && refused.length === 0, removed, blocksRemoved, dirsRemoved, kept, refused };
 }
 
 function isDirectRun() {
