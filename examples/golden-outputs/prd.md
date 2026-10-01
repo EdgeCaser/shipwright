@@ -61,32 +61,32 @@ This is our #2 priority this quarter.
 
 ### Phase 1: Internal Press Release
 
-# ComplianceOS Eliminates Manual Evidence Collection for Cloud-First Companies
+# ComplianceOS Automates Scheduled Evidence Collection from AWS, GCP, and GitHub
 
 ## Headline
-ComplianceOS customers now pass audits without manually gathering a single piece of evidence from their cloud infrastructure.
+ComplianceOS collects supported infrastructure evidence automatically and shows which controls still need manual evidence.
 
 ## Subheading
-For compliance officers at mid-market fintech companies, Evidence Auto-Collection continuously pulls and maps compliance evidence from AWS, GCP, and GitHub, reducing audit prep from weeks to hours.
+For compliance officers at mid-market fintech companies, Evidence Auto-Collection pulls and maps supported evidence from AWS, GCP, and GitHub on a configurable schedule, with a daily default. The proposed benefit is less repetitive collection work; audit-preparation outcomes remain to be measured.
 
 ## Summary
-ComplianceOS today launched Evidence Auto-Collection, a new capability that connects directly to customers' cloud infrastructure and developer tools to automatically gather, validate, and map compliance evidence to SOC 2, HIPAA, and PCI-DSS controls. Compliance officers who previously spent 3-4 weeks manually collecting screenshots, logs, and configurations from 12+ tools can now maintain continuous evidence coverage with zero manual uploads for supported integrations.
+This proposed release connects to customers' cloud infrastructure and developer tools to gather supported evidence and map it to SOC 2, HIPAA, and PCI-DSS controls. Scheduled collection covers the artifact types listed in scope. Other evidence, failed collections, and mapping gaps still require manual follow-up. The release does not promise complete evidence coverage or a successful audit.
 
 ## Problem Statement
 Carmen is a compliance officer at a 200-person fintech company. Every quarter, she spends 3 weeks asking engineering teams to export CloudTrail logs, screenshot IAM configurations, and document GitHub branch protection rules. Engineers resent the interruption. Evidence arrives in inconsistent formats. And Carmen still isn't sure she has everything until the auditor asks for something she missed. The process is manual, adversarial, and unreliable.
 
 ## Solution
-Evidence Auto-Collection connects to customers' existing AWS accounts, GCP projects, and GitHub organizations using read-only credentials. It continuously monitors and collects evidence relevant to active compliance frameworks, maps each piece of evidence to the specific control it satisfies, and flags gaps where evidence is missing or stale. Carmen opens ComplianceOS and sees a live evidence dashboard, green where auto-collected, yellow where evidence is aging, red where manual intervention is still needed.
+Evidence Auto-Collection connects to customers' existing AWS accounts, GCP projects, and GitHub organizations using read-only credentials. It collects supported evidence on the configured schedule, maps artifacts to relevant controls with confidence scoring, and flags missing or stale evidence. Carmen sees the latest collection results in the dashboard: green where auto-collected, yellow where evidence is aging, red where manual intervention is still needed. Low-confidence mappings require review.
 
 ## How It Works
 - **Connect once:** Add read-only credentials for AWS, GCP, and/or GitHub through a guided setup wizard. No agents to install, no infrastructure changes.
 - **Automatic mapping:** ComplianceOS maps collected artifacts (CloudTrail logs, IAM policies, branch protection rules, PR review settings) to the specific controls in your active frameworks.
-- **Continuous monitoring:** Evidence is refreshed on a configurable schedule (daily default). If a configuration changes and breaks compliance, Carmen gets an alert.
+- **Scheduled collection:** Evidence is refreshed on a configurable schedule (daily default). Gaps discovered during a collection appear in the dashboard; the release does not promise immediate detection between runs.
 - **Gap detection:** The dashboard shows which controls have fresh evidence, which are stale, and which still require manual uploads.
-- **Auditor-ready export:** When audit time comes, export a complete, time-stamped evidence package organized by control.
+- **Evidence export:** Export the collected, time-stamped artifacts organized by control, with remaining gaps visible for review.
 
 ## Customer Quote
-"I used to spend the first three weeks of every quarter chasing engineers for screenshots. Now I open ComplianceOS and 80% of my evidence is already there, mapped to the right controls, and timestamped. Last audit, the auditor said it was the most organized evidence package they'd ever seen."
+[TBD, requires: a sourced customer interview, support ticket, or review quote. Do not invent a customer quote for a proposed launch.]
 
 ## Call to Action
 Existing ComplianceOS customers can enable Evidence Auto-Collection from Settings → Integrations. New customers can see it in action during a demo at complianceos.com/demo.
@@ -98,10 +98,13 @@ Existing ComplianceOS customers can enable Evidence Auto-Collection from Setting
 ## Customer FAQ
 
 **Q: What cloud providers do you support?**
-A: At launch, AWS, GCP, and GitHub. Azure and GitLab are on the roadmap for H2 2026. We prioritized based on customer infrastructure surveys, 89% of our customers use at least one of the launch providers.
+A: At launch, AWS, GCP, and GitHub. Azure and GitLab are future considerations, not part of this release. The stated 89% coverage is an assumption pending the cited customer infrastructure survey; it does not authorize a launch claim until that evidence is supplied.
 
 **Q: What permissions does this require?**
-A: Read-only access. We never write to or modify your infrastructure. Specific permissions are documented per provider: AWS uses a cross-account IAM role with SecurityAudit policy; GCP uses a service account with Viewer role; GitHub uses a GitHub App with read-only repository and organization permissions.
+A: Read-only access. This release does not write to or modify customer infrastructure. Specific permissions are documented per provider: AWS uses a cross-account IAM role with SecurityAudit policy; GCP uses a service account with Viewer role; GitHub uses a GitHub App with read-only repository and organization permissions.
+
+**Q: Does this affect systems without a supported integration?**
+A: No. Systems without AWS, GCP, or GitHub connected continue using their existing manual-evidence workflow. This release does not change their access, collection reliability, or audit process.
 
 **Q: Will this work with our existing compliance frameworks?**
 A: Yes. Evidence Auto-Collection maps to controls across SOC 2, HIPAA, and PCI-DSS. Multi-framework overlap detection means a single piece of evidence (e.g., CloudTrail logging configuration) can satisfy controls across multiple frameworks simultaneously.
@@ -192,13 +195,14 @@ A: L-sized initiative. ~10 weeks with 2 engineers. Breakdown: AWS integration (3
 - AWS integration: CloudTrail, IAM policies, S3 bucket policies, Config rules, GuardDuty status
 - GCP integration: Cloud Audit Logs, IAM bindings, Security Command Center findings, VPC firewall rules
 - GitHub integration: branch protection rules, required review settings, CODEOWNERS presence, org-level 2FA enforcement
+- Read-only collection for every supported integration; no infrastructure or source-control writes
 - Evidence-to-control mapping engine with confidence scoring
 - Dashboard with auto/manual/gap status per control
 - Configurable collection schedule (daily default)
-- Auditor-ready evidence export
+- Evidence export with timestamps, control mappings, and remaining gaps
 
 ### Out of Scope
-- Azure and GitLab integrations, Rationale: coverage for 89% of customer base with AWS/GCP/GitHub; Azure/GitLab planned for H2 2026
+- Azure and GitLab integrations, Rationale: not selected for v1; revisit after the customer infrastructure survey and demand signals establish the next integration priority
 - Real-time remediation, Rationale: auto-fixing compliance issues is a different product surface; detect first, remediate later
 - Custom evidence scripts, Rationale: maintenance burden too high; standard APIs only
 - SOC 1 or ISO 27001 control mapping, Rationale: frameworks not yet supported in ComplianceOS
@@ -231,6 +235,8 @@ A: L-sized initiative. ~10 weeks with 2 engineers. Breakdown: AWS integration (3
 - [ ] Week 8: Beta with 5 design partner customers (selected from CAB)
 - [ ] Week 9: Address beta feedback, fix mapping accuracy issues
 - [ ] Week 10: GA for all customers
+
+**Rollout guardrail:** Before each phase, verify that customers without a supported integration retain their existing manual-evidence workflow and that no collection credential can write to customer infrastructure.
 
 ## 8. Open Questions
 

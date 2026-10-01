@@ -198,6 +198,10 @@ The output is a ready-to-cite markdown table covering plan names, prices, billin
 
 ## Minimum Evidence Bar
 
+**Price-change decision boundary:** For a proposed change, carry the user's timing, affected customer population, and stated conditions through the recommendation, next action, and Decision Frame. A relative period is a planning window, not an exact effective or notice date. Leave unspecified dates, contract terms, and rollout scope unknown; label any suggested dates or cohorts as proposals. Keep acquisition and retention evidence distinct: a test of new-buyer conversion may inform new-buyer demand, but extending a change to existing customers needs evidence about renewal, downgrade, churn, or a relevant existing-customer test. If that evidence is missing, give a provisional verdict and name the missing check rather than making a rollout commitment.
+
+**Financial claims:** State the population, horizon, baseline, and assumptions behind any break-even calculation. A revenue threshold is arithmetic under those assumptions, not an observed response, acceptable churn target, profit result, or causal forecast. Evaluate contribution profit and longer-term effects separately when the decision depends on them; mark missing inputs rather than inferring them from list-price arithmetic.
+
 **Required inputs:** Product description with target customer segment, current pricing (if any), and at least one of: customer interview data, competitive pricing data, or usage/conversion analytics. At Light depth, product description and target customer segment are sufficient, data inputs are deferred to Standard/Deep.
 
 **Acceptable evidence:** Van Westendorp or Gabor-Granger survey results, win/loss data citing price, competitive pricing pages, ARPU and conversion cohorts, customer interviews mentioning willingness-to-pay, usage data showing value metric correlation.

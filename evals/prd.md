@@ -28,6 +28,16 @@ Apply the 4 dimensions from the [universal rubric](rubric.md): Clarity, Complete
 | **6 (Adequate)** | Some decisions cite evidence, but it's generic. "Based on customer feedback" without specifics. Metrics exist but baselines are missing. |
 | **9 (Strong)** | Key decisions cite specific evidence: "8/12 CAB members independently raised this; support tickets up 34% QoQ; win rate drops 23pp when competing against Vanta on this dimension." Metrics have baselines and targets. |
 
+### 7. Cross-Section Consistency
+
+**What it measures:** Do the press release, FAQ, requirements, scope, dependencies, and rollout describe the same material behavior, audience, timing, and availability?
+
+| Score | Anchor |
+|---|---|
+| **3 (Weak)** | A customer-facing promise exceeds the requirements or scope. For example, the press release promises a universal outcome while its acceptance measure covers only a subset, or it announces an integration that is only a future consideration. |
+| **6 (Adequate)** | The main sections broadly agree, but a boundary is missing: an affected non-feature application, active state, dependency, timing condition, or rollout gate is left implicit. |
+| **9 (Strong)** | Every material promise is traceable through the FAQ, requirements, scope, dependencies, and rollout. Boundaries and exceptions are stated consistently, including effects on applications outside the new feature path. Timing guarantees distinguish future actions from active state, and fast-follows are never presented as v1 behavior. |
+
 ## Scored example: 9/10 vs. 6/10
 
 The following excerpts show the same PRD section at two quality levels. The full golden output is in [examples/golden-outputs/prd.md](../examples/golden-outputs/prd.md).

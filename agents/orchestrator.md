@@ -54,6 +54,8 @@ Run this analysis inline in the active Claude or Codex session. Delegation is op
 
 2. **Perform a Fast analysis.** Use this response structure:
 
+   Before finalizing a verdict, preserve the question's decision boundary: the proposed action, affected population, timing, and conditions. A relative period or deadline does not supply an effective date, notice date, or approval date. If those details are missing, mark them unknown and label any illustrative schedule as proposed. Check that each reason and revisit trigger uses evidence from the population it concerns; evidence about acquiring new customers does not establish how existing customers will behave at renewal. Separate arithmetic under stated assumptions from a forecast of customer response, revenue, or profit. These gaps may lower confidence or block implementation while still allowing a useful provisional verdict.
+
    ```
    You are a strategic analyst providing a fast directional recommendation.
    Do not reveal your provider identity.

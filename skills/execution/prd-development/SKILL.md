@@ -194,6 +194,22 @@ For every new or changed screen:
 | [Question 1] | [name] | [date] | [TBD / resolved] |
 ```
 
+### Cross-Section Consistency Check
+
+Before finalizing a Standard or Deep PRD, reconcile every material customer promise across the Press Release, FAQ, Detailed Requirements, Scope, Dependencies, and Rollout Plan. Check especially:
+
+- supported audiences, applications, integrations, and availability stages;
+- access, security, data-retention, or other state-change behavior;
+- timing guarantees, including what happens to work already in progress or sessions already active;
+- metrics, populations, units, targets, and timeframes; and
+- exclusions, fast-follows, dependencies, and GA gates.
+
+For each promise, either specify the same behavior and boundary in every relevant section or state the difference plainly. Do not let a customer-facing statement imply an outcome that the requirements, scope, or rollout cannot deliver. For example, if a release promises cancellation, say whether work already queued or in progress completes, stops, or needs a support action. If immediate cancellation is required, make it an explicit requirement, dependency, rollout gate, and measurable acceptance criterion.
+
+Work backward from the operative acceptance criteria as well as forward from the promise. Keep an internal mapping of promise, requirement and acceptance measure, mismatch, and correction. Compare the trigger, affected population, time bound, exceptions, and required dependencies. A percentile target is not an absolute guarantee, an optional safeguard cannot support an unconditional promise, and a schedule is not continuous behavior. Narrow the customer claim to the specified behavior or make the stronger design an explicit unresolved requirement that blocks approval. Recheck the corrected announcement, FAQ and decision summary against that mapping.
+
+Consider adjacent applications, user flows, and active state when they share the changed behavior. State the affected boundary and add a regression guardrail or acceptance criterion when the change can affect them. Keep a fast-follow out of customer promises until it is actually in scope.
+
 ## Minimum Evidence Bar
 
 **Required inputs:** A problem statement with at least one form of customer evidence (interviews, support tickets, usage data, or market research). At Light depth, prior PRD, launch data, or documented stakeholder alignment satisfies the evidence requirement for fast-follows with clear scope.

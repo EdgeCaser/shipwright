@@ -89,10 +89,11 @@ This boundary is repo-wide. Individual skills should not override it.
 
 ## Evidence rules
 
-- Every material claim must be either:
-  - **Evidenced** (data source, metric, transcript, ticket volume), or
-  - **Assumption** (explicitly marked as such)
-- Do not blend assumptions and facts in the same sentence.
+- Before finalizing, reconcile each material factual claim, number, comparison and decision-changing implication with the evidence actually inspected. For each, identify the exact supporting passage or record, its date and the scope it covers. Check tables, summaries, recommendations and cited sentences against the same evidence; a citation beside a claim is not itself confirmation that the source says it. Remove or qualify a claim that the inspected evidence does not establish.
+- Keep an internal claim-to-source check while drafting; it need not appear in the answer. Distinguish supplied facts, verified external facts, inferences, and proposals. Explicit assumptions can support a scenario or proposed test, but cannot turn an unknown current-world fact into a finding. Do not blend assumptions and facts in the same sentence.
+- Before calculating a rate, interval, threshold or projection, identify each input's unit, population, numerator, denominator and observation period. Check that the study design supports the calculation. Do not silently reinterpret one kind of count as another. If a required input is missing, give the formula and missing input, or a fully labeled hypothetical example; do not attach the result to the observed sample. Carry these conditions into summaries and decision triggers.
+- For a legal, regulatory or other high-stakes applicability claim, list the rule's required inputs and match each to evidence about this case before drawing even a reassuring probability claim. A proxy such as company size cannot substitute for an unverified transaction value, jurisdiction, party financials or exemption. If required inputs are missing, state that applicability is undetermined and name the inputs and qualified review needed.
+- For a competitor price or feature claim, verify the complete tuple: provider, named plan, feature or amount, currency, charged unit, billing cadence, and source date. Preserve the source's exact plan boundary and billing wording. If a field is unavailable, mark that field unknown; do not infer a monthly rate, annual discount, or feature tier from a neighboring plan or a summarized fetch result.
 - Avoid template filler that could apply to any product.
 
 ## What breaks the signature
