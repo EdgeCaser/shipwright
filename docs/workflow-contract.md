@@ -59,4 +59,6 @@ Before synthesis, compare each decision-relevant extracted fact with its cited s
 
 ## Proportionality
 
+For a substantial decision, competitor comparison or PRD containing material evidence claims, calculations or promises, execute [final artifact reconciliation](artifact-reconciliation.md) with the installed `scripts/reconcile-artifact.mjs`. Keep canonical inputs and source context in scratch records, check the final saved draft, and review its recommendation separately from machine consistency. This local step uses no extra model call. If execution is unavailable, disclose it; reading its instructions does not count as running it. Structural validity and readiness retain their existing meanings.
+
 Counts in examples (themes, opportunities, risks, personas, options and actions) are guides, not quotas. Report only supported items; do not manufacture content to satisfy a template. Explicit validity requirements such as experiment sample calculations still apply. A next artifact is optional: when the requested work is complete, state the next practical action or that no further artifact is needed.

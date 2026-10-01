@@ -23,4 +23,6 @@ Pick the matching skill in `{{HOST_DIR}}/skills/<name>/SKILL.md`, for example `{
 
 Every substantial artifact ends with `Decision Frame`, `Unknowns & Evidence Gaps`, `Pass/Fail Readiness` and `Recommended Next Artifact`. Details: `{{HOST_DIR}}/docs/output-standard.md`.
 
+For substantial decisions, comparisons and PRDs with material claims, calculations or promises, follow `{{HOST_DIR}}/docs/artifact-reconciliation.md`. Execute `scripts/reconcile-artifact.mjs` on scratch drafts and records, then validate after the final rewrite. Machine consistency does not establish source truth, readiness or approval.
+
 Generated output must not use em dashes (U+2014). Use a comma, colon, parentheses or a separate sentence.

@@ -6,10 +6,33 @@ import test from 'node:test';
 
 import {
   buildCacheKey,
+  buildPrimarySource,
   collectResearch,
   extractFactsPack,
   readCachePack,
 } from '../scripts/collect-research.mjs';
+
+test('primary source context retains short headings and table cells with retrieval metadata', () => {
+  const body = '<html><body><main><h2 class="tier">Starter</h2><table><tr><th>Plan</th><th>Price</th></tr><tr><td class="plan">Starter</td><td>$8</td></tr></table></main></body></html>';
+  const primary = buildPrimarySource({
+    url: 'https://example.com/pricing', body, contentType: 'text/html',
+    retrievedAt: '2026-04-01T00:00:00Z', excerptChars: 40,
+  });
+  assert.equal(primary.kind, 'primary-passage');
+  assert.equal(primary.url, 'https://example.com/pricing');
+  assert.equal(primary.retrievedAt, '2026-04-01T00:00:00Z');
+  assert.match(primary.context, /Starter\nPlan\nPrice\nStarter\n\$8/);
+  assert.ok(primary.context.includes(primary.passage));
+  assert.match(primary.contentSha256, /^[0-9a-f]{64}$/);
+  assert.equal(primary.contextTruncated, false);
+});
+
+test('non-text response does not become a primary passage', () => {
+  assert.equal(buildPrimarySource({
+    url: 'https://example.com/file', body: '{}', contentType: 'application/json',
+    retrievedAt: '2026-04-01T00:00:00Z',
+  }), null);
+});
 
 const NOOP_LOGGER = {
   log() {},
@@ -281,6 +304,8 @@ test('configured-provider run writes cache on miss and reuses it on hit without 
   assert.equal(first.pack.cache.status, 'miss');
   assert.equal(first.pack.cache.persisted, true);
   assert.equal(calls.length, 2);
+  assert.equal(first.pack.results[0].primarySource.kind, 'primary-passage');
+  assert.ok(first.pack.results[0].primarySource.context.includes('pricing evidence'));
   assert.equal(first.factsPathLabel, path.join('research-output', 'facts.json'));
 
   const cacheKey = buildCacheKey(createArgs(), createProviderPlan());
@@ -291,6 +316,9 @@ test('configured-provider run writes cache on miss and reuses it on hit without 
   const factsJson = JSON.parse(await readFile(first.factsPath, 'utf8'));
   assert.equal(factsJson.meta.query, 'mid-market AI support pricing');
   assert.ok(factsJson.facts.every((fact) => Boolean(fact.source_url)));
+
+  const evidenceJson = JSON.parse(await readFile(first.jsonPath, 'utf8'));
+  assert.equal(evidenceJson.results[0].primarySource.kind, 'primary-passage');
 
   const cachedFactsJson = JSON.parse(await readFile(path.join(cwd, '.shipwright', 'cache', 'research', 'v1', cacheKey, 'facts.json'), 'utf8'));
   assert.equal(cachedFactsJson.meta.query, 'mid-market AI support pricing');

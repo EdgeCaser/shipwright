@@ -43,6 +43,10 @@ Providers:
 
 Outputs:
   evidence.json               Structured machine-readable results
+                               Successful page results include primarySource:
+                               id, kind, url, retrievedAt, passage, context,
+                               contentType, contentSha256, contextTruncated.
+                               Search snippets are never primarySource records.
   evidence.md                 AI-ready source digest
   facts.json                  Atomic source-attributed facts derived from evidence.json
                                v1 fields: company, product, plan_name, price, currency,
@@ -75,6 +79,7 @@ const DEFAULTS = {
 
 const CACHE_VERSION = 'v1';
 const CACHE_ROOT = path.join('.shipwright', 'cache', 'research', CACHE_VERSION);
+const MAX_PRIMARY_CONTEXT_CHARS = 20000;
 
 // ---------------------------------------------------------------------------
 // Lazy source-adapter loader
@@ -1131,6 +1136,13 @@ async function fetchAndExtract(result, timeoutMs, excerptChars) {
     const body = await response.text();
     const contentType = response.headers.get('content-type') || '';
     const extracted = extractPage(body, contentType, excerptChars);
+    const primarySource = response.ok ? buildPrimarySource({
+      url: response.url || result.url,
+      body,
+      contentType,
+      retrievedAt: new Date().toISOString(),
+      excerptChars,
+    }) : null;
 
     // Run source adapter while the raw HTML body is still available.
     // Adapter errors must never surface — fail soft and continue without data.
@@ -1155,6 +1167,7 @@ async function fetchAndExtract(result, timeoutMs, excerptChars) {
         contentType,
       },
       extracted,
+      ...(primarySource ? { primarySource } : {}),
       ...(adapterData ? { adapterData } : {}),
     };
   } catch (error) {
@@ -1218,6 +1231,7 @@ function mergeResults(existingResults, candidates, fetchedResults) {
 
     current.fetched = fetched.fetched;
     current.extracted = fetched.extracted;
+    if (fetched.primarySource) current.primarySource = fetched.primarySource;
     if (!current.title && fetched.title) current.title = fetched.title;
     if (!current.searchSnippet && fetched.searchSnippet) current.searchSnippet = fetched.searchSnippet;
   }
@@ -1343,6 +1357,50 @@ function htmlToLines(html) {
     .split(/\n+/)
     .map((line) => cleanInlineText(line))
     .filter((line) => line.length >= 40);
+}
+
+// This larger source rendering keeps short headings and table cells in order.
+// The AI-ready digest above stays compact; evidence.json retains this context.
+function htmlToSourceLines(html) {
+  const text = html
+    .replace(/<!--[\s\S]*?-->/g, ' ')
+    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<noscript[\s\S]*?<\/noscript>/gi, ' ')
+    .replace(/<svg[\s\S]*?<\/svg>/gi, ' ')
+    .replace(/<template[\s\S]*?<\/template>/gi, ' ')
+    .replace(/<nav[\s\S]*?<\/nav>/gi, ' ')
+    .replace(/<footer[\s\S]*?<\/footer>/gi, ' ')
+    .replace(/<header[\s\S]*?<\/header>/gi, ' ')
+    .replace(/<\/?(?:br|p|div|li|section|article|h[1-6]|tr|th|td|caption|ul|ol)\b[^>]*>/gi, '\n')
+    .replace(/<[^>]+>/g, ' ');
+  return decodeEntities(text)
+    .split(/\n+/)
+    .map((line) => cleanInlineText(line))
+    .filter(Boolean);
+}
+
+export function buildPrimarySource({ url, body, contentType, retrievedAt, excerptChars = 1200 }) {
+  if (!url || typeof body !== 'string' ||
+      (!contentType.includes('html') && !contentType.includes('text/plain'))) return null;
+  const sourceText = contentType.includes('html')
+    ? htmlToSourceLines(body).join('\n')
+    : body.split(/\r?\n/).map(cleanInlineText).filter(Boolean).join('\n');
+  if (!sourceText) return null;
+  const contextTruncated = sourceText.length > MAX_PRIMARY_CONTEXT_CHARS;
+  const context = sourceText.slice(0, MAX_PRIMARY_CONTEXT_CHARS).trimEnd();
+  const passage = context.slice(0, Math.max(1, Math.min(excerptChars, 2000))).trimEnd();
+  return {
+    id: `source-${createHash('sha256').update(url).digest('hex').slice(0, 16)}`,
+    kind: 'primary-passage',
+    url,
+    retrievedAt,
+    passage,
+    context,
+    contentType,
+    contentSha256: createHash('sha256').update(body).digest('hex'),
+    contextTruncated,
+  };
 }
 
 function buildExcerpt(lines, excerptChars) {
