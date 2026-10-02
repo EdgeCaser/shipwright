@@ -5,7 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
-import { buildPlugin, pluginFiles, SOURCE_ROOT } from '../scripts/build-plugin.mjs';
+import { buildPlugin, pluginFiles, PLUGIN_ROOT_LINE, SOURCE_ROOT } from '../scripts/build-plugin.mjs';
 
 const execFileAsync = promisify(execFile);
 
@@ -23,6 +23,40 @@ test('package README is self-contained plugin guidance rather than source-checko
   assert.doesNotMatch(readme, /node scripts\/build-plugin\.mjs/);
   assert.doesNotMatch(readme, /node scripts\/install\.mjs/);
   assert.ok(files.has('docs/plugin-guide.md'));
+});
+
+test('the marketplace installs the committed bundle, and the bundle matches a fresh build', async () => {
+  const marketplace = JSON.parse(await readFile(path.join(SOURCE_ROOT, '.claude-plugin', 'marketplace.json'), 'utf8'));
+  assert.deepEqual(marketplace.plugins.map(plugin => plugin.source), ['./plugins/shipwright']);
+  const bundle = path.join(SOURCE_ROOT, 'plugins', 'shipwright');
+  const committed = new Map();
+  async function walk(dir) {
+    for (const entry of await readdir(dir, { withFileTypes: true })) {
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) await walk(full);
+      else committed.set(path.relative(bundle, full).split(path.sep).join('/'), await readFile(full));
+    }
+  }
+  await walk(bundle);
+  const files = await pluginFiles();
+  assert.deepEqual([...committed.keys()].sort(), [...files.keys()].sort(), 'Rebuild plugins/shipwright with scripts/build-plugin.mjs');
+  for (const [name, content] of files) {
+    assert.equal(committed.get(name).toString('utf8').replace(/\r\n/g, '\n'), content.toString('utf8').replace(/\r\n/g, '\n'), `Stale bundle file: ${name}`);
+  }
+});
+
+test('packaged commands and skills name the plugin root right after frontmatter, and nothing else does', async () => {
+  const files = await pluginFiles();
+  const entries = [...files.keys()].filter(name => /^(commands\/[^/]+|skills\/[^/]+\/SKILL)\.md$/.test(name));
+  assert.ok(entries.length >= 60);
+  for (const name of entries) {
+    const text = files.get(name).toString('utf8');
+    assert.match(text, /^---\r?\n[\s\S]*?\r?\n---\r?\n\nShipwright root: `\$\{CLAUDE_PLUGIN_ROOT\}`\./, name);
+    assert.equal(text.split(PLUGIN_ROOT_LINE).length, 2, name);
+  }
+  for (const [name, content] of files) {
+    if (!entries.includes(name)) assert.equal(content.toString('utf8').includes('${CLAUDE_PLUGIN_ROOT}'), false, name);
+  }
 });
 
 test('every packaged relative Node helper reference resolves inside the package', async () => {

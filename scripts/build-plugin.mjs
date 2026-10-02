@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { realpathSync } from 'node:fs';
 
 export const SOURCE_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+export const PLUGIN_ROOT_LINE = 'Shipwright root: `${CLAUDE_PLUGIN_ROOT}`. Read Shipwright docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file\'s path instead.';
 
 // Explicit distribution allowlist. Never package credentials, local installs or run artifacts.
 export async function pluginFiles(root = SOURCE_ROOT) {
@@ -13,9 +14,17 @@ export async function pluginFiles(root = SOURCE_ROOT) {
   const rewrite = text => text
     .replace(/skills\/[a-z-]+\/([a-z-]+)\/SKILL\.md/g, 'skills/$1/SKILL.md')
     .replace(/\.codex\/skills\//g, 'skills/');
+  // Claude Code fills in ${CLAUDE_PLUGIN_ROOT} in command and skill text; other hosts leave it as written.
+  const withRoot = text => text.replace(/^(---\r?\n[\s\S]*?\r?\n---\r?\n)/, `$1\n${PLUGIN_ROOT_LINE}\n`);
   async function add(source, target = source) {
     const content = await readFile(path.join(root, source));
-    files.set(target, /\.(md|json)$/.test(target) ? Buffer.from(rewrite(content.toString('utf8'))) : content);
+    if (!/\.(md|json)$/.test(target)) { files.set(target, content); return; }
+    let text = rewrite(content.toString('utf8'));
+    if (/^(commands\/[^/]+|skills\/[^/]+\/SKILL)\.md$/.test(target)) {
+      text = withRoot(text);
+      if (!text.includes(PLUGIN_ROOT_LINE)) throw new Error(`No frontmatter to anchor the plugin root line: ${source}`);
+    }
+    files.set(target, Buffer.from(text));
   }
   async function addTree(dir) {
     for (const entry of await readdir(path.join(root, dir), { withFileTypes: true })) {

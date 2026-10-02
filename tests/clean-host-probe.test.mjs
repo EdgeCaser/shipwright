@@ -91,9 +91,10 @@ test('a project .claude directory above the workdir is a hit', () => {
 
 test('the ancestor walk stops at the filesystem root', () => {
   const seen = [];
-  ancestorInstructionHits(path.resolve('C:\\shipwright-clean-host-probe'), {
+  const root = path.parse(process.cwd()).root;
+  ancestorInstructionHits(path.join(root, 'shipwright-clean-host-probe'), {
     exists: candidate => { seen.push(candidate); return false; },
-    home: path.resolve('C:\\Users\\ianfe'),
+    home: path.join(root, 'Users', 'someone'),
   });
   assert.equal(seen.length, 4);
 });

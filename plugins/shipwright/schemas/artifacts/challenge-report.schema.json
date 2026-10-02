@@ -1,0 +1,331 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Shipwright Challenge Report Artifact",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "artifact_type",
+    "mode",
+    "depth",
+    "metadata",
+    "decision_frame",
+    "unknowns",
+    "pass_fail_readiness",
+    "evidence",
+    "payload"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "minLength": 1,
+      "enum": [
+        "2.0.0"
+      ]
+    },
+    "artifact_type": {
+      "type": "string",
+      "enum": [
+        "challenge-report"
+      ],
+      "minLength": 1
+    },
+    "mode": {
+      "type": "string",
+      "enum": [
+        "fast",
+        "rigorous"
+      ],
+      "minLength": 1
+    },
+    "depth": {
+      "type": "string",
+      "enum": [
+        "quick",
+        "light",
+        "standard",
+        "deep"
+      ],
+      "minLength": 1
+    },
+    "metadata": {
+      "type": "object",
+      "required": [
+        "title",
+        "status",
+        "authors",
+        "updated_at"
+      ],
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "draft",
+            "in-review",
+            "approved",
+            "exploratory-draft"
+          ],
+          "minLength": 1
+        },
+        "authors": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "updated_at": {
+          "type": "string",
+          "minLength": 1
+        },
+        "approval_record": {
+          "type": "object",
+          "required": ["human_identity", "decision_ref", "decided_at"],
+          "properties": {
+            "human_identity": { "type": "string", "minLength": 1 },
+            "decision_ref": { "type": "string", "minLength": 1 },
+            "decided_at": { "type": "string", "minLength": 1, "pattern": "^\\d{4}-\\d{2}-\\d{2}T" }
+          }
+        }
+      },
+      "if": { "properties": { "status": { "const": "approved" } } },
+      "then": { "required": ["approval_record"] }
+    },
+    "decision_frame": {
+      "type": "object",
+      "required": [
+        "recommendation",
+        "tradeoff",
+        "confidence",
+        "owner",
+        "decision_date",
+        "revisit_trigger"
+      ],
+      "properties": {
+        "recommendation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "tradeoff": {
+          "type": "string",
+          "minLength": 1
+        },
+        "confidence": {
+          "type": "string",
+          "enum": [
+            "low",
+            "medium",
+            "high"
+          ],
+          "minLength": 1
+        },
+        "owner": {
+          "type": "string",
+          "minLength": 1
+        },
+        "decision_date": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(?:\\d{4}-\\d{2}-\\d{2}|\\[TBD, requires: [^\\]]+\\])$"
+        },
+        "revisit_trigger": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "unknowns": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "pass_fail_readiness": {
+      "type": "object",
+      "required": [
+        "status",
+        "reason"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "PASS",
+            "FAIL"
+          ],
+          "minLength": 1
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "evidence_id",
+          "kind",
+          "source_ref",
+          "confidence",
+          "supports"
+        ],
+        "properties": {
+          "evidence_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "metric",
+              "interview",
+              "research",
+              "experiment",
+              "document",
+              "assumption"
+            ],
+            "minLength": 1
+          },
+          "source_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "confidence": {
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high"
+            ],
+            "minLength": 1
+          },
+          "supports": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
+    "payload": {
+      "type": "object",
+      "required": [
+        "reviewed_artifact",
+        "depth",
+        "findings",
+        "verdict",
+        "action_plan"
+      ],
+      "properties": {
+        "reviewed_artifact": {
+          "type": "object",
+          "required": [
+            "title",
+            "artifact_type"
+          ],
+          "properties": {
+            "title": {
+              "type": "string",
+              "minLength": 1
+            },
+            "artifact_type": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "depth": {
+          "type": "string",
+          "enum": [
+            "light",
+            "standard",
+            "deep"
+          ],
+          "minLength": 1
+        },
+        "findings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "finding_id",
+              "claim",
+              "vector",
+              "severity",
+              "rationale",
+              "resolution_condition",
+              "evidence_ids"
+            ],
+            "properties": {
+              "finding_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "claim": {
+                "type": "string",
+                "minLength": 1
+              },
+              "vector": {
+                "type": "string",
+                "minLength": 1
+              },
+              "severity": {
+                "type": "string",
+                "enum": [
+                  "critical",
+                  "moderate",
+                  "minor",
+                  "low"
+                ],
+                "minLength": 1
+              },
+              "rationale": {
+                "type": "string",
+                "minLength": 1
+              },
+              "resolution_condition": {
+                "type": "string",
+                "minLength": 1
+              },
+              "evidence_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          }
+        },
+        "verdict": {
+          "type": "string",
+          "minLength": 1,
+          "enum": [
+            "CLEAR",
+            "DEFEND",
+            "ESCALATE",
+            "INSUFFICIENT_EVIDENCE"
+          ]
+        },
+        "action_plan": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  }
+}

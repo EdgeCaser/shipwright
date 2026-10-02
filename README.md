@@ -77,6 +77,24 @@ Each path chains 3 workflows; run them in separate sessions or back-to-back. For
 
 ## Quick Start
 
+### Install as a plugin
+
+In Claude Code:
+
+```text
+/plugin marketplace add EdgeCaser/shipwright
+/plugin install shipwright@shipwright
+```
+
+In Codex:
+
+```bash
+codex plugin marketplace add EdgeCaser/shipwright
+codex plugin add shipwright@shipwright
+```
+
+Both install the built bundle in `plugins/shipwright`. Restart the host, then start with `/shipwright:shipwright` in Claude Code, or ask Codex a PM question.
+
 ### Install into a project
 
 Requires Node.js 22 or newer. From a source checkout:
@@ -109,7 +127,7 @@ node scripts/build-plugin.mjs dist/shipwright
 
 The TAP file records every test that started, so an unexplained suite abort can be traced.
 
-The output directory must be new. Submit the contents of the generated bundle: it contains flat skill directories, Claude and Codex manifests, and their local dependencies. Source skills remain grouped by category for maintenance. The bundle excludes local credentials, run outputs and internal review material.
+The output directory must be new. The marketplace installs the committed copy in `plugins/shipwright`; after changing anything packaged, delete that folder and run `node scripts/build-plugin.mjs plugins/shipwright`. A test fails while the committed copy is stale. Submit the contents of the generated bundle: it contains flat skill directories, Claude and Codex manifests, and their local dependencies. Source skills remain grouped by category for maintenance. The bundle excludes local credentials, run outputs and internal review material.
 
 See [installation details](docs/installing-in-other-tools.md) and the [live release checks](docs/shipwright-v2-proof-runbook.md). Building and validating the bundle does not submit it to either directory.
 
