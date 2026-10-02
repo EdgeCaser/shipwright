@@ -89,7 +89,7 @@ function createArgs(overrides = {}) {
 
 function createProviderPlan(overrides = {}) {
   return {
-    providers: ['brave'],
+    providers: ['fixture'],
     providerStatus: 'configured',
     providerNote: '',
     ...overrides,
@@ -101,9 +101,9 @@ function createEvidencePack(overrides = {}) {
     generatedAt: '2026-04-01T00:00:00.000Z',
     query: 'acme pricing',
     mode: 'standard',
-    providerRequest: 'brave',
+    providerRequest: 'fixture',
     providerStatus: 'configured',
-    providersAttempted: ['brave'],
+    providersAttempted: ['fixture'],
     escalation: {
       status: 'complete',
       nextAction: 'Programmatic retrieval reached the target evidence threshold.',
@@ -130,9 +130,25 @@ async function createTempDir(t) {
   return dir;
 }
 
+let searchCalls = null;
+const FIXTURE_SEARCH = {
+  fixture: async (query) => {
+    searchCalls?.push(`search:${query}`);
+    return [{
+      rank: 1,
+      title: 'Pricing Example',
+      url: 'https://example.com/pricing',
+      site: '',
+      searchSnippet: 'A compact pricing summary for testing cache behavior.',
+      published: '',
+    }];
+  },
+};
+
 function mockProviderFetch(t) {
   const originalFetch = globalThis.fetch;
   const calls = [];
+  searchCalls = calls;
   const html = `
     <html>
       <head>
@@ -148,25 +164,6 @@ function mockProviderFetch(t) {
   globalThis.fetch = async (url) => {
     const target = String(url);
     calls.push(target);
-
-    if (target.includes('api.search.brave.com')) {
-      return new Response(JSON.stringify({
-        web: {
-          results: [
-            {
-              title: 'Pricing Example',
-              url: 'https://example.com/pricing',
-              description: 'A compact pricing summary for testing cache behavior.',
-            },
-          ],
-        },
-      }), {
-        status: 200,
-        headers: {
-          'content-type': 'application/json',
-        },
-      });
-    }
 
     if (target === 'https://example.com/pricing') {
       return new Response(html, {
@@ -187,29 +184,6 @@ function mockProviderFetch(t) {
   return calls;
 }
 
-function setEnvForTest(t, values) {
-  const keys = Object.keys(values);
-  const previous = new Map(keys.map((key) => [key, process.env[key]]));
-
-  for (const [key, value] of Object.entries(values)) {
-    if (value === undefined) {
-      delete process.env[key];
-    } else {
-      process.env[key] = value;
-    }
-  }
-
-  t.after(() => {
-    for (const [key, value] of previous.entries()) {
-      if (value === undefined) {
-        delete process.env[key];
-      } else {
-        process.env[key] = value;
-      }
-    }
-  });
-}
-
 test('buildCacheKey uses resolved maxPages and ignores providerNote', { concurrency: false }, () => {
   const argsWithoutMaxPages = createArgs({ maxResults: 5 });
   const argsWithMaxPages = createArgs({ maxResults: 5, maxPages: 5 });
@@ -226,10 +200,10 @@ test('buildCacheKey changes when keyed inputs change', { concurrency: false }, (
   const baseKey = buildCacheKey(baseArgs, basePlan);
 
   assert.notEqual(baseKey, buildCacheKey(createArgs({ query: 'different query' }), basePlan));
-  assert.notEqual(baseKey, buildCacheKey(createArgs({ provider: 'brave' }), basePlan));
+  assert.notEqual(baseKey, buildCacheKey(createArgs({ provider: 'other' }), basePlan));
   assert.notEqual(baseKey, buildCacheKey(createArgs({ mode: 'deep' }), basePlan));
   assert.notEqual(baseKey, buildCacheKey(createArgs({ excerptChars: 500 }), basePlan));
-  assert.notEqual(baseKey, buildCacheKey(baseArgs, createProviderPlan({ providers: ['brave', 'tavily'] })));
+  assert.notEqual(baseKey, buildCacheKey(baseArgs, createProviderPlan({ providers: ['fixture', 'other'] })));
 });
 
 test('extractFactsPack emits attributed atomic pricing facts from representative evidence', { concurrency: false }, () => {
@@ -324,14 +298,10 @@ test('extractFactsPack stays sparse when values are ambiguous or missing', { con
 
 test('configured-provider run writes cache on miss and reuses it on hit without network calls', { concurrency: false }, async (t) => {
   const cwd = await createTempDir(t);
-  setEnvForTest(t, {
-    BRAVE_SEARCH_API_KEY: 'test-brave-key',
-    TAVILY_API_KEY: undefined,
-  });
-
   const calls = mockProviderFetch(t);
   const first = await collectResearch(createArgs(), {
     cwd,
+    searchProviders: FIXTURE_SEARCH,
     now: new Date('2026-04-01T00:00:00.000Z'),
     logger: NOOP_LOGGER,
   });
@@ -364,6 +334,7 @@ test('configured-provider run writes cache on miss and reuses it on hit without 
 
   const second = await collectResearch(createArgs({ outDir: 'research-output-hit' }), {
     cwd,
+    searchProviders: FIXTURE_SEARCH,
     now: new Date('2026-04-01T01:00:00.000Z'),
     logger: NOOP_LOGGER,
   });
@@ -383,14 +354,10 @@ test('configured-provider run writes cache on miss and reuses it on hit without 
 
 test('stale cache entry refreshes and preserves previous cache metadata', { concurrency: false }, async (t) => {
   const cwd = await createTempDir(t);
-  setEnvForTest(t, {
-    BRAVE_SEARCH_API_KEY: 'test-brave-key',
-    TAVILY_API_KEY: undefined,
-  });
-
   let calls = mockProviderFetch(t);
   const first = await collectResearch(createArgs(), {
     cwd,
+    searchProviders: FIXTURE_SEARCH,
     now: new Date('2026-04-01T00:00:00.000Z'),
     logger: NOOP_LOGGER,
   });
@@ -401,6 +368,7 @@ test('stale cache entry refreshes and preserves previous cache metadata', { conc
   calls.length = 0;
   const refreshed = await collectResearch(createArgs({ outDir: 'research-output-refresh' }), {
     cwd,
+    searchProviders: FIXTURE_SEARCH,
     now: new Date('2026-04-02T01:00:00.000Z'),
     logger: NOOP_LOGGER,
   });
@@ -414,14 +382,10 @@ test('stale cache entry refreshes and preserves previous cache metadata', { conc
 
 test('corrupt cache falls back to normal retrieval', { concurrency: false }, async (t) => {
   const cwd = await createTempDir(t);
-  setEnvForTest(t, {
-    BRAVE_SEARCH_API_KEY: 'test-brave-key',
-    TAVILY_API_KEY: undefined,
-  });
-
   const calls = mockProviderFetch(t);
   await collectResearch(createArgs(), {
     cwd,
+    searchProviders: FIXTURE_SEARCH,
     now: new Date('2026-04-01T00:00:00.000Z'),
     logger: NOOP_LOGGER,
   });
@@ -434,6 +398,7 @@ test('corrupt cache falls back to normal retrieval', { concurrency: false }, asy
 
   const result = await collectResearch(createArgs({ outDir: 'research-output-corrupt' }), {
     cwd,
+    searchProviders: FIXTURE_SEARCH,
     now: new Date('2026-04-01T02:00:00.000Z'),
     logger: NOOP_LOGGER,
   });
@@ -445,11 +410,6 @@ test('corrupt cache falls back to normal retrieval', { concurrency: false }, asy
 
 test('no-provider run writes output but does not create a cache entry', { concurrency: false }, async (t) => {
   const cwd = await createTempDir(t);
-  setEnvForTest(t, {
-    BRAVE_SEARCH_API_KEY: undefined,
-    TAVILY_API_KEY: undefined,
-  });
-
   const originalFetch = globalThis.fetch;
   globalThis.fetch = async () => {
     throw new Error('Fetch should not be called without a configured provider.');
@@ -483,19 +443,15 @@ test('no-provider run writes output but does not create a cache entry', { concur
 
   const factsJson = JSON.parse(await readFile(path.join(cwd, 'research-output-no-provider', 'facts.json'), 'utf8'));
   assert.equal(factsJson.facts.length, 0);
-  assert.match(factsJson.meta.notes.join(' '), /No search provider configured/);
+  assert.match(factsJson.meta.notes.join(' '), /no built-in search provider/);
 });
 
 test('clear-cache removes cached entries without requiring a query', { concurrency: false }, async (t) => {
   const cwd = await createTempDir(t);
-  setEnvForTest(t, {
-    BRAVE_SEARCH_API_KEY: 'test-brave-key',
-    TAVILY_API_KEY: undefined,
-  });
-
   mockProviderFetch(t);
   await collectResearch(createArgs(), {
     cwd,
+    searchProviders: FIXTURE_SEARCH,
     now: new Date('2026-04-01T00:00:00.000Z'),
     logger: NOOP_LOGGER,
   });
@@ -812,4 +768,27 @@ test('extractFactsPack does not extract platforms without availability context',
 
   const platformFacts = factsPack.facts.filter((f) => f.field === 'supported_platform');
   assert.equal(platformFacts.length, 0, 'should not extract platforms from incidental mentions');
+});
+
+test('search keys in the environment or .env are never read or sent', { concurrency: false }, async (t) => {
+  const cwd = await createTempDir(t);
+  await writeFile(path.join(cwd, '.env'), 'BRAVE_SEARCH_API_KEY=from-dotenv\nTAVILY_API_KEY=from-dotenv\n', 'utf8');
+  const previous = process.env.BRAVE_SEARCH_API_KEY;
+  process.env.BRAVE_SEARCH_API_KEY = 'from-environment';
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async (url) => { throw new Error(`Unexpected fetch: ${url}`); };
+  t.after(() => {
+    globalThis.fetch = originalFetch;
+    if (previous === undefined) delete process.env.BRAVE_SEARCH_API_KEY; else process.env.BRAVE_SEARCH_API_KEY = previous;
+  });
+
+  const result = await collectResearch(createArgs({ provider: 'brave', outDir: 'research-output-keys' }), {
+    cwd,
+    now: new Date('2026-04-01T00:00:00.000Z'),
+    logger: NOOP_LOGGER,
+  });
+
+  assert.equal(result.pack.providerStatus, 'not-configured');
+  assert.deepEqual(result.pack.providersAttempted, []);
+  assert.equal(process.env.TAVILY_API_KEY, undefined);
 });

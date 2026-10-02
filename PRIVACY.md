@@ -14,14 +14,12 @@ Shipwright writes only into the project you're working in: the documents you ask
 
 ## When it goes online
 
-One part of Shipwright makes network requests: the research collector, `scripts/collect-research.mjs`. It runs when a research workflow calls it or when you run it yourself.
+One part of Shipwright makes network requests: the research collector, `scripts/collect-research.mjs`. It runs when a research workflow calls it or when you run it yourself, and it reads no API keys or credentials.
 
-- If `BRAVE_SEARCH_API_KEY` is set, it sends your search query and that key to the Brave Search API.
-- If `TAVILY_API_KEY` is set, it sends your search query and that key to the Tavily API.
-- It downloads the public pages those searches return, and any page you pass with `--url`.
+- It downloads any public page you pass with `--url`.
 - For a crates.io package page, it also reads that crate's public record from the crates.io API.
 
-It reads the two keys from your environment or from a `.env` file in the current directory, and sends each one only to its own provider. The keys are not saved in evidence packs. With neither key set, the collector makes no search requests, and the model uses your host's own web search instead if you have it turned on. Brave, Tavily, crates.io and the sites you fetch have their own privacy policies.
+A research question on its own sends nothing. The collector writes a list of suggested searches, and the model runs them with your host's own web search if you have it turned on. crates.io and the sites you fetch have their own privacy policies.
 
 ## Tools you connect
 

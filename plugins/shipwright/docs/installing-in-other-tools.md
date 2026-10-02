@@ -34,6 +34,6 @@ For an agent that can read local Markdown, keep the complete bundle together and
 
 The PM frameworks can run without Node. Node is needed for the collector and deterministic validators; if unavailable, follow the documented evidence/tool fallback and explicitly mark automated checks unrun. Do not claim a helper ran when it did not.
 
-## Research credentials
+## Research without keys
 
-The collector uses supported keys from the environment or the user's project `.env`. Keep the helper's working directory in that project while invoking the helper by its absolute installed path. Never include credentials in a release bundle or display them in an artifact. Missing keys allow a bounded interactive-research fallback.
+The collector reads no API keys. A query run writes suggested follow-up queries for the host's own web search, and `--url` captures known public pages. Keep the helper's working directory in the user's project while invoking it by its absolute installed path, so evidence packs land there.

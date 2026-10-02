@@ -12,7 +12,7 @@ Locate the Shipwright root from this skill's path: the ancestor containing `mani
 ## Retrieve once
 
 1. Reuse adequate current evidence. When fresh web evidence is needed, run the installed `scripts/collect-research.mjs` with one primary query and `--mode auto`.
-2. Missing Node, helper, credentials or collector failure permits available browsing tools. If browsing is unavailable too, name the gap and produce a limited draft.
+2. A fallback pack, missing Node or helper, or collector failure permits available browsing tools. If browsing is unavailable too, name the gap and produce a limited draft.
 3. Read `facts.json` when present, then `evidence.md` or `evidence.json`. Extraction confidence describes parsing, not source truth. Verify material facts against cited entries even at high confidence. Medium or missing confidence is provisional; low confidence is a lead only.
 4. Name material gaps before targeted follow-up searches. A usable pack should not trigger a second broad pass.
 

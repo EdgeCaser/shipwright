@@ -116,7 +116,7 @@ If the user asks in plain English, route silently. Do not force them to speak in
 
 ## Public-Web Research Protocol
 
-When fresh public-web evidence is needed, read the research protocol in `docs/workflow-contract.md` from the Shipwright installation root. Run the installed collector with one primary query and `--mode auto` when Node and the helper are available. It checks project `.env` itself; never print credentials. Read `facts.json` if present, then the evidence pack. Missing runtime/helper/credentials or a failed collector permits bounded browsing. Name the unresolved gap before additional searching. Extraction confidence is not source truth. Mention the local evidence pack when it was used.
+When fresh public-web evidence is needed, read the research protocol in `docs/workflow-contract.md` from the Shipwright installation root. Run the installed collector with one primary query and `--mode auto` when Node and the helper are available. Read `facts.json` if present, then the evidence pack. A fallback pack, missing runtime or helper, or a failed collector permits bounded browsing. Name the unresolved gap before additional searching. Extraction confidence is not source truth. Mention the local evidence pack when it was used.
 
 ## Bounded Execution
 

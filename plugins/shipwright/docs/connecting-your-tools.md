@@ -63,7 +63,7 @@ claude mcp add --transport http jira https://mcp.atlassian.com/mcp \
   --header "Authorization: Bearer YOUR_API_KEY_HERE"
 ```
 
-Your API key stays on your machine. It's stored in `~/.claude.json` and never sent anywhere except to the service you're connecting to.
+Claude Code keeps the key in its local settings and sends it only to the service you're connecting to.
 
 ## Sharing connections with your team
 
@@ -87,25 +87,20 @@ claude mcp remove linear   # disconnect a tool
 
 Inside a Claude Code session, type `/mcp` to see which connections are active and what tools they provide.
 
-## Programmatic web research without changing the UX
+## Local research helper
 
-For public-web research, you can offload search and page retrieval to a local helper so Shipwright stays conversational while spending fewer tool calls on raw retrieval.
+Shipwright includes `scripts/collect-research.mjs`, a local helper that keeps research conversational while spending fewer tool calls on raw retrieval. It has no search provider of its own and reads no API keys.
 
-Shipwright includes `scripts/collect-research.mjs` in the repo and installs it to `.claude/scripts/collect-research.mjs` plus `.codex/scripts/collect-research.mjs` when you use `scripts/sync.sh --install`. In-repo, prefer `scripts/collect-research.mjs` first; the `.claude` and `.codex` copies are compatibility fallbacks.
+For a research question, it writes an evidence pack under `.shipwright/research/` with `needs-interactive-followup` and a short list of suggested follow-up queries. The agent then runs only those queries with the host's own web search.
 
-What it does:
+For known public pages, pass them with `--url` (up to 8). The helper fetches each page and then:
 
-- runs a programmatic web search
-- fetches the top pages in parallel
-- extracts a compact source digest
-- writes `evidence.json` and `evidence.md` under `.shipwright/research/`
+- extracts a compact source digest into `evidence.json` and `evidence.md`
 - writes `facts.json` with sparse, source-attributed pricing, product, review, date, and package-registry facts when they can be extracted deterministically
-- uses structured-source adapters for npm, PyPI, and crates.io package metadata when available
-- in v1, `facts.json` emits only `high` and `medium` `confidence_hint` values
+- uses structured-source adapters for npm, PyPI, and crates.io package metadata
+- emits only `high` and `medium` `confidence_hint` values in `facts.json`
 
 Pricing facts include a `tuple_id` for the source offer or extracted text line. Keep it with `source_url` when joining plan, price, currency, and billing period. Structured offers also retain `product_id` and their own product name when supplied; unnamed products stay explicit. The formatting helpers omit ambiguous groups and older flattened adapter pricing that lacks offer identity. Re-extract from the evidence or source to recover those associations; do not infer them from shared excerpts.
-- caches canonical evidence packs under `.shipwright/cache/research/v1/`
-- escalates automatically from the primary query to broader subqueries and then to gap-only follow-up recommendations when needed
 
 What the AI still does:
 
@@ -114,49 +109,17 @@ What the AI still does:
 - synthesize findings
 - write the final answer
 
-Set one of these environment variables before starting Claude Code:
+Example:
 
 ```bash
-export BRAVE_SEARCH_API_KEY=...
-# or
-export TAVILY_API_KEY=...
+node scripts/collect-research.mjs   --query "AI-powered customer support tools for mid-market SaaS pricing"   --url "https://www.example.com/pricing"
 ```
 
-If you prefer a local env file, `scripts/collect-research.mjs` also auto-loads `.env` from the current working directory. Example:
-
-```bash
-BRAVE_SEARCH_API_KEY=...
-```
-
-If you do not configure a provider key, the helper still runs and writes a fallback evidence pack with `needs-interactive-followup` plus suggested queries. That keeps the workflow conversational while nudging the agent onto interactive WebSearch or WebFetch only for the remaining gaps.
-
-Then an agent can call the helper with Bash using a prompt that still feels conversational to the PM. Example:
-
-```bash
-node scripts/collect-research.mjs \
-  --query "AI-powered customer support tools for mid-market SaaS pricing" \
-  --max-results 5
-```
-
-This produces a compact evidence pack plus a machine-readable `facts.json` sidecar the model can synthesize instead of spending a long sequence of `WebSearch` and `WebFetch` calls on the same task.
-
-The collector cache is local to the repo and keyed by the normalized query plus provider and retrieval settings. By default, a cache entry is reusable for 24 hours:
-
-- `hit` means the collector reused a fresh cached evidence pack and wrote a served copy to the requested output directory
-- `miss` means no matching cache entry was available, so the collector ran normal retrieval and then cached the result
-- `refresh` means a matching cache entry existed but was older than the TTL, so the collector recollected and replaced it
-
-If you want a different freshness window, pass `--cache-ttl-hours <n>`.
-
-If the cache grows larger than you want locally, clear it with:
+Page captures are cached under `.shipwright/cache/research/v1/` for 24 hours by default, keyed by the query, URLs and retrieval settings. Pass `--cache-ttl-hours <n>` for a different window. Query-only fallback packs are not cached. To clear the cache:
 
 ```bash
 node scripts/collect-research.mjs --clear-cache
 ```
-
-When the helper still cannot gather enough usable sources, or no provider is configured, it records `needs-interactive-followup` plus suggested follow-up queries. Agents should then use interactive browsing only for those remaining gaps.
-
-If no provider is configured, the helper still writes the fallback evidence pack for the current run, but it does not cache that no-provider fallback output.
 
 In Codex, this same pattern can be triggered from plain-language prompts when the project has a Shipwright-aware `AGENTS.md` and the helper exists at `.codex/scripts/collect-research.mjs` or `scripts/collect-research.mjs`.
 

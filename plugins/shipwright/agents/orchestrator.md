@@ -273,7 +273,6 @@ run the collector by its absolute installed path:
 
 If `facts.json` exists alongside the evidence pack, read it before the full pack.
 Read the generated `evidence.md` or `evidence.json` and synthesize from that pack first.
-The helper loads `.env` from the working directory, so do not skip this step just because no API key is visible in the session environment.
 Only if the pack reports `needs-interactive-followup`, the helper command fails, or a specific unresolved gap remains after reading the pack, may you use WebSearch/WebFetch, and then only for that gap or the suggested follow-up queries.
 If the pack status is `complete`, do not restart the research pass with a broad WebSearch fan-out.
 Do not start with broad WebSearch fan-out when the local collector is available.

@@ -9,14 +9,10 @@ import { fetchPublicSource } from './public-source-fetch.mjs';
 
 const HELP_TEXT = `Shipwright research collector
 
-Build a compact evidence pack from programmatic web search so the model can
-spend fewer tool calls and fewer tokens on raw retrieval.
-
-The collector uses an internal escalation ladder:
-  L1: primary query, small budget
-  L2: automatic subqueries, same provider
-  L3: secondary provider or deeper follow-up queries
-  L4: explicit interactive-search follow-up recommendations
+Build a compact evidence pack so the model spends fewer tool calls and tokens
+on raw retrieval. The command line has no search provider and reads no API
+keys: a --query run writes suggested follow-up queries for the host's own web
+search, and --url captures known public pages directly.
 
 Usage:
   node scripts/collect-research.mjs --query "mid-market AI support pricing"
@@ -28,7 +24,6 @@ Options:
                                Direct URL mode does not require a search provider.
                                Up to 8 URLs, 3 concurrent fetches, 30s and 1 MiB
                                per page; at most 4 redirects are followed.
-  --provider <name>           brave | tavily | auto (default: auto)
   --mode <name>               standard | auto | deep (default: auto)
   --max-results <n>           Search results to collect in the first pass (default: 5)
   --max-pages <n>             Pages to fetch and extract in the first pass (default: same as max-results)
@@ -41,11 +36,6 @@ Options:
   --cache-ttl-hours <n>       Fresh cache window in hours (default: 24)
   --clear-cache               Remove all entries under .shipwright/cache/research/v1 and exit
   --help                      Show this message
-
-Providers:
-  brave   Uses BRAVE_SEARCH_API_KEY
-  tavily  Uses TAVILY_API_KEY
-  auto    Uses the first configured provider and can escalate to the second
 
 Outputs:
   evidence.json               Structured machine-readable results
@@ -63,9 +53,8 @@ Outputs:
                                Only high and medium confidence_hint values are emitted.
 
 Behavior:
-  Loads .env from the current working directory if present.
-  If no provider is configured, still writes a fallback evidence pack with
-  'needs-interactive-followup' instead of failing.
+  A --query run writes a fallback evidence pack with
+  'needs-interactive-followup' and the suggested follow-up queries.
   Direct URL mode checks each destination and redirect, limits response size,
   and retains only successful HTML/plain-text pages as primary passages.
   Source adapters run automatically when source-adapters.mjs is co-located.
@@ -160,38 +149,6 @@ async function main(argv = process.argv.slice(2), options = {}) {
   return result;
 }
 
-async function loadDotenv(filePath) {
-  let contents = '';
-
-  try {
-    contents = await readFile(filePath, 'utf8');
-  } catch {
-    return;
-  }
-
-  for (const rawLine of contents.split(/\r?\n/)) {
-    const line = rawLine.trim();
-    if (!line || line.startsWith('#')) continue;
-
-    const normalized = line.startsWith('export ') ? line.slice(7).trim() : line;
-    const separatorIndex = normalized.indexOf('=');
-    if (separatorIndex <= 0) continue;
-
-    const key = normalized.slice(0, separatorIndex).trim();
-    if (!key || process.env[key]) continue;
-
-    let value = normalized.slice(separatorIndex + 1).trim();
-    if (
-      (value.startsWith('"') && value.endsWith('"')) ||
-      (value.startsWith("'") && value.endsWith("'"))
-    ) {
-      value = value.slice(1, -1);
-    }
-
-    process.env[key] = value;
-  }
-}
-
 export async function collectResearch(rawArgs, options = {}) {
   const args = normalizeArgs(rawArgs);
   const cwd = options.cwd || process.cwd();
@@ -212,12 +169,10 @@ export async function collectResearch(rawArgs, options = {}) {
     throw new Error('Each --url must be a nonblank URL.');
   }
 
-  await loadDotenv(path.resolve(cwd, '.env'));
-
   const directMode = args.urls.length > 0;
   const providerPlan = directMode
     ? { providers: [], providerStatus: 'direct-url', providerNote: 'Known public URLs supplied directly.' }
-    : resolveProviderPlan(args.provider);
+    : resolveProviderPlan(args.provider, options.searchProviders);
   const cacheKey = buildCacheKey(args, providerPlan);
   const cacheState = await resolveCacheState({
     cacheKey,
@@ -241,7 +196,7 @@ export async function collectResearch(rawArgs, options = {}) {
   } else {
     const basePack = directMode
       ? await runDirectUrlResearch(args, { now, publicSourceFetch: options.publicSourceFetch })
-      : await runEscalatingResearch(args, providerPlan, { now });
+      : await runEscalatingResearch(args, providerPlan, { now, searchProviders: options.searchProviders });
     pack = await finalizeCollectedPack({
       basePack,
       cacheKey,
@@ -693,6 +648,7 @@ async function runEscalatingResearch(args, providerPlan, options = {}) {
   const followupQueries = buildInteractiveFollowupQueries(args.query);
   const secondaryQueries = buildAutomaticSubqueries(args.query, args.subqueryLimit);
   const providers = providerPlan.providers;
+  const searchProviders = options.searchProviders || {};
   const stages = [];
   let results = [];
 
@@ -716,6 +672,7 @@ async function runEscalatingResearch(args, providerPlan, options = {}) {
     fetchLimit: initialMaxPages,
     args,
     stages,
+    searchProviders,
   });
 
   let coverage = summarizeCoverage(results);
@@ -731,6 +688,7 @@ async function runEscalatingResearch(args, providerPlan, options = {}) {
       fetchLimit: Math.max(initialMaxPages + 2, args.minUsableSources + 2),
       args,
       stages,
+      searchProviders,
     });
     coverage = summarizeCoverage(results);
   }
@@ -751,6 +709,7 @@ async function runEscalatingResearch(args, providerPlan, options = {}) {
       fetchLimit: Math.max(initialMaxPages + 3, args.minUsableSources + 3),
       args,
       stages,
+      searchProviders,
     });
     coverage = summarizeCoverage(results);
   }
@@ -819,7 +778,7 @@ function buildNoProviderPack({ args, generatedAt, initialMaxPages, followupQueri
     },
     escalation: {
       status: 'needs-interactive-followup',
-      nextAction: 'No programmatic search provider is configured. Use interactive WebSearch/WebFetch only for the suggested follow-up queries or configure BRAVE_SEARCH_API_KEY/TAVILY_API_KEY and rerun the collector.',
+      nextAction: 'Run the suggested follow-up queries with the host web search, or capture known public pages with --url.',
       suggestedInteractiveQueries: followupQueries,
       coverage,
       stages: [
@@ -851,12 +810,13 @@ async function runStage({
   fetchLimit,
   args,
   stages,
+  searchProviders,
 }) {
   const candidateGroups = await mapLimit(
     queries,
     Math.min(args.concurrency, Math.max(1, queries.length)),
     async (query) => {
-      const matches = await search(provider, query, searchResultsPerQuery, args.timeoutMs);
+      const matches = await searchProviders[provider](query, searchResultsPerQuery, args.timeoutMs);
       return matches.map((result, index) => ({
         ...result,
         search: {
@@ -983,59 +943,18 @@ function parseNumber(value, flagName) {
   return parsed;
 }
 
-function resolveProviderPlan(requested) {
-  if (requested && requested !== 'auto') {
-    assertSupportedProvider(requested);
-    if (isProviderConfigured(requested)) {
-      return {
-        providers: [requested],
-        providerStatus: 'configured',
-        providerNote: '',
-      };
-    }
+const NO_PROVIDER_NOTE = 'The collector has no built-in search provider. Run the suggested follow-up queries with the host web search, or capture known pages with --url.';
 
-    return {
-      providers: [],
-      providerStatus: 'not-configured',
-      providerNote: `Provider "${requested}" is not configured. Set ${providerEnvVar(requested)} or rerun with --provider auto after configuring a provider.`,
-    };
-  }
-
-  const providers = [];
-  if (process.env.BRAVE_SEARCH_API_KEY) providers.push('brave');
-  if (process.env.TAVILY_API_KEY) providers.push('tavily');
-
+/** Search providers are passed in by callers; the CLI passes none, reads no keys and calls no search API. */
+function resolveProviderPlan(requested, searchProviders = {}) {
+  const available = Object.keys(searchProviders);
+  const providers = requested && requested !== 'auto'
+    ? available.filter((name) => name === requested)
+    : available;
   if (providers.length === 0) {
-    return {
-      providers: [],
-      providerStatus: 'not-configured',
-      providerNote: 'No search provider configured. Set BRAVE_SEARCH_API_KEY or TAVILY_API_KEY to enable programmatic collection.',
-    };
+    return { providers: [], providerStatus: 'not-configured', providerNote: NO_PROVIDER_NOTE };
   }
-
-  return {
-    providers,
-    providerStatus: 'configured',
-    providerNote: '',
-  };
-}
-
-function assertSupportedProvider(provider) {
-  if (!['brave', 'tavily'].includes(provider)) {
-    throw new Error(`Unsupported provider: ${provider}`);
-  }
-}
-
-function isProviderConfigured(provider) {
-  if (provider === 'brave') return Boolean(process.env.BRAVE_SEARCH_API_KEY);
-  if (provider === 'tavily') return Boolean(process.env.TAVILY_API_KEY);
-  return false;
-}
-
-function providerEnvVar(provider) {
-  if (provider === 'brave') return 'BRAVE_SEARCH_API_KEY';
-  if (provider === 'tavily') return 'TAVILY_API_KEY';
-  return 'UNKNOWN_PROVIDER_ENV';
+  return { providers, providerStatus: 'configured', providerNote: '' };
 }
 
 function defaultOutDir(query) {
@@ -1144,75 +1063,6 @@ function buildInteractiveFollowupQueries(query) {
 
 function containsAny(haystack, needles) {
   return needles.some((needle) => haystack.includes(needle));
-}
-
-async function search(provider, query, maxResults, timeoutMs) {
-  if (provider === 'brave') {
-    return braveSearch(query, maxResults, timeoutMs);
-  }
-  if (provider === 'tavily') {
-    return tavilySearch(query, maxResults, timeoutMs);
-  }
-  throw new Error(`Unsupported provider: ${provider}`);
-}
-
-async function braveSearch(query, maxResults, timeoutMs) {
-  const url = new URL('https://api.search.brave.com/res/v1/web/search');
-  url.searchParams.set('q', query);
-  url.searchParams.set('count', String(maxResults));
-  url.searchParams.set('search_lang', 'en');
-  url.searchParams.set('country', 'us');
-
-  const response = await fetchWithTimeout(url.toString(), {
-    headers: {
-      Accept: 'application/json',
-      'X-Subscription-Token': process.env.BRAVE_SEARCH_API_KEY,
-      'User-Agent': 'ShipwrightResearchCollector/1.0',
-    },
-  }, timeoutMs);
-
-  const payload = await readJson(response);
-  const results = payload.web?.results || [];
-
-  return results.map((item, index) => ({
-    rank: index + 1,
-    title: item.title || item.profile?.name || item.url,
-    url: item.url,
-    site: item.profile?.name || '',
-    searchSnippet: cleanInlineText(item.description || ''),
-    published: item.age || item.page_age || '',
-  }));
-}
-
-async function tavilySearch(query, maxResults, timeoutMs) {
-  const response = await fetchWithTimeout('https://api.tavily.com/search', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-      'User-Agent': 'ShipwrightResearchCollector/1.0',
-    },
-    body: JSON.stringify({
-      api_key: process.env.TAVILY_API_KEY,
-      query,
-      search_depth: 'basic',
-      max_results: maxResults,
-      include_answer: false,
-      include_raw_content: false,
-    }),
-  }, timeoutMs);
-
-  const payload = await readJson(response);
-  const results = payload.results || [];
-
-  return results.map((item, index) => ({
-    rank: index + 1,
-    title: item.title || item.url,
-    url: item.url,
-    site: '',
-    searchSnippet: cleanInlineText(item.content || ''),
-    published: item.published_date || '',
-  }));
 }
 
 function pickFetchCandidates(candidates, existingResults, fetchLimit) {

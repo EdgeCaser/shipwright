@@ -26,24 +26,19 @@ node "<absolute-shipwright-root>/scripts/collect-research.mjs" --query "<primary
 
 Read `docs/workflow-contract.md` before running the research helper.
 
-## Network access and credentials
+## Network access
 
 Skills, commands, agents and every helper other than the research collector work offline. The
 research collector, `scripts/collect-research.mjs`, runs only when an instruction or the user calls
-it, and it makes these requests:
+it. It reads no API keys and calls no search API. It makes these requests:
 
-- If `BRAVE_SEARCH_API_KEY` is set, it sends the search query and that key to the Brave Search API
-  (`api.search.brave.com`).
-- If `TAVILY_API_KEY` is set, it sends the search query and that key to the Tavily API
-  (`api.tavily.com`).
-- It downloads the public pages those searches return, and any page passed with `--url`.
+- It downloads any public page passed with `--url`.
 - For a crates.io package page, it also reads that crate's public record from the crates.io API.
 
-The collector reads the two keys from the environment or from a `.env` file in the current
-directory, and sends each key only to its own provider. With neither key set it makes no search
-requests and writes a fallback pack listing follow-up queries. Evidence packs are written to
-`.shipwright/research/` in the current project. Nothing is sent to the Shipwright maintainers, and
-the plugin collects no telemetry.
+A query without `--url` makes no network request; it writes a fallback pack listing follow-up
+queries for the host's own web search. Evidence packs are written to `.shipwright/research/` in
+the current project. Nothing is sent to the Shipwright maintainers, and the plugin collects no
+telemetry.
 
 ## Source checkout installation and updates
 

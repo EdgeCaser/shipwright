@@ -11,7 +11,7 @@ Locate the Shipwright root from this skill's path: the ancestor containing `mani
 
 - A binary high-stakes question about acquisition, governance, publication, sunsetting, pivoting or a price change needs a verdict. Apply the inline decision-analysis protocol in `agents/orchestrator.md`. Do not replace the verdict with a strategy workshop or start another model CLI inside this session. A second opposing-position pass is a same-session stress test, not independent validation.
 - Choose one framework first. Consult `manifest.json` and `skills-map.md` for broader work. Optional `scripts/route-request.mjs` output is a routing hint, not evidence that required inputs exist.
-- For fresh web evidence, follow the research protocol in `docs/workflow-contract.md`: one primary query, `--mode auto`, facts first and then the evidence pack. Missing helper, runtime or credentials permits bounded browsing.
+- For fresh web evidence, follow the research protocol in `docs/workflow-contract.md`: one primary query, `--mode auto`, facts first and then the evidence pack. A fallback pack or a missing helper or runtime permits bounded browsing.
 - For a requested workflow, read `commands/<name>.md`. Reuse existing work. If delegation is unavailable, apply specialist roles sequentially in this session.
 
 ## Common mappings
