@@ -427,7 +427,7 @@ async function extractCratesIoAdapter(url, options = {}) {
     {
       headers: {
         Accept: 'application/json',
-        'User-Agent': 'ShipwrightResearchCollector/1.0 (+https://github.com/ianbrillembourg/shipwright)',
+        'User-Agent': 'ShipwrightResearchCollector/1.0 (+https://github.com/EdgeCaser/shipwright)',
       },
     },
   );

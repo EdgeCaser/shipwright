@@ -37,11 +37,19 @@ export function validateSnapshot(snapshot) {
   return errors;
 }
 
+/** The snapshot directory itself must not be a symlink or junction. Ancestors are
+ * resolved rather than rejected, so OS aliases such as macOS /var or Windows
+ * short names (RUNNER~1) do not read as links. */
+async function assertNotLinked(dir) {
+  const parent = await realpath(path.dirname(dir));
+  if ((await lstat(dir)).isSymbolicLink() || path.relative(await realpath(dir), path.join(parent, path.basename(dir))) !== '') throw new Error('Snapshot directory must not be a symbolic link.');
+}
+
 /** Read every revision, checking links rather than trusting a mutable latest pointer.
  * A writer who can replace the whole directory can replace this history. */
 export async function loadSnapshot(directory) {
   const dir = path.resolve(directory);
-  if ((await lstat(dir)).isSymbolicLink() || path.relative(await realpath(dir), dir) !== '') throw new Error('Snapshot directory must not traverse a symbolic link.');
+  await assertNotLinked(dir);
   const entries = (await readdir(dir)).filter(name => /^snapshot-\d+\.json$/.test(name)).sort();
   if (!entries.length) throw new Error('No input snapshot found. Capture before drafting.');
   let previousSha256 = null, firstSha256 = null, latest;
@@ -89,7 +97,7 @@ export async function captureInputs({ requestPath, recordPath, directory, artifa
   const errors = validateSnapshot(snapshot);
   if (errors.length) throw new Error(errors.join('\n'));
   if (!prior) await mkdir(dir, { recursive: true });
-  if ((await lstat(dir)).isSymbolicLink() || path.relative(await realpath(dir), dir) !== '') throw new Error('Snapshot directory must not traverse a symbolic link.');
+  await assertNotLinked(dir);
   const file = path.join(dir, `snapshot-${String(snapshot.revision).padStart(4, '0')}.json`);
   await writeFile(file, JSON.stringify(snapshot, null, 2) + '\n', { flag: 'wx' });
   const result = await loadSnapshot(dir);

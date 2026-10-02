@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { mkdtemp, writeFile, readFile, rm } from 'node:fs/promises';
+import { mkdtemp, mkdir, writeFile, readFile, rm, symlink } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { captureInputs, loadSnapshot, validateSnapshot } from '../scripts/capture-inputs.mjs';
@@ -76,4 +76,19 @@ test('incorrect excerpts, invented unknown values and proposed implementation ar
 test('an incorrect but internally plausible author extraction remains a disclosed limitation', () => {
   const snapshot = { version: 1, requestText: 'Six buyers.', inputs: [{ id: 'x', kind: 'supplied', quote: 'Six buyers.', value: 60, unit: 'count' }], behaviors: [] };
   assert.deepEqual(validateSnapshot(snapshot), []); // Exact passage presence is not semantic extraction.
+});
+
+test('a linked snapshot directory is refused but a linked ancestor is resolved', async t => {
+  const { options } = await fixture(t);
+  const root = path.dirname(options.directory), type = process.platform === 'win32' ? 'junction' : 'dir';
+  const real = path.join(root, 'real-history');
+  await mkdir(real);
+  await symlink(real, options.directory, type);
+  await assert.rejects(captureInputs(options), /must not be a symbolic link/);
+  await rm(options.directory, { recursive: true, force: true });
+  const realParent = path.join(root, 'real-parent');
+  await mkdir(realParent);
+  await symlink(realParent, path.join(root, 'alias'), type);
+  const receipt = await captureInputs({ ...options, directory: path.join(root, 'alias', 'history') });
+  assert.equal(receipt.revision, 1);
 });
