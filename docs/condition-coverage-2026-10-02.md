@@ -60,18 +60,30 @@ Twelve judges split 173 unique pairs and saw no labels. The result was 28 echo, 
 
 The document tallies match the echo check with no judge. The 28 echoes sat inside answers that still had another drop. The three misses were answers the echo check did not flag, so the judge had no pair that could restore them. The rubric was not edited after this score. Verdict ids are in `docs/paraphrase-echo-judgments-2026-10-02.json`. The check is not on the package allowlist.
 
+## Head attachment
+
+`scripts/constraint-head.mjs` was committed in `aa7d05af` before this score. A marker counts only when its own clause has a head. A previous sentence, a nearest leftover word, and a by-phrase agent do not supply one. The decision has to carry that head, and only a ruling of the same kind can make the finding: a comparison for an unknown or a difference, a stated fact for an unestablished point, an exemption or a cutoff for an exception or an only-if. The rule was not edited after the score. The check is not on the package allowlist. With these fifteen tests the full suite passed 720, zero failures.
+
+The scored set is the 2026-09-30 live acceptance, which the earlier checks had not used. Labels are the coordinator lines that name a material L1, L2, L3, or L4 failure. The Claude structured PRD is L5, a contract miss, and it was skipped. Caveats that the note did not call material failures stayed passes.
+
+| Set | Recorded fails caught | Passes flagged |
+|---|---:|---:|
+| 2026-09-30, 4 material fails and 14 passes | 2 of 4 | 1 of 14 |
+
+The two hits are Claude pricing-decision and Claude pricing-framework. The pricing-decision findings quote the new-customer conversion trigger against an unknown market and an unknown price level. The pricing-framework finding quotes an unknown collaborator count against a price-test trigger, which is a different defect from the Business-tier audit log the note names. The miss is Claude governance-decision and Claude prd-draft. The one false alarm is Claude build-vs-buy, on an unknown cost comparison beside a stated fee range. Thirteen passes produced no finding.
+
 ## Decision Frame
 
-Keep the release hold. Leave the phrase check, the echo check, and the paraphrase check unpackaged.
+Keep the release hold. Leave the phrase check, the echo check, the paraphrase check, and the head check unpackaged.
 
 ## Unknowns & Evidence Gaps
 
-These 40 answers are spent for rule fitting. A tighter noun attachment can no longer be written before an archive look. A new labeled set, kept unseen while a rule is written, is the remaining way to test another check. The sterile profile probe named earlier was not run.
+This set has four material fails. One of the two hits names a different defect from the note. The September 30 answers are now spent, along with the earlier 40. The sterile profile probe named earlier was not run.
 
 ## Pass/Fail Readiness
 
-Fail as a release gate. Pass as a recorded result: 28 of 173 pairs were paraphrases, and the document tally stayed put.
+Fail as a release gate. Pass as a recorded result: on a set the rule had not seen, thirteen of fourteen careful answers stayed clear, and two of four material fails were flagged.
 
 ## Recommended Next Artifact
 
-A new labeled set, if another check is written. Leave these 40 out of the fitting. No live rerun of the same prompts for that purpose.
+Leave the attachment as it is. Another rule fitted on these answers would reuse a spent set.
