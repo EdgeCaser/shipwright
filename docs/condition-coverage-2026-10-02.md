@@ -36,18 +36,29 @@ The first version of this checker, before the predicate change, caught 8 of 8 an
 
 The fitted set now matches the human grades, and the quotes match the recorded conflicts. The earlier set does not. Zero false alarms there is not a catch rate. The bar for a gate was a catch rate clearly above 2 of 9 on that earlier set, with at most one pass flagged. This score is 0 of 9. The misses were left as misses. Adding the checker to the installed path, or running another live round, is not justified.
 
+## Constraint echo
+
+`scripts/constraint-echo.mjs` is a separate check. It pulls the noun attached to unknown, not stated, not established, except, optional, only if, and different. The decision, revisit trigger, launch copy, and press release have to carry that noun. An unestablished point also has to stay marked not established. A refusal with no positive ruling passes. A paraphrase adjudicator can be passed in. The archive score did not use one, so a decision that carries the point in other words still fails. Thirteen synthetic tests cover the pairs. With these tests the full suite passed 696, zero failures. The check is not on the package allowlist. The rules were not edited after this score.
+
+| Set | Recorded fails caught | Passes flagged |
+|---|---:|---:|
+| Later 20, input and evidence | 7 of 8 | 12 of 12 |
+| Earlier 20, mechanism remediation | 7 of 9 | 10 of 11 |
+
+The catch rate travels, which the phrase checker did not. The cost is that careful answers fail too. One earlier pass survived. None of the later passes did. Many flagged nouns are the nearest word, such as "contents", "moves", "engineering", or "second", rather than the constraint the human graded. That score stands. It was not tuned.
+
 ## Decision Frame
 
-Keep the release hold. Leave the checker unpackaged. The measured bar for any later gate is fewer false alarms on answers that already passed human review, and a higher catch rate on a set that was not used to write the patterns.
+Keep the release hold. Leave both checkers unpackaged. The echo gate catches dropped constraints across both archives and also rejects careful answers.
 
 ## Unknowns & Evidence Gaps
 
-Whether a sterile host profile would change the underlying answers. Whether page text, passed in as source rather than as the model's summary, would catch the comparison misses. The 20-answer sets are the ones already spent. They are not a new sample.
+Whether a paraphrase adjudicator, seeing only the two quoted sentences, would clear the careful answers without losing the 7 of 9. Whether a tighter attachment of the noun, written before any further archive look, would do the same. These 40 answers are now spent for rule fitting.
 
 ## Pass/Fail Readiness
 
-Fail as a release gate. Pass as a recorded result: the fitted answers can be separated without the co-occurrence false alarms, and that separation does not carry to the previous round.
+Fail as a release gate. Pass as a recorded result: a noun taken from the draft travels to the earlier set, and the current attachment is too blunt to let a careful answer through.
 
 ## Recommended Next Artifact
 
-Leave this checker unpackaged. A further offline revision has to raise the earlier-set catch rate above 2 of 9 without disturbing the later set's 8 hits and 12 passes. Do that before any live rerun, and do not fit phrases from the nine misses and then rescore those same nine.
+A paraphrase check over the quoted pairs only, written down before it sees labels, then applied once to the pairs this run already produced. No new live round, and no new noun list.

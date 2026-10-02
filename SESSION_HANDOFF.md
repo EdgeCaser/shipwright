@@ -4,9 +4,9 @@ Last updated: 2026-10-02
 
 ## Current
 
-Public release remains on hold. The October 1 repairs (`7fa1d48`, `6e93f14`, `ec53084`, local `main`, three commits ahead of `origin/main` before this note) made author-written records consistent and did not raise matched Claude semantic scores. L1 through L4 stay deferred.
+Public release remains on hold. The October 1 repairs (`7fa1d48`, `6e93f14`, `ec53084`) made author-written records consistent and did not raise matched Claude semantic scores. L1 through L4 stay deferred. Local `main` is six commits ahead of `origin/main` and has not been pushed.
 
-On 2026-10-02 an offline checker was added at `scripts/condition-coverage.mjs`. It sees the prompt, retained source text, and final prose, and it does not read an author reconciliation record. A finding has to quote both the condition and the claim. It is not installed or packaged. The measure rule now requires a transferred number rather than two measure-words in one bullet. On the later 20 answers it matches the human grades: 8 of 8 fails, 0 of 12 passes flagged, and all 8 quotes overlap the recorded conflict. On the earlier 20, scored once after that fit, it caught 0 of 9 fails and flagged 0 of 11 passes. That misses the gate. Details are in `docs/condition-coverage-2026-10-02.md`. No live rerun was started.
+On 2026-10-02 two offline checks were added. Neither is installed or packaged. `scripts/condition-coverage.mjs` matches the later 20 human grades (8 of 8 fails, 0 of 12 passes) and, scored once on the earlier 20, caught 0 of 9. `scripts/constraint-echo.mjs` takes the noun attached to unknown, not established, except, optional, only if, and different, and requires the decision to carry it. Scored once on both archives with no later edit: later set 7 of 8 fails and 12 of 12 passes flagged; earlier set 7 of 9 fails and 10 of 11 passes flagged. The catch rate travels. Careful answers do not pass. Details are in `docs/condition-coverage-2026-10-02.md`. No live rerun was started. Public release remains on hold.
 
 ## Done
 
