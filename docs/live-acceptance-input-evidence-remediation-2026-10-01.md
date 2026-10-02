@@ -4,7 +4,7 @@
 
 This report records a bounded repair from `6e93f14ab88784bd0f667ceb9f2afffa82a60213` (`Add installed reconciliation with unresolved semantic release gates`). Public release remains on hold. Local consistency checks are useful, but neither internally consistent records nor hashes establish semantic correctness.
 
-Durable evidence: `C:/Users/ianfe/.codex/visualizations/2026/10/01/01a0f869-ee43-73c3-8664-c78108d48903/input-evidence-remediation`. Paths below are relative to that directory unless stated otherwise. Raw evidence and generated benchmark outputs are excluded from the commit.
+Durable evidence: `~/.codex/visualizations/2026/10/01/01a0f869-ee43-73c3-8664-c78108d48903/input-evidence-remediation`. Paths below are relative to that directory unless stated otherwise. Raw evidence and generated benchmark outputs are excluded from the commit.
 
 The initial checkout matched the expected baseline, with only the protected untracked benchmark directories. Historical reports and the prior evidence archive were preserved. `prior-verification.json` reproduces the previous group's recorded results: 627 tests, 20 structural passes, Claude semantic passes of 3/4 baseline, 2/4 repaired, 1/4 repeat, Codex 4/4 without a matched Codex baseline, and preserved regressions 1/4. Nineteen host final validations succeeded; all 16 repaired records matched their final receipts. Its aggregate improvement claim remains negative, with L1-L4 deferred. The prior Craft flat-pricing example was not a demonstrated error; the Notion failure concerned unsupported cadence comparability, not a disproved numerical inequality.
 

@@ -18,7 +18,7 @@ This follows [the local remediation report](release-readiness-remediation-2026-0
 
 Local evidence directory:
 
-`C:/Users/ianfe/.codex/visualizations/2026/09/30/01a0f474-28ee-72d0-8c41-04d39306bd8e/shipwright-live-acceptance-2026-09-30/`
+`~/.codex/visualizations/2026/09/30/01a0f474-28ee-72d0-8c41-04d39306bd8e/shipwright-live-acceptance-2026-09-30/`
 
 Each `<host>/<scenario-id>/` contains the exact prompt, final response, event trace, stderr and result. The root contains original and regraded results, the runner, installed-file snapshot, regression evidence, full test logs and protected-file hashes. These are local artifacts, not committed benchmark results. The earlier Codex PRD evidence remains in the sibling `shipwright-live-test/` directory.
 

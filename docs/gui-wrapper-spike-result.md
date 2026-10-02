@@ -13,7 +13,7 @@
 | macOS version | 15.6.1 |
 | Auth method | `claude.ai` (first-party, Max subscription) |
 | Permission mode | default (not explicitly set during spike) |
-| Working directory | `/Users/ianbrillembourg/Documents/GitHub/shipwright` |
+| Working directory | `<local checkout>` |
 
 Results may differ under API key auth, org-managed accounts, or custom permission modes.
 
