@@ -1,6 +1,12 @@
 # Session Handoff
 
-Last updated: 2026-09-30
+Last updated: 2026-10-02
+
+## Current
+
+Public release remains on hold. The October 1 repairs (`7fa1d48`, `6e93f14`, `ec53084`, local `main`, three commits ahead of `origin/main` before this note) made author-written records consistent and did not raise matched Claude semantic scores. L1 through L4 stay deferred.
+
+On 2026-10-02 an offline checker was added at `scripts/condition-coverage.mjs`. It sees the prompt, retained source text, and final prose, and it does not read an author reconciliation record. A finding has to quote both the condition and the claim. It is not installed or packaged. Details and the archive score are in `docs/condition-coverage-2026-10-02.md`. On the 20-answer set from that same failure family it caught 8 of 8 recorded fails and false-alarmed 2 of 12 passes. On the earlier 20-answer set it caught 2 of 9 fails and false-alarmed 1 of 11 passes. That is not a release gate. No live rerun was started.
 
 ## Done
 
@@ -42,6 +48,8 @@ Third Codex run, after `1793ea6` (no-em-dash rule in the installed block, plus `
 Block trim and re-runs. The installed block went from 638 to 284 words (`3345b60`); a test holds it under 350. Run 4 on the trimmed block: Codex 10 of 10, Claude 7 of 10 (two decision answers without closing blocks, one verdict on an unclear question). The trim had cut the line that applies closing blocks to decisions, and the old block had quoted the vendor-pricing acceptance prompt word for word as its clarification example, so the earlier Claude 10 of 10 on that check was partly taught to the test. `3ec22c0` restored both rules in general wording (308 words). Run 5: Claude 10 of 10, Codex 9 of 10 (one em dash in one transcript; runs 3 and 4 had none, so one run per version cannot separate this from noise). Claude runs 4 and 5 used `--setting-sources project,local`; whether that excludes the maintainer's global CLAUDE.md was never confirmed.
 
 ## Remaining
+
+The September 30 list below is historical. The open release question is the condition check in `docs/condition-coverage-2026-10-02.md`: the plain checker is not accurate enough to block a recommendation, and another wording or reconciliation pass is not the next step.
 
 1. Confirm whether `claude -p --setting-sources project,local` excludes the user-level CLAUDE.md (a one-line probe from the install dir).
 2. Acceptance runs once per version; a rate claim (for example em dash slips) needs several runs per host.
