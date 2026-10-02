@@ -46,4 +46,4 @@ Fail as an automatic ship gate. Pass as the profile question for these five prom
 
 ## Recommended Next Artifact
 
-A yes or no on directory submission from this evidence. Another Claude run of these five prompts would spend the set again. The Codex probe setup is in `docs/codex-clean-host-probe.md` and has not been run.
+A yes or no on directory submission from this evidence. Another Claude run of these five prompts would spend the set again. The Codex pass is graded in `docs/codex-clean-host-probe-results-2026-10-02.md`. Command policy blocked its skill reads.
