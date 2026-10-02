@@ -78,7 +78,7 @@ Keep the release hold. Leave the phrase check, the echo check, the paraphrase ch
 
 ## Unknowns & Evidence Gaps
 
-This set has four material fails. One of the two hits names a different defect from the note. The September 30 answers are now spent, along with the earlier 40. The clean-host probe ran once from a drive-root install. The grade is in `docs/clean-host-probe-results-2026-10-02.md`.
+This set has four material fails. One of the two hits names a different defect from the note. The September 30 answers are now spent, along with the earlier 40. Two clean-host passes from a drive-root install agreed. The grade is in `docs/clean-host-probe-results-2026-10-02.md`.
 
 ## Pass/Fail Readiness
 
