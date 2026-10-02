@@ -55,17 +55,23 @@ export async function pluginFiles(root = SOURCE_ROOT) {
     author: plugin.author, repository: plugin.repository, homepage: plugin.homepage, license: plugin.license,
     interface: {
       displayName: 'Shipwright', developerName: plugin.author.name, category: 'Productivity',
-      shortDescription: 'Research, decisions and product planning with explicit evidence.',
+      shortDescription: 'Evidence-based PM workflows',
       longDescription: 'Shipwright provides 46 product-management frameworks, workflow routing, evidence checks and structured handoffs for research, pricing, PRDs, strategy and launches.',
       capabilities: [], defaultPrompt: 'Use Shipwright to help with my product-management task.',
+      websiteURL: plugin.homepage, supportURL: plugin.supportUrl, privacyPolicyURL: plugin.privacyPolicyUrl,
     } }, null, 2) + '\n'));
   return files;
 }
 
-/** The directory bundle adds the listing icon, which project installs don't need. */
+/** The directory bundle adds the listing icons, which project installs don't need. */
 export async function bundleFiles(root = SOURCE_ROOT) {
   const files = await pluginFiles(root);
-  files.set('.claude-plugin/icon.png', await readFile(path.join(root, 'assets/shipwright-icon.png')));
+  const icon = await readFile(path.join(root, 'assets/shipwright-icon.png'));
+  files.set('.claude-plugin/icon.png', icon);
+  files.set('assets/icon.png', icon);
+  const codex = JSON.parse(files.get('.codex-plugin/plugin.json'));
+  Object.assign(codex.interface, { logo: './assets/icon.png', composerIcon: './assets/icon.png' });
+  files.set('.codex-plugin/plugin.json', Buffer.from(JSON.stringify(codex, null, 2) + '\n'));
   return files;
 }
 
