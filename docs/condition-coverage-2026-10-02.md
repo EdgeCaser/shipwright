@@ -78,7 +78,7 @@ Keep the release hold. Leave the phrase check, the echo check, the paraphrase ch
 
 ## Unknowns & Evidence Gaps
 
-This set has four material fails. One of the two hits names a different defect from the note. The September 30 answers are now spent, along with the earlier 40. The sterile profile probe named earlier was not run.
+This set has four material fails. One of the two hits names a different defect from the note. The September 30 answers are now spent, along with the earlier 40. The clean-host probe setup is in `docs/clean-host-probe.md` and has not been run.
 
 ## Pass/Fail Readiness
 
@@ -86,4 +86,4 @@ Fail as a release gate. Pass as a recorded result: on a set the rule had not see
 
 ## Recommended Next Artifact
 
-Leave the attachment as it is. Another rule fitted on these answers would reuse a spent set.
+Leave the attachment as it is. Another rule fitted on these answers would reuse a spent set. The clean-host probe is prepared and has not been run.
