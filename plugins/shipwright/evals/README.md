@@ -1,0 +1,63 @@
+# Evaluation System
+
+Shipwright skills produce structured artifacts. This directory provides rubrics for evaluating whether those artifacts are actually good, not just well-formatted, but decision-ready.
+
+## Why evaluate
+
+A PRD can follow the Working Backwards template perfectly and still be useless if it's full of vague language, missing evidence, and placeholder metrics. Structure is necessary but not sufficient. Rubrics close the gap between "correctly formatted" and "actually good."
+
+## How to use the rubrics
+
+### During a session
+After a skill or workflow produces an artifact, ask the agent to score it:
+
+```
+Score this PRD against the evaluation rubric in evals/prd.md. Be honest.
+```
+
+The agent will rate each dimension, identify the weakest areas, and suggest specific improvements. This works best as a second pass, generate the artifact first, then evaluate and revise.
+
+### For team calibration
+Use the rubrics to align your team on what "good" looks like. The scored examples in each rubric show the concrete difference between a 6/10 and a 9/10 artifact. Review these in a team setting to build shared quality standards.
+
+### For continuous improvement
+Track scores across sessions. If your PRDs consistently score low on "evidence grounding," that's a signal to invest more in discovery before writing requirements, not a prompt engineering problem.
+
+## Enforcement first, scoring second
+
+Use [pass-fail gates](pass-fail.md) before any scoring rubric.
+
+1. Run pass/fail gates to determine if the artifact is acceptable or must be rewritten
+2. If it passes, run a scoring rubric to improve quality from good to excellent
+
+This prevents evals from becoming optional documentation.
+
+## The rubrics
+
+| Rubric | Evaluates | Artifact-specific dimensions |
+|---|---|---|
+| [Pass/Fail gates](pass-fail.md) | Binary readiness check | Required structure, decision frame, evidence integrity, ownership |
+| [Universal rubric](rubric.md) | Any Shipwright artifact | Clarity, Completeness, Actionability, Correctness |
+| [PRD](prd.md) | PRDs from `/write-prd` | + Scope Discipline, Evidence Grounding |
+| [Strategy](strategy.md) | Strategy docs from `/strategy` | + Decision Courage, Falsifiability |
+| [Design Review](design-review.md) | Design reviews from `design-review` skill | + Perspective Coverage, Tension Surfacing |
+| [Adversarial Review](adversarial-review.md) | Challenge Reports from `adversarial-review` or `red-team` | + Finding Specificity, Severity Calibration, Evidence Grounding, Resolution Actionability |
+
+## Scoring
+
+All dimensions use a 1-10 scale. The universal rubric defines anchor points at 3 (weak), 6 (adequate), and 9 (strong) for each dimension. Artifact-specific rubrics add their own anchors.
+
+A practical quality bar:
+- **Fail any pass/fail gate:** Rewrite required, do not ship
+- **Pass all gates + 7+ on all rubric dimensions:** Ship-ready
+- **Pass all gates + any rubric dimension below 7:** Iterate before broad sharing
+
+## Adding rubrics
+
+To add a rubric for a new artifact type:
+
+1. Create `evals/<artifact>.md`
+2. Include the 4 universal dimensions (copy from `rubric.md`)
+3. Add 2-3 artifact-specific dimensions with anchor descriptions
+4. Include a scored example showing the difference between 6/10 and 9/10
+5. Update `manifest.json` to register the new eval
