@@ -290,7 +290,7 @@ test('the probe stays unpackaged and contains no em dash', async () => {
   assert.equal(source.includes(EM_DASH), false);
   assert.equal(note.includes(EM_DASH), false);
   assert.equal(allowlist.includes('clean-host-probe'), false);
-  assert.match(note, /No session has been started/);
+  assert.match(note, /clean-host-probe-results-2026-10-02/);
   assert.match(note, /--setting-sources project/);
   for (const item of CASES) assert.ok(note.includes(item.question), item.id);
 });

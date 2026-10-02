@@ -1,6 +1,6 @@
 # Clean-host probe
 
-Prepared on 2026-10-02. No session has been started. No transcript exists. This is a maintainer check. It is not a release gate, and `scripts/build-plugin.mjs` does not package it.
+Prepared on 2026-10-02. The run and the hand grade are in `docs/clean-host-probe-results-2026-10-02.md`. This is a maintainer check. It is not a release gate, and `scripts/build-plugin.mjs` does not package it.
 
 Public release stays on hold. The five answers, once they exist, are graded by hand against the questions below. `--check` only confirms the sterility transcript and that the five files exist.
 
@@ -46,7 +46,7 @@ Prepare does not start a session:
 node scripts/clean-host-probe.mjs --prepare --workdir C:\Users\ianfe\AppData\Local\shipwright-clean-host-probe --operator C:\Users\ianfe\AppData\Local\shipwright-clean-host-probe-operator
 ```
 
-The operator starts the sessions by hand. This setup has not run the command:
+The operator starts the sessions by hand. The command prepared with this workdir was:
 
 ```text
 $env:SHIPWRIGHT_CLEAN_HOST_PROBE = '1'

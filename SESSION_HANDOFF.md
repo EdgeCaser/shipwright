@@ -4,9 +4,9 @@ Last updated: 2026-10-02
 
 ## Current
 
-Public release remains on hold. The October 1 repairs (`7fa1d48`, `6e93f14`, `ec53084`) made author-written records consistent and did not raise matched Claude semantic scores. L1 through L4 stay deferred. Local `main` is eleven commits ahead of `origin/main` and has not been pushed.
+Public release remains on hold. The October 1 repairs (`7fa1d48`, `6e93f14`, `ec53084`) made author-written records consistent and did not raise matched Claude semantic scores. L1 through L4 stay deferred as a release gate. Local `main` is twelve commits ahead of `origin/main` and has not been pushed.
 
-The clean-host probe is set up in `docs/clean-host-probe.md` and `scripts/clean-host-probe.mjs`. It prepares a disposable install and prints one operator command. That command has not been run. No transcript exists. The five cases are graded by hand. The probe is not a release gate. Full suite after these tests: 736 passed, 0 failed.
+The clean-host probe ran on 2026-10-02. An AppData workdir listed the user `CLAUDE.md`, and those five cases were not started. A drive-root install at `C:\shipwright-clean-host-probe` listed only its own `CLAUDE.md`. On that pass the four named failures did not reproduce, and the ambiguous control asked and withheld a verdict. The grade is in `docs/clean-host-probe-results-2026-10-02.md`. One pass is not a rate. The probe is not a release gate. Full suite before this note: 736 passed, 0 failed.
 
 On 2026-10-02 four offline checks were added. None is installed or packaged. `scripts/condition-coverage.mjs` matches the later 20 human grades (8 of 8 fails, 0 of 12 passes) and, scored once on the earlier 20, caught 0 of 9. `scripts/constraint-echo.mjs` takes the noun attached to unknown, not established, except, optional, only if, and different, and requires the decision to carry it. Scored once on both archives with no later edit: later set 7 of 8 fails and 12 of 12 passes flagged; earlier set 7 of 9 fails and 10 of 11 passes flagged. `scripts/paraphrase-echo.mjs` judged the 173 quote pairs once, after the rubric was committed. 28 pairs were echo and 145 were drop. The document tallies did not move. `scripts/constraint-head.mjs` keeps only the clause head and was committed before it saw the 2026-09-30 grades. Scored once: 2 of 4 material fails, 1 of 14 passes flagged. Details are in `docs/condition-coverage-2026-10-02.md`. No live rerun was started. Public release remains on hold.
 
@@ -53,7 +53,7 @@ Block trim and re-runs. The installed block went from 638 to 284 words (`3345b60
 
 The September 30 list below is historical. The open release question is the condition check in `docs/condition-coverage-2026-10-02.md`: the plain checker is not accurate enough to block a recommendation, and another wording or reconciliation pass is not the next step.
 
-1. Run the prepared clean-host probe once, using the operator command in `docs/clean-host-probe.md`. Grade the five transcripts by hand. The script checks sterility and file presence only.
+1. Read the clean-host grade in `docs/clean-host-probe-results-2026-10-02.md`. One pass did not reproduce the four named failures. A rate claim still needs more than one run per host.
 2. Acceptance runs once per version; a rate claim (for example em dash slips) needs several runs per host.
 3. The acceptance prompts are fixed and known; keep host-instruction wording free of them so passes stay meaningful.
 4. Rebuild `dist/shipwright` again if anything packaged changes after `3ec22c0`.
