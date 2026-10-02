@@ -217,7 +217,7 @@ Target: Developer makes their first successful API call in < [N] minutes.
 
 1. **Sign up** → Get API key instantly (no approval queue)
 2. **Quickstart guide** → Copy-paste example that works
-3. **First call** → `curl` example they can run in terminal immediately
+3. **First call** → a copy-paste terminal command they can run immediately
 4. **SDK install** → `pip install your-sdk` / `npm install your-sdk`
 5. **Build something** → Tutorial that builds a real mini-project
 
