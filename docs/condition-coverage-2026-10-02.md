@@ -9,30 +9,32 @@ Public release remains on hold. This note records one offline checker. It does n
 The checks are narrow:
 
 - A low-risk or headcount exemption stated beside a stricter "not likely to result in a risk" test, or while the prompt says risks are unmapped.
-- A count, renewal rate, or per-arm interval used in the same claim as revenue, margin, or break-even, after the prompt says contract values or seat counts differ. A second pattern flags a price multiplier applied again to changed-price revenue.
-- A promise section that blocks the next sign-in, clears the screen, or cuts everyone off immediately, when an Optional password, an unestablished screen clear, or an offline-until-reconnect limit is stated elsewhere and missing from that section.
-- A cheaper or percent-under claim in a recommendation section when the draft or a retained source says cadence or currency is unknown.
+- A renewal-rate interval equated with the decision margin, a percent of partners or seats used as the revenue rule, or a full-price pass line that drops the no-change basis, after the prompt says contract values or seat counts differ. A price multiplier applied again to changed-price revenue is the same class.
+- A promise section that blocks the next sign-in, says a user cannot start a session, clears the screen, or cuts everyone off immediately, when an Optional password, an unestablished screen clear, or an offline-until-reconnect limit is stated elsewhere and missing from that section.
+- A cheaper or percent-under claim in a recommendation section when the draft or a retained source says cadence or currency is unknown. A refusal to claim "cheaper" is not itself a claim. A like-for-like charging unit fails when scope or cadence is unresolved, and a feature available on a lower plan cannot be described as an upper-plan price.
 
-Eighteen unit tests cover paired wording for those four shapes, including a correct answer an author record cannot talk out of a failure. The full Node suite passed 676 tests, zero failures. The previous recorded suite was 658. The difference is these 18 tests. The checker is not on the package allowlist in `scripts/build-plugin.mjs`.
+Twenty-five unit tests cover these pairs, including a correct answer an author record cannot talk out of a failure. The full suite passed 683 tests, zero failures. The suite before this checker was 658. The difference is these 25 tests. The checker is not on the package allowlist in `scripts/build-plugin.mjs`.
+
+## Predicate change
+
+The first version flagged a bullet that merely named a count and a value. Careful renewal answers failed that test. The measure rule now requires a transferred number: a renewal-rate interval equated with the decision margin, a percent of partners or seats used as the revenue rule, or a full-price revenue pass line that drops the no-change basis. A decimal such as 13.33% is read as one percent, not as 33%. A sentence that says the revenue share is unknown, or that renewal response is missing, is not a swap.
+
+Comparison refusals ("cannot claim to be cheaper") are not claims. A like-for-like charging-unit sentence still fails when the draft says the plan scope or cadence is unresolved. A feature marked available on a free plan cannot be described as an upper-plan price. Twenty-five unit tests cover these pairs. The checker remains off the package allowlist.
 
 ## Archive score
 
-Both sets are the 20 substantive saved answers already graded in the October 1 evidence directories. Prompts and saved finals were the only inputs. Retained page files were not passed in, so a condition that exists only on a page was invisible. The grades are the archived semantic labels.
-
-The later set is the one whose published failure notes match these patterns. On that set the checker caught every recorded fail and false-alarmed two passes.
+Both sets are the 20 substantive saved answers already graded in the October 1 evidence directories. Prompts and saved finals were the only inputs. Page files were not passed in. The later set is the one these predicates were fitted to. It was rescored until the human grades matched. The earlier set was then scored once and not used to add another phrase.
 
 | Set | Recorded fails caught | Passes flagged | Quote overlap on hits |
 |---|---:|---:|---:|
-| Input and evidence, 2026-10-01 | 8 of 8 | 2 of 12 | 5 of 8 |
-| Mechanism remediation, 2026-10-01 | 2 of 9 | 1 of 11 | No recorded excerpts |
+| Input and evidence, 2026-10-01, after the predicate change | 8 of 8 | 0 of 12 | 8 of 8 |
+| Mechanism remediation, 2026-10-01, scored once | 0 of 9 | 0 of 11 | No recorded excerpts |
 
-The two false alarms on the later set, and the one on the earlier set, are careful renewal answers. A bullet names seat counts and revenue together, or says a revenue break-even is anchored on retention that includes seat downgrades. The rule treats that co-occurrence as a swap. Three of the eight hits on the later set agreed with the fail label but quoted a different sentence than the recorded conflict.
-
-The earlier set was not used to choose the patterns. The checker missed both privacy-applicability fails, the field-access behavior fail, the repeat training-renewal fail, the preserved pricing-decision fail, the preserved SSO fail, and the preserved pricing-framework fail. Those drops are real and worded outside these patterns: a missing legal prerequisite, a behavior exception other than password or screen clearing, and a comparison that does not say "cadence" or "currency" next to "unknown."
+The first version of this checker, before the predicate change, caught 8 of 8 and flagged 2 of 12 on the later set, with quote overlap on 5 of 8. On the earlier set it caught 2 of 9 and flagged 1 of 11. Those two earlier hits came from the co-occurrence rule. Removing that rule removed the false alarms and also removed those two hits.
 
 ## What this does not support
 
-The plain check is not accurate enough to block a recommendation. It repeats the fitted failures and also flags answers that keep the two measures apart in one bullet. It does not generalize to the previous round. Adding it to the installed path, or running another live round to word around it, is not justified by this score.
+The fitted set now matches the human grades, and the quotes match the recorded conflicts. The earlier set does not. Zero false alarms there is not a catch rate. The bar for a gate was a catch rate clearly above 2 of 9 on that earlier set, with at most one pass flagged. This score is 0 of 9. The misses were left as misses. Adding the checker to the installed path, or running another live round, is not justified.
 
 ## Decision Frame
 
@@ -44,8 +46,8 @@ Whether a sterile host profile would change the underlying answers. Whether page
 
 ## Pass/Fail Readiness
 
-Fail as a release gate. Pass as a recorded negative result: author-record reconciliation was the wrong layer, and this quote check is not yet the replacement.
+Fail as a release gate. Pass as a recorded result: the fitted answers can be separated without the co-occurrence false alarms, and that separation does not carry to the previous round.
 
 ## Recommended Next Artifact
 
-A revision of this checker only if it can separate "these two measures differ" from "this count was used as that value" on the three false-alarm answers without losing the eight hits. Do that offline. Do not start a live rerun from this result.
+Leave this checker unpackaged. A further offline revision has to raise the earlier-set catch rate above 2 of 9 without disturbing the later set's 8 hits and 12 passes. Do that before any live rerun, and do not fit phrases from the nine misses and then rescore those same nine.

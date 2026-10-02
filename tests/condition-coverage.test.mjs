@@ -71,6 +71,60 @@ test('applying the price increase to changed-price revenue fails', () => {
   assert.equal(check(prompt, prose).status, 'fail');
 });
 
+test('naming seats inside a revenue-retention break-even passes', () => {
+  const prompt = 'There are 900 organizations with different contract values and seat prices.';
+  const prose = '# Recommendation\n\nBaseline revenue retention for discount holders (logo churn plus seat downgrades), which anchors the 88% break-even.';
+  assert.equal(check(prompt, prose).status, 'pass');
+});
+
+test('an organization share with unknown revenue passes', () => {
+  const prompt = 'There are 900 organizations with different contract values and seat prices.';
+  const prose = '# Calculations\n\n120 / 900 = 13.33% of organizations. Its share of revenue is unknown.';
+  assert.equal(check(prompt, prose).status, 'pass');
+});
+
+test('a prospect result kept off the renewal decision passes', () => {
+  const prompt = 'There are 900 organizations with different contract values. A new-prospect experiment ran. No renewal experiment has run.';
+  const prose = '# Summary\n\nOn new prospects, full price produced about 3% more first-year revenue per prospect. For existing renewals there is no response data at all, so only the break-even is known.';
+  assert.equal(check(prompt, prose).status, 'pass');
+});
+
+test('a partner percentage used as the revenue rule fails', () => {
+  const prompt = 'Partners have different seat counts.';
+  const prose = '# Recommendation\n\nRevenue holds if at least 85% of partners who would renew still renew.';
+  const result = check(prompt, prose);
+  assert.equal(result.status, 'fail');
+  assert.ok(codes(result).includes('measure-swap'));
+});
+
+test('refusing a cheaper claim passes when cadence is unknown', () => {
+  const prompt = 'Compare the plans.';
+  const prose = '# Recommendation\n\nBilling cadence is unresolved.\n\nWe cannot claim to be cheaper than the other plan on a comparable basis yet.';
+  assert.equal(check(prompt, prose).status, 'pass');
+});
+
+test('a like-for-like unit claim fails while plan scope is not stated', () => {
+  const prompt = 'Recommend packaging.';
+  const prose = '# Value metric\n\nPlan scope is not stated.\n\nCharge per active member seat, as GitHub does, so buyers can compare like for like.';
+  const result = check(prompt, prose);
+  assert.equal(result.status, 'fail');
+  assert.ok(codes(result).includes('unsupported-likeness'));
+});
+
+test('an upper-plan price for a feature available on the free plan fails', () => {
+  const prompt = 'Benchmark the host.';
+  const prose = [
+    '# Benchmark',
+    'The basic organization audit log is marked Available on Free, Team and Enterprise.',
+    '',
+    '## Positioning recommendation',
+    'The bet is audit log export. GitHub charges Enterprise prices for both.',
+  ].join('\n');
+  const result = check(prompt, prose);
+  assert.equal(result.status, 'fail');
+  assert.ok(codes(result).includes('narrowed-feature'));
+});
+
 test('an equal-value illustration can carry a customer percentage', () => {
   const prompt = 'Partners have different contract values.';
   const prose = '# Recommendation\n\nIf values were equal, 88% customer retention would be the break-even illustration. They are not equal, so this is not a rollout threshold.';

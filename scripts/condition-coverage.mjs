@@ -71,15 +71,25 @@ function checkApplicability(promptUnits, sourceUnits, proseUnits, add) {
 
 function checkMeasures(promptUnits, proseUnits, add) {
   const gap = promptUnits.find(unit => VALUE_GAP.test(unit.quote));
-  if (!gap) return;
+  const basis = proseUnits.find(unit => /no-change|unchanged[- ]price/i.test(unit.quote) && /break-even|break even|\d\s*%/.test(unit.quote));
   for (const unit of proseUnits) {
-    if (swapsCountForValue(unit.quote) || doublesPrice(unit.quote) || countThreshold(unit.quote)) {
+    const transferred = rateIntervalDecidesValue(unit.quote) || countPercentIsValueRule(unit.quote) || populationSwap(unit.quote);
+    if (gap && (transferred || doublesPrice(unit.quote))) {
       add({
         code: 'measure-swap',
         conditionOrigin: 'prompt',
         conditionQuote: gap.quote,
         proseQuote: unit.quote,
         correction: 'Keep the count result on the count, and state the price basis before any value threshold.',
+      });
+    }
+    if (fullPriceControlRule(unit.quote) && (basis || gap)) {
+      add({
+        code: 'measure-swap',
+        conditionOrigin: basis ? 'prose' : 'prompt',
+        conditionQuote: (basis || gap).quote,
+        proseQuote: unit.quote,
+        correction: 'A full-price revenue test needs the unchanged-price break-even, not a percent of control.',
       });
     }
   }
@@ -89,7 +99,7 @@ function checkExceptions(promptUnits, sourceUnits, proseUnits, add) {
   const rules = [
     {
       present: quote => /optional/i.test(quote) && /password/i.test(quote),
-      promise: statesBlockedSignIn,
+      promise: statesAccessCutoff,
       kept: quote => /password/i.test(quote) || /optional/i.test(quote),
       correction: 'Keep the Optional-mode password exception beside the sign-in promise.',
     },
@@ -147,6 +157,9 @@ function checkComparisons(proseUnits, sourceUnits, add) {
       });
     }
   }
+  checkLikeness(proseUnits, add);
+  checkFeatureScope(proseUnits, add);
+  checkConjuncts(proseUnits, add);
 }
 
 function isWeakRiskTest(quote) {
@@ -165,30 +178,48 @@ function isHeadcountExemption(quote) {
   return true;
 }
 
-function swapsCountForValue(quote) {
-  const count = /renewal[ -]rate|per arm|customer counts?|organization counts?|organisation counts?|seat counts?/i.test(quote);
-  const value = /\bmargin\b|\brevenue\b|break-even|break even/i.test(quote);
-  return count && value && !CAVEAT.test(quote);
+function rateIntervalDecidesValue(quote) {
+  const hasRate = /renewal[- ]rate|points on the .{0,40}difference|per arm/i.test(quote);
+  const equates = /as wide as|decision turns on/i.test(quote);
+  const value = /\bmargin\b|\brevenue\b/i.test(quote);
+  return hasRate && equates && value && !refuses(quote);
+}
+
+function countPercentIsValueRule(quote) {
+  if (!/(?<![\d.])[1-9]\d?(?:\.\d+)?\s*%\s+of\s+(partners|customers|organizations|organisations|seats|the cohort)\b/i.test(quote)) return false;
+  if (!/break-even|break even|\brevenue\b|\bmargin\b|\bholds\b|threshold|rollout|roll out/i.test(quote)) return false;
+  if (/unknown|not known|unresolved/i.test(quote)) return false;
+  return !/equal value|if values were equal|illustration|no-change|unchanged/i.test(quote) && !refuses(quote);
+}
+
+function populationSwap(quote) {
+  if (refuses(quote) || /no response|unknown|not known|only the break-even/i.test(quote)) return false;
+  return /break-even|break even/i.test(quote)
+    && /(?<![\d.])[1-9]\d?(?:\.\d+)?\s*%\s+of\s+(the )?(test cohort|new subscribers|prospects)\b/i.test(quote)
+    && /renew/i.test(quote);
+}
+
+function fullPriceControlRule(quote) {
+  if (!/full[- ]price (retained )?revenue/i.test(quote)) return false;
+  if (!/\b[1-9]\d?\s*%/.test(quote)) return false;
+  if (/no-change|unchanged|list[- ]price|equal value/i.test(quote)) return false;
+  return /control|at or above|clear of/i.test(quote);
 }
 
 function doublesPrice(quote) {
   const base = /full[- ]price revenue|changed-price revenue|revenue at the (new|higher) price/i.test(quote);
   const again = /\bagain\b|second time|multiply|multiplied|uplift|\b1\.\d{2}\b/i.test(quote);
-  return base && again && !CAVEAT.test(quote);
+  return base && again && !refuses(quote);
 }
 
-function countThreshold(quote) {
-  const percent = /\b([1-9]\d?)\s*%/.exec(quote);
-  if (!percent || Number(percent[1]) >= 100) return false;
-  const count = /customers?|organizations?|organisations?|seats?|partners?/i.test(quote);
-  const asRule = /break-even|break even|enough to|operating threshold|rollout threshold/i.test(quote);
-  const basis = /unchanged[- ]price|list price|old price|equal value|no-change/i.test(quote);
-  return count && asRule && !basis && !CAVEAT.test(quote);
-}
-
-function statesBlockedSignIn(quote) {
+function statesAccessCutoff(quote) {
   if (/\b(does not|doesn't|do not|don't|will not|won't)\s+block/i.test(quote)) return false;
-  return /blocks? (their|the|a) next/i.test(quote) && /sign-?in|log-?in/i.test(quote);
+  const cutoff = /blocks? (their|the|a) next|cannot (start|sign|log|access)|no longer able to (sign|log|access)|ends access/i.test(quote);
+  return cutoff && /sign-?in|log-?in|session|access/i.test(quote);
+}
+
+function refuses(quote) {
+  return /cannot stand in|can't stand in|does not|doesn't|do not|don't|cannot|can't|is not|isn't|are not|aren't|not a revenue|not resolve|not establish/i.test(quote);
 }
 
 function statesScreenClears(quote) {
@@ -202,7 +233,74 @@ function fieldUnresolved(quote, field) {
 }
 
 function comparisonClaim(quote) {
+  if (/cannot claim|can't claim|do not claim|don't claim|should not say|no comparable|not comparable|make no comparable/i.test(quote)) return false;
   return /\d+\s*%\s*(under|below|cheaper|less)|\bcheaper\b|under the \$/i.test(quote);
+}
+
+function checkLikeness(proseUnits, add) {
+  const unresolved = proseUnits.find(unit => /not stated|not decided|unresolved|unknown/i.test(unit.quote) && /scope|cadence|billing|unit|plan/i.test(unit.quote));
+  if (!unresolved) return;
+  for (const unit of proseUnits) {
+    if (!/like for like|as [A-Z][A-Za-z]+ does/i.test(unit.quote)) continue;
+    if (!/seat|per user|per member|charg/i.test(unit.quote)) continue;
+    if (/not supported|cannot compare|do not compare|not comparable/i.test(unit.quote)) continue;
+    add({
+      code: 'unsupported-likeness',
+      conditionOrigin: 'prose',
+      conditionQuote: unresolved.quote,
+      proseQuote: unit.quote,
+      correction: 'Do not call the charging unit comparable while its scope or cadence is unresolved.',
+    });
+  }
+}
+
+function checkFeatureScope(proseUnits, add) {
+  const available = proseUnits.find(unit => /available on free/i.test(unit.quote));
+  if (!available) return;
+  const feature = /([A-Za-z][A-Za-z ]{0,40}?) (?:is marked |are )?available on free/i.exec(available.quote);
+  const token = featureToken(feature ? feature[1] : available.quote);
+  if (!token) return;
+  for (const unit of proseUnits) {
+    if (unit.quote === available.quote) continue;
+    if (!/charges? [A-Z][A-Za-z]+ prices for/i.test(unit.quote)) continue;
+    const sectionQuote = proseUnits.filter(item => item.section === unit.section).map(item => item.quote).join('\n');
+    const namesFeature = new RegExp(token, 'i').test(unit.quote) || (/for both/i.test(unit.quote) && new RegExp(token, 'i').test(sectionQuote));
+    if (!namesFeature) continue;
+    add({
+      code: 'narrowed-feature',
+      conditionOrigin: 'prose',
+      conditionQuote: available.quote,
+      proseQuote: unit.quote,
+      correction: 'A feature available on a lower plan cannot be described as an upper-plan price.',
+    });
+  }
+}
+
+function checkConjuncts(proseUnits, add) {
+  const lexicon = ['revenue', 'employees', 'consumers', 'households', 'entity', 'bought', 'sold', 'shared', 'risk', 'occasional', 'brand'];
+  const qualified = proseUnits.find(unit => /only if|provided that|must also/i.test(unit.quote) && lexicon.filter(word => new RegExp(`\\b${word}\\b`, 'i').test(unit.quote)).length >= 2);
+  if (!qualified) return;
+  const required = lexicon.filter(word => new RegExp(`\\b${word}\\b`, 'i').test(qualified.quote));
+  for (const unit of proseUnits) {
+    if (!isComparisonSection(unit.section) && !/revisit|decision|trigger/i.test(unit.section)) continue;
+    if (!/if any|any buying|any selling|any sharing|moves to|is exempt|does not apply|compliance plan/i.test(unit.quote)) continue;
+    if (refuses(unit.quote) || /undetermined|not sufficient/i.test(unit.quote)) continue;
+    const missing = required.filter(word => !new RegExp(`\\b${word}\\b`, 'i').test(unit.quote));
+    if (missing.length < required.length - 1 || missing.length < 1) continue;
+    add({
+      code: 'weakened-applicability',
+      conditionOrigin: 'prose',
+      conditionQuote: qualified.quote,
+      proseQuote: unit.quote,
+      correction: 'Carry every requirement from the stricter test into the decision trigger.',
+    });
+  }
+}
+
+function featureToken(text) {
+  const words = text.toLowerCase().match(/[a-z]{4,}/g) || [];
+  const skip = new Set(['basic', 'organization', 'marked', 'available', 'with', 'that', 'this', 'from']);
+  return words.find(word => !skip.has(word)) || '';
 }
 
 function isPromiseSection(section) {

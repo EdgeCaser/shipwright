@@ -6,7 +6,7 @@ Last updated: 2026-10-02
 
 Public release remains on hold. The October 1 repairs (`7fa1d48`, `6e93f14`, `ec53084`, local `main`, three commits ahead of `origin/main` before this note) made author-written records consistent and did not raise matched Claude semantic scores. L1 through L4 stay deferred.
 
-On 2026-10-02 an offline checker was added at `scripts/condition-coverage.mjs`. It sees the prompt, retained source text, and final prose, and it does not read an author reconciliation record. A finding has to quote both the condition and the claim. It is not installed or packaged. Details and the archive score are in `docs/condition-coverage-2026-10-02.md`. On the 20-answer set from that same failure family it caught 8 of 8 recorded fails and false-alarmed 2 of 12 passes. On the earlier 20-answer set it caught 2 of 9 fails and false-alarmed 1 of 11 passes. That is not a release gate. No live rerun was started.
+On 2026-10-02 an offline checker was added at `scripts/condition-coverage.mjs`. It sees the prompt, retained source text, and final prose, and it does not read an author reconciliation record. A finding has to quote both the condition and the claim. It is not installed or packaged. The measure rule now requires a transferred number rather than two measure-words in one bullet. On the later 20 answers it matches the human grades: 8 of 8 fails, 0 of 12 passes flagged, and all 8 quotes overlap the recorded conflict. On the earlier 20, scored once after that fit, it caught 0 of 9 fails and flagged 0 of 11 passes. That misses the gate. Details are in `docs/condition-coverage-2026-10-02.md`. No live rerun was started.
 
 ## Done
 
