@@ -521,8 +521,8 @@ function normalizeJsonLdTypes(value) {
  * Normalize a priceCurrency value to an ISO 4217 currency code.
  * Accepts the three most common codes and any other valid 3-letter code.
  */
-function normalizeJsonLdCurrency(token) {
-  const upper = String(token).trim().toUpperCase();
+function normalizeJsonLdCurrency(value) {
+  const upper = String(value).trim().toUpperCase();
   // Named codes
   if (upper === 'USD') return 'USD';
   if (upper === 'EUR') return 'EUR';

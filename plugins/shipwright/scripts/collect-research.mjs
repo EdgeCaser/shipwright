@@ -9,8 +9,8 @@ import { fetchPublicSource } from './public-source-fetch.mjs';
 
 const HELP_TEXT = `Shipwright research collector
 
-Build a compact evidence pack so the model spends fewer tool calls and tokens
-on raw retrieval. The command line has no search provider and reads no API
+Build a compact evidence pack so the model spends fewer tool calls on raw
+retrieval. The command line has no search provider and reads no API
 keys: a --query run writes suggested follow-up queries for the host's own web
 search, and --url captures known public pages directly.
 
@@ -859,9 +859,9 @@ function parseArgs(argv) {
   const args = createDefaultArgs();
 
   for (let i = 0; i < argv.length; i += 1) {
-    const token = argv[i];
+    const arg = argv[i];
 
-    switch (token) {
+    switch (arg) {
       case '--query':
         args.query = argv[++i] || '';
         break;
@@ -909,7 +909,7 @@ function parseArgs(argv) {
         args.help = true;
         break;
       default:
-        throw new Error(`Unknown argument: ${token}`);
+        throw new Error(`Unknown argument: ${arg}`);
     }
   }
 
@@ -1921,7 +1921,7 @@ function extractPlatformFacts(result, sourceUrl, observedAt) {
 
 /**
  * Returns true for proper-noun entity names suitable for acquisition facts.
- * Filters out common articles, pronouns, and very short tokens.
+ * Filters out common articles, pronouns, and very short words.
  */
 function isValidEntityName(value) {
   if (!value || value.length < 3 || value.length > 50) return false;
@@ -2020,8 +2020,8 @@ function detectPlanName(line, priceIndex) {
   return cleanInlineText(match[0]);
 }
 
-function normalizeCurrency(token) {
-  const upper = cleanInlineText(token).toUpperCase();
+function normalizeCurrency(value) {
+  const upper = cleanInlineText(value).toUpperCase();
   if (upper === '$' || upper === 'USD') return 'USD';
   if (upper === '€' || upper === 'EUR') return 'EUR';
   if (upper === '£' || upper === 'GBP') return 'GBP';
@@ -2055,8 +2055,8 @@ function normalizeBillingPeriod(input) {
   return '';
 }
 
-function normalizePeriodLabel(token) {
-  const lower = token.toLowerCase();
+function normalizePeriodLabel(value) {
+  const lower = value.toLowerCase();
   if (['month', 'mo', 'monthly'].includes(lower)) return 'month';
   if (['year', 'yr', 'yearly', 'annually', 'annual'].includes(lower)) return 'year';
   return lower;
@@ -2133,12 +2133,12 @@ function extractDomainRootToken(rawUrl) {
 function deriveCompanyFromProduct(product, title, domainRoot) {
   if (!domainRoot) return '';
 
-  for (const token of unique([
+  for (const candidate of unique([
     ...product.split(/\s+/),
     ...title.split(/\s+/),
   ].map((item) => item.replace(/[^A-Za-z0-9]/g, '')))) {
-    if (normalizeAlphaNumeric(token) === domainRoot) {
-      return token;
+    if (normalizeAlphaNumeric(candidate) === domainRoot) {
+      return candidate;
     }
   }
 
