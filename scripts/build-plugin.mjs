@@ -62,9 +62,16 @@ export async function pluginFiles(root = SOURCE_ROOT) {
   return files;
 }
 
+/** The directory bundle adds the listing icon, which project installs don't need. */
+export async function bundleFiles(root = SOURCE_ROOT) {
+  const files = await pluginFiles(root);
+  files.set('.claude-plugin/icon.png', await readFile(path.join(root, 'assets/shipwright-icon.png')));
+  return files;
+}
+
 export async function buildPlugin(outDir, root = SOURCE_ROOT) {
   const destination = path.resolve(outDir);
-  const files = await pluginFiles(root);
+  const files = await bundleFiles(root);
   try { await lstat(destination); throw new Error(`Output must be a new directory: ${destination}`); }
   catch (error) { if (error.code !== 'ENOENT') throw error; }
   for (const [relative, content] of files) {

@@ -5,7 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
-import { buildPlugin, pluginFiles, PLUGIN_ROOT_LINE, SOURCE_ROOT } from '../scripts/build-plugin.mjs';
+import { buildPlugin, bundleFiles, pluginFiles, PLUGIN_ROOT_LINE, SOURCE_ROOT } from '../scripts/build-plugin.mjs';
 
 const execFileAsync = promisify(execFile);
 
@@ -38,9 +38,10 @@ test('the marketplace installs the committed bundle, and the bundle matches a fr
     }
   }
   await walk(bundle);
-  const files = await pluginFiles();
+  const files = await bundleFiles();
   assert.deepEqual([...committed.keys()].sort(), [...files.keys()].sort(), 'Rebuild plugins/shipwright with scripts/build-plugin.mjs');
   for (const [name, content] of files) {
+    if (name.endsWith('.png')) { assert.ok(committed.get(name).equals(content), `Stale bundle file: ${name}`); continue; }
     assert.equal(committed.get(name).toString('utf8').replace(/\r\n/g, '\n'), content.toString('utf8').replace(/\r\n/g, '\n'), `Stale bundle file: ${name}`);
   }
 });

@@ -2183,18 +2183,18 @@ function normalizeBillingPeriod(input) {
 
   let match = lower.match(/(?:per\s+|\/\s*)(user|seat)\s*(?:\/|per\s+)?\s*(month|mo|year|yr|monthly|yearly|annually|annual)/);
   if (match) {
-    return `${match[1]}/${normalizePeriodToken(match[2])}`;
+    return `${match[1]}/${normalizePeriodLabel(match[2])}`;
   }
 
   match = lower.match(/\b(user|seat)\s*\/\s*(month|mo|year|yr|monthly|yearly|annually|annual)\b/);
   if (match) {
-    return `${match[1]}/${normalizePeriodToken(match[2])}`;
+    return `${match[1]}/${normalizePeriodLabel(match[2])}`;
   }
 
   // No word boundary before "/": the tail usually starts with it, as in "$29/month".
   match = lower.match(/(?:\bper\s+|\/\s*)(month|mo|year|yr|monthly|yearly|annually|annual)\b/);
   if (match) {
-    return normalizePeriodToken(match[1]);
+    return normalizePeriodLabel(match[1]);
   }
 
   if (/\bmonthly\b/.test(lower)) return 'month';
@@ -2205,7 +2205,7 @@ function normalizeBillingPeriod(input) {
   return '';
 }
 
-function normalizePeriodToken(token) {
+function normalizePeriodLabel(token) {
   const lower = token.toLowerCase();
   if (['month', 'mo', 'monthly'].includes(lower)) return 'month';
   if (['year', 'yr', 'yearly', 'annually', 'annual'].includes(lower)) return 'year';

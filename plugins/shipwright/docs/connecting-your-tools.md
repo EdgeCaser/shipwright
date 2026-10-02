@@ -75,23 +75,7 @@ claude mcp add --transport http linear --scope project https://linear.app/mcp
 
 This creates a `.mcp.json` file in your project root that you can commit to git. Team members will be prompted to approve the connection on their first session.
 
-You can also use environment variables in the project config so credentials aren't committed:
-
-```json
-{
-  "mcpServers": {
-    "linear": {
-      "type": "http",
-      "url": "https://linear.app/mcp",
-      "headers": {
-        "Authorization": "Bearer ${LINEAR_API_KEY}"
-      }
-    }
-  }
-}
-```
-
-Each team member sets `LINEAR_API_KEY` in their own environment.
+The shared file holds no credentials. Each team member signs in to Linear in their browser the first time they use the connection.
 
 ## Managing your connections
 
