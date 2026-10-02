@@ -89,6 +89,7 @@ test('the session argv ignores user config and pins the September 30 model', () 
   assert.match(text, /exec --ephemeral --skip-git-repo-check --sandbox workspace-write/);
   assert.match(text, /--ignore-user-config/);
   assert.match(text, /--ignore-rules/);
+  assert.match(text, /windows\.sandbox="unelevated"/);
   assert.match(text, /--model gpt-6-astra\b/);
   assert.match(text, /--json/);
   assert.equal(text.includes('--dangerously-bypass'), false);

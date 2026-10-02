@@ -34,4 +34,4 @@ Fail as a Codex listing measurement. The host was sterile at startup, and the pr
 
 ## Recommended Next Artifact
 
-A decision on whether these five prompts should be shown to Codex again with command execution able to read the install, still without user config. The Claude copies of these prompts stay finished.
+The probe command now sets `windows.sandbox` to `unelevated`. These five prompts have not been shown to Codex again. A rerun needs a new operator directory because these transcripts remain. The Claude copies of these prompts stay finished.

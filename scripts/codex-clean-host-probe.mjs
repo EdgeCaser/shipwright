@@ -85,6 +85,7 @@ export function codexArgs({ messagePath, workdir, codexJs = DEFAULT_CODEX_JS }) 
     '--output-last-message', messagePath,
     '--ignore-user-config',
     '--ignore-rules',
+    '-c', 'windows.sandbox="unelevated"',
     '--model', MODEL,
     '-',
   ];
@@ -139,7 +140,7 @@ export function buildPlan({ workdir, operator, codexJs = DEFAULT_CODEX_JS, hits 
     'Session argv, spawned only by --run after SHIPWRIGHT_CODEX_CLEAN_HOST_PROBE=1:',
     `  ${[process.execPath, ...codexArgs({ messagePath: sampleMessage, workdir: root, codexJs })].join(' ')}`,
     '',
-    'The prompt is the process stdin. User config.toml and execpolicy rules are not loaded. The September 30 xhigh effort lived in that config, so this command does not set it.',
+    'The prompt is the process stdin. User config.toml and execpolicy rules are not loaded. windows.sandbox is unelevated so a command can read the install. The September 30 xhigh effort lived in user config, so this command does not set it.',
     '',
     'Order: sterility, then the five cases. One pass. An existing transcript blocks a second pass.',
   );
@@ -220,7 +221,7 @@ async function prepareProbe({ workdir, operator, exists, home, install }) {
   const installed = await install(workdir, { apply: true });
   await writeFile(path.join(operator, 'grade-sheet.md'), gradeSheet(), 'utf8');
   await writeFile(path.join(operator, 'probe.json'), `${JSON.stringify({
-    workdir, operator, model: MODEL, ignoreUserConfig: true, ignoreRules: true, started: false,
+    workdir, operator, model: MODEL, ignoreUserConfig: true, ignoreRules: true, windowsSandbox: 'unelevated', started: false,
   }, null, 2)}\n`, 'utf8');
   const prompts = path.join(operator, 'prompts');
   await mkdir(prompts, { recursive: true });
