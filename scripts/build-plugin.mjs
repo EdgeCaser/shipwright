@@ -59,6 +59,7 @@ export async function pluginFiles(root = SOURCE_ROOT) {
       longDescription: 'Shipwright provides 46 product-management frameworks, workflow routing, evidence checks and structured handoffs for research, pricing, PRDs, strategy and launches.',
       capabilities: [], defaultPrompt: 'Use Shipwright to help with my product-management task.',
       websiteURL: plugin.homepage, supportURL: plugin.supportUrl, privacyPolicyURL: plugin.privacyPolicyUrl,
+      termsOfServiceURL: plugin.termsOfServiceUrl,
     } }, null, 2) + '\n'));
   return files;
 }
