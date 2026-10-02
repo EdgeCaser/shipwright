@@ -47,18 +47,31 @@ The fitted set now matches the human grades, and the quotes match the recorded c
 
 The catch rate travels, which the phrase checker did not. The cost is that careful answers fail too. One earlier pass survived. None of the later passes did. Many flagged nouns are the nearest word, such as "contents", "moves", "engineering", or "second", rather than the constraint the human graded. That score stands. It was not tuned.
 
+## Paraphrase check
+
+`scripts/paraphrase-echo.mjs` applies a judge to the quote pairs the echo check already produced. The rubric was committed in `b0b17d6a` before this score. Its hash is `969bf3c80ee1b105`. The judge sees the constraint sentence and the ruling sentence. It does not see the grade, the author record, or the rest of the draft. An echo removes that pair. A drop, a missing judgment, or an unclear word keeps the finding. The echo extractor was not edited.
+
+Twelve judges split 173 unique pairs and saw no labels. The result was 28 echo, 145 drop, and 0 unparsed. Those judgments were applied once to each archive. With the nine harness tests, the full suite passed 705, zero failures.
+
+| Set | Recorded fails caught | Passes flagged |
+|---|---:|---:|
+| Later 20, input and evidence | 7 of 8 | 12 of 12 |
+| Earlier 20, mechanism remediation | 7 of 9 | 10 of 11 |
+
+The document tallies match the echo check with no judge. The 28 echoes sat inside answers that still had another drop. The three misses were answers the echo check did not flag, so the judge had no pair that could restore them. The rubric was not edited after this score. Verdict ids are in `docs/paraphrase-echo-judgments-2026-10-02.json`. The check is not on the package allowlist.
+
 ## Decision Frame
 
-Keep the release hold. Leave both checkers unpackaged. The echo gate catches dropped constraints across both archives and also rejects careful answers.
+Keep the release hold. Leave the phrase check, the echo check, and the paraphrase check unpackaged.
 
 ## Unknowns & Evidence Gaps
 
-Whether a paraphrase adjudicator, seeing only the two quoted sentences, would clear the careful answers without losing the 7 of 9. Whether a tighter attachment of the noun, written before any further archive look, would do the same. These 40 answers are now spent for rule fitting.
+These 40 answers are spent for rule fitting. A tighter noun attachment can no longer be written before an archive look. A new labeled set, kept unseen while a rule is written, is the remaining way to test another check. The sterile profile probe named earlier was not run.
 
 ## Pass/Fail Readiness
 
-Fail as a release gate. Pass as a recorded result: a noun taken from the draft travels to the earlier set, and the current attachment is too blunt to let a careful answer through.
+Fail as a release gate. Pass as a recorded result: 28 of 173 pairs were paraphrases, and the document tally stayed put.
 
 ## Recommended Next Artifact
 
-A paraphrase check over the quoted pairs only, written down before it sees labels, then applied once to the pairs this run already produced. No new live round, and no new noun list.
+A new labeled set, if another check is written. Leave these 40 out of the fitting. No live rerun of the same prompts for that purpose.
