@@ -137,6 +137,24 @@ test('price decisions may name the plan or price before the noun', () => {
   }
 });
 
+test('moving customers between named pricing models is a price decision', () => {
+  for (const question of [
+    'Should we move our analytics add-on from per-seat to usage-based pricing? We have 1,200 paying accounts and churn rose last quarter',
+    'Should we switch from per-seat to usage-based pricing?', 'Should we migrate existing customers to usage-based billing?',
+    'Should we go from flat-rate to tiered pricing?', 'Should we transition the Pro plan to per-user pricing?',
+    'Should we change from seat-based to consumption-based pricing?', 'Should we shift enterprise accounts to metered billing?']) {
+    const result = routeRequest(question);
+    assert.equal(result.decisionClass, 'pricing', question);
+    assert.equal(result.topRoute?.route, 'decision-analysis', question);
+  }
+  for (const question of ['Should we move the CTA to the pricing page?', 'Should we migrate our data to tiered storage?',
+    'Should we switch from Stripe to Chargebee?', 'Should we move the team to a hybrid work schedule?',
+    'Should we move to a hybrid model?', 'Should we move from per-seat to usage-based dashboards?',
+    'Write a PRD for usage-based billing']) {
+    assert.equal(routeRequest(question).decisionClass, null, question);
+  }
+});
+
 // [question, decision route expected, expected decisionClass]
 const DECISION_CORPUS = [
   ['Should we acquire our largest competitor?', true, 'governance'],

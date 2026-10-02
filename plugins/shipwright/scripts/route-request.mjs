@@ -19,6 +19,7 @@ const BUILD_BUY_MENTION_RE = /\b(?:build|buy)(?:ing)?[\s-]+(?:vs\.?|versus|or)[\
 const CLARIFICATION_HINT = 'Tell me whether this is a price change (raise, lower or restructure prices) or a build-or-buy choice (build in-house versus buy or license). That detail lets me classify the decision.';
 const RUNTIME_SHUTDOWN_RE = /\b(?:kill|shut\s+down)\b[^?!.]*\b(?:process|thread|worker|background|daemon|timeout|deployment|restart|reboot|crash)\b/i;
 const EXPLICIT_BUSINESS_OBJECT_RE = /\b(?:product(?:\s+line)?|business|division)\b/i;
+const PRICING_MODEL = '(?:per[- ](?:seat|user|unit|account)|(?:seat|usage|consumption|value|outcome|credit|volume|user)[- ]based|metered|flat[- ](?:rate|fee)|flat|tiered|hybrid|freemium)';
 const SCENARIO_CLASS_PATTERNS = [
   { scenarioClass: 'governance', pattern: /\b(restructur\w*|acquir\w*|acquisition|merg(?:e|er|ing)|divest\w*|spin[- ]off|dissolv\w*|reorgani[sz]\w*|board\s+(?:vote|decision|approval))\b/i },
   { scenarioClass: 'publication', pattern: /\b(go\s+public|ipo|press\s+release|public\s+(?:statement|announcement)|publish\s+(?:(?:the|our|a)\s+)?(?:public\s+(?:statement|announcement)|press\s+release))\b/i },
@@ -27,6 +28,9 @@ const SCENARIO_CLASS_PATTERNS = [
   // A price decision, not a pricing page, copy, ownership or announcement question.
   // Up to three modifiers may sit before the noun ("the Pro plan price").
   { scenarioClass: 'pricing', pattern: /\b((?:raise|increase|lower|cut|reduce|change)\s+(?:(?!(?:who|whom|that|which|how|what|when|where|why|to|for|on|of|about|with|by|time|spent|owns?|effort|work|process)\b)[\w$.-]+\s+){0,3}?(?:prices?|pricing)(?!\s+(?:page|pages|table|copy|headline|section|calculator|load|display|widget|email|announcement))|reprice|(?:make|do|approve|implement|adopt|go\s+ahead\s+with|proceed\s+with)\s+(?:a|the|this)\s+price\s+(?:increase|decrease|change|cut|hike))\b/i },
+  // Moving existing customers between pricing models ("from per-seat to usage-based") restructures their prices.
+  // The target must be a named model, so "move the CTA to the pricing page" or "migrate to tiered storage" stays out.
+  { scenarioClass: 'pricing', pattern: new RegExp(`\\b(?:from\\s+(?:a\\s+)?${PRICING_MODEL}\\b(?:\\s+(?:pricing|billing|model|plans?))?\\s+to|(?:move|switch|migrate|transition|convert|shift|go)\\s+(?:[\\w$.-]+\\s+){0,4}?to)\\s+(?:an?\\s+)?${PRICING_MODEL}(?=\\s*(?:pricing|billing|plans?|prices?)\\b|\\s*(?:[?.!,;]|$))`, 'i') },
 ];
 
 const ROUTE_RULES = [
