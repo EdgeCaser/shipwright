@@ -1,6 +1,6 @@
 ---
 name: start
-description: "Launch the Shipwright orchestrator. Greets the PM, asks what they're working on, chooses Fast or Rigorous execution, and only builds a plan when the work actually needs one."
+description: "Launch the Leeward orchestrator. Greets the PM, asks what they're working on, chooses Fast or Rigorous execution, and only builds a plan when the work actually needs one."
 ---
 
 Shipwright root: `${CLAUDE_PLUGIN_ROOT}`. Read Shipwright docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
@@ -9,7 +9,7 @@ Shipwright root: `${CLAUDE_PLUGIN_ROOT}`. Read Shipwright docs and run its helpe
 
 Before executing, read `docs/workflow-contract.md` from this Shipwright installation. Resolve it relative to this file's parent installation root (or the plugin root), not the user's product directory. Its handoff, depth, evidence and authorization rules apply throughout.
 
-Also available as `/shipwright`, the branded Claude Code entrypoint. For a menu of common paths and direct workflows, use `/shipwright-help`.
+Also available as `/leeward`, the branded Claude Code entrypoint. For a menu of common paths and direct workflows, use `/leeward-help`.
 
 Run this command at the beginning of any session to activate the Shipwright orchestrator. It acts as a concierge: it understands what you need, maps your request to the right skills and agents, chooses Fast or Rigorous execution, and only builds an execution plan when the work actually needs one.
 

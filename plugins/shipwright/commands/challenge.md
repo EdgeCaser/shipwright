@@ -1,6 +1,6 @@
 ---
 name: challenge
-description: "Run a red-team review against a Shipwright artifact and return a Challenge Report with verdict, findings, and resolution conditions."
+description: "Run a red-team review against a Leeward artifact and return a Challenge Report with verdict, findings, and resolution conditions."
 ---
 
 Shipwright root: `${CLAUDE_PLUGIN_ROOT}`. Read Shipwright docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.

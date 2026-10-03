@@ -1,6 +1,6 @@
 ---
 name: adversarial-review
-description: "Stress-tests a Shipwright artifact using five attack vectors: evidence integrity, decision courage, scope discipline, specificity, and structural honesty. Produces a Challenge Report with verdict, findings, and resolution conditions."
+description: "Stress-tests a Leeward artifact using five attack vectors: evidence integrity, decision courage, scope discipline, specificity, and structural honesty. Produces a Challenge Report with verdict, findings, and resolution conditions."
 category: technical
 default_depth: standard
 ---

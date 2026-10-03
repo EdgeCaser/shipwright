@@ -1,7 +1,9 @@
 ---
-name: shipwright-concierge
-description: "Handle plain-language PM and business-analysis requests with Shipwright: research, PRDs, strategy, pricing, discovery, launch plans and decision analysis. Excludes software maintenance of Shipwright itself."
+name: leeward-concierge
+description: "Handle plain-language PM and business-analysis requests with Leeward: research, PRDs, strategy, pricing, discovery, launch plans and decision analysis. Excludes software maintenance of Leeward itself."
 ---
+
+Shipwright root: `${CLAUDE_PLUGIN_ROOT}`. Read Shipwright docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
 
 # Shipwright Concierge
 

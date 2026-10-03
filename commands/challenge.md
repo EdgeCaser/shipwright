@@ -1,6 +1,6 @@
 ---
 name: challenge
-description: "Run a red-team review against a Shipwright artifact and return a Challenge Report with verdict, findings, and resolution conditions."
+description: "Run a red-team review against a Leeward artifact and return a Challenge Report with verdict, findings, and resolution conditions."
 ---
 
 # /challenge, Adversarial Review

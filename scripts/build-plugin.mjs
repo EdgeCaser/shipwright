@@ -36,7 +36,7 @@ export async function pluginFiles(root = SOURCE_ROOT) {
   for (const [category, names] of Object.entries(manifest.skills)) {
     for (const name of names) await add(`skills/${category}/${name}/SKILL.md`, `skills/${name}/SKILL.md`);
   }
-  for (const name of ['shipwright-concierge', 'shipwright-research-brief']) {
+  for (const name of ['leeward-concierge', 'leeward-research-brief']) {
     await add(`.codex/skills/${name}/SKILL.md`, `skills/${name}/SKILL.md`);
   }
   for (const dir of ['commands', 'agents', 'evals', 'schemas', 'output-styles', 'examples/golden-outputs']) await addTree(dir);
@@ -54,10 +54,10 @@ export async function pluginFiles(root = SOURCE_ROOT) {
     description: 'Evidence-backed product management skills and workflows.', skills: './skills/',
     author: plugin.author, repository: plugin.repository, homepage: plugin.homepage, license: plugin.license,
     interface: {
-      displayName: 'Shipwright', developerName: plugin.author.name, category: 'Productivity',
+      displayName: plugin.displayName, developerName: plugin.author.name, category: 'Productivity',
       shortDescription: 'Evidence-based PM workflows',
-      longDescription: 'Shipwright provides 46 product-management frameworks, workflow routing, evidence checks and structured handoffs for research, pricing, PRDs, strategy and launches.',
-      capabilities: [], defaultPrompt: 'Use Shipwright to help with my product-management task.',
+      longDescription: 'Leeward provides 46 product-management frameworks, workflow routing, evidence checks and structured handoffs for research, pricing, PRDs, strategy and launches.',
+      capabilities: [], defaultPrompt: 'Use Leeward to help with my product-management task.',
       websiteURL: plugin.homepage, supportURL: plugin.supportUrl, privacyPolicyURL: plugin.privacyPolicyUrl,
       termsOfServiceURL: plugin.termsOfServiceUrl,
     } }, null, 2) + '\n'));

@@ -1,6 +1,6 @@
 ---
 name: quality-check
-description: "Score recent Shipwright artifacts against core rubric dimensions to detect quality drift over time."
+description: "Score recent Leeward artifacts against core rubric dimensions to detect quality drift over time."
 ---
 
 Shipwright root: `${CLAUDE_PLUGIN_ROOT}`. Read Shipwright docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.

@@ -44,8 +44,8 @@ If the user is modifying Shipwright itself or asking an ordinary software-engine
 Use the repo structure to ground the work before inventing a new approach:
 
 - `skills/` contains the authoritative Shipwright frameworks and methods
-- `.codex/skills/shipwright-concierge/` is the default entry point for plain-language Shipwright requests
-- `.codex/skills/shipwright-research-brief/` is the default companion for fresh public-web research work
+- `.codex/skills/leeward-concierge/` is the default entry point for plain-language Shipwright requests
+- `.codex/skills/leeward-research-brief/` is the default companion for fresh public-web research work
 - `manifest.json` and `skills-map.md` help with routing across Shipwright capabilities
 - `schemas/` contains artifact and benchmark validation contracts
 - `benchmarks/` contains benchmark scenarios, fixtures, baselines, and run outputs
@@ -95,8 +95,8 @@ Since you are already running inside a Codex session, you are the analysis model
 - Prefer the smallest viable Shipwright path: one framework first, then combine only if the ask truly needs it.
 - Use `manifest.json` and `skills-map.md` for routing when the request spans multiple Shipwright areas.
 - The authoritative Shipwright frameworks in this repo live under `skills/`.
-- For Shipwright-style PM requests, first load `.codex/skills/shipwright-concierge/SKILL.md`.
-- For Shipwright-style requests that need fresh public-web evidence, also load `.codex/skills/shipwright-research-brief/SKILL.md`.
+- For Shipwright-style PM requests, first load `.codex/skills/leeward-concierge/SKILL.md`.
+- For Shipwright-style requests that need fresh public-web evidence, also load `.codex/skills/leeward-research-brief/SKILL.md`.
 
 ## Routing Heuristics
 

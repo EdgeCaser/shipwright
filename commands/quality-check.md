@@ -1,6 +1,6 @@
 ---
 name: quality-check
-description: "Score recent Shipwright artifacts against core rubric dimensions to detect quality drift over time."
+description: "Score recent Leeward artifacts against core rubric dimensions to detect quality drift over time."
 ---
 
 # /quality-check, Artifact Quality Audit

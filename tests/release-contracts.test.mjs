@@ -87,7 +87,7 @@ for (const heading of ['Sources', 'References', 'Evidence']) {
 test('every workflow supports explicit plain and namespaced commands', async () => {
   const manifest = JSON.parse(await readFile(path.join(SOURCE_ROOT, 'manifest.json'), 'utf8'));
   for (const route of Object.keys(manifest.routing)) {
-    for (const prefix of ['/', '/shipwright:']) {
+    for (const prefix of ['/', '/leeward:', '/shipwright:']) {
       assert.equal(routeRequest(`${prefix}${route} Should we acquire a competitor?`).topRoute?.route, route);
     }
   }

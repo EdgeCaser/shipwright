@@ -169,7 +169,7 @@ export function routeRequest(input, options = {}) {
 
   const normalized = text.toLowerCase();
   // Explicit commands are authoritative, including at the start of the input.
-  const explicit = /^\/(?:shipwright:)?([a-z-]+)(?=\s|$)/i.exec(text)?.[1];
+  const explicit = /^\/(?:(?:leeward|shipwright):)?([a-z-]+)(?=\s|$)/i.exec(text)?.[1];
   const matches = PREPARED_ROUTE_RULES.map((rule) => matchRule(rule, normalized))
     .filter((result) => result.score > 0 || result.exactMatch);
   const explicitRule = PREPARED_ROUTE_RULES.find(rule => rule.route === explicit);

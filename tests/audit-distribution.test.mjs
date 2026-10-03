@@ -19,7 +19,7 @@ const localLinks = markdown => [...markdown.matchAll(/\]\(([^)]+)\)/g)]
 test('package README is self-contained plugin guidance rather than source-checkout instructions', async () => {
   const files = await pluginFiles();
   const readme = files.get('README.md')?.toString('utf8') || '';
-  assert.match(readme, /^# Shipwright Plugin Guide/m);
+  assert.match(readme, /^# Leeward Plugin Guide/m);
   assert.doesNotMatch(readme, /node scripts\/build-plugin\.mjs/);
   assert.doesNotMatch(readme, /node scripts\/install\.mjs/);
   assert.ok(files.has('docs/plugin-guide.md'));
@@ -127,7 +127,7 @@ test('a fresh bundle contains the plugin guide and its linked golden-output exam
   t.after(() => rm(root, { recursive: true, force: true }));
   const output = path.join(root, 'bundle');
   await buildPlugin(output);
-  assert.match(await readFile(path.join(output, 'README.md'), 'utf8'), /^# Shipwright Plugin Guide/m);
+  assert.match(await readFile(path.join(output, 'README.md'), 'utf8'), /^# Leeward Plugin Guide/m);
   for (const name of ['prd.md', 'strategy.md', 'design-review.md']) {
     await readFile(path.join(output, 'examples', 'golden-outputs', name), 'utf8');
   }
@@ -181,7 +181,7 @@ test('CLI entry guards run when the script is reached through a directory link',
   const project = path.join(root, 'project');
   await mkdir(project);
   await execFileAsync(process.execPath, [path.join(link, 'install.mjs'), project, '--apply']);
-  assert.match(await readFile(path.join(project, '.claude', 'README.md'), 'utf8'), /^# Shipwright Plugin Guide/m);
+  assert.match(await readFile(path.join(project, '.claude', 'README.md'), 'utf8'), /^# Leeward Plugin Guide/m);
 
   const routed = await execFileAsync(process.execPath, [path.join(link, 'route-request.mjs'), 'size the market for a pricing tool', '--format', 'json']);
   assert.ok(JSON.parse(routed.stdout).topRoute);

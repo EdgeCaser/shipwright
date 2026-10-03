@@ -6,11 +6,13 @@
 
 **Write PRDs, run discovery cycles, plan launches, and facilitate strategy sessions, from your terminal.**
 
+The plugin is listed in the Claude and ChatGPT plugin directories as **Leeward**; install it as `leeward` and run its commands as `/leeward:<command>`.
+
 Shipwright gives PMs a real operating system for product work: framework-backed skills, orchestrated workflows, quality gates that produce artifacts teams can execute, and a single-model decision analysis system for high-stakes questions.
 
 Under the hood, Shipwright includes 46 skills, 7 agents (6 specialists plus the orchestrator), 17 chained workflows, 3 Claude helper commands, and a decision analysis system with Fast Mode analysis. The counts matter less than the contract: evidence-first outputs, explicit decisions, pass/fail gating, deterministic recovery, and adversarial review for high-stakes artifacts.
 
-The skills are plain markdown files, so they're compatible with any AI coding tool that reads skill files (Cursor, Codex, Gemini CLI, and others). Agents, commands, and the Claude Code helper commands (`/shipwright`, `/start`, and `/shipwright-help`) are Claude Code-specific. This repo also includes a Codex-native bridge via [AGENTS.md](AGENTS.md) so plain-language prompts in Codex can still route through Shipwright's bounded research and framework selection.
+The skills are plain markdown files, so they're compatible with any AI coding tool that reads skill files (Cursor, Codex, Gemini CLI, and others). Agents, commands, and the Claude Code helper commands (`/leeward`, `/start`, and `/leeward-help`) are Claude Code-specific. This repo also includes a Codex-native bridge via [AGENTS.md](AGENTS.md) so plain-language prompts in Codex can still route through Shipwright's bounded research and framework selection.
 
 ## What Shipwright adds
 
@@ -83,17 +85,17 @@ In Claude Code:
 
 ```text
 /plugin marketplace add EdgeCaser/shipwright
-/plugin install shipwright@shipwright
+/plugin install leeward@shipwright
 ```
 
 In Codex:
 
 ```bash
 codex plugin marketplace add EdgeCaser/shipwright
-codex plugin add shipwright@shipwright
+codex plugin add leeward@shipwright
 ```
 
-Both install the built bundle in `plugins/shipwright`. Restart the host, then start with `/shipwright:shipwright` in Claude Code, or ask Codex a PM question.
+Both install the built bundle in `plugins/shipwright`. Restart the host, then start with `/leeward:shipwright` in Claude Code, or ask Codex a PM question.
 
 ### Install into a project
 
@@ -115,7 +117,7 @@ node scripts/install.mjs /path/to/your-project --uninstall --apply
 
 Uninstall deletes only files listed in `.shipwright-install.json` whose content still matches what was installed. Edited files are kept and reported. It removes the managed block from `AGENTS.md` and `CLAUDE.md` and leaves the rest of those files as it was, deleting one only if the installer created it and nothing else is in it. Directories the installer created are removed if empty. The install record is removed last. Records from older installs do not list created directories or block details, so uninstall removes empty parent directories of the files it removed and may leave a blank line where the block was.
 
-In Claude Code, start with `/shipwright` in a project copy. Plugin commands use `/shipwright:shipwright`. In Codex, invoke `shipwright-concierge` or ask a PM question; the skill routes to the relevant framework. Restart or reload the host after installing so it discovers the new skills. No source-repo working directory is required.
+In Claude Code, start with `/leeward` in a project copy. Plugin commands use `/leeward:shipwright`. In Codex, invoke `leeward-concierge` or ask a PM question; the skill routes to the relevant framework. Restart or reload the host after installing so it discovers the new skills. No source-repo working directory is required.
 
 ### Build a directory-submission bundle
 
@@ -220,15 +222,15 @@ cp shipwright/examples/CLAUDE.md.example your-project/CLAUDE.md
 Then open Claude Code in your project and run:
 
 ```text
-/shipwright I'm a PM at [company] working on [brief context]
+/leeward I'm a PM at [company] working on [brief context]
 ```
 
-That's it. The orchestrator reads your CLAUDE.md, picks up your context, and routes you to the right workflow. `/shipwright` is the branded Claude Code entrypoint; `/start` still works as a backwards-compatible alias. If you skip the CLAUDE.md, Shipwright still works, but outputs will be generic instead of tailored to your product.
+That's it. The orchestrator reads your CLAUDE.md, picks up your context, and routes you to the right workflow. `/leeward` is the branded Claude Code entrypoint; `/start` still works as a backwards-compatible alias. If you skip the CLAUDE.md, Shipwright still works, but outputs will be generic instead of tailored to your product.
 
 If you want a quick menu of common paths and direct commands inside Claude Code, run:
 
 ```text
-/shipwright-help
+/leeward-help
 ```
 
 You can also run workflows directly:
@@ -241,7 +243,7 @@ For the full workflow list and behavior, see [using workflows](docs/using-workfl
 
 ### Keep Sessions Fast
 
-When you already know the job to be done, run the workflow directly instead of routing through `/shipwright` (or `/start`). For example, use `/competitive` for competitive analysis or `/pricing` for pricing work.
+When you already know the job to be done, run the workflow directly instead of routing through `/leeward` (or `/start`). For example, use `/competitive` for competitive analysis or `/pricing` for pricing work.
 
 When a task needs fresh public research, keep the first pass narrow:
 

@@ -87,7 +87,7 @@ Groups facts by source domain, reconstructs pricing tuples by source and offer i
 resolves product identity, and annotates adapter-sourced fields with `[schema]`.
 
 Wired into:
-- `shipwright-research-brief/SKILL.md`, Step 3 of the retrieval workflow
+- `leeward-research-brief/SKILL.md`, Step 3 of the retrieval workflow
 
 ### Pricing diff (`scripts/pricing-diff.mjs`)
 
@@ -103,7 +103,7 @@ node scripts/pricing-diff.mjs --dir path/to/comparison-set/
 Wired into:
 - `pricing-strategy/SKILL.md`, Step 5 (Competitive Pricing Analysis)
 - `competitive-landscape/SKILL.md`, Step 3 (Positioning Analysis)
-- `shipwright-research-brief/SKILL.md`, multi-competitor pricing requests
+- `leeward-research-brief/SKILL.md`, multi-competitor pricing requests
 
 ### Request classifier (`scripts/classify-request.mjs`)
 
@@ -120,7 +120,7 @@ node scripts/classify-request.mjs --json "Series B funding in developer tools"
 ```
 
 Wired into:
-- `shipwright-research-brief/SKILL.md`, Step 1 of the retrieval workflow
+- `leeward-research-brief/SKILL.md`, Step 1 of the retrieval workflow
 
 ## Remaining backlog
 

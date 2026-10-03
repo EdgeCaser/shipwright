@@ -16,7 +16,7 @@ Put project-relative paths or `*` patterns in `.shipwright-ignore` to preserve s
 For updates, rerun the two Node commands above from the source checkout. `scripts/sync.sh` is a
 Bash compatibility wrapper; it is not the portable update path.
 
-Restart/reload your host to discover skills. In Claude project copies use `/shipwright`; a plugin uses the plugin namespace, such as `/shipwright:shipwright`. In Codex use the `shipwright-concierge` skill or a matching plain-language PM request. Native Claude agent/command registration is host-specific; the Codex concierge executes those workflows in the current session when appropriate.
+Restart/reload your host to discover skills. In Claude project copies use `/leeward`; a plugin uses the plugin namespace, such as `/leeward:shipwright`. In Codex use the `leeward-concierge` skill or a matching plain-language PM request. Native Claude agent/command registration is host-specific; the Codex concierge executes those workflows in the current session when appropriate.
 
 ## Directory/plugin distribution
 

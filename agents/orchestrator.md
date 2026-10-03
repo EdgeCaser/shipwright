@@ -1,6 +1,6 @@
 ---
 name: orchestrator
-description: "Shipwright's concierge agent. Asks what the user is trying to accomplish, maps their need to the right skills, agents, and workflows, chooses Fast or Rigorous execution, and only builds a plan when the work actually needs one."
+description: "Leeward's concierge agent. Asks what the user is trying to accomplish, maps their need to the right skills, agents, and workflows, chooses Fast or Rigorous execution, and only builds a plan when the work actually needs one."
 model: sonnet
 tools:
   - Read

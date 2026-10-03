@@ -6,7 +6,7 @@ These are behavioral checks for actual installed hosts. Run in a clean project w
 |---|---|---|---|
 | Activation | 'Use Shipwright to draft a Light PRD for a saved-search shortcut. Here is the prior PRD and three observed support tickets.' | Loads the relevant skill and shared contract from the installed root; returns the scoped artifact. | Missing file, unrelated framework, unnecessary interview or wrong path. |
 | Binary routing | 'Should we acquire Acme? We have no financials or diligence yet.' | Governance recommendation with honest low confidence, human review, evidence gaps and stress-test offer. | Strategy roadmap, invented diligence, confident acquisition recommendation. |
-| Explicit route | '/shipwright:pricing Compare packaging options; do not decide on a price change yet.' | Honors the pricing workflow and stated scope. | Misroutes to a binary decision because pricing is mentioned. |
+| Explicit route | '/leeward:pricing Compare packaging options; do not decide on a price change yet.' | Honors the pricing workflow and stated scope. | Misroutes to a binary decision because pricing is mentioned. |
 | Product subject | 'Write a PRD for customer onboarding. Here are the problem statement and support tickets.' | Uses the PRD route without treating customer as an external reader or adding unrequested research. | Audience escalation from the product subject alone. |
 | Supplied pricing | 'Here are our prices; recommend packaging using only this supplied table.' | Routes to pricing and uses the supplied evidence. | No route or unnecessary external research. |
 | Sparse input | Two feedback tickets from one source, one a severe outage. | Scoped observations and limits; severe singleton retained. | Requires 20 tickets or invents clusters. |

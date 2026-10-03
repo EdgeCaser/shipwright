@@ -17,7 +17,7 @@ Classes: `governance` (restructure, acquisition, merger, divestiture, spin-off),
 
 ## Skills
 
-Pick the matching skill in `{{HOST_DIR}}/skills/<name>/SKILL.md`, for example `{{HOST_DIR}}/skills/pricing-strategy/SKILL.md` for pricing, `market-sizing`, `competitive-landscape` or `prd-development`. When unsure, use `{{HOST_DIR}}/skills/shipwright-concierge/SKILL.md`. Fresh web evidence follows `{{HOST_DIR}}/docs/workflow-contract.md`.
+Pick the matching skill in `{{HOST_DIR}}/skills/<name>/SKILL.md`, for example `{{HOST_DIR}}/skills/pricing-strategy/SKILL.md` for pricing, `market-sizing`, `competitive-landscape` or `prd-development`. When unsure, use `{{HOST_DIR}}/skills/leeward-concierge/SKILL.md`. Fresh web evidence follows `{{HOST_DIR}}/docs/workflow-contract.md`.
 
 ## Output standard
 
