@@ -1,4 +1,4 @@
-# Shipwright Skills Map
+# Leeward Skills Map
 
 > This file is the orchestrator agent's routing reference. It maps plain-language PM needs
 > to the skills, agents, and workflows best suited to handle them.

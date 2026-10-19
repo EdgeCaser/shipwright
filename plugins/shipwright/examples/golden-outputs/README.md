@@ -1,17 +1,17 @@
 # Golden Outputs
 
-These examples show the difference between what a generic AI produces and what Shipwright produces for the same prompt. Each example uses the same fictional product context: **ComplianceOS**, a B2B SaaS compliance automation platform (see `examples/CLAUDE.md.b2b-saas` for full context).
+These examples show the difference between what a generic AI produces and what Leeward produces for the same prompt. Each example uses the same fictional product context: **ComplianceOS**, a B2B SaaS compliance automation platform (see `examples/CLAUDE.md.b2b-saas` for full context).
 
 ## Why these exist
 
-Skills and workflows define *structure*, but structure alone doesn't prove quality. These examples let you judge the output for yourself before adopting Shipwright.
+Skills and workflows define *structure*, but structure alone doesn't prove quality. These examples let you judge the output for yourself before adopting Leeward.
 
 Each example shows:
 
 1. **Scenario**, what the PM is trying to accomplish
 2. **Input prompt**, what you'd actually type
-3. **Baseline output**, what a capable AI produces without Shipwright (typical ChatGPT/Claude response)
-4. **Shipwright output**, what the same AI produces when guided by a Shipwright skill or workflow
+3. **Baseline output**, what a capable AI produces without Leeward (typical ChatGPT/Claude response)
+4. **Leeward output**, what the same AI produces when guided by a Leeward skill or workflow
 5. **Why it's better**, specific annotations on what changed and why it matters
 
 ## The examples

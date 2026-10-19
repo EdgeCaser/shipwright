@@ -20,7 +20,7 @@ or the risks are understated. Standard depth.
 
 ---
 
-## Baseline output (without Shipwright)
+## Baseline output (without Leeward)
 
 > A typical AI adversarial review. Notice how everything is critical, the complaints are vague, and there are no resolution paths.
 
@@ -57,7 +57,7 @@ or the risks are understated. Standard depth.
 
 ---
 
-## Shipwright output (with `adversarial-review` skill)
+## Leeward output (with `adversarial-review` skill)
 
 > The skill runs a structured 5-vector sweep, produces calibrated findings with resolution conditions, and closes with a verdict that tells the PM exactly what to do next.
 
@@ -143,14 +143,14 @@ Route findings #1 and #2 back to the PRD author for revision, then proceed to `t
 
 ---
 
-## Why the Shipwright output is better
+## Why the Leeward output is better
 
-1. **Calibrated severity replaces uniform alarm.** The baseline marks everything as critical or high risk --- 8 issues all at the same urgency. The Shipwright output distinguishes 1 Critical (the 90% claim is arithmetically unsupported), 2 Moderate (setup ownership and accuracy threshold ambiguity), and 2 Minor (estimate rationale and open question triage). This tells the PM where to spend their time.
+1. **Calibrated severity replaces uniform alarm.** The baseline marks everything as critical or high risk --- 8 issues all at the same urgency. The Leeward output distinguishes 1 Critical (the 90% claim is arithmetically unsupported), 2 Moderate (setup ownership and accuracy threshold ambiguity), and 2 Minor (estimate rationale and open question triage). This tells the PM where to spend their time.
 
-2. **Specific claims challenged, not vibes.** The baseline says "vague success metrics" and "more detail needed." The Shipwright output identifies the exact claim ("90% of evidence collected automatically"), explains why it is vulnerable (contradicted by the PRD's own FAQ about process-based evidence), and states what would resolve it (audit the control list or restate the denominator). The PM can act on the second; they cannot act on the first.
+2. **Specific claims challenged, not vibes.** The baseline says "vague success metrics" and "more detail needed." The Leeward output identifies the exact claim ("90% of evidence collected automatically"), explains why it is vulnerable (contradicted by the PRD's own FAQ about process-based evidence), and states what would resolve it (audit the control list or restate the denominator). The PM can act on the second; they cannot act on the first.
 
-3. **Resolution conditions make findings actionable.** Every Shipwright finding ends with "What Would Resolve It" --- a specific action, not a suggestion to "add more detail." The baseline's recommendations ("add more detail to all sections," "consider a phased approach") are indistinguishable from generic feedback on any document.
+3. **Resolution conditions make findings actionable.** Every Leeward finding ends with "What Would Resolve It" --- a specific action, not a suggestion to "add more detail." The baseline's recommendations ("add more detail to all sections," "consider a phased approach") are indistinguishable from generic feedback on any document.
 
-4. **The artifact's own contradictions are surfaced.** The Shipwright output catches that the PRD uses 90% in one section and 60% in another, and that the "no engineering assistance" claim contradicts the CloudFormation template edge case. The baseline treats the PRD as a black box and critiques it from the outside. The Shipwright review reads the document closely enough to find internal inconsistencies.
+4. **The artifact's own contradictions are surfaced.** The Leeward output catches that the PRD uses 90% in one section and 60% in another, and that the "no engineering assistance" claim contradicts the CloudFormation template edge case. The baseline treats the PRD as a black box and critiques it from the outside. The Leeward review reads the document closely enough to find internal inconsistencies.
 
-5. **Verdict framework prevents overcorrection.** The baseline says "significant rework recommended" --- a conclusion that could delay the project by weeks. The Shipwright verdict is DEFEND with a scoped action plan: fix two specific things before the leadership review, address three more during or after. The PM knows exactly what "done" looks like.
+5. **Verdict framework prevents overcorrection.** The baseline says "significant rework recommended" --- a conclusion that could delay the project by weeks. The Leeward verdict is DEFEND with a scoped action plan: fix two specific things before the leadership review, address three more during or after. The PM knows exactly what "done" looks like.

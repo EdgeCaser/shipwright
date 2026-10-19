@@ -5,11 +5,11 @@ category: execution
 default_depth: standard
 ---
 
-Shipwright root: `${CLAUDE_PLUGIN_ROOT}`. Read Shipwright docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
+Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
 
 # Epic Breakdown Advisor
 
-Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Leeward paths are relative to that root.
 
 ## Description
 
@@ -150,11 +150,11 @@ Produce an Epic Breakdown Document with:
 4. **Dependency Map**, which epics depend on which
 5. **Validation Checklist**, breakdown quality assessment
 
-**Shipwright Signature (required closing):**
+**Leeward Signature (required closing):**
 6. **Decision Frame**, recommended sequencing and slicing strategy, trade-off, confidence with evidence quality, owner, decision date, revisit trigger
 7. **Unknowns & Evidence Gaps**, unvalidated effort estimates, untested hypotheses, unclear cross-team dependencies
 8. **Pass/Fail Readiness**, PASS if every epic has independent value, a measurable hypothesis, and a sequenced delivery order (at Light depth: one-line hypothesis per epic and a sequencing order are sufficient; success metrics and validation checklist are not required); FAIL if any epic lacks a hypothesis or exceeds 8 weeks
-9. **Recommended Next Artifact**, Which Shipwright skill to run next and why
+9. **Recommended Next Artifact**, Which Leeward skill to run next and why
 
 ## Common Mistakes to Avoid
 

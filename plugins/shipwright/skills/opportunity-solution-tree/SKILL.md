@@ -5,11 +5,11 @@ category: discovery
 default_depth: standard
 ---
 
-Shipwright root: `${CLAUDE_PLUGIN_ROOT}`. Read Shipwright docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
+Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
 
 # Opportunity Solution Tree
 
-Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Leeward paths are relative to that root.
 
 ## Description
 
@@ -130,11 +130,11 @@ Produce a structured markdown document with:
 4. **Assumption Register**, all assumptions with risk ratings
 5. **Experiment Backlog**, prioritized list of assumption tests
 
-**Shipwright Signature (required closing):**
+**Leeward Signature (required closing):**
 6. **Decision Frame**, Which opportunity-solution pair to test first, trade-off between assumption risk vs. experiment cost, confidence in opportunity prioritization with evidence quality, owner, decision date, revisit trigger
 7. **Unknowns & Evidence Gaps**, Opportunities with single-source evidence, assumption categories (desirability/viability/feasibility/usability) with no tests designed
 8. **Pass/Fail Readiness**, PASS if the outcome is measurable, each opportunity is evidenced, and each prioritized solution has a riskiest assumption and test. Light depth may omit solutions and tests. FAIL if the tree invents opportunities or implies unsupported prioritization.
-9. **Recommended Next Artifact**, Which Shipwright skill to run next and why
+9. **Recommended Next Artifact**, Which Leeward skill to run next and why
 
 Include a visual tree summary at the top using indented markdown:
 

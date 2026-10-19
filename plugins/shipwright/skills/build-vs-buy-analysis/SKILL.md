@@ -5,11 +5,11 @@ category: strategy
 default_depth: standard
 ---
 
-Shipwright root: `${CLAUDE_PLUGIN_ROOT}`. Read Shipwright docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
+Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
 
 # Build-vs-Buy Analysis
 
-Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Leeward paths are relative to that root.
 
 ## Description
 
@@ -175,11 +175,11 @@ Produce a Build-vs-Buy Decision Brief with:
 5. **Recommendation**, chosen path with explicit trade-offs acknowledged
 6. **Kill Criteria**, table of triggers that would reopen the decision
 
-**Shipwright Signature (required closing):**
+**Leeward Signature (required closing):**
 7. **Decision Frame**, Recommended path with primary trade-off (cost vs. control, speed vs. flexibility), confidence level with evidence quality, decision owner, decision date, revisit trigger
 8. **Unknowns & Evidence Gaps**, Missing vendor quotes, unvalidated engineering estimates, untested scaling assumptions, vendor roadmap items taken on faith
 9. **Pass/Fail Readiness**, PASS for a spending/build decision if comparable TCO uses sourced prices and estimates for at least two options and strategic fit is justified. Light depth may PASS only as a directional fit assessment with cost gaps explicit; it cannot authorize procurement or engineering commitment.
-10. **Recommended Next Artifact**, Which Shipwright skill to run next and why
+10. **Recommended Next Artifact**, Which Leeward skill to run next and why
 
 ## Common Mistakes to Avoid
 

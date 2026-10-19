@@ -3,13 +3,13 @@ name: challenge
 description: "Run a red-team review against a Leeward artifact and return a Challenge Report with verdict, findings, and resolution conditions."
 ---
 
-Shipwright root: `${CLAUDE_PLUGIN_ROOT}`. Read Shipwright docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
+Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
 
 # /challenge, Adversarial Review
 
-Before executing, read `docs/workflow-contract.md` from this Shipwright installation. Resolve it relative to this file's parent installation root (or the plugin root), not the user's product directory. Its handoff, depth, evidence and authorization rules apply throughout.
+Before executing, read `docs/workflow-contract.md` from this Leeward installation. Resolve it relative to this file's parent installation root (or the plugin root), not the user's product directory. Its handoff, depth, evidence and authorization rules apply throughout.
 
-Run this command to pressure-test an existing artifact with Shipwright's red-team agent.
+Run this command to pressure-test an existing artifact with Leeward's red-team agent.
 
 ## Workflow Steps
 
@@ -20,7 +20,7 @@ Ask the PM:
 - What artifact should be challenged?
 - Is the artifact pasted here, available as a file path, or available from prior session context?
 - Who is the intended audience for the artifact?
-- If Shipwright produced it, which workflow or agent produced it?
+- If Leeward produced it, which workflow or agent produced it?
 
 Do not guess by reading the most recent file in the working directory. The artifact must be explicitly identified.
 
@@ -64,7 +64,7 @@ If the verdict is `DEFEND` or `ESCALATE`, ask the PM whether they want to send t
 
 In v1 this is PM-mediated. The command does not automatically reopen the original workflow.
 
-If the PM says yes and a producing Shipwright agent is known, pass both the original artifact and the findings verbatim to that agent and ask it to respond to each finding directly rather than summarizing or selectively filtering them.
+If the PM says yes and a producing Leeward agent is known, pass both the original artifact and the findings verbatim to that agent and ask it to respond to each finding directly rather than summarizing or selectively filtering them.
 
 If the PM says yes but no producing agent is known, suggest the most likely agent based on artifact type (e.g., `execution-driver` for PRDs, `strategy-planner` for strategy docs, `discovery-researcher` for research artifacts, `cross-functional-liaison` for stakeholder communications). Let the PM confirm or override the suggestion before dispatching.
 

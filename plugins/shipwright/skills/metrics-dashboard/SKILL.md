@@ -5,11 +5,11 @@ category: measurement
 default_depth: standard
 ---
 
-Shipwright root: `${CLAUDE_PLUGIN_ROOT}`. Read Shipwright docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
+Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
 
 # Metrics Dashboard Design
 
-Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Leeward paths are relative to that root.
 
 ## Description
 
@@ -161,11 +161,11 @@ Produce a Metrics Architecture Document with:
 4. **Counter-Metrics**, side effect detection
 5. **Dashboard Specification**, layout, data sources, alert rules
 
-**Shipwright Signature (required closing):**
+**Leeward Signature (required closing):**
 6. **Decision Frame**, recommended North Star with rationale, trade-off vs. alternative candidates, confidence with evidence quality (data availability, instrumentation readiness), owner, decision date, revisit trigger
 7. **Unknowns & Evidence Gaps**, metrics that cannot be instrumented yet, unvalidated causal assumptions in the input metric decomposition
 8. **Pass/Fail Readiness**, PASS for a measurement design if user value, metric definitions and input decomposition are justified and missing instrumentation is explicit. Operational readiness additionally requires verified collection and baselines. FAIL if the North Star is a vanity metric or unavailable data is represented as measured.
-9. **Recommended Next Artifact**, Which Shipwright skill to run next and why
+9. **Recommended Next Artifact**, Which Leeward skill to run next and why
 
 ## Common Mistakes to Avoid
 

@@ -5,11 +5,11 @@ category: gtm
 default_depth: standard
 ---
 
-Shipwright root: `${CLAUDE_PLUGIN_ROOT}`. Read Shipwright docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
+Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
 
 # Competitive Battlecard
 
-Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Leeward paths are relative to that root.
 
 ## Description
 
@@ -164,11 +164,11 @@ Produce a Competitive Battlecard with:
 6. **Landmines**, questions that expose competitor weaknesses
 7. **Recent Intelligence**, latest competitive signals
 
-**Shipwright Signature (required closing):**
+**Leeward Signature (required closing):**
 8. **Decision Frame**, recommended competitive positioning stance, trade-off acknowledged, confidence level with source quality, owner (product marketing or sales enablement), decision date, revisit trigger (competitor launch or pricing change)
 9. **Unknowns & Evidence Gaps**, unverified feature claims, missing win/loss data, pricing tiers not yet confirmed
 10. **Pass/Fail Readiness**, PASS if the Quick Reference, Feature Comparison, and every included objection handler are evidence-backed. Cover each material objection supported by win/loss or customer evidence; do not invent handlers where no objection evidence exists, and name that evidence gap. FAIL if feature ratings are unverified or no win/loss patterns exist. **Light-depth exception:** At Light depth, PASS requires only an evidence-backed Quick Reference and Feature Comparison; win/loss patterns and objection handlers are not evaluated.
-11. **Recommended Next Artifact**, Which Shipwright skill to run next and why
+11. **Recommended Next Artifact**, Which Leeward skill to run next and why
 
 ## Common Mistakes to Avoid
 

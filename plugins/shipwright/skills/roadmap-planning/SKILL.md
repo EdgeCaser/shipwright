@@ -5,11 +5,11 @@ category: strategy
 default_depth: standard
 ---
 
-Shipwright root: `${CLAUDE_PLUGIN_ROOT}`. Read Shipwright docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
+Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
 
 # Roadmap Planning
 
-Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Leeward paths are relative to that root.
 
 ## Description
 
@@ -148,11 +148,11 @@ Produce a Roadmap Document with:
 5. **Not Doing**, conscious exclusions with rationale
 6. **Dependencies**, cross-team dependencies and risks
 
-**Shipwright Signature (required closing):**
+**Leeward Signature (required closing):**
 7. **Decision Frame**, Recommended Now-quarter commitment with trade-off (scope vs. confidence), confidence with evidence quality, owner, decision date, revisit trigger
 8. **Unknowns & Evidence Gaps**, Initiatives with unvalidated RICE inputs, unresolved dependencies, missing engineering estimates
 9. **Pass/Fail Readiness**, PASS if every Now item has an outcome, metric, and owner, and at least one Later item has a promotion trigger; at Light depth, PASS if Now/Next/Later overview is present with outcomes and metrics for each item, RICE scoring, dependencies, and Not Doing section are not required; FAIL if Now items lack metrics or the roadmap is a feature list with no outcomes
-10. **Recommended Next Artifact**, Which Shipwright skill to run next and why
+10. **Recommended Next Artifact**, Which Leeward skill to run next and why
 
 ## Common Mistakes to Avoid
 

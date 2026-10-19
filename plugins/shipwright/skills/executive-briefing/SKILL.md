@@ -5,11 +5,11 @@ category: communication
 default_depth: standard
 ---
 
-Shipwright root: `${CLAUDE_PLUGIN_ROOT}`. Read Shipwright docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
+Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
 
 # Executive Briefing / One-Pager
 
-Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Leeward paths are relative to that root.
 
 ## Description
 
@@ -145,11 +145,11 @@ Produce a One-Page Executive Briefing with:
 3. **Supporting Evidence**, key data and options comparison
 4. **The Ask**, specific, time-bound, actionable
 
-**Shipwright Signature (required closing):**
+**Leeward Signature (required closing):**
 5. **Decision Frame**, recommended option, trade-off vs. alternatives, confidence level with evidence quality cited, decision owner, decision-by date, revisit trigger
 6. **Unknowns & Evidence Gaps**, unvalidated assumptions in projections, missing competitive data, untested customer willingness
 7. **Pass/Fail Readiness**, PASS if SCR is complete, ask is specific and time-bound, and at least one data point supports the complication; FAIL if the ask is vague or the complication lacks quantified urgency
-8. **Recommended Next Artifact**, Which Shipwright skill to run next and why
+8. **Recommended Next Artifact**, Which Leeward skill to run next and why
 
 ## Common Mistakes to Avoid
 

@@ -5,11 +5,11 @@ category: execution
 default_depth: standard
 ---
 
-Shipwright root: `${CLAUDE_PLUGIN_ROOT}`. Read Shipwright docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
+Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
 
 # Sprint Planning Support
 
-Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Leeward paths are relative to that root.
 
 ## Description
 
@@ -160,11 +160,11 @@ Produce a Sprint Plan with:
 4. **Dependencies & Risks**, flagged and mitigated
 5. **Sprint Agreement**, what's in, what's stretch, what's out
 
-**Shipwright Signature (required closing):**
+**Leeward Signature (required closing):**
 6. **Decision Frame**, sprint scope recommendation with capacity utilization rationale, trade-off, confidence with evidence quality, owner, decision date, revisit trigger
 7. **Unknowns & Evidence Gaps**, unconfirmed external dependencies, stories with low estimation confidence, untested capacity assumptions for new team members
 8. **Pass/Fail Readiness**, PASS for commitment if the goal is outcome-oriented, estimates fit the agreed capacity with an explicit buffer, and material dependencies are confirmed. A Light proposal may list unresolved checks but must not claim committed scope. FAIL for commitment when those checks are missing.
-9. **Recommended Next Artifact**, Which Shipwright skill to run next and why
+9. **Recommended Next Artifact**, Which Leeward skill to run next and why
 
 ## Common Mistakes to Avoid
 

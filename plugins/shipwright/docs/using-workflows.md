@@ -35,7 +35,7 @@ If you already have a finished artifact and want a separate adversarial pass bef
 
 ## When to use what
 
-There are three ways to get work done in Shipwright, and they're suited to different situations:
+There are three ways to get work done in Leeward, and they're suited to different situations:
 
 **Use the orchestrator (`/leeward`, or `/start`)** when you're not sure which skill or workflow fits, or when your task spans multiple areas. Describe what you need and it routes to the right place. Good for: "I need to prepare for a board meeting," "Help me think through this new feature idea," "What should I do before our quarterly planning?" If you already know the exact workflow you want, running it directly is usually faster and less likely to time out.
 
@@ -134,7 +134,7 @@ If none of these fit, type `/leeward` and describe what you're working on. The o
 
 ## Keeping runs bounded
 
-Shipwright works best when each run has one clear deliverable. If you ask for fresh public research plus synthesis plus a polished final document in one shot, the agent may spend too much time searching and formatting.
+Leeward works best when each run has one clear deliverable. If you ask for fresh public research plus synthesis plus a polished final document in one shot, the agent may spend too much time searching and formatting.
 
 Use these patterns to keep sessions moving:
 

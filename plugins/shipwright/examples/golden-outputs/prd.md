@@ -20,7 +20,7 @@ This is our #2 priority this quarter.
 
 ---
 
-## Baseline output (without Shipwright)
+## Baseline output (without Leeward)
 
 > A typical AI response to this prompt. Not bad, but notice what's missing.
 
@@ -55,7 +55,7 @@ This is our #2 priority this quarter.
 
 ---
 
-## Shipwright output (with `/write-prd`)
+## Leeward output (with `/write-prd`)
 
 > The workflow forces 3 phases: press release first (customer value), then FAQ (hard questions), then full requirements. Each phase feeds the next.
 
@@ -248,16 +248,16 @@ A: L-sized initiative. ~10 weeks with 2 engineers. Breakdown: AWS integration (3
 
 ---
 
-## Why the Shipwright output is better
+## Why the Leeward output is better
 
 1. **Customer-first structure.** The Working Backwards method forced the PRD to start with Carmen's actual pain ("3 weeks chasing engineers for screenshots") rather than jumping to technical requirements. The baseline went straight to a solution description and feature list.
 
 2. **Hard questions surfaced early.** The FAQ phase forced explicit answers to "What are we NOT building?" and "What are the biggest risks?" before writing a single requirement. The baseline mentioned risks as a 3-item afterthought.
 
-3. **Evidence-grounded decisions.** The Shipwright output cites specific data: "60% of pipeline deals," "win rate drops from 45% to 22%," "8/12 CAB members." The baseline says "significant time" and "tedious and error-prone" without quantification.
+3. **Evidence-grounded decisions.** The Leeward output cites specific data: "60% of pipeline deals," "win rate drops from 45% to 22%," "8/12 CAB members." The baseline says "significant time" and "tedious and error-prone" without quantification.
 
 4. **Explicit scope boundaries with rationale.** Each out-of-scope item has a "Rationale" explaining *why* it's excluded and *when* it might be revisited. The baseline's scope is implicit, it lists what to build but not what to skip.
 
 5. **Testable acceptance criteria.** User stories have checkbox acceptance criteria and edge cases. The baseline lists requirements as bullet points with no definition of "done."
 
-6. **Guardrail metrics.** The Shipwright output defines what must NOT get worse (evidence mapping accuracy, setup completion rate) alongside what should improve. The baseline's success metrics are vague ("customer satisfaction improvement") and have no guardrails.
+6. **Guardrail metrics.** The Leeward output defines what must NOT get worse (evidence mapping accuracy, setup completion rate) alongside what should improve. The baseline's success metrics are vague ("customer satisfaction improvement") and have no guardrails.

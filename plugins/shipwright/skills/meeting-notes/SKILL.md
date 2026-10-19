@@ -5,11 +5,11 @@ category: communication
 default_depth: standard
 ---
 
-Shipwright root: `${CLAUDE_PLUGIN_ROOT}`. Read Shipwright docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
+Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
 
 # Meeting Notes & Action Items
 
-Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Leeward paths are relative to that root.
 
 ## Description
 
@@ -173,11 +173,11 @@ Produce structured meeting notes with:
 6. **Parking Lot**, deferred items with revisit dates
 7. **Previous Action Review**, accountability check
 
-**Shipwright Signature (required closing):**
+**Leeward Signature (required closing):**
 8. **Decision Frame**, key decision from this meeting, trade-offs discussed, confidence based on evidence cited in-room, decision owner, decision date, revisit trigger
 9. **Unknowns & Evidence Gaps**, questions raised but unanswered, data cited but not verified, absent stakeholders whose input is needed
 10. **Pass/Fail Readiness**, PASS if decisions are faithfully attributed and agreed actions have owners and dates. Mark missing attribution, ownership or dates as TBD and FAIL for action readiness; an informational meeting with no decisions or actions can PASS as an accurate record.
-11. **Recommended Next Artifact**, Which Shipwright skill to run next and why
+11. **Recommended Next Artifact**, Which Leeward skill to run next and why
 
 ## Common Mistakes to Avoid
 

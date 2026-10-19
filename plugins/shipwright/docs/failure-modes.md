@@ -1,6 +1,6 @@
 # Failure Modes
 
-Shipwright produces structured artifacts, not guaranteed-correct ones. The frameworks improve output quality significantly (see [golden outputs](../examples/golden-outputs/)), but AI-generated PM artifacts fail in predictable ways. This document describes those failure modes so you can detect them. For deterministic recovery steps, use [recovery playbooks](recovery-playbooks.md).
+Leeward produces structured artifacts, not guaranteed-correct ones. The frameworks improve output quality significantly (see [golden outputs](../examples/golden-outputs/)), but AI-generated PM artifacts fail in predictable ways. This document describes those failure modes so you can detect them. For deterministic recovery steps, use [recovery playbooks](recovery-playbooks.md).
 
 ## Agent failure modes
 

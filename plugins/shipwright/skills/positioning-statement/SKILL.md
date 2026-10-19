@@ -5,11 +5,11 @@ category: strategy
 default_depth: standard
 ---
 
-Shipwright root: `${CLAUDE_PLUGIN_ROOT}`. Read Shipwright docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
+Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
 
 # Positioning Statement
 
-Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Leeward paths are relative to that root.
 
 ## Description
 
@@ -167,11 +167,11 @@ Produce a positioning document with:
 6. **Positioning Statement**, assembled statement
 7. **Stress Test**, evaluation and refinements
 
-**Shipwright Signature (required closing):**
+**Leeward Signature (required closing):**
 8. **Decision Frame**, Recommended positioning to commit to, category strategy trade-off, confidence with evidence quality, owner, decision date, revisit trigger
 9. **Unknowns & Evidence Gaps**, Unvalidated differentiation claims, untested category framing with buyers, assumed competitive weaknesses
 10. **Pass/Fail Readiness**, PASS if positioning is grounded in multiple validated unique attributes and tested against real competitive alternatives (at Light depth: PASS if competitive context is established and Value (UVP) is grounded in at least one differentiator, full attribute validation is deferred); FAIL if differentiation is aspirational with no customer or market evidence
-11. **Recommended Next Artifact**, Which Shipwright skill to run next and why
+11. **Recommended Next Artifact**, Which Leeward skill to run next and why
 
 ## Common Mistakes to Avoid
 

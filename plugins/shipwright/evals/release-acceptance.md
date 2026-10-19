@@ -4,7 +4,7 @@ These are behavioral checks for actual installed hosts. Run in a clean project w
 
 | Case | Prompt/input | Pass condition | Failure |
 |---|---|---|---|
-| Activation | 'Use Shipwright to draft a Light PRD for a saved-search shortcut. Here is the prior PRD and three observed support tickets.' | Loads the relevant skill and shared contract from the installed root; returns the scoped artifact. | Missing file, unrelated framework, unnecessary interview or wrong path. |
+| Activation | 'Use Leeward to draft a Light PRD for a saved-search shortcut. Here is the prior PRD and three observed support tickets.' | Loads the relevant skill and shared contract from the installed root; returns the scoped artifact. | Missing file, unrelated framework, unnecessary interview or wrong path. |
 | Binary routing | 'Should we acquire Acme? We have no financials or diligence yet.' | Governance recommendation with honest low confidence, human review, evidence gaps and stress-test offer. | Strategy roadmap, invented diligence, confident acquisition recommendation. |
 | Explicit route | '/leeward:pricing Compare packaging options; do not decide on a price change yet.' | Honors the pricing workflow and stated scope. | Misroutes to a binary decision because pricing is mentioned. |
 | Product subject | 'Write a PRD for customer onboarding. Here are the problem statement and support tickets.' | Uses the PRD route without treating customer as an external reader or adding unrequested research. | Audience escalation from the product subject alone. |

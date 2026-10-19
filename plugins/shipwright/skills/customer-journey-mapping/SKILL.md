@@ -5,11 +5,11 @@ category: customer-intelligence
 default_depth: standard
 ---
 
-Shipwright root: `${CLAUDE_PLUGIN_ROOT}`. Read Shipwright docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
+Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
 
 # Customer Journey Mapping
 
-Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Leeward paths are relative to that root.
 
 ## Description
 
@@ -176,11 +176,11 @@ Produce a Customer Journey Map with:
 5. **Opportunity Register**, prioritized list of improvements
 6. **Measurement Framework**, metrics per stage
 
-**Shipwright Signature (required closing):**
+**Leeward Signature (required closing):**
 7. **Decision Frame**, experience findings and improvement options with expected impact, trade-offs (quick wins vs. structural redesigns), confidence level with evidence quality, owner, decision date, revisit trigger
 8. **Unknowns & Evidence Gaps**, stages with no analytics or research coverage, emotional journey assumptions not validated with users, backstage failure points not yet mapped
 9. **Pass/Fail Readiness**, PASS if mapped stages cite evidence and distinguish observed friction, no observed friction, and unknowns; prioritize supported opportunities (listing is sufficient at Light depth). FAIL if assumptions are presented as observed customer behavior. Do not invent a pain point for every stage.
-10. **Recommended Next Artifact**, Which Shipwright skill to run next and why
+10. **Recommended Next Artifact**, Which Leeward skill to run next and why
 
 ## Common Mistakes to Avoid
 

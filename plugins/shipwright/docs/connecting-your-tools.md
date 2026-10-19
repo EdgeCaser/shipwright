@@ -1,12 +1,12 @@
-# Connecting Your Tools to Shipwright
+# Connecting Your Tools to Leeward
 
-Shipwright's agents work fine on their own, but they get a lot more useful when they can read and write to the tools your team already uses. Instead of pasting Jira tickets into chat or describing what your Amplitude dashboard says, the agents can just pull that data directly.
+Leeward's agents work fine on their own, but they get a lot more useful when they can read and write to the tools your team already uses. Instead of pasting Jira tickets into chat or describing what your Amplitude dashboard says, the agents can just pull that data directly.
 
 This is done through MCP (Model Context Protocol), which is how Claude Code connects to external services. You don't need to write any code. It's a one-line terminal command per tool.
 
 ## How it works
 
-When you connect a tool via MCP, its capabilities become available to every agent and skill in Shipwright automatically. For example:
+When you connect a tool via MCP, its capabilities become available to every agent and skill in Leeward automatically. For example:
 
 - Connect **Linear or Jira**, and the execution driver can read real tickets when planning sprints
 - Connect **Amplitude or PostHog**, and the metrics dashboard skill can reference actual numbers
@@ -14,7 +14,7 @@ When you connect a tool via MCP, its capabilities become available to every agen
 - Connect **Notion**, and agents can read your existing docs and write new ones directly
 - Connect **Figma**, and the design review skill can reference actual design files
 
-You don't need to change any Shipwright files. The agents detect what tools are available and use them when relevant.
+You don't need to change any Leeward files. The agents detect what tools are available and use them when relevant.
 
 ## Adding your first connection
 
@@ -67,7 +67,7 @@ Claude Code keeps the key in its local settings and sends it only to the service
 
 ## Sharing connections with your team
 
-By default, connections are local to your machine. If you want your whole team to use the same connections (so everyone's Shipwright setup talks to the same Linear workspace, for example), add `--scope project`:
+By default, connections are local to your machine. If you want your whole team to use the same connections (so everyone's Leeward setup talks to the same Linear workspace, for example), add `--scope project`:
 
 ```bash
 claude mcp add --transport http linear --scope project https://linear.app/mcp
@@ -89,7 +89,7 @@ Inside a Claude Code session, type `/mcp` to see which connections are active an
 
 ## Local research helper
 
-Shipwright includes `scripts/collect-research.mjs`, a local helper that keeps research conversational while spending fewer tool calls on raw retrieval. It has no search provider of its own and reads no API keys.
+Leeward includes `scripts/collect-research.mjs`, a local helper that keeps research conversational while spending fewer tool calls on raw retrieval. It has no search provider of its own and reads no API keys.
 
 For a research question, it writes an evidence pack under `.shipwright/research/` with `needs-interactive-followup` and a short list of suggested follow-up queries. The agent then runs only those queries with the host's own web search.
 
@@ -121,11 +121,11 @@ Page captures are cached under `.shipwright/cache/research/v1/` for 24 hours by 
 node scripts/collect-research.mjs --clear-cache
 ```
 
-In Codex, this same pattern can be triggered from plain-language prompts when the project has a Shipwright-aware `AGENTS.md` and the helper exists at `.codex/scripts/collect-research.mjs` or `scripts/collect-research.mjs`.
+In Codex, this same pattern can be triggered from plain-language prompts when the project has a Leeward-aware `AGENTS.md` and the helper exists at `.codex/scripts/collect-research.mjs` or `scripts/collect-research.mjs`.
 
 ## What to connect first
 
-If you're not sure where to start, pick based on what you use Shipwright for most:
+If you're not sure where to start, pick based on what you use Leeward for most:
 
 | If you mostly use... | Connect this first |
 |---|---|

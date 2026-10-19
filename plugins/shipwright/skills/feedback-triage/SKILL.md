@@ -5,11 +5,11 @@ category: customer-intelligence
 default_depth: standard
 ---
 
-Shipwright root: `${CLAUDE_PLUGIN_ROOT}`. Read Shipwright docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
+Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
 
 # Feedback Triage & Taxonomy
 
-Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Leeward paths are relative to that root.
 
 ## Description
 
@@ -180,11 +180,11 @@ Produce a Feedback Intelligence Report with:
 4. **Taxonomy**, categorized by type (bugs, UX, feature requests, praise, churn)
 5. **Priority Matrix**, scored and ranked for action
 
-**Shipwright Signature (required closing):**
+**Leeward Signature (required closing):**
 6. **Decision Frame**, top clusters with response options (fix, build, investigate, or defer) and trade-offs between high-volume and high-revenue-impact items, confidence level with evidence quality, owner, decision date, revisit trigger
 7. **Unknowns & Evidence Gaps**, clusters with single-channel signal only, segments with no feedback representation, underlying needs inferred but not validated
 8. **Pass/Fail Readiness**, PASS if every cluster links to independent source items, counts are deduplicated, sample limits are explicit, and priorities are justified (priority scoring optional at Light depth); FAIL if evidence is missing or the report generalizes beyond the sample. Singleton incidents may be reported as such.
-9. **Recommended Next Artifact**, Which Shipwright skill to run next and why
+9. **Recommended Next Artifact**, Which Leeward skill to run next and why
 
 ## Common Mistakes to Avoid
 

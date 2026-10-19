@@ -5,11 +5,11 @@ category: planning
 default_depth: standard
 ---
 
-Shipwright root: `${CLAUDE_PLUGIN_ROOT}`. Read Shipwright docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
+Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
 
 # Decision Log / Product Decision Record (PDR)
 
-Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Leeward paths are relative to that root.
 
 ## Description
 
@@ -162,11 +162,11 @@ Produce:
 2. **Decision Log Entry**, row for the index
 3. **Communication Summary**, who needs to be informed and how (for S1 and S2 decisions)
 
-**Shipwright Signature (required closing):**
+**Leeward Signature (required closing):**
 4. **Decision Frame**, Restate the chosen option as a trade-off statement ("We chose X over Y because Z"), confidence level tied to evidence quality, decision owner, decision date, revisit trigger
 5. **Unknowns & Evidence Gaps**, Consequences not yet validated, assumptions underlying the rationale, options rejected without full evaluation
 6. **Pass/Fail Readiness**, PASS if the PDR has a clear decision statement and documented rationale; FAIL if rationale is missing. (At Light depth, Options Considered is omitted, so the two-option requirement does not apply.)
-7. **Recommended Next Artifact**, Which Shipwright skill to run next and why
+7. **Recommended Next Artifact**, Which Leeward skill to run next and why
 
 ## Common Mistakes to Avoid
 

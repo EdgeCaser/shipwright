@@ -5,11 +5,11 @@ category: discovery
 default_depth: standard
 ---
 
-Shipwright root: `${CLAUDE_PLUGIN_ROOT}`. Read Shipwright docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
+Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
 
 # Market Sizing (TAM / SAM / SOM)
 
-Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Leeward paths are relative to that root.
 
 ## Description
 
@@ -146,11 +146,11 @@ Produce a market sizing document with:
 5. **Assumption Register**, all assumptions with sensitivity ratings
 6. **Visualization**, nested TAM > SAM > SOM summary
 
-**Shipwright Signature (required closing):**
+**Leeward Signature (required closing):**
 7. **Decision Frame**, Whether the market justifies investment given SOM range, trade-off between market size confidence vs. speed to decision, confidence in estimates with evidence quality, owner, decision date, revisit trigger
 8. **Unknowns & Evidence Gaps**, Assumptions with HIGH sensitivity that lack primary sources, segments with no bottom-up validation
 9. **Pass/Fail Readiness**, PASS if both top-down and bottom-up estimates are present with cited sources and deltas are reconciled (at Light depth: PASS if top-down TAM/SAM/SOM is present with at least one cited source; bottom-up and triangulation not required); FAIL if only one method used or TAM source is undocumented (at Light depth: FAIL if TAM source is undocumented)
-10. **Recommended Next Artifact**, Which Shipwright skill to run next and why
+10. **Recommended Next Artifact**, Which Leeward skill to run next and why
 
 ## Common Mistakes to Avoid
 

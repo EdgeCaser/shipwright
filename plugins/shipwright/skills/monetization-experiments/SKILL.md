@@ -5,11 +5,11 @@ category: pricing
 default_depth: standard
 ---
 
-Shipwright root: `${CLAUDE_PLUGIN_ROOT}`. Read Shipwright docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
+Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
 
 # Monetization Experiment Design
 
-Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Leeward paths are relative to that root.
 
 ## Description
 
@@ -202,11 +202,11 @@ Produce a Monetization Experiment Plan with:
 4. **Risk Assessment**, risks with mitigations and kill criteria
 5. **Rollout Plan**, phased deployment with checkpoints
 
-**Shipwright Signature (required closing):**
+**Leeward Signature (required closing):**
 6. **Decision Frame**, Ship/iterate/kill recommendation, revenue vs. churn trade-off, confidence level with evidence quality, experiment owner, decision date, revisit trigger (e.g., metric drift post-rollout)
 7. **Unknowns & Evidence Gaps**, Segments not yet tested, long-term retention effects, price elasticity beyond tested range
 8. **Pass/Fail Readiness**, PASS for launch if the hypothesis is falsifiable, sample size is achievable within a justified precommitted duration, and guardrails and kill criteria are defined. Light depth may PASS as a concept with sample sizing explicitly deferred, never as a launch-ready experiment.
-9. **Recommended Next Artifact**, Which Shipwright skill to run next and why
+9. **Recommended Next Artifact**, Which Leeward skill to run next and why
 
 ## Common Mistakes to Avoid
 

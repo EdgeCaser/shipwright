@@ -5,11 +5,11 @@ category: execution
 default_depth: standard
 ---
 
-Shipwright root: `${CLAUDE_PLUGIN_ROOT}`. Read Shipwright docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
+Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
 
 # Release Notes Generator
 
-Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Leeward paths are relative to that root.
 
 ## Description
 
@@ -173,11 +173,11 @@ Produce:
 2. **Internal Release Notes**, segmented by audience (Support, Sales, Eng)
 3. **Channel Variants**, adapted versions for email, blog, social, in-app
 
-**Shipwright Signature (required closing):**
+**Leeward Signature (required closing):**
 4. **Decision Frame**, recommended communication priority and channel sequencing, trade-off, confidence with evidence quality, owner, decision date, revisit trigger
 5. **Unknowns & Evidence Gaps**, unconfirmed customer impact of changes, missing performance benchmarks, unclear migration paths for breaking changes
 6. **Pass/Fail Readiness**, PASS if every customer-facing change has a benefit statement and breaking changes have migration instructions (at Light depth: PASS if every change has a one-line benefit statement; breaking-change migration instructions are still required if any breaking changes exist); FAIL if breaking changes are undocumented or customer-facing notes use engineering jargon
-7. **Recommended Next Artifact**, Which Shipwright skill to run next and why
+7. **Recommended Next Artifact**, Which Leeward skill to run next and why
 
 ## Common Mistakes to Avoid
 

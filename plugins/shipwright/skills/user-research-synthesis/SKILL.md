@@ -5,11 +5,11 @@ category: discovery
 default_depth: standard
 ---
 
-Shipwright root: `${CLAUDE_PLUGIN_ROOT}`. Read Shipwright docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
+Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
 
 # User Research Synthesis
 
-Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Leeward paths are relative to that root.
 
 ## Description
 
@@ -147,11 +147,11 @@ Produce:
 3. **Insight cards**, structured findings
 4. **Research summary**, executive-level readout
 
-**Shipwright Signature (required closing):**
+**Leeward Signature (required closing):**
 5. **Decision Frame**, Top findings and their product implications, trade-off between acting on current evidence vs. gathering more data, confidence in themes with evidence quality and sample size, owner, decision date, revisit trigger
 6. **Unknowns & Evidence Gaps**, Segments not represented in the sample, themes with only counter-evidence, questions that emerged but were not explored
 7. **Pass/Fail Readiness**, PASS if observations are traceable, interpretations and counter-evidence are distinguished, and conclusions fit the sample. A finding of no stable themes can PASS. FAIL if themes are invented or evidence trails are missing; Light depth may omit insight cards and the research summary.
-8. **Recommended Next Artifact**, Which Shipwright skill to run next and why
+8. **Recommended Next Artifact**, Which Leeward skill to run next and why
 
 ## Common Mistakes to Avoid
 

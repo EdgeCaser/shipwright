@@ -5,11 +5,11 @@ category: discovery
 default_depth: standard
 ---
 
-Shipwright root: `${CLAUDE_PLUGIN_ROOT}`. Read Shipwright docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
+Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
 
 # Discovery Interview Prep
 
-Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Leeward paths are relative to that root.
 
 ## Description
 
@@ -164,11 +164,11 @@ Produce three documents:
 2. **Screener**, recruitment qualification criteria
 3. **Debrief Template**, post-interview capture sheet
 
-**Shipwright Signature (required closing):**
+**Leeward Signature (required closing):**
 4. **Decision Frame**, Key assumptions the interview round will test, trade-off between breadth vs. depth of questioning, confidence in screener fit with evidence quality, owner, interview dates, revisit trigger
 5. **Unknowns & Evidence Gaps**, Segments not yet covered, assumptions with no interview questions mapped to them
 6. **Pass/Fail Readiness**, PASS if each in-scope discovery theme has enough Mom Test-compliant questions to reveal the material behavior or decision, and the screener filters to the target persona. At Light depth, the screener is not required. Do not add questions merely to fill a list: omit an unsupported theme and name the evidence gap. FAIL if questions are leading, hypothetical, or the persona is undefined.
-7. **Recommended Next Artifact**, Which Shipwright skill to run next and why
+7. **Recommended Next Artifact**, Which Leeward skill to run next and why
 
 ## Common Mistakes to Avoid
 

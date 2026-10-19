@@ -5,11 +5,11 @@ category: gtm
 default_depth: standard
 ---
 
-Shipwright root: `${CLAUDE_PLUGIN_ROOT}`. Read Shipwright docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
+Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
 
 # Growth Loops Identification
 
-Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Leeward paths are relative to that root.
 
 ## Description
 
@@ -170,11 +170,11 @@ Produce a Growth Loops Analysis with:
 4. **New Loop Proposals**, designed loops with hypotheses and tests
 5. **Investment Recommendation**, where to focus growth engineering effort
 
-**Shipwright Signature (required closing):**
+**Leeward Signature (required closing):**
 6. **Decision Frame**, recommended loop to invest in first, trade-off vs. alternative loops, confidence level with data quality, owner (growth or product lead), decision date, revisit trigger (loop metric review at end of cycle)
 7. **Unknowns & Evidence Gaps**, unmeasured cycle times, assumed conversion rates, missing K-factor data
 8. **Pass/Fail Readiness**, PASS if at least one loop has measured cycle time and conversion data at each step; FAIL if all loops are theoretical with no observed metrics
-9. **Recommended Next Artifact**, Which Shipwright skill to run next and why
+9. **Recommended Next Artifact**, Which Leeward skill to run next and why
 
 ## Common Mistakes to Avoid
 

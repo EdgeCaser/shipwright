@@ -1,6 +1,6 @@
 # Pass/Fail Quality Gates
 
-This is the enforcement layer for Shipwright outputs.
+This is the enforcement layer for Leeward outputs.
 
 Use this file **before** scoring with artifact rubrics. Rubrics optimize quality; gates block bad outputs from being treated as done.
 

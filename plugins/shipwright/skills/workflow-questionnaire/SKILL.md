@@ -5,11 +5,11 @@ category: discovery
 default_depth: standard
 ---
 
-Shipwright root: `${CLAUDE_PLUGIN_ROOT}`. Read Shipwright docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
+Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
 
 # Workflow Questionnaire
 
-Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Leeward paths are relative to that root.
 
 ## Description
 
@@ -238,7 +238,7 @@ Map questionnaire findings to next actions.
 ```markdown
 ## Follow-Up Decision Tree
 
-| Finding Pattern | Next Action | Shipwright Skill |
+| Finding Pattern | Next Action | Leeward Skill |
 |---|---|---|
 | High friction + high lens relevance across respondents | Deep-dive interview on top 3 friction points | discovery-interview-prep |
 | High friction but LOW lens relevance | Park, real problem, but not in scope for this engagement | (none, log for future) |
@@ -269,13 +269,13 @@ Produce up to six artifacts depending on depth:
 3. **Questionnaire**, ready-to-use, numbered question set organized by workflow domain
 4. **Scoring Rubric**, friction severity and lens relevance scales with opportunity scoring
 5. **Response Analysis Template**, synthesis framework for multiple respondents
-6. **Follow-Up Decision Tree**, maps finding patterns to next actions and Shipwright skills
+6. **Follow-Up Decision Tree**, maps finding patterns to next actions and Leeward skills
 
-**Shipwright Signature (required closing):**
+**Leeward Signature (required closing):**
 7. **Decision Frame**, Primary lens and workflow domains selected, trade-off between questionnaire breadth (more domains) vs. depth (more questions per domain), confidence that the lens will surface actionable data with evidence quality, owner, date, revisit trigger (e.g., "revisit lens after first 3 responses if top opportunities don't emerge")
 8. **Unknowns & Evidence Gaps**, Workflow domains not covered, respondent roles not represented, assumptions about the prospect's operations that the questionnaire itself will test
 9. **Pass/Fail Readiness**, PASS if the questionnaire has a defined lens, every included question traces to it, each in-scope workflow domain has sufficient behavioral coverage for the decision, and no question is leading or hypothetical. At Light depth, the scoring rubric is not required. Do not manufacture questions for a domain with no supported workflow evidence; omit it and name the gap. FAIL if the lens is undefined, questions are leading/hypothetical, or questions fall outside declared scope.
-10. **Recommended Next Artifact**, Which Shipwright skill to run next and why (typically discovery-interview-prep for deep-dive follow-ups, or jobs-to-be-done for framing validated friction as job statements)
+10. **Recommended Next Artifact**, Which Leeward skill to run next and why (typically discovery-interview-prep for deep-dive follow-ups, or jobs-to-be-done for framing validated friction as job statements)
 
 ## Common Mistakes to Avoid
 

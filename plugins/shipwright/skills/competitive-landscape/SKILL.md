@@ -5,11 +5,11 @@ category: discovery
 default_depth: standard
 ---
 
-Shipwright root: `${CLAUDE_PLUGIN_ROOT}`. Read Shipwright docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
+Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
 
 # Competitive Landscape Analysis
 
-Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Leeward paths are relative to that root.
 
 ## Description
 
@@ -150,11 +150,11 @@ Produce a structured competitive intelligence report with:
 6. **Market Dynamics**, macro trends affecting competition
 7. **Strategic Implications**, what this means for our product decisions (label as hypotheses)
 
-**Shipwright Signature (required closing):**
+**Leeward Signature (required closing):**
 8. **Decision Frame**, Primary strategic takeaway, trade-off, confidence with evidence quality, owner, decision date, revisit trigger
 9. **Unknowns & Evidence Gaps**, What we don't know about the competitive landscape and what evidence would resolve it
 10. **Pass/Fail Readiness**, PASS if ≥2 competitors analyzed with sourced evidence (at Light depth: PASS if ≥2 competitors listed with sourced evidence and capability matrix is present; Positioning Analysis, Competitor Deep Dives, and Market Dynamics not required); FAIL if competitive set is assumption-only or no capability matrix produced
-11. **Recommended Next Artifact**, Which Shipwright skill to run next (e.g., positioning-statement, competitive-battlecard) and why
+11. **Recommended Next Artifact**, Which Leeward skill to run next (e.g., positioning-statement, competitive-battlecard) and why
 
 ## Common Mistakes to Avoid
 

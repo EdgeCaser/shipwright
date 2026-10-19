@@ -5,11 +5,11 @@ category: strategy
 default_depth: standard
 ---
 
-Shipwright root: `${CLAUDE_PLUGIN_ROOT}`. Read Shipwright docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
+Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
 
 # Business Model Canvas
 
-Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Leeward paths are relative to that root.
 
 ## Description
 
@@ -152,11 +152,11 @@ Produce:
 2. **Key Dependencies** - which blocks are most tightly coupled and what breaks if one changes
 3. **Stress Test** - the 3 weakest links in the model and what would need to be true for them to hold
 
-**Shipwright Signature (required closing):**
+**Leeward Signature (required closing):**
 4. **Decision Frame**, Which business model elements to commit to vs. experiment on, key trade-offs, confidence level with evidence quality, owner, decision date, revisit trigger
 5. **Unknowns & Evidence Gaps**, Unvalidated segment sizes, untested channel assumptions, unconfirmed partnership terms
 6. **Pass/Fail Readiness**, PASS if all 9 blocks have evidence-backed entries and dependencies are mapped (at Light depth: PASS if Customer Segments, Value Propositions, and Revenue Streams have evidence-backed entries, remaining blocks are deferred); FAIL if any included block relies entirely on assumptions with no supporting data
-7. **Recommended Next Artifact**, Which Shipwright skill to run next and why
+7. **Recommended Next Artifact**, Which Leeward skill to run next and why
 
 ## Common Mistakes to Avoid
 

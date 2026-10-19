@@ -21,7 +21,7 @@ n=340 total (170 per group). Help me make the ship/no-ship decision.
 
 ---
 
-## Baseline output (without Shipwright)
+## Baseline output (without Leeward)
 
 > The AI gives directional advice but doesn't apply statistical rigor. Notice the missing guardrail checks, segment analysis, and rigor validation.
 
@@ -47,7 +47,7 @@ The 12% activation lift will compound over time and likely improve retention, wh
 
 ---
 
-## Shipwright output (with `ab-test-analysis` skill)
+## Leeward output (with `ab-test-analysis` skill)
 
 > The skill forces structured analysis: rigor checks before interpreting results, explicit effect classification, segment analysis, and a decision framework with rationale tied to data.
 
@@ -157,16 +157,16 @@ The 12% activation lift will compound over time and likely improve retention, wh
 
 ---
 
-## Why the Shipwright output is better
+## Why the Leeward output is better
 
-1. **Power analysis catches the fatal flaw.** The test was underpowered (34% power). The baseline recommends shipping based on a non-significant result. The Shipwright output identifies this immediately and adjusts the recommendation accordingly.
+1. **Power analysis catches the fatal flaw.** The test was underpowered (34% power). The baseline recommends shipping based on a non-significant result. The Leeward output identifies this immediately and adjusts the recommendation accordingly.
 
-2. **Guardrails are checked explicitly.** The NPS decline is flagged as a guardrail degradation, not just a "concern." The baseline acknowledges the NPS drop but still recommends shipping, the Shipwright framework treats guardrail violations as blocking signals.
+2. **Guardrails are checked explicitly.** The NPS decline is flagged as a guardrail degradation, not just a "concern." The baseline acknowledges the NPS drop but still recommends shipping, the Leeward framework treats guardrail violations as blocking signals.
 
-3. **Effect classification forces clarity.** Instead of "mixed results," the Shipwright output classifies this as "Inconclusive with a concerning mixed signal" and explains exactly why. The classification table makes it impossible to cherry-pick the positive result.
+3. **Effect classification forces clarity.** Instead of "mixed results," the Leeward output classifies this as "Inconclusive with a concerning mixed signal" and explains exactly why. The classification table makes it impossible to cherry-pick the positive result.
 
 4. **Segment analysis generates actionable hypotheses.** The finding that the effect concentrates in smaller, single-framework customers directly shapes the next experiment. The baseline has no segment analysis and therefore no path to a better iteration.
 
-5. **Decision includes a concrete next experiment.** The Shipwright output specifies what to test next, with an updated hypothesis and required sample size. The baseline says "ship with modifications" but doesn't define what success looks like for the modified version.
+5. **Decision includes a concrete next experiment.** The Leeward output specifies what to test next, with an updated hypothesis and required sample size. The baseline says "ship with modifications" but doesn't define what success looks like for the modified version.
 
 6. **Institutional learning is captured.** "Speed and satisfaction are not automatically aligned" is an insight that applies beyond this experiment. The baseline captures no reusable learning, the analysis dies when the decision is made.

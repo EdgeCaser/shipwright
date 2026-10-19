@@ -5,11 +5,11 @@ category: strategy
 default_depth: standard
 ---
 
-Shipwright root: `${CLAUDE_PLUGIN_ROOT}`. Read Shipwright docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
+Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
 
 # Lean Canvas / Business Model
 
-Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Leeward paths are relative to that root.
 
 ## Description
 
@@ -143,11 +143,11 @@ Produce:
 2. **Riskiest Assumptions**, top 3 assumptions that could invalidate the canvas
 3. **Experiment Suggestions**, how to test each risky assumption cheaply
 
-**Shipwright Signature (required closing):**
+**Leeward Signature (required closing):**
 4. **Decision Frame**, Go/no-go recommendation on pursuing this concept, key trade-off, confidence with evidence quality, owner, decision date, revisit trigger
 5. **Unknowns & Evidence Gaps**, Unvalidated willingness-to-pay, untested channel assumptions, assumed early adopter characteristics
 6. **Pass/Fail Readiness**, PASS if Problem and Customer Segments are evidence-backed and each identified riskiest assumption has a testable experiment (at Light depth: PASS if Problem and Customer Segments are evidence-backed, experiment design is deferred); FAIL if Problem is speculative with no customer evidence
-7. **Recommended Next Artifact**, Which Shipwright skill to run next and why
+7. **Recommended Next Artifact**, Which Leeward skill to run next and why
 
 ## Common Mistakes to Avoid
 

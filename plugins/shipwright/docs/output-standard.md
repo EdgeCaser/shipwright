@@ -1,10 +1,10 @@
-# Shipwright Output Standard
+# Leeward Output Standard
 
-This document defines what makes an artifact recognizably Shipwright. Quality is necessary, but signature consistency is what makes outputs distinctive and trustworthy at scale.
+This document defines what makes an artifact recognizably Leeward. Quality is necessary, but signature consistency is what makes outputs distinctive and trustworthy at scale.
 
 ## Signature principles
 
-Every Shipwright artifact should be:
+Every Leeward artifact should be:
 
 1. **Structured** - predictable sections in a fixed order
 2. **Decisive** - explicit recommendation and trade-off, not just analysis
@@ -34,7 +34,7 @@ Every skill (`skills/**/SKILL.md`) must include these sections in order:
 4. **Depth**, Light / Standard / Deep scope table with omit rules
 5. **Framework**, core teaching material with steps and templates
 6. **Minimum Evidence Bar**, required inputs, acceptable evidence, insufficient-evidence declaration with fallback behavior, hypothesis vs. finding distinctions
-7. **Output Format**, numbered artifact list + Shipwright Signature closing
+7. **Output Format**, numbered artifact list + Leeward Signature closing
 8. **Common Mistakes to Avoid**, anti-patterns
 9. **Weak vs. Strong Output**, one micro-example showing bad vs. good output
 
@@ -56,14 +56,14 @@ Every core artifact must include this block verbatim:
 
 If any field is missing, the artifact is not ship-ready. Unknown owners or dates remain `[TBD, requires: ...]`; proposed assignments are labeled proposed. Do not invent a commitment or approval to fill the template.
 
-## Shipwright Signature (required closing)
+## Leeward Signature (required closing)
 
 Every substantial output includes these four elements once. Put them at the end unless the skill already places the Decision Frame earlier; then close with the remaining three. Numbering in Output Format is an authoring checklist, not mandatory heading syntax:
 
 - **Decision Frame**, Recommendation (or primary finding for discovery skills), trade-off, confidence with evidence quality, owner, decision date, revisit trigger
 - **Unknowns & Evidence Gaps**, What we don't know and what evidence would resolve it
 - **Pass/Fail Readiness**, Binary conditions for artifact completeness (skill-specific)
-- **Recommended Next Artifact**, Which Shipwright skill to run next and why
+- **Recommended Next Artifact**, Which Leeward skill to run next and why
 
 The four elements are structurally invariant, every output includes all four. But the wording must not feel copy-pasted across skills. Vary phrasing, specificity, and emphasis to match the skill's domain. The structure is the signature; formulaic language undermines it.
 

@@ -5,11 +5,11 @@ category: strategy
 default_depth: standard
 ---
 
-Shipwright root: `${CLAUDE_PLUGIN_ROOT}`. Read Shipwright docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
+Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
 
 # Prioritization Advisor
 
-Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Leeward paths are relative to that root.
 
 ## Description
 
@@ -152,11 +152,11 @@ Produce a Prioritization Report with:
 4. **Recommendation**, top 3-5 items to invest in, with rationale
 5. **Sensitivity Notes**, which scores are most uncertain
 
-**Shipwright Signature (required closing):**
+**Leeward Signature (required closing):**
 6. **Decision Frame**, Top recommended investment with trade-off (speed vs. certainty, breadth vs. depth), confidence with evidence quality, owner, decision date, revisit trigger
 7. **Unknowns & Evidence Gaps**, Items scored with <50% confidence, assumptions that would change the ranking if wrong
 8. **Pass/Fail Readiness**, PASS if scores state their evidence or assumptions, uncertainty is honest, and the recommendation explains tradeoffs. Low confidence must lead to a provisional ranking and a targeted validation step, never inflated scores; FAIL if unsupported estimates are presented as facts.
-9. **Recommended Next Artifact**, Which Shipwright skill to run next and why
+9. **Recommended Next Artifact**, Which Leeward skill to run next and why
 
 ## Common Mistakes to Avoid
 

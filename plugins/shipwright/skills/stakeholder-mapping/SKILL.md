@@ -5,11 +5,11 @@ category: planning
 default_depth: standard
 ---
 
-Shipwright root: `${CLAUDE_PLUGIN_ROOT}`. Read Shipwright docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
+Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
 
 # Stakeholder Mapping (Power × Interest)
 
-Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Leeward paths are relative to that root.
 
 ## Description
 
@@ -175,11 +175,11 @@ Produce a Stakeholder Map with:
 4. **Communication Plan**, tailored by stakeholder
 5. **Tracking Sheet**, alignment over time with escalation triggers
 
-**Shipwright Signature (required closing):**
+**Leeward Signature (required closing):**
 6. **Decision Frame**, Top engagement priority (which stakeholder relationship to invest in first), trade-off between breadth and depth of engagement, confidence based on evidence quality of stance assessments, map owner, date, revisit trigger
 7. **Unknowns & Evidence Gaps**, Stakeholders whose stance is assumed not observed, influence relationships not yet validated, hidden decision-makers not yet identified
 8. **Pass/Fail Readiness**, PASS if every "Manage Closely" stakeholder has a documented stance based on direct interaction; FAIL if any high-power stakeholder's stance is unverified assumption. (At Light depth, the tailored engagement plan requirement is waived since the Communication Plan is omitted.)
-9. **Recommended Next Artifact**, Which Shipwright skill to run next and why
+9. **Recommended Next Artifact**, Which Leeward skill to run next and why
 
 ## Common Mistakes to Avoid
 

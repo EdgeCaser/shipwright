@@ -3,11 +3,11 @@ name: leeward-research-brief
 description: "Produce an evidence-backed market, competitor, pricing or business-attractiveness brief. Use Leeward's installed collector when available, with bounded browsing for gaps."
 ---
 
-Shipwright root: `${CLAUDE_PLUGIN_ROOT}`. Read Shipwright docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
+Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
 
-# Shipwright Research Brief
+# Leeward Research Brief
 
-Locate the Shipwright root from this skill's path: the ancestor containing `manifest.json` and `docs/workflow-contract.md`. In a checkout this is the repository root; in a copied install it is `.codex/`; in a plugin it is the plugin root. Read that workflow contract. Resolve referenced files and helpers from that root while keeping the working directory at the user's project.
+Locate the Leeward root from this skill's path: the ancestor containing `manifest.json` and `docs/workflow-contract.md`. In a checkout this is the repository root; in a copied install it is `.codex/`; in a plugin it is the plugin root. Read that workflow contract. Resolve referenced files and helpers from that root while keeping the working directory at the user's project.
 
 ## Retrieve once
 

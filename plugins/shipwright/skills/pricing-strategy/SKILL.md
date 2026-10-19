@@ -5,11 +5,11 @@ category: pricing
 default_depth: standard
 ---
 
-Shipwright root: `${CLAUDE_PLUGIN_ROOT}`. Read Shipwright docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
+Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
 
 # Pricing Strategy Analyzer
 
-Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Leeward paths are relative to that root.
 
 ## Description
 
@@ -224,11 +224,11 @@ Produce a Pricing Strategy Document with:
 5. **Competitive Analysis**, market pricing landscape
 6. **Packaging Design**, tier structure with feature gating and upgrade triggers
 
-**Shipwright Signature (required closing):**
+**Leeward Signature (required closing):**
 7. **Decision Frame**, Recommended pricing model and price point, acquisition vs. revenue trade-off, confidence level with evidence quality, pricing owner, decision date, revisit trigger (e.g., competitive move, NRR shift)
 8. **Unknowns & Evidence Gaps**, WTP ranges not yet validated, segments not surveyed, competitive pricing behind sales walls
 9. **Pass/Fail Readiness**, PASS for a pricing recommendation if the value metric and model have evidence-backed rationale and the range is defensible. Light depth may PASS as a hypothesis-only model assessment with evidence gaps explicit; it is not approval to change prices.
-10. **Recommended Next Artifact**, Which Shipwright skill to run next and why
+10. **Recommended Next Artifact**, Which Leeward skill to run next and why
 
 ## Common Mistakes to Avoid
 

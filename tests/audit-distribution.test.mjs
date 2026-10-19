@@ -52,7 +52,7 @@ test('packaged commands and skills name the plugin root right after frontmatter,
   assert.ok(entries.length >= 60);
   for (const name of entries) {
     const text = files.get(name).toString('utf8');
-    assert.match(text, /^---\r?\n[\s\S]*?\r?\n---\r?\n\nShipwright root: `\$\{CLAUDE_PLUGIN_ROOT\}`\./, name);
+    assert.match(text, /^---\r?\n[\s\S]*?\r?\n---\r?\n\nLeeward root: `\$\{CLAUDE_PLUGIN_ROOT\}`\./, name);
     assert.equal(text.split(PLUGIN_ROOT_LINE).length, 2, name);
   }
   for (const [name, content] of files) {
@@ -100,7 +100,7 @@ test('the Node installer preflights conflicts and applies a disposable update wi
   for (const entry of ['skills', 'commands', 'agents', 'evals', 'schemas', 'output-styles', 'docs', 'scripts', 'examples', '.claude-plugin', '.codex']) {
     await cp(path.join(SOURCE_ROOT, entry), path.join(source, entry), { recursive: true });
   }
-  for (const entry of ['manifest.json', 'skills-map.md', 'LICENSE']) {
+  for (const entry of ['manifest.json', 'skills-map.md', 'LICENSE', 'PRIVACY.md', 'TERMS.md']) {
     await cp(path.join(SOURCE_ROOT, entry), path.join(source, entry));
   }
   await mkdir(project);

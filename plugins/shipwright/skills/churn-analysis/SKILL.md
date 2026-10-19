@@ -5,11 +5,11 @@ category: customer-intelligence
 default_depth: standard
 ---
 
-Shipwright root: `${CLAUDE_PLUGIN_ROOT}`. Read Shipwright docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
+Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
 
 # Churn Analysis & Retention Playbook
 
-Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Leeward paths are relative to that root.
 
 ## Description
 
@@ -192,11 +192,11 @@ Produce a Churn Analysis & Retention Playbook with:
 4. **Retention Options**, framed intervention options across stages (prevention, intervention, save, recovery) with expected impact and trade-offs; does not prescribe which to implement
 5. **Measurement Plan**, metrics and review cadence
 
-**Shipwright Signature (required closing):**
+**Leeward Signature (required closing):**
 6. **Decision Frame**, primary finding on churn drivers and framed retention options with expected churn impact, trade-offs (cost of intervention vs. cost of churn), confidence level with evidence quality, owner, decision date, revisit trigger
 7. **Unknowns & Evidence Gaps**, root causes with insufficient qualitative backing, segments with no exit data, untested intervention assumptions
 8. **Pass/Fail Readiness**, PASS if churn is consistently defined and quantified, causal claims match available evidence, and uncertainty is explicit. A Light pulse may report causes unknown. Standard/Deep frame supported retention options; FAIL if correlation or an unsupported explanation is asserted as a root cause.
-9. **Recommended Next Artifact**, Which Shipwright skill to run next and why
+9. **Recommended Next Artifact**, Which Leeward skill to run next and why
 
 ## Common Mistakes to Avoid
 

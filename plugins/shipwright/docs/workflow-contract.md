@@ -1,10 +1,10 @@
 # Workflow and handoff contract
 
-Applies to every Shipwright skill, command and specialist. Read once per session, then use the selected skill's depth and evidence rules. For execution, handoff and authority conflicts, this shared contract takes precedence over older examples or generic agent templates; explicit user instructions remain authoritative.
+Applies to every Leeward skill, command and specialist. Read once per session, then use the selected skill's depth and evidence rules. For execution, handoff and authority conflicts, this shared contract takes precedence over older examples or generic agent templates; explicit user instructions remain authoritative.
 
 ## Resolve the installation first
 
-All `skills/`, `agents/`, `commands/`, `docs/`, `evals/`, `schemas/`, `manifest.json`, and `skills-map.md` references are relative to the Shipwright installation, never the filesystem root or an unrelated product repository. Locate the root from the loaded command/skill path. A plugin root contains its manifest; a project copy uses `.claude/` or `.codex/` with its own `manifest.json`. Use the actual absolute path when reading or running a helper. Keep the working directory at the user's project so research credentials and temporary evidence packs stay project-local.
+All `skills/`, `agents/`, `commands/`, `docs/`, `evals/`, `schemas/`, `manifest.json`, and `skills-map.md` references are relative to the Leeward installation, never the filesystem root or an unrelated product repository. Locate the root from the loaded command/skill path. A plugin root contains its manifest; a project copy uses `.claude/` or `.codex/` with its own `manifest.json`. Use the actual absolute path when reading or running a helper. Keep the working directory at the user's project so research credentials and temporary evidence packs stay project-local.
 
 ## Execute only the needed work
 

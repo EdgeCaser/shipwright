@@ -5,11 +5,11 @@ category: execution
 default_depth: standard
 ---
 
-Shipwright root: `${CLAUDE_PLUGIN_ROOT}`. Read Shipwright docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
+Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
 
 # User Story Writing
 
-Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Leeward paths are relative to that root.
 
 ## Description
 
@@ -171,11 +171,11 @@ For each user story, produce:
 4. **Definition of done**, checklist
 5. **Estimation notes**, dependencies, risks, unknowns
 
-**Shipwright Signature (required closing):**
+**Leeward Signature (required closing):**
 6. **Decision Frame**, story readiness recommendation (ready for sprint / needs grooming / needs split), trade-off, confidence with evidence quality, owner, decision date, revisit trigger
 7. **Unknowns & Evidence Gaps**, undefined edge case behaviors, missing design specs, unconfirmed performance thresholds
 8. **Pass/Fail Readiness**, PASS if the story meets INVEST criteria, the acceptance criteria cover the intended behavior and material stated boundaries or error paths, and the persona is evidence-based. At Light depth, cover the main behavior and any material error path without inventing edge cases. FAIL if the persona is generic ("a user"), acceptance criteria are untestable, or the story is too large for one sprint.
-9. **Recommended Next Artifact**, Which Shipwright skill to run next and why
+9. **Recommended Next Artifact**, Which Leeward skill to run next and why
 
 ## Common Mistakes to Avoid
 

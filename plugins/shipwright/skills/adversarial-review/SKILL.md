@@ -5,15 +5,15 @@ category: technical
 default_depth: standard
 ---
 
-Shipwright root: `${CLAUDE_PLUGIN_ROOT}`. Read Shipwright docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
+Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
 
 # Adversarial Review
 
-Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Leeward paths are relative to that root.
 
 ## Description
 
-Stress-tests a completed Shipwright artifact from an explicitly adversarial posture. The job is not to rewrite the artifact or prove superiority. The job is to find the places where the artifact may be wrong, weakly supported, too comfortable, too generic, or structurally misleading.
+Stress-tests a completed Leeward artifact from an explicitly adversarial posture. The job is not to rewrite the artifact or prove superiority. The job is to find the places where the artifact may be wrong, weakly supported, too comfortable, too generic, or structurally misleading.
 
 This skill produces a **Challenge Report**. A good Challenge Report creates useful friction: it names the exact claim being challenged, explains why the claim is vulnerable, and states what would resolve the challenge.
 
@@ -193,7 +193,7 @@ For Deep reviews, add:
 
 **Required inputs:** The artifact under review. If the artifact depends on evidence outside itself, include that source evidence when available.
 
-**Acceptable evidence:** The artifact text, linked or pasted source materials, cited metrics, PM-supplied context, and upstream Shipwright artifacts.
+**Acceptable evidence:** The artifact text, linked or pasted source materials, cited metrics, PM-supplied context, and upstream Leeward artifacts.
 
 **Insufficient evidence behavior:** If the artifact lacks enough context to be reviewed responsibly, produce a partial Challenge Report that says `Insufficient evidence to assess` and list the exact missing inputs needed. Do not fill the gaps with invented counter-evidence.
 
@@ -206,7 +206,7 @@ When in doubt, downgrade to hypothesis instead of overstating the critique.
 
 ## Output Format
 
-When an automated handoff or benchmark explicitly requests structured output, also read `docs/structured-artifacts.md` and the matching schema from the Shipwright installation root. Append the validated envelope and keep it consistent with the visible artifact. Ordinary chat output needs no JSON duplicate.
+When an automated handoff or benchmark explicitly requests structured output, also read `docs/structured-artifacts.md` and the matching schema from the Leeward installation root. Append the validated envelope and keep it consistent with the visible artifact. Ordinary chat output needs no JSON duplicate.
 
 Produce a **Challenge Report** containing:
 
@@ -236,11 +236,11 @@ Produce a **Challenge Report** containing:
 
 In v1, the Challenge Report is conversation-native unless the PM explicitly asks to save it to disk.
 
-Then close with the remaining Shipwright Signature elements:
+Then close with the remaining Leeward Signature elements:
 
 6. **Unknowns & Evidence Gaps**, Missing context, missing source evidence, or reviewer limitations that reduced confidence in the review itself
 7. **Pass/Fail Readiness**, PASS if findings are evidence-backed, severity is calibrated, and each finding includes a resolution condition; FAIL if critique is generic, theatrical, or unsupported
-8. **Recommended Next Artifact**, Which Shipwright skill or agent should engage next and why
+8. **Recommended Next Artifact**, Which Leeward skill or agent should engage next and why
 
 For machine handoffs, serialize `minor` for Minor severity and record all author responses by finding ID. Use `INSUFFICIENT_EVIDENCE` with FAIL for an incomplete review. A Critical finding requires ESCALATE.
 

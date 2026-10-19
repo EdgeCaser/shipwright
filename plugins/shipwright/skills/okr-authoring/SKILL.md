@@ -5,11 +5,11 @@ category: planning
 default_depth: standard
 ---
 
-Shipwright root: `${CLAUDE_PLUGIN_ROOT}`. Read Shipwright docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
+Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
 
 # OKR Authoring & Alignment
 
-Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Leeward paths are relative to that root.
 
 ## Description
 
@@ -194,11 +194,11 @@ Produce an OKR Document with:
 4. **Anti-Pattern Audit**, checklist results with fixes
 5. **Check-In Template**, ready for mid-quarter scoring
 
-**Shipwright Signature (required closing):**
+**Leeward Signature (required closing):**
 6. **Decision Frame**, Key trade-offs in objective selection (what you're pursuing vs. what you're deferring), confidence in each target based on baseline data quality, OKR owner, cycle dates, revisit trigger
 7. **Unknowns & Evidence Gaps**, KRs lacking baselines, metrics not yet instrumented, alignment relationships assumed but unconfirmed with partner teams
 8. **Pass/Fail Readiness**, PASS if every KR has a measurable target with a known or planned baseline; FAIL if any KR is binary ("ship X") or has no measurement method. (At Light depth, company-level alignment is not evaluated since the Alignment Check is omitted.)
-9. **Recommended Next Artifact**, Which Shipwright skill to run next and why
+9. **Recommended Next Artifact**, Which Leeward skill to run next and why
 
 ## Common Mistakes to Avoid
 

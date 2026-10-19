@@ -20,7 +20,7 @@ to start moving upmarket toward 500+ employee companies.
 
 ---
 
-## Baseline output (without Shipwright)
+## Baseline output (without Leeward)
 
 > The AI gives reasonable strategic thinking but as a narrative essay. Notice the absence of falsifiable claims, kill criteria, or explicit trade-offs.
 
@@ -54,7 +54,7 @@ to start moving upmarket toward 500+ employee companies.
 
 ---
 
-## Shipwright output (with `/strategy`)
+## Leeward output (with `/strategy`)
 
 > The workflow forces structured phases: vision, strategic context, explicit bets with kill criteria, boundaries, pre-mortem, and measurable success criteria.
 
@@ -160,7 +160,7 @@ For compliance officers and CTOs at mid-market fintech companies (100-1000 emplo
 
 ---
 
-## Why the Shipwright output is better
+## Why the Leeward output is better
 
 1. **Falsifiable bets replace vague themes.** Each bet has a testable thesis ("We believe X will cause Y because Z") with explicit kill criteria. The baseline's "themes" ("Enterprise Readiness," "Platform Expansion") can't be proven wrong and will never be abandoned.
 
@@ -170,6 +170,6 @@ For compliance officers and CTOs at mid-market fintech companies (100-1000 emplo
 
 4. **Pre-mortem adds rigor.** The pre-mortem identifies 5 specific failure modes with likelihood, impact, and mitigations. The baseline lists 3 one-line risks with no mitigation plans.
 
-5. **Quantified strategic context.** The Shipwright output ties every bet to specific data: "win rate drops 23 points," "4 of 5 lost enterprise deals cited org structure," "customers who complete first framework in <35 days have 3x retention." The baseline uses directional language ("significantly expand," "room for improvement") without numbers.
+5. **Quantified strategic context.** The Leeward output ties every bet to specific data: "win rate drops 23 points," "4 of 5 lost enterprise deals cited org structure," "customers who complete first framework in <35 days have 3x retention." The baseline uses directional language ("significantly expand," "room for improvement") without numbers.
 
 6. **Explicit sequencing.** The pre-mortem identifies capacity as a risk and the strategy sequences bets: Bet 1 → Bet 2 (staggered) → Bet 3. The baseline puts everything into Q3 and Q4 without addressing the constraint.

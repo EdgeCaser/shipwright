@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { realpathSync } from 'node:fs';
 
 export const SOURCE_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-export const PLUGIN_ROOT_LINE = 'Shipwright root: `${CLAUDE_PLUGIN_ROOT}`. Read Shipwright docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file\'s path instead.';
+export const PLUGIN_ROOT_LINE = 'Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file\'s path instead.';
 
 // Explicit distribution allowlist. Never package credentials, local installs or run artifacts.
 export async function pluginFiles(root = SOURCE_ROOT) {
@@ -13,7 +13,9 @@ export async function pluginFiles(root = SOURCE_ROOT) {
   const manifest = JSON.parse(await readFile(path.join(root, 'manifest.json'), 'utf8'));
   const rewrite = text => text
     .replace(/skills\/[a-z-]+\/([a-z-]+)\/SKILL\.md/g, 'skills/$1/SKILL.md')
-    .replace(/\.codex\/skills\//g, 'skills/');
+    .replace(/\.codex\/skills\//g, 'skills/')
+    .replace(/\bShipwright\b/g, 'Leeward')
+    .replace('first developed under the name Leeward', 'first developed under the name Shipwright');
   // Claude Code fills in ${CLAUDE_PLUGIN_ROOT} in command and skill text; other hosts leave it as written.
   const withRoot = text => text.replace(/^(---\r?\n[\s\S]*?\r?\n---\r?\n)/, `$1\n${PLUGIN_ROOT_LINE}\n`);
   async function add(source, target = source) {
@@ -45,7 +47,7 @@ export async function pluginFiles(root = SOURCE_ROOT) {
   for (const entry of ['collect-research', 'source-adapters', 'classify-request', 'format-facts',
     'pricing-diff', 'pricing-tuples', 'markdown-scan', 'extract-structured-artifact', 'validate-artifact', 'route-request',
     'reconcile-artifact', 'reconcile-evidence', 'reconcile-inputs', 'reconcile-behavior', 'capture-inputs', 'public-source-fetch']) await add(`scripts/${entry}.mjs`);
-  for (const file of ['manifest.json', 'skills-map.md', 'LICENSE', '.claude-plugin/plugin.json']) await add(file);
+  for (const file of ['manifest.json', 'skills-map.md', 'LICENSE', 'PRIVACY.md', 'TERMS.md', '.claude-plugin/plugin.json']) await add(file);
   // The source README documents checkout-only development tools. A directory install needs
   // a guide whose links and commands are valid inside this bundle.
   await add('docs/plugin-guide.md', 'README.md');

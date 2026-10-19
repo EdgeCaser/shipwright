@@ -20,7 +20,7 @@ and ComplianceOS maps collected evidence to their active compliance controls.
 
 ---
 
-## Baseline output (without Shipwright)
+## Baseline output (without Leeward)
 
 > The AI gives a reasonable single-perspective review. Notice that it stays in one voice and misses entire categories of concern.
 
@@ -49,7 +49,7 @@ and ComplianceOS maps collected evidence to their active compliance controls.
 
 ---
 
-## Shipwright output (with `design-review` skill)
+## Leeward output (with `design-review` skill)
 
 > The skill runs 7 parallel perspectives, each with a specific evaluator mindset and forced verdict. The synthesis identifies tensions between perspectives.
 
@@ -268,15 +268,15 @@ and ComplianceOS maps collected evidence to their active compliance controls.
 
 ---
 
-## Why the Shipwright output is better
+## Why the Leeward output is better
 
-1. **Seven perspectives vs. one.** The baseline gives a single-voice review that catches UX issues but misses legal, security, sales, and customer adoption concerns entirely. The Shipwright output's Legal perspective identified a hard blocker (contract gap) that would have surfaced weeks into development.
+1. **Seven perspectives vs. one.** The baseline gives a single-voice review that catches UX issues but misses legal, security, sales, and customer adoption concerns entirely. The Leeward output's Legal perspective identified a hard blocker (contract gap) that would have surfaced weeks into development.
 
-2. **Forced verdicts prevent hand-waving.** Each perspective must commit to Green/Yellow/Red. The baseline says "looks good with minor improvements", the Shipwright output shows 1 Red, 4 Yellow, 2 Green, which is a fundamentally different risk picture.
+2. **Forced verdicts prevent hand-waving.** Each perspective must commit to Green/Yellow/Red. The baseline says "looks good with minor improvements", the Leeward output shows 1 Red, 4 Yellow, 2 Green, which is a fundamentally different risk picture.
 
 3. **Tensions are surfaced explicitly.** The synthesis identifies where perspectives disagree (timeline vs. legal, setup ownership messaging) and assigns resolution owners. The baseline treats all feedback as a single undifferentiated list.
 
-4. **Blockers are distinguished from recommendations.** The baseline mixes "add a test connection step" (nice-to-have) with security concerns (critical) at the same priority level. The Shipwright output separates blockers from recommendations with severity ratings.
+4. **Blockers are distinguished from recommendations.** The baseline mixes "add a test connection step" (nice-to-have) with security concerns (critical) at the same priority level. The Leeward output separates blockers from recommendations with severity ratings.
 
 5. **Devil's Advocate challenges assumptions.** The 60% evidence coverage claim is questioned with a specific counter-argument ("many SOC 2 controls are process-based"). The baseline doesn't question any of the proposal's assumptions.
 

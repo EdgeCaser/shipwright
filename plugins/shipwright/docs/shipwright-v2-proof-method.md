@@ -2,7 +2,7 @@
 
 Fixture replay is a regression check, not product performance evidence. Synthetic artifacts, injected runner tests and self-review must be labeled as such.
 
-A publishable comparison needs independently generated baseline and Shipwright artifacts from the same fixed scenario inputs, actual model/version and environment records, equal evidence/tool budgets, preserved raw outputs and at least three independent reviewers blinded to condition. Keep failed and incomplete runs in the denominator. Record interventions and revisions; do not cherry-pick the best generation.
+A publishable comparison needs independently generated baseline and Leeward artifacts from the same fixed scenario inputs, actual model/version and environment records, equal evidence/tool budgets, preserved raw outputs and at least three independent reviewers blinded to condition. Keep failed and incomplete runs in the denominator. Record interventions and revisions; do not cherry-pick the best generation.
 
 The harness checks metadata structure and declared provenance. `publishable_proof_ready` checks nonempty matching scenario sets, recorded independent generation/review and complete ratings. Those flags are producer assertions: software cannot certify reviewer independence, real blinding or honest sampling. A release owner must verify the underlying records. A provisional threshold policy remains provisional even if provenance fields are complete.
 

@@ -1,4 +1,4 @@
-# Installing Shipwright
+# Installing Leeward
 
 ## Complete project install (Claude Code and Codex)
 

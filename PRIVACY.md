@@ -1,6 +1,6 @@
 # Privacy policy
 
-Last updated: October 2, 2026
+Last updated: October 19, 2026
 
 Leeward is an open-source plugin that runs inside the AI tool you install it in, such as Claude Code or Codex. Nobody runs a server behind it, and the maintainers can't see what you do with it. There is no account and no telemetry.
 
@@ -27,7 +27,7 @@ The docs explain how to connect tools such as Linear or Jira. Those connections 
 
 ## Age
 
-Leeward is built for product work and is not intended for anyone under 18.
+Leeward provides general-audience product-management workflows. It does not target children under 13. Your AI host's age requirements apply.
 
 ## Changes and questions
 

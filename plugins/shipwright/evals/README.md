@@ -1,6 +1,6 @@
 # Evaluation System
 
-Shipwright skills produce structured artifacts. This directory provides rubrics for evaluating whether those artifacts are actually good, not just well-formatted, but decision-ready.
+Leeward skills produce structured artifacts. This directory provides rubrics for evaluating whether those artifacts are actually good, not just well-formatted, but decision-ready.
 
 ## Why evaluate
 
@@ -37,7 +37,7 @@ This prevents evals from becoming optional documentation.
 | Rubric | Evaluates | Artifact-specific dimensions |
 |---|---|---|
 | [Pass/Fail gates](pass-fail.md) | Binary readiness check | Required structure, decision frame, evidence integrity, ownership |
-| [Universal rubric](rubric.md) | Any Shipwright artifact | Clarity, Completeness, Actionability, Correctness |
+| [Universal rubric](rubric.md) | Any Leeward artifact | Clarity, Completeness, Actionability, Correctness |
 | [PRD](prd.md) | PRDs from `/write-prd` | + Scope Discipline, Evidence Grounding |
 | [Strategy](strategy.md) | Strategy docs from `/strategy` | + Decision Courage, Falsifiability |
 | [Design Review](design-review.md) | Design reviews from `design-review` skill | + Perspective Coverage, Tension Surfacing |

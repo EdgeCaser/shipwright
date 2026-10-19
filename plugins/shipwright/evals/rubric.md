@@ -1,6 +1,6 @@
 # Universal Evaluation Rubric
 
-This rubric applies to any artifact produced by a Shipwright skill or workflow. Every artifact should be scored on these 4 dimensions. Artifact-specific rubrics add 2-3 additional dimensions on top of these.
+This rubric applies to any artifact produced by a Leeward skill or workflow. Every artifact should be scored on these 4 dimensions. Artifact-specific rubrics add 2-3 additional dimensions on top of these.
 
 ## Dimensions
 

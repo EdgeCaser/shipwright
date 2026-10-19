@@ -5,11 +5,11 @@ category: measurement
 default_depth: standard
 ---
 
-Shipwright root: `${CLAUDE_PLUGIN_ROOT}`. Read Shipwright docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
+Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
 
 # Retrospective Facilitator
 
-Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Leeward paths are relative to that root.
 
 ## Description
 
@@ -209,11 +209,11 @@ Produce a Retrospective Report with:
 5. **Action Items**, owned, dated, with success criteria
 6. **Previous Items Review**, accountability check
 
-**Shipwright Signature (required closing):**
+**Leeward Signature (required closing):**
 7. **Decision Frame**, top process change recommendation, trade-off (effort to implement vs. expected improvement), confidence with evidence quality (number of corroborating observations, recurrence across retros), owner, decision date, revisit trigger
 8. **Unknowns & Evidence Gaps**, themes raised by only one person, root causes not yet validated, missing perspectives from absent team members
 9. **Pass/Fail Readiness**, PASS if observations are traceable and each agreed action has an owner and due date, plus success criteria at Standard/Deep depth. Zero or one action is valid when the findings warrant it; do not invent actions or consensus. FAIL if agreed actions are unowned or evidence is missing.
-10. **Recommended Next Artifact**, Which Shipwright skill to run next and why
+10. **Recommended Next Artifact**, Which Leeward skill to run next and why
 
 ## Common Mistakes to Avoid
 

@@ -5,15 +5,15 @@ category: measurement
 default_depth: standard
 ---
 
-Shipwright root: `${CLAUDE_PLUGIN_ROOT}`. Read Shipwright docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
+Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
 
 # Artifact Quality Audit
 
-Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Leeward paths are relative to that root.
 
 ## Description
 
-Scores a set of Shipwright artifacts against the universal rubric dimensions (Clarity, Completeness, Actionability, Correctness), layers artifact-specific eval criteria when available, and compares scores across the set to detect quality drift. The output is a Quality Audit Report, a scoring artifact, not a review or rewrite.
+Scores a set of Leeward artifacts against the universal rubric dimensions (Clarity, Completeness, Actionability, Correctness), layers artifact-specific eval criteria when available, and compares scores across the set to detect quality drift. The output is a Quality Audit Report, a scoring artifact, not a review or rewrite.
 
 This skill is distinct from adversarial review. Adversarial review pressure-tests a single artifact for weak reasoning. Quality audit scores multiple artifacts against a consistent rubric to find patterns over time.
 
@@ -23,7 +23,7 @@ This skill is distinct from adversarial review. Adversarial review pressure-test
 - When a PM suspects output quality has degraded but can't pinpoint where
 - Before adopting a new workflow or agent configuration, to establish a quality baseline
 - During a retrospective, to ground "the outputs felt weaker" in scored evidence
-- When onboarding a new team member to Shipwright, to calibrate expectations
+- When onboarding a new team member to Leeward, to calibrate expectations
 
 ## Depth
 
@@ -54,7 +54,7 @@ If the PM has not specified artifacts, offer to review the last 3-5 from the cur
 
 ### Step 1b: Run the Deterministic Pre-Pass
 
-Before scoring manually, locate the nearest Shipwright installation root containing
+Before scoring manually, locate the nearest Leeward installation root containing
 `manifest.json` and run the postflight validator on each artifact file by its absolute installed path:
 
 ```bash
@@ -115,7 +115,7 @@ Each recommendation must be specific (name the dimension, the agent/workflow, an
 
 ## Minimum Evidence Bar
 
-**Required inputs:** One or more completed Shipwright artifacts. A single-artifact audit scores the artifact and records that it cannot support trend findings; a comparison needs enough comparable artifacts to support the trend claimed.
+**Required inputs:** One or more completed Leeward artifacts. A single-artifact audit scores the artifact and records that it cannot support trend findings; a comparison needs enough comparable artifacts to support the trend claimed.
 
 **Acceptable evidence:** The artifacts themselves, plus any source materials or context that informed them.
 
@@ -133,11 +133,11 @@ Produce a **Quality Audit Report** with:
 3. **Trend Observations**, declining, stable, or improving per dimension; strongest and weakest patterns
 4. **Recommendations**, 3-5 specific actions tied to failure modes and recovery playbooks
 
-**Shipwright Signature (required closing):**
+**Leeward Signature (required closing):**
 5. **Decision Frame**, Primary quality finding, trade-off (invest in fixing weakest dimension vs. maintain current trajectory), confidence with sample size caveat, owner, decision date, revisit trigger (next audit cycle)
 6. **Unknowns & Evidence Gaps**, Artifacts not included in the audit, dimensions not scored due to missing artifact-specific evals, sample size limitations
 7. **Pass/Fail Readiness**, PASS if every reviewed artifact is scored on all 4 universal dimensions with evidence-backed rationales, and any trend claim is supported by comparable artifacts. A single-artifact audit may PASS without a trend claim when it states that limitation. FAIL if scores lack rationales or trends are asserted without cross-artifact comparison.
-8. **Recommended Next Artifact**, Which Shipwright skill to run next and why
+8. **Recommended Next Artifact**, Which Leeward skill to run next and why
 
 ## Common Mistakes to Avoid
 

@@ -1,6 +1,6 @@
 # Composition Model
 
-Shipwright has four layers. Each layer builds on the one below it. Understanding how they compose lets you build custom workflows, assign agents to new tasks, and reason about what's happening when you type `/start`.
+Leeward has four layers. Each layer builds on the one below it. Understanding how they compose lets you build custom workflows, assign agents to new tasks, and reason about what's happening when you type `/start`.
 
 ## The four layers
 

@@ -5,11 +5,11 @@ category: strategy
 default_depth: standard
 ---
 
-Shipwright root: `${CLAUDE_PLUGIN_ROOT}`. Read Shipwright docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
+Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
 
 # PESTEL Analysis
 
-Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Leeward paths are relative to that root.
 
 ## Description
 
@@ -132,11 +132,11 @@ Produce a PESTEL report with:
 3. **Priority Matrix**, categorized by urgency
 4. **Monitoring Plan**, signals to watch and review cadence
 
-**Shipwright Signature (required closing):**
+**Leeward Signature (required closing):**
 5. **Decision Frame**, Which macro factors to act on vs. monitor, key trade-off, confidence with evidence quality, owner, decision date, revisit trigger
 6. **Unknowns & Evidence Gaps**, Pending legislation outcomes, unconfirmed regulatory timelines, emerging technology trajectories without consensus
 7. **Pass/Fail Readiness**, PASS if at least 4 dimensions have sourced factors and the Priority Matrix is populated (Act Now items required only if factors meet the High Impact × High Likelihood × Near-term threshold; if none qualify, explicit declaration is sufficient) (at Light depth: PASS if the 2-3 included dimensions have sourced factors, Priority Matrix is deferred); FAIL if factors are generic trends not tied to the specific product or market
-8. **Recommended Next Artifact**, Which Shipwright skill to run next and why
+8. **Recommended Next Artifact**, Which Leeward skill to run next and why
 
 ## Common Mistakes to Avoid
 

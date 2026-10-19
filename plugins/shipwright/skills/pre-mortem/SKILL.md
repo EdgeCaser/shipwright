@@ -5,11 +5,11 @@ category: execution
 default_depth: standard
 ---
 
-Shipwright root: `${CLAUDE_PLUGIN_ROOT}`. Read Shipwright docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
+Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
 
 # Pre-Mortem Analysis
 
-Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Leeward paths are relative to that root.
 
 ## Description
 
@@ -160,11 +160,11 @@ Produce a Pre-Mortem Report with:
 4. **Mitigation Plan**, prevention, detection, and contingency for each top risk
 5. **Kill Criteria**, pre-committed decision triggers
 
-**Shipwright Signature (required closing):**
+**Leeward Signature (required closing):**
 6. **Decision Frame**, go/no-go recommendation based on risk profile, trade-off, confidence with evidence quality, owner, decision date, revisit trigger
 7. **Unknowns & Evidence Gaps**, failure modes with low-confidence likelihood ratings, risks that need spike investigation, missing historical baselines
 8. **Pass/Fail Readiness**, PASS if material risks are ranked with likelihood and impact, and Standard/Deep risks have owned mitigations and kill criteria. Light may omit mitigation detail. FAIL if asserted risks have no rationale or material risks are left unassessed; do not invent risks to meet a count.
-9. **Recommended Next Artifact**, Which Shipwright skill to run next and why
+9. **Recommended Next Artifact**, Which Leeward skill to run next and why
 
 ## Common Mistakes to Avoid
 

@@ -5,11 +5,11 @@ category: strategy
 default_depth: standard
 ---
 
-Shipwright root: `${CLAUDE_PLUGIN_ROOT}`. Read Shipwright docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
+Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
 
 # SWOT Analysis
 
-Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Leeward paths are relative to that root.
 
 ## Description
 
@@ -131,11 +131,11 @@ Produce:
 2. **Strategic Options Matrix** (SO, WO, ST, WT) with at least 2 options per quadrant
 3. **Top 3 Actions** ranked by urgency and impact
 
-**Shipwright Signature (required closing):**
+**Leeward Signature (required closing):**
 4. **Decision Frame**, Top strategic action from cross-reference analysis with trade-off (offensive vs. defensive posture), confidence with evidence quality, owner, decision date, revisit trigger
 5. **Unknowns & Evidence Gaps**, Quadrant items based on assumption rather than data, missing competitive intel, unverified market trends
 6. **Pass/Fail Readiness**, PASS if every quadrant item cites evidence and at least one SO/WT strategy is actionable (at Light depth: PASS if every quadrant item cites evidence, cross-reference strategies are deferred); FAIL if quadrants contain unsourced assertions
-7. **Recommended Next Artifact**, Which Shipwright skill to run next and why
+7. **Recommended Next Artifact**, Which Leeward skill to run next and why
 
 ## Common Mistakes to Avoid
 

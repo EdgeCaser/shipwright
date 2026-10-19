@@ -3,15 +3,15 @@ name: start
 description: "Launch the Leeward orchestrator. Greets the PM, asks what they're working on, chooses Fast or Rigorous execution, and only builds a plan when the work actually needs one."
 ---
 
-Shipwright root: `${CLAUDE_PLUGIN_ROOT}`. Read Shipwright docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
+Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
 
-# /start, Launch Shipwright
+# /start, Launch Leeward
 
-Before executing, read `docs/workflow-contract.md` from this Shipwright installation. Resolve it relative to this file's parent installation root (or the plugin root), not the user's product directory. Its handoff, depth, evidence and authorization rules apply throughout.
+Before executing, read `docs/workflow-contract.md` from this Leeward installation. Resolve it relative to this file's parent installation root (or the plugin root), not the user's product directory. Its handoff, depth, evidence and authorization rules apply throughout.
 
 Also available as `/leeward`, the branded Claude Code entrypoint. For a menu of common paths and direct workflows, use `/leeward-help`.
 
-Run this command at the beginning of any session to activate the Shipwright orchestrator. It acts as a concierge: it understands what you need, maps your request to the right skills and agents, chooses Fast or Rigorous execution, and only builds an execution plan when the work actually needs one.
+Run this command at the beginning of any session to activate the Leeward orchestrator. It acts as a concierge: it understands what you need, maps your request to the right skills and agents, chooses Fast or Rigorous execution, and only builds an execution plan when the work actually needs one.
 
 Use `/start` when you need routing help or a phased plan. If you already know you want `/competitive`, `/pricing`, `/write-prd`, or another specific workflow, running that command directly is usually faster and less likely to time out. For fresh market, competitive, or pricing work, `/start` should usually propose research first and synthesis second instead of one giant run.
 
@@ -24,7 +24,7 @@ Read `CLAUDE.md` (if it exists) to understand the product, personas, metrics, an
 If no task was supplied, present the user with:
 
 ```
-Welcome to Shipwright, your PM agent toolkit.
+Welcome to Leeward, your PM agent toolkit.
 
 What are you trying to accomplish today? Describe it in plain language and I'll
 map out which skills, agents, and workflows can help.
@@ -54,7 +54,7 @@ Rules:
 ### 4. Choose Execution Mode
 
 If the installed routing helper is available and routing is ambiguous, locate the nearest
-Shipwright installation root containing `manifest.json` and optionally run:
+Leeward installation root containing `manifest.json` and optionally run:
 
 ```bash
 node "<absolute-shipwright-root>/scripts/route-request.mjs" "<user request>" --format json
@@ -89,7 +89,7 @@ For Fast mode:
 Read `skills-map.md` and use the routing helper result plus the agent capability matrix to construct a plan:
 
 ```markdown
-## Shipwright Plan: [Title]
+## Leeward Plan: [Title]
 
 Based on what you've described, here's my recommended approach:
 

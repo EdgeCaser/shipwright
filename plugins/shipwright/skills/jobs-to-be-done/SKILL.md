@@ -5,11 +5,11 @@ category: discovery
 default_depth: standard
 ---
 
-Shipwright root: `${CLAUDE_PLUGIN_ROOT}`. Read Shipwright docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
+Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
 
 # Jobs-to-Be-Done Analysis
 
-Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Shipwright paths are relative to that root.
+Read `docs/workflow-contract.md` once per session before applying this skill. Resolve it from the nearest ancestor of this file containing `manifest.json`; all Leeward paths are relative to that root.
 
 ## Description
 
@@ -165,11 +165,11 @@ When I [context], I want to [goal], So I can [outcome].
 [Top underserved opportunities with possible next steps, prototype tests, deeper research, etc.]
 ```
 
-**Shipwright Signature (required closing):**
+**Leeward Signature (required closing):**
 8. **Decision Frame**, Top underserved opportunities worth pursuing, trade-off between breadth of jobs vs. depth of scoring, confidence in opportunity scores with evidence quality, owner, decision date, revisit trigger
 9. **Unknowns & Evidence Gaps**, Job steps with no customer evidence, outcomes scored on assumption rather than data
 10. **Pass/Fail Readiness**, PASS if the core job statement is solution-agnostic and every scored outcome is backed by evidence. At Light depth, PASS requires the functional, emotional, and social layers; outcome scoring is not required. Do not invent outcomes to make a list longer: if evidence does not identify a material outcome, record that gap and avoid a prioritized-outcome recommendation. FAIL if job statements contain product or feature names, or all scores are assumed.
-11. **Recommended Next Artifact**, Which Shipwright skill to run next and why
+11. **Recommended Next Artifact**, Which Leeward skill to run next and why
 
 ## Common Mistakes to Avoid
 

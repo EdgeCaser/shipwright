@@ -3,11 +3,11 @@ name: tech-handoff
 description: "Complete handoff from strategy to engineering: PRD, technical spec, design review, epic breakdown, and user stories."
 ---
 
-Shipwright root: `${CLAUDE_PLUGIN_ROOT}`. Read Shipwright docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
+Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
 
 # /tech-handoff, Strategy-to-Engineering Handoff Workflow
 
-Before executing, read `docs/workflow-contract.md` from this Shipwright installation. Resolve it relative to this file's parent installation root (or the plugin root), not the user's product directory. Its handoff, depth, evidence and authorization rules apply throughout.
+Before executing, read `docs/workflow-contract.md` from this Leeward installation. Resolve it relative to this file's parent installation root (or the plugin root), not the user's product directory. Its handoff, depth, evidence and authorization rules apply throughout.
 
 Run this command to take an approved strategic initiative and produce everything engineering needs to start building. This is the most comprehensive workflow: it chains 5 skills, with a codebase grounding step between the PRD and the tech spec, into the full PM-to-engineering handoff.
 
@@ -60,7 +60,7 @@ Resolve blockers before labeling the breakdown ready for engineering. Draft plan
 
 Before delivering the package to engineering, the handoff PRD must meet the Standard or Deep
 engineering conditions; a Light PRD is directional only. Request its structured PRD envelope,
-then locate the installed Shipwright root and run:
+then locate the installed Leeward root and run:
 
 ```text
 node "<absolute-shipwright-root>/scripts/validate-artifact.mjs" "<prd-path>" --artifact-type prd --expect-structured --require-ready --related "<challenge-report-path>"
