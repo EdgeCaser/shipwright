@@ -56,14 +56,7 @@ Most of these will prompt you to authenticate through your browser the first tim
 
 ## If your tool needs an API key
 
-Some tools use API keys instead of browser login. Pass the key as a header:
-
-```bash
-claude mcp add --transport http jira https://mcp.atlassian.com/mcp \
-  --header "Authorization: Bearer YOUR_API_KEY_HERE"
-```
-
-Claude Code keeps the key in its local settings and sends it only to the service you're connecting to.
+Some tools use API keys instead of browser login. Follow that tool's own setup instructions for Claude Code. The connection belongs to Claude Code, and Leeward never sees or stores the key.
 
 ## Sharing connections with your team
 
