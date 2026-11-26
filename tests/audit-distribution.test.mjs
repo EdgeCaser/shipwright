@@ -207,3 +207,12 @@ test('no script uses the symlink-blind CLI entry guard', async () => {
     assert.doesNotMatch(await readFile(path.join(dir, name), 'utf8'), /import\.meta\.url === pathToFileURL\(/, name);
   }
 });
+
+test('packaged scripts name no variable like a credential, which the directory scan refuses', async () => {
+  // The directory's MCP_FORWARDS_CREDENTIAL_ENV rule fired on `const token = argv[i]`.
+  const credentialName = /\b(?:const|let|var)\s+(?:token|key|secret|password|apiKey)\b|\bfor\s*\(\s*(?:const|let)\s+(?:token|key)\b/;
+  const offenders = [...await bundleFiles()]
+    .filter(([name, content]) => name.startsWith('scripts/') && credentialName.test(content.toString('utf8')))
+    .map(([name]) => name);
+  assert.deepEqual(offenders, []);
+});
