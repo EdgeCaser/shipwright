@@ -10,8 +10,8 @@ import { describeEarlyCommentClose, scanMarkdownLines } from './markdown-scan.mj
 // An envelope starts its own line or directly follows another comment's closer,
 // which is still HTML. An inline mention in prose (for example in a code span)
 // is not an envelope.
-const ENVELOPE_START = String.raw`(?<=^[ \t]{0,3}|-->[ \t]*)<!--\s*shipwright:artifact`;
-const ARTIFACT_COMMENT_RE = new RegExp(`${ENVELOPE_START}\\s*([\\s\\S]*?)-->`, 'gm');
+const envelopeStart = String.raw`(?<=^[ \t]{0,3}|-->[ \t]*)<!--\s*shipwright:artifact`;
+const ARTIFACT_COMMENT_RE = new RegExp(`${envelopeStart}\\s*([\\s\\S]*?)-->`, 'gm');
 
 const SCHEMA_FILE_BY_TYPE = Object.freeze({
   prd: 'prd.schema.json',
@@ -43,7 +43,7 @@ export function extractStructuredArtifact(text) {
   // A documented example of the envelope inside a code fence is not an envelope.
   const searchable = maskFencedCode(text);
   const matches = [...searchable.matchAll(ARTIFACT_COMMENT_RE)];
-  const markers = [...searchable.matchAll(new RegExp(`${ENVELOPE_START}\\b`, 'gm'))];
+  const markers = [...searchable.matchAll(new RegExp(`${envelopeStart}\\b`, 'gm'))];
   if (markers.length !== matches.length || matches.length > 1) {
     return { artifact: null, raw: null, startLine: 1,
       error: 'Expected exactly one complete shipwright:artifact block.' };

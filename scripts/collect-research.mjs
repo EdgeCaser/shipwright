@@ -77,7 +77,7 @@ const DEFAULTS = {
 const CACHE_VERSION = 'v1';
 const CACHE_ROOT = path.join('.shipwright', 'cache', 'research', CACHE_VERSION);
 const MAX_PRIMARY_CONTEXT_CHARS = 20000;
-const MAX_DIRECT_URLS = 8;
+const maxDirectUrls = 8;
 const MAX_DIRECT_TIMEOUT_MS = 30000;
 
 // ---------------------------------------------------------------------------
@@ -162,8 +162,8 @@ export async function collectResearch(rawArgs, options = {}) {
   if (!args.query && args.urls.length === 0) {
     throw new Error('Missing --query or --url. Run with --help for usage.');
   }
-  if (args.urls.length > MAX_DIRECT_URLS) {
-    throw new Error(`Direct URL capture accepts at most ${MAX_DIRECT_URLS} URLs per run.`);
+  if (args.urls.length > maxDirectUrls) {
+    throw new Error(`Direct URL capture accepts at most ${maxDirectUrls} URLs per run.`);
   }
   if (args.urls.some((url) => typeof url !== 'string' || !url.trim())) {
     throw new Error('Each --url must be a nonblank URL.');
