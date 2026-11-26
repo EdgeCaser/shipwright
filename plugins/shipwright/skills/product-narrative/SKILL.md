@@ -1,8 +1,6 @@
 ---
 name: product-narrative
 description: "Produces long-form persuasive product narratives in the style of Amazon's 6-pager or shorter 2-pager memos. Used for complex product decisions that require deep reasoning, multi-stakeholder alignment, and a permanent record of the thinking process. Unlike a one-pager (which is a pitch), a narrative is an argument."
-category: communication
-default_depth: standard
 ---
 
 Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.

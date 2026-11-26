@@ -1,8 +1,6 @@
 ---
 name: user-research-synthesis
 description: "Transforms raw interview notes, survey responses, and observational data into structured insight cards using affinity mapping techniques. Produces themed findings with evidence trails so product decisions are traceable back to user evidence."
-category: discovery
-default_depth: standard
 ---
 
 Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.

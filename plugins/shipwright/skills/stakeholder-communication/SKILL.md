@@ -1,8 +1,6 @@
 ---
 name: stakeholder-communication
 description: "Drafts status updates, steering committee decks, and executive summaries calibrated to audience seniority and information needs. Uses the Pyramid Principle (lead with the answer) and adapts depth, tone, and format by stakeholder type."
-category: measurement
-default_depth: standard
 ---
 
 Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.

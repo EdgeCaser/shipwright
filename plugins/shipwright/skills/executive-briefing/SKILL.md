@@ -1,8 +1,6 @@
 ---
 name: executive-briefing
 description: "Produces single-page executive briefings designed to secure alignment, approval, or resources from senior leadership. Uses the Situation-Complication-Resolution (SCR) framework and Pyramid Principle to deliver maximum impact in minimum reading time. Different from a status update, this is a persuasive artifact with a clear ask."
-category: communication
-default_depth: standard
 ---
 
 Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.

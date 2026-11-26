@@ -18,12 +18,17 @@ export async function pluginFiles(root = SOURCE_ROOT) {
     .replace('first developed under the name Leeward', 'first developed under the name Shipwright');
   // Claude Code fills in ${CLAUDE_PLUGIN_ROOT} in command and skill text; other hosts leave it as written.
   const withRoot = text => text.replace(/^(---\r?\n[\s\S]*?\r?\n---\r?\n)/, `$1\n${PLUGIN_ROOT_LINE}\n`);
+  // The directory refuses frontmatter keys outside its allowed list. These two are
+  // maintainer metadata that no host reads, so the source keeps them and the bundle drops them.
+  const BUNDLE_DROPPED_KEYS = /^(?:category|default_depth):.*\r?\n/gm;
+  const withoutMaintainerKeys = text => text.replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n/,
+    frontmatter => frontmatter.replace(BUNDLE_DROPPED_KEYS, ''));
   async function add(source, target = source) {
     const content = await readFile(path.join(root, source));
     if (!/\.(md|json)$/.test(target)) { files.set(target, content); return; }
     let text = rewrite(content.toString('utf8'));
     if (/^(commands\/[^/]+|skills\/[^/]+\/SKILL)\.md$/.test(target)) {
-      text = withRoot(text);
+      text = withRoot(withoutMaintainerKeys(text));
       if (!text.includes(PLUGIN_ROOT_LINE)) throw new Error(`No frontmatter to anchor the plugin root line: ${source}`);
     }
     files.set(target, Buffer.from(text));

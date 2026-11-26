@@ -1,8 +1,6 @@
 ---
 name: prioritization-advisor
 description: "Applies structured prioritization frameworks (RICE, ICE, Kano, MoSCoW, Weighted Scoring) to a feature backlog or initiative list. Helps PMs make transparent, defensible prioritization decisions by making trade-offs explicit."
-category: strategy
-default_depth: standard
 ---
 
 Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.

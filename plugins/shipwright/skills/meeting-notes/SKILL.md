@@ -1,8 +1,6 @@
 ---
 name: meeting-notes
 description: "Transforms raw meeting notes, transcripts, or recordings into structured summaries with decisions captured, action items assigned, open questions tracked, and parking lot items preserved. The single skill every PM uses daily."
-category: communication
-default_depth: standard
 ---
 
 Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.

@@ -1,8 +1,6 @@
 ---
 name: jobs-to-be-done
 description: "Applies the Jobs-to-Be-Done (JTBD) framework to frame customer needs as job statements and identify underserved needs. Based on the work of Clayton Christensen and Tony Ulwick's Outcome-Driven Innovation methodology."
-category: discovery
-default_depth: standard
 ---
 
 Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.

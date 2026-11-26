@@ -60,6 +60,20 @@ test('packaged commands and skills name the plugin root right after frontmatter,
   }
 });
 
+test('packaged skills drop maintainer frontmatter keys the directory refuses, and source skills keep them', async () => {
+  const files = await pluginFiles();
+  const skills = [...files.keys()].filter(name => /^skills\/[^/]+\/SKILL\.md$/.test(name));
+  assert.ok(skills.length >= 46);
+  for (const name of skills) {
+    const frontmatter = files.get(name).toString('utf8').match(/^---\r?\n([\s\S]*?)\r?\n---/)[1];
+    assert.doesNotMatch(frontmatter, /^(?:category|default_depth):/m, name);
+    assert.match(frontmatter, /^name: /m, name);
+    assert.match(frontmatter, /^description: /m, name);
+  }
+  const source = await readFile(path.join(SOURCE_ROOT, 'skills', 'discovery', 'market-sizing', 'SKILL.md'), 'utf8');
+  assert.match(source, /^default_depth: standard/m);
+});
+
 test('every packaged relative Node helper reference resolves inside the package', async () => {
   const files = await pluginFiles();
   for (const [file, markdown] of packagedMarkdown(files)) {

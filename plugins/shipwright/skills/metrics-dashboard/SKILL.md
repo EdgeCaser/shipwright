@@ -1,8 +1,6 @@
 ---
 name: metrics-dashboard
 description: "Defines a product metrics architecture: North Star metric, input metrics, guardrail metrics, and counter-metrics. Produces a dashboard specification that connects daily tactical metrics to strategic outcomes. Based on the Amplitude/Sean Ellis North Star framework and Reforge metrics methodology."
-category: measurement
-default_depth: standard
 ---
 
 Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.

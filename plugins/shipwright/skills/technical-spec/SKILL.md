@@ -1,8 +1,6 @@
 ---
 name: technical-spec
 description: "Translates product requirements (PRDs, user stories) into engineering-ready technical specifications. Covers system architecture decisions, API contracts, data models, non-functional requirements, and migration plans. Bridges the gap between \"what to build\" (PM) and \"how to build it\" (engineering)."
-category: technical
-default_depth: standard
 ---
 
 Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.

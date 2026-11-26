@@ -1,8 +1,6 @@
 ---
 name: build-vs-buy-analysis
 description: "Evaluates whether to build a capability in-house, buy/license from a vendor, integrate via API, adopt open-source, or partner. Produces a total-cost-of-ownership comparison anchored to strategic fit, not just sticker price, with explicit kill criteria for revisiting the decision."
-category: strategy
-default_depth: standard
 ---
 
 Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.

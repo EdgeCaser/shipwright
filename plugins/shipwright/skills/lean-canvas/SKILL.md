@@ -1,8 +1,6 @@
 ---
 name: lean-canvas
 description: "Builds a one-page Lean Canvas capturing the core business model: problem, solution, key metrics, unfair advantage, channels, customer segments, and cost/revenue structure. Based on Ash Maurya's adaptation of the Business Model Canvas for startups."
-category: strategy
-default_depth: standard
 ---
 
 Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.

@@ -1,8 +1,6 @@
 ---
 name: design-review
 description: "Runs a multi-stakeholder design review by evaluating a product proposal through 7 parallel perspectives: Engineering, Design, Executive, Legal/Compliance, Customer Voice, Devil's Advocate, and Sales/GTM. Produces a synthesized review with consensus points, tensions, blockers, and open questions."
-category: technical
-default_depth: standard
 ---
 
 Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.

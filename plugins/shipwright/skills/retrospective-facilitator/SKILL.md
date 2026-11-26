@@ -1,8 +1,6 @@
 ---
 name: retrospective-facilitator
 description: "Runs structured team retrospectives using proven formats (Start/Stop/Continue, 4Ls, Sailboat, Mad/Sad/Glad). Produces an action item list with owners, due dates, and follow-up mechanisms to ensure retro outcomes actually lead to change."
-category: measurement
-default_depth: standard
 ---
 
 Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.

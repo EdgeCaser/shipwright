@@ -1,8 +1,6 @@
 ---
 name: growth-loops
 description: "Maps acquisition, engagement, and monetization loops to identify self-reinforcing growth mechanisms. Moves beyond the linear funnel model to identify compounding loops where output from one cycle becomes input for the next. Based on Reforge's growth loops framework."
-category: gtm
-default_depth: standard
 ---
 
 Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.

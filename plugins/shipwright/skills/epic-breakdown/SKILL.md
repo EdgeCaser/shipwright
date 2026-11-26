@@ -1,8 +1,6 @@
 ---
 name: epic-breakdown
 description: "Takes a large product initiative and decomposes it into shippable epics, each with a hypothesis statement, success metric, and estimated effort. Ensures each epic delivers independent value and can be shipped and measured on its own."
-category: execution
-default_depth: standard
 ---
 
 Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.

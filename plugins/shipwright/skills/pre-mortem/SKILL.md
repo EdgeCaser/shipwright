@@ -1,8 +1,6 @@
 ---
 name: pre-mortem
 description: "Runs a structured \"imagine this already failed\" exercise to surface risks, assumptions, and failure modes before a launch or major initiative begins. Based on Gary Klein's prospective hindsight research."
-category: execution
-default_depth: standard
 ---
 
 Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.

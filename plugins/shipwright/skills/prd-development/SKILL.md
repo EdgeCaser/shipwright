@@ -1,8 +1,6 @@
 ---
 name: prd-development
 description: "Produces a comprehensive Product Requirements Document using Amazon's Working Backwards method: start with the press release, then FAQ, then detailed requirements. This approach forces clarity of thought by starting from the customer outcome and working backward to the requirements."
-category: execution
-default_depth: standard
 ---
 
 Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.

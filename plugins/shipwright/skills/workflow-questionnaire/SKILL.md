@@ -1,8 +1,6 @@
 ---
 name: workflow-questionnaire
 description: "Generates constraint-aware questionnaires that map a prospect or customer's workflows, surface friction points, and identify where processes can be optimized or eliminated. Accepts a configurable lens (e.g., AI/automation readiness, tool consolidation, compliance) that focuses all questions on a specific angle."
-category: discovery
-default_depth: standard
 ---
 
 Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.

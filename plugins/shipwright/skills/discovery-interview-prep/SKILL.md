@@ -1,8 +1,6 @@
 ---
 name: discovery-interview-prep
 description: "Generates comprehensive preparation materials for customer discovery interviews including interview guides, screener criteria, and debrief templates. Grounded in the Jobs-to-Be-Done methodology and \"The Mom Test\" principles."
-category: discovery
-default_depth: standard
 ---
 
 Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.

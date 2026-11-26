@@ -1,8 +1,6 @@
 ---
 name: swot-analysis
 description: "Produces a structured Strengths, Weaknesses, Opportunities, and Threats analysis for a product, feature, or business unit. Goes beyond listing items by cross-referencing quadrants to generate strategic options (SO, WO, ST, WT strategies)."
-category: strategy
-default_depth: standard
 ---
 
 Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.

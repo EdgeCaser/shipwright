@@ -1,8 +1,6 @@
 ---
 name: competitive-battlecard
 description: "Creates sales-ready competitive battlecards with objection handling, win/loss patterns, feature comparison grids, and tactical talk tracks. Designed to be used in live sales conversations, deal reviews, and competitive displacement campaigns."
-category: gtm
-default_depth: standard
 ---
 
 Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.

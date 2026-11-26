@@ -1,8 +1,6 @@
 ---
 name: go-to-market-strategy
 description: "Builds a comprehensive GTM plan covering beachhead segment selection, ideal customer profile, messaging, channel strategy, launch timeline, and success metrics. Based on Geoffrey Moore's market adoption lifecycle and modern PLG/sales-led hybrid approaches."
-category: gtm
-default_depth: standard
 ---
 
 Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.

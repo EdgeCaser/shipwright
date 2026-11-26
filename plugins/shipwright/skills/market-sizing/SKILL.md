@@ -1,8 +1,6 @@
 ---
 name: market-sizing
 description: "Walks through both top-down and bottom-up market sizing methodologies with explicit assumption tracking. Produces investor-ready estimates with transparent reasoning."
-category: discovery
-default_depth: standard
 ---
 
 Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.

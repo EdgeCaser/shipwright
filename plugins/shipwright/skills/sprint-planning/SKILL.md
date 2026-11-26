@@ -1,8 +1,6 @@
 ---
 name: sprint-planning
 description: "Helps PMs scope sprints, draft sprint goals tied to product outcomes, flag dependency risks, and balance capacity across new work, tech debt, and bug fixes. Grounded in Scrum methodology with practical adaptations for product-led teams."
-category: execution
-default_depth: standard
 ---
 
 Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.

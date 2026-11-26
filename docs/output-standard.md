@@ -28,7 +28,7 @@ Do not force this wrapper onto a skill's native template or a short communicatio
 
 Every skill (`skills/**/SKILL.md`) must include these sections in order:
 
-1. **Frontmatter**, name, description, category, `default_depth: standard`
+1. **Frontmatter**, name, description, category, `default_depth: standard` (the packaged plugin leaves out category and default_depth, which the plugin directory does not accept)
 2. **Description**, what the skill does
 3. **When to Use**, specific trigger scenarios
 4. **Depth**, Light / Standard / Deep scope table with omit rules

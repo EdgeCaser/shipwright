@@ -1,8 +1,6 @@
 ---
 name: opportunity-solution-tree
 description: "Guides the PM through Teresa Torres' Opportunity Solution Tree (OST) framework for continuous product discovery. Maps a desired outcome to customer opportunities, then to potential solutions, and finally to assumption tests and experiments."
-category: discovery
-default_depth: standard
 ---
 
 Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.

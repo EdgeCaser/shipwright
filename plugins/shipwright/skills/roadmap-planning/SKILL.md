@@ -1,8 +1,6 @@
 ---
 name: roadmap-planning
 description: "Creates outcome-based product roadmaps using the Now/Next/Later framework with prioritization via RICE scoring. Helps PMs communicate what the team is working on, why, and what comes next, without falling into the trap of date-driven feature lists."
-category: strategy
-default_depth: standard
 ---
 
 Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.

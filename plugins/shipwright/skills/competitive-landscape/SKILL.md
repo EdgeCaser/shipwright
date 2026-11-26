@@ -1,8 +1,6 @@
 ---
 name: competitive-landscape
 description: "Structures a comprehensive competitive analysis across positioning, feature parity, pricing, go-to-market, and market signals. Produces artifacts useful for strategy sessions, sales enablement, and investor updates."
-category: discovery
-default_depth: standard
 ---
 
 Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file's path instead.
