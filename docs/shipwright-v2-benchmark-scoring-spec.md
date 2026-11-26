@@ -2,7 +2,7 @@
 
 ## What the harness measures
 
-`scripts/run-benchmarks.mjs` replays saved first/final artifacts, validates their structured envelopes and compares them with related artifacts. It does not run a model, measure skill activation, verify source truth, or establish superiority over another workflow.
+The source repository's `scripts/run-benchmarks.mjs` replays saved first/final artifacts, validates their structured envelopes and compares them with related artifacts. It does not run a model, measure skill activation, verify source truth, or establish superiority over another workflow.
 
 Every scenario result contains a scenario ID, PASS/FAIL/DNF, first-pass usability and validator counts, final-pass usability and counts, optional blind ratings, timing/revision metadata and deltas. The implementation is the executable contract; `schemas/artifacts/` defines the three structured artifact shapes; suite summaries are validated by the harness itself.
 

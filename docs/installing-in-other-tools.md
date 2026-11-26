@@ -24,7 +24,7 @@ Restart/reload your host to discover skills. In Claude project copies use `/leew
 node "<absolute-source-root>/scripts/build-plugin.mjs" "<new-output-directory>"
 ```
 
-Build into a new directory. The resulting bundle includes 46 frameworks and two routing/research entry skills, `.claude-plugin/plugin.json`, `.codex-plugin/plugin.json`, local dependencies and public docs. Package the contents of this folder so manifests are at the plugin root. Use this bundle for submission, not a partial copy of category folders.
+Add `--directory` for the Claude plugin directory edition, which leaves out the helper scripts. Build into a new directory. The resulting bundle includes 46 frameworks and two routing/research entry skills, `.claude-plugin/plugin.json`, `.codex-plugin/plugin.json`, local dependencies and public docs. Package the contents of this folder so manifests are at the plugin root. Use this bundle for submission, not a partial copy of category folders.
 
 The generated flat layout follows the [Codex plugin layout](https://developers.openai.com/plugins/build/plugins) and [Claude conversion guidance](https://developers.openai.com/plugins/guides/submit-claude-plugin). Host activation still needs the observed checks in `docs/shipwright-v2-proof-runbook.md`.
 

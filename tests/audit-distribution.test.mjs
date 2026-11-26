@@ -5,7 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
-import { buildPlugin, bundleFiles, pluginFiles, PLUGIN_ROOT_LINE, SOURCE_ROOT } from '../scripts/build-plugin.mjs';
+import { buildPlugin, bundleFiles, DIRECTORY_NOTE, EDITIONS, pluginFiles, PLUGIN_ROOT_LINE, SOURCE_ROOT } from '../scripts/build-plugin.mjs';
 
 const execFileAsync = promisify(execFile);
 
@@ -25,10 +25,13 @@ test('package README is self-contained plugin guidance rather than source-checko
   assert.ok(files.has('docs/plugin-guide.md'));
 });
 
-test('the marketplace installs the committed bundle, and the bundle matches a fresh build', async () => {
+test('the marketplace installs the full edition', async () => {
   const marketplace = JSON.parse(await readFile(path.join(SOURCE_ROOT, '.claude-plugin', 'marketplace.json'), 'utf8'));
-  assert.deepEqual(marketplace.plugins.map(plugin => plugin.source), ['./plugins/shipwright']);
-  const bundle = path.join(SOURCE_ROOT, 'plugins', 'shipwright');
+  assert.deepEqual(marketplace.plugins.map(plugin => plugin.source), [`./${EDITIONS.full}`]);
+});
+
+for (const edition of Object.keys(EDITIONS)) test(`the committed ${edition} edition matches a fresh build`, async () => {
+  const bundle = path.join(SOURCE_ROOT, ...EDITIONS[edition].split('/'));
   const committed = new Map();
   async function walk(dir) {
     for (const entry of await readdir(dir, { withFileTypes: true })) {
@@ -38,8 +41,8 @@ test('the marketplace installs the committed bundle, and the bundle matches a fr
     }
   }
   await walk(bundle);
-  const files = await bundleFiles();
-  assert.deepEqual([...committed.keys()].sort(), [...files.keys()].sort(), 'Rebuild plugins/shipwright with scripts/build-plugin.mjs');
+  const files = await bundleFiles(SOURCE_ROOT, { edition });
+  assert.deepEqual([...committed.keys()].sort(), [...files.keys()].sort(), `Rebuild ${EDITIONS[edition]} with scripts/build-plugin.mjs`);
   for (const [name, content] of files) {
     if (name.endsWith('.png')) { assert.ok(committed.get(name).equals(content), `Stale bundle file: ${name}`); continue; }
     assert.equal(committed.get(name).toString('utf8').replace(/\r\n/g, '\n'), content.toString('utf8').replace(/\r\n/g, '\n'), `Stale bundle file: ${name}`);
@@ -214,5 +217,40 @@ test('packaged scripts name no variable like a credential, which the directory s
   const offenders = [...await bundleFiles()]
     .filter(([name, content]) => name.startsWith('scripts/') && credentialName.test(content.toString('utf8')))
     .map(([name]) => name);
+  assert.deepEqual(offenders, []);
+});
+
+test('the directory edition holds only file types the directory accepts from unverified organizations', async () => {
+  const files = await bundleFiles(SOURCE_ROOT, { edition: 'directory' });
+  const refused = [...files]
+    .filter(([name, content]) => !/(?:\.md|\.json|\.png)$|^LICENSE$/.test(name) || content.subarray(0, 2).toString() === '#!')
+    .map(([name]) => name);
+  assert.deepEqual(refused, []);
+});
+
+test('every directory-edition file that names a helper script tells the agent the helpers are absent', async () => {
+  const files = await bundleFiles(SOURCE_ROOT, { edition: 'directory' });
+  for (const [name, text] of packagedMarkdown(files)) {
+    const notes = text.split(DIRECTORY_NOTE).length - 1;
+    if (/scripts\/[a-z-]+\.mjs/.test(text)) assert.equal(notes, 1, name);
+    else assert.ok(notes <= 1, name);
+  }
+  for (const name of ['README.md', 'docs/workflow-contract.md']) {
+    assert.ok(files.get(name).toString('utf8').includes(DIRECTORY_NOTE), name);
+  }
+  assert.ok(!files.has('scripts/collect-research.mjs'));
+  assert.match(files.get('.claude-plugin/plugin.json').toString('utf8'), /plugins\/leeward\/README\.md/);
+});
+
+test('full-edition docs name only helper scripts the edition ships, unless they point at the source checkout', async () => {
+  const files = await bundleFiles();
+  const offenders = [];
+  for (const [name, text] of packagedMarkdown(files)) {
+    for (const line of text.split('\n')) {
+      for (const [, script] of line.matchAll(/scripts\/([a-z-]+\.mjs)/g)) {
+        if (!files.has(`scripts/${script}`) && !/source|path\/to\/shipwright/.test(line)) offenders.push(`${name}: ${script}`);
+      }
+    }
+  }
   assert.deepEqual(offenders, []);
 });

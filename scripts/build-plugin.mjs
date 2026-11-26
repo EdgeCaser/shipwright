@@ -7,8 +7,27 @@ import { realpathSync } from 'node:fs';
 export const SOURCE_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 export const PLUGIN_ROOT_LINE = 'Leeward root: `${CLAUDE_PLUGIN_ROOT}`. Read Leeward docs and run its helper scripts from that absolute path; it stands in for `<installed-root>` and `<absolute-shipwright-root>` below. If it still shows a variable name, locate the root from this file\'s path instead.';
 
+// The plugin directory accepts code only from Verified organizations, so its edition leaves out
+// scripts/ and tells the agent how to proceed where an instruction names a helper.
+export const DIRECTORY_NOTE = 'Directory edition: this copy of Leeward ships without its helper scripts. When an instruction says to run a file under `scripts/`, skip that step and continue: use the host\'s own web search for fresh evidence, check the artifact against the stated rules yourself, and note in the result that the automated check did not run. The full edition with the helpers installs from https://github.com/EdgeCaser/shipwright.';
+export const EDITIONS = { full: 'plugins/shipwright', directory: 'plugins/leeward' };
+const SCRIPT_REFERENCE = /scripts\/[a-z-]+\.mjs/;
+
+function withDirectoryNote(text) {
+  const rootAt = text.indexOf(PLUGIN_ROOT_LINE);
+  if (rootAt >= 0) {
+    const end = rootAt + PLUGIN_ROOT_LINE.length;
+    return `${text.slice(0, end)}\n\n${DIRECTORY_NOTE}${text.slice(end)}`;
+  }
+  const lead = text.match(/^---\r?\n[\s\S]*?\r?\n---\r?\n/) || text.match(/^# .*\r?\n/);
+  if (lead) return `${lead[0]}\n${DIRECTORY_NOTE}\n${text.slice(lead[0].length)}`;
+  return `${DIRECTORY_NOTE}\n\n${text}`;
+}
+
 // Explicit distribution allowlist. Never package credentials, local installs or run artifacts.
-export async function pluginFiles(root = SOURCE_ROOT) {
+export async function pluginFiles(root = SOURCE_ROOT, { edition = 'full' } = {}) {
+  if (!EDITIONS[edition]) throw new Error(`Unknown edition: ${edition}`);
+  const directory = edition === 'directory';
   const files = new Map();
   const manifest = JSON.parse(await readFile(path.join(root, 'manifest.json'), 'utf8'));
   const rewrite = text => text
@@ -31,6 +50,13 @@ export async function pluginFiles(root = SOURCE_ROOT) {
       text = withRoot(withoutMaintainerKeys(text));
       if (!text.includes(PLUGIN_ROOT_LINE)) throw new Error(`No frontmatter to anchor the plugin root line: ${source}`);
     }
+    if (directory && target.endsWith('.md') &&
+        (SCRIPT_REFERENCE.test(text) || ['README.md', 'docs/workflow-contract.md'].includes(target))) {
+      text = withDirectoryNote(text);
+    }
+    if (directory && target === '.claude-plugin/plugin.json') {
+      text = text.replace(`/${EDITIONS.full}/`, `/${EDITIONS.directory}/`);
+    }
     files.set(target, Buffer.from(text));
   }
   async function addTree(dir) {
@@ -49,7 +75,7 @@ export async function pluginFiles(root = SOURCE_ROOT) {
   for (const dir of ['commands', 'agents', 'evals', 'schemas', 'output-styles', 'examples/golden-outputs']) await addTree(dir);
   // Public operational docs only; internal review exchanges and outreach are excluded.
   for (const name of [...manifest.docs, 'workflow-contract', 'structured-artifacts', 'plugin-guide', 'artifact-reconciliation']) await add(`docs/${name}.md`);
-  for (const entry of ['collect-research', 'source-adapters', 'classify-request', 'format-facts',
+  if (!directory) for (const entry of ['collect-research', 'source-adapters', 'classify-request', 'format-facts',
     'pricing-diff', 'pricing-tuples', 'markdown-scan', 'extract-structured-artifact', 'validate-artifact', 'route-request',
     'reconcile-artifact', 'reconcile-evidence', 'reconcile-inputs', 'reconcile-behavior', 'capture-inputs', 'public-source-fetch']) await add(`scripts/${entry}.mjs`);
   for (const file of ['manifest.json', 'skills-map.md', 'LICENSE', 'PRIVACY.md', 'TERMS.md', '.claude-plugin/plugin.json']) await add(file);
@@ -72,8 +98,8 @@ export async function pluginFiles(root = SOURCE_ROOT) {
 }
 
 /** The directory bundle adds the listing icons, which project installs don't need. */
-export async function bundleFiles(root = SOURCE_ROOT) {
-  const files = await pluginFiles(root);
+export async function bundleFiles(root = SOURCE_ROOT, options = {}) {
+  const files = await pluginFiles(root, options);
   const icon = await readFile(path.join(root, 'assets/shipwright-icon.png'));
   files.set('.claude-plugin/icon.png', icon);
   files.set('assets/icon.png', icon);
@@ -83,9 +109,9 @@ export async function bundleFiles(root = SOURCE_ROOT) {
   return files;
 }
 
-export async function buildPlugin(outDir, root = SOURCE_ROOT) {
+export async function buildPlugin(outDir, root = SOURCE_ROOT, options = {}) {
   const destination = path.resolve(outDir);
-  const files = await bundleFiles(root);
+  const files = await bundleFiles(root, options);
   try { await lstat(destination); throw new Error(`Output must be a new directory: ${destination}`); }
   catch (error) { if (error.code !== 'ENOENT') throw error; }
   for (const [relative, content] of files) {
@@ -105,6 +131,9 @@ function isDirectRun() {
 }
 
 if (process.argv[1] && isDirectRun()) {
-  if (!process.argv[2]) throw new Error('Usage: node scripts/build-plugin.mjs <new-output-directory>');
-  console.log(JSON.stringify(await buildPlugin(process.argv[2]), null, 2));
+  const args = process.argv.slice(2);
+  const outDir = args.find(arg => !arg.startsWith('--'));
+  if (!outDir) throw new Error('Usage: node scripts/build-plugin.mjs <new-output-directory> [--directory]');
+  const edition = args.includes('--directory') ? 'directory' : 'full';
+  console.log(JSON.stringify(await buildPlugin(outDir, SOURCE_ROOT, { edition }), null, 2));
 }
