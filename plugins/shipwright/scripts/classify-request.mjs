@@ -43,7 +43,7 @@ import path from 'node:path';
  * @property {number} confidence - 0–1, how strongly this type was matched
  * @property {string} suggestedMode - collector mode hint: 'standard'|'auto'|'deep'
  * @property {string[]} priorityFacts - fact fields most likely to be useful
- * @property {object} collectorHints - key/value config hints for the collector
+ * @property {object} collectorHints - name/value config hints for the collector
  * @property {string[]} matchedSignals - which patterns fired (for debugging)
  */
 

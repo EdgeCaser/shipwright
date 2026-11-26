@@ -217,18 +217,18 @@ export function validateValueAgainstSchema(value, schema, currentPath, errors) {
     const properties = schema.properties || {};
     const required = schema.required || [];
 
-    for (const key of required) {
-      if (!(key in value)) {
+    for (const prop of required) {
+      if (!(prop in value)) {
         errors.push({
-          path: `${currentPath}.${key}`,
+          path: `${currentPath}.${prop}`,
           message: 'Missing required property.',
         });
       }
     }
 
-    for (const [key, childSchema] of Object.entries(properties)) {
-      if (!(key in value)) continue;
-      validateValueAgainstSchema(value[key], childSchema, `${currentPath}.${key}`, errors);
+    for (const [prop, childSchema] of Object.entries(properties)) {
+      if (!(prop in value)) continue;
+      validateValueAgainstSchema(value[prop], childSchema, `${currentPath}.${prop}`, errors);
     }
     return;
   }

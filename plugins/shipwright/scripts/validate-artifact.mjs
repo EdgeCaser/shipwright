@@ -289,24 +289,24 @@ function checkVisibleContract(visible, artifact) {
     ['decision_date', /decision[ _-]?date/i],
     ['revisit_trigger', /revisit[ _-]?trigger/i],
   ];
-  for (const [key, label] of labels) {
+  for (const [fieldName, label] of labels) {
     const match = decision.text.split('\n').find(line => new RegExp(`^\\s*(?:[-*]\\s*)?(?:${label.source})\\s*:`, 'i').test(line.replace(/\*\*/g, '')));
-    if (!match) { fail(`Visible Decision Frame is missing ${key}.`, decision.lineNumber); continue; }
+    if (!match) { fail(`Visible Decision Frame is missing ${fieldName}.`, decision.lineNumber); continue; }
     const value = match.replace(/\*\*/g, '').replace(/^\s*(?:[-*]\s*)?[^:]+:\s*/, '').trim();
-    if (!value) { fail(`Visible Decision Frame has an empty ${key}.`, decision.lineNumber); continue; }
-    if (key === 'confidence' || key === 'decision_date' || key === 'owner') {
+    if (!value) { fail(`Visible Decision Frame has an empty ${fieldName}.`, decision.lineNumber); continue; }
+    if (fieldName === 'confidence' || fieldName === 'decision_date' || fieldName === 'owner') {
       const normalized = normalizeProse(value);
-      const expected = normalizeProse(String(artifact.decision_frame[key]));
-      const matches = key === 'confidence'
+      const expected = normalizeProse(String(artifact.decision_frame[fieldName]));
+      const matches = fieldName === 'confidence'
         // The level leads and is not itself negated; a later explanation may say "no" or "not".
         ? normalized.match(/^(low|medium|high)\b/)?.[1] === expected
           && !/^(?:low|medium|high)\s+(?:(?:is|confidence)\s+)?(?:not|no|never)\b/i.test(value)
         : normalized === expected && !/^(?:not|no|never)\b/.test(normalized);
       if (!matches) {
-        fail(`Visible Decision Frame ${key} disagrees with JSON.`, decision.lineNumber);
+        fail(`Visible Decision Frame ${fieldName} disagrees with JSON.`, decision.lineNumber);
       }
-    } else if (!substantivelyMatches(value, artifact.decision_frame[key])) {
-      fail(`Visible Decision Frame ${key} differs materially from JSON.`, decision.lineNumber);
+    } else if (!substantivelyMatches(value, artifact.decision_frame[fieldName])) {
+      fail(`Visible Decision Frame ${fieldName} differs materially from JSON.`, decision.lineNumber);
     }
   }
   const readiness = section('Pass/Fail Readiness');
@@ -620,15 +620,15 @@ function checkInternalConsistency(artifact, lineNumber) {
   const issues = [];
   const fail = message => issues.push({ type: IssueType.INVALID_STRUCTURED_ARTIFACT,
     severity: Severity.ERROR, message, lineNumber, excerpt: '' });
-  for (const [items, key] of [
+  for (const [items, fieldName] of [
     [artifact.payload.success_metrics, 'metric_id'], [artifact.payload.bets, 'bet_id'],
     [artifact.payload.findings, 'finding_id'], [artifact.challenge_resolution, 'finding_id'],
   ]) {
     if (!Array.isArray(items)) continue;
     const ids = new Set();
     for (const item of items) {
-      if (ids.has(item[key])) fail(`Duplicate ${key}: ${item[key]}.`);
-      ids.add(item[key]);
+      if (ids.has(item[fieldName])) fail(`Duplicate ${fieldName}: ${item[fieldName]}.`);
+      ids.add(item[fieldName]);
     }
   }
   if (artifact.artifact_type === 'challenge-report') {
@@ -653,11 +653,11 @@ function checkMetricContradictions(artifact, relatedArtifacts, lineNumber) {
 
     for (const currentMetric of currentMetrics) {
       for (const otherMetric of relatedMetrics) {
-        if (currentMetric.key !== otherMetric.key) continue;
+        if (currentMetric.identity !== otherMetric.identity) continue;
         // Shared IDs cannot make different cohorts or measurement windows comparable.
         if (['segment', 'unit', 'timeframe'].some(field => currentMetric[field] && otherMetric[field]
           && currentMetric[field] !== otherMetric[field])) continue;
-        const signature = `${currentMetric.key}:${related?.metadata?.title || related?.artifact_type || 'related'}`;
+        const signature = `${currentMetric.identity}:${related?.metadata?.title || related?.artifact_type || 'related'}`;
         if (seen.has(signature)) continue;
 
         const baselineConflict = compareMetricValue(
@@ -699,9 +699,9 @@ function checkSegmentContradictions(artifact, relatedArtifacts, lineNumber) {
     const otherSegment = normalizeSegment(extractPrimarySegment(related));
     if (!otherSegment || otherSegment === currentSegment) continue;
 
-    const key = `${currentSegment}:${otherSegment}:${related?.metadata?.title || related?.artifact_type || 'related'}`;
-    if (seen.has(key)) continue;
-    seen.add(key);
+    const pairId = `${currentSegment}:${otherSegment}:${related?.metadata?.title || related?.artifact_type || 'related'}`;
+    if (seen.has(pairId)) continue;
+    seen.add(pairId);
 
     issues.push({
       type: IssueType.SEGMENT_CONTRADICTION,
@@ -896,12 +896,12 @@ function normalizeMetric(metric) {
   const segment = normalizeSegment(metric.segment);
   const unit = String(metric.unit || '').trim().toLowerCase();
   const timeframe = String(metric.timeframe || '').trim().toLowerCase();
-  const key = metric.metric_id
+  const identity = metric.metric_id
     ? `id:${metric.metric_id}`
     : `name:${name.toLowerCase()}|segment:${segment || ''}|unit:${unit}|timeframe:${timeframe}`;
 
   return {
-    key,
+    identity,
     name,
     segment,
     unit,

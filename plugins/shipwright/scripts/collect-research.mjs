@@ -10,8 +10,8 @@ import { fetchPublicSource } from './public-source-fetch.mjs';
 const HELP_TEXT = `Shipwright research collector
 
 Build a compact evidence pack so the model spends fewer tool calls on raw
-retrieval. The command line has no search provider and reads no API
-keys: a --query run writes suggested follow-up queries for the host's own web
+retrieval. The command line has no search provider and calls no search
+API: a --query run writes suggested follow-up queries for the host's own web
 search, and --url captures known public pages directly.
 
 Usage:
@@ -402,7 +402,7 @@ async function finalizeCollectedPack({
   if (basePack.providerStatus === 'not-configured') {
     return withCacheMetadata(basePack, {
       version: CACHE_VERSION,
-      key: cacheKey,
+      id: cacheKey,
       status: cacheStatus,
       ttlHours: cacheTtlHours,
       servedAt: now.toISOString(),
@@ -416,7 +416,7 @@ async function finalizeCollectedPack({
 
   const persistedPack = withCacheMetadata(basePack, {
     version: CACHE_VERSION,
-    key: cacheKey,
+    id: cacheKey,
     status: cacheStatus,
     ttlHours: cacheTtlHours,
     servedAt: now.toISOString(),
@@ -436,7 +436,7 @@ async function finalizeCollectedPack({
     );
     return withCacheMetadata(basePack, {
       version: CACHE_VERSION,
-      key: cacheKey,
+      id: cacheKey,
       status: cacheStatus,
       ttlHours: cacheTtlHours,
       servedAt: now.toISOString(),
@@ -452,7 +452,7 @@ async function finalizeCollectedPack({
 function buildHitPack({ cachedPack, cacheKey, cacheTtlHours, now, storedAt, ageMs }) {
   return withCacheMetadata(cachedPack, {
     version: CACHE_VERSION,
-    key: cacheKey,
+    id: cacheKey,
     status: 'hit',
     ttlHours: cacheTtlHours,
     servedAt: now.toISOString(),
@@ -945,7 +945,7 @@ function parseNumber(value, flagName) {
 
 const NO_PROVIDER_NOTE = 'The collector has no built-in search provider. Run the suggested follow-up queries with the host web search, or capture known pages with --url.';
 
-/** Search providers are passed in by callers; the CLI passes none, reads no keys and calls no search API. */
+/** Search providers are passed in by callers; the CLI passes none and calls no search API. */
 function resolveProviderPlan(requested, searchProviders = {}) {
   const available = Object.keys(searchProviders);
   const providers = requested && requested !== 'auto'
@@ -1075,10 +1075,10 @@ function pickFetchCandidates(candidates, existingResults, fetchLimit) {
   const selected = [];
 
   for (const candidate of candidates) {
-    const key = normalizeUrl(candidate.url);
-    if (!key || seenKeys.has(key)) continue;
-    seenKeys.add(key);
-    if (fetchedKeys.has(key)) continue;
+    const entryId = normalizeUrl(candidate.url);
+    if (!entryId || seenKeys.has(entryId)) continue;
+    seenKeys.add(entryId);
+    if (fetchedKeys.has(entryId)) continue;
     selected.push(candidate);
     if (selected.length >= fetchLimit) break;
   }
@@ -1154,19 +1154,19 @@ function mergeResults(existingResults, candidates, fetchedResults) {
   const merged = new Map();
 
   for (const result of existingResults) {
-    const key = normalizeUrl(result.fetched?.finalUrl || result.url);
-    merged.set(key, {
+    const entryId = normalizeUrl(result.fetched?.finalUrl || result.url);
+    merged.set(entryId, {
       ...result,
       searchHistory: [...(result.searchHistory || [])],
     });
   }
 
   for (const candidate of candidates) {
-    const key = normalizeUrl(candidate.url);
-    const current = merged.get(key);
+    const entryId = normalizeUrl(candidate.url);
+    const current = merged.get(entryId);
 
     if (!current) {
-      merged.set(key, {
+      merged.set(entryId, {
         ...candidate,
         searchHistory: [candidate.search],
       });
@@ -1182,10 +1182,10 @@ function mergeResults(existingResults, candidates, fetchedResults) {
   }
 
   for (const fetched of fetchedResults) {
-    const key = normalizeUrl(fetched.fetched?.finalUrl || fetched.url);
-    const current = merged.get(key);
+    const entryId = normalizeUrl(fetched.fetched?.finalUrl || fetched.url);
+    const current = merged.get(entryId);
     if (!current) {
-      merged.set(key, {
+      merged.set(entryId, {
         ...fetched,
         searchHistory: [fetched.search],
       });
@@ -1470,8 +1470,8 @@ function normalizeUrl(rawUrl) {
       'fbclid',
       'ref',
     ];
-    for (const key of trackingParams) {
-      url.searchParams.delete(key);
+    for (const param of trackingParams) {
+      url.searchParams.delete(param);
     }
     url.hostname = url.hostname.replace(/^www\./, '');
     url.pathname = url.pathname.replace(/\/+$/, '') || '/';
@@ -2193,15 +2193,15 @@ function dedupeFacts(facts) {
 
   for (const fact of facts) {
     if (!fact?.source_url) continue;
-    const key = [
+    const entryId = [
       fact.field,
       fact.value,
       fact.source_url,
       fact.tuple_id || (['plan_name', 'price', 'currency', 'billing_period'].includes(fact.field) ? fact.excerpt : ''),
     ].join('::');
 
-    if (seen.has(key)) continue;
-    seen.add(key);
+    if (seen.has(entryId)) continue;
+    seen.add(entryId);
     deduped.push(fact);
   }
 
@@ -2225,7 +2225,7 @@ function renderMarkdown(pack) {
     lines.push('## Cache Summary', '');
     lines.push(`- Status: ${pack.cache.status}`);
     lines.push(`- TTL hours: ${pack.cache.ttlHours}`);
-    lines.push(`- Cache key: ${pack.cache.key}`);
+    lines.push(`- Cache id: ${pack.cache.id}`);
     lines.push(`- Persisted: ${pack.cache.persisted ? 'yes' : 'no'}`);
     lines.push(`- Served at: ${pack.cache.servedAt}`);
     if (pack.cache.storedAt) lines.push(`- Stored at: ${pack.cache.storedAt}`);

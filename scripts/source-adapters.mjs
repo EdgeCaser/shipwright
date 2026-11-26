@@ -558,9 +558,9 @@ function dedupeAdapterFields(fields) {
   const result = [];
 
   for (const field of fields) {
-    const key = JSON.stringify([field.tuple_id || '', field.field, field.value]);
-    if (!seen.has(key)) {
-      seen.add(key);
+    const entryId = JSON.stringify([field.tuple_id || '', field.field, field.value]);
+    if (!seen.has(entryId)) {
+      seen.add(entryId);
       result.push(field);
     }
   }

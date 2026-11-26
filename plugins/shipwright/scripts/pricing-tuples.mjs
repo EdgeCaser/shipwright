@@ -8,9 +8,9 @@ export function reconstructPricingTuples(facts) {
   for (const fact of facts) {
     if (!fact?.source_url || !PRICING_FIELDS.has(fact.field)) continue;
     if (!fact.tuple_id && (!fact.excerpt || /^Structured data extracted by/i.test(fact.excerpt))) continue;
-    const key = JSON.stringify([fact.source_url, fact.tuple_id ? 'tuple' : 'excerpt', fact.tuple_id || fact.excerpt]);
-    if (!groups.has(key)) groups.set(key, { source_url: fact.source_url, confidence: 'high' });
-    const group = groups.get(key);
+    const groupId = JSON.stringify([fact.source_url, fact.tuple_id ? 'tuple' : 'excerpt', fact.tuple_id || fact.excerpt]);
+    if (!groups.has(groupId)) groups.set(groupId, { source_url: fact.source_url, confidence: 'high' });
+    const group = groups.get(groupId);
     if (fact.product_id) group.product_id = JSON.stringify([fact.source_url, fact.product_id]);
     if (group[fact.field] !== undefined && group[fact.field] !== fact.value) group.ambiguous = true;
     group[fact.field] = fact.value;
