@@ -313,9 +313,9 @@ function parseCliArgs(argv) {
   let dir = '';
 
   for (let i = 0; i < argv.length; i += 1) {
-    const token = argv[i];
+    const arg = argv[i];
 
-    if (token === '--dir') {
+    if (arg === '--dir') {
       dir = argv[i + 1] || '';
       if (!dir) {
         throw new Error('Missing value for --dir.');
@@ -324,11 +324,11 @@ function parseCliArgs(argv) {
       continue;
     }
 
-    if (token.startsWith('--')) {
-      throw new Error(`Unknown argument: ${token}`);
+    if (arg.startsWith('--')) {
+      throw new Error(`Unknown argument: ${arg}`);
     }
 
-    filePaths.push(token);
+    filePaths.push(arg);
   }
 
   return { filePaths, dir };

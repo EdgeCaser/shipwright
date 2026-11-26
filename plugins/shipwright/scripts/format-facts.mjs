@@ -6,7 +6,7 @@
  * Converts a facts.json pack into a compact structured block suitable for
  * direct prompt injection or human review. Groups facts by source domain,
  * reconstructs pricing tuples from source and offer identity, and produces a concise
- * summary that fits in roughly 300-500 tokens for a typical research run.
+ * summary that fits in roughly 300-500 words for a typical research run.
  *
  * Usage (CLI):
  *   node scripts/format-facts.mjs path/to/facts.json
