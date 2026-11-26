@@ -12,7 +12,7 @@ test('rejects private, mapped, reserved, and non-web destinations', () => {
   assert.equal(isPublicAddress('8.8.8.8'), true);
   assert.equal(isPublicAddress('2001:4860:4860::8888'), true);
   for (const url of ['file:///etc/passwd', 'http://localhost/', 'http://127.0.0.1/',
-    'http://2130706433/', 'http://user:pass@example.com/']) {
+    'http://2130706433/', 'http://user:pass@example.com/', 'https://user@example.com/path']) {
     assert.throws(() => parsePublicUrl(url), url);
   }
 });

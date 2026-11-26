@@ -33,7 +33,8 @@ export function parsePublicUrl(rawUrl) {
   let url;
   try { url = new URL(rawUrl); } catch { throw new Error('invalid-url'); }
   if (!['http:', 'https:'].includes(url.protocol)) throw new Error('unsupported-url-scheme');
-  if (url.username || url.password) throw new Error('url-credentials-disallowed');
+  // Refuse a user-info part (anything before an @ in the authority) without reading its fields.
+  if (url.href.slice(url.protocol.length + 2).split(/[/?#]/, 1)[0].includes('@')) throw new Error('url-userinfo-disallowed');
   const host = url.hostname.replace(/^\[|\]$/g, '').toLowerCase();
   if (!host || (!isIP(host) &&
     (!host.includes('.') || /\.(?:localhost|local|internal|test|invalid|example|onion)$/.test(host)))) {
